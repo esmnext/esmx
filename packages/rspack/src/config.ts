@@ -75,6 +75,8 @@ export function createRspackConfig(
                     : `${gez.basePathPlaceholder}${gez.basePath}`,
             uniqueName: gez.varName,
             hotUpdateChunkFilename: '__hot__/[id].[fullhash].hot-update.js',
+            hotUpdateMainFilename:
+                '__hot__/[runtime].[fullhash].hot-update.json',
             path: ((): string => {
                 switch (buildTarget) {
                     case 'client':
