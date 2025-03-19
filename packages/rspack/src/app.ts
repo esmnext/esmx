@@ -13,12 +13,12 @@ import {
     mergeMiddlewares
 } from '@gez/core';
 import { createVmImport } from '@gez/import';
-import { type RspackOptions, rspack } from '@rspack/core';
-import devMiddleware from 'webpack-dev-middleware';
+import type { RspackOptions } from '@rspack/core';
 import hotMiddleware from 'webpack-hot-middleware';
 import type { BuildTarget } from './build-target';
 import { createRspackConfig } from './config';
 import { pack } from './pack';
+import { createRsBuild } from './utils';
 
 /**
  * Rspack 应用配置上下文接口。
@@ -205,57 +205,34 @@ async function createMiddleware(
     gez: Gez,
     options: RspackAppOptions = {}
 ): Promise<Middleware[]> {
-    const middlewares: Middleware[] = [];
-    if (gez.command === gez.COMMAND.dev) {
-        const clientCompiler = rspack(
-            generateBuildConfig(gez, options, 'client')
-        );
-        const serverCompiler = rspack(
-            generateBuildConfig(gez, options, 'server')
-        );
-        // @ts-expect-error
-        devMiddleware(clientCompiler, {
-            writeToDisk: true
-        });
-        // @ts-expect-error
-        devMiddleware(serverCompiler, {
-            writeToDisk: true
-        });
-
-        // 创建路径判断中间件
-        function createPathCheckMiddleware(
-            path: string,
-            middleware: Middleware
-        ): Middleware {
-            return (req, res, next) => {
-                if (req.url?.includes(path)) {
-                    return middleware(req, res, next);
-                }
-                next();
-            };
-        }
-
-        middlewares.push(
-            createPathCheckMiddleware(
-                `${gez.basePath}hot-middleware`,
-                // @ts-expect-error
-                hotMiddleware(clientCompiler, {
-                    path: `${gez.basePath}hot-middleware`
-                })
-            )
-        );
-        await new Promise<void>((resolve) => {
-            clientCompiler.run(() => {
-                resolve();
-            });
-        });
-        await new Promise<void>((resolve) => {
-            serverCompiler.run(() => {
-                resolve();
-            });
-        });
+    if (gez.command !== gez.COMMAND.dev) {
+        return [];
     }
-    return middlewares;
+    // const middlewares: Middleware[] = [];
+
+    const rsBuild = createRsBuild([
+        generateBuildConfig(gez, options, 'client'),
+        generateBuildConfig(gez, options, 'server')
+    ]);
+    rsBuild.watch();
+    rsBuild.compilers.forEach((item) => {
+        if (item.options.target === 'web') {
+        }
+    });
+
+    // @ts-ignore
+    const hot = hotMiddleware(rsBuild.compilers[0], {
+        path: `${gez.basePath}hot-middleware`
+    });
+    return [
+        (req, res, next) => {
+            if (req.url?.startsWith(`${gez.basePath}hot-middleware`)) {
+                // @ts-ignore
+                return hot(req, res, next);
+            }
+            return next();
+        }
+    ];
 }
 
 function generateBuildConfig(
@@ -297,11 +274,6 @@ function rewriteRender(gez: Gez) {
 
 function rewriteBuild(gez: Gez, options: RspackAppOptions = {}) {
     return async (): Promise<boolean> => {
-        const list: (() => Promise<boolean>)[] = [
-            () => rspackBuild(generateBuildConfig(gez, options, 'client')),
-            () => rspackBuild(generateBuildConfig(gez, options, 'server')),
-            () => rspackBuild(generateBuildConfig(gez, options, 'node'))
-        ];
         for (const item of gez.moduleConfig.exports) {
             if (item.type === PathType.root) {
                 const text = fs.readFileSync(
@@ -325,12 +297,11 @@ function rewriteBuild(gez: Gez, options: RspackAppOptions = {}) {
                 }
             }
         }
-        for (const build of list) {
-            const successful = await build();
-            if (!successful) {
-                return false;
-            }
-        }
+        await createRsBuild([
+            generateBuildConfig(gez, options, 'client'),
+            generateBuildConfig(gez, options, 'server'),
+            generateBuildConfig(gez, options, 'node')
+        ]).build();
         gez.writeSync(
             gez.resolvePath('dist/index.js'),
             `
@@ -349,34 +320,4 @@ start();
         );
         return pack(gez);
     };
-}
-
-async function rspackBuild(options: RspackOptions) {
-    const ok = await new Promise<boolean>((resolve) => {
-        const compiler = rspack(options);
-        compiler.run((err, stats) => {
-            if (err) {
-                console.error(err);
-                resolve(false);
-                return;
-            } else if (stats?.hasErrors()) {
-                stats.toJson({ errors: true })?.errors?.forEach((err) => {
-                    console.error(err);
-                });
-
-                return resolve(false);
-            }
-            compiler.close((err) => {
-                if (err) {
-                    console.error(err);
-                    resolve(false);
-                    return;
-                }
-                resolve(true);
-            });
-        });
-    });
-    // 避免前面的进度条被 rspack.ProgressPlugin 清理了
-    ok && console.log('');
-    return ok;
 }

@@ -9,8 +9,8 @@
         "lint:css": "pnpm --filter \"*\" lint:css",
         "lint:type": "pnpm --filter \"*\" lint:type",
         "test": "pnpm --filter \"*\" test",
-        "build": "pnpm --filter \"*\" --recursive --sort build",
-        "build:packages": "pnpm --filter \"./packages/**\" --recursive build",
+        "build": "pnpm -r build",
+        "build:packages": "pnpm --filter \"./packages/**\" build",
         "release": "npm run build:packages && lerna publish --force-publish --exact",
         "deploy": "npm run build && ./deploy.sh"
     },
@@ -30,6 +30,18 @@
     "engines": {
         "lerna": ">=8",
         "node": ">=22",
-        "pnpm": ">=9"
+        "pnpm": ">=10"
+    },
+    "pnpm": {
+        "onlyBuiltDependencies": [
+            "@biomejs/biome",
+            "@gez/router-vue",
+            "esbuild"
+        ],
+        "ignoredBuiltDependencies": [
+            "core-js",
+            "swiper",
+            "puppeteer"
+        ]
     }
 }

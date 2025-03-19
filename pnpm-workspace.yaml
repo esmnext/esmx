@@ -1,4 +1,4 @@
-# Template generation, do not manually modify
+# Delete this comment line, the template will no longer be written
 packages:
     - 'packages/*'
     - 'examples/*'

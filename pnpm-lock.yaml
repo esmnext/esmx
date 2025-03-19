@@ -199,7 +199,7 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0
       ssr-vue2-remote:
-        specifier: workspace:ssr-vue2-remote
+        specifier: workspace:*
         version: link:../ssr-vue2-remote
       typescript:
         specifier: ^5.2.2
@@ -498,9 +498,6 @@ importers:
       style-resources-loader:
         specifier: ^1.5.0
         version: 1.5.0(webpack@5.98.0)
-      webpack-dev-middleware:
-        specifier: ^7.4.2
-        version: 7.4.2(webpack@5.98.0)
       webpack-hot-middleware:
         specifier: ^2.26.1
         version: 2.26.1
