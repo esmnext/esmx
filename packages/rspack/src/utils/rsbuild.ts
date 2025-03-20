@@ -34,7 +34,38 @@ export function createRsBuild(options: RspackOptions[]) {
             });
         },
         watch() {
-            multiCompiler.watch({}, (err, stats) => {});
+            const watching = multiCompiler.watch({}, (err, stats) => {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+                if (stats?.hasErrors()) {
+                    stats.toJson({ errors: true })?.errors?.forEach((err) => {
+                        console.log(styleText('red', err.message));
+                    });
+                }
+            });
+
+            // 监听进程信号，确保优雅退出
+            const signals = ['SIGINT', 'SIGTERM', 'SIGHUP'] satisfies string[];
+            signals.forEach((signal) => {
+                process.on(signal, () => {
+                    watching.close(() => {
+                        process.exit();
+                    });
+                });
+            });
+
+            // 监听未捕获的异常和 Promise 拒绝
+            process.on('uncaughtException', handleExit);
+            process.on('unhandledRejection', handleExit);
+
+            function handleExit(err: Error) {
+                console.error(err);
+                watching.close(() => {
+                    process.exit(1);
+                });
+            }
         }
     };
 }
