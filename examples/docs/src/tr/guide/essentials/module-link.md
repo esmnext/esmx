@@ -9,38 +9,19 @@ head:
 
 # Modül Bağlantısı
 
-Gez çerçevesi, hizmetler arası kod paylaşımını ve bağımlılık ilişkilerini yönetmek için kapsamlı bir modül bağlantı mekanizması sunar. Bu mekanizma ESM (ECMAScript Module) spesifikasyonu temelinde uygulanmıştır ve kaynak kodu seviyesinde modül dışa aktarma ve içe aktarma ile tam bağımlılık yönetimi işlevlerini destekler.
+Gez çerçevesi, hizmetler arası kod paylaşımını ve bağımlılık ilişkilerini yönetmek için kapsamlı bir modül bağlantı mekanizması sunar. Bu mekanizma ESM (ECMAScript Module) spesifikasyonu temelinde uygulanır ve kaynak kodu seviyesinde modül dışa aktarma ve içe aktarma ile tam bağımlılık yönetimi işlevlerini destekler.
 
 ### Temel Kavramlar
 
 #### Modül Dışa Aktarma
 Modül dışa aktarma, bir hizmetteki belirli kod birimlerini (bileşenler, yardımcı fonksiyonlar vb.) ESM formatında dışarıya açma sürecidir. İki tür dışa aktarma desteklenir:
 - **Kaynak Kodu Dışa Aktarma**: Projedeki kaynak kod dosyalarını doğrudan dışa aktarır
-- **Bağımlılık Dışa Aktarma**: Projede kullanılan üçüncü taraf bağımlılık paketlerini dışa aktarır
+- **Bağımlılık Dışa Aktarma**: Projenin kullandığı üçüncü taraf bağımlılık paketlerini dışa aktarır
 
-#### Modül İçe Aktarma
+#### Modül Bağlantısı
 Modül içe aktarma, bir hizmette diğer hizmetler tarafından dışa aktarılan kod birimlerini referans alma sürecidir. Birden fazla kurulum yöntemi desteklenir:
-- **Kaynak Kodu Kurulumu**: Geliştirme ortamı için uygundur, gerçek zamanlı değişiklik ve sıcak güncelleme desteği sağlar
-- **Paket Kurulumu**: Üretim ortamı için uygundur, doğrudan derleme çıktılarını kullanır
-
-### Ön Yükleme Mekanizması
-
-Hizmet performansını optimize etmek için Gez akıllı bir modül ön yükleme mekanizması uygular:
-
-1. **Bağımlılık Analizi**
-   - Derleme sırasında bileşenler arasındaki bağımlılık ilişkilerini analiz eder
-   - Kritik yoldaki temel modülleri tanımlar
-   - Modüllerin yükleme önceliğini belirler
-
-2. **Yükleme Stratejisi**
-   - **Anında Yükleme**: Kritik yoldaki temel modüller
-   - **Gecikmeli Yükleme**: Kritik olmayan işlev modülleri
-   - **İhtiyaç Halinde Yükleme**: Koşullu olarak render edilen modüller
-
-3. **Kaynak Optimizasyonu**
-   - Akıllı kod bölme stratejisi
-   - Modül seviyesinde önbellek yönetimi
-   - İhtiyaç halinde derleme ve paketleme
+- **Kaynak Kodu Kurulumu**: Geliştirme ortamları için uygundur, gerçek zamanlı değişiklik ve sıcak güncelleme desteği sunar
+- **Yazılım Paketi Kurulumu**: Üretim ortamları için uygundur, doğrudan yapı ürünlerini kullanır
 
 ## Modül Dışa Aktarma
 
@@ -80,15 +61,15 @@ import type { GezOptions } from '@gez/core';
 
 export default {
     modules: {
-        // İçe aktarma yapılandırması
-        imports: {
-            // Kaynak kod kurulumu: Derleme çıktısı dizinine işaret eder
+        // Bağlantı yapılandırması
+        links: {
+            // Kaynak kodu kurulumu: yapı ürünleri dizinine işaret eder
             'ssr-remote': 'root:./node_modules/ssr-remote/dist',
-            // Paket kurulumu: Paket dizinine işaret eder
+            // Yazılım paketi kurulumu: paket dizinine işaret eder
             'other-remote': 'root:./node_modules/other-remote'
         },
-        // Harici bağımlılık yapılandırması
-        externals: {
+        // İçe aktarma eşleme ayarları
+        imports: {
             // Uzak modüllerdeki bağımlılıkları kullan
             'vue': 'ssr-remote/npm/vue',
             'vue-router': 'ssr-remote/npm/vue-router'
@@ -97,10 +78,10 @@ export default {
 } satisfies GezOptions;
 ```
 
-Yapılandırma seçenekleri:
-1. **imports**: Uzak modüllerin yerel yolunu yapılandırır
-   - Kaynak kod kurulumu: Derleme çıktısı dizinine (dist) işaret eder
-   - Paket kurulumu: Doğrudan paket dizinine işaret eder
+Yapılandırma seçenekleri açıklaması:
+1. **imports**: Uzak modüllerin yerel yollarını yapılandırır
+   - Kaynak kodu kurulumu: yapı ürünleri dizinine (dist) işaret eder
+   - Yazılım paketi kurulumu: doğrudan paket dizinine işaret eder
 
 2. **externals**: Harici bağımlılıkları yapılandırır
    - Uzak modüllerdeki bağımlılıkları paylaşmak için kullanılır
@@ -109,8 +90,8 @@ Yapılandırma seçenekleri:
 
 ### Kurulum Yöntemleri
 
-#### Kaynak Kod Kurulumu
-Geliştirme ortamı için uygundur, gerçek zamanlı değişiklik ve sıcak güncelleme desteği sağlar.
+#### Kaynak Kodu Kurulumu
+Geliştirme ortamları için uygundur, gerçek zamanlı değişiklik ve sıcak güncelleme desteği sunar.
 
 1. **Workspace Yöntemi**
 Monorepo projelerinde kullanım için önerilir:
@@ -132,8 +113,8 @@ Yerel geliştirme ve hata ayıklama için kullanılır:
 }
 ```
 
-#### Paket Kurulumu
-Üretim ortamı için uygundur, doğrudan derleme çıktılarını kullanır.
+#### Yazılım Paketi Kurulumu
+Üretim ortamları için uygundur, doğrudan yapı ürünlerini kullanır.
 
 1. **NPM Registry**
 npm registry üzerinden kurulum:
@@ -155,11 +136,11 @@ HTTP/HTTPS protokolü üzerinden kurulum:
 }
 ```
 
-## Paket Derleme
+## Yazılım Paketi Oluşturma
 
 ### Yapılandırma Açıklaması
 
-`entry.node.ts` dosyasında derleme seçeneklerini yapılandırın:
+`entry.node.ts` dosyasında yapı seçeneklerini yapılandırın:
 
 ```ts title="src/entry.node.ts"
 import type { GezOptions } from '@gez/core';
@@ -173,9 +154,9 @@ export default {
             'npm:vue'
         ]
     },
-    // Derleme yapılandırması
+    // Yapı yapılandırması
     pack: {
-        // Derlemeyi etkinleştir
+        // Yapıyı etkinleştir
         enable: true,
 
         // Çıktı yapılandırması
@@ -184,20 +165,20 @@ export default {
             'dist/client/versions/1.0.0.tgz'
         ],
 
-        // Özelleştirilmiş package.json
+        // Özel package.json
         packageJson: async (gez, pkg) => {
             pkg.version = '1.0.0';
             return pkg;
         },
 
-        // Derleme öncesi işlemler
+        // Yapı öncesi işlemler
         onBefore: async (gez, pkg) => {
             // Tür bildirimleri oluştur
             // Test senaryolarını çalıştır
             // Dokümantasyonu güncelle vb.
         },
 
-        // Derleme sonrası işlemler
+        // Yapı sonrası işlemler
         onAfter: async (gez, pkg, file) => {
             // CDN'e yükle
             // npm deposuna yayınla
@@ -207,61 +188,25 @@ export default {
 } satisfies GezOptions;
 ```
 
-### Derleme Çıktıları
+### Yapı Ürünleri
 
 ```
 your-app-name.tgz
 ├── package.json        # Paket bilgisi
 ├── index.js            # Üretim ortamı girişi
-├── server/             # Sunucu tarafı kaynaklar
+├── server/             # Sunucu tarafı kaynakları
 │   └── manifest.json   # Sunucu tarafı kaynak eşlemesi
 ├── node/               # Node.js çalışma zamanı
-└── client/             # İstemci tarafı kaynaklar
+└── client/             # İstemci tarafı kaynakları
     └── manifest.json   # İstemci tarafı kaynak eşlemesi
 ```
 
 ### Yayınlama Süreci
 
 ```bash
-# 1. Üretim sürümünü derle
+# 1. Üretim sürümünü oluştur
 gez build
 
 # 2. npm'e yayınla
 npm publish dist/versions/your-app-name.tgz
-```
-
-## En İyi Uygulamalar
-
-### Geliştirme Ortamı Yapılandırması
-- **Bağımlılık Yönetimi**
-  - Workspace veya Link yöntemiyle bağımlılıkları kur
-  - Bağımlılık sürümlerini tek merkezden yönet
-  - Aynı bağımlılıkların tekrar kurulmasını önle
-
-- **Geliştirme Deneyimi**
-  - Sıcak güncelleme özelliğini etkinleştir
-  - Uygun ön yükleme stratejisini yapılandır
-  - Derleme hızını optimize et
-
-### Üretim Ortamı Yapılandırması
-- **Dağıtım Stratejisi**
-  - NPM Registry veya statik sunucu kullan
-  - Derleme çıktılarının bütünlüğünü sağla
-  - Gri yayın mekanizması uygula
-
-- **Performans Optimizasyonu**
-  - Kaynak ön yüklemeyi uygun şekilde yapılandır
-  - Modül yükleme sırasını optimize et
-  - Etkili önbellek stratejileri uygula
-
-### Sürüm Yönetimi
-- **Sürüm Kuralları**
-  - Anlamsal sürümleme kurallarına uy
-  - Detaylı güncelleme günlükleri tut
-  - Sürüm uyumluluk testlerini yap
-
-- **Bağımlılık Güncellemeleri**
-  - Bağımlılık paketlerini zamanında güncelle
-  - Düzenli olarak güvenlik denetimi yap
-  - Bağımlılık sürüm tutarlılığını koru
 ```

@@ -25,7 +25,7 @@ export enum PathType {
  *     ],
  *
  *     // 导入配置
- *     imports: {
+ *     links: {
  *       // 源码安装方式：需要指向 dist 目录
  *       'ssr-remote': 'root:./node_modules/ssr-remote/dist',
  *       // 软件包安装方式：直接指向包目录
@@ -33,7 +33,7 @@ export enum PathType {
  *     },
  *
  *     // 外部依赖配置
- *     externals: {
+ *     imports: {
  *       'vue': 'ssr-remote/npm/vue',
  *       'vue-router': 'ssr-remote/npm/vue-router'
  *     }
@@ -74,7 +74,7 @@ export interface ModuleConfig {
      *
      * @example
      * ```ts
-     * imports: {
+     * links: {
      *   // 源码安装方式：需要指向 dist 目录
      *   'ssr-remote': 'root:./node_modules/ssr-remote/dist',
      *   // 软件包安装方式：直接指向包目录
@@ -82,7 +82,7 @@ export interface ModuleConfig {
      * }
      * ```
      */
-    imports?: Record<string, string>;
+    links?: Record<string, string>;
 
     /**
      * 外部依赖映射。
@@ -90,14 +90,14 @@ export interface ModuleConfig {
      *
      * @example
      * ```ts
-     * externals: {
+     * imports: {
      *   // 使用远程模块中的依赖
      *   'vue': 'ssr-remote/npm/vue',
      *   'vue-router': 'ssr-remote/npm/vue-router'
      * }
      * ```
      */
-    externals?: Record<string, string>;
+    imports?: Record<string, string>;
 }
 
 /**
@@ -167,19 +167,17 @@ export interface ParsedModuleConfig {
      * 导入配置列表。
      * 定义了当前服务需要导入的外部模块。
      */
-    imports: {
+    links: Array<{
         /**
-         * 外部服务的名称。
-         * 用于标识导入的模块来源。
+         * 软包名称
          */
         name: string;
 
         /**
-         * 本地存储路径。
-         * 用于存放外部模块的构建产物。
+         * 软件包根目录
          */
-        localPath: string;
-    }[];
+        root: string;
+    }>;
 
     /**
      * 外部依赖映射。
@@ -195,7 +193,7 @@ export interface ParsedModuleConfig {
      * }
      * ```
      */
-    externals: Record<string, { match: RegExp; import?: string }>;
+    imports: Record<string, { match: RegExp; import?: string }>;
 }
 
 export function parseModuleConfig(
@@ -234,8 +232,8 @@ export function parseModuleConfig(
         });
     }
 
-    const imports: ParsedModuleConfig['imports'] = [];
-    if (config.imports) {
+    const links: ParsedModuleConfig['links'] = [];
+    if (config.links) {
         const getLocalPath = (dir: string) => {
             if (dir.startsWith(PathType.root)) {
                 return path.resolve(root, dir.substring(PathType.root.length));
@@ -244,42 +242,41 @@ export function parseModuleConfig(
             }
             return path.resolve(process.cwd(), dir);
         };
-        const _imports = config.imports;
-        Object.keys(config.imports).forEach((key) => {
-            const value = _imports[key].trim();
-            imports.push({
+        const _links = config.links;
+        Object.keys(config.links).forEach((key) => {
+            const value = _links[key].trim();
+            links.push({
                 name: key,
-                localPath: getLocalPath(value)
+                root: getLocalPath(value)
             });
         });
     }
 
-    const externals: ParsedModuleConfig['externals'] = {};
+    const imports: ParsedModuleConfig['imports'] = {};
     exports.forEach(({ importName, externalName }) => {
-        externals[externalName] = {
+        imports[externalName] = {
             match: new RegExp(`^${externalName}$`),
             import: importName
         };
     });
 
-    imports.forEach(({ name }) => {
-        externals[name] = {
+    links.forEach(({ name }) => {
+        imports[name] = {
             match: new RegExp(`^${[name]}/`)
         };
     });
-    if (config.externals) {
-        const _externals = config.externals;
-        Object.entries(_externals).forEach(([key, value]) => {
-            externals[key] = {
+    if (config.imports) {
+        Object.entries(config.imports).forEach(([key, value]) => {
+            imports[key] = {
                 import: value,
                 match: new RegExp(`^${key}$`)
             };
         });
     }
 
-    imports.push({
+    links.push({
         name,
-        localPath: path.resolve(root, 'dist')
+        root: path.resolve(root, 'dist')
     });
-    return { name, root, exports, imports, externals };
+    return { name, root, exports, links, imports };
 }

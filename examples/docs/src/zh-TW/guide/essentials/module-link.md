@@ -1,6 +1,6 @@
 ---
 titleSuffix: Gez 框架服務間程式碼共享機制
-description: 詳細介紹 Gez 框架的模組連結機制，包括服務間程式碼共享、依賴管理和 ESM 規範實現，幫助開發者構建高效的微前端應用。
+description: 詳細介紹 Gez 框架的模組連結機制，包括服務間程式碼共享、依賴管理和 ESM 規範實現，幫助開發者建構高效的微前端應用。
 head:
   - - meta
     - property: keywords
@@ -18,35 +18,16 @@ Gez 框架提供了一套完整的模組連結機制，用於管理服務間的�
 - **原始碼匯出**：直接匯出專案中的原始碼檔案
 - **依賴匯出**：匯出專案使用的第三方依賴套件
 
-#### 模組匯入
+#### 模組連結
 模組匯入是在服務中引用其他服務匯出的程式碼單元的過程。支援多種安裝方式：
 - **原始碼安裝**：適用於開發環境，支援即時修改和熱更新
 - **軟體包安裝**：適用於生產環境，直接使用建置產物
 
-### 預載機制
-
-為了優化服務效能，Gez 實現了智能的模組預載機制：
-
-1. **依賴分析**
-   - 建置時分析元件間的依賴關係
-   - 識別關鍵路徑上的核心模組
-   - 確定模組的載入優先級
-
-2. **載入策略**
-   - **立即載入**：關鍵路徑上的核心模組
-   - **延遲載入**：非關鍵功能模組
-   - **按需載入**：條件渲染的模組
-
-3. **資源優化**
-   - 智能的程式碼分割策略
-   - 模組層級的快取管理
-   - 按需編譯和打包
-
 ## 模組匯出
 
-### 配置說明
+### 設定說明
 
-在 `entry.node.ts` 中配置需要匯出的模組：
+在 `entry.node.ts` 中設定需要匯出的模組：
 
 ```ts title="src/entry.node.ts"
 import type { GezOptions } from '@gez/core';
@@ -65,30 +46,30 @@ export default {
 } satisfies GezOptions;
 ```
 
-匯出配置支援兩種類型：
+匯出設定支援兩種類型：
 - `root:*`：匯出原始碼檔案，路徑相對於專案根目錄
 - `npm:*`：匯出第三方依賴，直接指定套件名稱
 
 ## 模組匯入
 
-### 配置說明
+### 設定說明
 
-在 `entry.node.ts` 中配置需要匯入的模組：
+在 `entry.node.ts` 中設定需要匯入的模組：
 
 ```ts title="src/entry.node.ts"
 import type { GezOptions } from '@gez/core';
 
 export default {
     modules: {
-        // 匯入配置
-        imports: {
+        // 連結設定
+        links: {
             // 原始碼安裝：指向建置產物目錄
             'ssr-remote': 'root:./node_modules/ssr-remote/dist',
             // 軟體包安裝：指向套件目錄
             'other-remote': 'root:./node_modules/other-remote'
         },
-        // 外部依賴配置
-        externals: {
+        // 匯入映射設定
+        imports: {
             // 使用遠端模組中的依賴
             'vue': 'ssr-remote/npm/vue',
             'vue-router': 'ssr-remote/npm/vue-router'
@@ -97,12 +78,12 @@ export default {
 } satisfies GezOptions;
 ```
 
-配置項說明：
-1. **imports**：配置遠端模組的本地路徑
+設定項說明：
+1. **imports**：設定遠端模組的本機路徑
    - 原始碼安裝：指向建置產物目錄（dist）
    - 軟體包安裝：直接指向套件目錄
 
-2. **externals**：配置外部依賴
+2. **externals**：設定外部依賴
    - 用於共享遠端模組中的依賴
    - 避免重複打包相同依賴
    - 支援多個模組共享依賴
@@ -123,7 +104,7 @@ export default {
 ```
 
 2. **Link 方式**
-用於本地開發除錯：
+用於本機開發除錯：
 ```ts title="package.json"
 {
     "devDependencies": {
@@ -157,15 +138,15 @@ export default {
 
 ## 軟體包建置
 
-### 配置說明
+### 設定說明
 
-在 `entry.node.ts` 中配置建置選項：
+在 `entry.node.ts` 中設定建置選項：
 
 ```ts title="src/entry.node.ts"
 import type { GezOptions } from '@gez/core';
 
 export default {
-    // 模組匯出配置
+    // 模組匯出設定
     modules: {
         exports: [
             'root:src/components/button.vue',
@@ -173,12 +154,12 @@ export default {
             'npm:vue'
         ]
     },
-    // 建置配置
+    // 建置設定
     pack: {
         // 啟用建置
         enable: true,
 
-        // 輸出配置
+        // 輸出設定
         outputs: [
             'dist/client/versions/latest.tgz',
             'dist/client/versions/1.0.0.tgz'
@@ -193,7 +174,7 @@ export default {
         // 建置前處理
         onBefore: async (gez, pkg) => {
             // 產生類型宣告
-            // 執行測試用例
+            // 執行測試案例
             // 更新文件等
         },
 
@@ -228,40 +209,4 @@ gez build
 
 # 2. 發布到 npm
 npm publish dist/versions/your-app-name.tgz
-```
-
-## 最佳實踐
-
-### 開發環境配置
-- **依賴管理**
-  - 使用 Workspace 或 Link 方式安裝依賴
-  - 統一管理依賴版本
-  - 避免重複安裝相同依賴
-
-- **開發體驗**
-  - 啟用熱更新功能
-  - 配置合適的預載策略
-  - 優化建置速度
-
-### 生產環境配置
-- **部署策略**
-  - 使用 NPM Registry 或靜態伺服器
-  - 確保建置產物完整性
-  - 實施灰度發布機制
-
-- **效能優化**
-  - 合理配置資源預載
-  - 優化模組載入順序
-  - 實施有效的快取策略
-
-### 版本管理
-- **版本規範**
-  - 遵循語意化版本規範
-  - 維護詳細的更新日誌
-  - 做好版本相容性測試
-
-- **依賴更新**
-  - 及時更新依賴套件
-  - 定期進行安全審計
-  - 保持依賴版本一致性
 ```

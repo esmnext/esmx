@@ -7,11 +7,10 @@ export function externalPlugin(
     compiler: Compiler
 ) {
     const externals = compiler.options.externals || [];
-    const options = moduleConfig.externals;
     if (!Array.isArray(externals)) {
         throw new TypeError(`'externals' configuration must be an array`);
     }
-    Object.entries(options).forEach(([key, value]) => {
+    Object.entries(moduleConfig.imports).forEach(([key, value]) => {
         externals.push(
             (
                 { request, contextInfo }: any,
@@ -39,8 +38,8 @@ export function externalPlugin(
  */
 function getImportResult(
     moduleConfig: ParsedModuleConfig,
-    externalName: keyof ParsedModuleConfig['externals'],
-    externalValue: ParsedModuleConfig['externals'][string]
+    externalName: keyof ParsedModuleConfig['imports'],
+    externalValue: ParsedModuleConfig['imports'][string]
 ): (issuer: string, request: string) => string | false {
     /**
      * 匹配的相对路径和别名

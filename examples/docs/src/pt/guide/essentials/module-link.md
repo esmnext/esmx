@@ -9,7 +9,7 @@ head:
 
 # Vinculação de Módulos
 
-O framework Gez fornece um mecanismo completo de vinculação de módulos para gerenciar o compartilhamento de código e as dependências entre serviços. Este mecanismo é implementado com base na especificação ESM (ECMAScript Module), suportando a exportação e importação de módulos em nível de código-fonte, bem como funcionalidades completas de gerenciamento de dependências.
+O framework Gez fornece um mecanismo completo de vinculação de módulos para gerenciar o compartilhamento de código e as dependências entre serviços. Este mecanismo é implementado com base na especificação ESM (ECMAScript Module), suportando exportação e importação de módulos em nível de código-fonte, além de funcionalidades completas de gerenciamento de dependências.
 
 ### Conceitos Principais
 
@@ -18,29 +18,10 @@ A exportação de módulos é o processo de expor unidades de código específic
 - **Exportação de Código-Fonte**: Exporta diretamente arquivos de código-fonte do projeto
 - **Exportação de Dependências**: Exporta pacotes de dependências de terceiros usados pelo projeto
 
-#### Importação de Módulos
+#### Vinculação de Módulos
 A importação de módulos é o processo de referenciar unidades de código exportadas por outros serviços em um serviço. São suportados vários métodos de instalação:
-- **Instalação de Código-Fonte**: Adequado para ambientes de desenvolvimento, suporta modificações em tempo real e atualização a quente (hot update)
+- **Instalação de Código-Fonte**: Adequado para ambientes de desenvolvimento, suporta modificações em tempo real e atualização a quente
 - **Instalação de Pacotes**: Adequado para ambientes de produção, utiliza diretamente os artefatos de construção
-
-### Mecanismo de Pré-carregamento
-
-Para otimizar o desempenho dos serviços, o Gez implementa um mecanismo inteligente de pré-carregamento de módulos:
-
-1. **Análise de Dependências**
-   - Analisa as dependências entre componentes durante a construção
-   - Identifica os módulos principais no caminho crítico
-   - Determina a prioridade de carregamento dos módulos
-
-2. **Estratégia de Carregamento**
-   - **Carregamento Imediato**: Módulos principais no caminho crítico
-   - **Carregamento Atrasado**: Módulos de funcionalidades não críticas
-   - **Carregamento Sob Demanda**: Módulos renderizados condicionalmente
-
-3. **Otimização de Recursos**
-   - Estratégia inteligente de divisão de código (code splitting)
-   - Gerenciamento de cache em nível de módulo
-   - Compilação e empacotamento sob demanda
 
 ## Exportação de Módulos
 
@@ -80,15 +61,15 @@ import type { GezOptions } from '@gez/core';
 
 export default {
     modules: {
-        // Configuração de importação
-        imports: {
+        // Configuração de vinculação
+        links: {
             // Instalação de código-fonte: aponta para o diretório de artefatos de construção
             'ssr-remote': 'root:./node_modules/ssr-remote/dist',
             // Instalação de pacotes: aponta para o diretório do pacote
             'other-remote': 'root:./node_modules/other-remote'
         },
-        // Configuração de dependências externas
-        externals: {
+        // Configuração de mapeamento de importação
+        imports: {
             // Usar dependências de módulos remotos
             'vue': 'ssr-remote/npm/vue',
             'vue-router': 'ssr-remote/npm/vue-router'
@@ -104,7 +85,7 @@ Explicação dos itens de configuração:
 
 2. **externals**: Configura dependências externas
    - Usado para compartilhar dependências de módulos remotos
-   - Evita empacotamento repetido das mesmas dependências
+   - Evita empacotamento duplicado das mesmas dependências
    - Suporta compartilhamento de dependências entre vários módulos
 
 ### Métodos de Instalação
@@ -184,7 +165,7 @@ export default {
             'dist/client/versions/1.0.0.tgz'
         ],
 
-        // Personalizar package.json
+        // package.json personalizado
         packageJson: async (gez, pkg) => {
             pkg.version = '1.0.0';
             return pkg;
@@ -229,38 +210,3 @@ gez build
 # 2. Publicar no npm
 npm publish dist/versions/your-app-name.tgz
 ```
-
-## Melhores Práticas
-
-### Configuração de Ambiente de Desenvolvimento
-- **Gerenciamento de Dependências**
-  - Usar modo Workspace ou Link para instalar dependências
-  - Gerenciar versões de dependências de forma unificada
-  - Evitar instalação repetida das mesmas dependências
-
-- **Experiência de Desenvolvimento**
-  - Habilitar funcionalidade de atualização a quente
-  - Configurar estratégia de pré-carregamento adequada
-  - Otimizar velocidade de construção
-
-### Configuração de Ambiente de Produção
-- **Estratégia de Implantação**
-  - Usar registro npm ou servidor estático
-  - Garantir integridade dos artefatos de construção
-  - Implementar mecanismo de lançamento gradual (gray release)
-
-- **Otimização de Desempenho**
-  - Configurar pré-carregamento de recursos de forma adequada
-  - Otimizar ordem de carregamento de módulos
-  - Implementar estratégia de cache eficaz
-
-### Gerenciamento de Versões
-- **Padrão de Versões**
-  - Seguir a especificação de versionamento semântico
-  - Manter registro detalhado de alterações
-  - Realizar testes de compatibilidade de versões
-
-- **Atualização de Dependências**
-  - Atualizar pacotes de dependências regularmente
-  - Realizar auditorias de segurança periodicamente
-  - Manter consistência de versões de dependências

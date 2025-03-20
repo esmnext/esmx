@@ -1,6 +1,7 @@
+```markdown
 ---
-titleSuffix: Gez Framework Service Interoperability Code Sharing Mechanism
-description: Gedetailleerde uitleg over de module linking mechanismen van het Gez framework, inclusief code sharing tussen services, dependency management en ESM-specificatie implementatie, om ontwikkelaars te helpen efficiënte micro-frontend applicaties te bouwen.
+titleSuffix: Gez Framework Service Inter-Code Sharing Mechanism
+description: Gedetailleerde uitleg over de module linking mechanisme van het Gez framework, inclusief service inter-code sharing, dependency management en ESM specificatie implementatie, om ontwikkelaars te helpen efficiënte micro-frontend applicaties te bouwen.
 head:
   - - meta
     - property: keywords
@@ -9,40 +10,21 @@ head:
 
 # Module Linking
 
-Het Gez framework biedt een compleet module linking mechanisme voor het beheren van code sharing en afhankelijkheden tussen services. Dit mechanisme is gebaseerd op de ESM (ECMAScript Module) specificatie en ondersteunt het exporteren en importeren van modules op broncodeniveau, evenals volledige dependency management functionaliteit.
+Het Gez framework biedt een compleet module linking mechanisme voor het beheren van code sharing en afhankelijkheden tussen services. Dit mechanisme is gebaseerd op de ESM (ECMAScript Module) specificatie en ondersteunt module export en import op broncode niveau, evenals volledige dependency management functionaliteit.
 
 ### Kernconcepten
 
-#### Module Exporteren
-Module exporteren is het proces waarbij specifieke code-eenheden (zoals componenten, utility functies, etc.) vanuit een service worden blootgesteld in ESM-formaat. Er worden twee exporttypen ondersteund:
-- **Broncode Exporteren**: Direct exporteren van broncodebestanden uit het project
-- **Dependency Exporteren**: Exporteren van gebruikte third-party dependencies
+#### Module Export
+Module export is het proces waarbij specifieke code eenheden (zoals componenten, utility functies, etc.) vanuit een service worden blootgesteld in ESM formaat. Er worden twee export types ondersteund:
+- **Broncode Export**: Directe export van broncode bestanden uit het project
+- **Dependency Export**: Export van gebruikte third-party dependency packages
 
-#### Module Importeren
-Module importeren is het proces waarbij code-eenheden die door andere services zijn geëxporteerd, worden geïmporteerd in een service. Er worden meerdere installatiemethoden ondersteund:
-- **Broncode Installatie**: Geschikt voor ontwikkelomgevingen, ondersteunt real-time wijzigingen en hot reloading
-- **Pakket Installatie**: Geschikt voor productieomgevingen, maakt gebruik van build artifacts
+#### Module Linking
+Module import is het proces waarbij code eenheden die door andere services zijn geëxporteerd, worden geïmporteerd in een service. Er worden meerdere installatiemethoden ondersteund:
+- **Broncode Installatie**: Geschikt voor ontwikkelomgevingen, ondersteunt real-time wijzigingen en hot updates
+- **Package Installatie**: Geschikt voor productieomgevingen, maakt direct gebruik van build artifacts
 
-### Preloading Mechanism
-
-Om de serviceprestaties te optimaliseren, heeft Gez een intelligent module preloading mechanisme geïmplementeerd:
-
-1. **Dependency Analyse**
-   - Analyseer de afhankelijkheden tussen componenten tijdens het bouwen
-   - Identificeer kernmodules op kritieke paden
-   - Bepaal de laadprioriteit van modules
-
-2. **Laadstrategie**
-   - **Direct Laden**: Kernmodules op kritieke paden
-   - **Uitgesteld Laden**: Niet-kritieke functionaliteitsmodules
-   - **Op Vraag Laden**: Modules die conditioneel worden gerenderd
-
-3. **Resource Optimalisatie**
-   - Intelligente code splitting strategie
-   - Cachebeheer op moduleniveau
-   - Compileren en bundelen op aanvraag
-
-## Module Exporteren
+## Module Export
 
 ### Configuratie Uitleg
 
@@ -54,7 +36,7 @@ import type { GezOptions } from '@gez/core';
 export default {
     modules: {
         exports: [
-            // Exporteer broncodebestanden
+            // Exporteer broncode bestanden
             'root:src/components/button.vue',  // Vue component
             'root:src/utils/format.ts',        // Utility functie
             // Exporteer third-party dependencies
@@ -65,11 +47,11 @@ export default {
 } satisfies GezOptions;
 ```
 
-De exportconfiguratie ondersteunt twee typen:
-- `root:*`: Exporteer broncodebestanden, pad relatief ten opzichte van de projectroot
-- `npm:*`: Exporteer third-party dependencies, specificeer direct de pakketnaam
+Export configuratie ondersteunt twee types:
+- `root:*`: Exporteer broncode bestanden, pad relatief ten opzichte van de project root directory
+- `npm:*`: Exporteer third-party dependencies, specificeer direct de package naam
 
-## Module Importeren
+## Module Import
 
 ### Configuratie Uitleg
 
@@ -80,16 +62,16 @@ import type { GezOptions } from '@gez/core';
 
 export default {
     modules: {
-        // Import configuratie
-        imports: {
-            // Broncode Installatie: Verwijs naar de build artifact directory
+        // Link configuratie
+        links: {
+            // Broncode installatie: wijs naar de build artifact directory
             'ssr-remote': 'root:./node_modules/ssr-remote/dist',
-            // Pakket Installatie: Verwijs naar de pakketdirectory
+            // Package installatie: wijs naar de package directory
             'other-remote': 'root:./node_modules/other-remote'
         },
-        // Externe dependency configuratie
-        externals: {
-            // Gebruik dependencies van externe modules
+        // Import mapping instellingen
+        imports: {
+            // Gebruik dependencies van remote modules
             'vue': 'ssr-remote/npm/vue',
             'vue-router': 'ssr-remote/npm/vue-router'
         }
@@ -98,19 +80,19 @@ export default {
 ```
 
 Configuratie uitleg:
-1. **imports**: Configureer het lokale pad van externe modules
-   - Broncode Installatie: Verwijs naar de build artifact directory (dist)
-   - Pakket Installatie: Verwijs direct naar de pakketdirectory
+1. **imports**: Configureer lokale paden voor remote modules
+   - Broncode installatie: wijs naar de build artifact directory (dist)
+   - Package installatie: wijs direct naar de package directory
 
 2. **externals**: Configureer externe dependencies
-   - Voor het delen van dependencies tussen externe modules
+   - Gebruikt voor het delen van dependencies tussen remote modules
    - Voorkomt dubbele bundeling van dezelfde dependencies
    - Ondersteunt het delen van dependencies tussen meerdere modules
 
-### Installatiemethoden
+### Installatie Methoden
 
 #### Broncode Installatie
-Geschikt voor ontwikkelomgevingen, ondersteunt real-time wijzigingen en hot reloading.
+Geschikt voor ontwikkelomgevingen, ondersteunt real-time wijzigingen en hot updates.
 
 1. **Workspace Methode**
 Aanbevolen voor gebruik in Monorepo projecten:
@@ -123,7 +105,7 @@ Aanbevolen voor gebruik in Monorepo projecten:
 ```
 
 2. **Link Methode**
-Voor lokale ontwikkeling en debugging:
+Gebruikt voor lokale ontwikkeling en debugging:
 ```ts title="package.json"
 {
     "devDependencies": {
@@ -132,7 +114,7 @@ Voor lokale ontwikkeling en debugging:
 }
 ```
 
-#### Pakket Installatie
+#### Package Installatie
 Geschikt voor productieomgevingen, maakt direct gebruik van build artifacts.
 
 1. **NPM Registry**
@@ -155,7 +137,7 @@ Installatie via HTTP/HTTPS protocol:
 }
 ```
 
-## Pakket Bouwen
+## Package Bouwen
 
 ### Configuratie Uitleg
 
@@ -193,7 +175,7 @@ export default {
         // Pre-build verwerking
         onBefore: async (gez, pkg) => {
             // Genereer type declaraties
-            // Voer testcases uit
+            // Voer test cases uit
             // Update documentatie, etc.
         },
 
@@ -211,8 +193,8 @@ export default {
 
 ```
 your-app-name.tgz
-├── package.json        # Pakket informatie
-├── index.js            # Productieomgeving entry
+├── package.json        # Package informatie
+├── index.js            # Productie omgeving entry
 ├── server/             # Server resources
 │   └── manifest.json   # Server resource mapping
 ├── node/               # Node.js runtime
@@ -220,47 +202,13 @@ your-app-name.tgz
     └── manifest.json   # Client resource mapping
 ```
 
-### Publicatieproces
+### Publicatie Proces
 
 ```bash
-# 1. Bouw productieversie
+# 1. Bouw productie versie
 gez build
 
 # 2. Publiceer naar npm
 npm publish dist/versions/your-app-name.tgz
 ```
-
-## Best Practices
-
-### Ontwikkelomgeving Configuratie
-- **Dependency Management**
-  - Gebruik Workspace of Link methode voor dependency installatie
-  - Beheer dependency versies centraal
-  - Voorkom dubbele installatie van dezelfde dependencies
-
-- **Ontwikkelervaring**
-  - Schakel hot reloading in
-  - Configureer een geschikte preloading strategie
-  - Optimaliseer build snelheid
-
-### Productieomgeving Configuratie
-- **Deploy Strategie**
-  - Gebruik NPM Registry of een statische server
-  - Zorg voor integriteit van build artifacts
-  - Implementeer een canary release mechanisme
-
-- **Prestatieoptimalisatie**
-  - Configureer resource preloading op de juiste manier
-  - Optimaliseer module laadvolgorde
-  - Implementeer effectieve caching strategieën
-
-### Versiebeheer
-- **Versiebeheerrichtlijnen**
-  - Volg semantische versiebeheerrichtlijnen
-  - Onderhoud gedetailleerde changelogs
-  - Voer compatibiliteitstesten uit voor versies
-
-- **Dependency Updates**
-  - Update dependencies tijdig
-  - Voer regelmatig security audits uit
-  - Houd dependency versies consistent
+```

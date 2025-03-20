@@ -1,6 +1,6 @@
 ---
 titleSuffix: Mechanizm udostępniania kodu między usługami w frameworku Gez
-description: Szczegółowy opis mechanizmu łączenia modułów w frameworku Gez, w tym udostępniania kodu między usługami, zarządzania zależnościami i implementacji specyfikacji ESM, pomagający programistom w budowaniu wydajnych aplikacji mikrofrontendowych.
+description: Szczegółowy opis mechanizmu łączenia modułów w frameworku Gez, obejmujący udostępnianie kodu między usługami, zarządzanie zależnościami oraz implementację specyfikacji ESM, pomagający programistom w budowaniu wydajnych aplikacji mikrofrontendowych.
 head:
   - - meta
     - property: keywords
@@ -16,37 +16,18 @@ Framework Gez zapewnia kompleksowy mechanizm łączenia modułów, służący do
 #### Eksportowanie modułów
 Eksportowanie modułów to proces udostępniania określonych jednostek kodu (np. komponentów, funkcji narzędziowych) z usługi w formacie ESM. Obsługiwane są dwa typy eksportu:
 - **Eksport kodu źródłowego**: bezpośrednie eksportowanie plików źródłowych z projektu
-- **Eksport zależności**: eksportowanie pakietów zależności innych firm używanych w projekcie
+- **Eksport zależności**: eksportowanie pakietów zależności używanych w projekcie
 
-#### Importowanie modułów
+#### Łączenie modułów
 Importowanie modułów to proces odwoływania się do jednostek kodu eksportowanych przez inne usługi. Obsługiwane są różne metody instalacji:
-- **Instalacja kodu źródłowego**: odpowiednia dla środowisk deweloperskich, obsługuje modyfikacje w czasie rzeczywistym i gorącą aktualizację
-- **Instalacja pakietu**: odpowiednia dla środowisk produkcyjnych, korzysta bezpośrednio z wyników budowania
-
-### Mechanizm preładowania
-
-W celu optymalizacji wydajności usług, Gez implementuje inteligentny mechanizm preładowania modułów:
-
-1. **Analiza zależności**
-   - Analiza zależności między komponentami podczas budowania
-   - Identyfikacja kluczowych modułów na ścieżce krytycznej
-   - Określenie priorytetów ładowania modułów
-
-2. **Strategie ładowania**
-   - **Natychmiastowe ładowanie**: kluczowe moduły na ścieżce krytycznej
-   - **Opóźnione ładowanie**: moduły funkcji niekrytycznych
-   - **Ładowanie na żądanie**: moduły renderowane warunkowo
-
-3. **Optymalizacja zasobów**
-   - Inteligentna strategia podziału kodu
-   - Zarządzanie pamięcią podręczną na poziomie modułów
-   - Kompilacja i pakowanie na żądanie
+- **Instalacja kodu źródłowego**: przeznaczona dla środowisk deweloperskich, obsługuje modyfikacje w czasie rzeczywistym i gorącą aktualizację
+- **Instalacja pakietów**: przeznaczona dla środowisk produkcyjnych, korzysta bezpośrednio z wyników budowania
 
 ## Eksportowanie modułów
 
 ### Konfiguracja
 
-Konfiguracja modułów do eksportu w pliku `entry.node.ts`:
+W pliku `entry.node.ts` należy skonfigurować moduły do eksportu:
 
 ```ts title="src/entry.node.ts"
 import type { GezOptions } from '@gez/core';
@@ -57,7 +38,7 @@ export default {
             // Eksportowanie plików źródłowych
             'root:src/components/button.vue',  // Komponent Vue
             'root:src/utils/format.ts',        // Funkcja narzędziowa
-            // Eksportowanie zależności innych firm
+            // Eksportowanie zależności
             'npm:vue',                         // Framework Vue
             'npm:vue-router'                   // Vue Router
         ]
@@ -67,28 +48,28 @@ export default {
 
 Konfiguracja eksportu obsługuje dwa typy:
 - `root:*`: eksportowanie plików źródłowych, ścieżka względem katalogu głównego projektu
-- `npm:*`: eksportowanie zależności innych firm, bezpośrednie określenie nazwy pakietu
+- `npm:*`: eksportowanie zależności, bezpośrednie określenie nazwy pakietu
 
 ## Importowanie modułów
 
 ### Konfiguracja
 
-Konfiguracja modułów do importu w pliku `entry.node.ts`:
+W pliku `entry.node.ts` należy skonfigurować moduły do importu:
 
 ```ts title="src/entry.node.ts"
 import type { GezOptions } from '@gez/core';
 
 export default {
     modules: {
-        // Konfiguracja importu
-        imports: {
+        // Konfiguracja łączenia
+        links: {
             // Instalacja kodu źródłowego: wskazuje na katalog wyników budowania
             'ssr-remote': 'root:./node_modules/ssr-remote/dist',
-            // Instalacja pakietu: wskazuje na katalog pakietu
+            // Instalacja pakietów: wskazuje na katalog pakietu
             'other-remote': 'root:./node_modules/other-remote'
         },
-        // Konfiguracja zależności zewnętrznych
-        externals: {
+        // Konfiguracja mapowania importów
+        imports: {
             // Używanie zależności z modułów zdalnych
             'vue': 'ssr-remote/npm/vue',
             'vue-router': 'ssr-remote/npm/vue-router'
@@ -100,17 +81,17 @@ export default {
 Opis konfiguracji:
 1. **imports**: konfiguracja lokalnych ścieżek do modułów zdalnych
    - Instalacja kodu źródłowego: wskazuje na katalog wyników budowania (dist)
-   - Instalacja pakietu: bezpośrednio wskazuje na katalog pakietu
+   - Instalacja pakietów: bezpośrednio wskazuje na katalog pakietu
 
 2. **externals**: konfiguracja zależności zewnętrznych
    - Służy do udostępniania zależności z modułów zdalnych
-   - Unika powtarzającego się pakowania tych samych zależności
+   - Zapobiega wielokrotnemu pakowaniu tych samych zależności
    - Obsługuje udostępnianie zależności przez wiele modułów
 
 ### Metody instalacji
 
 #### Instalacja kodu źródłowego
-Odpowiednia dla środowisk deweloperskich, obsługuje modyfikacje w czasie rzeczywistym i gorącą aktualizację.
+Przeznaczona dla środowisk deweloperskich, obsługuje modyfikacje w czasie rzeczywistym i gorącą aktualizację.
 
 1. **Sposób Workspace**
 Zalecany w projektach Monorepo:
@@ -132,8 +113,8 @@ Używany do lokalnego debugowania:
 }
 ```
 
-#### Instalacja pakietu
-Odpowiednia dla środowisk produkcyjnych, korzysta bezpośrednio z wyników budowania.
+#### Instalacja pakietów
+Przeznaczona dla środowisk produkcyjnych, korzysta bezpośrednio z wyników budowania.
 
 1. **Rejestr NPM**
 Instalacja przez rejestr npm:
@@ -159,7 +140,7 @@ Instalacja przez protokół HTTP/HTTPS:
 
 ### Konfiguracja
 
-Konfiguracja opcji budowania w pliku `entry.node.ts`:
+W pliku `entry.node.ts` należy skonfigurować opcje budowania:
 
 ```ts title="src/entry.node.ts"
 import type { GezOptions } from '@gez/core';
@@ -228,40 +209,4 @@ gez build
 
 # 2. Publikowanie w npm
 npm publish dist/versions/your-app-name.tgz
-```
-
-## Najlepsze praktyki
-
-### Konfiguracja środowiska deweloperskiego
-- **Zarządzanie zależnościami**
-  - Używanie sposobu Workspace lub Link do instalacji zależności
-  - Ujednolicone zarządzanie wersjami zależności
-  - Unikanie powtarzającej się instalacji tych samych zależności
-
-- **Doświadczenie deweloperskie**
-  - Włączanie funkcji gorącej aktualizacji
-  - Konfiguracja odpowiednich strategii preładowania
-  - Optymalizacja szybkości budowania
-
-### Konfiguracja środowiska produkcyjnego
-- **Strategie wdrażania**
-  - Używanie rejestru NPM lub serwera statycznego
-  - Zapewnienie integralności wyników budowania
-  - Wdrażanie mechanizmu stopniowego udostępniania
-
-- **Optymalizacja wydajności**
-  - Odpowiednia konfiguracja preładowania zasobów
-  - Optymalizacja kolejności ładowania modułów
-  - Wdrażanie efektywnych strategii pamięci podręcznej
-
-### Zarządzanie wersjami
-- **Standardy wersjonowania**
-  - Przestrzeganie semantycznego wersjonowania
-  - Utrzymywanie szczegółowych dzienników zmian
-  - Przeprowadzanie testów zgodności wersji
-
-- **Aktualizacja zależności**
-  - Regularne aktualizowanie pakietów zależności
-  - Przeprowadzanie okresowych audytów bezpieczeństwa
-  - Utrzymywanie spójności wersji zależności
 ```

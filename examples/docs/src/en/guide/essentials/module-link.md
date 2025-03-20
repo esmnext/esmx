@@ -4,7 +4,7 @@ description: Detailed introduction to Gez framework's module linking mechanism, 
 head:
   - - meta
     - property: keywords
-      content: Gez, Module Linking, ESM, Code Sharing, Dependency Management, Micro-frontend
+      content: Gez, Module Linking, Module Link, ESM, Code Sharing, Dependency Management, Micro-frontend
 ---
 
 # Module Linking
@@ -14,33 +14,14 @@ The Gez framework provides a comprehensive module linking mechanism for managing
 ### Core Concepts
 
 #### Module Export
-Module export is the process of exposing specific code units (such as components, utility functions, etc.) from a service in ESM format. It supports two types of exports:
-- **Source Code Export**: Directly exports source code files from the project
-- **Dependency Export**: Exports third-party dependency packages used by the project
+Module export is the process of exposing specific code units (such as components, utility functions, etc.) from a service in ESM format. Two types of exports are supported:
+- **Source Code Export**: Directly exporting source code files from the project
+- **Dependency Export**: Exporting third-party dependency packages used by the project
 
-#### Module Import
-Module import is the process of referencing code units exported by other services within a service. It supports multiple installation methods:
+#### Module Linking
+Module import is the process of referencing code units exported by other services within a service. Multiple installation methods are supported:
 - **Source Code Installation**: Suitable for development environments, supports real-time modifications and hot updates
-- **Package Installation**: Suitable for production environments, directly uses build artifacts
-
-### Preloading Mechanism
-
-To optimize service performance, Gez implements an intelligent module preloading mechanism:
-
-1. **Dependency Analysis**
-   - Analyze dependencies between components during build time
-   - Identify core modules on critical paths
-   - Determine module loading priorities
-
-2. **Loading Strategy**
-   - **Immediate Loading**: Core modules on critical paths
-   - **Lazy Loading**: Non-critical functional modules
-   - **On-demand Loading**: Conditionally rendered modules
-
-3. **Resource Optimization**
-   - Intelligent code splitting strategy
-   - Module-level cache management
-   - On-demand compilation and bundling
+- **Package Installation**: Suitable for production environments, directly using build artifacts
 
 ## Module Export
 
@@ -66,8 +47,8 @@ export default {
 ```
 
 Export configuration supports two types:
-- `root:*`: Exports source code files, paths relative to the project root directory
-- `npm:*`: Exports third-party dependencies, directly specifies package names
+- `root:*`: Export source code files, with paths relative to the project root directory
+- `npm:*`: Export third-party dependencies, directly specifying the package name
 
 ## Module Import
 
@@ -80,15 +61,15 @@ import type { GezOptions } from '@gez/core';
 
 export default {
     modules: {
-        // Import configuration
-        imports: {
-            // Source code installation: points to build artifact directory
+        // Link configuration
+        links: {
+            // Source code installation: points to the build artifact directory
             'ssr-remote': 'root:./node_modules/ssr-remote/dist',
-            // Package installation: points to package directory
+            // Package installation: points to the package directory
             'other-remote': 'root:./node_modules/other-remote'
         },
-        // External dependency configuration
-        externals: {
+        // Import mapping settings
+        imports: {
             // Use dependencies from remote modules
             'vue': 'ssr-remote/npm/vue',
             'vue-router': 'ssr-remote/npm/vue-router'
@@ -98,13 +79,13 @@ export default {
 ```
 
 Configuration item descriptions:
-1. **imports**: Configures local paths for remote modules
-   - Source code installation: Points to build artifact directory (dist)
-   - Package installation: Directly points to package directory
+1. **imports**: Configure the local paths of remote modules
+   - Source code installation: points to the build artifact directory (dist)
+   - Package installation: directly points to the package directory
 
-2. **externals**: Configures external dependencies
+2. **externals**: Configure external dependencies
    - Used for sharing dependencies from remote modules
-   - Avoids duplicate bundling of the same dependencies
+   - Avoids duplicate packaging of the same dependencies
    - Supports multiple modules sharing dependencies
 
 ### Installation Methods
@@ -133,7 +114,7 @@ Used for local development and debugging:
 ```
 
 #### Package Installation
-Suitable for production environments, directly uses build artifacts.
+Suitable for production environments, directly using build artifacts.
 
 1. **NPM Registry**
 Install via npm registry:
@@ -228,40 +209,4 @@ gez build
 
 # 2. Publish to npm
 npm publish dist/versions/your-app-name.tgz
-```
-
-## Best Practices
-
-### Development Environment Configuration
-- **Dependency Management**
-  - Use Workspace or Link method for dependency installation
-  - Unified management of dependency versions
-  - Avoid duplicate installation of the same dependencies
-
-- **Development Experience**
-  - Enable hot update functionality
-  - Configure appropriate preloading strategies
-  - Optimize build speed
-
-### Production Environment Configuration
-- **Deployment Strategy**
-  - Use NPM Registry or static server
-  - Ensure build artifact integrity
-  - Implement canary release mechanism
-
-- **Performance Optimization**
-  - Properly configure resource preloading
-  - Optimize module loading order
-  - Implement effective caching strategies
-
-### Version Management
-- **Version Specification**
-  - Follow semantic versioning specification
-  - Maintain detailed changelogs
-  - Conduct version compatibility testing
-
-- **Dependency Updates**
-  - Update dependencies promptly
-  - Conduct regular security audits
-  - Maintain dependency version consistency
 ```

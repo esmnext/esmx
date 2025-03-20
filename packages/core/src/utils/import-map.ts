@@ -24,21 +24,18 @@ export async function getImportMap(
             }
         }
     } else {
-        // 转成map，方便O1查找
-        const cfgImports = moduleConfig.imports.reduce((obj, item) => {
-            obj[item.name] = item;
-            return obj;
-        }, {});
         for (const manifest of manifests) {
-            const importItem = cfgImports[manifest.name];
-            if (!importItem) {
+            const link = moduleConfig.links.find(
+                (item) => item.name === manifest.name
+            );
+            if (!link) {
                 throw new Error(
                     `'${manifest.name}' service did not find module config`
                 );
             }
             for (const [name, value] of Object.entries(manifest.exports)) {
                 imports[`${manifest.name}/${name}`] = path.resolve(
-                    importItem.localPath,
+                    link.root,
                     'server',
                     value
                 );

@@ -64,12 +64,8 @@ export async function getManifestList(
     moduleConfig: ParsedModuleConfig
 ): Promise<ManifestJson[]> {
     return Promise.all(
-        moduleConfig.imports.map(async (item) => {
-            const filename = path.resolve(
-                item.localPath,
-                target,
-                'manifest.json'
-            );
+        moduleConfig.links.map(async (item) => {
+            const filename = path.resolve(item.root, target, 'manifest.json');
             try {
                 const data: ManifestJson = await readJson(filename);
                 data.name = item.name;

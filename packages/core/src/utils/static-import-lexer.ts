@@ -55,12 +55,6 @@ export async function getImportPreloadInfo(
 
     const ans: ImportPreloadInfo = {};
 
-    // 转成map，方便O1查找
-    const cfgImports = moduleConfig.imports.reduce((obj, item) => {
-        obj[item.name] = item;
-        return obj;
-    }, {});
-
     const needHandles: string[][] = [[specifier]];
     // 词法分析是耗时操作，因此处理的文件越少越快，换句话说就是深度越浅越快，因此这里使用广度优先搜索
     while (needHandles.length) {
@@ -70,11 +64,11 @@ export async function getImportPreloadInfo(
             const splitRes = filepath.split('/');
             if (splitRes[0] === '') splitRes.shift();
             const name = splitRes.shift() + '';
-            const cfg = cfgImports[name];
-            if (!cfg) {
+            const link = moduleConfig.links.find((item) => item.name === name);
+            if (!link) {
                 continue;
             }
-            filepath = path.join(cfg.localPath, 'client', ...splitRes);
+            filepath = path.join(link.root, 'client', ...splitRes);
             const imports = await getImportsFromJsFile(filepath);
             imports.forEach((specifier) => {
                 // 如果模块名在 importMap 中存在，且没处理过

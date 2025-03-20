@@ -61,10 +61,10 @@ export function isImmutableFile(filename: string) {
  * ```
  */
 export function createMiddleware(gez: Gez): Middleware {
-    const middlewares = gez.moduleConfig.imports.map((item): Middleware => {
+    const middlewares = gez.moduleConfig.links.map((item): Middleware => {
         const base = `/${item.name}/`;
         const baseUrl = new URL(`file:`);
-        const root = path.resolve(item.localPath, 'client');
+        const root = path.resolve(item.root, 'client');
         // const reFinal = /\.final\.[a-zA-Z0-9]+$/;
         return (req, res, next) => {
             const url = req.url ?? '/';
