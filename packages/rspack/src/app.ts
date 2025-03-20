@@ -215,10 +215,6 @@ async function createMiddleware(
         generateBuildConfig(gez, options, 'server')
     ]);
     rsBuild.watch();
-    rsBuild.compilers.forEach((item) => {
-        if (item.options.target === 'web') {
-        }
-    });
 
     // @ts-ignore
     const hot = hotMiddleware(rsBuild.compilers[0], {
