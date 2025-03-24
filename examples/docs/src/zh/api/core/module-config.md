@@ -33,8 +33,8 @@ enum PathType {
 ```ts
 interface ModuleConfig {
   exports?: string[]
+  links?: Record<string, string>
   imports?: Record<string, string>
-  externals?: Record<string, string>
 }
 ```
 
@@ -45,20 +45,32 @@ interface ModuleConfig {
 导出配置列表，将服务中的特定代码单元（如组件、工具函数等）以 ESM 格式对外暴露。
 
 支持两种类型：
-- `root:*`: 导出源码文件，如：'root:src/components/button.vue'
-- `npm:*`: 导出第三方依赖，如：'npm:vue'
+- `root:*`: 导出源码文件，如：`root:src/components/button.vue`
+- `npm:*`: 导出第三方依赖，如：`npm:vue`
+
+每个导出项包含以下属性：
+- `name`: 原始导出路径，如：'npm:vue' 或 'root:src/components'
+- `type`: 路径类型（npm 或 root）
+- `importName`: 导入名称，格式：'${serviceName}/${type}/${path}'
+- `exportName`: 导出路径，相对于服务根目录
+- `exportPath`: 实际的文件路径
+- `externalName`: 外部依赖名称，用于其他服务导入此模块时的标识
+
+#### links
+
+服务依赖配置映射，用于配置当前服务依赖的其他服务（本地或远程）及其本地路径。每个配置项的键为服务名称，值为该服务在本地的路径。
+
+安装方式不同，配置也不同：
+- 源码安装（Workspace、Git）：需要指向 dist 目录，因为需要使用构建后的文件
+- 软件包安装（Link、静态服务器、私有镜像源、File）：直接指向包目录，因为包中已包含构建后的文件
 
 #### imports
 
-导入配置映射，配置需要导入的远程模块及其本地路径。
-
-安装方式不同，配置也不同：
-- 源码安装（Workspace、Git）：需要指向 dist 目录
-- 软件包安装（Link、静态服务器、私有镜像源、File）：直接指向包目录
-
-#### externals
-
 外部依赖映射，配置要使用的外部依赖，通常是使用远程模块中的依赖。
+
+每个依赖项包含以下属性：
+- `match`: 用于匹配导入语句的正则表达式
+- `import`: 实际的模块路径
 
 **示例**：
 ```ts title="entry.node.ts"
@@ -75,7 +87,7 @@ export default {
     ],
 
     // 导入配置
-    imports: {
+    links: {
       // 源码安装方式：需要指向 dist 目录
       'ssr-remote': 'root:./node_modules/ssr-remote/dist',
       // 软件包安装方式：直接指向包目录
@@ -83,7 +95,7 @@ export default {
     },
 
     // 外部依赖配置
-    externals: {
+    imports: {
       'vue': 'ssr-remote/npm/vue',
       'vue-router': 'ssr-remote/npm/vue-router'
     }
@@ -106,11 +118,17 @@ interface ParsedModuleConfig {
     exportPath: string
     externalName: string
   }[]
-  imports: {
+  links: Array<{
+    /**
+     * 软包名称
+     */
     name: string
-    localPath: string
-  }[]
-  externals: Record<string, { match: RegExp; import?: string }>
+    /**
+     * 软件包根目录
+     */
+    root: string
+  }>
+  imports: Record<string, { match: RegExp; import?: string }>
 }
 ```
 
@@ -133,12 +151,12 @@ interface ParsedModuleConfig {
 - `exportPath`: 实际的文件路径
 - `externalName`: 外部依赖名称，用于其他服务导入此模块时的标识
 
-#### imports
+#### links
 导入配置列表
-- `name`: 外部服务的名称
-- `localPath`: 本地存储路径，用于存放外部模块的构建产物
+- `name`: 软包名称
+- `root`: 软件包根目录
 
-#### externals
+#### imports
 外部依赖映射
 - 将模块的导入路径映射到实际的模块位置
 - `match`: 用于匹配导入语句的正则表达式
