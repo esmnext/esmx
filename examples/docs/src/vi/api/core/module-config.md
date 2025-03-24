@@ -1,15 +1,15 @@
 ---
-titleSuffix: Tham chiếu API cấu hình module của framework Gez
-description: Tài liệu chi tiết về giao diện cấu hình ModuleConfig của framework Gez, bao gồm các quy tắc nhập/xuất module, cấu hình bí danh và quản lý phụ thuộc bên ngoài, giúp nhà phát triển hiểu sâu hơn về hệ thống module hóa của framework.
+titleSuffix: Tham chiếu API cấu hình module của khung Gez
+description: Tài liệu chi tiết về giao diện cấu hình ModuleConfig của khung Gez, bao gồm các quy tắc nhập/xuất module, cấu hình bí danh và quản lý phụ thuộc bên ngoài, giúp nhà phát triển hiểu sâu về hệ thống module hóa của khung.
 head:
   - - meta
     - property: keywords
-      content: Gez, ModuleConfig, cấu hình module, nhập/xuất module, phụ thuộc bên ngoài, cấu hình bí danh, quản lý phụ thuộc, framework ứng dụng web
+      content: Gez, ModuleConfig, cấu hình module, nhập/xuất module, phụ thuộc bên ngoài, cấu hình bí danh, quản lý phụ thuộc, khung ứng dụng web
 ---
 
 # ModuleConfig
 
-ModuleConfig cung cấp chức năng cấu hình module cho framework Gez, dùng để định nghĩa các quy tắc nhập/xuất module, cấu hình bí danh và phụ thuộc bên ngoài.
+ModuleConfig cung cấp chức năng cấu hình module cho khung Gez, dùng để định nghĩa các quy tắc nhập/xuất module, cấu hình bí danh và phụ thuộc bên ngoài.
 
 ## Định nghĩa kiểu
 
@@ -33,8 +33,8 @@ Enum loại đường dẫn module:
 ```ts
 interface ModuleConfig {
   exports?: string[]
+  links?: Record<string, string>
   imports?: Record<string, string>
-  externals?: Record<string, string>
 }
 ```
 
@@ -42,23 +42,35 @@ Giao diện cấu hình module, dùng để định nghĩa cấu hình xuất, n
 
 #### exports
 
-Danh sách cấu hình xuất, xuất các đơn vị mã cụ thể trong dịch vụ (như component, hàm tiện ích, v.v.) dưới dạng ESM.
+Danh sách cấu hình xuất, dùng để xuất các đơn vị mã cụ thể trong dịch vụ (như component, hàm tiện ích, v.v.) ra ngoài dưới dạng ESM.
 
 Hỗ trợ hai loại:
-- `root:*`: Xuất file mã nguồn, ví dụ: 'root:src/components/button.vue'
-- `npm:*`: Xuất phụ thuộc bên thứ ba, ví dụ: 'npm:vue'
+- `root:*`: Xuất file mã nguồn, ví dụ: `root:src/components/button.vue`
+- `npm:*`: Xuất phụ thuộc bên thứ ba, ví dụ: `npm:vue`
+
+Mỗi mục xuất bao gồm các thuộc tính sau:
+- `name`: Đường dẫn xuất gốc, ví dụ: `npm:vue` hoặc `root:src/components`
+- `type`: Loại đường dẫn (`npm` hoặc `root`)
+- `importName`: Tên nhập, định dạng: `${serviceName}/${type}/${path}`
+- `exportName`: Đường dẫn xuất, tương đối với thư mục gốc của dịch vụ
+- `exportPath`: Đường dẫn file thực tế
+- `externalName`: Tên phụ thuộc bên ngoài, dùng để định danh khi các dịch vụ khác nhập module này
+
+#### links
+
+Ánh xạ cấu hình phụ thuộc dịch vụ, dùng để cấu hình các dịch vụ khác (cục bộ hoặc từ xa) mà dịch vụ hiện tại phụ thuộc vào và đường dẫn cục bộ của chúng. Mỗi mục cấu hình có key là tên dịch vụ và value là đường dẫn cục bộ của dịch vụ đó.
+
+Cách cài đặt khác nhau sẽ có cấu hình khác nhau:
+- Cài đặt mã nguồn (Workspace, Git): Cần trỏ đến thư mục dist, vì cần sử dụng file đã được build
+- Cài đặt gói (Link, máy chủ tĩnh, nguồn gói riêng, File): Trực tiếp trỏ đến thư mục gói, vì gói đã chứa file đã được build
 
 #### imports
 
-Bản đồ cấu hình nhập, cấu hình các module từ xa cần nhập và đường dẫn cục bộ của chúng.
+Ánh xạ phụ thuộc bên ngoài, cấu hình các phụ thuộc bên ngoài cần sử dụng, thường là các phụ thuộc từ module từ xa.
 
-Cách cài đặt khác nhau, cấu hình cũng khác nhau:
-- Cài đặt mã nguồn (Workspace, Git): Cần trỏ đến thư mục dist
-- Cài đặt gói phần mềm (Link, máy chủ tĩnh, nguồn gương riêng, File): Trực tiếp trỏ đến thư mục gói
-
-#### externals
-
-Bản đồ phụ thuộc bên ngoài, cấu hình các phụ thuộc bên ngoài cần sử dụng, thường là sử dụng phụ thuộc từ các module từ xa.
+Mỗi phụ thuộc bao gồm các thuộc tính sau:
+- `match`: Biểu thức chính quy dùng để khớp câu lệnh nhập
+- `import`: Đường dẫn module thực tế
 
 **Ví dụ**:
 ```ts title="entry.node.ts"
@@ -75,15 +87,15 @@ export default {
     ],
 
     // Cấu hình nhập
-    imports: {
+    links: {
       // Cách cài đặt mã nguồn: cần trỏ đến thư mục dist
       'ssr-remote': 'root:./node_modules/ssr-remote/dist',
-      // Cách cài đặt gói phần mềm: trực tiếp trỏ đến thư mục gói
+      // Cách cài đặt gói: trực tiếp trỏ đến thư mục gói
       'other-remote': 'root:./node_modules/other-remote'
     },
 
     // Cấu hình phụ thuộc bên ngoài
-    externals: {
+    imports: {
       'vue': 'ssr-remote/npm/vue',
       'vue-router': 'ssr-remote/npm/vue-router'
     }
@@ -106,18 +118,24 @@ interface ParsedModuleConfig {
     exportPath: string
     externalName: string
   }[]
-  imports: {
+  links: Array<{
+    /**
+     * Tên gói
+     */
     name: string
-    localPath: string
-  }[]
-  externals: Record<string, { match: RegExp; import?: string }>
+    /**
+     * Thư mục gốc của gói
+     */
+    root: string
+  }>
+  imports: Record<string, { match: RegExp; import?: string }>
 }
 ```
 
-Cấu hình module đã được phân tích, chuyển đổi cấu hình module gốc sang định dạng nội bộ chuẩn hóa:
+Cấu hình module đã được phân tích, chuyển đổi cấu hình module gốc sang định dạng chuẩn hóa nội bộ:
 
 #### name
-Tên của dịch vụ hiện tại
+Tên dịch vụ hiện tại
 - Dùng để định danh module và tạo đường dẫn nhập
 
 #### root
@@ -133,13 +151,13 @@ Danh sách cấu hình xuất
 - `exportPath`: Đường dẫn file thực tế
 - `externalName`: Tên phụ thuộc bên ngoài, dùng để định danh khi các dịch vụ khác nhập module này
 
-#### imports
+#### links
 Danh sách cấu hình nhập
-- `name`: Tên của dịch vụ bên ngoài
-- `localPath`: Đường dẫn lưu trữ cục bộ, dùng để lưu trữ sản phẩm build của module bên ngoài
+- `name`: Tên gói
+- `root`: Thư mục gốc của gói
 
-#### externals
-Bản đồ phụ thuộc bên ngoài
-- Ánh xạ đường dẫn nhập module đến vị trí thực tế của module
+#### imports
+Ánh xạ phụ thuộc bên ngoài
+- Ánh xạ đường dẫn nhập module đến vị trí module thực tế
 - `match`: Biểu thức chính quy dùng để khớp câu lệnh nhập
-- `import`: Đường dẫn thực tế của module
+- `import`: Đường dẫn module thực tế

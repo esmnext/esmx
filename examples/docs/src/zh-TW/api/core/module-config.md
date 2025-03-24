@@ -33,8 +33,8 @@ enum PathType {
 ```ts
 interface ModuleConfig {
   exports?: string[]
+  links?: Record<string, string>
   imports?: Record<string, string>
-  externals?: Record<string, string>
 }
 ```
 
@@ -45,20 +45,32 @@ interface ModuleConfig {
 匯出配置列表，將服務中的特定程式碼單元（如元件、工具函數等）以 ESM 格式對外暴露。
 
 支援兩種類型：
-- `root:*`: 匯出原始碼檔案，如：'root:src/components/button.vue'
-- `npm:*`: 匯出第三方依賴，如：'npm:vue'
+- `root:*`: 匯出原始碼檔案，如：`root:src/components/button.vue`
+- `npm:*`: 匯出第三方依賴，如：`npm:vue`
+
+每個匯出項包含以下屬性：
+- `name`: 原始匯出路徑，如：`npm:vue` 或 `root:src/components`
+- `type`: 路徑類型（`npm` 或 `root`）
+- `importName`: 匯入名稱，格式：`${serviceName}/${type}/${path}`
+- `exportName`: 匯出路徑，相對於服務根目錄
+- `exportPath`: 實際的檔案路徑
+- `externalName`: 外部依賴名稱，用於其他服務匯入此模組時的識別
+
+#### links
+
+服務依賴配置映射，用於配置當前服務依賴的其他服務（本地或遠端）及其本地路徑。每個配置項的鍵為服務名稱，值為該服務在本地的路徑。
+
+安裝方式不同，配置也不同：
+- 原始碼安裝（Workspace、Git）：需要指向 dist 目錄，因為需要使用建置後的檔案
+- 軟體包安裝（Link、靜態伺服器、私有鏡像源、File）：直接指向套件目錄，因為套件中已包含建置後的檔案
 
 #### imports
 
-匯入配置映射，配置需要匯入的遠端模組及其本地路徑。
-
-安裝方式不同，配置也不同：
-- 原始碼安裝（Workspace、Git）：需要指向 dist 目錄
-- 軟體包安裝（Link、靜態伺服器、私有鏡像源、File）：直接指向套件目錄
-
-#### externals
-
 外部依賴映射，配置要使用的外部依賴，通常是使用遠端模組中的依賴。
+
+每個依賴項包含以下屬性：
+- `match`: 用於匹配匯入語句的正則表達式
+- `import`: 實際的模組路徑
 
 **範例**：
 ```ts title="entry.node.ts"
@@ -75,7 +87,7 @@ export default {
     ],
 
     // 匯入配置
-    imports: {
+    links: {
       // 原始碼安裝方式：需要指向 dist 目錄
       'ssr-remote': 'root:./node_modules/ssr-remote/dist',
       // 軟體包安裝方式：直接指向套件目錄
@@ -83,7 +95,7 @@ export default {
     },
 
     // 外部依賴配置
-    externals: {
+    imports: {
       'vue': 'ssr-remote/npm/vue',
       'vue-router': 'ssr-remote/npm/vue-router'
     }
@@ -106,22 +118,28 @@ interface ParsedModuleConfig {
     exportPath: string
     externalName: string
   }[]
-  imports: {
+  links: Array<{
+    /**
+     * 軟體包名稱
+     */
     name: string
-    localPath: string
-  }[]
-  externals: Record<string, { match: RegExp; import?: string }>
+    /**
+     * 軟體包根目錄
+     */
+    root: string
+  }>
+  imports: Record<string, { match: RegExp; import?: string }>
 }
 ```
 
 解析後的模組配置，將原始的模組配置轉換為標準化的內部格式：
 
 #### name
-目前服務的名稱
+當前服務的名稱
 - 用於識別模組和產生匯入路徑
 
 #### root
-目前服務的根目錄路徑
+當前服務的根目錄路徑
 - 用於解析相對路徑和建置產物的存放
 
 #### exports
@@ -133,12 +151,12 @@ interface ParsedModuleConfig {
 - `exportPath`: 實際的檔案路徑
 - `externalName`: 外部依賴名稱，用於其他服務匯入此模組時的識別
 
-#### imports
+#### links
 匯入配置列表
-- `name`: 外部服務的名稱
-- `localPath`: 本地儲存路徑，用於存放外部模組的建置產物
+- `name`: 軟體包名稱
+- `root`: 軟體包根目錄
 
-#### externals
+#### imports
 外部依賴映射
 - 將模組的匯入路徑映射到實際的模組位置
 - `match`: 用於匹配匯入語句的正則表達式

@@ -24,7 +24,7 @@ enum PathType {
 ```
 
 Enum typów ścieżek modułów:
-- `npm`: oznacza zależność z node_modules
+- `npm`: oznacza zależność w node_modules
 - `root`: oznacza plik w katalogu głównym projektu
 
 ### ModuleConfig
@@ -33,8 +33,8 @@ Enum typów ścieżek modułów:
 ```ts
 interface ModuleConfig {
   exports?: string[]
+  links?: Record<string, string>
   imports?: Record<string, string>
-  externals?: Record<string, string>
 }
 ```
 
@@ -45,20 +45,32 @@ Interfejs konfiguracji modułów, służący do definiowania eksportu, importu i
 Lista konfiguracji eksportu, która udostępnia określone jednostki kodu (np. komponenty, funkcje narzędziowe) w formacie ESM.
 
 Obsługiwane są dwa typy:
-- `root:*`: eksport plików źródłowych, np.: 'root:src/components/button.vue'
-- `npm:*`: eksport zależności zewnętrznych, np.: 'npm:vue'
+- `root:*`: eksport plików źródłowych, np.: `root:src/components/button.vue`
+- `npm:*`: eksport zależności zewnętrznych, np.: `npm:vue`
+
+Każdy element eksportu zawiera następujące właściwości:
+- `name`: oryginalna ścieżka eksportu, np.: `npm:vue` lub `root:src/components`
+- `type`: typ ścieżki (`npm` lub `root`)
+- `importName`: nazwa importu, format: `${serviceName}/${type}/${path}`
+- `exportName`: ścieżka eksportu, względem katalogu głównego usługi
+- `exportPath`: rzeczywista ścieżka pliku
+- `externalName`: nazwa zależności zewnętrznej, używana jako identyfikator podczas importu tego modułu przez inne usługi
+
+#### links
+
+Mapa konfiguracji zależności usług, służąca do konfigurowania innych usług (lokalnych lub zdalnych) od których zależy bieżąca usługa oraz ich lokalnych ścieżek. Kluczem każdego elementu konfiguracji jest nazwa usługi, a wartością jest lokalna ścieżka tej usługi.
+
+Konfiguracja różni się w zależności od sposobu instalacji:
+- Instalacja ze źródeł (Workspace, Git): należy wskazać katalog dist, ponieważ wymagane jest użycie skompilowanych plików
+- Instalacja pakietów (Link, serwer statyczny, prywatne repozytorium, File): bezpośrednie wskazanie katalogu pakietu, ponieważ pakiet zawiera już skompilowane pliki
 
 #### imports
 
-Mapa konfiguracji importu, konfigurująca zdalne moduły do zaimportowania i ich lokalne ścieżki.
+Mapa zależności zewnętrznych, konfigurująca zależności zewnętrzne, które mają być używane, zazwyczaj są to zależności z modułów zdalnych.
 
-Konfiguracja zależy od sposobu instalacji:
-- Instalacja ze źródeł (Workspace, Git): wymaga wskazania katalogu dist
-- Instalacja pakietów (Link, serwer statyczny, prywatne repozytorium, File): bezpośrednio wskazuje katalog pakietu
-
-#### externals
-
-Mapa zależności zewnętrznych, konfigurująca zależności zewnętrzne do użycia, zazwyczaj pochodzące ze zdalnych modułów.
+Każda zależność zawiera następujące właściwości:
+- `match`: wyrażenie regularne używane do dopasowania instrukcji importu
+- `import`: rzeczywista ścieżka modułu
 
 **Przykład**:
 ```ts title="entry.node.ts"
@@ -75,15 +87,15 @@ export default {
     ],
 
     // Konfiguracja importu
-    imports: {
-      // Instalacja ze źródeł: wymaga wskazania katalogu dist
+    links: {
+      // Instalacja ze źródeł: należy wskazać katalog dist
       'ssr-remote': 'root:./node_modules/ssr-remote/dist',
-      // Instalacja pakietów: bezpośrednio wskazuje katalog pakietu
+      // Instalacja pakietów: bezpośrednie wskazanie katalogu pakietu
       'other-remote': 'root:./node_modules/other-remote'
     },
 
     // Konfiguracja zależności zewnętrznych
-    externals: {
+    imports: {
       'vue': 'ssr-remote/npm/vue',
       'vue-router': 'ssr-remote/npm/vue-router'
     }
@@ -106,15 +118,21 @@ interface ParsedModuleConfig {
     exportPath: string
     externalName: string
   }[]
-  imports: {
+  links: Array<{
+    /**
+     * Nazwa pakietu
+     */
     name: string
-    localPath: string
-  }[]
-  externals: Record<string, { match: RegExp; import?: string }>
+    /**
+     * Katalog główny pakietu
+     */
+    root: string
+  }>
+  imports: Record<string, { match: RegExp; import?: string }>
 }
 ```
 
-Sparsowana konfiguracja modułów, przekształcająca oryginalną konfigurację modułów w znormalizowany format wewnętrzny:
+Skonwertowana konfiguracja modułów, przekształcająca oryginalną konfigurację modułów w ustandaryzowany format wewnętrzny:
 
 #### name
 Nazwa bieżącej usługi
@@ -122,7 +140,7 @@ Nazwa bieżącej usługi
 
 #### root
 Ścieżka katalogu głównego bieżącej usługi
-- Służy do rozwiązywania ścieżek względnych i przechowywania artefaktów budowy
+- Służy do rozwiązywania ścieżek względnych i przechowywania wyników kompilacji
 
 #### exports
 Lista konfiguracji eksportu
@@ -131,15 +149,15 @@ Lista konfiguracji eksportu
 - `importName`: nazwa importu, format: '${serviceName}/${type}/${path}'
 - `exportName`: ścieżka eksportu, względem katalogu głównego usługi
 - `exportPath`: rzeczywista ścieżka pliku
-- `externalName`: nazwa zależności zewnętrznej, służąca do identyfikacji tego modułu podczas importu przez inne usługi
+- `externalName`: nazwa zależności zewnętrznej, używana jako identyfikator podczas importu tego modułu przez inne usługi
+
+#### links
+Lista konfiguracji importu
+- `name`: nazwa pakietu
+- `root`: katalog główny pakietu
 
 #### imports
-Lista konfiguracji importu
-- `name`: nazwa zewnętrznej usługi
-- `localPath`: lokalna ścieżka przechowywania, służąca do przechowywania artefaktów budowy zewnętrznych modułów
-
-#### externals
 Mapa zależności zewnętrznych
 - Mapuje ścieżki importu modułów na rzeczywiste lokalizacje modułów
-- `match`: wyrażenie regularne do dopasowania instrukcji importu
+- `match`: wyrażenie regularne używane do dopasowania instrukcji importu
 - `import`: rzeczywista ścieżka modułu

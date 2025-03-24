@@ -1,15 +1,15 @@
 ---
 titleSuffix: Referência da API de Configuração de Módulos do Framework Gez
-description: Detalha a interface de configuração ModuleConfig do framework Gez, incluindo regras de importação e exportação de módulos, configuração de alias e gerenciamento de dependências externas, ajudando os desenvolvedores a entender profundamente o sistema modular do framework.
+description: Detalha a interface de configuração ModuleConfig do framework Gez, incluindo regras de importação e exportação de módulos, configuração de aliases e gerenciamento de dependências externas, ajudando os desenvolvedores a entender profundamente o sistema modular do framework.
 head:
   - - meta
     - property: keywords
-      content: Gez, ModuleConfig, configuração de módulos, importação e exportação de módulos, dependências externas, configuração de alias, gerenciamento de dependências, framework de aplicação web
+      content: Gez, ModuleConfig, configuração de módulos, importação e exportação de módulos, dependências externas, configuração de aliases, gerenciamento de dependências, framework de aplicações web
 ---
 
 # ModuleConfig
 
-O ModuleConfig fornece a funcionalidade de configuração de módulos do framework Gez, usada para definir regras de importação e exportação de módulos, configuração de alias e dependências externas.
+O ModuleConfig fornece a funcionalidade de configuração de módulos do framework Gez, usada para definir regras de importação e exportação de módulos, configuração de aliases e dependências externas.
 
 ## Definição de Tipos
 
@@ -33,8 +33,8 @@ Enumeração de tipos de caminho de módulo:
 ```ts
 interface ModuleConfig {
   exports?: string[]
+  links?: Record<string, string>
   imports?: Record<string, string>
-  externals?: Record<string, string>
 }
 ```
 
@@ -42,23 +42,35 @@ Interface de configuração de módulo, usada para definir a exportação, impor
 
 #### exports
 
-Lista de configuração de exportação, expõe unidades de código específicas (como componentes, funções utilitárias, etc.) no serviço no formato ESM.
+Lista de configuração de exportação, que expõe unidades de código específicas (como componentes, funções utilitárias, etc.) no serviço no formato ESM.
 
 Suporta dois tipos:
-- `root:*`: Exporta arquivos de código-fonte, por exemplo: 'root:src/components/button.vue'
-- `npm:*`: Exporta dependências de terceiros, por exemplo: 'npm:vue'
+- `root:*`: Exporta arquivos de código-fonte, por exemplo: `root:src/components/button.vue`
+- `npm:*`: Exporta dependências de terceiros, por exemplo: `npm:vue`
+
+Cada item de exportação contém os seguintes atributos:
+- `name`: Caminho de exportação original, por exemplo: `npm:vue` ou `root:src/components`
+- `type`: Tipo de caminho (`npm` ou `root`)
+- `importName`: Nome de importação, no formato: `${serviceName}/${type}/${path}`
+- `exportName`: Caminho de exportação, relativo ao diretório raiz do serviço
+- `exportPath`: Caminho real do arquivo
+- `externalName`: Nome da dependência externa, usado como identificador quando outros serviços importam este módulo
+
+#### links
+
+Mapeamento de configuração de dependências do serviço, usado para configurar outros serviços (locais ou remotos) dos quais o serviço atual depende e seus caminhos locais. A chave de cada item de configuração é o nome do serviço e o valor é o caminho local desse serviço.
+
+A configuração varia dependendo do método de instalação:
+- Instalação de código-fonte (Workspace, Git): Precisa apontar para o diretório dist, pois usa os arquivos construídos
+- Instalação de pacote (Link, servidor estático, repositório privado, File): Aponta diretamente para o diretório do pacote, pois o pacote já contém os arquivos construídos
 
 #### imports
 
-Mapeamento de configuração de importação, configura módulos remotos que precisam ser importados e seus caminhos locais.
+Mapeamento de dependências externas, configurando as dependências externas a serem usadas, geralmente dependências de módulos remotos.
 
-A configuração varia dependendo do método de instalação:
-- Instalação de código-fonte (Workspace, Git): Precisa apontar para o diretório dist
-- Instalação de pacote (Link, servidor estático, repositório privado, File): Aponta diretamente para o diretório do pacote
-
-#### externals
-
-Mapeamento de dependências externas, configura dependências externas a serem usadas, geralmente dependências de módulos remotos.
+Cada dependência contém os seguintes atributos:
+- `match`: Expressão regular usada para corresponder às instruções de importação
+- `import`: Caminho real do módulo
 
 **Exemplo**:
 ```ts title="entry.node.ts"
@@ -75,15 +87,15 @@ export default {
     ],
 
     // Configuração de importação
-    imports: {
-      // Método de instalação de código-fonte: Precisa apontar para o diretório dist
+    links: {
+      // Método de instalação de código-fonte: precisa apontar para o diretório dist
       'ssr-remote': 'root:./node_modules/ssr-remote/dist',
-      // Método de instalação de pacote: Aponta diretamente para o diretório do pacote
+      // Método de instalação de pacote: aponta diretamente para o diretório do pacote
       'other-remote': 'root:./node_modules/other-remote'
     },
 
     // Configuração de dependências externas
-    externals: {
+    imports: {
       'vue': 'ssr-remote/npm/vue',
       'vue-router': 'ssr-remote/npm/vue-router'
     }
@@ -106,40 +118,47 @@ interface ParsedModuleConfig {
     exportPath: string
     externalName: string
   }[]
-  imports: {
+  links: Array<{
+    /**
+     * Nome do pacote
+     */
     name: string
-    localPath: string
-  }[]
-  externals: Record<string, { match: RegExp; import?: string }>
+    /**
+     * Diretório raiz do pacote
+     */
+    root: string
+  }>
+  imports: Record<string, { match: RegExp; import?: string }>
 }
 ```
 
-Configuração de módulo analisada, converte a configuração de módulo original em um formato interno padronizado:
+Configuração de módulo analisada, que converte a configuração de módulo original em um formato interno padronizado:
 
 #### name
 Nome do serviço atual
-- Usado para identificar o módulo e gerar caminhos de importação
+- Usado para identificar o módulo e gerar o caminho de importação
 
 #### root
 Caminho do diretório raiz do serviço atual
-- Usado para resolver caminhos relativos e armazenar artefatos de construção
+- Usado para resolver caminhos relativos e o armazenamento dos artefatos de construção
 
 #### exports
 Lista de configuração de exportação
 - `name`: Caminho de exportação original, por exemplo: 'npm:vue' ou 'root:src/components'
 - `type`: Tipo de caminho (npm ou root)
-- `importName`: Nome de importação, formato: '${serviceName}/${type}/${path}'
+- `importName`: Nome de importação, no formato: '${serviceName}/${type}/${path}'
 - `exportName`: Caminho de exportação, relativo ao diretório raiz do serviço
 - `exportPath`: Caminho real do arquivo
 - `externalName`: Nome da dependência externa, usado como identificador quando outros serviços importam este módulo
 
-#### imports
+#### links
 Lista de configuração de importação
-- `name`: Nome do serviço externo
-- `localPath`: Caminho de armazenamento local, usado para armazenar artefatos de construção de módulos externos
+- `name`: Nome do pacote
+- `root`: Diretório raiz do pacote
 
-#### externals
+#### imports
 Mapeamento de dependências externas
-- Mapeia caminhos de importação de módulos para a localização real do módulo
+- Mapeia o caminho de importação do módulo para a localização real do módulo
 - `match`: Expressão regular usada para corresponder às instruções de importação
 - `import`: Caminho real do módulo
+```

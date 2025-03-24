@@ -4,12 +4,12 @@ description: Gez çerçevesinin ModuleConfig yapılandırma arayüzünü detayl�
 head:
   - - meta
     - property: keywords
-      content: Gez, ModuleConfig, modül yapılandırma, modül içe/dışa aktarma, harici bağımlılık, takma ad yapılandırma, bağımlılık yönetimi, Web uygulama çerçevesi
+      content: Gez, ModuleConfig, modül yapılandırma, modül içe/dışa aktarma, harici bağımlılık, takma ad yapılandırması, bağımlılık yönetimi, Web uygulama çerçevesi
 ---
 
 # ModuleConfig
 
-ModuleConfig, Gez çerçevesinin modül yapılandırma işlevlerini sağlar, modüllerin içe/dışa aktarma kurallarını, takma ad yapılandırmasını ve harici bağımlılıkları tanımlamak için kullanılır.
+ModuleConfig, Gez çerçevesinin modül yapılandırma işlevlerini sağlar ve modüllerin içe/dışa aktarma kurallarını, takma ad yapılandırmasını ve harici bağımlılıkları tanımlamak için kullanılır.
 
 ## Tür Tanımları
 
@@ -33,8 +33,8 @@ Modül yol türü numaralandırması:
 ```ts
 interface ModuleConfig {
   exports?: string[]
+  links?: Record<string, string>
   imports?: Record<string, string>
-  externals?: Record<string, string>
 }
 ```
 
@@ -42,23 +42,35 @@ Modül yapılandırma arayüzü, servislerin dışa aktarma, içe aktarma ve har
 
 #### exports
 
-Dışa aktarma yapılandırma listesi, servisteki belirli kod birimlerini (bileşenler, yardımcı fonksiyonlar vb.) ESM formatında dışarıya açığa çıkarır.
+Dışa aktarma yapılandırma listesi, servisteki belirli kod birimlerini (bileşenler, yardımcı fonksiyonlar vb.) ESM formatında dışarıya açıklar.
 
 İki türü destekler:
-- `root:*`: kaynak kod dosyalarını dışa aktarır, örneğin: 'root:src/components/button.vue'
-- `npm:*`: üçüncü parti bağımlılıkları dışa aktarır, örneğin: 'npm:vue'
+- `root:*`: kaynak kod dosyalarını dışa aktarır, örneğin: `root:src/components/button.vue`
+- `npm:*`: üçüncü taraf bağımlılıkları dışa aktarır, örneğin: `npm:vue`
+
+Her dışa aktarma öğesi aşağıdaki özellikleri içerir:
+- `name`: orijinal dışa aktarma yolu, örneğin: `npm:vue` veya `root:src/components`
+- `type`: yol türü (`npm` veya `root`)
+- `importName`: içe aktarma adı, format: `${serviceName}/${type}/${path}`
+- `exportName`: dışa aktarma yolu, servis kök dizinine göre
+- `exportPath`: gerçek dosya yolu
+- `externalName`: harici bağımlılık adı, diğer servislerin bu modülü içe aktarırken kullanacağı tanımlayıcı
+
+#### links
+
+Servis bağımlılık yapılandırma eşlemesi, mevcut servisin bağımlı olduğu diğer servisleri (yerel veya uzak) ve bunların yerel yollarını yapılandırmak için kullanılır. Her yapılandırma öğesinin anahtarı servis adı, değeri ise bu servisin yerel yoludur.
+
+Kurulum yöntemine göre yapılandırma farklılık gösterir:
+- Kaynak kod kurulumu (Workspace, Git): dist dizinine işaret etmelidir, çünkü derlenmiş dosyalar kullanılır
+- Paket kurulumu (Link, statik sunucu, özel kaynak, File): doğrudan paket dizinine işaret eder, çünkü paket içinde derlenmiş dosyalar bulunur
 
 #### imports
 
-İçe aktarma yapılandırma eşlemesi, uzak modülleri ve yerel yollarını yapılandırır.
+Harici bağımlılık eşlemesi, kullanılacak harici bağımlılıkları yapılandırır, genellikle uzak modüllerdeki bağımlılıklar kullanılır.
 
-Kurulum yöntemine göre yapılandırma farklılık gösterir:
-- Kaynak kod kurulumu (Workspace, Git): dist dizinine işaret etmelidir
-- Paket kurulumu (Link, statik sunucu, özel ayna kaynağı, File): doğrudan paket dizinine işaret eder
-
-#### externals
-
-Harici bağımlılık eşlemesi, kullanılacak harici bağımlılıkları yapılandırır, genellikle uzak modüllerdeki bağımlılıkları kullanır.
+Her bağımlılık öğesi aşağıdaki özellikleri içerir:
+- `match`: içe aktarma ifadelerini eşleştirmek için kullanılan düzenli ifade
+- `import`: gerçek modül yolu
 
 **Örnek**:
 ```ts title="entry.node.ts"
@@ -70,20 +82,20 @@ export default {
     exports: [
       'root:src/components/button.vue',  // kaynak kod dosyasını dışa aktar
       'root:src/utils/format.ts',
-      'npm:vue',  // üçüncü parti bağımlılığı dışa aktar
+      'npm:vue',  // üçüncü taraf bağımlılığını dışa aktar
       'npm:vue-router'
     ],
 
     // İçe aktarma yapılandırması
-    imports: {
-      // Kaynak kod kurulumu: dist dizinine işaret etmelidir
+    links: {
+      // Kaynak kod kurulumu: dist dizinine işaret etmeli
       'ssr-remote': 'root:./node_modules/ssr-remote/dist',
-      // Paket kurulumu: doğrudan paket dizinine işaret eder
+      // Paket kurulumu: doğrudan paket dizinine işaret et
       'other-remote': 'root:./node_modules/other-remote'
     },
 
     // Harici bağımlılık yapılandırması
-    externals: {
+    imports: {
       'vue': 'ssr-remote/npm/vue',
       'vue-router': 'ssr-remote/npm/vue-router'
     }
@@ -106,15 +118,21 @@ interface ParsedModuleConfig {
     exportPath: string
     externalName: string
   }[]
-  imports: {
+  links: Array<{
+    /**
+     * Paket adı
+     */
     name: string
-    localPath: string
-  }[]
-  externals: Record<string, { match: RegExp; import?: string }>
+    /**
+     * Paket kök dizini
+     */
+    root: string
+  }>
+  imports: Record<string, { match: RegExp; import?: string }>
 }
 ```
 
-Ayrıştırılmış modül yapılandırması, orijinal modül yapılandırmasını standartlaştırılmış bir iç formata dönüştürür:
+Ayrıştırılmış modül yapılandırması, orijinal modül yapılandırmasını standartlaştırılmış iç formata dönüştürür:
 
 #### name
 Mevcut servisin adı
@@ -122,23 +140,23 @@ Mevcut servisin adı
 
 #### root
 Mevcut servisin kök dizin yolu
-- Göreli yolları çözümlemek ve yapı ürünlerini depolamak için kullanılır
+- Göreli yolları çözümlemek ve derleme çıktılarını depolamak için kullanılır
 
 #### exports
 Dışa aktarma yapılandırma listesi
 - `name`: orijinal dışa aktarma yolu, örneğin: 'npm:vue' veya 'root:src/components'
 - `type`: yol türü (npm veya root)
 - `importName`: içe aktarma adı, format: '${serviceName}/${type}/${path}'
-- `exportName`: servis kök dizinine göre dışa aktarma yolu
+- `exportName`: dışa aktarma yolu, servis kök dizinine göre
 - `exportPath`: gerçek dosya yolu
-- `externalName`: harici bağımlılık adı, diğer servislerin bu modülü içe aktarması için kullanılan tanımlayıcı
+- `externalName`: harici bağımlılık adı, diğer servislerin bu modülü içe aktarırken kullanacağı tanımlayıcı
+
+#### links
+İçe aktarma yapılandırma listesi
+- `name`: paket adı
+- `root`: paket kök dizini
 
 #### imports
-İçe aktarma yapılandırma listesi
-- `name`: harici servisin adı
-- `localPath`: harici modüllerin yapı ürünlerini depolamak için kullanılan yerel depolama yolu
-
-#### externals
 Harici bağımlılık eşlemesi
 - Modülün içe aktarma yolunu gerçek modül konumuna eşler
 - `match`: içe aktarma ifadelerini eşleştirmek için kullanılan düzenli ifade

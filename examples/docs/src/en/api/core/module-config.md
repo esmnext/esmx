@@ -1,6 +1,6 @@
 ---
 titleSuffix: Gez Framework Module Configuration API Reference
-description: Detailed documentation on the ModuleConfig interface in the Gez framework, including module import/export rules, alias configuration, and external dependency management, helping developers gain a deeper understanding of the framework's modular system.
+description: Detailed documentation on the ModuleConfig interface of the Gez framework, including module import/export rules, alias configuration, and external dependency management, helping developers gain a deeper understanding of the framework's modular system.
 head:
   - - meta
     - property: keywords
@@ -33,8 +33,8 @@ Module path type enumeration:
 ```ts
 interface ModuleConfig {
   exports?: string[]
+  links?: Record<string, string>
   imports?: Record<string, string>
-  externals?: Record<string, string>
 }
 ```
 
@@ -45,20 +45,32 @@ Module configuration interface, used to define service exports, imports, and ext
 Export configuration list, exposing specific code units (such as components, utility functions, etc.) from the service in ESM format.
 
 Supports two types:
-- `root:*`: Exports source code files, e.g., 'root:src/components/button.vue'
-- `npm:*`: Exports third-party dependencies, e.g., 'npm:vue'
+- `root:*`: Exports source code files, e.g., `root:src/components/button.vue`
+- `npm:*`: Exports third-party dependencies, e.g., `npm:vue`
+
+Each export item contains the following properties:
+- `name`: Original export path, e.g., `npm:vue` or `root:src/components`
+- `type`: Path type (`npm` or `root`)
+- `importName`: Import name, format: `${serviceName}/${type}/${path}`
+- `exportName`: Export path, relative to the service root directory
+- `exportPath`: Actual file path
+- `externalName`: External dependency name, used as an identifier when other services import this module
+
+#### links
+
+Service dependency configuration mapping, used to configure other services (local or remote) that the current service depends on and their local paths. Each configuration item's key is the service name, and the value is the local path of that service.
+
+Different installation methods require different configurations:
+- Source code installation (Workspace, Git): Needs to point to the dist directory, as it requires using built files
+- Package installation (Link, static server, private mirror source, File): Directly points to the package directory, as the package already contains built files
 
 #### imports
 
-Import configuration mapping, configuring remote modules to be imported and their local paths.
+External dependency mapping, configuring external dependencies to be used, typically using dependencies from remote modules.
 
-Configuration varies based on installation method:
-- Source installation (Workspace, Git): Needs to point to the dist directory
-- Package installation (Link, static server, private registry, File): Directly points to the package directory
-
-#### externals
-
-External dependency mapping, configuring external dependencies to be used, typically dependencies from remote modules.
+Each dependency item contains the following properties:
+- `match`: Regular expression used to match import statements
+- `import`: Actual module path
 
 **Example**:
 ```ts title="entry.node.ts"
@@ -75,15 +87,15 @@ export default {
     ],
 
     // Import configuration
-    imports: {
-      // Source installation: Needs to point to the dist directory
+    links: {
+      // Source code installation: Needs to point to the dist directory
       'ssr-remote': 'root:./node_modules/ssr-remote/dist',
       // Package installation: Directly points to the package directory
       'other-remote': 'root:./node_modules/other-remote'
     },
 
     // External dependency configuration
-    externals: {
+    imports: {
       'vue': 'ssr-remote/npm/vue',
       'vue-router': 'ssr-remote/npm/vue-router'
     }
@@ -106,11 +118,17 @@ interface ParsedModuleConfig {
     exportPath: string
     externalName: string
   }[]
-  imports: {
+  links: Array<{
+    /**
+     * Package name
+     */
     name: string
-    localPath: string
-  }[]
-  externals: Record<string, { match: RegExp; import?: string }>
+    /**
+     * Package root directory
+     */
+    root: string
+  }>
+  imports: Record<string, { match: RegExp; import?: string }>
 }
 ```
 
@@ -133,12 +151,12 @@ Export configuration list
 - `exportPath`: Actual file path
 - `externalName`: External dependency name, used as an identifier when other services import this module
 
-#### imports
+#### links
 Import configuration list
-- `name`: External service name
-- `localPath`: Local storage path, used to store build artifacts of external modules
+- `name`: Package name
+- `root`: Package root directory
 
-#### externals
+#### imports
 External dependency mapping
 - Maps module import paths to actual module locations
 - `match`: Regular expression used to match import statements

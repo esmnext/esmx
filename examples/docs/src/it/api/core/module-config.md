@@ -9,7 +9,7 @@ head:
 
 # ModuleConfig
 
-ModuleConfig fornisce la funzionalità di configurazione dei moduli per il framework Gez, utilizzata per definire le regole di importazione/esportazione dei moduli, la configurazione degli alias e le dipendenze esterne.
+ModuleConfig fornisce le funzionalità di configurazione dei moduli per il framework Gez, utilizzate per definire le regole di importazione/esportazione dei moduli, la configurazione degli alias e le dipendenze esterne.
 
 ## Definizione dei tipi
 
@@ -33,8 +33,8 @@ Enumerazione dei tipi di percorso dei moduli:
 ```ts
 interface ModuleConfig {
   exports?: string[]
+  links?: Record<string, string>
   imports?: Record<string, string>
-  externals?: Record<string, string>
 }
 ```
 
@@ -42,23 +42,35 @@ Interfaccia di configurazione dei moduli, utilizzata per definire l'esportazione
 
 #### exports
 
-Lista di configurazione delle esportazioni, che espone unità di codice specifiche (come componenti, funzioni di utilità, ecc.) dal servizio in formato ESM.
+Lista di configurazione delle esportazioni, che espone specifiche unità di codice (come componenti, funzioni di utilità, ecc.) dal servizio in formato ESM.
 
 Supporta due tipi:
-- `root:*`: esporta i file sorgente, ad esempio: 'root:src/components/button.vue'
-- `npm:*`: esporta dipendenze di terze parti, ad esempio: 'npm:vue'
+- `root:*`: esporta i file sorgenti, ad esempio: `root:src/components/button.vue`
+- `npm:*`: esporta dipendenze di terze parti, ad esempio: `npm:vue`
+
+Ogni voce di esportazione contiene i seguenti attributi:
+- `name`: percorso di esportazione originale, ad esempio: `npm:vue` o `root:src/components`
+- `type`: tipo di percorso (`npm` o `root`)
+- `importName`: nome di importazione, formato: `${serviceName}/${type}/${path}`
+- `exportName`: percorso di esportazione, relativo alla directory radice del servizio
+- `exportPath`: percorso effettivo del file
+- `externalName`: nome della dipendenza esterna, utilizzato come identificatore quando altri servizi importano questo modulo
+
+#### links
+
+Mappatura della configurazione delle dipendenze del servizio, utilizzata per configurare altri servizi (locali o remoti) da cui dipende il servizio corrente e i loro percorsi locali. La chiave di ogni voce di configurazione è il nome del servizio e il valore è il percorso locale di tale servizio.
+
+La configurazione varia in base al metodo di installazione:
+- Installazione da sorgente (Workspace, Git): deve puntare alla directory dist, poiché è necessario utilizzare i file compilati
+- Installazione da pacchetto (Link, server statico, repository privato, File): punta direttamente alla directory del pacchetto, poiché il pacchetto contiene già i file compilati
 
 #### imports
 
-Mappatura di configurazione delle importazioni, che configura i moduli remoti da importare e i loro percorsi locali.
+Mappatura delle dipendenze esterne, configura le dipendenze esterne da utilizzare, solitamente dipendenze da moduli remoti.
 
-La configurazione varia in base al metodo di installazione:
-- Installazione da sorgente (Workspace, Git): deve puntare alla directory dist
-- Installazione da pacchetto (Link, server statico, repository privato, File): punta direttamente alla directory del pacchetto
-
-#### externals
-
-Mappatura delle dipendenze esterne, che configura le dipendenze esterne da utilizzare, solitamente provenienti da moduli remoti.
+Ogni dipendenza contiene i seguenti attributi:
+- `match`: espressione regolare utilizzata per abbinare le istruzioni di importazione
+- `import`: percorso effettivo del modulo
 
 **Esempio**:
 ```ts title="entry.node.ts"
@@ -75,15 +87,15 @@ export default {
     ],
 
     // Configurazione delle importazioni
-    imports: {
-      // Installazione da sorgente: deve puntare alla directory dist
+    links: {
+      // Metodo di installazione da sorgente: deve puntare alla directory dist
       'ssr-remote': 'root:./node_modules/ssr-remote/dist',
-      // Installazione da pacchetto: punta direttamente alla directory del pacchetto
+      // Metodo di installazione da pacchetto: punta direttamente alla directory del pacchetto
       'other-remote': 'root:./node_modules/other-remote'
     },
 
     // Configurazione delle dipendenze esterne
-    externals: {
+    imports: {
       'vue': 'ssr-remote/npm/vue',
       'vue-router': 'ssr-remote/npm/vue-router'
     }
@@ -106,23 +118,29 @@ interface ParsedModuleConfig {
     exportPath: string
     externalName: string
   }[]
-  imports: {
+  links: Array<{
+    /**
+     * Nome del pacchetto
+     */
     name: string
-    localPath: string
-  }[]
-  externals: Record<string, { match: RegExp; import?: string }>
+    /**
+     * Directory radice del pacchetto
+     */
+    root: string
+  }>
+  imports: Record<string, { match: RegExp; import?: string }>
 }
 ```
 
-Configurazione dei moduli analizzata, che converte la configurazione originale dei moduli in un formato interno standardizzato:
+Configurazione del modulo analizzata, che converte la configurazione originale del modulo in un formato interno standardizzato:
 
 #### name
 Nome del servizio corrente
-- Utilizzato per identificare il modulo e generare i percorsi di importazione
+- Utilizzato per identificare il modulo e generare il percorso di importazione
 
 #### root
 Percorso della directory radice del servizio corrente
-- Utilizzato per risolvere i percorsi relativi e la posizione degli artefatti di build
+- Utilizzato per risolvere i percorsi relativi e la posizione degli artefatti di compilazione
 
 #### exports
 Lista di configurazione delle esportazioni
@@ -133,13 +151,13 @@ Lista di configurazione delle esportazioni
 - `exportPath`: percorso effettivo del file
 - `externalName`: nome della dipendenza esterna, utilizzato come identificatore quando altri servizi importano questo modulo
 
-#### imports
+#### links
 Lista di configurazione delle importazioni
-- `name`: nome del servizio esterno
-- `localPath`: percorso di archiviazione locale, utilizzato per memorizzare gli artefatti di build del modulo esterno
+- `name`: nome del pacchetto
+- `root`: directory radice del pacchetto
 
-#### externals
+#### imports
 Mappatura delle dipendenze esterne
-- Mappa i percorsi di importazione del modulo alla posizione effettiva del modulo
-- `match`: espressione regolare utilizzata per corrispondere alle istruzioni di importazione
+- Mappa il percorso di importazione del modulo alla posizione effettiva del modulo
+- `match`: espressione regolare utilizzata per abbinare le istruzioni di importazione
 - `import`: percorso effettivo del modulo

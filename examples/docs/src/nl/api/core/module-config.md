@@ -9,7 +9,7 @@ head:
 
 # ModuleConfig
 
-ModuleConfig biedt de moduleconfiguratiefunctionaliteit van het Gez framework, gebruikt om de import/export regels van modules, aliasconfiguratie en externe afhankelijkheden te definiëren.
+ModuleConfig biedt de moduleconfiguratiefunctie van het Gez framework, gebruikt om de import/export regels, aliasconfiguratie en externe afhankelijkheden van modules te definiëren.
 
 ## Type Definitie
 
@@ -33,32 +33,44 @@ Enum voor modulepadtype:
 ```ts
 interface ModuleConfig {
   exports?: string[]
+  links?: Record<string, string>
   imports?: Record<string, string>
-  externals?: Record<string, string>
 }
 ```
 
-Moduleconfiguratie-interface, gebruikt om de export, import en externe afhankelijkheidsconfiguratie van een service te definiëren.
+Moduleconfiguratie-interface, gebruikt om de export, import en externe afhankelijkheidsconfiguratie van services te definiëren.
 
 #### exports
 
 Exportconfiguratielijst, die specifieke code-eenheden (zoals componenten, hulpfuncties, etc.) in de service naar buiten beschikbaar stelt in ESM-formaat.
 
 Ondersteunt twee typen:
-- `root:*`: Exporteert broncodebestanden, bijv.: 'root:src/components/button.vue'
-- `npm:*`: Exporteert externe afhankelijkheden, bijv.: 'npm:vue'
+- `root:*`: Exporteert broncodebestanden, bijv.: `root:src/components/button.vue`
+- `npm:*`: Exporteert externe afhankelijkheden, bijv.: `npm:vue`
+
+Elk exportitem bevat de volgende eigenschappen:
+- `name`: Origineel exportpad, bijv.: `npm:vue` of `root:src/components`
+- `type`: Padtype (`npm` of `root`)
+- `importName`: Importnaam, formaat: `${serviceName}/${type}/${path}`
+- `exportName`: Exportpad, relatief ten opzichte van de serviceroot
+- `exportPath`: Werkelijk bestandspad
+- `externalName`: Naam van externe afhankelijkheid, gebruikt als identificatie voor andere services die deze module importeren
+
+#### links
+
+Serviceafhankelijkheidsconfiguratiemapping, gebruikt om andere services (lokaal of extern) waarvan de huidige service afhankelijk is, en hun lokale paden te configureren. De sleutel van elk configuratieitem is de servicenaam, de waarde is het lokale pad van die service.
+
+De configuratie verschilt afhankelijk van de installatiemethode:
+- Broncode-installatie (Workspace, Git): Moet naar de dist-directory wijzen, omdat de gebouwde bestanden moeten worden gebruikt
+- Pakketinstallatie (Link, statische server, privé mirror, File): Rechtstreeks naar de pakketdirectory wijzen, omdat de pakketten al de gebouwde bestanden bevatten
 
 #### imports
 
-Importconfiguratiemapping, configureert de externe modules die moeten worden geïmporteerd en hun lokale paden.
-
-De configuratie verschilt afhankelijk van de installatiemethode:
-- Broncode-installatie (Workspace, Git): moet naar de dist-directory wijzen
-- Pakketinstallatie (Link, statische server, privémirror, File): wijst direct naar de pakketdirectory
-
-#### externals
-
 Externe afhankelijkheidsmapping, configureert de te gebruiken externe afhankelijkheden, meestal afhankelijkheden van externe modules.
+
+Elke afhankelijkheid bevat de volgende eigenschappen:
+- `match`: Reguliere expressie om importstatements te matchen
+- `import`: Werkelijk modulepad
 
 **Voorbeeld**:
 ```ts title="entry.node.ts"
@@ -68,22 +80,22 @@ export default {
   modules: {
     // Exportconfiguratie
     exports: [
-      'root:src/components/button.vue',  // Exporteert broncodebestand
+      'root:src/components/button.vue',  // Exporteer broncodebestand
       'root:src/utils/format.ts',
-      'npm:vue',  // Exporteert externe afhankelijkheid
+      'npm:vue',  // Exporteer externe afhankelijkheid
       'npm:vue-router'
     ],
 
     // Importconfiguratie
-    imports: {
-      // Broncode-installatie: moet naar dist-directory wijzen
+    links: {
+      // Broncode-installatiemethode: moet naar dist-directory wijzen
       'ssr-remote': 'root:./node_modules/ssr-remote/dist',
-      // Pakketinstallatie: wijst direct naar pakketdirectory
+      // Pakketinstallatiemethode: rechtstreeks naar pakketdirectory wijzen
       'other-remote': 'root:./node_modules/other-remote'
     },
 
     // Externe afhankelijkheidsconfiguratie
-    externals: {
+    imports: {
       'vue': 'ssr-remote/npm/vue',
       'vue-router': 'ssr-remote/npm/vue-router'
     }
@@ -106,11 +118,17 @@ interface ParsedModuleConfig {
     exportPath: string
     externalName: string
   }[]
-  imports: {
+  links: Array<{
+    /**
+     * Naam van het pakket
+     */
     name: string
-    localPath: string
-  }[]
-  externals: Record<string, { match: RegExp; import?: string }>
+    /**
+     * Rootdirectory van het pakket
+     */
+    root: string
+  }>
+  imports: Record<string, { match: RegExp; import?: string }>
 }
 ```
 
@@ -121,8 +139,8 @@ Naam van de huidige service
 - Gebruikt om de module te identificeren en importpaden te genereren
 
 #### root
-Rootpad van de huidige service
-- Gebruikt om relatieve paden op te lossen en build-artefacten op te slaan
+Rootdirectorypad van de huidige service
+- Gebruikt om relatieve paden en build-output te resolveren
 
 #### exports
 Exportconfiguratielijst
@@ -131,15 +149,16 @@ Exportconfiguratielijst
 - `importName`: Importnaam, formaat: '${serviceName}/${type}/${path}'
 - `exportName`: Exportpad, relatief ten opzichte van de serviceroot
 - `exportPath`: Werkelijk bestandspad
-- `externalName`: Naam van externe afhankelijkheid, gebruikt als identificatie wanneer andere services deze module importeren
+- `externalName`: Naam van externe afhankelijkheid, gebruikt als identificatie voor andere services die deze module importeren
+
+#### links
+Importconfiguratielijst
+- `name`: Naam van het pakket
+- `root`: Rootdirectory van het pakket
 
 #### imports
-Importconfiguratielijst
-- `name`: Naam van de externe service
-- `localPath`: Lokaal opslagpad, gebruikt om build-artefacten van externe modules op te slaan
-
-#### externals
 Externe afhankelijkheidsmapping
-- Mapt importpaden van modules naar de werkelijke modulelocatie
+- Mapt importpaden van modules naar werkelijke modulelocaties
 - `match`: Reguliere expressie om importstatements te matchen
 - `import`: Werkelijk modulepad
+```

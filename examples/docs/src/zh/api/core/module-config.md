@@ -49,9 +49,9 @@ interface ModuleConfig {
 - `npm:*`: 导出第三方依赖，如：`npm:vue`
 
 每个导出项包含以下属性：
-- `name`: 原始导出路径，如：'npm:vue' 或 'root:src/components'
-- `type`: 路径类型（npm 或 root）
-- `importName`: 导入名称，格式：'${serviceName}/${type}/${path}'
+- `name`: 原始导出路径，如：`npm:vue` 或 `root:src/components`
+- `type`: 路径类型（`npm` 或 `root`）
+- `importName`: 导入名称，格式：`${serviceName}/${type}/${path}`
 - `exportName`: 导出路径，相对于服务根目录
 - `exportPath`: 实际的文件路径
 - `externalName`: 外部依赖名称，用于其他服务导入此模块时的标识

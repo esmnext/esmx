@@ -1,15 +1,15 @@
 ---
 titleSuffix: Gez Framework Modulkonfiguration API-Referenz
-description: Detaillierte Beschreibung der ModuleConfig-Konfigurationsschnittstelle des Gez-Frameworks, einschließlich Modulimport- und Exportregeln, Alias-Konfiguration und externer Abhängigkeitsverwaltung, um Entwicklern ein tieferes Verständnis des modularen Systems des Frameworks zu vermitteln.
+description: Detaillierte Beschreibung der ModuleConfig-Schnittstelle des Gez-Frameworks, einschließlich Modulimport- und Exportregeln, Alias-Konfiguration und externer Abhängigkeitsverwaltung, um Entwicklern ein tieferes Verständnis des modularen Systems des Frameworks zu vermitteln.
 head:
   - - meta
     - property: keywords
-      content: Gez, ModuleConfig, Modulkonfiguration, Modulimport und -export, Externe Abhängigkeiten, Alias-Konfiguration, Abhängigkeitsverwaltung, Webanwendungsframework
+      content: Gez, ModuleConfig, Modulkonfiguration, Modulimport und -export, Externe Abhängigkeiten, Alias-Konfiguration, Abhängigkeitsverwaltung, Web-Anwendungsframework
 ---
 
 # ModuleConfig
 
-ModuleConfig bietet die Modulkonfigurationsfunktionalität des Gez-Frameworks, um Import- und Exportregeln für Module, Alias-Konfigurationen und externe Abhängigkeiten zu definieren.
+ModuleConfig bietet die Modulkonfigurationsfunktionen des Gez-Frameworks, um Import- und Exportregeln, Alias-Konfigurationen und externe Abhängigkeiten zu definieren.
 
 ## Typdefinitionen
 
@@ -33,8 +33,8 @@ Enumeration der Modulpfadtypen:
 ```ts
 interface ModuleConfig {
   exports?: string[]
+  links?: Record<string, string>
   imports?: Record<string, string>
-  externals?: Record<string, string>
 }
 ```
 
@@ -45,20 +45,32 @@ Schnittstelle für die Modulkonfiguration, verwendet zur Definition von Export-,
 Liste der Exportkonfigurationen, die spezifische Codeeinheiten (wie Komponenten, Utility-Funktionen usw.) im ESM-Format nach außen verfügbar machen.
 
 Unterstützt zwei Typen:
-- `root:*`: Exportiert Quellcodedateien, z.B.: 'root:src/components/button.vue'
-- `npm:*`: Exportiert Drittanbieterabhängigkeiten, z.B.: 'npm:vue'
+- `root:*`: Exportiert Quellcodedateien, z.B.: `root:src/components/button.vue`
+- `npm:*`: Exportiert Drittanbieterabhängigkeiten, z.B.: `npm:vue`
+
+Jeder Exporteintrag enthält folgende Attribute:
+- `name`: Ursprünglicher Exportpfad, z.B.: `npm:vue` oder `root:src/components`
+- `type`: Pfadtyp (`npm` oder `root`)
+- `importName`: Importname, Format: `${serviceName}/${type}/${path}`
+- `exportName`: Exportpfad, relativ zum Dienststammverzeichnis
+- `exportPath`: Tatsächlicher Dateipfad
+- `externalName`: Name der externen Abhängigkeit, verwendet als Kennung beim Import dieses Moduls durch andere Dienste
+
+#### links
+
+Zuordnung der Dienstabhängigkeiten, verwendet zur Konfiguration von Abhängigkeiten des aktuellen Dienstes von anderen Diensten (lokal oder remote) und deren lokalen Pfaden. Der Schlüssel jedes Konfigurationseintrags ist der Dienstname, der Wert ist der lokale Pfad des Dienstes.
+
+Die Konfiguration variiert je nach Installationsmethode:
+- Quellcodeinstallation (Workspace, Git): Muss auf das dist-Verzeichnis verweisen, da die gebauten Dateien verwendet werden müssen
+- Paketinstallation (Link, statischer Server, privater Mirror, File): Verweist direkt auf das Paketverzeichnis, da das Paket bereits die gebauten Dateien enthält
 
 #### imports
 
-Importkonfigurationszuordnung, konfiguriert die zu importierenden Remote-Module und ihre lokalen Pfade.
-
-Die Konfiguration variiert je nach Installationsmethode:
-- Quellcodeinstallation (Workspace, Git): Muss auf das dist-Verzeichnis verweisen
-- Paketinstallation (Link, statischer Server, privater Mirror, File): Verweist direkt auf das Paketverzeichnis
-
-#### externals
-
 Zuordnung externer Abhängigkeiten, konfiguriert die zu verwendenden externen Abhängigkeiten, typischerweise Abhängigkeiten aus Remote-Modulen.
+
+Jeder Abhängigkeitseintrag enthält folgende Attribute:
+- `match`: Regulärer Ausdruck zum Abgleichen von Importanweisungen
+- `import`: Tatsächlicher Modulpfad
 
 **Beispiel**:
 ```ts title="entry.node.ts"
@@ -75,7 +87,7 @@ export default {
     ],
 
     // Importkonfiguration
-    imports: {
+    links: {
       // Quellcodeinstallation: Muss auf dist-Verzeichnis verweisen
       'ssr-remote': 'root:./node_modules/ssr-remote/dist',
       // Paketinstallation: Verweist direkt auf Paketverzeichnis
@@ -83,7 +95,7 @@ export default {
     },
 
     // Externe Abhängigkeitskonfiguration
-    externals: {
+    imports: {
       'vue': 'ssr-remote/npm/vue',
       'vue-router': 'ssr-remote/npm/vue-router'
     }
@@ -106,22 +118,28 @@ interface ParsedModuleConfig {
     exportPath: string
     externalName: string
   }[]
-  imports: {
+  links: Array<{
+    /**
+     * Name des Softpakets
+     */
     name: string
-    localPath: string
-  }[]
-  externals: Record<string, { match: RegExp; import?: string }>
+    /**
+     * Stammverzeichnis des Softpakets
+     */
+    root: string
+  }>
+  imports: Record<string, { match: RegExp; import?: string }>
 }
 ```
 
-Parsed Module Configuration, die die ursprüngliche Modulkonfiguration in ein standardisiertes internes Format umwandelt:
+ParsedModuleConfig, die ursprüngliche Modulkonfiguration in ein standardisiertes internes Format umgewandelt:
 
 #### name
 Name des aktuellen Dienstes
-- Wird zur Identifizierung des Moduls und zur Generierung von Importpfaden verwendet
+- Wird zur Kennzeichnung von Modulen und zur Generierung von Importpfaden verwendet
 
 #### root
-Stammverzeichnis des aktuellen Dienstes
+Stammverzeichnispfad des aktuellen Dienstes
 - Wird zur Auflösung relativer Pfade und zur Speicherung von Build-Artefakten verwendet
 
 #### exports
@@ -131,16 +149,16 @@ Liste der Exportkonfigurationen
 - `importName`: Importname, Format: '${serviceName}/${type}/${path}'
 - `exportName`: Exportpfad, relativ zum Dienststammverzeichnis
 - `exportPath`: Tatsächlicher Dateipfad
-- `externalName`: Name der externen Abhängigkeit, wird als Kennung für den Import dieses Moduls durch andere Dienste verwendet
+- `externalName`: Name der externen Abhängigkeit, verwendet als Kennung beim Import dieses Moduls durch andere Dienste
+
+#### links
+Liste der Importkonfigurationen
+- `name`: Name des Softpakets
+- `root`: Stammverzeichnis des Softpakets
 
 #### imports
-Liste der Importkonfigurationen
-- `name`: Name des externen Dienstes
-- `localPath`: Lokaler Speicherpfad, wird zur Speicherung der Build-Artefakte des externen Moduls verwendet
-
-#### externals
 Zuordnung externer Abhängigkeiten
-- Ordnet den Importpfad des Moduls dem tatsächlichen Modulpfad zu
+- Ordnet Modulimportpfade den tatsächlichen Modulpositionen zu
 - `match`: Regulärer Ausdruck zum Abgleichen von Importanweisungen
 - `import`: Tatsächlicher Modulpfad
 ```

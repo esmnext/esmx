@@ -24,8 +24,8 @@ enum PathType {
 ```
 
 Énumération des types de chemins de modules :
-- `npm`: représente les dépendances dans node_modules
-- `root`: représente les fichiers dans le répertoire racine du projet
+- `npm`: représente une dépendance dans node_modules
+- `root`: représente un fichier à la racine du projet
 
 ### ModuleConfig
 
@@ -33,32 +33,44 @@ enum PathType {
 ```ts
 interface ModuleConfig {
   exports?: string[]
+  links?: Record<string, string>
   imports?: Record<string, string>
-  externals?: Record<string, string>
 }
 ```
 
-Interface de configuration des modules, utilisée pour définir les configurations d'export, d'import et de dépendances externes d'un service.
+Interface de configuration des modules, utilisée pour définir l'export, l'import et la configuration des dépendances externes d'un service.
 
 #### exports
 
-Liste de configuration des exports, exposant des unités de code spécifiques (composants, fonctions utilitaires, etc.) du service au format ESM.
+Liste de configuration des exports, exposant des unités de code spécifiques (comme des composants, des fonctions utilitaires, etc.) d'un service au format ESM.
 
-Supporte deux types :
-- `root:*`: exporte les fichiers sources, par exemple : 'root:src/components/button.vue'
-- `npm:*`: exporte des dépendances tierces, par exemple : 'npm:vue'
+Deux types sont supportés :
+- `root:*`: exporte un fichier source, par exemple : `root:src/components/button.vue`
+- `npm:*`: exporte une dépendance tierce, par exemple : `npm:vue`
+
+Chaque élément d'export contient les propriétés suivantes :
+- `name`: chemin d'export original, par exemple : `npm:vue` ou `root:src/components`
+- `type`: type de chemin (`npm` ou `root`)
+- `importName`: nom d'import, format : `${serviceName}/${type}/${path}`
+- `exportName`: chemin d'export, relatif à la racine du service
+- `exportPath`: chemin réel du fichier
+- `externalName`: nom de la dépendance externe, utilisé comme identifiant lors de l'import de ce module par d'autres services
+
+#### links
+
+Mappage de configuration des dépendances de service, utilisé pour configurer les autres services (locaux ou distants) dont dépend le service actuel et leurs chemins locaux. La clé de chaque élément de configuration est le nom du service, et la valeur est le chemin local de ce service.
+
+La configuration varie selon le mode d'installation :
+- Installation à partir du code source (Workspace, Git) : doit pointer vers le répertoire dist, car les fichiers construits sont nécessaires
+- Installation via paquet (Link, serveur statique, miroir privé, File) : pointe directement vers le répertoire du paquet, car celui-ci contient déjà les fichiers construits
 
 #### imports
 
-Mappage de configuration des imports, configurant les modules distants à importer et leurs chemins locaux.
-
-La configuration varie selon le mode d'installation :
-- Installation depuis les sources (Workspace, Git) : doit pointer vers le répertoire dist
-- Installation depuis un package (Link, serveur statique, miroir privé, File) : pointe directement vers le répertoire du package
-
-#### externals
-
 Mappage des dépendances externes, configurant les dépendances externes à utiliser, généralement des dépendances provenant de modules distants.
+
+Chaque dépendance contient les propriétés suivantes :
+- `match`: expression régulière utilisée pour faire correspondre les instructions d'import
+- `import`: chemin réel du module
 
 **Exemple** :
 ```ts title="entry.node.ts"
@@ -75,15 +87,15 @@ export default {
     ],
 
     // Configuration des imports
-    imports: {
-      // Installation depuis les sources : doit pointer vers le répertoire dist
+    links: {
+      // Mode d'installation à partir du code source : doit pointer vers le répertoire dist
       'ssr-remote': 'root:./node_modules/ssr-remote/dist',
-      // Installation depuis un package : pointe directement vers le répertoire du package
+      // Mode d'installation via paquet : pointe directement vers le répertoire du paquet
       'other-remote': 'root:./node_modules/other-remote'
     },
 
     // Configuration des dépendances externes
-    externals: {
+    imports: {
       'vue': 'ssr-remote/npm/vue',
       'vue-router': 'ssr-remote/npm/vue-router'
     }
@@ -106,15 +118,21 @@ interface ParsedModuleConfig {
     exportPath: string
     externalName: string
   }[]
-  imports: {
+  links: Array<{
+    /**
+     * Nom du paquet
+     */
     name: string
-    localPath: string
-  }[]
-  externals: Record<string, { match: RegExp; import?: string }>
+    /**
+     * Répertoire racine du paquet
+     */
+    root: string
+  }>
+  imports: Record<string, { match: RegExp; import?: string }>
 }
 ```
 
-Configuration des modules après analyse, convertissant la configuration originale des modules en un format interne standardisé :
+Configuration de module analysée, convertissant la configuration de module originale en un format interne standardisé :
 
 #### name
 Nom du service actuel
@@ -122,25 +140,25 @@ Nom du service actuel
 
 #### root
 Chemin du répertoire racine du service actuel
-- Utilisé pour résoudre les chemins relatifs et stocker les artefacts de construction
+- Utilisé pour résoudre les chemins relatifs et le stockage des artefacts de construction
 
 #### exports
 Liste de configuration des exports
 - `name`: chemin d'export original, par exemple : 'npm:vue' ou 'root:src/components'
 - `type`: type de chemin (npm ou root)
 - `importName`: nom d'import, format : '${serviceName}/${type}/${path}'
-- `exportName`: chemin d'export, relatif au répertoire racine du service
+- `exportName`: chemin d'export, relatif à la racine du service
 - `exportPath`: chemin réel du fichier
 - `externalName`: nom de la dépendance externe, utilisé comme identifiant lors de l'import de ce module par d'autres services
 
-#### imports
+#### links
 Liste de configuration des imports
-- `name`: nom du service externe
-- `localPath`: chemin de stockage local, utilisé pour stocker les artefacts de construction des modules externes
+- `name`: nom du paquet
+- `root`: répertoire racine du paquet
 
-#### externals
+#### imports
 Mappage des dépendances externes
-- Mappe les chemins d'import des modules vers leurs emplacements réels
-- `match`: expression régulière utilisée pour correspondre aux instructions d'import
+- Mappe les chemins d'import des modules vers leur emplacement réel
+- `match`: expression régulière utilisée pour faire correspondre les instructions d'import
 - `import`: chemin réel du module
 ```
