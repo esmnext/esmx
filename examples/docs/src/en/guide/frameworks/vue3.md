@@ -114,7 +114,7 @@ Create the main application component `src/app.vue`, using Vue3's Composition AP
 ```html title="src/app.vue"
 <template>
     <div>
-        <h1><a href="https://www.jsesm.com/guide/frameworks/vue3.html" target="_blank">Gez Quick Start</a></h1>
+        <h1><a href="https://www.esmnext.com/guide/frameworks/vue3.html" target="_blank">Gez Quick Start</a></h1>
         <time :datetime="time">{{ time }}</time>
     </div>
 </template>

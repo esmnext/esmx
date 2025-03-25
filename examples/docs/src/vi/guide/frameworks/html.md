@@ -141,7 +141,7 @@ export default class App {
 
         return `
         <div id="app">
-            <h1><a href="https://www.jsesm.com/guide/frameworks/html.html" target="_blank">Bắt đầu nhanh với Gez</a></h1>
+            <h1><a href="https://www.esmnext.com/guide/frameworks/html.html" target="_blank">Bắt đầu nhanh với Gez</a></h1>
             <time datetime="${this.time}">${this.time}</time>
         </div>
         `;

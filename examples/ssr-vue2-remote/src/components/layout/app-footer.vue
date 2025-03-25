@@ -4,7 +4,7 @@
       <div class="footer-content">
         <div class="footer-info">
           <div class="footer-brand">
-            <img src="https://www.jsesm.com/logo.svg" alt="Gez Logo" class="footer-logo" />
+            <img src="https://www.esmnext.com/logo.svg" alt="Gez Logo" class="footer-logo" />
             <span class="footer-title">Gez</span>
           </div>
           <div class="source-links">

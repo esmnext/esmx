@@ -114,7 +114,7 @@ Tạo component chính `src/app.vue`, sử dụng cú pháp `<script setup>`:
 ```html title="src/app.vue"
 <template>
     <div id="app">
-        <h1><a href="https://www.jsesm.com/guide/frameworks/vue2.html" target="_blank">Hướng dẫn nhanh Gez</a></h1>
+        <h1><a href="https://www.esmnext.com/guide/frameworks/vue2.html" target="_blank">Hướng dẫn nhanh Gez</a></h1>
         <time :datetime="time">{{ time }}</time>
     </div>
 </template>

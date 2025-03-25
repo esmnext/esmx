@@ -112,7 +112,7 @@ export default defineConfig({
                 icon: 'github',
                 mode: 'link',
                 content:
-                    'https://github.com/js-esm/gez?utm_source=www.jsesm.com'
+                    'https://github.com/js-esm/gez?utm_source=www.esmnext.com'
             }
         ]
     },
@@ -121,7 +121,7 @@ export default defineConfig({
     },
     plugins: [
         sitemap({
-            domain: 'https://www.jsesm.com',
+            domain: 'https://www.esmnext.com',
             defaultChangeFreq: 'monthly',
             defaultPriority: '0.5'
         })

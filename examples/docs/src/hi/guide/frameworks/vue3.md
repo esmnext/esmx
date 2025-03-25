@@ -114,7 +114,7 @@ npm install
 ```html title="src/app.vue"
 <template>
     <div>
-        <h1><a href="https://www.jsesm.com/guide/frameworks/vue3.html" target="_blank">Gez क्विक स्टार्ट</a></h1>
+        <h1><a href="https://www.esmnext.com/guide/frameworks/vue3.html" target="_blank">Gez क्विक स्टार्ट</a></h1>
         <time :datetime="time">{{ time }}</time>
     </div>
 </template>

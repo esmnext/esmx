@@ -114,7 +114,7 @@ Créez le composant principal de l'application `src/app.vue`, en utilisant la sy
 ```html title="src/app.vue"
 <template>
     <div id="app">
-        <h1><a href="https://www.jsesm.com/guide/frameworks/vue2.html" target="_blank">Démarrage rapide avec Gez</a></h1>
+        <h1><a href="https://www.esmnext.com/guide/frameworks/vue2.html" target="_blank">Démarrage rapide avec Gez</a></h1>
         <time :datetime="time">{{ time }}</time>
     </div>
 </template>

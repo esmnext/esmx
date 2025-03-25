@@ -22,7 +22,7 @@ npm install @gez/core
 
 ## 文档
 
-访问 [@gez/core 官方文档](https://www.jsesm.com) 获取详细的使用指南和 API 文档。
+访问 [@gez/core 官方文档](https://www.esmnext.com) 获取详细的使用指南和 API 文档。
 
 ## 许可证
 

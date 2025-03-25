@@ -12,7 +12,7 @@ test('base', async () => {
     await fetchPkgsWithProgress({
         outputDir,
         axiosReqCfg: {
-            baseURL: 'https://www.jsesm.com',
+            baseURL: 'https://www.esmnext.com',
             timeout: 4500
         },
         packs: urls.map((url) => ({ url, name: url.split('/')[0] }))

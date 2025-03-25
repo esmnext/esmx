@@ -31,7 +31,7 @@ export default class App extends Component {
         const { time } = this.state;
         return html`
             <div>
-                <h1><a href="https://www.jsesm.com/guide/frameworks/preact-htm.html" target="_blank">Gez 快速开始</a></h1>
+                <h1><a href="https://www.esmnext.com/guide/frameworks/preact-htm.html" target="_blank">Gez 快速开始</a></h1>
                 <time datetime=${time}>${time}</time>
             </div>
         `;

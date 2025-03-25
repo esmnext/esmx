@@ -22,7 +22,7 @@ npm install @gez/rspack -D
 
 ## 文档
 
-访问 [@gez/rspack 官方文档](https://www.jsesm.com/api/app/rspack.html) 获取详细的使用指南和 API 文档。
+访问 [@gez/rspack 官方文档](https://www.esmnext.com/api/app/rspack.html) 获取详细的使用指南和 API 文档。
 
 ## 许可证
 
