@@ -4,7 +4,6 @@
 set -e
 
 rm -rf dist
-npx pnpm@10 install
 # 编译代码
 npm run build
 
@@ -33,15 +32,15 @@ if [ -f "$src_base/docs/doc_build/sitemap.xml" ]; then
   echo "Copied sitemap.xml to $target_base"
 fi
 
-# cd dist
-# # 如果是发布到自定义域名
-# # echo 'www.example.com' > CNAME
+cd dist
+# 如果是发布到自定义域名
+# echo 'www.example.com' > CNAME
 
-# git init
-# git add -A
-# git commit -m 'deploy'
+git init
+git add -A
+git commit -m 'deploy'
 
-# # 如果发布到 https://js-esm.github.io/gez/
-# git push -f git@github.com:js-esm/gez.git master:docs
+# 如果发布到 https://js-esm.github.io/gez/
+git push -f git@github.com:js-esm/gez.git master:docs
 
 cd -
