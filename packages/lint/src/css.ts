@@ -22,6 +22,7 @@ export default {
         'order/properties-order': [],
         'no-descending-specificity': null,
         'font-family-no-missing-generic-family-keyword': null,
-        'selector-class-pattern': null
+        'selector-class-pattern': null,
+        'declaration-property-value-no-unknown': null
     }
 };
