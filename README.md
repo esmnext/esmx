@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://www.esmnext.com/logo.svg" width="180" alt="Esmx Logo" />
+  <img src="https://www.esmnext.com/logo.svg?t=2025" width="180" alt="Esmx Logo" />
 </p>
 
 <h1 align="center">Esmx</h1>
