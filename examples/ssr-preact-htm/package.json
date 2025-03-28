@@ -12,7 +12,6 @@
     "start": "NODE_ENV=production node dist/index.js",
     "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src"
   },
-  "author": "",
   "license": "MIT",
   "description": "",
   "dependencies": {

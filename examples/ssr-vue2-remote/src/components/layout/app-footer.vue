@@ -8,11 +8,11 @@
             <span class="footer-title">Esmx</span>
           </div>
           <div class="source-links">
-            <a href="https://github.com/js-esm/esmx/tree/master/examples/ssr-vue2-host" class="source-link" target="_blank" rel="noopener">
+            <a href="https://github.com/esmnext/esmx/tree/master/examples/ssr-vue2-host" class="source-link" target="_blank" rel="noopener">
               <span class="source-label">Host Source</span>
               <span class="source-path">/examples/ssr-vue2-host</span>
             </a>
-            <a href="https://github.com/js-esm/esmx/tree/master/examples/ssr-vue2-remote" class="source-link" target="_blank" rel="noopener">
+            <a href="https://github.com/esmnext/esmx/tree/master/examples/ssr-vue2-remote" class="source-link" target="_blank" rel="noopener">
               <span class="source-label">Remote Source</span>
               <span class="source-path">/examples/ssr-vue2-remote</span>
             </a>

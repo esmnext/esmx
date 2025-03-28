@@ -105,7 +105,7 @@ Web 标准的进化为我们带来了新的可能。现在，我们可以用最�
 - 🎯 性能优先的架构设计
 - 🛠 适用于资源受限场景
 
-所有示例都包含完整的工程配置和最佳实践指南，帮助你快速上手并应用到生产环境。查看 [examples](https://github.com/js-esm/esmx/tree/master/examples) 目录了解更多详情。
+所有示例都包含完整的工程配置和最佳实践指南，帮助你快速上手并应用到生产环境。查看 [examples](https://github.com/esmnext/esmx/tree/master/examples) 目录了解更多详情。
 
 ## 📚 版本说明
 
@@ -115,7 +115,7 @@ Web 标准的进化为我们带来了新的可能。现在，我们可以用最�
 > **已知问题**：
 > - ESM 模块导出优化中：`modern-module` 的 `export *` 语法存在稳定性问题 [#8557](https://github.com/web-infra-dev/rspack/issues/8557)
 
-### [v2.x](https://github.com/js-esm/esmx/blob/v2/docs/zh-CN/README.md) - 不推荐生产使用
+### [v2.x](https://github.com/esmnext/esmx/blob/v2/docs/zh-CN/README.md) - 不推荐生产使用
 此版本不再推荐用于生产环境，建议使用最新版本。
 
 ### [v1.x](https://fmfe.github.io/genesis-docs/guide/) - 已停止维护
@@ -125,7 +125,7 @@ Web 标准的进化为我们带来了新的可能。现在，我们可以用最�
 
 感谢所有为 Esmx 做出贡献的开发者！
 
-[![Contributors](https://contrib.rocks/image?repo=js-esm/esmx)](https://github.com/js-esm/esmx/graphs/contributors)
+[![Contributors](https://contrib.rocks/image?repo=esmnext/esmx)](https://github.com/esmnext/esmx/graphs/contributors)
 
 ## 📄 许可证
 

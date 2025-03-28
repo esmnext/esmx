@@ -2,6 +2,24 @@
     "name": "@esmx/import",
     "template": "library-node",
     "license": "MIT",
+    "contributors": [
+        {
+            "name": "lzxb",
+            "url": "https://github.com/lzxb"
+        },
+        {
+            "name": "RockShi1994",
+            "url": "https://github.com/RockShi1994"
+        },
+        {
+            "name": "jerrychan7",
+            "url": "https://github.com/jerrychan7"
+        },
+        {
+            "name": "wesloong",
+            "url": "https://github.com/wesloong"
+        }
+    ],
     "scripts": {
         "lint:js": "biome check --write --no-errors-on-unmatched",
         "lint:css": "stylelint '**/*.{css,vue}' --fix --aei",

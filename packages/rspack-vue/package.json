@@ -1,11 +1,11 @@
 {
     "name": "@esmx/rspack-vue",
     "description": "A high-performance Vue integration for Esmx microfrontend framework, providing Vue 2/3 support with SSR and Module Federation capabilities.",
-    "author": {
-        "name": "lzxb",
-        "url": "https://github.com/lzxb"
-    },
     "contributors": [
+        {
+            "name": "lzxb",
+            "url": "https://github.com/lzxb"
+        },
         {
             "name": "RockShi1994",
             "url": "https://github.com/RockShi1994"
@@ -13,16 +13,20 @@
         {
             "name": "jerrychan7",
             "url": "https://github.com/jerrychan7"
+        },
+        {
+            "name": "wesloong",
+            "url": "https://github.com/wesloong"
         }
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/js-esm/esmx.git",
+        "url": "https://github.com/esmnext/esmx.git",
         "directory": "packages/rspack-vue"
     },
-    "homepage": "https://github.com/js-esm/esmx",
+    "homepage": "https://github.com/esmnext/esmx",
     "bugs": {
-        "url": "https://github.com/js-esm/esmx/issues"
+        "url": "https://github.com/esmnext/esmx/issues"
     },
     "template": "library-node",
     "license": "MIT",

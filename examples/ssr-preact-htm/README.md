@@ -13,7 +13,7 @@
 
 1. 克隆仓库
 ```bash
-git clone https://github.com/js-esm/esmx.git
+git clone https://github.com/esmnext/esmx.git
 cd esmx/examples/ssr-preact-htm
 ```
 
@@ -51,7 +51,7 @@ src/
 ## 相关链接
 
 - [项目文档](https://js-esm.github.io/esmx/)
-- [GitHub 仓库](https://github.com/js-esm/esmx)
+- [GitHub 仓库](https://github.com/esmnext/esmx)
 
 ## 许可证
 

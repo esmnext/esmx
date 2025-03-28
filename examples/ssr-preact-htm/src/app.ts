@@ -132,7 +132,7 @@ export const App = () => html`
         <${List} />
         <${Features} />
         <footer>
-            <a href="https://github.com/js-esm/esmx" target="_blank" rel="noopener">
+            <a href="https://github.com/esmnext/esmx" target="_blank" rel="noopener">
                 在 GitHub 上查看
             </a>
         </footer>
