@@ -1,15 +1,15 @@
 ---
-titleSuffix: Guida alla configurazione del percorso delle risorse statiche nel framework Gez
-description: Descrizione dettagliata della configurazione del percorso di base nel framework Gez, inclusa la distribuzione in più ambienti, la distribuzione CDN e l'impostazione del percorso di accesso alle risorse, per aiutare gli sviluppatori a gestire in modo flessibile le risorse statiche.
+titleSuffix: Guida alla configurazione del percorso delle risorse statiche nel framework Esmx
+description: Descrizione dettagliata della configurazione del percorso di base nel framework Esmx, inclusa la distribuzione in più ambienti, la distribuzione CDN e l'impostazione del percorso di accesso alle risorse, per aiutare gli sviluppatori a gestire in modo flessibile le risorse statiche.
 head:
   - - meta
     - property: keywords
-      content: Gez, Percorso di base, Base Path, CDN, Risorse statiche, Distribuzione multi-ambiente, Gestione delle risorse
+      content: Esmx, Percorso di base, Base Path, CDN, Risorse statiche, Distribuzione multi-ambiente, Gestione delle risorse
 ---
 
 # Percorso di base
 
-Il percorso di base (Base Path) è il prefisso del percorso di accesso alle risorse statiche (come JavaScript, CSS, immagini, ecc.) all'interno di un'applicazione. In Gez, una configurazione appropriata del percorso di base è fondamentale per i seguenti scenari:
+Il percorso di base (Base Path) è il prefisso del percorso di accesso alle risorse statiche (come JavaScript, CSS, immagini, ecc.) all'interno di un'applicazione. In Esmx, una configurazione appropriata del percorso di base è fondamentale per i seguenti scenari:
 
 - **Distribuzione multi-ambiente**: supporta l'accesso alle risorse in diversi ambienti come sviluppo, test e produzione
 - **Distribuzione multi-regione**: adatta le esigenze di distribuzione in cluster in diverse regioni o paesi
@@ -17,7 +17,7 @@ Il percorso di base (Base Path) è il prefisso del percorso di accesso alle riso
 
 ## Meccanismo del percorso predefinito
 
-Gez utilizza un meccanismo di generazione automatica del percorso basato sul nome del servizio. Per impostazione predefinita, il framework legge il campo `name` nel file `package.json` del progetto per generare il percorso di base delle risorse statiche: `/your-app-name/`.
+Esmx utilizza un meccanismo di generazione automatica del percorso basato sul nome del servizio. Per impostazione predefinita, il framework legge il campo `name` nel file `package.json` del progetto per generare il percorso di base delle risorse statiche: `/your-app-name/`.
 
 ```json title="package.json"
 {
@@ -33,7 +33,7 @@ Questo design basato su convenzioni piuttosto che su configurazioni offre i segu
 
 ## Configurazione dinamica del percorso
 
-Nei progetti reali, spesso è necessario distribuire lo stesso codice in ambienti o regioni diversi. Gez supporta la configurazione dinamica del percorso di base, consentendo all'applicazione di adattarsi a diversi scenari di distribuzione.
+Nei progetti reali, spesso è necessario distribuire lo stesso codice in ambienti o regioni diversi. Esmx supporta la configurazione dinamica del percorso di base, consentendo all'applicazione di adattarsi a diversi scenari di distribuzione.
 
 ### Casi d'uso
 
@@ -53,10 +53,10 @@ Nei progetti reali, spesso è necessario distribuire lo stesso codice in ambient
 
 ### Metodo di configurazione
 
-Attraverso il parametro `base` del metodo `gez.render()`, è possibile impostare dinamicamente il percorso di base in base al contesto della richiesta:
+Attraverso il parametro `base` del metodo `esmx.render()`, è possibile impostare dinamicamente il percorso di base in base al contesto della richiesta:
 
 ```ts
-const render = await gez.render({
+const render = await esmx.render({
     base: '/cn',  // Imposta il percorso di base
     params: {
         url: req.url

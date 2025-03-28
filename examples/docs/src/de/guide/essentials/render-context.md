@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework Server-Side Rendering Kernmechanismus
-description: Detaillierte Erläuterung des RenderContext-Mechanismus im Gez Framework, einschließlich Ressourcenverwaltung, HTML-Generierung und ESM-Modulsystem, um Entwicklern das Verständnis und die Nutzung der Server-Side Rendering-Funktionalität zu erleichtern.
+titleSuffix: Esmx Framework Server-Side Rendering Kernmechanismus
+description: Detaillierte Erläuterung des RenderContext-Mechanismus im Esmx Framework, einschließlich Ressourcenverwaltung, HTML-Generierung und ESM-Modulsystem, um Entwicklern das Verständnis und die Nutzung der Server-Side Rendering-Funktionalität zu erleichtern.
 head:
   - - meta
     - property: keywords
-      content: Gez, Renderkontext, RenderContext, SSR, Server-Side Rendering, ESM, Ressourcenverwaltung
+      content: Esmx, Renderkontext, RenderContext, SSR, Server-Side Rendering, ESM, Ressourcenverwaltung
 ---
 
 # Renderkontext
 
-RenderContext ist eine Kernklasse im Gez Framework, die hauptsächlich für die Ressourcenverwaltung und HTML-Generierung während des Server-Side Renderings (SSR) verantwortlich ist. Es verfügt über die folgenden Kernmerkmale:
+RenderContext ist eine Kernklasse im Esmx Framework, die hauptsächlich für die Ressourcenverwaltung und HTML-Generierung während des Server-Side Renderings (SSR) verantwortlich ist. Es verfügt über die folgenden Kernmerkmale:
 
 1. **ESM-basiertes Modulsystem**
    - Verwendet den modernen ECMAScript Modules-Standard
@@ -33,15 +33,15 @@ RenderContext ist eine Kernklasse im Gez Framework, die hauptsächlich für die 
 
 ## Verwendung
 
-Im Gez Framework müssen Entwickler normalerweise keine RenderContext-Instanz direkt erstellen, sondern erhalten eine Instanz über die Methode `gez.render()`:
+Im Esmx Framework müssen Entwickler normalerweise keine RenderContext-Instanz direkt erstellen, sondern erhalten eine Instanz über die Methode `esmx.render()`:
 
 ```ts title="src/entry.node.ts"
-async server(gez) {
+async server(esmx) {
     const server = http.createServer((req, res) => {
         // Statische Dateiverarbeitung
-        gez.middleware(req, res, async () => {
-            // RenderContext-Instanz über gez.render() erhalten
-            const rc = await gez.render({
+        esmx.middleware(req, res, async () => {
+            // RenderContext-Instanz über esmx.render() erhalten
+            const rc = await esmx.render({
                 params: {
                     url: req.url
                 }
@@ -141,8 +141,8 @@ export default async (rc: RenderContext) => {
 RenderContext bietet einen flexiblen Mechanismus zur dynamischen Konfiguration des Basis-Pfads, der es ermöglicht, den Basis-Pfad für statische Ressourcen zur Laufzeit dynamisch festzulegen:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
-    base: '/gez',  // Basis-Pfad festlegen
+const rc = await esmx.render({
+    base: '/esmx',  // Basis-Pfad festlegen
     params: {
         url: req.url
     }
@@ -179,7 +179,7 @@ RenderContext bietet zwei Import-Mapping-Modi (Import Map):
 Der gewünschte Modus kann über die Konfiguration ausgewählt werden:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     importmapMode: 'js',  // 'inline' | 'js'
     params: {
         url: req.url
@@ -192,7 +192,7 @@ const rc = await gez.render({
 RenderContext unterstützt die Konfiguration von `entryName`, um die Einstiegsfunktion für das Server-Side Rendering festzulegen:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     entryName: 'mobile',  // Einstiegsfunktion für Mobilgeräte festlegen
     params: {
         url: req.url
@@ -228,7 +228,7 @@ Dieser Mechanismus ist besonders nützlich in den folgenden Szenarien:
 ## Best Practices
 
 1. **RenderContext-Instanz erhalten**
-   - Immer über die Methode `gez.render()` eine Instanz erhalten
+   - Immer über die Methode `esmx.render()` eine Instanz erhalten
    - Bei Bedarf geeignete Parameter übergeben
    - Vermeiden Sie die manuelle Erstellung von Instanzen
 

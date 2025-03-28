@@ -1,10 +1,10 @@
 ---
-titleSuffix: Справочник API конфигурации сборки Gez
-description: Подробное описание интерфейса конфигурации PackConfig в рамках Gez, включая правила упаковки пакетов, настройки вывода и хуки жизненного цикла, чтобы помочь разработчикам реализовать стандартизированные процессы сборки.
+titleSuffix: Справочник API конфигурации сборки Esmx
+description: Подробное описание интерфейса конфигурации PackConfig в рамках Esmx, включая правила упаковки пакетов, настройки вывода и хуки жизненного цикла, чтобы помочь разработчикам реализовать стандартизированные процессы сборки.
 head:
   - - meta
     - property: keywords
-      content: Gez, PackConfig, упаковка пакетов, конфигурация сборки, хуки жизненного цикла, конфигурация упаковки, фреймворк для веб-приложений
+      content: Esmx, PackConfig, упаковка пакетов, конфигурация сборки, хуки жизненного цикла, конфигурация упаковки, фреймворк для веб-приложений
 ---
 
 # PackConfig
@@ -21,9 +21,9 @@ head:
 interface PackConfig {
     enable?: boolean;
     outputs?: string | string[] | boolean;
-    packageJson?: (gez: Gez, pkg: Record<string, any>) => Promise<Record<string, any>>;
-    onBefore?: (gez: Gez, pkg: Record<string, any>) => Promise<void>;
-    onAfter?: (gez: Gez, pkg: Record<string, any>, file: Buffer) => Promise<void>;
+    packageJson?: (esmx: Esmx, pkg: Record<string, any>) => Promise<Record<string, any>>;
+    onBefore?: (esmx: Esmx, pkg: Record<string, any>) => Promise<void>;
+    onAfter?: (esmx: Esmx, pkg: Record<string, any>, file: Buffer) => Promise<void>;
 }
 ```
 
@@ -48,7 +48,7 @@ interface PackConfig {
 Функция обратного вызова для настройки содержимого package.json. Вызывается перед упаковкой для изменения содержимого package.json.
 
 - Параметры:
-  - `gez: Gez` — экземпляр Gez
+  - `esmx: Esmx` — экземпляр Esmx
   - `pkg: any` — исходное содержимое package.json
 - Возвращаемое значение: `Promise<any>` — измененное содержимое package.json
 
@@ -60,7 +60,7 @@ interface PackConfig {
 
 Пример:
 ```ts
-packageJson: async (gez, pkg) => {
+packageJson: async (esmx, pkg) => {
   // Установка информации о пакете
   pkg.name = 'my-app';
   pkg.version = '1.0.0';
@@ -86,7 +86,7 @@ packageJson: async (gez, pkg) => {
 Функция обратного вызова для подготовки перед упаковкой.
 
 - Параметры:
-  - `gez: Gez` — экземпляр Gez
+  - `esmx: Esmx` — экземпляр Esmx
   - `pkg: Record<string, any>` — содержимое package.json
 - Возвращаемое значение: `Promise<void>`
 
@@ -98,7 +98,7 @@ packageJson: async (gez, pkg) => {
 
 Пример:
 ```ts
-onBefore: async (gez, pkg) => {
+onBefore: async (esmx, pkg) => {
   // Добавление документации
   await fs.writeFile('dist/README.md', '# My App');
   await fs.writeFile('dist/LICENSE', 'MIT License');
@@ -119,7 +119,7 @@ onBefore: async (gez, pkg) => {
 Функция обратного вызова для обработки после завершения упаковки. Вызывается после создания файла .tgz для обработки результатов упаковки.
 
 - Параметры:
-  - `gez: Gez` — экземпляр Gez
+  - `esmx: Esmx` — экземпляр Esmx
   - `pkg: Record<string, any>` — содержимое package.json
   - `file: Buffer` — содержимое упакованного файла
 - Возвращаемое значение: `Promise<void>`
@@ -132,7 +132,7 @@ onBefore: async (gez, pkg) => {
 
 Пример:
 ```ts
-onAfter: async (gez, pkg, file) => {
+onAfter: async (esmx, pkg, file) => {
   // Публикация в приватный npm-репозиторий
   await publishToRegistry(file, {
     registry: 'https://registry.example.com'
@@ -152,7 +152,7 @@ onAfter: async (gez, pkg, file) => {
 ## Пример использования
 
 ```ts title="entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
@@ -176,13 +176,13 @@ export default {
     ],
 
     // Настройка package.json
-    packageJson: async (gez, pkg) => {
+    packageJson: async (esmx, pkg) => {
       pkg.version = '1.0.0';
       return pkg;
     },
 
     // Подготовка перед упаковкой
-    onBefore: async (gez, pkg) => {
+    onBefore: async (esmx, pkg) => {
       // Добавление необходимых файлов
       await fs.writeFile('dist/README.md', '# Your App\n\nОписание экспорта модулей...');
       // Выполнение проверки типов
@@ -190,7 +190,7 @@ export default {
     },
 
     // Обработка после упаковки
-    onAfter: async (gez, pkg, file) => {
+    onAfter: async (esmx, pkg, file) => {
       // Публикация в приватный npm-репозиторий
       await publishToRegistry(file, {
         registry: 'https://npm.your-registry.com/'
@@ -199,5 +199,5 @@ export default {
       await uploadToServer(file, 'https://static.example.com/packages');
     }
   }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```

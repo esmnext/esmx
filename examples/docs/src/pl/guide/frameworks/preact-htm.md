@@ -1,15 +1,15 @@
 ---
-titleSuffix: Przykład aplikacji Preact+HTM SSR w frameworku Gez
-description: Tworzenie aplikacji Preact+HTM SSR od podstaw z wykorzystaniem frameworku Gez. Przykład pokazuje podstawowe użycie frameworku, w tym inicjalizację projektu, konfigurację Preact i ustawienia plików wejściowych.
+titleSuffix: Przykład aplikacji Preact+HTM SSR w frameworku Esmx
+description: Tworzenie aplikacji Preact+HTM SSR od podstaw z wykorzystaniem frameworku Esmx. Przykład pokazuje podstawowe użycie frameworku, w tym inicjalizację projektu, konfigurację Preact i ustawienia plików wejściowych.
 head:
   - - meta
     - property: keywords
-      content: Gez, Preact, HTM, aplikacja SSR, konfiguracja TypeScript, inicjalizacja projektu, renderowanie po stronie serwera, interakcja po stronie klienta
+      content: Esmx, Preact, HTM, aplikacja SSR, konfiguracja TypeScript, inicjalizacja projektu, renderowanie po stronie serwera, interakcja po stronie klienta
 ---
 
 # Preact+HTM
 
-Ten tutorial pomoże Ci od podstaw zbudować aplikację Preact+HTM SSR opartą na frameworku Gez. Przedstawimy kompletny przykład, jak użyć frameworku Gez do stworzenia aplikacji z renderowaniem po stronie serwera.
+Ten tutorial pomoże Ci od podstaw zbudować aplikację Preact+HTM SSR opartą na frameworku Esmx. Przedstawimy kompletny przykład, jak użyć frameworku Esmx do stworzenia aplikacji z renderowaniem po stronie serwera.
 
 ## Struktura projektu
 
@@ -40,18 +40,18 @@ Utwórz plik `package.json`, aby skonfigurować zależności i skrypty projektu:
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "gez dev",
+    "dev": "esmx dev",
     "build": "npm run build:dts && npm run build:ssr",
-    "build:ssr": "gez build",
-    "preview": "gez preview",
+    "build:ssr": "esmx build",
+    "preview": "esmx preview",
     "start": "NODE_ENV=production node dist/index.js",
     "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src"
   },
   "dependencies": {
-    "@gez/core": "*"
+    "@esmx/core": "*"
   },
   "devDependencies": {
-    "@gez/rspack": "*",
+    "@esmx/rspack": "*",
     "@types/node": "22.8.6",
     "htm": "^3.1.1",
     "preact": "^10.26.2",
@@ -118,7 +118,7 @@ Utwórz główny komponent aplikacji `src/app.ts`, używając komponentów klaso
 ```ts title="src/app.ts"
 /**
  * @file Przykładowy komponent
- * @description Pokazuje tytuł strony z automatycznie aktualizowanym czasem, demonstrując podstawowe funkcje frameworku Gez
+ * @description Pokazuje tytuł strony z automatycznie aktualizowanym czasem, demonstrując podstawowe funkcje frameworku Esmx
  */
 
 import { Component } from 'preact';
@@ -149,7 +149,7 @@ export default class App extends Component {
         const { time } = this.state;
         return html`
             <div>
-                <h1><a href="https://www.esmnext.com/guide/frameworks/preact-htm.html" target="_blank">Szybki start z Gez</a></h1>
+                <h1><a href="https://www.esmnext.com/guide/frameworks/preact-htm.html" target="_blank">Szybki start z Esmx</a></h1>
                 <time datetime=${time}>${time}</time>
             </div>
         `;
@@ -210,18 +210,18 @@ Utwórz plik `entry.node.ts`, aby skonfigurować środowisko deweloperskie i uru
  */
 
 import http from 'node:http';
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     /**
      * Konfiguruje twórcę aplikacji dla środowiska deweloperskiego
      * @description Tworzy i konfiguruje instancję aplikacji Rspack, używanej do budowania i aktualizacji na gorąco w środowisku deweloperskim
-     * @param gez Instancja frameworku Gez, zapewniająca podstawowe funkcje i interfejsy konfiguracyjne
+     * @param esmx Instancja frameworku Esmx, zapewniająca podstawowe funkcje i interfejsy konfiguracyjne
      * @returns Zwraca skonfigurowaną instancję aplikacji Rspack, wspierającą HMR i podgląd na żywo
      */
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createRspackHtmlApp(gez, {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createRspackHtmlApp(esmx, {
                 config(context) {
                     // Tutaj można dostosować konfigurację kompilacji Rspack
                 }
@@ -231,15 +231,15 @@ export default {
 
     /**
      * Konfiguruje i uruchamia serwer HTTP
-     * @description Tworzy instancję serwera HTTP, integrując middleware Gez, obsługujący żądania SSR
-     * @param gez Instancja frameworku Gez, zapewniająca middleware i funkcje renderowania
+     * @description Tworzy instancję serwera HTTP, integrując middleware Esmx, obsługujący żądania SSR
+     * @param esmx Instancja frameworku Esmx, zapewniająca middleware i funkcje renderowania
      */
-    async server(gez) {
+    async server(esmx) {
         const server = http.createServer((req, res) => {
-            // Użyj middleware Gez do obsługi żądań
-            gez.middleware(req, res, async () => {
+            // Użyj middleware Esmx do obsługi żądań
+            esmx.middleware(req, res, async () => {
                 // Wykonaj renderowanie po stronie serwera
-                const rc = await gez.render({
+                const rc = await esmx.render({
                     params: { url: req.url }
                 });
                 res.end(rc.html);
@@ -250,13 +250,13 @@ export default {
             console.log('Serwer uruchomiony: http://localhost:3000');
         });
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 Ten plik jest głównym plikiem konfiguracyjnym środowiska deweloperskiego i uruchomienia serwera, zawierającym dwie główne funkcje:
 
 1. Funkcja `devApp`: Odpowiedzialna za tworzenie i konfigurację instancji aplikacji Rspack dla środowiska deweloperskiego, wspierająca aktualizacje na gorąco i podgląd na żywo. Używa `createRspackHtmlApp` do stworzenia specjalnej instancji aplikacji Rspack dla Preact+HTM.
-2. Funkcja `server`: Odpowiedzialna za tworzenie i konfigurację serwera HTTP, integrując middleware Gez do obsługi żądań SSR.
+2. Funkcja `server`: Odpowiedzialna za tworzenie i konfigurację serwera HTTP, integrując middleware Esmx do obsługi żądań SSR.
 
 ### entry.server.ts
 
@@ -268,7 +268,7 @@ Utwórz plik wejściowy renderowania po stronie serwera `src/entry.server.ts`:
  * @description Odpowiedzialny za proces renderowania SSR, generowanie HTML i wstrzykiwanie zasobów
  */
 
-import type { RenderContext } from '@gez/core';
+import type { RenderContext } from '@esmx/core';
 import type { VNode } from 'preact';
 import { render } from 'preact-render-to-string';
 import { createApp } from './create-app';
@@ -288,7 +288,7 @@ export default async (rc: RenderContext) => {
 <html lang="pl">
 <head>
     ${rc.preload()}
-    <title>Szybki start z Gez</title>
+    <title>Szybki start z Esmx</title>
     ${rc.css()}
 </head>
 <body>
@@ -321,4 +321,4 @@ npm run build
 npm run start
 ```
 
-Teraz pomyślnie stworzyłeś aplikację Preact+HTM SSR opartą na frameworku Gez! Odwiedź http://localhost:3000, aby zobaczyć efekt.
+Teraz pomyślnie stworzyłeś aplikację Preact+HTM SSR opartą na frameworku Esmx! Odwiedź http://localhost:3000, aby zobaczyć efekt.

@@ -1,22 +1,22 @@
 ---
-titleSuffix: Gez Framework Anwendungsabstraktionsschnittstelle
-description: Detaillierte Beschreibung der App-Schnittstelle des Gez-Frameworks, einschließlich Anwendungslebenszyklusverwaltung, statischer Ressourcenverarbeitung und serverseitigem Rendering, um Entwicklern zu helfen, die Kernfunktionen der Anwendung zu verstehen und zu nutzen.
+titleSuffix: Esmx Framework Anwendungsabstraktionsschnittstelle
+description: Detaillierte Beschreibung der App-Schnittstelle des Esmx-Frameworks, einschließlich Anwendungslebenszyklusverwaltung, statischer Ressourcenverarbeitung und serverseitigem Rendering, um Entwicklern zu helfen, die Kernfunktionen der Anwendung zu verstehen und zu nutzen.
 head:
   - - meta
     - property: keywords
-      content: Gez, App, Anwendungsabstraktion, Lebenszyklus, statische Ressourcen, serverseitiges Rendering, API
+      content: Esmx, App, Anwendungsabstraktion, Lebenszyklus, statische Ressourcen, serverseitiges Rendering, API
 ---
 
 # App
 
-`App` ist die Anwendungsabstraktion des Gez-Frameworks und bietet eine einheitliche Schnittstelle zur Verwaltung des Anwendungslebenszyklus, statischer Ressourcen und des serverseitigen Renderings.
+`App` ist die Anwendungsabstraktion des Esmx-Frameworks und bietet eine einheitliche Schnittstelle zur Verwaltung des Anwendungslebenszyklus, statischer Ressourcen und des serverseitigen Renderings.
 
 ```ts title="entry.node.ts"
 export default {
   // Entwicklungsumgebungskonfiguration
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(rc) {
           // Benutzerdefinierte Rspack-Konfiguration
         }
@@ -55,7 +55,7 @@ Produktionsumgebung:
 - Optimierte Ressourcenlade-Strategie
 
 ```ts
-server.use(gez.middleware);
+server.use(esmx.middleware);
 ```
 
 #### render
@@ -67,7 +67,7 @@ Serverseitige Rendering-Funktion. Bietet unterschiedliche Implementierungen basi
 - Entwicklungsumgebung (dev): Lädt die serverseitige Einstiegsdatei aus dem Quellcode und führt das Rendering aus
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: '/page' }
 });
 res.end(rc.html);

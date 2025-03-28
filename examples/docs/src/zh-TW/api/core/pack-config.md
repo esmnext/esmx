@@ -1,10 +1,10 @@
 ---
-titleSuffix: Gez 框架打包配置 API 參考
-description: 詳細介紹 Gez 框架的 PackConfig 配置介面，包括軟體包打包規則、輸出配置和生命週期鉤子，幫助開發者實現標準化的建置流程。
+titleSuffix: Esmx 框架打包配置 API 參考
+description: 詳細介紹 Esmx 框架的 PackConfig 配置介面，包括軟體包打包規則、輸出配置和生命週期鉤子，幫助開發者實現標準化的建置流程。
 head:
   - - meta
     - property: keywords
-      content: Gez, PackConfig, 軟體包打包, 建置配置, 生命週期鉤子, 打包配置, Web 應用框架
+      content: Esmx, PackConfig, 軟體包打包, 建置配置, 生命週期鉤子, 打包配置, Web 應用框架
 ---
 
 # PackConfig
@@ -21,9 +21,9 @@ head:
 interface PackConfig {
     enable?: boolean;
     outputs?: string | string[] | boolean;
-    packageJson?: (gez: Gez, pkg: Record<string, any>) => Promise<Record<string, any>>;
-    onBefore?: (gez: Gez, pkg: Record<string, any>) => Promise<void>;
-    onAfter?: (gez: Gez, pkg: Record<string, any>, file: Buffer) => Promise<void>;
+    packageJson?: (esmx: Esmx, pkg: Record<string, any>) => Promise<Record<string, any>>;
+    onBefore?: (esmx: Esmx, pkg: Record<string, any>) => Promise<void>;
+    onAfter?: (esmx: Esmx, pkg: Record<string, any>, file: Buffer) => Promise<void>;
 }
 ```
 
@@ -48,7 +48,7 @@ interface PackConfig {
 自訂 package.json 內容的回呼函式。在打包前呼叫，用於自訂 package.json 的內容。
 
 - 參數：
-  - `gez: Gez` - Gez 實例
+  - `esmx: Esmx` - Esmx 實例
   - `pkg: any` - 原始的 package.json 內容
 - 回傳值：`Promise<any>` - 修改後的 package.json 內容
 
@@ -60,7 +60,7 @@ interface PackConfig {
 
 範例：
 ```ts
-packageJson: async (gez, pkg) => {
+packageJson: async (esmx, pkg) => {
   // 設定套件資訊
   pkg.name = 'my-app';
   pkg.version = '1.0.0';
@@ -86,7 +86,7 @@ packageJson: async (gez, pkg) => {
 打包前的準備工作回呼函式。
 
 - 參數：
-  - `gez: Gez` - Gez 實例
+  - `esmx: Esmx` - Esmx 實例
   - `pkg: Record<string, any>` - package.json 內容
 - 回傳值：`Promise<void>`
 
@@ -98,7 +98,7 @@ packageJson: async (gez, pkg) => {
 
 範例：
 ```ts
-onBefore: async (gez, pkg) => {
+onBefore: async (esmx, pkg) => {
   // 新增文件
   await fs.writeFile('dist/README.md', '# My App');
   await fs.writeFile('dist/LICENSE', 'MIT License');
@@ -119,7 +119,7 @@ onBefore: async (gez, pkg) => {
 打包完成後的處理回呼函式。在 .tgz 檔案產生後呼叫，用於處理打包產物。
 
 - 參數：
-  - `gez: Gez` - Gez 實例
+  - `esmx: Esmx` - Esmx 實例
   - `pkg: Record<string, any>` - package.json 內容
   - `file: Buffer` - 打包後的檔案內容
 - 回傳值：`Promise<void>`
@@ -132,7 +132,7 @@ onBefore: async (gez, pkg) => {
 
 範例：
 ```ts
-onAfter: async (gez, pkg, file) => {
+onAfter: async (esmx, pkg, file) => {
   // 發佈到 npm 私有倉庫
   await publishToRegistry(file, {
     registry: 'https://registry.example.com'
@@ -152,7 +152,7 @@ onAfter: async (gez, pkg, file) => {
 ## 使用範例
 
 ```ts title="entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
@@ -176,13 +176,13 @@ export default {
     ],
 
     // 自訂 package.json
-    packageJson: async (gez, pkg) => {
+    packageJson: async (esmx, pkg) => {
       pkg.version = '1.0.0';
       return pkg;
     },
 
     // 打包前準備
-    onBefore: async (gez, pkg) => {
+    onBefore: async (esmx, pkg) => {
       // 新增必要檔案
       await fs.writeFile('dist/README.md', '# Your App\n\n模組匯出說明...');
       // 執行類型檢查
@@ -190,7 +190,7 @@ export default {
     },
 
     // 打包後處理
-    onAfter: async (gez, pkg, file) => {
+    onAfter: async (esmx, pkg, file) => {
       // 發佈到私有 npm 鏡像源
       await publishToRegistry(file, {
         registry: 'https://npm.your-registry.com/'
@@ -199,5 +199,5 @@ export default {
       await uploadToServer(file, 'https://static.example.com/packages');
     }
   }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```

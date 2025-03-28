@@ -1,10 +1,10 @@
 ---
-titleSuffix: Przewodnik zgodności frameworka Gez
-description: Szczegółowy opis wymagań środowiskowych frameworka Gez, w tym wymagań dotyczących wersji Node.js i kompatybilności przeglądarek, aby pomóc programistom w prawidłowej konfiguracji środowiska deweloperskiego.
+titleSuffix: Przewodnik zgodności frameworka Esmx
+description: Szczegółowy opis wymagań środowiskowych frameworka Esmx, w tym wymagań dotyczących wersji Node.js i kompatybilności przeglądarek, aby pomóc programistom w prawidłowej konfiguracji środowiska deweloperskiego.
 head:
   - - meta
     - property: keywords
-      content: Gez, Node.js, kompatybilność przeglądarek, TypeScript, es-module-shims, konfiguracja środowiska
+      content: Esmx, Node.js, kompatybilność przeglądarek, TypeScript, es-module-shims, konfiguracja środowiska
 ---
 
 # Wymagania środowiskowe

@@ -1,17 +1,17 @@
 ---
 titleSuffix: Çerçeve Çekirdek Sınıfı API Referansı
-description: Gez çerçevesinin çekirdek sınıf API'lerini detaylı olarak açıklar, uygulama yaşam döngüsü yönetimi, statik kaynak işleme ve sunucu tarafı render özelliklerini içerir, geliştiricilerin çerçevenin temel işlevlerini derinlemesine anlamasına yardımcı olur.
+description: Esmx çerçevesinin çekirdek sınıf API'lerini detaylı olarak açıklar, uygulama yaşam döngüsü yönetimi, statik kaynak işleme ve sunucu tarafı render özelliklerini içerir, geliştiricilerin çerçevenin temel işlevlerini derinlemesine anlamasına yardımcı olur.
 head:
   - - meta
     - property: keywords
-      content: Gez, API, yaşam döngüsü yönetimi, statik kaynak, sunucu tarafı render, Rspack, Web uygulama çerçevesi
+      content: Esmx, API, yaşam döngüsü yönetimi, statik kaynak, sunucu tarafı render, Rspack, Web uygulama çerçevesi
 ---
 
-# Gez
+# Esmx
 
 ## Giriş
 
-Gez, Rspack tabanlı yüksek performanslı bir Web uygulama çerçevesidir ve eksiksiz bir uygulama yaşam döngüsü yönetimi, statik kaynak işleme ve sunucu tarafı render özellikleri sunar.
+Esmx, Rspack tabanlı yüksek performanslı bir Web uygulama çerçevesidir ve eksiksiz bir uygulama yaşam döngüsü yönetimi, statik kaynak işleme ve sunucu tarafı render özellikleri sunar.
 
 ## Tür Tanımları
 
@@ -76,18 +76,18 @@ Komut türü numaralandırması:
 
 ## Örnek Seçenekleri
 
-Gez çerçevesinin temel yapılandırma seçeneklerini tanımlar.
+Esmx çerçevesinin temel yapılandırma seçeneklerini tanımlar.
 
 ```ts
-interface GezOptions {
+interface EsmxOptions {
   root?: string
   isProd?: boolean
   basePathPlaceholder?: string | false
   modules?: ModuleConfig
   packs?: PackConfig
-  devApp?: (gez: Gez) => Promise<App>
-  server?: (gez: Gez) => Promise<void>
-  postBuild?: (gez: Gez) => Promise<void>
+  devApp?: (esmx: Esmx) => Promise<App>
+  server?: (esmx: Esmx) => Promise<void>
+  postBuild?: (esmx: Esmx) => Promise<void>
 }
 ```
 
@@ -128,15 +128,15 @@ Paketleme yapılandırma seçenekleri. Derleme çıktılarını standart npm .tg
 
 #### devApp
 
-- **Tür**: `(gez: Gez) => Promise<App>`
+- **Tür**: `(esmx: Esmx) => Promise<App>`
 
 Geliştirme ortamı uygulama oluşturma işlevi. Yalnızca geliştirme ortamında kullanılır, geliştirme sunucusu için uygulama örneği oluşturmak için kullanılır.
 
 ```ts title="entry.node.ts"
 export default {
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(context) {
           // Özel Rspack yapılandırması
         }
@@ -148,16 +148,16 @@ export default {
 
 #### server
 
-- **Tür**: `(gez: Gez) => Promise<void>`
+- **Tür**: `(esmx: Esmx) => Promise<void>`
 
 Sunucu başlatma yapılandırma işlevi. HTTP sunucusunu yapılandırmak ve başlatmak için kullanılır, geliştirme ve üretim ortamlarında kullanılabilir.
 
 ```ts title="entry.node.ts"
 export default {
-  async server(gez) {
+  async server(esmx) {
     const server = http.createServer((req, res) => {
-      gez.middleware(req, res, async () => {
-        const render = await gez.render({
+      esmx.middleware(req, res, async () => {
+        const render = await esmx.render({
           params: { url: req.url }
         });
         res.end(render.html);
@@ -171,7 +171,7 @@ export default {
 
 #### postBuild
 
-- **Tür**: `(gez: Gez) => Promise<void>`
+- **Tür**: `(esmx: Esmx) => Promise<void>`
 
 Derleme sonrası işlem işlevi. Proje derlendikten sonra çalıştırılır, şunlar için kullanılabilir:
 - Ek kaynak işleme
@@ -235,8 +235,8 @@ Statik kaynak işleme ara katmanını alır. Ortama göre farklı uygulamalar sa
 
 ```ts
 const server = http.createServer((req, res) => {
-  gez.middleware(req, res, async () => {
-    const rc = await gez.render({ url: req.url });
+  esmx.middleware(req, res, async () => {
+    const rc = await esmx.render({ url: req.url });
     res.end(rc.html);
   });
 });
@@ -253,12 +253,12 @@ Sunucu tarafı render işlevini alır. Ortama göre farklı uygulamalar sağlar:
 
 ```ts
 // Temel kullanım
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: req.url }
 });
 
 // Gelişmiş yapılandırma
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '',                    // Temel yol
   importmapMode: 'inline',     // Import haritalama modu
   entryName: 'default',        // Render girişi
@@ -297,13 +297,13 @@ Mevcut modülün paketleme ile ilgili yapılandırmalarını alır, çıktı yol
 ### constructor()
 
 - **Parametreler**: 
-  - `options?: GezOptions` - Çerçeve yapılandırma seçenekleri
-- **Dönüş Değeri**: `Gez`
+  - `options?: EsmxOptions` - Çerçeve yapılandırma seçenekleri
+- **Dönüş Değeri**: `Esmx`
 
-Gez çerçevesi örneği oluşturur.
+Esmx çerçevesi örneği oluşturur.
 
 ```ts
-const gez = new Gez({
+const esmx = new Esmx({
   root: './src',
   isProd: process.env.NODE_ENV === 'production'
 });
@@ -317,7 +317,7 @@ const gez = new Gez({
   - `Error`: Tekrar başlatma sırasında
   - `NotReadyError`: Başlatılmamış örneğe erişim sırasında
 
-Gez çerçevesi örneğini başlatır. Aşağıdaki temel başlatma işlemlerini gerçekleştirir:
+Esmx çerçevesi örneğini başlatır. Aşağıdaki temel başlatma işlemlerini gerçekleştirir:
 
 1. Proje yapılandırmasını çözümleme (package.json, modül yapılandırması, paketleme yapılandırması vb.)
 2. Uygulama örneği oluşturma (geliştirme ortamı veya üretim ortamı)
@@ -330,26 +330,26 @@ Gez çerçevesi örneğini başlatır. Aşağıdaki temel başlatma işlemlerini
 :::
 
 ```ts
-const gez = new Gez({
+const esmx = new Esmx({
   root: './src',
   isProd: process.env.NODE_ENV === 'production'
 });
 
-await gez.init(COMMAND.dev);
+await esmx.init(COMMAND.dev);
 ```
 
 ### destroy()
 
 - **Dönüş Değeri**: `Promise<boolean>`
 
-Gez çerçevesi örneğini yok eder, kaynak temizleme ve bağlantı kapatma gibi işlemleri gerçekleştirir. Temel olarak şunlar için kullanılır:
+Esmx çerçevesi örneğini yok eder, kaynak temizleme ve bağlantı kapatma gibi işlemleri gerçekleştirir. Temel olarak şunlar için kullanılır:
 - Geliştirme sunucusunu kapatma
 - Geçici dosyaları ve önbelleği temizleme
 - Sistem kaynaklarını serbest bırakma
 
 ```ts
 process.once('SIGTERM', async () => {
-  await gez.destroy();
+  await esmx.destroy();
   process.exit(0);
 });
 ```
@@ -370,14 +370,14 @@ Uygulamanın derleme sürecini gerçekleştirir, şunları içerir:
 
 ```ts title="entry.node.ts"
 export default {
-  async postBuild(gez) {
-    await gez.build();
+  async postBuild(esmx) {
+    await esmx.build();
     // Derleme tamamlandıktan sonra statik HTML oluşturma
-    const render = await gez.render({
+    const render = await esmx.render({
       params: { url: '/' }
     });
-    gez.writeSync(
-      gez.resolvePath('dist/client', 'index.html'),
+    esmx.writeSync(
+      esmx.resolvePath('dist/client', 'index.html'),
       render.html
     );
   }
@@ -395,12 +395,12 @@ HTTP sunucusunu ve yapılandırma sunucusu örneğini başlatır. Aşağıdaki y
 
 ```ts title="entry.node.ts"
 export default {
-  async server(gez) {
+  async server(esmx) {
     const server = http.createServer((req, res) => {
       // Statik kaynakları işleme
-      gez.middleware(req, res, async () => {
+      esmx.middleware(req, res, async () => {
         // Sunucu tarafı render
-        const render = await gez.render({
+        const render = await esmx.render({
           params: { url: req.url }
         });
         res.end(render.html);
@@ -426,7 +426,7 @@ Derleme sonrası işlem mantığını gerçekleştirir, şunlar için kullanıl�
 
 ```ts title="entry.node.ts"
 export default {
-  async postBuild(gez) {
+  async postBuild(esmx) {
     // Birden fazla sayfa için statik HTML oluşturma
     const pages = ['/', '/about', '/404'];
 

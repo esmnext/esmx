@@ -1,10 +1,10 @@
 ---
-titleSuffix: Gez फ्रेमवर्क पैकेजिंग कॉन्फ़िगरेशन API संदर्भ
-description: Gez फ्रेमवर्क के PackConfig कॉन्फ़िगरेशन इंटरफ़ेस का विस्तृत विवरण, जिसमें सॉफ़्टवेयर पैकेज पैकेजिंग नियम, आउटपुट कॉन्फ़िगरेशन और लाइफ़साइकल हुक शामिल हैं, जो डेवलपर्स को मानकीकृत बिल्ड प्रक्रिया को लागू करने में मदद करता है।
+titleSuffix: Esmx फ्रेमवर्क पैकेजिंग कॉन्फ़िगरेशन API संदर्भ
+description: Esmx फ्रेमवर्क के PackConfig कॉन्फ़िगरेशन इंटरफ़ेस का विस्तृत विवरण, जिसमें सॉफ़्टवेयर पैकेज पैकेजिंग नियम, आउटपुट कॉन्फ़िगरेशन और लाइफ़साइकल हुक शामिल हैं, जो डेवलपर्स को मानकीकृत बिल्ड प्रक्रिया को लागू करने में मदद करता है।
 head:
   - - meta
     - property: keywords
-      content: Gez, PackConfig, सॉफ़्टवेयर पैकेज पैकेजिंग, बिल्ड कॉन्फ़िगरेशन, लाइफ़साइकल हुक, पैकेजिंग कॉन्फ़िगरेशन, वेब एप्लिकेशन फ्रेमवर्क
+      content: Esmx, PackConfig, सॉफ़्टवेयर पैकेज पैकेजिंग, बिल्ड कॉन्फ़िगरेशन, लाइफ़साइकल हुक, पैकेजिंग कॉन्फ़िगरेशन, वेब एप्लिकेशन फ्रेमवर्क
 ---
 
 # PackConfig
@@ -21,9 +21,9 @@ head:
 interface PackConfig {
     enable?: boolean;
     outputs?: string | string[] | boolean;
-    packageJson?: (gez: Gez, pkg: Record<string, any>) => Promise<Record<string, any>>;
-    onBefore?: (gez: Gez, pkg: Record<string, any>) => Promise<void>;
-    onAfter?: (gez: Gez, pkg: Record<string, any>, file: Buffer) => Promise<void>;
+    packageJson?: (esmx: Esmx, pkg: Record<string, any>) => Promise<Record<string, any>>;
+    onBefore?: (esmx: Esmx, pkg: Record<string, any>) => Promise<void>;
+    onAfter?: (esmx: Esmx, pkg: Record<string, any>, file: Buffer) => Promise<void>;
 }
 ```
 
@@ -48,7 +48,7 @@ interface PackConfig {
 package.json सामग्री को अनुकूलित करने के लिए कॉलबैक फ़ंक्शन। पैकेजिंग से पहले कॉल किया जाता है, package.json की सामग्री को अनुकूलित करने के लिए उपयोग किया जाता है।
 
 - पैरामीटर:
-  - `gez: Gez` - Gez उदाहरण
+  - `esmx: Esmx` - Esmx उदाहरण
   - `pkg: any` - मूल package.json सामग्री
 - रिटर्न मान: `Promise<any>` - संशोधित package.json सामग्री
 
@@ -60,7 +60,7 @@ package.json सामग्री को अनुकूलित करने 
 
 उदाहरण:
 ```ts
-packageJson: async (gez, pkg) => {
+packageJson: async (esmx, pkg) => {
   // पैकेज जानकारी सेट करें
   pkg.name = 'my-app';
   pkg.version = '1.0.0';
@@ -86,7 +86,7 @@ packageJson: async (gez, pkg) => {
 पैकेजिंग से पहले की तैयारी के लिए कॉलबैक फ़ंक्शन।
 
 - पैरामीटर:
-  - `gez: Gez` - Gez उदाहरण
+  - `esmx: Esmx` - Esmx उदाहरण
   - `pkg: Record<string, any>` - package.json सामग्री
 - रिटर्न मान: `Promise<void>`
 
@@ -98,7 +98,7 @@ packageJson: async (gez, pkg) => {
 
 उदाहरण:
 ```ts
-onBefore: async (gez, pkg) => {
+onBefore: async (esmx, pkg) => {
   // दस्तावेज़ जोड़ें
   await fs.writeFile('dist/README.md', '# My App');
   await fs.writeFile('dist/LICENSE', 'MIT License');
@@ -119,7 +119,7 @@ onBefore: async (gez, pkg) => {
 पैकेजिंग पूर्ण होने के बाद के प्रसंस्करण के लिए कॉलबैक फ़ंक्शन। .tgz फ़ाइल उत्पन्न होने के बाद कॉल किया जाता है, पैकेज आउटपुट को संसाधित करने के लिए उपयोग किया जाता है।
 
 - पैरामीटर:
-  - `gez: Gez` - Gez उदाहरण
+  - `esmx: Esmx` - Esmx उदाहरण
   - `pkg: Record<string, any>` - package.json सामग्री
   - `file: Buffer` - पैकेज की गई फ़ाइल सामग्री
 - रिटर्न मान: `Promise<void>`
@@ -132,7 +132,7 @@ onBefore: async (gez, pkg) => {
 
 उदाहरण:
 ```ts
-onAfter: async (gez, pkg, file) => {
+onAfter: async (esmx, pkg, file) => {
   // npm निजी रिपॉजिटरी पर प्रकाशित करें
   await publishToRegistry(file, {
     registry: 'https://registry.example.com'
@@ -152,7 +152,7 @@ onAfter: async (gez, pkg, file) => {
 ## उपयोग उदाहरण
 
 ```ts title="entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
@@ -176,13 +176,13 @@ export default {
     ],
 
     // package.json को अनुकूलित करें
-    packageJson: async (gez, pkg) => {
+    packageJson: async (esmx, pkg) => {
       pkg.version = '1.0.0';
       return pkg;
     },
 
     // पैकेजिंग से पहले तैयारी
-    onBefore: async (gez, pkg) => {
+    onBefore: async (esmx, pkg) => {
       // आवश्यक फ़ाइलें जोड़ें
       await fs.writeFile('dist/README.md', '# Your App\n\nमॉड्यूल निर्यात स्पष्टीकरण...');
       // टाइप जाँच निष्पादित करें
@@ -190,7 +190,7 @@ export default {
     },
 
     // पैकेजिंग के बाद प्रसंस्करण
-    onAfter: async (gez, pkg, file) => {
+    onAfter: async (esmx, pkg, file) => {
       // निजी npm मिरर पर प्रकाशित करें
       await publishToRegistry(file, {
         registry: 'https://npm.your-registry.com/'
@@ -199,5 +199,5 @@ export default {
       await uploadToServer(file, 'https://static.example.com/packages');
     }
   }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```

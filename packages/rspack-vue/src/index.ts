@@ -1,2 +1,2 @@
-export * from '@gez/rspack';
+export * from '@esmx/rspack';
 export * from './vue';

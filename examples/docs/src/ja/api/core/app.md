@@ -1,22 +1,22 @@
 ---
-titleSuffix: Gez フレームワーク アプリケーション抽象インターフェース
-description: Gez フレームワークの App インターフェースについて詳しく説明します。アプリケーションのライフサイクル管理、静的リソース処理、サーバーサイドレンダリング機能をカバーし、開発者がアプリケーションのコア機能を理解し使用するのを支援します。
+titleSuffix: Esmx フレームワーク アプリケーション抽象インターフェース
+description: Esmx フレームワークの App インターフェースについて詳しく説明します。アプリケーションのライフサイクル管理、静的リソース処理、サーバーサイドレンダリング機能をカバーし、開発者がアプリケーションのコア機能を理解し使用するのを支援します。
 head:
   - - meta
     - property: keywords
-      content: Gez, App, アプリケーション抽象, ライフサイクル, 静的リソース, サーバーサイドレンダリング, API
+      content: Esmx, App, アプリケーション抽象, ライフサイクル, 静的リソース, サーバーサイドレンダリング, API
 ---
 
 # App
 
-`App` は Gez フレームワークのアプリケーション抽象化で、アプリケーションのライフサイクル管理、静的リソース処理、サーバーサイドレンダリングを統一的に管理するインターフェースを提供します。
+`App` は Esmx フレームワークのアプリケーション抽象化で、アプリケーションのライフサイクル管理、静的リソース処理、サーバーサイドレンダリングを統一的に管理するインターフェースを提供します。
 
 ```ts title="entry.node.ts"
 export default {
   // 開発環境設定
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(rc) {
           // Rspack 設定のカスタマイズ
         }
@@ -55,7 +55,7 @@ interface App {
 - 最適化されたリソースロード戦略
 
 ```ts
-server.use(gez.middleware);
+server.use(esmx.middleware);
 ```
 
 #### render
@@ -67,7 +67,7 @@ server.use(gez.middleware);
 - 開発環境（dev）：ソースコード内のサーバーエントリーファイルをロードしてレンダリングを実行
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: '/page' }
 });
 res.end(rc.html);

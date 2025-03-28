@@ -1,13 +1,13 @@
 ---
 pageType: home
 titleSuffix: ESM Tabanlı Yüksek Performanslı Sunucu Taraflı Renderleme Çerçevesi
-description: Gez, ESM tabanlı yüksek performanslı bir sunucu taraflı renderleme çerçevesidir. Büyük ölçekli web uygulamaları geliştirmek için tam SSR yetenekleri, akıllı renderleme bağlamı ve yenilikçi modül bağlama sistemi sunar.
+description: Esmx, ESM tabanlı yüksek performanslı bir sunucu taraflı renderleme çerçevesidir. Büyük ölçekli web uygulamaları geliştirmek için tam SSR yetenekleri, akıllı renderleme bağlamı ve yenilikçi modül bağlama sistemi sunar.
 head:
   - - meta
     - property: keywords
-      content: Gez, SSR, ESM, Sunucu Taraflı Renderleme, Modül Bağlama, Vue, React, TypeScript, Mikro Frontend
+      content: Esmx, SSR, ESM, Sunucu Taraflı Renderleme, Modül Bağlama, Vue, React, TypeScript, Mikro Frontend
 hero:
-  name: Gez
+  name: Esmx
   text: ESM Tabanlı Sunucu Taraflı Renderleme Çerçevesi
   tagline: Yüksek Performanslı, Genişletilebilir Modül Bağlama Sistemi
   actions:
@@ -16,7 +16,7 @@ hero:
       link: /guide/start/getting-started
     - theme: alt
       text: GitHub
-      link: https://github.com/js-esm/gez
+      link: https://github.com/js-esm/esmx
 
 features:
   - icon: ⚡️

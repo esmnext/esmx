@@ -1,15 +1,15 @@
 ---
-titleSuffix: Guida alla mappatura dei percorsi di importazione dei moduli del framework Gez
-description: Descrizione dettagliata del meccanismo degli alias di percorso nel framework Gez, inclusi la semplificazione dei percorsi di importazione, l'evitare annidamenti profondi, la sicurezza dei tipi e l'ottimizzazione della risoluzione dei moduli, per aiutare gli sviluppatori a migliorare la manutenibilità del codice.
+titleSuffix: Guida alla mappatura dei percorsi di importazione dei moduli del framework Esmx
+description: Descrizione dettagliata del meccanismo degli alias di percorso nel framework Esmx, inclusi la semplificazione dei percorsi di importazione, l'evitare annidamenti profondi, la sicurezza dei tipi e l'ottimizzazione della risoluzione dei moduli, per aiutare gli sviluppatori a migliorare la manutenibilità del codice.
 head:
   - - meta
     - property: keywords
-      content: Gez, Alias di percorso, Path Alias, TypeScript, Importazione di moduli, Mappatura dei percorsi, Manutenibilità del codice
+      content: Esmx, Alias di percorso, Path Alias, TypeScript, Importazione di moduli, Mappatura dei percorsi, Manutenibilità del codice
 ---
 
 # Alias di percorso
 
-L'alias di percorso (Path Alias) è un meccanismo di mappatura dei percorsi di importazione dei moduli che consente agli sviluppatori di utilizzare identificatori brevi e semantici al posto dei percorsi completi dei moduli. In Gez, il meccanismo degli alias di percorso offre i seguenti vantaggi:
+L'alias di percorso (Path Alias) è un meccanismo di mappatura dei percorsi di importazione dei moduli che consente agli sviluppatori di utilizzare identificatori brevi e semantici al posto dei percorsi completi dei moduli. In Esmx, il meccanismo degli alias di percorso offre i seguenti vantaggi:
 
 - **Semplificazione dei percorsi di importazione**: Utilizza alias semantici al posto di percorsi relativi lunghi, migliorando la leggibilità del codice
 - **Evitare annidamenti profondi**: Elimina le difficoltà di manutenzione causate da riferimenti a directory multilivello (ad esempio `../../../../`)
@@ -18,7 +18,7 @@ L'alias di percorso (Path Alias) è un meccanismo di mappatura dei percorsi di i
 
 ## Meccanismo degli alias predefiniti
 
-Gez utilizza un meccanismo automatico di alias basato sul nome del servizio (Service Name), un design che privilegia le convenzioni rispetto alla configurazione, con le seguenti caratteristiche:
+Esmx utilizza un meccanismo automatico di alias basato sul nome del servizio (Service Name), un design che privilegia le convenzioni rispetto alla configurazione, con le seguenti caratteristiche:
 
 - **Configurazione automatica**: Genera automaticamente alias basati sul campo `name` in `package.json`, senza necessità di configurazione manuale
 - **Uniformità delle convenzioni**: Garantisce che tutti i moduli del servizio seguano una nomenclatura e un riferimento coerenti
@@ -112,13 +112,13 @@ import { logger } from 'remote-service/src/utils';
 
 ### Alias personalizzati
 
-Per pacchetti di terze parti o scenari speciali, è possibile definire alias personalizzati tramite il file di configurazione di Gez:
+Per pacchetti di terze parti o scenari speciali, è possibile definire alias personalizzati tramite il file di configurazione di Esmx:
 
 ```ts title="src/entry.node.ts"
 export default {
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createApp(gez, (buildContext) => {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createApp(esmx, (buildContext) => {
                 buildContext.config.resolve = {
                     ...buildContext.config.resolve,
                     alias: {
@@ -133,7 +133,7 @@ export default {
             })
         );
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ::: warning Avvertenze

@@ -1,17 +1,17 @@
 ---
 titleSuffix: 框架核心類 API 參考
-description: 詳細介紹 Gez 框架的核心類 API，包括應用生命週期管理、靜態資源處理和伺服器端渲染能力，幫助開發者深入理解框架的核心功能。
+description: 詳細介紹 Esmx 框架的核心類 API，包括應用生命週期管理、靜態資源處理和伺服器端渲染能力，幫助開發者深入理解框架的核心功能。
 head:
   - - meta
     - property: keywords
-      content: Gez, API, 生命週期管理, 靜態資源, 伺服器端渲染, Rspack, Web 應用框架
+      content: Esmx, API, 生命週期管理, 靜態資源, 伺服器端渲染, Rspack, Web 應用框架
 ---
 
-# Gez
+# Esmx
 
 ## 簡介
 
-Gez 是一個基於 Rspack 的高效能 Web 應用框架，提供了完整的應用生命週期管理、靜態資源處理和伺服器端渲染能力。
+Esmx 是一個基於 Rspack 的高效能 Web 應用框架，提供了完整的應用生命週期管理、靜態資源處理和伺服器端渲染能力。
 
 ## 類型定義
 
@@ -76,18 +76,18 @@ enum COMMAND {
 
 ## 實例選項
 
-定義 Gez 框架的核心配置選項。
+定義 Esmx 框架的核心配置選項。
 
 ```ts
-interface GezOptions {
+interface EsmxOptions {
   root?: string
   isProd?: boolean
   basePathPlaceholder?: string | false
   modules?: ModuleConfig
   packs?: PackConfig
-  devApp?: (gez: Gez) => Promise<App>
-  server?: (gez: Gez) => Promise<void>
-  postBuild?: (gez: Gez) => Promise<void>
+  devApp?: (esmx: Esmx) => Promise<App>
+  server?: (esmx: Esmx) => Promise<void>
+  postBuild?: (esmx: Esmx) => Promise<void>
 }
 ```
 
@@ -128,15 +128,15 @@ interface GezOptions {
 
 #### devApp
 
-- **類型**: `(gez: Gez) => Promise<App>`
+- **類型**: `(esmx: Esmx) => Promise<App>`
 
 開發環境應用建立函式。僅在開發環境中使用，用於建立開發伺服器的應用實例。
 
 ```ts title="entry.node.ts"
 export default {
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(context) {
           // 自訂 Rspack 配置
         }
@@ -148,16 +148,16 @@ export default {
 
 #### server
 
-- **類型**: `(gez: Gez) => Promise<void>`
+- **類型**: `(esmx: Esmx) => Promise<void>`
 
 伺服器啟動配置函式。用於配置和啟動 HTTP 伺服器，在開發環境和生產環境中都可使用。
 
 ```ts title="entry.node.ts"
 export default {
-  async server(gez) {
+  async server(esmx) {
     const server = http.createServer((req, res) => {
-      gez.middleware(req, res, async () => {
-        const render = await gez.render({
+      esmx.middleware(req, res, async () => {
+        const render = await esmx.render({
           params: { url: req.url }
         });
         res.end(render.html);
@@ -171,7 +171,7 @@ export default {
 
 #### postBuild
 
-- **類型**: `(gez: Gez) => Promise<void>`
+- **類型**: `(esmx: Esmx) => Promise<void>`
 
 建置後置處理函式。在專案建置完成後執行，可用於：
 - 執行額外的資源處理
@@ -235,8 +235,8 @@ export default {
 
 ```ts
 const server = http.createServer((req, res) => {
-  gez.middleware(req, res, async () => {
-    const rc = await gez.render({ url: req.url });
+  esmx.middleware(req, res, async () => {
+    const rc = await esmx.render({ url: req.url });
     res.end(rc.html);
   });
 });
@@ -253,12 +253,12 @@ const server = http.createServer((req, res) => {
 
 ```ts
 // 基本用法
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: req.url }
 });
 
 // 進階配置
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '',                    // 基礎路徑
   importmapMode: 'inline',     // 匯入映射模式
   entryName: 'default',        // 渲染入口
@@ -297,13 +297,13 @@ const rc = await gez.render({
 ### constructor()
 
 - **參數**: 
-  - `options?: GezOptions` - 框架配置選項
-- **返回值**: `Gez`
+  - `options?: EsmxOptions` - 框架配置選項
+- **返回值**: `Esmx`
 
-建立 Gez 框架實例。
+建立 Esmx 框架實例。
 
 ```ts
-const gez = new Gez({
+const esmx = new Esmx({
   root: './src',
   isProd: process.env.NODE_ENV === 'production'
 });
@@ -317,7 +317,7 @@ const gez = new Gez({
   - `Error`: 重複初始化時
   - `NotReadyError`: 存取未初始化實例時
 
-初始化 Gez 框架實例。執行以下核心初始化流程：
+初始化 Esmx 框架實例。執行以下核心初始化流程：
 
 1. 解析專案配置（package.json、模組配置、打包配置等）
 2. 建立應用實例（開發環境或生產環境）
@@ -330,26 +330,26 @@ const gez = new Gez({
 :::
 
 ```ts
-const gez = new Gez({
+const esmx = new Esmx({
   root: './src',
   isProd: process.env.NODE_ENV === 'production'
 });
 
-await gez.init(COMMAND.dev);
+await esmx.init(COMMAND.dev);
 ```
 
 ### destroy()
 
 - **返回值**: `Promise<boolean>`
 
-銷毀 Gez 框架實例，執行資源清理和連線關閉等操作。主要用於：
+銷毀 Esmx 框架實例，執行資源清理和連線關閉等操作。主要用於：
 - 關閉開發伺服器
 - 清理暫存檔案和快取
 - 釋放系統資源
 
 ```ts
 process.once('SIGTERM', async () => {
-  await gez.destroy();
+  await esmx.destroy();
   process.exit(0);
 });
 ```
@@ -370,14 +370,14 @@ process.once('SIGTERM', async () => {
 
 ```ts title="entry.node.ts"
 export default {
-  async postBuild(gez) {
-    await gez.build();
+  async postBuild(esmx) {
+    await esmx.build();
     // 建置完成後生成靜態 HTML
-    const render = await gez.render({
+    const render = await esmx.render({
       params: { url: '/' }
     });
-    gez.writeSync(
-      gez.resolvePath('dist/client', 'index.html'),
+    esmx.writeSync(
+      esmx.resolvePath('dist/client', 'index.html'),
       render.html
     );
   }
@@ -395,12 +395,12 @@ export default {
 
 ```ts title="entry.node.ts"
 export default {
-  async server(gez) {
+  async server(esmx) {
     const server = http.createServer((req, res) => {
       // 處理靜態資源
-      gez.middleware(req, res, async () => {
+      esmx.middleware(req, res, async () => {
         // 伺服器端渲染
-        const render = await gez.render({
+        const render = await esmx.render({
           params: { url: req.url }
         });
         res.end(render.html);
@@ -426,17 +426,17 @@ export default {
 
 ```ts title="entry.node.ts"
 export default {
-  async postBuild(gez) {
+  async postBuild(esmx) {
     // 生成多個頁面的靜態 HTML
     const pages = ['/', '/about', '/404'];
 
     for (const url of pages) {
-      const render = await gez.render({
+      const render = await esmx.render({
         params: { url }
       });
 
-      await gez.write(
-        gez.resolvePath('dist/client', url.substring(1), 'index.html'),
+      await esmx.write(
+        esmx.resolvePath('dist/client', url.substring(1), 'index.html'),
         render.html
       );
     }
@@ -456,7 +456,7 @@ export default {
 - **範例**:
 ```ts
 // 解析靜態資源路徑
-const htmlPath = gez.resolvePath('dist/client', 'index.html');
+const htmlPath = esmx.resolvePath('dist/client', 'index.html');
 ```
 
 ### writeSync()
@@ -471,9 +471,9 @@ const htmlPath = gez.resolvePath('dist/client', 'index.html');
 - **範例**:
 ```ts title="src/entry.node.ts"
 
-async postBuild(gez) {
-  const htmlPath = gez.resolvePath('dist/client', 'index.html');
-  const success = await gez.write(htmlPath, '<html>...</html>');
+async postBuild(esmx) {
+  const htmlPath = esmx.resolvePath('dist/client', 'index.html');
+  const success = await esmx.write(htmlPath, '<html>...</html>');
 }
 ```
 
@@ -489,8 +489,8 @@ async postBuild(gez) {
 
 - **範例**:
 ```ts title="src/entry.node.ts"
-async server(gez) {
-  const manifest = gez.readJsonSync(gez.resolvePath('dist/client', 'manifest.json'));
+async server(esmx) {
+  const manifest = esmx.readJsonSync(esmx.resolvePath('dist/client', 'manifest.json'));
   // 使用 manifest 物件
 }
 ```
@@ -507,8 +507,8 @@ async server(gez) {
 
 - **範例**:
 ```ts title="src/entry.node.ts"
-async server(gez) {
-  const manifest = await gez.readJson(gez.resolvePath('dist/client', 'manifest.json'));
+async server(esmx) {
+  const manifest = await esmx.readJson(esmx.resolvePath('dist/client', 'manifest.json'));
   // 使用 manifest 物件
 }
 ```
@@ -540,9 +540,9 @@ async server(gez) {
 
 - **範例**:
 ```ts title="src/entry.node.ts"
-async server(gez) {
+async server(esmx) {
   // 取得客戶端建置清單
-  const manifests = await gez.getManifestList('client');
+  const manifests = await esmx.getManifestList('client');
 
   // 查找特定模組的建置資訊
   const appModule = manifests.find(m => m.name === 'my-app');
@@ -581,9 +581,9 @@ async server(gez) {
 
 - **範例**:
 ```ts title="src/entry.node.ts"
-async server(gez) {
+async server(esmx) {
   // 取得客戶端匯入映射
-  const importmap = await gez.getImportMap('client');
+  const importmap = await esmx.getImportMap('client');
 
   // 自訂 HTML 模板
   const html = `

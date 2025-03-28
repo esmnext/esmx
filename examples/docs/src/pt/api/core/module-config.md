@@ -1,15 +1,15 @@
 ---
-titleSuffix: Referência da API de Configuração de Módulos do Framework Gez
-description: Detalha a interface de configuração ModuleConfig do framework Gez, incluindo regras de importação e exportação de módulos, configuração de aliases e gerenciamento de dependências externas, ajudando os desenvolvedores a entender profundamente o sistema modular do framework.
+titleSuffix: Referência da API de Configuração de Módulos do Framework Esmx
+description: Detalha a interface de configuração ModuleConfig do framework Esmx, incluindo regras de importação e exportação de módulos, configuração de aliases e gerenciamento de dependências externas, ajudando os desenvolvedores a entender profundamente o sistema modular do framework.
 head:
   - - meta
     - property: keywords
-      content: Gez, ModuleConfig, configuração de módulos, importação e exportação de módulos, dependências externas, configuração de aliases, gerenciamento de dependências, framework de aplicações web
+      content: Esmx, ModuleConfig, configuração de módulos, importação e exportação de módulos, dependências externas, configuração de aliases, gerenciamento de dependências, framework de aplicações web
 ---
 
 # ModuleConfig
 
-O ModuleConfig fornece a funcionalidade de configuração de módulos do framework Gez, usada para definir regras de importação e exportação de módulos, configuração de aliases e dependências externas.
+O ModuleConfig fornece a funcionalidade de configuração de módulos do framework Esmx, usada para definir regras de importação e exportação de módulos, configuração de aliases e dependências externas.
 
 ## Definição de Tipos
 
@@ -74,7 +74,7 @@ Cada dependência contém os seguintes atributos:
 
 **Exemplo**:
 ```ts title="entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
@@ -100,7 +100,7 @@ export default {
       'vue-router': 'ssr-remote/npm/vue-router'
     }
   }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ### ParsedModuleConfig

@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Çerçevesi Sunucu Taraflı Render Mekanizması
-description: Gez çerçevesinin RenderContext (Render Bağlamı) mekanizmasını detaylı olarak açıklar, kaynak yönetimi, HTML oluşturma ve ESM modül sistemi dahil olmak üzere geliştiricilerin sunucu tarafı render (SSR) özelliğini anlamasına ve kullanmasına yardımcı olur.
+titleSuffix: Esmx Çerçevesi Sunucu Taraflı Render Mekanizması
+description: Esmx çerçevesinin RenderContext (Render Bağlamı) mekanizmasını detaylı olarak açıklar, kaynak yönetimi, HTML oluşturma ve ESM modül sistemi dahil olmak üzere geliştiricilerin sunucu tarafı render (SSR) özelliğini anlamasına ve kullanmasına yardımcı olur.
 head:
   - - meta
     - property: keywords
-      content: Gez, Render Bağlamı, RenderContext, SSR, Sunucu Taraflı Render, ESM, Kaynak Yönetimi
+      content: Esmx, Render Bağlamı, RenderContext, SSR, Sunucu Taraflı Render, ESM, Kaynak Yönetimi
 ---
 
 # Render Bağlamı
 
-RenderContext, Gez çerçevesindeki temel bir sınıftır ve sunucu tarafı render (SSR) sürecinde kaynak yönetimi ve HTML oluşturma işlemlerinden sorumludur. Aşağıdaki temel özelliklere sahiptir:
+RenderContext, Esmx çerçevesindeki temel bir sınıftır ve sunucu tarafı render (SSR) sürecinde kaynak yönetimi ve HTML oluşturma işlemlerinden sorumludur. Aşağıdaki temel özelliklere sahiptir:
 
 1. **ESM Tabanlı Modül Sistemi**
    - Modern ECMAScript Modules (ESM) standardını kullanır
@@ -33,15 +33,15 @@ RenderContext, Gez çerçevesindeki temel bir sınıftır ve sunucu tarafı rend
 
 ## Kullanım Şekli
 
-Gez çerçevesinde, geliştiriciler genellikle doğrudan RenderContext örneği oluşturmaz, bunun yerine `gez.render()` yöntemi ile örnek alır:
+Esmx çerçevesinde, geliştiriciler genellikle doğrudan RenderContext örneği oluşturmaz, bunun yerine `esmx.render()` yöntemi ile örnek alır:
 
 ```ts title="src/entry.node.ts"
-async server(gez) {
+async server(esmx) {
     const server = http.createServer((req, res) => {
         // Statik dosya işleme
-        gez.middleware(req, res, async () => {
-            // gez.render() ile RenderContext örneği alınır
-            const rc = await gez.render({
+        esmx.middleware(req, res, async () => {
+            // esmx.render() ile RenderContext örneği alınır
+            const rc = await esmx.render({
                 params: {
                     url: req.url
                 }
@@ -141,8 +141,8 @@ export default async (rc: RenderContext) => {
 RenderContext, çalışma zamanında statik kaynakların temel yolunu dinamik olarak ayarlamak için esnek bir mekanizma sunar:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
-    base: '/gez',  // Temel yolu ayarla
+const rc = await esmx.render({
+    base: '/esmx',  // Temel yolu ayarla
     params: {
         url: req.url
     }
@@ -179,7 +179,7 @@ RenderContext, iki tür içe aktarma haritası (Import Map) modu sunar:
 Uygun modu seçmek için yapılandırma yapılabilir:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     importmapMode: 'js',  // 'inline' | 'js'
     params: {
         url: req.url
@@ -192,7 +192,7 @@ const rc = await gez.render({
 RenderContext, `entryName` yapılandırması ile sunucu tarafı render için kullanılacak giriş fonksiyonunu belirlemeyi destekler:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     entryName: 'mobile',  // Mobil giriş fonksiyonunu kullan
     params: {
         url: req.url
@@ -228,7 +228,7 @@ Bu mekanizma özellikle aşağıdaki senaryolar için uygundur:
 ## En İyi Uygulamalar
 
 1. **RenderContext Örneği Alma**
-   - Her zaman `gez.render()` yöntemi ile örnek alın
+   - Her zaman `esmx.render()` yöntemi ile örnek alın
    - Gerektiğinde uygun parametreleri geçirin
    - Manuel örnek oluşturmaktan kaçının
 

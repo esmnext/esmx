@@ -1,10 +1,10 @@
 ---
-titleSuffix: Tham chiếu API cấu hình đóng gói của khung Gez
-description: Tài liệu chi tiết về giao diện cấu hình PackConfig của khung Gez, bao gồm quy tắc đóng gói gói phần mềm, cấu hình đầu ra và các hook vòng đời, giúp nhà phát triển thực hiện quy trình xây dựng tiêu chuẩn.
+titleSuffix: Tham chiếu API cấu hình đóng gói của khung Esmx
+description: Tài liệu chi tiết về giao diện cấu hình PackConfig của khung Esmx, bao gồm quy tắc đóng gói gói phần mềm, cấu hình đầu ra và các hook vòng đời, giúp nhà phát triển thực hiện quy trình xây dựng tiêu chuẩn.
 head:
   - - meta
     - property: keywords
-      content: Gez, PackConfig, đóng gói gói phần mềm, cấu hình xây dựng, hook vòng đời, cấu hình đóng gói, khung ứng dụng Web
+      content: Esmx, PackConfig, đóng gói gói phần mềm, cấu hình xây dựng, hook vòng đời, cấu hình đóng gói, khung ứng dụng Web
 ---
 
 # PackConfig
@@ -21,9 +21,9 @@ head:
 interface PackConfig {
     enable?: boolean;
     outputs?: string | string[] | boolean;
-    packageJson?: (gez: Gez, pkg: Record<string, any>) => Promise<Record<string, any>>;
-    onBefore?: (gez: Gez, pkg: Record<string, any>) => Promise<void>;
-    onAfter?: (gez: Gez, pkg: Record<string, any>, file: Buffer) => Promise<void>;
+    packageJson?: (esmx: Esmx, pkg: Record<string, any>) => Promise<Record<string, any>>;
+    onBefore?: (esmx: Esmx, pkg: Record<string, any>) => Promise<void>;
+    onAfter?: (esmx: Esmx, pkg: Record<string, any>, file: Buffer) => Promise<void>;
 }
 ```
 
@@ -48,7 +48,7 @@ Chỉ định đường dẫn tệp gói phần mềm đầu ra. Hỗ trợ các
 Hàm callback tùy chỉnh nội dung package.json. Được gọi trước khi đóng gói, dùng để tùy chỉnh nội dung của package.json.
 
 - Tham số:
-  - `gez: Gez` - Thể hiện Gez
+  - `esmx: Esmx` - Thể hiện Esmx
   - `pkg: any` - Nội dung package.json gốc
 - Giá trị trả về: `Promise<any>` - Nội dung package.json đã được sửa đổi
 
@@ -60,7 +60,7 @@ Công dụng phổ biến:
 
 Ví dụ:
 ```ts
-packageJson: async (gez, pkg) => {
+packageJson: async (esmx, pkg) => {
   // Thiết lập thông tin gói
   pkg.name = 'my-app';
   pkg.version = '1.0.0';
@@ -86,7 +86,7 @@ packageJson: async (gez, pkg) => {
 Hàm callback chuẩn bị trước khi đóng gói.
 
 - Tham số:
-  - `gez: Gez` - Thể hiện Gez
+  - `esmx: Esmx` - Thể hiện Esmx
   - `pkg: Record<string, any>` - Nội dung package.json
 - Giá trị trả về: `Promise<void>`
 
@@ -98,7 +98,7 @@ Công dụng phổ biến:
 
 Ví dụ:
 ```ts
-onBefore: async (gez, pkg) => {
+onBefore: async (esmx, pkg) => {
   // Thêm tài liệu
   await fs.writeFile('dist/README.md', '# My App');
   await fs.writeFile('dist/LICENSE', 'MIT License');
@@ -119,7 +119,7 @@ onBefore: async (gez, pkg) => {
 Hàm callback xử lý sau khi đóng gói hoàn tất. Được gọi sau khi tệp .tgz được tạo, dùng để xử lý sản phẩm đóng gói.
 
 - Tham số:
-  - `gez: Gez` - Thể hiện Gez
+  - `esmx: Esmx` - Thể hiện Esmx
   - `pkg: Record<string, any>` - Nội dung package.json
   - `file: Buffer` - Nội dung tệp đã đóng gói
 - Giá trị trả về: `Promise<void>`
@@ -132,7 +132,7 @@ Công dụng phổ biến:
 
 Ví dụ:
 ```ts
-onAfter: async (gez, pkg, file) => {
+onAfter: async (esmx, pkg, file) => {
   // Phát hành lên kho lưu trữ npm riêng tư
   await publishToRegistry(file, {
     registry: 'https://registry.example.com'
@@ -152,7 +152,7 @@ onAfter: async (gez, pkg, file) => {
 ## Ví dụ sử dụng
 
 ```ts title="entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
@@ -176,13 +176,13 @@ export default {
     ],
 
     // Tùy chỉnh package.json
-    packageJson: async (gez, pkg) => {
+    packageJson: async (esmx, pkg) => {
       pkg.version = '1.0.0';
       return pkg;
     },
 
     // Chuẩn bị trước khi đóng gói
-    onBefore: async (gez, pkg) => {
+    onBefore: async (esmx, pkg) => {
       // Thêm các tệp cần thiết
       await fs.writeFile('dist/README.md', '# Your App\n\nHướng dẫn xuất mô-đun...');
       // Thực hiện kiểm tra kiểu
@@ -190,7 +190,7 @@ export default {
     },
 
     // Xử lý sau khi đóng gói
-    onAfter: async (gez, pkg, file) => {
+    onAfter: async (esmx, pkg, file) => {
       // Phát hành lên nguồn npm riêng tư
       await publishToRegistry(file, {
         registry: 'https://npm.your-registry.com/'
@@ -199,5 +199,5 @@ export default {
       await uploadToServer(file, 'https://static.example.com/packages');
     }
   }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```

@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Çerçeve Modül Yapılandırma API Referansı
-description: Gez çerçevesinin ModuleConfig yapılandırma arayüzünü detaylı olarak açıklar, modül içe/dışa aktarma kurallarını, takma ad yapılandırmasını ve harici bağımlılık yönetimini içerir, geliştiricilerin çerçevenin modüler sistemini derinlemesine anlamasına yardımcı olur.
+titleSuffix: Esmx Çerçeve Modül Yapılandırma API Referansı
+description: Esmx çerçevesinin ModuleConfig yapılandırma arayüzünü detaylı olarak açıklar, modül içe/dışa aktarma kurallarını, takma ad yapılandırmasını ve harici bağımlılık yönetimini içerir, geliştiricilerin çerçevenin modüler sistemini derinlemesine anlamasına yardımcı olur.
 head:
   - - meta
     - property: keywords
-      content: Gez, ModuleConfig, modül yapılandırma, modül içe/dışa aktarma, harici bağımlılık, takma ad yapılandırması, bağımlılık yönetimi, Web uygulama çerçevesi
+      content: Esmx, ModuleConfig, modül yapılandırma, modül içe/dışa aktarma, harici bağımlılık, takma ad yapılandırması, bağımlılık yönetimi, Web uygulama çerçevesi
 ---
 
 # ModuleConfig
 
-ModuleConfig, Gez çerçevesinin modül yapılandırma işlevlerini sağlar ve modüllerin içe/dışa aktarma kurallarını, takma ad yapılandırmasını ve harici bağımlılıkları tanımlamak için kullanılır.
+ModuleConfig, Esmx çerçevesinin modül yapılandırma işlevlerini sağlar ve modüllerin içe/dışa aktarma kurallarını, takma ad yapılandırmasını ve harici bağımlılıkları tanımlamak için kullanılır.
 
 ## Tür Tanımları
 
@@ -74,7 +74,7 @@ Her bağımlılık öğesi aşağıdaki özellikleri içerir:
 
 **Örnek**:
 ```ts title="entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
@@ -100,7 +100,7 @@ export default {
       'vue-router': 'ssr-remote/npm/vue-router'
     }
   }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ### ParsedModuleConfig

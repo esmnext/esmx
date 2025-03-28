@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez फ्रेमवर्क HTML SSR एप्लिकेशन उदाहरण
-description: Gez पर आधारित HTML SSR एप्लिकेशन को शुरू से बनाने का उदाहरण, जिसमें प्रोजेक्ट इनिशियलाइज़ेशन, HTML कॉन्फ़िगरेशन और एंट्री फ़ाइल सेटअप शामिल हैं।
+titleSuffix: Esmx फ्रेमवर्क HTML SSR एप्लिकेशन उदाहरण
+description: Esmx पर आधारित HTML SSR एप्लिकेशन को शुरू से बनाने का उदाहरण, जिसमें प्रोजेक्ट इनिशियलाइज़ेशन, HTML कॉन्फ़िगरेशन और एंट्री फ़ाइल सेटअप शामिल हैं।
 head:
   - - meta
     - property: keywords
-      content: Gez, HTML, SSR एप्लिकेशन, TypeScript कॉन्फ़िगरेशन, प्रोजेक्ट इनिशियलाइज़ेशन, सर्वर-साइड रेंडरिंग, क्लाइंट-साइड इंटरैक्शन
+      content: Esmx, HTML, SSR एप्लिकेशन, TypeScript कॉन्फ़िगरेशन, प्रोजेक्ट इनिशियलाइज़ेशन, सर्वर-साइड रेंडरिंग, क्लाइंट-साइड इंटरैक्शन
 ---
 
 # HTML
 
-यह ट्यूटोरियल आपको Gez पर आधारित एक HTML SSR एप्लिकेशन को शुरू से बनाने में मदद करेगा। हम एक पूर्ण उदाहरण के माध्यम से दिखाएंगे कि Gez फ्रेमवर्क का उपयोग करके सर्वर-साइड रेंडरिंग एप्लिकेशन कैसे बनाया जाता है।
+यह ट्यूटोरियल आपको Esmx पर आधारित एक HTML SSR एप्लिकेशन को शुरू से बनाने में मदद करेगा। हम एक पूर्ण उदाहरण के माध्यम से दिखाएंगे कि Esmx फ्रेमवर्क का उपयोग करके सर्वर-साइड रेंडरिंग एप्लिकेशन कैसे बनाया जाता है।
 
 ## प्रोजेक्ट संरचना
 
@@ -40,18 +40,18 @@ head:
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "gez dev",
+    "dev": "esmx dev",
     "build": "npm run build:dts && npm run build:ssr",
-    "build:ssr": "gez build",
-    "preview": "gez preview",
+    "build:ssr": "esmx build",
+    "preview": "esmx preview",
     "start": "NODE_ENV=production node dist/index.js",
     "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src"
   },
   "dependencies": {
-    "@gez/core": "*"
+    "@esmx/core": "*"
   },
   "devDependencies": {
-    "@gez/rspack": "*",
+    "@esmx/rspack": "*",
     "@types/node": "22.8.6",
     "typescript": "^5.7.3"
   }
@@ -111,7 +111,7 @@ npm install
 ```ts title="src/app.ts"
 /**
  * @file उदाहरण कंपोनेंट
- * @description Gez फ्रेमवर्क की मूल कार्यक्षमता को प्रदर्शित करने के लिए ऑटो-अपडेट समय के साथ एक पेज टाइटल दिखाता है
+ * @description Esmx फ्रेमवर्क की मूल कार्यक्षमता को प्रदर्शित करने के लिए ऑटो-अपडेट समय के साथ एक पेज टाइटल दिखाता है
  */
 
 export default class App {
@@ -141,7 +141,7 @@ export default class App {
 
         return `
         <div id="app">
-            <h1><a href="https://www.esmnext.com/guide/frameworks/html.html" target="_blank">Gez क्विक स्टार्ट</a></h1>
+            <h1><a href="https://www.esmnext.com/guide/frameworks/html.html" target="_blank">Esmx क्विक स्टार्ट</a></h1>
             <time datetime="${this.time}">${this.time}</time>
         </div>
         `;
@@ -235,18 +235,18 @@ app.onClient();
  */
 
 import http from 'node:http';
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     /**
      * डेवलपमेंट एनवायरनमेंट के लिए एप्लिकेशन क्रिएटर को कॉन्फ़िगर करें
      * @description Rspack एप्लिकेशन इंस्टेंस बनाएं और कॉन्फ़िगर करें, डेवलपमेंट एनवायरनमेंट के लिए बिल्ड और हॉट रीलोडिंग सपोर्ट करता है
-     * @param gez Gez फ्रेमवर्क इंस्टेंस, कोर फंक्शनलिटी और कॉन्फ़िगरेशन इंटरफ़ेस प्रदान करता है
+     * @param esmx Esmx फ्रेमवर्क इंस्टेंस, कोर फंक्शनलिटी और कॉन्फ़िगरेशन इंटरफ़ेस प्रदान करता है
      * @returns कॉन्फ़िगर किया गया Rspack एप्लिकेशन इंस्टेंस लौटाता है, HMR और रियल-टाइम प्रीव्यू सपोर्ट करता है
      */
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createRspackHtmlApp(gez, {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createRspackHtmlApp(esmx, {
                 config(context) {
                     // यहां Rspack कंपाइल कॉन्फ़िगरेशन को कस्टमाइज़ करें
                 }
@@ -256,15 +256,15 @@ export default {
 
     /**
      * HTTP सर्वर को कॉन्फ़िगर करें और स्टार्ट करें
-     * @description HTTP सर्वर इंस्टेंस बनाएं, Gez मिडलवेयर को इंटीग्रेट करें, SSR रिक्वेस्ट को हैंडल करें
-     * @param gez Gez फ्रेमवर्क इंस्टेंस, मिडलवेयर और रेंडरिंग फंक्शनलिटी प्रदान करता है
+     * @description HTTP सर्वर इंस्टेंस बनाएं, Esmx मिडलवेयर को इंटीग्रेट करें, SSR रिक्वेस्ट को हैंडल करें
+     * @param esmx Esmx फ्रेमवर्क इंस्टेंस, मिडलवेयर और रेंडरिंग फंक्शनलिटी प्रदान करता है
      */
-    async server(gez) {
+    async server(esmx) {
         const server = http.createServer((req, res) => {
-            // Gez मिडलवेयर का उपयोग करके रिक्वेस्ट को हैंडल करें
-            gez.middleware(req, res, async () => {
+            // Esmx मिडलवेयर का उपयोग करके रिक्वेस्ट को हैंडल करें
+            esmx.middleware(req, res, async () => {
                 // सर्वर-साइड रेंडरिंग करें
-                const rc = await gez.render({
+                const rc = await esmx.render({
                     params: { url: req.url }
                 });
                 res.end(rc.html);
@@ -275,13 +275,13 @@ export default {
             console.log('सर्वर शुरू: http://localhost:3000');
         });
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 यह फ़ाइल डेवलपमेंट एनवायरनमेंट कॉन्फ़िगरेशन और सर्वर स्टार्टअप के लिए एंट्री फ़ाइल है, जिसमें दो मुख्य फंक्शनलिटी शामिल हैं:
 
 1. `devApp` फ़ंक्शन: डेवलपमेंट एनवायरनमेंट के लिए Rspack एप्लिकेशन इंस्टेंस बनाने और कॉन्फ़िगर करने के लिए जिम्मेदार है, हॉट रीलोडिंग और रियल-टाइम प्रीव्यू फंक्शनलिटी को सपोर्ट करता है।
-2. `server` फ़ंक्शन: HTTP सर्वर बनाने और कॉन्फ़िगर करने के लिए जिम्मेदार है, Gez मिडलवेयर को इंटीग्रेट करके SSR रिक्वेस्ट को हैंडल करता है।
+2. `server` फ़ंक्शन: HTTP सर्वर बनाने और कॉन्फ़िगर करने के लिए जिम्मेदार है, Esmx मिडलवेयर को इंटीग्रेट करके SSR रिक्वेस्ट को हैंडल करता है।
 
 ### entry.server.ts
 
@@ -293,7 +293,7 @@ export default {
  * @description सर्वर-साइड रेंडरिंग प्रोसेस, HTML जनरेशन और रिसोर्स इंजेक्शन के लिए जिम्मेदार
  */
 
-import type { RenderContext } from '@gez/core';
+import type { RenderContext } from '@esmx/core';
 import type App from './app';
 import type { SsrContext } from './app';
 import { createApp } from './create-app';

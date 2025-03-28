@@ -1,15 +1,15 @@
 ---
-titleSuffix: Mecanismo de Renderização no Lado do Servidor do Framework Gez
-description: Detalhes sobre o mecanismo de contexto de renderização (RenderContext) do framework Gez, incluindo gerenciamento de recursos, geração de HTML e sistema de módulos ESM, para ajudar desenvolvedores a entender e utilizar a funcionalidade de renderização no lado do servidor (SSR).
+titleSuffix: Mecanismo de Renderização no Lado do Servidor do Framework Esmx
+description: Detalhes sobre o mecanismo de contexto de renderização (RenderContext) do framework Esmx, incluindo gerenciamento de recursos, geração de HTML e sistema de módulos ESM, para ajudar desenvolvedores a entender e utilizar a funcionalidade de renderização no lado do servidor (SSR).
 head:
   - - meta
     - property: keywords
-      content: Gez, contexto de renderização, RenderContext, SSR, renderização no lado do servidor, ESM, gerenciamento de recursos
+      content: Esmx, contexto de renderização, RenderContext, SSR, renderização no lado do servidor, ESM, gerenciamento de recursos
 ---
 
 # Contexto de Renderização
 
-O RenderContext é uma classe central no framework Gez, responsável principalmente pelo gerenciamento de recursos e geração de HTML durante o processo de renderização no lado do servidor (SSR). Ele possui as seguintes características principais:
+O RenderContext é uma classe central no framework Esmx, responsável principalmente pelo gerenciamento de recursos e geração de HTML durante o processo de renderização no lado do servidor (SSR). Ele possui as seguintes características principais:
 
 1. **Sistema de Módulos Baseado em ESM**
    - Utiliza o padrão moderno de ECMAScript Modules
@@ -33,15 +33,15 @@ O RenderContext é uma classe central no framework Gez, responsável principalme
 
 ## Modo de Uso
 
-No framework Gez, os desenvolvedores geralmente não precisam criar instâncias de RenderContext diretamente, mas sim obtê-las através do método `gez.render()`:
+No framework Esmx, os desenvolvedores geralmente não precisam criar instâncias de RenderContext diretamente, mas sim obtê-las através do método `esmx.render()`:
 
 ```ts title="src/entry.node.ts"
-async server(gez) {
+async server(esmx) {
     const server = http.createServer((req, res) => {
         // Tratamento de arquivos estáticos
-        gez.middleware(req, res, async () => {
-            // Obtém a instância de RenderContext através de gez.render()
-            const rc = await gez.render({
+        esmx.middleware(req, res, async () => {
+            // Obtém a instância de RenderContext através de esmx.render()
+            const rc = await esmx.render({
                 params: {
                     url: req.url
                 }
@@ -141,8 +141,8 @@ export default async (rc: RenderContext) => {
 O RenderContext fornece um mecanismo flexível de configuração dinâmica de caminho base, permitindo definir dinamicamente o caminho base para recursos estáticos em tempo de execução:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
-    base: '/gez',  // Define o caminho base
+const rc = await esmx.render({
+    base: '/esmx',  // Define o caminho base
     params: {
         url: req.url
     }
@@ -179,7 +179,7 @@ O RenderContext oferece dois modos de mapeamento de importação (Import Map):
 É possível escolher o modo apropriado através da configuração:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     importmapMode: 'js',  // 'inline' | 'js'
     params: {
         url: req.url
@@ -192,7 +192,7 @@ const rc = await gez.render({
 O RenderContext suporta a configuração de `entryName` para especificar a função de entrada para renderização no lado do servidor:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     entryName: 'mobile',  // Especifica a função de entrada para dispositivos móveis
     params: {
         url: req.url
@@ -228,7 +228,7 @@ Esse mecanismo é particularmente útil nos seguintes cenários:
 ## Melhores Práticas
 
 1. **Obtenção de Instância de RenderContext**
-   - Sempre obtenha a instância através do método `gez.render()`
+   - Sempre obtenha a instância através do método `esmx.render()`
    - Passe os parâmetros apropriados conforme necessário
    - Evite criar instâncias manualmente
 

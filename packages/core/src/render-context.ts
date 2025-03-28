@@ -1,6 +1,6 @@
 import path from 'node:path';
 import serialize from 'serialize-javascript';
-import type { Gez } from './gez';
+import type { Esmx } from './esmx';
 
 /**
  * RenderContext 的配置选项接口
@@ -12,21 +12,21 @@ import type { Gez } from './gez';
  * ```ts
  * // 1. 基础路径配置示例
  * // 支持将静态资源部署到不同的路径下
- * const rc = await gez.render({
- *   // 设置基础路径为 /gez，所有静态资源都会基于此路径加载
- *   base: '/gez',
+ * const rc = await esmx.render({
+ *   // 设置基础路径为 /esmx，所有静态资源都会基于此路径加载
+ *   base: '/esmx',
  *   // 其他配置...
  * });
  *
  * // 2. 多语言站点部署示例
  * // 通过不同的基础路径支持多语言站点
- * const rc = await gez.render({
+ * const rc = await esmx.render({
  *   base: '/cn',  // 中文站点
  *   params: { lang: 'zh-CN' }
  * });
  *
  * // 3. 导入映射模式配置示例
- * const rc = await gez.render({
+ * const rc = await esmx.render({
  *   // 使用内联模式，适合小型应用
  *   importmapMode: 'inline',
  *   // 其他配置...
@@ -93,18 +93,18 @@ export interface RenderContextOptions {
      * @example
      * ```ts
      * // 使用内联模式（默认）
-     * const rc = await gez.render({
+     * const rc = await esmx.render({
      *   params: { url: req.url }
      * });
      *
      * // 显式指定内联模式
-     * const rc = await gez.render({
+     * const rc = await esmx.render({
      *   importmapMode: 'inline',
      *   params: { url: req.url }
      * });
      *
      * // 使用 JS 文件模式
-     * const rc = await gez.render({
+     * const rc = await esmx.render({
      *   importmapMode: 'js',
      *   params: { url: req.url }
      * });
@@ -212,18 +212,18 @@ export interface RenderFiles {
  * @example
  * ```ts
  * // 使用内联模式（默认）
- * const rc = await gez.render({
+ * const rc = await esmx.render({
  *   params: { url: req.url }
  * });
  *
  * // 显式指定内联模式
- * const rc = await gez.render({
+ * const rc = await esmx.render({
  *   importmapMode: 'inline',
  *   params: { url: req.url }
  * });
  *
  * // 使用 JS 文件模式
- * const rc = await gez.render({
+ * const rc = await esmx.render({
  *   importmapMode: 'js',
  *   params: { url: req.url }
  * });
@@ -232,7 +232,7 @@ export interface RenderFiles {
 export type ImportmapMode = 'inline' | 'js';
 
 /**
- * RenderContext 是 Gez 框架中的核心类，负责服务端渲染（SSR）过程中的资源管理和 HTML 生成
+ * RenderContext 是 Esmx 框架中的核心类，负责服务端渲染（SSR）过程中的资源管理和 HTML 生成
  *
  * @description
  * RenderContext 具有以下核心特点：
@@ -293,7 +293,7 @@ export type ImportmapMode = 'inline' | 'js';
  * ```
  */
 export class RenderContext {
-    public gez: Gez;
+    public esmx: Esmx;
     /**
      * 重定向地址
      * @description
@@ -325,7 +325,7 @@ export class RenderContext {
      *
      * // 3. 服务端处理示例
      * app.use(async (req, res) => {
-     *   const rc = await gez.render({
+     *   const rc = await esmx.render({
      *     params: {
      *       url: req.url
      *     }
@@ -384,7 +384,7 @@ export class RenderContext {
      *
      * // 3. 服务端处理示例
      * app.use(async (req, res) => {
-     *   const rc = await gez.render({
+     *   const rc = await esmx.render({
      *     params: {
      *       url: req.url
      *     }
@@ -413,7 +413,7 @@ export class RenderContext {
     /**
      * 静态资源的基础路径
      * @description
-     * base 属性用于控制静态资源的加载路径，是 Gez 框架动态基础路径配置的核心：
+     * base 属性用于控制静态资源的加载路径，是 Esmx 框架动态基础路径配置的核心：
      *
      * 1. **构建时处理**
      *    - 静态资源路径使用特殊占位符标记：`[[[___GEZ_DYNAMIC_BASE___]]]/your-app-name/`
@@ -421,7 +421,7 @@ export class RenderContext {
      *    - 支持 CSS、JavaScript、图片等各类静态资源
      *
      * 2. **运行时替换**
-     *    - 通过 `gez.render()` 的 `base` 参数设置实际基础路径
+     *    - 通过 `esmx.render()` 的 `base` 参数设置实际基础路径
      *    - RenderContext 自动将 HTML 中的占位符替换为实际路径
      *
      * 3. **技术优势**
@@ -432,19 +432,19 @@ export class RenderContext {
      * @example
      * ```ts
      * // 1. 基础用法
-     * const rc = await gez.render({
-     *   base: '/gez',  // 设置基础路径
+     * const rc = await esmx.render({
+     *   base: '/esmx',  // 设置基础路径
      *   params: { url: req.url }
      * });
      *
      * // 2. 多语言站点示例
-     * const rc = await gez.render({
+     * const rc = await esmx.render({
      *   base: '/cn',  // 中文站点
      *   params: { lang: 'zh-CN' }
      * });
      *
      * // 3. 微前端应用示例
-     * const rc = await gez.render({
+     * const rc = await esmx.render({
      *   base: '/app1',  // 子应用1
      *   params: { appId: 1 }
      * });
@@ -485,7 +485,7 @@ export class RenderContext {
      * };
      *
      * // 3. 根据设备类型选择入口函数
-     * const rc = await gez.render({
+     * const rc = await esmx.render({
      *   entryName: isMobile ? 'mobile' : 'desktop',
      *   params: { url: req.url }
      * });
@@ -517,7 +517,7 @@ export class RenderContext {
      * @example
      * ```ts
      * // 1. 基础用法 - 传递 URL 和语言设置
-     * const rc = await gez.render({
+     * const rc = await esmx.render({
      *   params: {
      *     url: req.url,
      *     lang: 'zh-CN'
@@ -525,7 +525,7 @@ export class RenderContext {
      * });
      *
      * // 2. 页面配置 - 设置主题和布局
-     * const rc = await gez.render({
+     * const rc = await esmx.render({
      *   params: {
      *     theme: 'dark',
      *     layout: 'sidebar'
@@ -533,7 +533,7 @@ export class RenderContext {
      * });
      *
      * // 3. 环境配置 - 注入 API 地址
-     * const rc = await gez.render({
+     * const rc = await esmx.render({
      *   params: {
      *     apiBaseUrl: process.env.API_BASE_URL,
      *     version: '1.0.0'
@@ -572,7 +572,7 @@ export class RenderContext {
     /**
      * 模块依赖收集集合
      * @description
-     * importMetaSet 是 Gez 框架智能依赖收集机制的核心，用于在服务端渲染过程中追踪和记录模块依赖：
+     * importMetaSet 是 Esmx 框架智能依赖收集机制的核心，用于在服务端渲染过程中追踪和记录模块依赖：
      *
      * 1. **按需收集**
      *    - 在组件实际渲染过程中自动追踪和记录模块依赖
@@ -711,18 +711,18 @@ export class RenderContext {
      * @example
      * ```ts
      * // 使用内联模式（默认）
-     * const rc = await gez.render({
+     * const rc = await esmx.render({
      *   params: { url: req.url }
      * });
      *
      * // 显式指定内联模式
-     * const rc = await gez.render({
+     * const rc = await esmx.render({
      *   importmapMode: 'inline',
      *   params: { url: req.url }
      * });
      *
      * // 使用 JS 文件模式
-     * const rc = await gez.render({
+     * const rc = await esmx.render({
      *   importmapMode: 'js',
      *   params: { url: req.url }
      * });
@@ -767,7 +767,7 @@ export class RenderContext {
      * };
      *
      * // 2. 动态基础路径
-     * const rc = await gez.render({
+     * const rc = await esmx.render({
      *   base: '/app',  // 设置基础路径
      *   params: { url: req.url }
      * });
@@ -782,13 +782,13 @@ export class RenderContext {
         return this._html;
     }
     public set html(html) {
-        const varName = this.gez.basePathPlaceholder;
+        const varName = this.esmx.basePathPlaceholder;
         this._html = varName
-            ? html.replaceAll(this.gez.basePathPlaceholder, this.base)
+            ? html.replaceAll(this.esmx.basePathPlaceholder, this.base)
             : html;
     }
-    public constructor(gez: Gez, options: RenderContextOptions = {}) {
-        this.gez = gez;
+    public constructor(esmx: Esmx, options: RenderContextOptions = {}) {
+        this.esmx = esmx;
         this.base = options.base ?? '';
         this.params = options.params ?? {};
         this.entryName = options.entryName ?? 'default';
@@ -986,7 +986,7 @@ export class RenderContext {
      * };
      *
      * // 2. 多应用场景
-     * const rc = await gez.render({
+     * const rc = await esmx.render({
      *   base: '/app1',  // 设置基础路径
      *   params: { appId: 1 }
      * });
@@ -1000,8 +1000,8 @@ export class RenderContext {
      * ```
      */
     public async commit() {
-        const { gez } = this;
-        const chunkSet = new Set([`${gez.name}@src/entry.client.ts`]);
+        const { esmx } = this;
+        const chunkSet = new Set([`${esmx.name}@src/entry.client.ts`]);
         for (const item of this.importMetaSet) {
             if ('chunkName' in item && typeof item.chunkName === 'string') {
                 chunkSet.add(item.chunkName);
@@ -1020,7 +1020,7 @@ export class RenderContext {
         const getUrlPath = (...paths: string[]) =>
             path.posix.join('/', this.base, ...paths);
 
-        const manifests = await this.gez.getManifestList('client');
+        const manifests = await this.esmx.getManifestList('client');
         manifests.forEach((item) => {
             const addPath = (setName: keyof RenderFiles, filepath: string) =>
                 files[setName].add(getUrlPath(item.name, filepath));
@@ -1037,9 +1037,9 @@ export class RenderContext {
             });
         });
 
-        const paths = await gez.getStaticImportPaths(
+        const paths = await esmx.getStaticImportPaths(
             'client',
-            `${gez.name}/src/entry.client`
+            `${esmx.name}/src/entry.client`
         );
         paths?.forEach((filepath) =>
             files.modulepreload.add(getUrlPath(filepath))
@@ -1049,7 +1049,7 @@ export class RenderContext {
         Object.keys(files).forEach(
             (key) => (this.files[key] = Array.from(files[key]))
         );
-        this._importMap = await gez.getImportMapClientInfo(this.importmapMode);
+        this._importMap = await esmx.getImportMapClientInfo(this.importmapMode);
     }
     /**
      * 生成资源预加载标签
@@ -1194,7 +1194,7 @@ export class RenderContext {
      * @example
      * ```ts
      * // 1. 基础用法 - 内联模式
-     * const rc = await gez.render({
+     * const rc = await esmx.render({
      *   importmapMode: 'inline'  // 默认模式
      * });
      *
@@ -1215,7 +1215,7 @@ export class RenderContext {
      * `;
      *
      * // 2. JS 文件模式 - 适合大型应用
-     * const rc = await gez.render({
+     * const rc = await esmx.render({
      *   importmapMode: 'js'  // 使用 JS 文件模式
      * });
      * ```
@@ -1262,14 +1262,14 @@ export class RenderContext {
      * `;
      *
      * // 2. 多入口配置
-     * const rc = await gez.render({
+     * const rc = await esmx.render({
      *   entryName: 'mobile',  // 指定入口名称
      *   params: { device: 'mobile' }
      * });
      * ```
      */
     public moduleEntry() {
-        return `<script type="module">import "${this.gez.name}/src/entry.client";</script>`;
+        return `<script type="module">import "${this.esmx.name}/src/entry.client";</script>`;
     }
 
     /**

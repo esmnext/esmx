@@ -1,18 +1,18 @@
 ---
-titleSuffix: "Van microfrontend-uitdagingen naar ESM-innovatie: De evolutie van het Gez-framework"
-description: Een diepgaande verkenning van de evolutie van het Gez-framework, van de beperkingen van traditionele microfrontend-architecturen naar innovatieve doorbraken gebaseerd op ESM. Deel technische praktijkervaringen op het gebied van prestatieoptimalisatie, afhankelijkheidsbeheer en keuze van bouwhulpmiddelen.
+titleSuffix: "Van microfrontend-uitdagingen naar ESM-innovatie: De evolutie van het Esmx-framework"
+description: Een diepgaande verkenning van de evolutie van het Esmx-framework, van de beperkingen van traditionele microfrontend-architecturen naar innovatieve doorbraken gebaseerd op ESM. Deel technische praktijkervaringen op het gebied van prestatieoptimalisatie, afhankelijkheidsbeheer en keuze van bouwhulpmiddelen.
 head:
   - - meta
     - property: keywords
-      content: Gez, microfrontend-framework, ESM, Import Maps, Rspack, Module Federation, afhankelijkheidsbeheer, prestatieoptimalisatie, technische evolutie, server-side rendering
+      content: Esmx, microfrontend-framework, ESM, Import Maps, Rspack, Module Federation, afhankelijkheidsbeheer, prestatieoptimalisatie, technische evolutie, server-side rendering
 sidebar: false
 ---
 
-# Van componentdeling naar native modulariteit: De evolutie van het Gez microfrontend-framework
+# Van componentdeling naar native modulariteit: De evolutie van het Esmx microfrontend-framework
 
 ## Projectachtergrond
 
-In de afgelopen jaren heeft de microfrontend-architectuur voortdurend gezocht naar de juiste weg. Echter, wat we zagen, waren diverse complexe technische oplossingen die met lagen van verpakkingen en kunstmatige isolatie een ideale microfrontend-wereld probeerden te simuleren. Deze oplossingen brachten zware prestatieverliezen met zich mee, maakten eenvoudige ontwikkeling complex en standaardprocessen onduidelijk.
+In de afgelopen jaren heeft de microfrontend-architectuur voortdurend esmxocht naar de juiste weg. Echter, wat we zagen, waren diverse complexe technische oplossingen die met lagen van verpakkingen en kunstmatige isolatie een ideale microfrontend-wereld probeerden te simuleren. Deze oplossingen brachten zware prestatieverliezen met zich mee, maakten eenvoudige ontwikkeling complex en standaardprocessen onduidelijk.
 
 ### Beperkingen van traditionele oplossingen
 
@@ -30,7 +30,7 @@ Deze problemen kwamen vooral naar voren in een enterprise-project uit 2019. Een 
 
 ### v1.0: Verkenning van externe componenten
 
-Om de efficiëntieproblemen van componentdeling op te lossen, introduceerde Gez v1.0 een RemoteView-componentmechanisme op basis van het HTTP-protocol. Deze oplossing implementeerde runtime-dynamische aanvragen voor codeassemblage tussen services, wat het probleem van te lange bouwafhankelijkheidsketens succesvol oploste. Echter, door het ontbreken van een gestandaardiseerd runtime-communicatiemechanisme, bleven er efficiëntieknelpunten bestaan in status- en gebeurtenissynchronisatie tussen services.
+Om de efficiëntieproblemen van componentdeling op te lossen, introduceerde Esmx v1.0 een RemoteView-componentmechanisme op basis van het HTTP-protocol. Deze oplossing implementeerde runtime-dynamische aanvragen voor codeassemblage tussen services, wat het probleem van te lange bouwafhankelijkheidsketens succesvol oploste. Echter, door het ontbreken van een gestandaardiseerd runtime-communicatiemechanisme, bleven er efficiëntieknelpunten bestaan in status- en gebeurtenissynchronisatie tussen services.
 
 ### v2.0: Module Federation-poging
 
@@ -75,7 +75,7 @@ Deze beslissing stelde ons in staat om een stabielere ondersteuning voor product
 
 ## Toekomstperspectief
 
-In de toekomstige ontwikkelingsplannen zal het Gez-framework zich richten op de volgende drie richtingen:
+In de toekomstige ontwikkelingsplannen zal het Esmx-framework zich richten op de volgende drie richtingen:
 
 ### Diepgaande optimalisatie van Import Maps
 
@@ -95,4 +95,4 @@ In de toekomstige ontwikkelingsplannen zal het Gez-framework zich richten op de 
 - **Statussynchronisatie**: Op ESM gebaseerde lichtgewicht statusdelingsoplossing
 - **Gebeurtenisbus**: Gestandaardiseerd gebeurteniscommunicatiemechanisme ter ondersteuning van ontkoppelde communicatie tussen applicaties
 
-Met deze optimalisaties en uitbreidingen hopen we Gez te maken tot een meer compleet en gebruiksvriendelijk microfrontend-oplossing, dat ontwikkelaars een betere ontwikkelingservaring en hogere ontwikkelingssnelheid biedt.
+Met deze optimalisaties en uitbreidingen hopen we Esmx te maken tot een meer compleet en gebruiksvriendelijk microfrontend-oplossing, dat ontwikkelaars een betere ontwikkelingservaring en hogere ontwikkelingssnelheid biedt.

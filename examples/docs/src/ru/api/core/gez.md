@@ -1,17 +1,17 @@
 ---
 titleSuffix: Справочник API основных классов фреймворка
-description: Подробное описание API основных классов фреймворка Gez, включая управление жизненным циклом приложения, обработку статических ресурсов и возможности серверного рендеринга, чтобы помочь разработчикам глубже понять ключевые функции фреймворка.
+description: Подробное описание API основных классов фреймворка Esmx, включая управление жизненным циклом приложения, обработку статических ресурсов и возможности серверного рендеринга, чтобы помочь разработчикам глубже понять ключевые функции фреймворка.
 head:
   - - meta
     - property: keywords
-      content: Gez, API, управление жизненным циклом, статические ресурсы, серверный рендеринг, Rspack, фреймворк для веб-приложений
+      content: Esmx, API, управление жизненным циклом, статические ресурсы, серверный рендеринг, Rspack, фреймворк для веб-приложений
 ---
 
-# Gez
+# Esmx
 
 ## Введение
 
-Gez — это высокопроизводительный фреймворк для веб-приложений, основанный на Rspack, который предоставляет полный набор функций для управления жизненным циклом приложения, обработки статических ресурсов и серверного рендеринга.
+Esmx — это высокопроизводительный фреймворк для веб-приложений, основанный на Rspack, который предоставляет полный набор функций для управления жизненным циклом приложения, обработки статических ресурсов и серверного рендеринга.
 
 ## Определения типов
 
@@ -76,18 +76,18 @@ enum COMMAND {
 
 ## Опции экземпляра
 
-Определение основных параметров конфигурации фреймворка Gez.
+Определение основных параметров конфигурации фреймворка Esmx.
 
 ```ts
-interface GezOptions {
+interface EsmxOptions {
   root?: string
   isProd?: boolean
   basePathPlaceholder?: string | false
   modules?: ModuleConfig
   packs?: PackConfig
-  devApp?: (gez: Gez) => Promise<App>
-  server?: (gez: Gez) => Promise<void>
-  postBuild?: (gez: Gez) => Promise<void>
+  devApp?: (esmx: Esmx) => Promise<App>
+  server?: (esmx: Esmx) => Promise<void>
+  postBuild?: (esmx: Esmx) => Promise<void>
 }
 ```
 
@@ -128,15 +128,15 @@ interface GezOptions {
 
 #### devApp
 
-- **Тип**: `(gez: Gez) => Promise<App>`
+- **Тип**: `(esmx: Esmx) => Promise<App>`
 
 Функция создания приложения для среды разработки. Используется только в среде разработки для создания экземпляра приложения сервера разработки.
 
 ```ts title="entry.node.ts"
 export default {
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(context) {
           // Пользовательская конфигурация Rspack
         }
@@ -148,16 +148,16 @@ export default {
 
 #### server
 
-- **Тип**: `(gez: Gez) => Promise<void>`
+- **Тип**: `(esmx: Esmx) => Promise<void>`
 
 Функция конфигурации запуска сервера. Используется для настройки и запуска HTTP-сервера, может использоваться как в среде разработки, так и в production-среде.
 
 ```ts title="entry.node.ts"
 export default {
-  async server(gez) {
+  async server(esmx) {
     const server = http.createServer((req, res) => {
-      gez.middleware(req, res, async () => {
-        const render = await gez.render({
+      esmx.middleware(req, res, async () => {
+        const render = await esmx.render({
           params: { url: req.url }
         });
         res.end(render.html);
@@ -171,7 +171,7 @@ export default {
 
 #### postBuild
 
-- **Тип**: `(gez: Gez) => Promise<void>`
+- **Тип**: `(esmx: Esmx) => Promise<void>`
 
 Функция постобработки сборки. Выполняется после завершения сборки проекта и может использоваться для:
 - Дополнительной обработки ресурсов.
@@ -235,8 +235,8 @@ export default {
 
 ```ts
 const server = http.createServer((req, res) => {
-  gez.middleware(req, res, async () => {
-    const rc = await gez.render({ url: req.url });
+  esmx.middleware(req, res, async () => {
+    const rc = await esmx.render({ url: req.url });
     res.end(rc.html);
   });
 });
@@ -253,12 +253,12 @@ const server = http.createServer((req, res) => {
 
 ```ts
 // Базовое использование
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: req.url }
 });
 
 // Расширенные настройки
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '',                    // Базовый путь
   importmapMode: 'inline',     // Режим карты импорта
   entryName: 'default',        // Точка входа для рендеринга
@@ -297,13 +297,13 @@ const rc = await gez.render({
 ### constructor()
 
 - **Параметры**: 
-  - `options?: GezOptions` - параметры конфигурации фреймворка
-- **Возвращаемое значение**: `Gez`
+  - `options?: EsmxOptions` - параметры конфигурации фреймворка
+- **Возвращаемое значение**: `Esmx`
 
-Создает экземпляр фреймворка Gez.
+Создает экземпляр фреймворка Esmx.
 
 ```ts
-const gez = new Gez({
+const esmx = new Esmx({
   root: './src',
   isProd: process.env.NODE_ENV === 'production'
 });
@@ -317,7 +317,7 @@ const gez = new Gez({
   - `Error`: при повторной инициализации
   - `NotReadyError`: при доступе к неинициализированному экземпляру
 
-Инициализирует экземпляр фреймворка Gez. Выполняет следующие основные шаги инициализации:
+Инициализирует экземпляр фреймворка Esmx. Выполняет следующие основные шаги инициализации:
 
 1. Разрешает конфигурацию проекта (package.json, конфигурация модулей, конфигурация сборки и т.д.)
 2. Создает экземпляр приложения (для среды разработки или production-среды)
@@ -330,26 +330,26 @@ const gez = new Gez({
 :::
 
 ```ts
-const gez = new Gez({
+const esmx = new Esmx({
   root: './src',
   isProd: process.env.NODE_ENV === 'production'
 });
 
-await gez.init(COMMAND.dev);
+await esmx.init(COMMAND.dev);
 ```
 
 ### destroy()
 
 - **Возвращаемое значение**: `Promise<boolean>`
 
-Уничтожает экземпляр фреймворка Gez, выполняя очистку ресурсов и закрытие соединений. В основном используется для:
+Уничтожает экземпляр фреймворка Esmx, выполняя очистку ресурсов и закрытие соединений. В основном используется для:
 - Закрытия сервера разработки
 - Очистки временных файлов и кэша
 - Освобождения системных ресурсов
 
 ```ts
 process.once('SIGTERM', async () => {
-  await gez.destroy();
+  await esmx.destroy();
   process.exit(0);
 });
 ```
@@ -370,14 +370,14 @@ process.once('SIGTERM', async () => {
 
 ```ts title="entry.node.ts"
 export default {
-  async postBuild(gez) {
-    await gez.build();
+  async postBuild(esmx) {
+    await esmx.build();
     // Генерация статического HTML после сборки
-    const render = await gez.render({
+    const render = await esmx.render({
       params: { url: '/' }
     });
-    gez.writeSync(
-      gez.resolvePath('dist/client', 'index.html'),
+    esmx.writeSync(
+      esmx.resolvePath('dist/client', 'index.html'),
       render.html
     );
   }
@@ -395,12 +395,12 @@ export default {
 
 ```ts title="entry.node.ts"
 export default {
-  async server(gez) {
+  async server(esmx) {
     const server = http.createServer((req, res) => {
       // Обработка статических ресурсов
-      gez.middleware(req, res, async () => {
+      esmx.middleware(req, res, async () => {
         // Серверный рендеринг
-        const render = await gez.render({
+        const render = await esmx.render({
           params: { url: req.url }
         });
         res.end(render.html);
@@ -426,17 +426,17 @@ export default {
 
 ```ts title="entry.node.ts"
 export default {
-  async postBuild(gez) {
+  async postBuild(esmx) {
     // Генерация статических HTML для нескольких страниц
     const pages = ['/', '/about', '/404'];
 
     for (const url of pages) {
-      const render = await gez.render({
+      const render = await esmx.render({
         params: { url }
       });
 
-      await gez.write(
-        gez.resolvePath('dist/client', url.substring(1), 'index.html'),
+      await esmx.write(
+        esmx.resolvePath('dist/client', url.substring(1), 'index.html'),
         render.html
       );
     }
@@ -456,7 +456,7 @@ export default {
 - **Пример**:
 ```ts
 // Разрешение пути к статическому ресурсу
-const htmlPath = gez.resolvePath('dist/client', 'index.html');
+const htmlPath = esmx.resolvePath('dist/client', 'index.html');
 ```
 
 ### writeSync()
@@ -471,9 +471,9 @@ const htmlPath = gez.resolvePath('dist/client', 'index.html');
 - **Пример**:
 ```ts title="src/entry.node.ts"
 
-async postBuild(gez) {
-  const htmlPath = gez.resolvePath('dist/client', 'index.html');
-  const success = await gez.write(htmlPath, '<html>...</html>');
+async postBuild(esmx) {
+  const htmlPath = esmx.resolvePath('dist/client', 'index.html');
+  const success = await esmx.write(htmlPath, '<html>...</html>');
 }
 ```
 
@@ -489,8 +489,8 @@ async postBuild(gez) {
 
 - **Пример**:
 ```ts title="src/entry.node.ts"
-async server(gez) {
-  const manifest = gez.readJsonSync(gez.resolvePath('dist/client', 'manifest.json'));
+async server(esmx) {
+  const manifest = esmx.readJsonSync(esmx.resolvePath('dist/client', 'manifest.json'));
   // Использование объекта manifest
 }
 ```
@@ -507,8 +507,8 @@ async server(gez) {
 
 - **Пример**:
 ```ts title="src/entry.node.ts"
-async server(gez) {
-  const manifest = await gez.readJson(gez.resolvePath('dist/client', 'manifest.json'));
+async server(esmx) {
+  const manifest = await esmx.readJson(esmx.resolvePath('dist/client', 'manifest.json'));
   // Использование объекта manifest
 }
 ```

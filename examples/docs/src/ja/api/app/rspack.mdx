@@ -1,23 +1,23 @@
 ---
-titleSuffix: Gez フレームワーク Rspack ビルドツール
-description: Gez フレームワークの Rspack ビルドツールは、高性能なアプリケーションビルド機能を提供し、標準アプリケーションと HTML アプリケーションの開発とビルドをサポートします。組み込みのリソースプロセッサと最適化設定を備えています。
+titleSuffix: Esmx フレームワーク Rspack ビルドツール
+description: Esmx フレームワークの Rspack ビルドツールは、高性能なアプリケーションビルド機能を提供し、標準アプリケーションと HTML アプリケーションの開発とビルドをサポートします。組み込みのリソースプロセッサと最適化設定を備えています。
 head:
   - - meta
     - property: keywords
-      content: Gez, Rspack, ビルドツール, アプリケーションビルド, HTML アプリケーション, TypeScript, CSS, リソース処理, パフォーマンス最適化
+      content: Esmx, Rspack, ビルドツール, アプリケーションビルド, HTML アプリケーション, TypeScript, CSS, リソース処理, パフォーマンス最適化
 ---
 
 import { PackageManagerTabs } from '@theme';
 
-# @gez/rspack
+# @esmx/rspack
 
 Rspack パッケージは、Rspack アプリケーションの作成と設定のための API を提供し、標準アプリケーションと HTML アプリケーションのビルドと開発をサポートします。
 
 ## インストール
 
-パッケージマネージャーを使用して `@gez/rspack` 開発依存関係をインストールします：
+パッケージマネージャーを使用して `@esmx/rspack` 開発依存関係をインストールします：
 
-<PackageManagerTabs command="install @gez/rspack -D" />
+<PackageManagerTabs command="install @esmx/rspack -D" />
 
 ## 型エクスポート
 
@@ -36,7 +36,7 @@ type BuildTarget = 'node' | 'client' | 'server'
 
 ```ts
 interface RspackAppConfigContext {
-  gez: Gez
+  esmx: Esmx
   buildTarget: BuildTarget
   config: RspackOptions
   options: RspackAppOptions
@@ -44,7 +44,7 @@ interface RspackAppConfigContext {
 ```
 
 Rspack アプリケーション設定コンテキストインターフェース。設定フック関数内でアクセス可能なコンテキスト情報を提供します：
-- `gez`: Gez フレームワークインスタンス
+- `esmx`: Esmx フレームワークインスタンス
 - `buildTarget`: 現在のビルドターゲット（client/server/node）
 - `config`: Rspack 設定オブジェクト
 - `options`: アプリケーション設定オプション
@@ -86,13 +86,13 @@ Rspack アプリケーション設定オプションインターフェース：
 ### createRspackApp
 
 ```ts
-function createRspackApp(gez: Gez, options?: RspackAppOptions): Promise<App>
+function createRspackApp(esmx: Esmx, options?: RspackAppOptions): Promise<App>
 ```
 
 標準の Rspack アプリケーションインスタンスを作成します。
 
 **パラメータ：**
-- `gez`: Gez フレームワークインスタンス
+- `esmx`: Esmx フレームワークインスタンス
 - `options`: Rspack アプリケーション設定オプション
 
 **戻り値：**
@@ -101,13 +101,13 @@ function createRspackApp(gez: Gez, options?: RspackAppOptions): Promise<App>
 ### createRspackHtmlApp
 
 ```ts
-function createRspackHtmlApp(gez: Gez, options?: RspackHtmlAppOptions): Promise<App>
+function createRspackHtmlApp(esmx: Esmx, options?: RspackHtmlAppOptions): Promise<App>
 ```
 
 HTML タイプの Rspack アプリケーションインスタンスを作成します。
 
 **パラメータ：**
-- `gez`: Gez フレームワークインスタンス
+- `esmx`: Esmx フレームワークインスタンス
 - `options`: HTML アプリケーション設定オプション
 
 **戻り値：**
@@ -141,12 +141,12 @@ Rspack 組み込みの loader 識別子マッピングオブジェクト。一�
 これらの定数を使用して、設定内で組み込みの loader を参照できます。手動で文字列を入力する必要がありません：
 
 ```ts title="src/entry.node.ts"
-import { RSPACK_LOADER } from '@gez/rspack';
+import { RSPACK_LOADER } from '@esmx/rspack';
 
 export default {
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         loaders: {
           // 定数を使用して loader を参照
           styleLoader: RSPACK_LOADER.styleLoader,

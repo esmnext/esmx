@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework Build Manifest Dateireferenz
-description: Detaillierte Beschreibung der Struktur der Build-Manifest-Datei (manifest.json) des Gez Frameworks, einschließlich Build-Artefaktverwaltung, Exportdateizuordnung und Ressourcenstatistik, um Entwicklern das Verständnis und die Nutzung des Build-Systems zu erleichtern.
+titleSuffix: Esmx Framework Build Manifest Dateireferenz
+description: Detaillierte Beschreibung der Struktur der Build-Manifest-Datei (manifest.json) des Esmx Frameworks, einschließlich Build-Artefaktverwaltung, Exportdateizuordnung und Ressourcenstatistik, um Entwicklern das Verständnis und die Nutzung des Build-Systems zu erleichtern.
 head:
   - - meta
     - property: keywords
-      content: Gez, ManifestJson, Build-Manifest, Ressourcenverwaltung, Build-Artefakte, Dateizuordnung, API
+      content: Esmx, ManifestJson, Build-Manifest, Ressourcenverwaltung, Build-Artefakte, Dateizuordnung, API
 ---
 
 # ManifestJson
 
-`manifest.json` ist eine vom Gez Framework während des Build-Prozesses generierte Manifest-Datei, die Informationen über die Build-Artefakte eines Dienstes erfasst. Sie bietet eine einheitliche Schnittstelle zur Verwaltung von Build-Artefakten, Exportdateien und Ressourcengrößenstatistiken.
+`manifest.json` ist eine vom Esmx Framework während des Build-Prozesses generierte Manifest-Datei, die Informationen über die Build-Artefakte eines Dienstes erfasst. Sie bietet eine einheitliche Schnittstelle zur Verwaltung von Build-Artefakten, Exportdateien und Ressourcengrößenstatistiken.
 
 ```json title="dist/client/manifest.json"
 {
@@ -71,7 +71,7 @@ interface ManifestJson {
 
 - **Typ**: `string`
 
-Der Name des Dienstes, stammt aus der GezOptions.name Konfiguration.
+Der Name des Dienstes, stammt aus der EsmxOptions.name Konfiguration.
 
 #### exports
 

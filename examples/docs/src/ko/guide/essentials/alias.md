@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez 프레임워크 모듈 임포트 경로 매핑 가이드
-description: Gez 프레임워크의 경로 별칭(Path Alias) 메커니즘에 대해 자세히 설명합니다. 이는 임포트 경로 단순화, 깊은 중첩 방지, 타입 안전성, 모듈 해석 최적화 등의 기능을 포함하며, 개발자가 코드 유지보수성을 향상시키는 데 도움을 줍니다.
+titleSuffix: Esmx 프레임워크 모듈 임포트 경로 매핑 가이드
+description: Esmx 프레임워크의 경로 별칭(Path Alias) 메커니즘에 대해 자세히 설명합니다. 이는 임포트 경로 단순화, 깊은 중첩 방지, 타입 안전성, 모듈 해석 최적화 등의 기능을 포함하며, 개발자가 코드 유지보수성을 향상시키는 데 도움을 줍니다.
 head:
   - - meta
     - property: keywords
-      content: Gez, 경로 별칭, Path Alias, TypeScript, 모듈 임포트, 경로 매핑, 코드 유지보수성
+      content: Esmx, 경로 별칭, Path Alias, TypeScript, 모듈 임포트, 경로 매핑, 코드 유지보수성
 ---
 
 # 경로 별칭
 
-경로 별칭(Path Alias)은 모듈 임포트 경로 매핑 메커니즘으로, 개발자가 완전한 모듈 경로 대신 짧고 의미 있는 식별자를 사용할 수 있게 해줍니다. Gez에서 경로 별칭 메커니즘은 다음과 같은 장점을 제공합니다:
+경로 별칭(Path Alias)은 모듈 임포트 경로 매핑 메커니즘으로, 개발자가 완전한 모듈 경로 대신 짧고 의미 있는 식별자를 사용할 수 있게 해줍니다. Esmx에서 경로 별칭 메커니즘은 다음과 같은 장점을 제공합니다:
 
 - **임포트 경로 단순화**: 의미 있는 별칭을 사용하여 긴 상대 경로를 대체함으로써 코드 가독성을 높입니다.
 - **깊은 중첩 방지**: `../../../../`와 같은 다중 디렉토리 참조로 인한 유지보수 어려움을 해결합니다.
@@ -18,7 +18,7 @@ head:
 
 ## 기본 별칭 메커니즘
 
-Gez는 서비스 이름(Service Name) 기반의 자동 별칭 메커니즘을 사용하며, 이는 설정보다 규약을 우선하는 설계로 다음과 같은 특징을 가집니다:
+Esmx는 서비스 이름(Service Name) 기반의 자동 별칭 메커니즘을 사용하며, 이는 설정보다 규약을 우선하는 설계로 다음과 같은 특징을 가집니다:
 
 - **자동 구성**: `package.json`의 `name` 필드를 기반으로 별칭이 자동 생성되며, 수동 설정이 필요 없습니다.
 - **통일된 규범**: 모든 서비스 모듈이 일관된 명명 및 참조 규칙을 따르도록 보장합니다.
@@ -112,13 +112,13 @@ import { logger } from 'remote-service/src/utils';
 
 ### 사용자 정의 별칭
 
-서드파티 패키지나 특수한 상황을 위해 Gez 설정 파일을 통해 사용자 정의 별칭을 설정할 수 있습니다:
+서드파티 패키지나 특수한 상황을 위해 Esmx 설정 파일을 통해 사용자 정의 별칭을 설정할 수 있습니다:
 
 ```ts title="src/entry.node.ts"
 export default {
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createApp(gez, (buildContext) => {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createApp(esmx, (buildContext) => {
                 buildContext.config.resolve = {
                     ...buildContext.config.resolve,
                     alias: {
@@ -133,7 +133,7 @@ export default {
             })
         );
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ::: warning 주의 사항

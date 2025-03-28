@@ -1,19 +1,19 @@
 ---
-titleSuffix: Gez Framework - Công cụ xây dựng hiệu suất cao
-description: Phân tích sâu về hệ thống xây dựng Rspack trong Gez Framework, bao gồm các tính năng cốt lõi như biên dịch hiệu suất cao, xây dựng đa môi trường, tối ưu hóa tài nguyên, giúp nhà phát triển xây dựng các ứng dụng Web hiện đại hiệu quả và đáng tin cậy.
+titleSuffix: Esmx Framework - Công cụ xây dựng hiệu suất cao
+description: Phân tích sâu về hệ thống xây dựng Rspack trong Esmx Framework, bao gồm các tính năng cốt lõi như biên dịch hiệu suất cao, xây dựng đa môi trường, tối ưu hóa tài nguyên, giúp nhà phát triển xây dựng các ứng dụng Web hiện đại hiệu quả và đáng tin cậy.
 head:
   - - meta
     - property: keywords
-      content: Gez, Rspack, hệ thống xây dựng, biên dịch hiệu suất cao, cập nhật nóng, xây dựng đa môi trường, Tree Shaking, phân chia mã, SSR, tối ưu hóa tài nguyên, hiệu quả phát triển, công cụ xây dựng
+      content: Esmx, Rspack, hệ thống xây dựng, biên dịch hiệu suất cao, cập nhật nóng, xây dựng đa môi trường, Tree Shaking, phân chia mã, SSR, tối ưu hóa tài nguyên, hiệu quả phát triển, công cụ xây dựng
 ---
 
 # Rspack
 
-Gez được xây dựng dựa trên hệ thống xây dựng [Rspack](https://rspack.dev/), tận dụng tối đa khả năng xây dựng hiệu suất cao của Rspack. Tài liệu này sẽ giới thiệu vị trí và các chức năng cốt lõi của Rspack trong Gez Framework.
+Esmx được xây dựng dựa trên hệ thống xây dựng [Rspack](https://rspack.dev/), tận dụng tối đa khả năng xây dựng hiệu suất cao của Rspack. Tài liệu này sẽ giới thiệu vị trí và các chức năng cốt lõi của Rspack trong Esmx Framework.
 
 ## Tính năng
 
-Rspack là hệ thống xây dựng cốt lõi của Gez Framework, cung cấp các tính năng chính sau:
+Rspack là hệ thống xây dựng cốt lõi của Esmx Framework, cung cấp các tính năng chính sau:
 
 - **Xây dựng hiệu suất cao**: Động cơ xây dựng được triển khai bằng Rust, cung cấp tốc độ biên dịch cực nhanh, cải thiện đáng kể tốc độ xây dựng cho các dự án lớn
 - **Tối ưu hóa trải nghiệm phát triển**: Hỗ trợ các tính năng phát triển hiện đại như cập nhật nóng (HMR), biên dịch tăng dần, mang lại trải nghiệm phát triển mượt mà
@@ -22,9 +22,9 @@ Rspack là hệ thống xây dựng cốt lõi của Gez Framework, cung cấp c
 
 ## Xây dựng ứng dụng
 
-Hệ thống xây dựng Rspack của Gez được thiết kế theo mô-đun, bao gồm các mô-đun cốt lõi sau:
+Hệ thống xây dựng Rspack của Esmx được thiết kế theo mô-đun, bao gồm các mô-đun cốt lõi sau:
 
-### @gez/rspack
+### @esmx/rspack
 
 Mô-đun xây dựng cơ bản, cung cấp các khả năng cốt lõi sau:
 
@@ -33,7 +33,7 @@ Mô-đun xây dựng cơ bản, cung cấp các khả năng cốt lõi sau:
 - **Tối ưu hóa xây dựng**: Cung cấp các tính năng tối ưu hóa hiệu suất như phân chia mã, Tree Shaking
 - **Máy chủ phát triển**: Tích hợp máy chủ phát triển hiệu suất cao, hỗ trợ HMR
 
-### @gez/rspack-vue
+### @esmx/rspack-vue
 
 Mô-đun xây dựng chuyên dụng cho Vue Framework, cung cấp:
 
@@ -43,7 +43,7 @@ Mô-đun xây dựng chuyên dụng cho Vue Framework, cung cấp:
 
 ## Quy trình xây dựng
 
-Quy trình xây dựng của Gez chủ yếu bao gồm các giai đoạn sau:
+Quy trình xây dựng của Esmx chủ yếu bao gồm các giai đoạn sau:
 
 1. **Khởi tạo cấu hình**
    - Tải cấu hình dự án
@@ -82,12 +82,12 @@ Quy trình xây dựng của Gez chủ yếu bao gồm các giai đoạn sau:
 ## Ví dụ cấu hình
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createRspackHtmlApp(gez, {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createRspackHtmlApp(esmx, {
                 // Cấu hình xây dựng tùy chỉnh
                 config({ config }) {
                     // Thêm cấu hình Rspack tùy chỉnh tại đây
@@ -95,7 +95,7 @@ export default {
             })
         );
     },
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ::: tip

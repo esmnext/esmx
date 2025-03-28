@@ -1,5 +1,5 @@
 {
-    "name": "@gez/class-state",
+    "name": "@esmx/class-state",
     "template": "library",
     "license": "MIT",
     "scripts": {
@@ -15,7 +15,7 @@
     },
     "devDependencies": {
         "@biomejs/biome": "1.9.4",
-        "@gez/lint": "workspace:*",
+        "@esmx/lint": "workspace:*",
         "@types/node": "22.13.10",
         "@vitest/coverage-v8": "3.0.8",
         "@vue/compiler-dom": "^3.5.13",

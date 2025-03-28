@@ -1,15 +1,15 @@
 ---
-titleSuffix: Przewodnik konfiguracji ścieżek zasobów statycznych w frameworku Gez
-description: Szczegółowy opis konfiguracji ścieżki bazowej w frameworku Gez, obejmujący wdrożenie w wielu środowiskach, dystrybucję CDN oraz ustawienia ścieżek dostępu do zasobów, pomagający programistom w elastycznym zarządzaniu zasobami statycznymi.
+titleSuffix: Przewodnik konfiguracji ścieżek zasobów statycznych w frameworku Esmx
+description: Szczegółowy opis konfiguracji ścieżki bazowej w frameworku Esmx, obejmujący wdrożenie w wielu środowiskach, dystrybucję CDN oraz ustawienia ścieżek dostępu do zasobów, pomagający programistom w elastycznym zarządzaniu zasobami statycznymi.
 head:
   - - meta
     - property: keywords
-      content: Gez, Ścieżka bazowa, Base Path, CDN, Zasoby statyczne, Wdrożenie w wielu środowiskach, Zarządzanie zasobami
+      content: Esmx, Ścieżka bazowa, Base Path, CDN, Zasoby statyczne, Wdrożenie w wielu środowiskach, Zarządzanie zasobami
 ---
 
 # Ścieżka bazowa
 
-Ścieżka bazowa (Base Path) to prefiks ścieżki dostępu do zasobów statycznych (takich jak JavaScript, CSS, obrazy itp.) w aplikacji. W Gez odpowiednia konfiguracja ścieżki bazowej jest kluczowa w następujących scenariuszach:
+Ścieżka bazowa (Base Path) to prefiks ścieżki dostępu do zasobów statycznych (takich jak JavaScript, CSS, obrazy itp.) w aplikacji. W Esmx odpowiednia konfiguracja ścieżki bazowej jest kluczowa w następujących scenariuszach:
 
 - **Wdrożenie w wielu środowiskach**: Obsługa dostępu do zasobów w różnych środowiskach, takich jak środowisko deweloperskie, testowe i produkcyjne
 - **Wdrożenie w wielu regionach**: Dostosowanie do wymagań wdrożenia klastrów w różnych regionach lub krajach
@@ -17,7 +17,7 @@ head:
 
 ## Mechanizm domyślnej ścieżki
 
-Gez wykorzystuje automatyczny mechanizm generowania ścieżek oparty na nazwie usługi. Domyślnie framework odczytuje pole `name` z pliku `package.json` projektu, aby wygenerować ścieżkę bazową dla zasobów statycznych: `/your-app-name/`.
+Esmx wykorzystuje automatyczny mechanizm generowania ścieżek oparty na nazwie usługi. Domyślnie framework odczytuje pole `name` z pliku `package.json` projektu, aby wygenerować ścieżkę bazową dla zasobów statycznych: `/your-app-name/`.
 
 ```json title="package.json"
 {
@@ -33,7 +33,7 @@ Ten projekt oparty na konwencji ma następujące zalety:
 
 ## Konfiguracja dynamicznej ścieżki
 
-W rzeczywistych projektach często musimy wdrożyć ten sam kod w różnych środowiskach lub regionach. Gez zapewnia wsparcie dla dynamicznej ścieżki bazowej, co pozwala aplikacji dostosować się do różnych scenariuszy wdrożenia.
+W rzeczywistych projektach często musimy wdrożyć ten sam kod w różnych środowiskach lub regionach. Esmx zapewnia wsparcie dla dynamicznej ścieżki bazowej, co pozwala aplikacji dostosować się do różnych scenariuszy wdrożenia.
 
 ### Scenariusze użycia
 
@@ -53,10 +53,10 @@ W rzeczywistych projektach często musimy wdrożyć ten sam kod w różnych śro
 
 ### Metoda konfiguracji
 
-Poprzez parametr `base` metody `gez.render()` można dynamicznie ustawić ścieżkę bazową na podstawie kontekstu żądania:
+Poprzez parametr `base` metody `esmx.render()` można dynamicznie ustawić ścieżkę bazową na podstawie kontekstu żądania:
 
 ```ts
-const render = await gez.render({
+const render = await esmx.render({
     base: '/cn',  // Ustawienie ścieżki bazowej
     params: {
         url: req.url

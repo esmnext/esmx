@@ -1,15 +1,15 @@
 ---
-titleSuffix: Пример приложения Vue2 SSR на фреймворке Gez
-description: Пошаговое руководство по созданию приложения Vue2 SSR с использованием фреймворка Gez. Включает инициализацию проекта, настройку Vue2 и конфигурацию входных файлов.
+titleSuffix: Пример приложения Vue2 SSR на фреймворке Esmx
+description: Пошаговое руководство по созданию приложения Vue2 SSR с использованием фреймворка Esmx. Включает инициализацию проекта, настройку Vue2 и конфигурацию входных файлов.
 head:
   - - meta
     - property: keywords
-      content: Gez, Vue2, SSR приложение, TypeScript конфигурация, инициализация проекта, серверный рендеринг, клиентское взаимодействие
+      content: Esmx, Vue2, SSR приложение, TypeScript конфигурация, инициализация проекта, серверный рендеринг, клиентское взаимодействие
 ---
 
 # Vue2
 
-В этом руководстве мы шаг за шагом создадим приложение Vue2 SSR с использованием фреймворка Gez. Мы рассмотрим полный пример, демонстрирующий, как использовать фреймворк Gez для создания приложения с серверным рендерингом.
+В этом руководстве мы шаг за шагом создадим приложение Vue2 SSR с использованием фреймворка Esmx. Мы рассмотрим полный пример, демонстрирующий, как использовать фреймворк Esmx для создания приложения с серверным рендерингом.
 
 ## Структура проекта
 
@@ -40,18 +40,18 @@ head:
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "gez dev",
+    "dev": "esmx dev",
     "build": "npm run build:dts && npm run build:ssr",
-    "build:ssr": "gez build",
-    "preview": "gez preview",
+    "build:ssr": "esmx build",
+    "preview": "esmx preview",
     "start": "NODE_ENV=production node dist/index.js",
     "build:dts": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/src"
   },
   "dependencies": {
-    "@gez/core": "*"
+    "@esmx/core": "*"
   },
   "devDependencies": {
-    "@gez/rspack-vue": "*",
+    "@esmx/rspack-vue": "*",
     "@types/node": "22.8.6",
     "typescript": "^5.7.3",
     "vue": "^2.7.16",
@@ -114,7 +114,7 @@ npm install
 ```html title="src/app.vue"
 <template>
     <div id="app">
-        <h1><a href="https://www.esmnext.com/guide/frameworks/vue2.html" target="_blank">Быстрый старт с Gez</a></h1>
+        <h1><a href="https://www.esmnext.com/guide/frameworks/vue2.html" target="_blank">Быстрый старт с Esmx</a></h1>
         <time :datetime="time">{{ time }}</time>
     </div>
 </template>
@@ -122,7 +122,7 @@ npm install
 <script setup lang="ts">
 /**
  * @file Пример компонента
- * @description Демонстрация заголовка страницы с автоматически обновляемым временем, иллюстрирующая базовые функции фреймворка Gez
+ * @description Демонстрация заголовка страницы с автоматически обновляемым временем, иллюстрирующая базовые функции фреймворка Esmx
  */
 
 import { onMounted, onUnmounted, ref } from 'vue';
@@ -196,18 +196,18 @@ app.$mount('#app');
  */
 
 import http from 'node:http';
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     /**
      * Конфигурация создателя приложения для среды разработки
      * @description Создает и конфигурирует экземпляр приложения Rspack для сборки и горячей перезагрузки в среде разработки
-     * @param gez Экземпляр фреймворка Gez, предоставляющий основные функции и интерфейсы конфигурации
+     * @param esmx Экземпляр фреймворка Esmx, предоставляющий основные функции и интерфейсы конфигурации
      * @returns Возвращает сконфигурированный экземпляр приложения Rspack, поддерживающий HMR и предварительный просмотр в реальном времени
      */
-    async devApp(gez) {
-        return import('@gez/rspack-vue').then((m) =>
-            m.createRspackVue2App(gez, {
+    async devApp(esmx) {
+        return import('@esmx/rspack-vue').then((m) =>
+            m.createRspackVue2App(esmx, {
                 config(context) {
                     // Здесь можно настроить конфигурацию компиляции Rspack
                 }
@@ -217,15 +217,15 @@ export default {
 
     /**
      * Конфигурация и запуск HTTP сервера
-     * @description Создает экземпляр HTTP сервера, интегрирует промежуточное ПО Gez для обработки запросов SSR
-     * @param gez Экземпляр фреймворка Gez, предоставляющий промежуточное ПО и функции рендеринга
+     * @description Создает экземпляр HTTP сервера, интегрирует промежуточное ПО Esmx для обработки запросов SSR
+     * @param esmx Экземпляр фреймворка Esmx, предоставляющий промежуточное ПО и функции рендеринга
      */
-    async server(gez) {
+    async server(esmx) {
         const server = http.createServer((req, res) => {
-            // Использование промежуточного ПО Gez для обработки запросов
-            gez.middleware(req, res, async () => {
+            // Использование промежуточного ПО Esmx для обработки запросов
+            esmx.middleware(req, res, async () => {
                 // Выполнение серверного рендеринга
-                const rc = await gez.render({
+                const rc = await esmx.render({
                     params: { url: req.url }
                 });
                 res.end(rc.html);
@@ -236,13 +236,13 @@ export default {
             console.log('Сервер запущен: http://localhost:3000');
         });
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 Этот файл является входным для конфигурации среды разработки и запуска сервера, содержащим две основные функции:
 
 1. Функция `devApp`: отвечает за создание и конфигурацию экземпляра приложения Rspack для среды разработки, поддерживает горячую перезагрузку и предварительный просмотр в реальном времени. Здесь используется `createRspackVue2App` для создания экземпляра приложения Rspack, предназначенного для Vue2.
-2. Функция `server`: отвечает за создание и конфигурацию HTTP сервера, интегрирует промежуточное ПО Gez для обработки запросов SSR.
+2. Функция `server`: отвечает за создание и конфигурацию HTTP сервера, интегрирует промежуточное ПО Esmx для обработки запросов SSR.
 
 ### entry.server.ts
 
@@ -254,7 +254,7 @@ export default {
  * @description Отвечает за процесс серверного рендеринга, генерацию HTML и инъекцию ресурсов
  */
 
-import type { RenderContext } from '@gez/core';
+import type { RenderContext } from '@esmx/core';
 import { createRenderer } from 'vue-server-renderer';
 import { createApp } from './create-app';
 
@@ -278,7 +278,7 @@ export default async (rc: RenderContext) => {
 <html lang="ru">
 <head>
     ${rc.preload()}
-    <title>Быстрый старт с Gez</title>
+    <title>Быстрый старт с Esmx</title>
     ${rc.css()}
 </head>
 <body>
@@ -311,4 +311,4 @@ npm run build
 npm run start
 ```
 
-Теперь вы успешно создали приложение Vue2 SSR с использованием фреймворка Gez! Перейдите по адресу http://localhost:3000, чтобы увидеть результат.
+Теперь вы успешно создали приложение Vue2 SSR с использованием фреймворка Esmx! Перейдите по адресу http://localhost:3000, чтобы увидеть результат.

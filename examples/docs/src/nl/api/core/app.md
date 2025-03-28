@@ -1,22 +1,22 @@
 ---
-titleSuffix: Gez Framework Applicatie Abstractie Interface
-description: Gedetailleerde uitleg over de App-interface van het Gez-framework, inclusief applicatie levenscyclusbeheer, statische bronbehandeling en server-side rendering functionaliteiten, om ontwikkelaars te helpen de kernfunctionaliteiten van de applicatie te begrijpen en te gebruiken.
+titleSuffix: Esmx Framework Applicatie Abstractie Interface
+description: Gedetailleerde uitleg over de App-interface van het Esmx-framework, inclusief applicatie levenscyclusbeheer, statische bronbehandeling en server-side rendering functionaliteiten, om ontwikkelaars te helpen de kernfunctionaliteiten van de applicatie te begrijpen en te gebruiken.
 head:
   - - meta
     - property: keywords
-      content: Gez, App, Applicatie Abstractie, Levenscyclus, Statische Bronnen, Server-side Rendering, API
+      content: Esmx, App, Applicatie Abstractie, Levenscyclus, Statische Bronnen, Server-side Rendering, API
 ---
 
 # App
 
-`App` is de applicatie abstractie van het Gez-framework, dat een uniforme interface biedt voor het beheren van de levenscyclus van de applicatie, statische bronnen en server-side rendering.
+`App` is de applicatie abstractie van het Esmx-framework, dat een uniforme interface biedt voor het beheren van de levenscyclus van de applicatie, statische bronnen en server-side rendering.
 
 ```ts title="entry.node.ts"
 export default {
   // Ontwikkelomgeving configuratie
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(rc) {
           // Aangepaste Rspack configuratie
         }
@@ -55,7 +55,7 @@ Productieomgeving:
 - Geoptimaliseerde bron laadstrategie
 
 ```ts
-server.use(gez.middleware);
+server.use(esmx.middleware);
 ```
 
 #### render
@@ -67,7 +67,7 @@ Server-side rendering functie. Biedt verschillende implementaties afhankelijk va
 - Ontwikkelomgeving (dev): Laadt het server-side ingangsbestand uit de broncode en voert rendering uit
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: '/page' }
 });
 res.end(rc.html);

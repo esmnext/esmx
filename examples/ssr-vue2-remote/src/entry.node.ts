@@ -1,18 +1,18 @@
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 import express from 'express';
 
 export default {
-    async devApp(gez) {
-        return import('@gez/rspack-vue').then((m) =>
-            m.createRspackVue2App(gez)
+    async devApp(esmx) {
+        return import('@esmx/rspack-vue').then((m) =>
+            m.createRspackVue2App(esmx)
         );
     },
-    async server(gez) {
+    async server(esmx) {
         const server = express();
-        server.use(gez.middleware);
+        server.use(esmx.middleware);
         server.get('*', async (req, res) => {
             res.setHeader('Content-Type', 'text/html;charset=UTF-8');
-            const result = await gez.render({
+            const result = await esmx.render({
                 importmapMode: 'js',
                 params: { url: '/' }
             });
@@ -37,13 +37,13 @@ export default {
             'root:src/examples/index.ts'
         ]
     },
-    async postBuild(gez) {
-        const render = await gez.render({
+    async postBuild(esmx) {
+        const render = await esmx.render({
             params: { url: '/' }
         });
-        gez.writeSync(
-            gez.resolvePath('dist/client', 'index.html'),
+        esmx.writeSync(
+            esmx.resolvePath('dist/client', 'index.html'),
             render.html
         );
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;

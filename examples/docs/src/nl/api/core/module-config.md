@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework Module Configuratie API Referentie
-description: Gedetailleerde uitleg over de ModuleConfig configuratie-interface van het Gez framework, inclusief module import/export regels, aliasconfiguratie en extern afhankelijkheidsbeheer, om ontwikkelaars te helpen het modulaire systeem van het framework beter te begrijpen.
+titleSuffix: Esmx Framework Module Configuratie API Referentie
+description: Gedetailleerde uitleg over de ModuleConfig configuratie-interface van het Esmx framework, inclusief module import/export regels, aliasconfiguratie en extern afhankelijkheidsbeheer, om ontwikkelaars te helpen het modulaire systeem van het framework beter te begrijpen.
 head:
   - - meta
     - property: keywords
-      content: Gez, ModuleConfig, moduleconfiguratie, module import/export, externe afhankelijkheden, aliasconfiguratie, afhankelijkheidsbeheer, webapplicatieframework
+      content: Esmx, ModuleConfig, moduleconfiguratie, module import/export, externe afhankelijkheden, aliasconfiguratie, afhankelijkheidsbeheer, webapplicatieframework
 ---
 
 # ModuleConfig
 
-ModuleConfig biedt de moduleconfiguratiefunctie van het Gez framework, gebruikt om de import/export regels, aliasconfiguratie en externe afhankelijkheden van modules te definiëren.
+ModuleConfig biedt de moduleconfiguratiefunctie van het Esmx framework, gebruikt om de import/export regels, aliasconfiguratie en externe afhankelijkheden van modules te definiëren.
 
 ## Type Definitie
 
@@ -74,7 +74,7 @@ Elke afhankelijkheid bevat de volgende eigenschappen:
 
 **Voorbeeld**:
 ```ts title="entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
@@ -100,7 +100,7 @@ export default {
       'vue-router': 'ssr-remote/npm/vue-router'
     }
   }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ### ParsedModuleConfig

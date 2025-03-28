@@ -5,7 +5,7 @@ import genSysCacheDir from 'cachedir';
 import type { FetchPkgOptions, FetchResult } from './types';
 import { downloadFile, getHashText } from './utils';
 
-const sysCacheDir = path.join(genSysCacheDir('npm-gez'), 'packages');
+const sysCacheDir = path.join(genSysCacheDir('npm-esmx'), 'packages');
 
 /**
  * 获取文件，并缓存到本地。如果有缓存则使用缓存

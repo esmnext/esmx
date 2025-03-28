@@ -1,15 +1,15 @@
 ---
-titleSuffix: Référence du fichier manifeste de construction du framework Gez
-description: Documentation détaillée sur la structure du fichier manifeste de construction (manifest.json) du framework Gez, incluant la gestion des artefacts de construction, le mappage des fichiers exportés et les statistiques de ressources, pour aider les développeurs à comprendre et utiliser le système de construction.
+titleSuffix: Référence du fichier manifeste de construction du framework Esmx
+description: Documentation détaillée sur la structure du fichier manifeste de construction (manifest.json) du framework Esmx, incluant la gestion des artefacts de construction, le mappage des fichiers exportés et les statistiques de ressources, pour aider les développeurs à comprendre et utiliser le système de construction.
 head:
   - - meta
     - property: keywords
-      content: Gez, ManifestJson, Manifeste de construction, Gestion des ressources, Artefacts de construction, Mappage de fichiers, API
+      content: Esmx, ManifestJson, Manifeste de construction, Gestion des ressources, Artefacts de construction, Mappage de fichiers, API
 ---
 
 # ManifestJson
 
-`manifest.json` est un fichier manifeste généré par le framework Gez lors du processus de construction, utilisé pour enregistrer les informations sur les artefacts de construction du service. Il fournit une interface unifiée pour gérer les artefacts de construction, les fichiers exportés et les statistiques de taille des ressources.
+`manifest.json` est un fichier manifeste généré par le framework Esmx lors du processus de construction, utilisé pour enregistrer les informations sur les artefacts de construction du service. Il fournit une interface unifiée pour gérer les artefacts de construction, les fichiers exportés et les statistiques de taille des ressources.
 
 ```json title="dist/client/manifest.json"
 {
@@ -71,7 +71,7 @@ interface ManifestJson {
 
 - **Type**: `string`
 
-Nom du service, provenant de la configuration GezOptions.name.
+Nom du service, provenant de la configuration EsmxOptions.name.
 
 #### exports
 

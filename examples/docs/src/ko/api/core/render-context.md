@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez 프레임워크 렌더링 컨텍스트 API 참조
-description: Gez 프레임워크의 RenderContext 핵심 클래스에 대해 자세히 설명합니다. 렌더링 제어, 리소스 관리, 상태 동기화 및 라우팅 제어 등의 기능을 포함하여 개발자가 효율적인 서버 사이드 렌더링(SSR)을 구현할 수 있도록 도와줍니다.
+titleSuffix: Esmx 프레임워크 렌더링 컨텍스트 API 참조
+description: Esmx 프레임워크의 RenderContext 핵심 클래스에 대해 자세히 설명합니다. 렌더링 제어, 리소스 관리, 상태 동기화 및 라우팅 제어 등의 기능을 포함하여 개발자가 효율적인 서버 사이드 렌더링(SSR)을 구현할 수 있도록 도와줍니다.
 head:
   - - meta
     - property: keywords
-      content: Gez, RenderContext, SSR, 서버 사이드 렌더링, 렌더링 컨텍스트, 상태 동기화, 리소스 관리, 웹 애플리케이션 프레임워크
+      content: Esmx, RenderContext, SSR, 서버 사이드 렌더링, 렌더링 컨텍스트, 상태 동기화, 리소스 관리, 웹 애플리케이션 프레임워크
 ---
 
 # RenderContext
 
-RenderContext는 Gez 프레임워크의 핵심 클래스로, 서버 사이드 렌더링(SSR)의 전체 생명주기를 관리합니다. 이 클래스는 렌더링 컨텍스트, 리소스 관리, 상태 동기화 등의 주요 작업을 처리하기 위한 완전한 API를 제공합니다:
+RenderContext는 Esmx 프레임워크의 핵심 클래스로, 서버 사이드 렌더링(SSR)의 전체 생명주기를 관리합니다. 이 클래스는 렌더링 컨텍스트, 리소스 관리, 상태 동기화 등의 주요 작업을 처리하기 위한 완전한 API를 제공합니다:
 
 - **렌더링 제어**: 서버 사이드 렌더링 프로세스를 관리하며, 다중 엔트리 렌더링, 조건부 렌더링 등의 시나리오를 지원합니다.
 - **리소스 관리**: JS, CSS 등의 정적 리소스를 지능적으로 수집하고 주입하여 로딩 성능을 최적화합니다.
@@ -148,7 +148,7 @@ export const desktop = async (rc: RenderContext) => {
 렌더링 매개변수입니다. 렌더링 함수에 임의의 타입의 매개변수를 전달할 수 있으며, 주로 요청 정보(URL, 쿼리 매개변수 등)를 전달하는 데 사용됩니다.
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     url: req.url,
     lang: 'zh-CN',
@@ -169,12 +169,12 @@ const rc = await gez.render({
 
 ## 인스턴스 속성
 
-### gez
+### esmx
 
-- **타입**: `Gez`
+- **타입**: `Esmx`
 - **읽기 전용**: `true`
 
-Gez 인스턴스 참조입니다. 프레임워크의 핵심 기능과 구성 정보에 접근하는 데 사용됩니다.
+Esmx 인스턴스 참조입니다. 프레임워크의 핵심 기능과 구성 정보에 접근하는 데 사용됩니다.
 
 ### redirect
 
@@ -264,7 +264,7 @@ export default async (rc: RenderContext) => {
 };
 
 // 동적 기본 경로
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/app',  // 기본 경로 설정
   params: { url: req.url }
 });
@@ -285,19 +285,19 @@ const rc = await gez.render({
 
 ```ts
 // 기본 사용법
-const rc = await gez.render({
-  base: '/gez',  // 기본 경로 설정
+const rc = await esmx.render({
+  base: '/esmx',  // 기본 경로 설정
   params: { url: req.url }
 });
 
 // 다국어 사이트 예시
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/cn',  // 중국어 사이트
   params: { lang: 'zh-CN' }
 });
 
 // 마이크로 프론트엔드 애플리케이션 예시
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/app1',  // 서브 애플리케이션1
   params: { appId: 1 }
 });
@@ -327,7 +327,7 @@ export const desktop = async (rc: RenderContext) => {
 };
 
 // 디바이스 타입에 따라 엔트리 함수 선택
-const rc = await gez.render({
+const rc = await esmx.render({
   entryName: isMobile ? 'mobile' : 'desktop',
   params: { url: req.url }
 });
@@ -343,7 +343,7 @@ const rc = await gez.render({
 
 ```ts
 // 기본 사용법 - URL 및 언어 설정 전달
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     url: req.url,
     lang: 'zh-CN'
@@ -351,7 +351,7 @@ const rc = await gez.render({
 });
 
 // 페이지 설정 - 테마 및 레이아웃 설정
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     theme: 'dark',
     layout: 'sidebar'
@@ -359,7 +359,7 @@ const rc = await gez.render({
 });
 
 // 환경 설정 - API 주소 주입
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     apiBaseUrl: process.env.API_BASE_URL,
     version: '1.0.0'

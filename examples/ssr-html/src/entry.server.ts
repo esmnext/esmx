@@ -1,4 +1,4 @@
-import type { RenderContext } from '@gez/core';
+import type { RenderContext } from '@esmx/core';
 import { getRoutePage } from './routes';
 
 export default async (rc: RenderContext) => {

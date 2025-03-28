@@ -1,10 +1,10 @@
 ---
-titleSuffix: Gez Framework Packaging Configuration API Reference
-description: รายละเอียดเกี่ยวกับอินเทอร์เฟซการกำหนดค่า PackConfig ของเฟรมเวิร์ก Gez รวมถึงกฎการแพ็คเกจซอฟต์แวร์ การกำหนดค่าผลลัพธ์ และฮุควงจรชีวิต ช่วยให้นักพัฒนาสามารถดำเนินกระบวนการสร้างมาตรฐานได้
+titleSuffix: Esmx Framework Packaging Configuration API Reference
+description: รายละเอียดเกี่ยวกับอินเทอร์เฟซการกำหนดค่า PackConfig ของเฟรมเวิร์ก Esmx รวมถึงกฎการแพ็คเกจซอฟต์แวร์ การกำหนดค่าผลลัพธ์ และฮุควงจรชีวิต ช่วยให้นักพัฒนาสามารถดำเนินกระบวนการสร้างมาตรฐานได้
 head:
   - - meta
     - property: keywords
-      content: Gez, PackConfig, การแพ็คเกจซอฟต์แวร์, การกำหนดค่าการสร้าง, ฮุควงจรชีวิต, การกำหนดค่าแพ็คเกจ, เว็บแอปพลิเคชันเฟรมเวิร์ก
+      content: Esmx, PackConfig, การแพ็คเกจซอฟต์แวร์, การกำหนดค่าการสร้าง, ฮุควงจรชีวิต, การกำหนดค่าแพ็คเกจ, เว็บแอปพลิเคชันเฟรมเวิร์ก
 ---
 
 # PackConfig
@@ -21,9 +21,9 @@ head:
 interface PackConfig {
     enable?: boolean;
     outputs?: string | string[] | boolean;
-    packageJson?: (gez: Gez, pkg: Record<string, any>) => Promise<Record<string, any>>;
-    onBefore?: (gez: Gez, pkg: Record<string, any>) => Promise<void>;
-    onAfter?: (gez: Gez, pkg: Record<string, any>, file: Buffer) => Promise<void>;
+    packageJson?: (esmx: Esmx, pkg: Record<string, any>) => Promise<Record<string, any>>;
+    onBefore?: (esmx: Esmx, pkg: Record<string, any>) => Promise<void>;
+    onAfter?: (esmx: Esmx, pkg: Record<string, any>, file: Buffer) => Promise<void>;
 }
 ```
 
@@ -48,7 +48,7 @@ interface PackConfig {
 ฟังก์ชันคอลแบ็กสำหรับกำหนดค่าเนื้อหา package.json โดยกำหนดเอง จะถูกเรียกใช้ก่อนการแพ็คเกจ เพื่อกำหนดค่าเนื้อหา package.json เอง
 
 - พารามิเตอร์:
-  - `gez: Gez` - อินสแตนซ์ Gez
+  - `esmx: Esmx` - อินสแตนซ์ Esmx
   - `pkg: any` - เนื้อหา package.json ดั้งเดิม
 - ค่าส่งกลับ: `Promise<any>` - เนื้อหา package.json ที่แก้ไขแล้ว
 
@@ -60,7 +60,7 @@ interface PackConfig {
 
 ตัวอย่าง:
 ```ts
-packageJson: async (gez, pkg) => {
+packageJson: async (esmx, pkg) => {
   // กำหนดข้อมูลแพ็คเกจ
   pkg.name = 'my-app';
   pkg.version = '1.0.0';
@@ -86,7 +86,7 @@ packageJson: async (gez, pkg) => {
 ฟังก์ชันคอลแบ็กสำหรับการเตรียมการก่อนการแพ็คเกจ
 
 - พารามิเตอร์:
-  - `gez: Gez` - อินสแตนซ์ Gez
+  - `esmx: Esmx` - อินสแตนซ์ Esmx
   - `pkg: Record<string, any>` - เนื้อหา package.json
 - ค่าส่งกลับ: `Promise<void>`
 
@@ -98,7 +98,7 @@ packageJson: async (gez, pkg) => {
 
 ตัวอย่าง:
 ```ts
-onBefore: async (gez, pkg) => {
+onBefore: async (esmx, pkg) => {
   // เพิ่มเอกสาร
   await fs.writeFile('dist/README.md', '# My App');
   await fs.writeFile('dist/LICENSE', 'MIT License');
@@ -119,7 +119,7 @@ onBefore: async (gez, pkg) => {
 ฟังก์ชันคอลแบ็กสำหรับการประมวลผลหลังการแพ็คเกจเสร็จสิ้น จะถูกเรียกใช้หลังจากสร้างไฟล์ .tgz แล้ว ใช้สำหรับประมวลผลผลลัพธ์การแพ็คเกจ
 
 - พารามิเตอร์:
-  - `gez: Gez` - อินสแตนซ์ Gez
+  - `esmx: Esmx` - อินสแตนซ์ Esmx
   - `pkg: Record<string, any>` - เนื้อหา package.json
   - `file: Buffer` - เนื้อหาไฟล์ที่แพ็คแล้ว
 - ค่าส่งกลับ: `Promise<void>`
@@ -132,7 +132,7 @@ onBefore: async (gez, pkg) => {
 
 ตัวอย่าง:
 ```ts
-onAfter: async (gez, pkg, file) => {
+onAfter: async (esmx, pkg, file) => {
   // เผยแพร่ไปยัง npm registry ส่วนตัว
   await publishToRegistry(file, {
     registry: 'https://registry.example.com'
@@ -152,7 +152,7 @@ onAfter: async (gez, pkg, file) => {
 ## ตัวอย่างการใช้งาน
 
 ```ts title="entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
@@ -176,13 +176,13 @@ export default {
     ],
 
     // กำหนดค่า package.json เอง
-    packageJson: async (gez, pkg) => {
+    packageJson: async (esmx, pkg) => {
       pkg.version = '1.0.0';
       return pkg;
     },
 
     // การเตรียมการก่อนการแพ็คเกจ
-    onBefore: async (gez, pkg) => {
+    onBefore: async (esmx, pkg) => {
       // เพิ่มไฟล์ที่จำเป็น
       await fs.writeFile('dist/README.md', '# Your App\n\nคำอธิบายการส่งออกโมดูล...');
       // ดำเนินการตรวจสอบประเภท
@@ -190,7 +190,7 @@ export default {
     },
 
     // การประมวลผลหลังการแพ็คเกจ
-    onAfter: async (gez, pkg, file) => {
+    onAfter: async (esmx, pkg, file) => {
       // เผยแพร่ไปยัง npm registry ส่วนตัว
       await publishToRegistry(file, {
         registry: 'https://npm.your-registry.com/'
@@ -199,5 +199,5 @@ export default {
       await uploadToServer(file, 'https://static.example.com/packages');
     }
   }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```

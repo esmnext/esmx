@@ -1,10 +1,10 @@
 ---
-titleSuffix: Gez 프레임워크 호환성 가이드
-description: Gez 프레임워크의 환경 요구사항을 상세히 설명하며, Node.js 버전 요구사항과 브라우저 호환성 정보를 포함하여 개발자가 개발 환경을 올바르게 구성할 수 있도록 돕습니다.
+titleSuffix: Esmx 프레임워크 호환성 가이드
+description: Esmx 프레임워크의 환경 요구사항을 상세히 설명하며, Node.js 버전 요구사항과 브라우저 호환성 정보를 포함하여 개발자가 개발 환경을 올바르게 구성할 수 있도록 돕습니다.
 head:
   - - meta
     - property: keywords
-      content: Gez, Node.js, 브라우저 호환성, TypeScript, es-module-shims, 환경 설정
+      content: Esmx, Node.js, 브라우저 호환성, TypeScript, es-module-shims, 환경 설정
 ---
 
 # 환경 요구사항

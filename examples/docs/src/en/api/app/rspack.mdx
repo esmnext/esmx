@@ -1,23 +1,23 @@
 ---
-titleSuffix: Gez Framework Rspack Build Tool
-description: The Rspack build tool for the Gez framework provides high-performance application building capabilities, supporting the development and building of standard applications and HTML applications, with built-in multiple resource processors and optimization configurations.
+titleSuffix: Esmx Framework Rspack Build Tool
+description: The Rspack build tool for the Esmx framework provides high-performance application building capabilities, supporting the development and building of standard applications and HTML applications, with built-in multiple resource processors and optimization configurations.
 head:
   - - meta
     - property: keywords
-      content: Gez, Rspack, Build Tool, Application Building, HTML Application, TypeScript, CSS, Resource Processing, Performance Optimization
+      content: Esmx, Rspack, Build Tool, Application Building, HTML Application, TypeScript, CSS, Resource Processing, Performance Optimization
 ---
 
 import { PackageManagerTabs } from '@theme';
 
-# @gez/rspack
+# @esmx/rspack
 
 The Rspack package provides a set of APIs for creating and configuring Rspack applications, supporting the building and development of standard applications and HTML applications.
 
 ## Installation
 
-Install `@gez/rspack` as a development dependency using a package manager:
+Install `@esmx/rspack` as a development dependency using a package manager:
 
-<PackageManagerTabs command="install @gez/rspack -D" />
+<PackageManagerTabs command="install @esmx/rspack -D" />
 
 ## Type Exports
 
@@ -36,7 +36,7 @@ The build target environment type defines the target environment for the applica
 
 ```ts
 interface RspackAppConfigContext {
-  gez: Gez
+  esmx: Esmx
   buildTarget: BuildTarget
   config: RspackOptions
   options: RspackAppOptions
@@ -44,7 +44,7 @@ interface RspackAppConfigContext {
 ```
 
 The Rspack application configuration context interface provides context information accessible within configuration hook functions:
-- `gez`: Gez framework instance
+- `esmx`: Esmx framework instance
 - `buildTarget`: Current build target (client/server/node)
 - `config`: Rspack configuration object
 - `options`: Application configuration options
@@ -86,13 +86,13 @@ Extends `RspackAppOptions`, used to configure specific options for HTML applicat
 ### createRspackApp
 
 ```ts
-function createRspackApp(gez: Gez, options?: RspackAppOptions): Promise<App>
+function createRspackApp(esmx: Esmx, options?: RspackAppOptions): Promise<App>
 ```
 
 Creates a standard Rspack application instance.
 
 **Parameters:**
-- `gez`: Gez framework instance
+- `esmx`: Esmx framework instance
 - `options`: Rspack application configuration options
 
 **Returns:**
@@ -101,13 +101,13 @@ Creates a standard Rspack application instance.
 ### createRspackHtmlApp
 
 ```ts
-function createRspackHtmlApp(gez: Gez, options?: RspackHtmlAppOptions): Promise<App>
+function createRspackHtmlApp(esmx: Esmx, options?: RspackHtmlAppOptions): Promise<App>
 ```
 
 Creates an HTML-type Rspack application instance.
 
 **Parameters:**
-- `gez`: Gez framework instance
+- `esmx`: Esmx framework instance
 - `options`: HTML application configuration options
 
 **Returns:**
@@ -141,12 +141,12 @@ A mapping object of Rspack's built-in loader identifiers, providing commonly use
 Using these constants allows referencing built-in loaders in configurations, avoiding manual string input:
 
 ```ts title="src/entry.node.ts"
-import { RSPACK_LOADER } from '@gez/rspack';
+import { RSPACK_LOADER } from '@esmx/rspack';
 
 export default {
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         loaders: {
           // Use constants to reference loaders
           styleLoader: RSPACK_LOADER.styleLoader,

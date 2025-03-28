@@ -4,18 +4,18 @@
  */
 
 import http from 'node:http';
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     /**
      * 配置开发环境的应用创建器
      * @description 创建并配置 Rspack 应用实例，用于开发环境的构建和热更新
-     * @param gez Gez 框架实例，提供核心功能和配置接口
+     * @param esmx Esmx 框架实例，提供核心功能和配置接口
      * @returns 返回配置好的 Rspack 应用实例，支持 HMR 和实时预览
      */
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createRspackHtmlApp(gez, {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createRspackHtmlApp(esmx, {
                 config(context) {
                     // 在此处自定义 Rspack 编译配置
                 }
@@ -25,15 +25,15 @@ export default {
 
     /**
      * 配置并启动 HTTP 服务器
-     * @description 创建 HTTP 服务器实例，集成 Gez 中间件，处理 SSR 请求
-     * @param gez Gez 框架实例，提供中间件和渲染功能
+     * @description 创建 HTTP 服务器实例，集成 Esmx 中间件，处理 SSR 请求
+     * @param esmx Esmx 框架实例，提供中间件和渲染功能
      */
-    async server(gez) {
+    async server(esmx) {
         const server = http.createServer((req, res) => {
-            // 使用 Gez 中间件处理请求
-            gez.middleware(req, res, async () => {
+            // 使用 Esmx 中间件处理请求
+            esmx.middleware(req, res, async () => {
                 // 执行服务端渲染
-                const rc = await gez.render({
+                const rc = await esmx.render({
                     params: { url: req.url }
                 });
                 res.end(rc.html);
@@ -44,4 +44,4 @@ export default {
             console.log('服务启动: http://localhost:3000');
         });
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;

@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez 框架渲染上下文 API 参考
-description: 详细介绍 Gez 框架的 RenderContext 核心类，包括渲染控制、资源管理、状态同步和路由控制等功能，帮助开发者实现高效的服务端渲染。
+titleSuffix: Esmx 框架渲染上下文 API 参考
+description: 详细介绍 Esmx 框架的 RenderContext 核心类，包括渲染控制、资源管理、状态同步和路由控制等功能，帮助开发者实现高效的服务端渲染。
 head:
   - - meta
     - property: keywords
-      content: Gez, RenderContext, SSR, 服务端渲染, 渲染上下文, 状态同步, 资源管理, Web 应用框架
+      content: Esmx, RenderContext, SSR, 服务端渲染, 渲染上下文, 状态同步, 资源管理, Web 应用框架
 ---
 
 # RenderContext
 
-RenderContext 是 Gez 框架中的核心类，负责管理服务端渲染（SSR）的完整生命周期。它提供了一套完整的 API 来处理渲染上下文、资源管理、状态同步等关键任务：
+RenderContext 是 Esmx 框架中的核心类，负责管理服务端渲染（SSR）的完整生命周期。它提供了一套完整的 API 来处理渲染上下文、资源管理、状态同步等关键任务：
 
 - **渲染控制**：管理服务端渲染流程，支持多入口渲染、条件渲染等场景
 - **资源管理**：智能收集和注入 JS、CSS 等静态资源，优化加载性能
@@ -148,7 +148,7 @@ export const desktop = async (rc: RenderContext) => {
 渲染参数。可以传递任意类型的参数给渲染函数，常用于传递请求信息（URL、query 参数等）。
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     url: req.url,
     lang: 'zh-CN',
@@ -169,12 +169,12 @@ const rc = await gez.render({
 
 ## 实例属性
 
-### gez
+### esmx
 
-- **类型**: `Gez`
+- **类型**: `Esmx`
 - **只读**: `true`
 
-Gez 实例引用。用于访问框架核心功能和配置信息。
+Esmx 实例引用。用于访问框架核心功能和配置信息。
 
 ### redirect
 
@@ -264,7 +264,7 @@ export default async (rc: RenderContext) => {
 };
 
 // 动态基础路径
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/app',  // 设置基础路径
   params: { url: req.url }
 });
@@ -285,19 +285,19 @@ const rc = await gez.render({
 
 ```ts
 // 基础用法
-const rc = await gez.render({
-  base: '/gez',  // 设置基础路径
+const rc = await esmx.render({
+  base: '/esmx',  // 设置基础路径
   params: { url: req.url }
 });
 
 // 多语言站点示例
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/cn',  // 中文站点
   params: { lang: 'zh-CN' }
 });
 
 // 微前端应用示例
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/app1',  // 子应用1
   params: { appId: 1 }
 });
@@ -327,7 +327,7 @@ export const desktop = async (rc: RenderContext) => {
 };
 
 // 根据设备类型选择入口函数
-const rc = await gez.render({
+const rc = await esmx.render({
   entryName: isMobile ? 'mobile' : 'desktop',
   params: { url: req.url }
 });
@@ -343,7 +343,7 @@ const rc = await gez.render({
 
 ```ts
 // 基础用法 - 传递 URL 和语言设置
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     url: req.url,
     lang: 'zh-CN'
@@ -351,7 +351,7 @@ const rc = await gez.render({
 });
 
 // 页面配置 - 设置主题和布局
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     theme: 'dark',
     layout: 'sidebar'
@@ -359,7 +359,7 @@ const rc = await gez.render({
 });
 
 // 环境配置 - 注入 API 地址
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     apiBaseUrl: process.env.API_BASE_URL,
     version: '1.0.0'

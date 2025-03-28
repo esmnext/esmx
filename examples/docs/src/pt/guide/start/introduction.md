@@ -1,16 +1,16 @@
 ---
-titleSuffix: Visão Geral e Inovações Técnicas do Framework Gez
-description: Aprofunde-se no contexto do projeto, evolução técnica e vantagens principais do framework de micro front-end Gez, explorando soluções modernas de renderização no lado do servidor baseadas em ESM.
+titleSuffix: Visão Geral e Inovações Técnicas do Framework Esmx
+description: Aprofunde-se no contexto do projeto, evolução técnica e vantagens principais do framework de micro front-end Esmx, explorando soluções modernas de renderização no lado do servidor baseadas em ESM.
 head:
   - - meta
     - property: keywords
-      content: Gez, micro front-end, ESM, renderização no servidor, SSR, inovação técnica, module federation
+      content: Esmx, micro front-end, ESM, renderização no servidor, SSR, inovação técnica, module federation
 ---
 
 # Introdução
 
 ## Contexto do Projeto
-Gez é um framework moderno de micro front-end baseado em ECMAScript Modules (ESM), focado na construção de aplicações de renderização no servidor (SSR) de alto desempenho e escaláveis. Como a terceira geração do projeto Genesis, Gez tem inovado continuamente ao longo de sua evolução técnica:
+Esmx é um framework moderno de micro front-end baseado em ECMAScript Modules (ESM), focado na construção de aplicações de renderização no servidor (SSR) de alto desempenho e escaláveis. Como a terceira geração do projeto Genesis, Esmx tem inovado continuamente ao longo de sua evolução técnica:
 
 - **v1.0**: Implementação de carregamento sob demanda de componentes remotos baseado em requisições HTTP
 - **v2.0**: Integração de aplicações baseada em Webpack Module Federation
@@ -27,7 +27,7 @@ No desenvolvimento da arquitetura de micro front-end, as soluções tradicionais
 - **Limitações do ecossistema**: Acoplamento de frameworks e APIs personalizadas restringem a escolha de pilhas tecnológicas
 
 ### Inovações Técnicas
-Gez oferece uma nova solução baseada em padrões web modernos:
+Esmx oferece uma nova solução baseada em padrões web modernos:
 
 - **Sistema de módulos nativo**: Utiliza ESM nativo do navegador e Import Maps para gerenciamento de dependências, com maior velocidade de análise e execução
 - **Mecanismo de isolamento padrão**: Isolamento confiável de aplicações baseado no escopo de módulos ECMAScript
@@ -36,7 +36,7 @@ Gez oferece uma nova solução baseada em padrões web modernos:
 - **Otimização de desempenho máxima**: Zero sobrecarga em tempo de execução através de capacidades nativas, combinado com estratégias de cache inteligentes
 
 :::tip
-Gez foca em fornecer infraestrutura de micro front-end de alto desempenho e fácil expansão, especialmente adequada para cenários de aplicações de renderização no servidor em larga escala.
+Esmx foca em fornecer infraestrutura de micro front-end de alto desempenho e fácil expansão, especialmente adequada para cenários de aplicações de renderização no servidor em larga escala.
 :::
 
 ## Especificações Técnicas
@@ -50,7 +50,7 @@ Consulte o documento [Requisitos de Ambiente](/guide/start/environment) para obt
 - **Ferramentas de desenvolvimento**: Suporta atualização em tempo real (hot reload) de ESM e execução nativa de TypeScript
 
 ## Posicionamento do Framework
-Gez difere de [Next.js](https://nextjs.org) ou [Nuxt.js](https://nuxt.com/), focando em fornecer infraestrutura de micro front-end:
+Esmx difere de [Next.js](https://nextjs.org) ou [Nuxt.js](https://nuxt.com/), focando em fornecer infraestrutura de micro front-end:
 
 - **Sistema de vinculação de módulos**: Implementa importação e exportação de módulos eficiente e confiável
 - **Renderização no servidor**: Oferece mecanismos flexíveis de implementação de SSR
@@ -75,4 +75,4 @@ Gez difere de [Next.js](https://nextjs.org) ou [Nuxt.js](https://nuxt.com/), foc
 - **Carregamento sob demanda**: Gerenciamento refinado de divisão de código e dependências
 
 ## Maturidade do Projeto
-Gez, através de quase 5 anos de iteração e evolução (v1.0 a v3.0), foi amplamente validado em ambientes empresariais. Atualmente, suporta dezenas de projetos de negócios em execução estável, e continua a impulsionar a modernização da pilha tecnológica. A estabilidade, confiabilidade e vantagens de desempenho do framework foram amplamente comprovadas na prática, fornecendo uma base técnica confiável para o desenvolvimento de aplicações em larga escala.
+Esmx, através de quase 5 anos de iteração e evolução (v1.0 a v3.0), foi amplamente validado em ambientes empresariais. Atualmente, suporta dezenas de projetos de negócios em execução estável, e continua a impulsionar a modernização da pilha tecnológica. A estabilidade, confiabilidade e vantagens de desempenho do framework foram amplamente comprovadas na prática, fornecendo uma base técnica confiável para o desenvolvimento de aplicações em larga escala.

@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Çerçevesi Modül İçe Aktarma Yolu Eşleme Kılavuzu
-description: Gez çerçevesinin yol takma adı mekanizmasını detaylı olarak açıklar, içe aktarma yollarını basitleştirme, derin iç içe geçmiş yapıları önleme, tür güvenliği ve modül çözümleme optimizasyonu gibi özellikleri içerir, geliştiricilerin kod bakımını kolaylaştırmasına yardımcı olur.
+titleSuffix: Esmx Çerçevesi Modül İçe Aktarma Yolu Eşleme Kılavuzu
+description: Esmx çerçevesinin yol takma adı mekanizmasını detaylı olarak açıklar, içe aktarma yollarını basitleştirme, derin iç içe geçmiş yapıları önleme, tür güvenliği ve modül çözümleme optimizasyonu gibi özellikleri içerir, geliştiricilerin kod bakımını kolaylaştırmasına yardımcı olur.
 head:
   - - meta
     - property: keywords
-      content: Gez, Yol Takma Adı, Path Alias, TypeScript, Modül İçe Aktarma, Yol Eşleme, Kod Bakımı
+      content: Esmx, Yol Takma Adı, Path Alias, TypeScript, Modül İçe Aktarma, Yol Eşleme, Kod Bakımı
 ---
 
 # Yol Takma Adı
 
-Yol takma adı (Path Alias), geliştiricilerin tam modül yolu yerine kısa ve anlamsal tanımlayıcılar kullanmasına olanak tanıyan bir modül içe aktarma yolu eşleme mekanizmasıdır. Gez'de, yol takma adı mekanizması aşağıdaki avantajlara sahiptir:
+Yol takma adı (Path Alias), geliştiricilerin tam modül yolu yerine kısa ve anlamsal tanımlayıcılar kullanmasına olanak tanıyan bir modül içe aktarma yolu eşleme mekanizmasıdır. Esmx'de, yol takma adı mekanizması aşağıdaki avantajlara sahiptir:
 
 - **İçe Aktarma Yollarını Basitleştirme**: Uzun göreli yollar yerine anlamsal takma adlar kullanarak kod okunabilirliğini artırır
 - **Derin İç İçe Geçmiş Yapıları Önleme**: Çok seviyeli dizin referanslarını (örneğin `../../../../`) ortadan kaldırarak bakım zorluğunu azaltır
@@ -18,7 +18,7 @@ Yol takma adı (Path Alias), geliştiricilerin tam modül yolu yerine kısa ve a
 
 ## Varsayılan Takma Ad Mekanizması
 
-Gez, hizmet adına (Service Name) dayalı otomatik takma ad mekanizmasını kullanır. Bu yapılandırma üzerine tercih edilen tasarım aşağıdaki özelliklere sahiptir:
+Esmx, hizmet adına (Service Name) dayalı otomatik takma ad mekanizmasını kullanır. Bu yapılandırma üzerine tercih edilen tasarım aşağıdaki özelliklere sahiptir:
 
 - **Otomatik Yapılandırma**: `package.json` dosyasındaki `name` alanına dayalı olarak otomatik olarak takma ad oluşturur, manuel yapılandırma gerektirmez
 - **Tutarlı Standartlar**: Tüm hizmet modüllerinin tutarlı bir adlandırma ve referans standardını takip etmesini sağlar
@@ -112,13 +112,13 @@ import { logger } from 'uzak-hizmet/src/utils';
 
 ### Özel Takma Adlar
 
-Üçüncü taraf paketler veya özel senaryolar için Gez yapılandırma dosyası üzerinden özel takma adlar tanımlanabilir:
+Üçüncü taraf paketler veya özel senaryolar için Esmx yapılandırma dosyası üzerinden özel takma adlar tanımlanabilir:
 
 ```ts title="src/entry.node.ts"
 export default {
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createApp(gez, (buildContext) => {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createApp(esmx, (buildContext) => {
                 buildContext.config.resolve = {
                     ...buildContext.config.resolve,
                     alias: {
@@ -133,7 +133,7 @@ export default {
             })
         );
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ::: uyarı Dikkat Edilmesi Gerekenler

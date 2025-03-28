@@ -1,13 +1,13 @@
 ---
 pageType: home
 titleSuffix: High-performance ESM-based Server-Side Rendering Framework
-description: Gez is a high-performance ESM-based server-side rendering framework that provides complete SSR capabilities, intelligent rendering context, and an innovative module linking system, suitable for large-scale web application development.
+description: Esmx is a high-performance ESM-based server-side rendering framework that provides complete SSR capabilities, intelligent rendering context, and an innovative module linking system, suitable for large-scale web application development.
 head:
   - - meta
     - property: keywords
-      content: Gez, SSR, ESM, Server-Side Rendering, Module Linking, Vue, React, TypeScript, Micro Frontend
+      content: Esmx, SSR, ESM, Server-Side Rendering, Module Linking, Vue, React, TypeScript, Micro Frontend
 hero:
-  name: Gez
+  name: Esmx
   text: ESM-based Server-Side Rendering Framework
   tagline: High-performance, scalable module linking system
   actions:
@@ -16,7 +16,7 @@ hero:
       link: /guide/start/getting-started
     - theme: alt
       text: GitHub
-      link: https://github.com/js-esm/gez
+      link: https://github.com/js-esm/esmx
 
 features:
   - icon: ⚡️

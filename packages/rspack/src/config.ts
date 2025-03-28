@@ -1,5 +1,5 @@
-import type { Gez } from '@gez/core';
-import { moduleLinkPlugin } from '@gez/rspack-module-link-plugin';
+import type { Esmx } from '@esmx/core';
+import { moduleLinkPlugin } from '@esmx/rspack-module-link-plugin';
 import {
     type ExternalItem,
     type Plugins,
@@ -14,32 +14,32 @@ import type { BuildTarget } from './build-target';
  * 构建 Client、Server、Node 的基础配置
  */
 export function createRspackConfig(
-    gez: Gez,
+    esmx: Esmx,
     buildTarget: BuildTarget,
     options: RspackAppOptions
 ): RspackOptions {
     const isWebApp = buildTarget === 'client' || buildTarget === 'server';
-    const isHot = buildTarget === 'client' && !gez.isProd;
+    const isHot = buildTarget === 'client' && !esmx.isProd;
     return {
         /**
          * 项目根目录，不可修改
          */
-        context: gez.root,
+        context: esmx.root,
         entry: (() => {
             const importPaths: string[] = [];
             switch (buildTarget) {
                 case 'client':
-                    importPaths.push(gez.resolvePath('src/entry.client.ts'));
+                    importPaths.push(esmx.resolvePath('src/entry.client.ts'));
                     isHot &&
                         importPaths.push(
-                            `${resolve('webpack-hot-middleware/client')}?path=${gez.basePath}hot-middleware&timeout=5000&overlay=false`
+                            `${resolve('webpack-hot-middleware/client')}?path=${esmx.basePath}hot-middleware&timeout=5000&overlay=false`
                         );
                     break;
                 case 'server':
-                    importPaths.push(gez.resolvePath('src/entry.server.ts'));
+                    importPaths.push(esmx.resolvePath('src/entry.server.ts'));
                     break;
                 case 'node':
-                    importPaths.push(gez.resolvePath('src/entry.node.ts'));
+                    importPaths.push(esmx.resolvePath('src/entry.node.ts'));
                     break;
             }
             return {
@@ -49,42 +49,42 @@ export function createRspackConfig(
             };
         })(),
         output: {
-            clean: gez.isProd,
+            clean: esmx.isProd,
             module: true,
-            chunkFormat: gez.isProd ? 'module' : undefined,
-            chunkLoading: gez.isProd ? 'import' : undefined,
-            chunkFilename: gez.isProd
+            chunkFormat: esmx.isProd ? 'module' : undefined,
+            chunkLoading: esmx.isProd ? 'import' : undefined,
+            chunkFilename: esmx.isProd
                 ? 'chunks/[name].[contenthash:8].final.js'
                 : 'chunks/[name].js',
             library: {
-                type: gez.isProd ? 'modern-module' : 'module'
+                type: esmx.isProd ? 'modern-module' : 'module'
             },
             filename:
-                buildTarget !== 'node' && gez.isProd
+                buildTarget !== 'node' && esmx.isProd
                     ? '[name].[contenthash:8].final.js'
                     : '[name].js',
-            cssFilename: gez.isProd
+            cssFilename: esmx.isProd
                 ? '[name].[contenthash:8].final.css'
                 : '[name].css',
-            cssChunkFilename: gez.isProd
+            cssChunkFilename: esmx.isProd
                 ? 'chunks/[name].[contenthash:8].final.css'
                 : 'chunks/[name].css',
             publicPath:
                 buildTarget === 'client'
                     ? 'auto'
-                    : `${gez.basePathPlaceholder}${gez.basePath}`,
-            uniqueName: gez.varName,
+                    : `${esmx.basePathPlaceholder}${esmx.basePath}`,
+            uniqueName: esmx.varName,
             hotUpdateChunkFilename: '__hot__/[id].[fullhash].hot-update.js',
             hotUpdateMainFilename:
                 '__hot__/[runtime].[fullhash].hot-update.json',
             path: ((): string => {
                 switch (buildTarget) {
                     case 'client':
-                        return gez.resolvePath('dist/client');
+                        return esmx.resolvePath('dist/client');
                     case 'server':
-                        return gez.resolvePath('dist/server');
+                        return esmx.resolvePath('dist/server');
                     case 'node':
-                        return gez.resolvePath('dist/node');
+                        return esmx.resolvePath('dist/node');
                 }
             })(),
             environment: {
@@ -99,7 +99,7 @@ export function createRspackConfig(
                     prefix: buildTarget
                 }),
                 // 模块链接插件
-                isWebApp ? moduleLinkPlugin(gez.moduleConfig) : false,
+                isWebApp ? moduleLinkPlugin(esmx.moduleConfig) : false,
                 // 热更新插件
                 isHot ? new rspack.HotModuleReplacementPlugin() : false
             ];
@@ -124,13 +124,13 @@ export function createRspackConfig(
         },
         resolve: {
             alias: {
-                [gez.name]: gez.root
+                [esmx.name]: esmx.root
             }
         },
         optimization: {
-            minimize: options.minimize ?? gez.isProd,
-            avoidEntryIife: gez.isProd,
-            concatenateModules: gez.isProd,
+            minimize: options.minimize ?? esmx.isProd,
+            avoidEntryIife: esmx.isProd,
+            concatenateModules: esmx.isProd,
             emitOnErrors: true,
             splitChunks: {
                 chunks: 'async'
@@ -161,8 +161,8 @@ export function createRspackConfig(
             }
         },
         target: buildTarget === 'client' ? 'web' : 'node22.6',
-        mode: gez.isProd ? 'production' : 'development',
-        cache: !gez.isProd
+        mode: esmx.isProd ? 'production' : 'development',
+        cache: !esmx.isProd
     };
 }
 

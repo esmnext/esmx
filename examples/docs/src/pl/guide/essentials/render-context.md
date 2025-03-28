@@ -1,15 +1,15 @@
 ---
-titleSuffix: Mechanizmy renderowania po stronie serwera w frameworku Gez
-description: Szczegółowy opis mechanizmu kontekstu renderowania (RenderContext) w frameworku Gez, obejmujący zarządzanie zasobami, generowanie HTML oraz system modułów ESM, pomagający programistom zrozumieć i wykorzystać funkcje renderowania po stronie serwera.
+titleSuffix: Mechanizmy renderowania po stronie serwera w frameworku Esmx
+description: Szczegółowy opis mechanizmu kontekstu renderowania (RenderContext) w frameworku Esmx, obejmujący zarządzanie zasobami, generowanie HTML oraz system modułów ESM, pomagający programistom zrozumieć i wykorzystać funkcje renderowania po stronie serwera.
 head:
   - - meta
     - property: keywords
-      content: Gez, kontekst renderowania, RenderContext, SSR, renderowanie po stronie serwera, ESM, zarządzanie zasobami
+      content: Esmx, kontekst renderowania, RenderContext, SSR, renderowanie po stronie serwera, ESM, zarządzanie zasobami
 ---
 
 # Kontekst renderowania
 
-RenderContext to klasa rdzeniowa w frameworku Gez, odpowiedzialna głównie za zarządzanie zasobami i generowanie HTML podczas procesu renderowania po stronie serwera (SSR). Posiada następujące kluczowe cechy:
+RenderContext to klasa rdzeniowa w frameworku Esmx, odpowiedzialna głównie za zarządzanie zasobami i generowanie HTML podczas procesu renderowania po stronie serwera (SSR). Posiada następujące kluczowe cechy:
 
 1. **System modułów oparty na ESM**
    - Wykorzystuje nowoczesny standard ECMAScript Modules
@@ -33,15 +33,15 @@ RenderContext to klasa rdzeniowa w frameworku Gez, odpowiedzialna głównie za z
 
 ## Sposób użycia
 
-W frameworku Gez programiści zazwyczaj nie muszą bezpośrednio tworzyć instancji RenderContext, lecz mogą uzyskać instancję poprzez metodę `gez.render()`:
+W frameworku Esmx programiści zazwyczaj nie muszą bezpośrednio tworzyć instancji RenderContext, lecz mogą uzyskać instancję poprzez metodę `esmx.render()`:
 
 ```ts title="src/entry.node.ts"
-async server(gez) {
+async server(esmx) {
     const server = http.createServer((req, res) => {
         // Obsługa plików statycznych
-        gez.middleware(req, res, async () => {
-            // Uzyskanie instancji RenderContext poprzez gez.render()
-            const rc = await gez.render({
+        esmx.middleware(req, res, async () => {
+            // Uzyskanie instancji RenderContext poprzez esmx.render()
+            const rc = await esmx.render({
                 params: {
                     url: req.url
                 }
@@ -141,8 +141,8 @@ export default async (rc: RenderContext) => {
 RenderContext zapewnia elastyczny mechanizm dynamicznej konfiguracji ścieżki bazowej, umożliwiający dynamiczne ustawienie ścieżki bazowej dla zasobów statycznych w czasie wykonywania:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
-    base: '/gez',  // Ustawienie ścieżki bazowej
+const rc = await esmx.render({
+    base: '/esmx',  // Ustawienie ścieżki bazowej
     params: {
         url: req.url
     }
@@ -179,7 +179,7 @@ RenderContext oferuje dwa tryby mapowania importu (Import Map):
 Można wybrać odpowiedni tryb poprzez konfigurację:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     importmapMode: 'js',  // 'inline' | 'js'
     params: {
         url: req.url
@@ -192,7 +192,7 @@ const rc = await gez.render({
 RenderContext obsługuje konfigurację `entryName` w celu określenia funkcji wejściowej dla renderowania po stronie serwera:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     entryName: 'mobile',  // Określenie użycia funkcji wejściowej dla urządzeń mobilnych
     params: {
         url: req.url
@@ -228,7 +228,7 @@ Ten mechanizm jest szczególnie przydatny w następujących scenariuszach:
 ## Najlepsze praktyki
 
 1. **Uzyskiwanie instancji RenderContext**
-   - Zawsze uzyskuj instancję poprzez metodę `gez.render()`
+   - Zawsze uzyskuj instancję poprzez metodę `esmx.render()`
    - Przekazuj odpowiednie parametry w zależności od potrzeb
    - Unikaj ręcznego tworzenia instancji
 

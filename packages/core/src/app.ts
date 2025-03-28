@@ -1,6 +1,6 @@
 import { pathToFileURL } from 'node:url';
-import { createLoaderImport } from '@gez/import';
-import type { COMMAND, Gez } from './gez';
+import { createLoaderImport } from '@esmx/import';
+import type { COMMAND, Esmx } from './esmx';
 import {
     RenderContext,
     type RenderContextOptions,
@@ -11,7 +11,7 @@ import { type Middleware, createMiddleware } from './utils/middleware';
 /**
  * 应用程序实例接口。
  *
- * App 是 Gez 框架的应用抽象，提供了统一的接口来管理应用的生命周期、
+ * App 是 Esmx 框架的应用抽象，提供了统一的接口来管理应用的生命周期、
  * 静态资源和服务端渲染。
  *
  * @example
@@ -19,9 +19,9 @@ import { type Middleware, createMiddleware } from './utils/middleware';
  * // entry.node.ts
  * export default {
  *   // 开发环境配置
- *   async devApp(gez) {
- *     return import('@gez/rspack').then((m) =>
- *       m.createRspackHtmlApp(gez, {
+ *   async devApp(esmx) {
+ *     return import('@esmx/rspack').then((m) =>
+ *       m.createRspackHtmlApp(esmx, {
  *         config(rc) {
  *           // 自定义 Rspack 配置
  *         }
@@ -47,7 +47,7 @@ export interface App {
      *
      * @example
      * ```ts
-     * server.use(gez.middleware);
+     * server.use(esmx.middleware);
      * ```
      */
     middleware: Middleware;
@@ -64,7 +64,7 @@ export interface App {
      *
      * @example
      * ```ts
-     * const rc = await gez.render({
+     * const rc = await esmx.render({
      *   params: { url: '/page' }
      * });
      * res.end(rc.html);
@@ -92,13 +92,13 @@ export interface App {
 /**
  * 创建生产环境的应用程序实例，开发环境不可用。
  */
-export async function createApp(gez: Gez, command: COMMAND): Promise<App> {
+export async function createApp(esmx: Esmx, command: COMMAND): Promise<App> {
     const render =
-        command === gez.COMMAND.start
-            ? await createStartRender(gez) // 提供实际的渲染函数
-            : createErrorRender(gez); // 提供错误提示渲染函数
+        command === esmx.COMMAND.start
+            ? await createStartRender(esmx) // 提供实际的渲染函数
+            : createErrorRender(esmx); // 提供错误提示渲染函数
     return {
-        middleware: createMiddleware(gez),
+        middleware: createMiddleware(esmx),
         render
     };
 }
@@ -107,7 +107,7 @@ export async function createApp(gez: Gez, command: COMMAND): Promise<App> {
  * 创建生产环境渲染函数。
  * 加载构建后的服务端入口文件（entry.server）执行渲染。
  *
- * @param gez - Gez 实例
+ * @param esmx - Esmx 实例
  * @returns 返回渲染函数
  * @internal
  *
@@ -119,14 +119,14 @@ export async function createApp(gez: Gez, command: COMMAND): Promise<App> {
  * }
  * ```
  */
-async function createStartRender(gez: Gez) {
-    const baseURL = pathToFileURL(gez.root) as URL;
-    const importMap = await gez.getImportMap('server');
+async function createStartRender(esmx: Esmx) {
+    const baseURL = pathToFileURL(esmx.root) as URL;
+    const importMap = await esmx.getImportMap('server');
     const loaderImport = createLoaderImport(baseURL, importMap);
 
     return async (options?: RenderContextOptions): Promise<RenderContext> => {
-        const rc = new RenderContext(gez, options);
-        const result = await loaderImport(`${gez.name}/src/entry.server`);
+        const rc = new RenderContext(esmx, options);
+        const result = await loaderImport(`${esmx.name}/src/entry.server`);
         const serverRender: ServerRenderHandle = result[rc.entryName];
         if (typeof serverRender === 'function') {
             await serverRender(rc);
@@ -135,7 +135,7 @@ async function createStartRender(gez: Gez) {
     };
 }
 
-function createErrorRender(gez: Gez) {
+function createErrorRender(esmx: Esmx) {
     return (options?: RenderContextOptions) => {
         throw new Error(
             `App instance is only available in production and can only execute built artifacts.`

@@ -1,13 +1,13 @@
 ---
 pageType: home
 titleSuffix: 基於 ESM 的高效能服務端渲染框架
-description: Gez 是一個基於 ESM 的高效能服務端渲染框架，提供完整的 SSR 能力、智能的渲染上下文和創新的模組連結系統，適用於大型 Web 應用開發。
+description: Esmx 是一個基於 ESM 的高效能服務端渲染框架，提供完整的 SSR 能力、智能的渲染上下文和創新的模組連結系統，適用於大型 Web 應用開發。
 head:
   - - meta
     - property: keywords
-      content: Gez, SSR, ESM, 服務端渲染, 模組連結, Vue, React, TypeScript, 微前端
+      content: Esmx, SSR, ESM, 服務端渲染, 模組連結, Vue, React, TypeScript, 微前端
 hero:
-  name: Gez
+  name: Esmx
   text: 基於 ESM 的服務端渲染框架
   tagline: 高效能、可擴展的模組連結系統
   actions:
@@ -16,7 +16,7 @@ hero:
       link: /guide/start/getting-started
     - theme: alt
       text: GitHub
-      link: https://github.com/js-esm/gez
+      link: https://github.com/js-esm/esmx
 
 features:
   - icon: ⚡️

@@ -1,9 +1,9 @@
 import module from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { COMMAND, Gez, type GezOptions } from '../gez';
+import { COMMAND, Esmx, type EsmxOptions } from '../esmx';
 
-async function getSrcOptions(): Promise<GezOptions> {
+async function getSrcOptions(): Promise<EsmxOptions> {
     return import(path.resolve(process.cwd(), './src/entry.node.ts')).then(
         (m) => m.default
     );
@@ -13,16 +13,16 @@ export async function cli(command: string) {
     if (command !== COMMAND.dev) {
         process.env.NODE_ENV = 'production';
     }
-    let gez: Gez | null;
-    let opts: GezOptions | null = null;
+    let esmx: Esmx | null;
+    let opts: EsmxOptions | null = null;
     switch (command) {
         case COMMAND.dev:
             opts = await getSrcOptions();
-            gez = new Gez(opts);
-            exit(await gez.init(COMMAND.dev));
+            esmx = new Esmx(opts);
+            exit(await esmx.init(COMMAND.dev));
 
             // 释放内存
-            gez = null;
+            esmx = null;
             opts = null;
             break;
         case COMMAND.start:
@@ -32,38 +32,38 @@ export async function cli(command: string) {
         case COMMAND.build:
             // 编译代码。
             opts = await getSrcOptions();
-            gez = new Gez(opts);
-            exit(await gez.init(COMMAND.build));
-            exit(await gez.destroy());
+            esmx = new Esmx(opts);
+            exit(await esmx.init(COMMAND.build));
+            exit(await esmx.destroy());
 
             if (typeof opts.postBuild === 'function') {
                 // 生产模式运行
-                gez = new Gez({
+                esmx = new Esmx({
                     ...opts,
                     server: undefined
                 });
-                exit(await gez.init(COMMAND.start));
-                exit(await gez.postBuild());
+                exit(await esmx.init(COMMAND.start));
+                exit(await esmx.postBuild());
             }
 
             // 释放内存
-            gez = null;
+            esmx = null;
             opts = null;
             break;
         case COMMAND.preview:
             opts = await getSrcOptions();
             // 编译代码
-            gez = new Gez(opts);
-            exit(await gez.init(COMMAND.build));
-            exit(await gez.destroy());
+            esmx = new Esmx(opts);
+            exit(await esmx.init(COMMAND.build));
+            exit(await esmx.destroy());
 
             // 生产模式运行
-            gez = new Gez(opts);
-            exit(await gez.init(COMMAND.start));
-            exit(await gez.postBuild());
+            esmx = new Esmx(opts);
+            exit(await esmx.init(COMMAND.start));
+            exit(await esmx.postBuild());
 
             // 释放内存
-            gez = null;
+            esmx = null;
             opts = null;
             break;
         default:

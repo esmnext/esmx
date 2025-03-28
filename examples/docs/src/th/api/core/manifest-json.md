@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework Build Manifest File Reference
-description: Detailed explanation of the build manifest file (manifest.json) structure in Gez framework, including build artifact management, export file mapping, and resource statistics, helping developers understand and use the build system.
+titleSuffix: Esmx Framework Build Manifest File Reference
+description: Detailed explanation of the build manifest file (manifest.json) structure in Esmx framework, including build artifact management, export file mapping, and resource statistics, helping developers understand and use the build system.
 head:
   - - meta
     - property: keywords
-      content: Gez, ManifestJson, Build Manifest, Resource Management, Build Artifacts, File Mapping, API
+      content: Esmx, ManifestJson, Build Manifest, Resource Management, Build Artifacts, File Mapping, API
 ---
 
 # ManifestJson
 
-`manifest.json` เป็นไฟล์รายการที่สร้างขึ้นในกระบวนการ build ของเฟรมเวิร์ค Gez ใช้สำหรับบันทึกข้อมูลผลลัพธ์ของการ build บริการ ไฟล์นี้ให้อินเทอร์เฟซที่มาตรฐานสำหรับการจัดการผลลัพธ์ build, ไฟล์ที่ export และสถิติขนาดทรัพยากร
+`manifest.json` เป็นไฟล์รายการที่สร้างขึ้นในกระบวนการ build ของเฟรมเวิร์ค Esmx ใช้สำหรับบันทึกข้อมูลผลลัพธ์ของการ build บริการ ไฟล์นี้ให้อินเทอร์เฟซที่มาตรฐานสำหรับการจัดการผลลัพธ์ build, ไฟล์ที่ export และสถิติขนาดทรัพยากร
 
 ```json title="dist/client/manifest.json"
 {
@@ -71,7 +71,7 @@ interface ManifestJson {
 
 - **ประเภท**: `string`
 
-ชื่อบริการ มาจากการกำหนดค่า GezOptions.name
+ชื่อบริการ มาจากการกำหนดค่า EsmxOptions.name
 
 #### exports
 

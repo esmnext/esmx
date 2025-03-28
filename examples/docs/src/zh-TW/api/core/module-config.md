@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez 框架模組配置 API 參考
-description: 詳細介紹 Gez 框架的 ModuleConfig 配置介面，包括模組匯入匯出規則、別名配置和外部依賴管理，幫助開發者深入理解框架的模組化系統。
+titleSuffix: Esmx 框架模組配置 API 參考
+description: 詳細介紹 Esmx 框架的 ModuleConfig 配置介面，包括模組匯入匯出規則、別名配置和外部依賴管理，幫助開發者深入理解框架的模組化系統。
 head:
   - - meta
     - property: keywords
-      content: Gez, ModuleConfig, 模組配置, 模組匯入匯出, 外部依賴, 別名配置, 依賴管理, Web 應用框架
+      content: Esmx, ModuleConfig, 模組配置, 模組匯入匯出, 外部依賴, 別名配置, 依賴管理, Web 應用框架
 ---
 
 # ModuleConfig
 
-ModuleConfig 提供了 Gez 框架的模組配置功能，用於定義模組的匯入匯出規則、別名配置和外部依賴等。
+ModuleConfig 提供了 Esmx 框架的模組配置功能，用於定義模組的匯入匯出規則、別名配置和外部依賴等。
 
 ## 類型定義
 
@@ -74,7 +74,7 @@ interface ModuleConfig {
 
 **範例**：
 ```ts title="entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
@@ -100,7 +100,7 @@ export default {
       'vue-router': 'ssr-remote/npm/vue-router'
     }
   }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ### ParsedModuleConfig

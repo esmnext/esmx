@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez 框架 Vue3 SSR 應用範例
-description: 從零開始搭建基於 Gez 的 Vue3 SSR 應用，透過實例展示框架的基本用法，包括專案初始化、Vue3 配置和入口檔案設定。
+titleSuffix: Esmx 框架 Vue3 SSR 應用範例
+description: 從零開始搭建基於 Esmx 的 Vue3 SSR 應用，透過實例展示框架的基本用法，包括專案初始化、Vue3 配置和入口檔案設定。
 head:
   - - meta
     - property: keywords
-      content: Gez, Vue3, SSR應用, TypeScript配置, 專案初始化, 伺服器端渲染, 客戶端互動, 組合式API
+      content: Esmx, Vue3, SSR應用, TypeScript配置, 專案初始化, 伺服器端渲染, 客戶端互動, 組合式API
 ---
 
 # Vue3
 
-本教學將幫助你從零開始搭建一個基於 Gez 的 Vue3 SSR 應用。我們將透過一個完整的範例來展示如何使用 Gez 框架建立伺服器端渲染應用。
+本教學將幫助你從零開始搭建一個基於 Esmx 的 Vue3 SSR 應用。我們將透過一個完整的範例來展示如何使用 Esmx 框架建立伺服器端渲染應用。
 
 ## 專案結構
 
@@ -40,18 +40,18 @@ head:
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "gez dev",
+    "dev": "esmx dev",
     "build": "npm run build:dts && npm run build:ssr",
-    "build:ssr": "gez build",
-    "preview": "gez preview",
+    "build:ssr": "esmx build",
+    "preview": "esmx preview",
     "start": "NODE_ENV=production node dist/index.js",
     "build:dts": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/src"
   },
   "dependencies": {
-    "@gez/core": "*"
+    "@esmx/core": "*"
   },
   "devDependencies": {
-    "@gez/rspack-vue": "*",
+    "@esmx/rspack-vue": "*",
     "@types/node": "22.8.6",
     "@vue/server-renderer": "^3.5.13",
     "typescript": "^5.7.3",
@@ -114,7 +114,7 @@ npm install
 ```html title="src/app.vue"
 <template>
     <div>
-        <h1><a href="https://www.esmnext.com/guide/frameworks/vue3.html" target="_blank">Gez 快速開始</a></h1>
+        <h1><a href="https://www.esmnext.com/guide/frameworks/vue3.html" target="_blank">Esmx 快速開始</a></h1>
         <time :datetime="time">{{ time }}</time>
     </div>
 </template>
@@ -122,7 +122,7 @@ npm install
 <script setup lang="ts">
 /**
  * @file 範例元件
- * @description 展示一個帶有自動更新時間的頁面標題，用於演示 Gez 框架的基本功能
+ * @description 展示一個帶有自動更新時間的頁面標題，用於演示 Esmx 框架的基本功能
  */
 
 import { onMounted, onUnmounted, ref } from 'vue';
@@ -194,18 +194,18 @@ app.mount('#app');
  */
 
 import http from 'node:http';
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     /**
      * 配置開發環境的應用建立器
      * @description 建立並配置 Rspack 應用實例，用於開發環境的建構和熱更新
-     * @param gez Gez 框架實例，提供核心功能和配置介面
+     * @param esmx Esmx 框架實例，提供核心功能和配置介面
      * @returns 返回配置好的 Rspack 應用實例，支援 HMR 和即時預覽
      */
-    async devApp(gez) {
-        return import('@gez/rspack-vue').then((m) =>
-            m.createRspackVue3App(gez, {
+    async devApp(esmx) {
+        return import('@esmx/rspack-vue').then((m) =>
+            m.createRspackVue3App(esmx, {
                 config(context) {
                     // 在此處自訂 Rspack 編譯配置
                 }
@@ -215,15 +215,15 @@ export default {
 
     /**
      * 配置並啟動 HTTP 伺服器
-     * @description 建立 HTTP 伺服器實例，整合 Gez 中介軟體，處理 SSR 請求
-     * @param gez Gez 框架實例，提供中介軟體和渲染功能
+     * @description 建立 HTTP 伺服器實例，整合 Esmx 中介軟體，處理 SSR 請求
+     * @param esmx Esmx 框架實例，提供中介軟體和渲染功能
      */
-    async server(gez) {
+    async server(esmx) {
         const server = http.createServer((req, res) => {
-            // 使用 Gez 中介軟體處理請求
-            gez.middleware(req, res, async () => {
+            // 使用 Esmx 中介軟體處理請求
+            esmx.middleware(req, res, async () => {
                 // 執行伺服器端渲染
-                const rc = await gez.render({
+                const rc = await esmx.render({
                     params: { url: req.url }
                 });
                 res.end(rc.html);
@@ -234,13 +234,13 @@ export default {
             console.log('服務啟動: http://localhost:3000');
         });
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 這個檔案是開發環境配置和伺服器啟動的入口檔案，主要包含兩個核心功能：
 
 1. `devApp` 函式：負責建立和配置開發環境的 Rspack 應用實例，支援熱更新和即時預覽功能。這裡使用 `createRspackVue3App` 來建立專門用於 Vue3 的 Rspack 應用實例。
-2. `server` 函式：負責建立和配置 HTTP 伺服器，整合 Gez 中介軟體處理 SSR 請求。
+2. `server` 函式：負責建立和配置 HTTP 伺服器，整合 Esmx 中介軟體處理 SSR 請求。
 
 ### entry.server.ts
 
@@ -252,7 +252,7 @@ export default {
  * @description 負責伺服器端渲染流程、HTML 生成和資源注入
  */
 
-import type { RenderContext } from '@gez/core';
+import type { RenderContext } from '@esmx/core';
 import { renderToString } from '@vue/server-renderer';
 import { createApp } from './create-app';
 
@@ -273,7 +273,7 @@ export default async (rc: RenderContext) => {
 <html lang="zh-TW">
 <head>
     ${rc.preload()}
-    <title>Gez 快速開始</title>
+    <title>Esmx 快速開始</title>
     ${rc.css()}
 </head>
 <body>
@@ -306,4 +306,4 @@ npm run build
 npm run start
 ```
 
-現在，你已經成功建立了一個基於 Gez 的 Vue3 SSR 應用！訪問 http://localhost:3000 即可看到效果。
+現在，你已經成功建立了一個基於 Esmx 的 Vue3 SSR 應用！訪問 http://localhost:3000 即可看到效果。

@@ -1,15 +1,15 @@
 ---
-titleSuffix: Hướng dẫn Cấu trúc và Quy chuẩn Dự án Gez Framework
-description: Hướng dẫn chi tiết về cấu trúc dự án tiêu chuẩn, quy chuẩn tệp tin đầu vào và cấu hình của Gez framework, giúp nhà phát triển xây dựng ứng dụng SSR chuẩn hóa và dễ bảo trì.
+titleSuffix: Hướng dẫn Cấu trúc và Quy chuẩn Dự án Esmx Framework
+description: Hướng dẫn chi tiết về cấu trúc dự án tiêu chuẩn, quy chuẩn tệp tin đầu vào và cấu hình của Esmx framework, giúp nhà phát triển xây dựng ứng dụng SSR chuẩn hóa và dễ bảo trì.
 head:
   - - meta
     - property: keywords
-      content: Gez, Cấu trúc dự án, Tệp tin đầu vào, Quy chuẩn cấu hình, SSR framework, TypeScript, Quy chuẩn dự án, Tiêu chuẩn phát triển
+      content: Esmx, Cấu trúc dự án, Tệp tin đầu vào, Quy chuẩn cấu hình, SSR framework, TypeScript, Quy chuẩn dự án, Tiêu chuẩn phát triển
 ---
 
 # Quy chuẩn Tiêu chuẩn
 
-Gez là một framework SSR hiện đại, sử dụng cấu trúc dự án tiêu chuẩn và cơ chế phân giải đường dẫn để đảm bảo tính nhất quán và khả năng bảo trì của dự án trong cả môi trường phát triển và sản xuất.
+Esmx là một framework SSR hiện đại, sử dụng cấu trúc dự án tiêu chuẩn và cơ chế phân giải đường dẫn để đảm bảo tính nhất quán và khả năng bảo trì của dự án trong cả môi trường phát triển và sản xuất.
 
 ## Quy chuẩn Cấu trúc Dự án
 
@@ -36,7 +36,7 @@ root
 ```
 
 ::: tip Kiến thức Mở rộng
-- `gez.name` được lấy từ trường `name` trong `package.json`
+- `esmx.name` được lấy từ trường `name` trong `package.json`
 - `dist/package.json` được lấy từ `package.json` ở thư mục gốc
 - Chỉ khi đặt `packs.enable` thành `true`, thư mục `dist` mới được lưu trữ
 
@@ -76,11 +76,11 @@ Tệp tin đầu vào máy chủ Node.js chịu trách nhiệm:
     "name": "your-app-name",
     "type": "module",
     "scripts": {
-        "dev": "gez dev",
+        "dev": "esmx dev",
         "build": "npm run build:dts && npm run build:ssr",
-        "build:ssr": "gez build",
+        "build:ssr": "esmx build",
         "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src",
-        "preview": "gez preview",
+        "preview": "esmx preview",
         "start": "NODE_ENV=production node dist/index.js"
     }
 }

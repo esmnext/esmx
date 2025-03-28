@@ -1,15 +1,15 @@
 ---
-titleSuffix: Справочник API контекста рендеринга Gez
-description: Подробное описание основного класса RenderContext в фреймворке Gez, включая управление рендерингом, управление ресурсами, синхронизацию состояния и управление маршрутизацией, чтобы помочь разработчикам реализовать эффективный серверный рендеринг.
+titleSuffix: Справочник API контекста рендеринга Esmx
+description: Подробное описание основного класса RenderContext в фреймворке Esmx, включая управление рендерингом, управление ресурсами, синхронизацию состояния и управление маршрутизацией, чтобы помочь разработчикам реализовать эффективный серверный рендеринг.
 head:
   - - meta
     - property: keywords
-      content: Gez, RenderContext, SSR, серверный рендеринг, контекст рендеринга, синхронизация состояния, управление ресурсами, фреймворк для веб-приложений
+      content: Esmx, RenderContext, SSR, серверный рендеринг, контекст рендеринга, синхронизация состояния, управление ресурсами, фреймворк для веб-приложений
 ---
 
 # RenderContext
 
-RenderContext — это основной класс в фреймворке Gez, отвечающий за управление полным жизненным циклом серверного рендеринга (SSR). Он предоставляет полный набор API для обработки контекста рендеринга, управления ресурсами, синхронизации состояния и других ключевых задач:
+RenderContext — это основной класс в фреймворке Esmx, отвечающий за управление полным жизненным циклом серверного рендеринга (SSR). Он предоставляет полный набор API для обработки контекста рендеринга, управления ресурсами, синхронизации состояния и других ключевых задач:
 
 - **Управление рендерингом**: Управление процессом серверного рендеринга, поддержка многопоточного рендеринга, условного рендеринга и других сценариев.
 - **Управление ресурсами**: Интеллектуальный сбор и внедрение статических ресурсов, таких как JS, CSS, для оптимизации производительности загрузки.
@@ -148,7 +148,7 @@ export const desktop = async (rc: RenderContext) => {
 Параметры рендеринга. Можно передавать параметры любого типа в функцию рендеринга, часто используется для передачи информации о запросе (URL, параметры запроса и т.д.).
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     url: req.url,
     lang: 'zh-CN',
@@ -169,12 +169,12 @@ const rc = await gez.render({
 
 ## Свойства экземпляра
 
-### gez
+### esmx
 
-- **Тип**: `Gez`
+- **Тип**: `Esmx`
 - **Только для чтения**: `true`
 
-Ссылка на экземпляр Gez. Используется для доступа к основным функциям и конфигурациям фреймворка.
+Ссылка на экземпляр Esmx. Используется для доступа к основным функциям и конфигурациям фреймворка.
 
 ### redirect
 
@@ -264,7 +264,7 @@ export default async (rc: RenderContext) => {
 };
 
 // Динамический базовый путь
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/app',  // Установка базового пути
   params: { url: req.url }
 });
@@ -285,19 +285,19 @@ const rc = await gez.render({
 
 ```ts
 // Базовое использование
-const rc = await gez.render({
-  base: '/gez',  // Установка базового пути
+const rc = await esmx.render({
+  base: '/esmx',  // Установка базового пути
   params: { url: req.url }
 });
 
 // Пример многоязычного сайта
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/cn',  // Китайский сайт
   params: { lang: 'zh-CN' }
 });
 
 // Пример микросервисного приложения
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/app1',  // Подприложение 1
   params: { appId: 1 }
 });
@@ -327,7 +327,7 @@ export const desktop = async (rc: RenderContext) => {
 };
 
 // Выбор функции входа в зависимости от типа устройства
-const rc = await gez.render({
+const rc = await esmx.render({
   entryName: isMobile ? 'mobile' : 'desktop',
   params: { url: req.url }
 });
@@ -343,7 +343,7 @@ const rc = await gez.render({
 
 ```ts
 // Базовое использование - передача URL и настроек языка
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     url: req.url,
     lang: 'zh-CN'
@@ -351,7 +351,7 @@ const rc = await gez.render({
 });
 
 // Конфигурация страницы - установка темы и макета
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     theme: 'dark',
     layout: 'sidebar'
@@ -359,7 +359,7 @@ const rc = await gez.render({
 });
 
 // Конфигурация окружения - внедрение адреса API
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     apiBaseUrl: process.env.API_BASE_URL,
     version: '1.0.0'

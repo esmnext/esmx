@@ -5,10 +5,10 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "gez dev",
+    "dev": "esmx dev",
     "build": "npm run build:dts && npm run build:ssr",
-    "build:ssr": "gez build",
-    "preview": "gez preview",
+    "build:ssr": "esmx build",
+    "preview": "esmx preview",
     "start": "NODE_ENV=production node dist/index.js",
     "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src"
   },
@@ -16,10 +16,10 @@
   "license": "MIT",
   "description": "",
   "dependencies": {
-    "@gez/core": "workspace:*"
+    "@esmx/core": "workspace:*"
   },
   "devDependencies": {
-    "@gez/rspack": "workspace:*",
+    "@esmx/rspack": "workspace:*",
     "@types/node": "22.8.6",
     "htm": "^3.1.1",
     "preact": "^10.26.2",

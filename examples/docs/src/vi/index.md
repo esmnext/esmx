@@ -1,13 +1,13 @@
 ---
 pageType: home
 titleSuffix: Khung SSR hiệu năng cao dựa trên ESM
-description: Gez là một khung SSR (Server-Side Rendering) hiệu năng cao dựa trên ESM, cung cấp khả năng SSR hoàn chỉnh, ngữ cảnh render thông minh và hệ thống liên kết module sáng tạo, phù hợp cho phát triển ứng dụng web lớn.
+description: Esmx là một khung SSR (Server-Side Rendering) hiệu năng cao dựa trên ESM, cung cấp khả năng SSR hoàn chỉnh, ngữ cảnh render thông minh và hệ thống liên kết module sáng tạo, phù hợp cho phát triển ứng dụng web lớn.
 head:
   - - meta
     - property: keywords
-      content: Gez, SSR, ESM, Server-Side Rendering, Module Linking, Vue, React, TypeScript, Micro Frontend
+      content: Esmx, SSR, ESM, Server-Side Rendering, Module Linking, Vue, React, TypeScript, Micro Frontend
 hero:
-  name: Gez
+  name: Esmx
   text: Khung SSR dựa trên ESM
   tagline: Hệ thống liên kết module hiệu năng cao và mở rộng
   actions:
@@ -16,7 +16,7 @@ hero:
       link: /guide/start/getting-started
     - theme: alt
       text: GitHub
-      link: https://github.com/js-esm/gez
+      link: https://github.com/js-esm/esmx
 
 features:
   - icon: ⚡️

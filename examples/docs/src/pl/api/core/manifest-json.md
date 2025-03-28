@@ -1,15 +1,15 @@
 ---
-titleSuffix: Dokumentacja pliku manifestu frameworku Gez
-description: Szczegółowy opis struktury pliku manifestu (manifest.json) frameworku Gez, obejmujący zarządzanie artefaktami budowania, mapowanie plików eksportowych oraz statystyki zasobów, aby pomóc programistom w zrozumieniu i wykorzystaniu systemu budowania.
+titleSuffix: Dokumentacja pliku manifestu frameworku Esmx
+description: Szczegółowy opis struktury pliku manifestu (manifest.json) frameworku Esmx, obejmujący zarządzanie artefaktami budowania, mapowanie plików eksportowych oraz statystyki zasobów, aby pomóc programistom w zrozumieniu i wykorzystaniu systemu budowania.
 head:
   - - meta
     - property: keywords
-      content: Gez, ManifestJson, manifest budowania, zarządzanie zasobami, artefakty budowania, mapowanie plików, API
+      content: Esmx, ManifestJson, manifest budowania, zarządzanie zasobami, artefakty budowania, mapowanie plików, API
 ---
 
 # ManifestJson
 
-`manifest.json` to plik manifestu generowany przez framework Gez podczas procesu budowania, służący do rejestrowania informacji o artefaktach budowania usługi. Dostarcza ujednoliconego interfejsu do zarządzania artefaktami budowania, plikami eksportowymi oraz statystykami rozmiaru zasobów.
+`manifest.json` to plik manifestu generowany przez framework Esmx podczas procesu budowania, służący do rejestrowania informacji o artefaktach budowania usługi. Dostarcza ujednoliconego interfejsu do zarządzania artefaktami budowania, plikami eksportowymi oraz statystykami rozmiaru zasobów.
 
 ```json title="dist/client/manifest.json"
 {
@@ -71,7 +71,7 @@ interface ManifestJson {
 
 - **Typ**: `string`
 
-Nazwa usługi, pochodząca z konfiguracji GezOptions.name.
+Nazwa usługi, pochodząca z konfiguracji EsmxOptions.name.
 
 #### exports
 

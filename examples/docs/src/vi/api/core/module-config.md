@@ -1,15 +1,15 @@
 ---
-titleSuffix: Tham chiếu API cấu hình module của khung Gez
-description: Tài liệu chi tiết về giao diện cấu hình ModuleConfig của khung Gez, bao gồm các quy tắc nhập/xuất module, cấu hình bí danh và quản lý phụ thuộc bên ngoài, giúp nhà phát triển hiểu sâu về hệ thống module hóa của khung.
+titleSuffix: Tham chiếu API cấu hình module của khung Esmx
+description: Tài liệu chi tiết về giao diện cấu hình ModuleConfig của khung Esmx, bao gồm các quy tắc nhập/xuất module, cấu hình bí danh và quản lý phụ thuộc bên ngoài, giúp nhà phát triển hiểu sâu về hệ thống module hóa của khung.
 head:
   - - meta
     - property: keywords
-      content: Gez, ModuleConfig, cấu hình module, nhập/xuất module, phụ thuộc bên ngoài, cấu hình bí danh, quản lý phụ thuộc, khung ứng dụng web
+      content: Esmx, ModuleConfig, cấu hình module, nhập/xuất module, phụ thuộc bên ngoài, cấu hình bí danh, quản lý phụ thuộc, khung ứng dụng web
 ---
 
 # ModuleConfig
 
-ModuleConfig cung cấp chức năng cấu hình module cho khung Gez, dùng để định nghĩa các quy tắc nhập/xuất module, cấu hình bí danh và phụ thuộc bên ngoài.
+ModuleConfig cung cấp chức năng cấu hình module cho khung Esmx, dùng để định nghĩa các quy tắc nhập/xuất module, cấu hình bí danh và phụ thuộc bên ngoài.
 
 ## Định nghĩa kiểu
 
@@ -74,7 +74,7 @@ Mỗi phụ thuộc bao gồm các thuộc tính sau:
 
 **Ví dụ**:
 ```ts title="entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
@@ -100,7 +100,7 @@ export default {
       'vue-router': 'ssr-remote/npm/vue-router'
     }
   }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ### ParsedModuleConfig

@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez 프레임워크 모듈 설정 API 참조
-description: Gez 프레임워크의 ModuleConfig 설정 인터페이스에 대해 자세히 설명합니다. 모듈 가져오기 및 내보내기 규칙, 별칭 설정, 외부 종속성 관리 등을 포함하여 프레임워크의 모듈화 시스템을 깊이 이해할 수 있도록 도와줍니다.
+titleSuffix: Esmx 프레임워크 모듈 설정 API 참조
+description: Esmx 프레임워크의 ModuleConfig 설정 인터페이스에 대해 자세히 설명합니다. 모듈 가져오기 및 내보내기 규칙, 별칭 설정, 외부 종속성 관리 등을 포함하여 프레임워크의 모듈화 시스템을 깊이 이해할 수 있도록 도와줍니다.
 head:
   - - meta
     - property: keywords
-      content: Gez, ModuleConfig, 모듈 설정, 모듈 가져오기 내보내기, 외부 종속성, 별칭 설정, 종속성 관리, 웹 애플리케이션 프레임워크
+      content: Esmx, ModuleConfig, 모듈 설정, 모듈 가져오기 내보내기, 외부 종속성, 별칭 설정, 종속성 관리, 웹 애플리케이션 프레임워크
 ---
 
 # ModuleConfig
 
-ModuleConfig는 Gez 프레임워크의 모듈 설정 기능을 제공하며, 모듈의 가져오기 및 내보내기 규칙, 별칭 설정, 외부 종속성 등을 정의하는 데 사용됩니다.
+ModuleConfig는 Esmx 프레임워크의 모듈 설정 기능을 제공하며, 모듈의 가져오기 및 내보내기 규칙, 별칭 설정, 외부 종속성 등을 정의하는 데 사용됩니다.
 
 ## 타입 정의
 
@@ -74,7 +74,7 @@ interface ModuleConfig {
 
 **예제**:
 ```ts title="entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
@@ -100,7 +100,7 @@ export default {
       'vue-router': 'ssr-remote/npm/vue-router'
     }
   }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ### ParsedModuleConfig

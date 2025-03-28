@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez フレームワーク ビルドマニフェストファイルリファレンス
-description: Gez フレームワークのビルドマニフェストファイル（manifest.json）の構造について詳しく説明します。ビルド成果物の管理、エクスポートファイルのマッピング、リソース統計機能などを含み、開発者がビルドシステムを理解し使用するのに役立ちます。
+titleSuffix: Esmx フレームワーク ビルドマニフェストファイルリファレンス
+description: Esmx フレームワークのビルドマニフェストファイル（manifest.json）の構造について詳しく説明します。ビルド成果物の管理、エクスポートファイルのマッピング、リソース統計機能などを含み、開発者がビルドシステムを理解し使用するのに役立ちます。
 head:
   - - meta
     - property: keywords
-      content: Gez, ManifestJson, ビルドマニフェスト, リソース管理, ビルド成果物, ファイルマッピング, API
+      content: Esmx, ManifestJson, ビルドマニフェスト, リソース管理, ビルド成果物, ファイルマッピング, API
 ---
 
 # ManifestJson
 
-`manifest.json` は、Gez フレームワークのビルドプロセス中に生成されるマニフェストファイルで、サービスのビルド成果物情報を記録します。ビルド成果物、エクスポートファイル、リソースサイズ統計を管理するための統一されたインターフェースを提供します。
+`manifest.json` は、Esmx フレームワークのビルドプロセス中に生成されるマニフェストファイルで、サービスのビルド成果物情報を記録します。ビルド成果物、エクスポートファイル、リソースサイズ統計を管理するための統一されたインターフェースを提供します。
 
 ```json title="dist/client/manifest.json"
 {
@@ -71,7 +71,7 @@ interface ManifestJson {
 
 - **型**: `string`
 
-サービス名。GezOptions.name 設定から取得されます。
+サービス名。EsmxOptions.name 設定から取得されます。
 
 #### exports
 

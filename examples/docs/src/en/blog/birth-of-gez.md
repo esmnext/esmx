@@ -1,14 +1,14 @@
 ---
-titleSuffix: "From Micro-Frontend Challenges to ESM Innovation: The Evolution of the Gez Framework"
-description: "Explore the journey of the Gez framework from the challenges of traditional micro-frontend architectures to breakthroughs in ESM-based innovation. Share technical practices in performance optimization, dependency management, and build tool selection."
+titleSuffix: "From Micro-Frontend Challenges to ESM Innovation: The Evolution of the Esmx Framework"
+description: "Explore the journey of the Esmx framework from the challenges of traditional micro-frontend architectures to breakthroughs in ESM-based innovation. Share technical practices in performance optimization, dependency management, and build tool selection."
 head:
   - - meta
     - property: keywords
-      content: Gez, Micro-Frontend Framework, ESM, Import Maps, Rspack, Module Federation, Dependency Management, Performance Optimization, Technical Evolution, Server-Side Rendering
+      content: Esmx, Micro-Frontend Framework, ESM, Import Maps, Rspack, Module Federation, Dependency Management, Performance Optimization, Technical Evolution, Server-Side Rendering
 sidebar: false
 ---
 
-# From Component Sharing to Native Modularity: The Evolution of the Gez Micro-Frontend Framework
+# From Component Sharing to Native Modularity: The Evolution of the Esmx Micro-Frontend Framework
 
 ## Project Background
 
@@ -30,7 +30,7 @@ These issues were particularly evident in a large enterprise project we worked o
 
 ### v1.0: Exploring Remote Components
 
-To address the efficiency issues of component sharing, Gez v1.0 introduced the RemoteView component mechanism based on the HTTP protocol. This solution achieved on-demand code assembly between services through runtime dynamic requests, successfully solving the problem of long build dependency chains. However, due to the lack of a standardized runtime communication mechanism, state synchronization and event passing between services still had efficiency bottlenecks.
+To address the efficiency issues of component sharing, Esmx v1.0 introduced the RemoteView component mechanism based on the HTTP protocol. This solution achieved on-demand code assembly between services through runtime dynamic requests, successfully solving the problem of long build dependency chains. However, due to the lack of a standardized runtime communication mechanism, state synchronization and event passing between services still had efficiency bottlenecks.
 
 ### v2.0: Module Federation Experiment
 
@@ -75,7 +75,7 @@ This decision allowed us to maintain a good development experience while gaining
 
 ## Future Outlook
 
-In future development plans, the Gez framework will focus on the following three directions:
+In future development plans, the Esmx framework will focus on the following three directions:
 
 ### Deep Optimization of Import Maps
 
@@ -95,4 +95,4 @@ In future development plans, the Gez framework will focus on the following three
 - **State Synchronization**: Lightweight state sharing solution based on ESM.
 - **Event Bus**: Standardized event communication mechanism to support decoupled communication between applications.
 
-Through these optimizations and expansions, we aim to make Gez a more comprehensive and user-friendly micro-frontend solution, providing developers with a better development experience and higher efficiency.
+Through these optimizations and expansions, we aim to make Esmx a more comprehensive and user-friendly micro-frontend solution, providing developers with a better development experience and higher efficiency.

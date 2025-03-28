@@ -1,15 +1,15 @@
 ---
-titleSuffix: Dokumentacja API konfiguracji modułów frameworka Gez
-description: Szczegółowy opis interfejsu konfiguracji ModuleConfig frameworka Gez, obejmujący reguły importu i eksportu modułów, konfigurację aliasów oraz zarządzanie zależnościami zewnętrznymi, pomagający programistom dogłębnie zrozumieć system modułowy frameworka.
+titleSuffix: Dokumentacja API konfiguracji modułów frameworka Esmx
+description: Szczegółowy opis interfejsu konfiguracji ModuleConfig frameworka Esmx, obejmujący reguły importu i eksportu modułów, konfigurację aliasów oraz zarządzanie zależnościami zewnętrznymi, pomagający programistom dogłębnie zrozumieć system modułowy frameworka.
 head:
   - - meta
     - property: keywords
-      content: Gez, ModuleConfig, konfiguracja modułów, import i eksport modułów, zależności zewnętrzne, konfiguracja aliasów, zarządzanie zależnościami, framework aplikacji webowych
+      content: Esmx, ModuleConfig, konfiguracja modułów, import i eksport modułów, zależności zewnętrzne, konfiguracja aliasów, zarządzanie zależnościami, framework aplikacji webowych
 ---
 
 # ModuleConfig
 
-ModuleConfig zapewnia funkcjonalność konfiguracji modułów w frameworku Gez, służącą do definiowania reguł importu i eksportu modułów, konfiguracji aliasów oraz zależności zewnętrznych.
+ModuleConfig zapewnia funkcjonalność konfiguracji modułów w frameworku Esmx, służącą do definiowania reguł importu i eksportu modułów, konfiguracji aliasów oraz zależności zewnętrznych.
 
 ## Definicje typów
 
@@ -74,7 +74,7 @@ Każda zależność zawiera następujące właściwości:
 
 **Przykład**:
 ```ts title="entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
@@ -100,7 +100,7 @@ export default {
       'vue-router': 'ssr-remote/npm/vue-router'
     }
   }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ### ParsedModuleConfig

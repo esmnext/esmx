@@ -14,87 +14,87 @@ export default defineConfig({
         {
             lang: 'zh',
             label: '简体中文',
-            title: 'Gez'
+            title: 'Esmx'
         },
         {
             lang: 'en',
             label: 'English',
-            title: 'Gez'
+            title: 'Esmx'
         },
         {
             lang: 'es',
             label: 'Español',
-            title: 'Gez'
+            title: 'Esmx'
         },
         {
             lang: 'hi',
             label: 'हिन्दी',
-            title: 'Gez'
+            title: 'Esmx'
         },
         {
             lang: 'pt',
             label: 'Português',
-            title: 'Gez'
+            title: 'Esmx'
         },
         {
             lang: 'ru',
             label: 'Русский',
-            title: 'Gez'
+            title: 'Esmx'
         },
         {
             lang: 'ja',
             label: '日本語',
-            title: 'Gez'
+            title: 'Esmx'
         },
         {
             lang: 'de',
             label: 'Deutsch',
-            title: 'Gez'
+            title: 'Esmx'
         },
         {
             lang: 'fr',
             label: 'Français',
-            title: 'Gez'
+            title: 'Esmx'
         },
         {
             lang: 'zh-TW',
             label: '繁體中文',
-            title: 'Gez'
+            title: 'Esmx'
         },
         {
             lang: 'it',
             label: 'Italiano',
-            title: 'Gez'
+            title: 'Esmx'
         },
         {
             lang: 'ko',
             label: '한국어',
-            title: 'Gez'
+            title: 'Esmx'
         },
         {
             lang: 'nl',
             label: 'Nederlands',
-            title: 'Gez'
+            title: 'Esmx'
         },
         {
             lang: 'pl',
             label: 'Polski',
-            title: 'Gez'
+            title: 'Esmx'
         },
         {
             lang: 'tr',
             label: 'Türkçe',
-            title: 'Gez'
+            title: 'Esmx'
         },
         {
             lang: 'th',
             label: 'ไทย',
-            title: 'Gez'
+            title: 'Esmx'
         },
         {
             lang: 'vi',
             label: 'Tiếng Việt',
-            title: 'Gez'
+            title: 'Esmx'
         }
     ],
     icon: '/logo.svg',
@@ -112,7 +112,7 @@ export default defineConfig({
                 icon: 'github',
                 mode: 'link',
                 content:
-                    'https://github.com/js-esm/gez?utm_source=www.esmnext.com'
+                    'https://github.com/js-esm/esmx?utm_source=www.esmnext.com'
             }
         ]
     },

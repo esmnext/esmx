@@ -1,15 +1,15 @@
 ---
-titleSuffix: Riferimento API per la configurazione dei moduli del framework Gez
-description: Descrizione dettagliata dell'interfaccia di configurazione ModuleConfig del framework Gez, incluse le regole di importazione/esportazione dei moduli, la configurazione degli alias e la gestione delle dipendenze esterne, per aiutare gli sviluppatori a comprendere a fondo il sistema modulare del framework.
+titleSuffix: Riferimento API per la configurazione dei moduli del framework Esmx
+description: Descrizione dettagliata dell'interfaccia di configurazione ModuleConfig del framework Esmx, incluse le regole di importazione/esportazione dei moduli, la configurazione degli alias e la gestione delle dipendenze esterne, per aiutare gli sviluppatori a comprendere a fondo il sistema modulare del framework.
 head:
   - - meta
     - property: keywords
-      content: Gez, ModuleConfig, configurazione moduli, importazione/esportazione moduli, dipendenze esterne, configurazione alias, gestione dipendenze, framework per applicazioni web
+      content: Esmx, ModuleConfig, configurazione moduli, importazione/esportazione moduli, dipendenze esterne, configurazione alias, gestione dipendenze, framework per applicazioni web
 ---
 
 # ModuleConfig
 
-ModuleConfig fornisce le funzionalità di configurazione dei moduli per il framework Gez, utilizzate per definire le regole di importazione/esportazione dei moduli, la configurazione degli alias e le dipendenze esterne.
+ModuleConfig fornisce le funzionalità di configurazione dei moduli per il framework Esmx, utilizzate per definire le regole di importazione/esportazione dei moduli, la configurazione degli alias e le dipendenze esterne.
 
 ## Definizione dei tipi
 
@@ -74,7 +74,7 @@ Ogni dipendenza contiene i seguenti attributi:
 
 **Esempio**:
 ```ts title="entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
@@ -100,7 +100,7 @@ export default {
       'vue-router': 'ssr-remote/npm/vue-router'
     }
   }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ### ParsedModuleConfig

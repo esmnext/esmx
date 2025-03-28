@@ -1,17 +1,17 @@
 ---
 titleSuffix: Tài liệu tham khảo API lớp lõi framework
-description: Tài liệu chi tiết về API lớp lõi của framework Gez, bao gồm quản lý vòng đời ứng dụng, xử lý tài nguyên tĩnh và khả năng render phía máy chủ, giúp nhà phát triển hiểu sâu về các chức năng cốt lõi của framework.
+description: Tài liệu chi tiết về API lớp lõi của framework Esmx, bao gồm quản lý vòng đời ứng dụng, xử lý tài nguyên tĩnh và khả năng render phía máy chủ, giúp nhà phát triển hiểu sâu về các chức năng cốt lõi của framework.
 head:
   - - meta
     - property: keywords
-      content: Gez, API, quản lý vòng đời, tài nguyên tĩnh, render phía máy chủ, Rspack, Web application framework
+      content: Esmx, API, quản lý vòng đời, tài nguyên tĩnh, render phía máy chủ, Rspack, Web application framework
 ---
 
-# Gez
+# Esmx
 
 ## Giới thiệu
 
-Gez là một framework ứng dụng web hiệu suất cao dựa trên Rspack, cung cấp đầy đủ các khả năng quản lý vòng đời ứng dụng, xử lý tài nguyên tĩnh và render phía máy chủ.
+Esmx là một framework ứng dụng web hiệu suất cao dựa trên Rspack, cung cấp đầy đủ các khả năng quản lý vòng đời ứng dụng, xử lý tài nguyên tĩnh và render phía máy chủ.
 
 ## Định nghĩa kiểu
 
@@ -76,18 +76,18 @@ Loại enum lệnh:
 
 ## Tùy chọn instance
 
-Định nghĩa các tùy chọn cấu hình cốt lõi của framework Gez.
+Định nghĩa các tùy chọn cấu hình cốt lõi của framework Esmx.
 
 ```ts
-interface GezOptions {
+interface EsmxOptions {
   root?: string
   isProd?: boolean
   basePathPlaceholder?: string | false
   modules?: ModuleConfig
   packs?: PackConfig
-  devApp?: (gez: Gez) => Promise<App>
-  server?: (gez: Gez) => Promise<void>
-  postBuild?: (gez: Gez) => Promise<void>
+  devApp?: (esmx: Esmx) => Promise<App>
+  server?: (esmx: Esmx) => Promise<void>
+  postBuild?: (esmx: Esmx) => Promise<void>
 }
 ```
 
@@ -128,15 +128,15 @@ Tùy chọn cấu hình đóng gói. Dùng để đóng gói các sản phẩm b
 
 #### devApp
 
-- **Loại**: `(gez: Gez) => Promise<App>`
+- **Loại**: `(esmx: Esmx) => Promise<App>`
 
 Hàm tạo ứng dụng môi trường phát triển. Chỉ được sử dụng trong môi trường phát triển, dùng để tạo instance ứng dụng cho máy chủ phát triển.
 
 ```ts title="entry.node.ts"
 export default {
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(context) {
           // Tùy chỉnh cấu hình Rspack
         }
@@ -148,16 +148,16 @@ export default {
 
 #### server
 
-- **Loại**: `(gez: Gez) => Promise<void>`
+- **Loại**: `(esmx: Esmx) => Promise<void>`
 
 Hàm cấu hình khởi động máy chủ. Dùng để cấu hình và khởi động máy chủ HTTP, có thể sử dụng trong cả môi trường phát triển và sản xuất.
 
 ```ts title="entry.node.ts"
 export default {
-  async server(gez) {
+  async server(esmx) {
     const server = http.createServer((req, res) => {
-      gez.middleware(req, res, async () => {
-        const render = await gez.render({
+      esmx.middleware(req, res, async () => {
+        const render = await esmx.render({
           params: { url: req.url }
         });
         res.end(render.html);
@@ -171,7 +171,7 @@ export default {
 
 #### postBuild
 
-- **Loại**: `(gez: Gez) => Promise<void>`
+- **Loại**: `(esmx: Esmx) => Promise<void>`
 
 Hàm xử lý hậu build. Được thực thi sau khi dự án build xong, có thể dùng để:
 - Thực hiện xử lý tài nguyên bổ sung
@@ -235,8 +235,8 @@ Lấy middleware xử lý tài nguyên tĩnh. Cung cấp các triển khai khác
 
 ```ts
 const server = http.createServer((req, res) => {
-  gez.middleware(req, res, async () => {
-    const rc = await gez.render({ url: req.url });
+  esmx.middleware(req, res, async () => {
+    const rc = await esmx.render({ url: req.url });
     res.end(rc.html);
   });
 });
@@ -253,12 +253,12 @@ Lấy hàm render phía máy chủ. Cung cấp các triển khai khác nhau tùy
 
 ```ts
 // Cách sử dụng cơ bản
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: req.url }
 });
 
 // Cấu hình nâng cao
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '',                    // Đường dẫn cơ sở
   importmapMode: 'inline',     // Chế độ ánh xạ nhập khẩu
   entryName: 'default',        // Điểm vào render
@@ -297,13 +297,13 @@ Lấy cấu hình liên quan đến đóng gói của module hiện tại, bao g
 ### constructor()
 
 - **Tham số**: 
-  - `options?: GezOptions` - Tùy chọn cấu hình framework
-- **Giá trị trả về**: `Gez`
+  - `options?: EsmxOptions` - Tùy chọn cấu hình framework
+- **Giá trị trả về**: `Esmx`
 
-Tạo instance framework Gez.
+Tạo instance framework Esmx.
 
 ```ts
-const gez = new Gez({
+const esmx = new Esmx({
   root: './src',
   isProd: process.env.NODE_ENV === 'production'
 });
@@ -317,7 +317,7 @@ const gez = new Gez({
   - `Error`: Khi khởi tạo lại
   - `NotReadyError`: Khi truy cập instance chưa được khởi tạo
 
-Khởi tạo instance framework Gez. Thực hiện các quy trình khởi tạo cốt lõi sau:
+Khởi tạo instance framework Esmx. Thực hiện các quy trình khởi tạo cốt lõi sau:
 
 1. Phân giải cấu hình dự án (package.json, cấu hình module, cấu hình đóng gói, v.v.)
 2. Tạo instance ứng dụng (môi trường phát triển hoặc sản xuất)
@@ -330,26 +330,26 @@ Khởi tạo instance framework Gez. Thực hiện các quy trình khởi tạo 
 :::
 
 ```ts
-const gez = new Gez({
+const esmx = new Esmx({
   root: './src',
   isProd: process.env.NODE_ENV === 'production'
 });
 
-await gez.init(COMMAND.dev);
+await esmx.init(COMMAND.dev);
 ```
 
 ### destroy()
 
 - **Giá trị trả về**: `Promise<boolean>`
 
-Hủy instance framework Gez, thực hiện các thao tác dọn dẹp tài nguyên và đóng kết nối. Chủ yếu dùng để:
+Hủy instance framework Esmx, thực hiện các thao tác dọn dẹp tài nguyên và đóng kết nối. Chủ yếu dùng để:
 - Đóng máy chủ phát triển
 - Dọn dẹp các tệp tạm thời và bộ nhớ đệm
 - Giải phóng tài nguyên hệ thống
 
 ```ts
 process.once('SIGTERM', async () => {
-  await gez.destroy();
+  await esmx.destroy();
   process.exit(0);
 });
 ```
@@ -370,14 +370,14 @@ Ném `NotReadyError` khi gọi mà instance framework chưa được khởi tạ
 
 ```ts title="entry.node.ts"
 export default {
-  async postBuild(gez) {
-    await gez.build();
+  async postBuild(esmx) {
+    await esmx.build();
     // Tạo HTML tĩnh sau khi build
-    const render = await gez.render({
+    const render = await esmx.render({
       params: { url: '/' }
     });
-    gez.writeSync(
-      gez.resolvePath('dist/client', 'index.html'),
+    esmx.writeSync(
+      esmx.resolvePath('dist/client', 'index.html'),
       render.html
     );
   }
@@ -395,12 +395,12 @@ Khởi động máy chủ HTTP và cấu hình instance máy chủ. Được g�
 
 ```ts title="entry.node.ts"
 export default {
-  async server(gez) {
+  async server(esmx) {
     const server = http.createServer((req, res) => {
       // Xử lý tài nguyên tĩnh
-      gez.middleware(req, res, async () => {
+      esmx.middleware(req, res, async () => {
         // Render phía máy chủ
-        const render = await gez.render({
+        const render = await esmx.render({
           params: { url: req.url }
         });
         res.end(render.html);
@@ -426,17 +426,17 @@ Thực thi logic xử lý hậu build, dùng để:
 
 ```ts title="entry.node.ts"
 export default {
-  async postBuild(gez) {
+  async postBuild(esmx) {
     // Tạo HTML tĩnh cho nhiều trang
     const pages = ['/', '/about', '/404'];
 
     for (const url of pages) {
-      const render = await gez.render({
+      const render = await esmx.render({
         params: { url }
       });
 
-      await gez.write(
-        gez.resolvePath('dist/client', url.substring(1), 'index.html'),
+      await esmx.write(
+        esmx.resolvePath('dist/client', url.substring(1), 'index.html'),
         render.html
       );
     }
@@ -456,7 +456,7 @@ Phân giải đường dẫn dự án, chuyển đổi đường dẫn tương �
 - **Ví dụ**:
 ```ts
 // Phân giải đường dẫn tài nguyên tĩnh
-const htmlPath = gez.resolvePath('dist/client', 'index.html');
+const htmlPath = esmx.resolvePath('dist/client', 'index.html');
 ```
 
 ### writeSync()

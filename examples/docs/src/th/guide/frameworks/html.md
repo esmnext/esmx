@@ -1,15 +1,15 @@
 ---
-titleSuffix: ตัวอย่างแอปพลิเคชัน HTML SSR ด้วย Gez Framework
-description: สร้างแอปพลิเคชัน HTML SSR ด้วย Gez Framework ตั้งแต่เริ่มต้น พร้อมตัวอย่างการใช้งานพื้นฐาน ตั้งแต่การเริ่มต้นโปรเจกต์ การตั้งค่า HTML และการกำหนดค่าไฟล์เข้า
+titleSuffix: ตัวอย่างแอปพลิเคชัน HTML SSR ด้วย Esmx Framework
+description: สร้างแอปพลิเคชัน HTML SSR ด้วย Esmx Framework ตั้งแต่เริ่มต้น พร้อมตัวอย่างการใช้งานพื้นฐาน ตั้งแต่การเริ่มต้นโปรเจกต์ การตั้งค่า HTML และการกำหนดค่าไฟล์เข้า
 head:
   - - meta
     - property: keywords
-      content: Gez, HTML, แอปพลิเคชัน SSR, การตั้งค่า TypeScript, การเริ่มต้นโปรเจกต์, การเรนเดอร์ฝั่งเซิร์ฟเวอร์, การโต้ตอบฝั่งไคลเอนต์
+      content: Esmx, HTML, แอปพลิเคชัน SSR, การตั้งค่า TypeScript, การเริ่มต้นโปรเจกต์, การเรนเดอร์ฝั่งเซิร์ฟเวอร์, การโต้ตอบฝั่งไคลเอนต์
 ---
 
 # HTML
 
-บทช่วยสอนนี้จะช่วยให้คุณสร้างแอปพลิเคชัน HTML SSR ด้วย Gez Framework ตั้งแต่เริ่มต้น เราจะแสดงตัวอย่างการใช้งาน Gez Framework ในการสร้างแอปพลิเคชันที่เรนเดอร์ฝั่งเซิร์ฟเวอร์
+บทช่วยสอนนี้จะช่วยให้คุณสร้างแอปพลิเคชัน HTML SSR ด้วย Esmx Framework ตั้งแต่เริ่มต้น เราจะแสดงตัวอย่างการใช้งาน Esmx Framework ในการสร้างแอปพลิเคชันที่เรนเดอร์ฝั่งเซิร์ฟเวอร์
 
 ## โครงสร้างโปรเจกต์
 
@@ -40,18 +40,18 @@ head:
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "gez dev",
+    "dev": "esmx dev",
     "build": "npm run build:dts && npm run build:ssr",
-    "build:ssr": "gez build",
-    "preview": "gez preview",
+    "build:ssr": "esmx build",
+    "preview": "esmx preview",
     "start": "NODE_ENV=production node dist/index.js",
     "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src"
   },
   "dependencies": {
-    "@gez/core": "*"
+    "@esmx/core": "*"
   },
   "devDependencies": {
-    "@gez/rspack": "*",
+    "@esmx/rspack": "*",
     "@types/node": "22.8.6",
     "typescript": "^5.7.3"
   }
@@ -111,7 +111,7 @@ npm install
 ```ts title="src/app.ts"
 /**
  * @file ตัวอย่างคอมโพเนนต์
- * @description แสดงหัวหน้าหน้าพร้อมเวลาที่อัปเดตอัตโนมัติ เพื่อสาธิตฟังก์ชันพื้นฐานของ Gez Framework
+ * @description แสดงหัวหน้าหน้าพร้อมเวลาที่อัปเดตอัตโนมัติ เพื่อสาธิตฟังก์ชันพื้นฐานของ Esmx Framework
  */
 
 export default class App {
@@ -141,7 +141,7 @@ export default class App {
 
         return `
         <div id="app">
-            <h1><a href="https://www.esmnext.com/guide/frameworks/html.html" target="_blank">Gez เริ่มต้นอย่างรวดเร็ว</a></h1>
+            <h1><a href="https://www.esmnext.com/guide/frameworks/html.html" target="_blank">Esmx เริ่มต้นอย่างรวดเร็ว</a></h1>
             <time datetime="${this.time}">${this.time}</time>
         </div>
         `;
@@ -235,18 +235,18 @@ app.onClient();
  */
 
 import http from 'node:http';
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     /**
      * กำหนดค่า app creator สำหรับ environment การพัฒนา
      * @description สร้างและกำหนดค่าอินสแตนซ์ Rspack app สำหรับ environment การพัฒนา เพื่อการ build และ hot module replacement
-     * @param gez อินสแตนซ์ Gez Framework จัดเตรียมฟังก์ชันหลักและอินเทอร์เฟซการกำหนดค่า
+     * @param esmx อินสแตนซ์ Esmx Framework จัดเตรียมฟังก์ชันหลักและอินเทอร์เฟซการกำหนดค่า
      * @returns ส่งกลับอินสแตนซ์ Rspack app ที่กำหนดค่าแล้ว รองรับ HMR และการแสดงตัวอย่างแบบ real-time
      */
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createRspackHtmlApp(gez, {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createRspackHtmlApp(esmx, {
                 config(context) {
                     // กำหนดค่า Rspack compilation ที่นี่
                 }
@@ -256,15 +256,15 @@ export default {
 
     /**
      * กำหนดค่าและเริ่มต้น HTTP server
-     * @description สร้างอินสแตนซ์ HTTP server รวม Gez middleware เพื่อจัดการคำขอ SSR
-     * @param gez อินสแตนซ์ Gez Framework จัดเตรียม middleware และฟังก์ชันการเรนเดอร์
+     * @description สร้างอินสแตนซ์ HTTP server รวม Esmx middleware เพื่อจัดการคำขอ SSR
+     * @param esmx อินสแตนซ์ Esmx Framework จัดเตรียม middleware และฟังก์ชันการเรนเดอร์
      */
-    async server(gez) {
+    async server(esmx) {
         const server = http.createServer((req, res) => {
-            // ใช้ Gez middleware เพื่อจัดการคำขอ
-            gez.middleware(req, res, async () => {
+            // ใช้ Esmx middleware เพื่อจัดการคำขอ
+            esmx.middleware(req, res, async () => {
                 // ดำเนินการเรนเดอร์ฝั่งเซิร์ฟเวอร์
-                const rc = await gez.render({
+                const rc = await esmx.render({
                     params: { url: req.url }
                 });
                 res.end(rc.html);
@@ -275,13 +275,13 @@ export default {
             console.log('เซิร์ฟเวอร์เริ่มทำงาน: http://localhost:3000');
         });
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ไฟล์นี้เป็นไฟล์เข้าสำหรับการกำหนดค่า environment การพัฒนาและการเริ่มต้นเซิร์ฟเวอร์ ประกอบด้วยสองฟังก์ชันหลัก:
 
 1. ฟังก์ชัน `devApp`: รับผิดชอบการสร้างและกำหนดค่าอินสแตนซ์ Rspack app สำหรับ environment การพัฒนา รองรับ hot module replacement และการแสดงตัวอย่างแบบ real-time
-2. ฟังก์ชัน `server`: รับผิดชอบการสร้างและกำหนดค่า HTTP server รวม Gez middleware เพื่อจัดการคำขอ SSR
+2. ฟังก์ชัน `server`: รับผิดชอบการสร้างและกำหนดค่า HTTP server รวม Esmx middleware เพื่อจัดการคำขอ SSR
 
 ### entry.server.ts
 
@@ -293,7 +293,7 @@ export default {
  * @description รับผิดชอบกระบวนการเรนเดอร์ฝั่งเซิร์ฟเวอร์ การสร้าง HTML และการ inject ทรัพยากร
  */
 
-import type { RenderContext } from '@gez/core';
+import type { RenderContext } from '@esmx/core';
 import type App from './app';
 import type { SsrContext } from './app';
 import { createApp } from './create-app';
@@ -325,7 +325,7 @@ export default async (rc: RenderContext) => {
 <html lang="th">
 <head>
     ${rc.preload()}
-    <title>Gez เริ่มต้นอย่างรวดเร็ว</title>
+    <title>Esmx เริ่มต้นอย่างรวดเร็ว</title>
     ${rc.css()}
 </head>
 <body>
@@ -358,4 +358,4 @@ npm run build
 npm run start
 ```
 
-ตอนนี้ คุณได้สร้างแอปพลิเคชัน HTML SSR ด้วย Gez Framework เรียบร้อยแล้ว! เข้าถึง http://localhost:3000 เพื่อดูผลลัพธ์
+ตอนนี้ คุณได้สร้างแอปพลิเคชัน HTML SSR ด้วย Esmx Framework เรียบร้อยแล้ว! เข้าถึง http://localhost:3000 เพื่อดูผลลัพธ์

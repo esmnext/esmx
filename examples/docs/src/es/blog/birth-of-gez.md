@@ -1,14 +1,14 @@
 ---
-titleSuffix: "De los desafíos de los microfrontends a la innovación con ESM: El camino evolutivo del framework Gez"
-description: Explora en profundidad la evolución del framework Gez desde los desafíos de las arquitecturas tradicionales de microfrontends hasta los avances innovadores basados en ESM, compartiendo experiencias prácticas en optimización de rendimiento, gestión de dependencias y selección de herramientas de construcción.
+titleSuffix: "De los desafíos de los microfrontends a la innovación con ESM: El camino evolutivo del framework Esmx"
+description: Explora en profundidad la evolución del framework Esmx desde los desafíos de las arquitecturas tradicionales de microfrontends hasta los avances innovadores basados en ESM, compartiendo experiencias prácticas en optimización de rendimiento, gestión de dependencias y selección de herramientas de construcción.
 head:
   - - meta
     - property: keywords
-      content: Gez, framework de microfrontends, ESM, Import Maps, Rspack, Federación de Módulos, gestión de dependencias, optimización de rendimiento, evolución técnica, renderizado en el servidor
+      content: Esmx, framework de microfrontends, ESM, Import Maps, Rspack, Federación de Módulos, gestión de dependencias, optimización de rendimiento, evolución técnica, renderizado en el servidor
 sidebar: false
 ---
 
-# De la compartición de componentes a la modularización nativa: El camino evolutivo del framework de microfrontends Gez
+# De la compartición de componentes a la modularización nativa: El camino evolutivo del framework de microfrontends Esmx
 
 ## Contexto del proyecto
 
@@ -30,7 +30,7 @@ Estos problemas fueron especialmente evidentes en un proyecto empresarial en 201
 
 ### v1.0: Exploración de componentes remotos
 
-Para resolver el problema de eficiencia en la compartición de componentes, Gez v1.0 introdujo el mecanismo de componentes RemoteView basado en el protocolo HTTP. Esta solución implementó el ensamblaje dinámico de código entre servicios en tiempo de ejecución, resolviendo con éxito el problema de las largas cadenas de dependencias de construcción. Sin embargo, debido a la falta de un mecanismo estandarizado de comunicación en tiempo de ejecución, la sincronización de estado y la transferencia de eventos entre servicios aún presentaban cuellos de botella en términos de eficiencia.
+Para resolver el problema de eficiencia en la compartición de componentes, Esmx v1.0 introdujo el mecanismo de componentes RemoteView basado en el protocolo HTTP. Esta solución implementó el ensamblaje dinámico de código entre servicios en tiempo de ejecución, resolviendo con éxito el problema de las largas cadenas de dependencias de construcción. Sin embargo, debido a la falta de un mecanismo estandarizado de comunicación en tiempo de ejecución, la sincronización de estado y la transferencia de eventos entre servicios aún presentaban cuellos de botella en términos de eficiencia.
 
 ### v2.0: Intento de Federación de Módulos
 
@@ -75,7 +75,7 @@ Esta decisión nos permitió mantener la experiencia de desarrollo mientras obte
 
 ## Perspectivas futuras
 
-En el plan de desarrollo futuro, el framework Gez se centrará en las siguientes tres direcciones:
+En el plan de desarrollo futuro, el framework Esmx se centrará en las siguientes tres direcciones:
 
 ### Optimización profunda de Import Maps
 
@@ -95,4 +95,4 @@ En el plan de desarrollo futuro, el framework Gez se centrará en las siguientes
 - **Sincronización de estado**: Solución ligera de compartición de estado basada en ESM.
 - **Bus de eventos**: Mecanismo estandarizado de comunicación de eventos, soportando comunicación desacoplada entre aplicaciones.
 
-Con estas optimizaciones y extensiones, esperamos que Gez se convierta en una solución de microfrontends más completa y fácil de usar, proporcionando a los desarrolladores una mejor experiencia de desarrollo y una mayor eficiencia.
+Con estas optimizaciones y extensiones, esperamos que Esmx se convierta en una solución de microfrontends más completa y fácil de usar, proporcionando a los desarrolladores una mejor experiencia de desarrollo y una mayor eficiencia.

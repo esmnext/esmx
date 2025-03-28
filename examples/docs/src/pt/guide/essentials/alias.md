@@ -1,15 +1,15 @@
 ---
-titleSuffix: Guia de Mapeamento de Caminhos de Importação de Módulos do Framework Gez
-description: Detalha o mecanismo de alias de caminhos do framework Gez, incluindo simplificação de caminhos de importação, prevenção de aninhamento profundo, segurança de tipos e otimização de resolução de módulos, ajudando desenvolvedores a melhorar a manutenibilidade do código.
+titleSuffix: Guia de Mapeamento de Caminhos de Importação de Módulos do Framework Esmx
+description: Detalha o mecanismo de alias de caminhos do framework Esmx, incluindo simplificação de caminhos de importação, prevenção de aninhamento profundo, segurança de tipos e otimização de resolução de módulos, ajudando desenvolvedores a melhorar a manutenibilidade do código.
 head:
   - - meta
     - property: keywords
-      content: Gez, Alias de Caminho, Path Alias, TypeScript, Importação de Módulos, Mapeamento de Caminhos, Manutenibilidade de Código
+      content: Esmx, Alias de Caminho, Path Alias, TypeScript, Importação de Módulos, Mapeamento de Caminhos, Manutenibilidade de Código
 ---
 
 # Alias de Caminho
 
-O alias de caminho (Path Alias) é um mecanismo de mapeamento de caminhos de importação de módulos que permite aos desenvolvedores usar identificadores curtos e semânticos no lugar de caminhos completos de módulos. No Gez, o mecanismo de alias de caminho oferece as seguintes vantagens:
+O alias de caminho (Path Alias) é um mecanismo de mapeamento de caminhos de importação de módulos que permite aos desenvolvedores usar identificadores curtos e semânticos no lugar de caminhos completos de módulos. No Esmx, o mecanismo de alias de caminho oferece as seguintes vantagens:
 
 - **Simplificação de caminhos de importação**: Uso de aliases semânticos no lugar de caminhos relativos longos, melhorando a legibilidade do código
 - **Prevenção de aninhamento profundo**: Elimina dificuldades de manutenção causadas por referências de diretórios com múltiplos níveis (como `../../../../`)
@@ -18,7 +18,7 @@ O alias de caminho (Path Alias) é um mecanismo de mapeamento de caminhos de imp
 
 ## Mecanismo de Alias Padrão
 
-O Gez adota um mecanismo de alias automático baseado no nome do serviço (Service Name), com um design que prioriza convenções em vez de configurações, apresentando as seguintes características:
+O Esmx adota um mecanismo de alias automático baseado no nome do serviço (Service Name), com um design que prioriza convenções em vez de configurações, apresentando as seguintes características:
 
 - **Configuração automática**: Gera aliases automaticamente com base no campo `name` do `package.json`, sem necessidade de configuração manual
 - **Padronização unificada**: Garante que todos os módulos de serviço sigam uma convenção consistente de nomenclatura e referência
@@ -112,13 +112,13 @@ import { logger } from 'remote-service/src/utils';
 
 ### Alias Personalizados
 
-Para pacotes de terceiros ou cenários específicos, é possível definir aliases personalizados através do arquivo de configuração do Gez:
+Para pacotes de terceiros ou cenários específicos, é possível definir aliases personalizados através do arquivo de configuração do Esmx:
 
 ```ts title="src/entry.node.ts"
 export default {
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createApp(gez, (buildContext) => {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createApp(esmx, (buildContext) => {
                 buildContext.config.resolve = {
                     ...buildContext.config.resolve,
                     alias: {
@@ -133,7 +133,7 @@ export default {
             })
         );
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ::: warning Considerações

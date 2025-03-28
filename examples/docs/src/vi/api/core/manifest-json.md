@@ -1,15 +1,15 @@
 ---
-titleSuffix: Tài liệu tham khảo tệp manifest của khung Gez
-description: Tài liệu chi tiết về cấu trúc tệp manifest (manifest.json) của khung Gez, bao gồm quản lý sản phẩm build, ánh xạ tệp xuất và thống kê tài nguyên, giúp nhà phát triển hiểu và sử dụng hệ thống build.
+titleSuffix: Tài liệu tham khảo tệp manifest của khung Esmx
+description: Tài liệu chi tiết về cấu trúc tệp manifest (manifest.json) của khung Esmx, bao gồm quản lý sản phẩm build, ánh xạ tệp xuất và thống kê tài nguyên, giúp nhà phát triển hiểu và sử dụng hệ thống build.
 head:
   - - meta
     - property: keywords
-      content: Gez, ManifestJson, Tệp manifest, Quản lý tài nguyên, Sản phẩm build, Ánh xạ tệp, API
+      content: Esmx, ManifestJson, Tệp manifest, Quản lý tài nguyên, Sản phẩm build, Ánh xạ tệp, API
 ---
 
 # ManifestJson
 
-`manifest.json` là tệp manifest được tạo ra trong quá trình build của khung Gez, dùng để ghi lại thông tin sản phẩm build của dịch vụ. Nó cung cấp một giao diện thống nhất để quản lý sản phẩm build, tệp xuất và thống kê kích thước tài nguyên.
+`manifest.json` là tệp manifest được tạo ra trong quá trình build của khung Esmx, dùng để ghi lại thông tin sản phẩm build của dịch vụ. Nó cung cấp một giao diện thống nhất để quản lý sản phẩm build, tệp xuất và thống kê kích thước tài nguyên.
 
 ```json title="dist/client/manifest.json"
 {
@@ -71,7 +71,7 @@ interface ManifestJson {
 
 - **Kiểu**: `string`
 
-Tên dịch vụ, được lấy từ cấu hình GezOptions.name.
+Tên dịch vụ, được lấy từ cấu hình EsmxOptions.name.
 
 #### exports
 

@@ -1,22 +1,22 @@
 ---
-titleSuffix: Interface d'application abstraite du framework Gez
-description: Détaille l'interface App du framework Gez, incluant la gestion du cycle de vie des applications, le traitement des ressources statiques et le rendu côté serveur, pour aider les développeurs à comprendre et utiliser les fonctionnalités clés de l'application.
+titleSuffix: Interface d'application abstraite du framework Esmx
+description: Détaille l'interface App du framework Esmx, incluant la gestion du cycle de vie des applications, le traitement des ressources statiques et le rendu côté serveur, pour aider les développeurs à comprendre et utiliser les fonctionnalités clés de l'application.
 head:
   - - meta
     - property: keywords
-      content: Gez, App, abstraction d'application, cycle de vie, ressources statiques, rendu côté serveur, API
+      content: Esmx, App, abstraction d'application, cycle de vie, ressources statiques, rendu côté serveur, API
 ---
 
 # App
 
-`App` est l'abstraction d'application du framework Gez, fournissant une interface unifiée pour gérer le cycle de vie de l'application, les ressources statiques et le rendu côté serveur.
+`App` est l'abstraction d'application du framework Esmx, fournissant une interface unifiée pour gérer le cycle de vie de l'application, les ressources statiques et le rendu côté serveur.
 
 ```ts title="entry.node.ts"
 export default {
   // Configuration de l'environnement de développement
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(rc) {
           // Personnalisation de la configuration Rspack
         }
@@ -55,7 +55,7 @@ Environnement de production :
 - Stratégie optimisée de chargement des ressources
 
 ```ts
-server.use(gez.middleware);
+server.use(esmx.middleware);
 ```
 
 #### render
@@ -67,7 +67,7 @@ Fonction de rendu côté serveur. Fournit différentes implémentations selon l'
 - Environnement de développement (dev) : Charge le fichier d'entrée côté serveur du code source pour exécuter le rendu
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: '/page' }
 });
 res.end(rc.html);

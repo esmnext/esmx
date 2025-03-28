@@ -1,4 +1,4 @@
-import type { ParsedModuleConfig } from '@gez/core';
+import type { ParsedModuleConfig } from '@esmx/core';
 import type { Compiler, RspackPluginFunction } from '@rspack/core';
 import { entryPlugin } from './entry-plugin';
 import { externalPlugin } from './external-plugin';

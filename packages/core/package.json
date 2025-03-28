@@ -1,5 +1,5 @@
 {
-    "name": "@gez/core",
+    "name": "@esmx/core",
     "description": "A high-performance microfrontend framework supporting Vue, React, Preact, Solid, and Svelte with SSR and Module Federation capabilities.",
     "author": {
         "name": "lzxb",
@@ -17,12 +17,12 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/js-esm/gez.git",
+        "url": "https://github.com/js-esm/esmx.git",
         "directory": "packages/core"
     },
-    "homepage": "https://github.com/js-esm/gez",
+    "homepage": "https://github.com/js-esm/esmx",
     "bugs": {
-        "url": "https://github.com/js-esm/gez/issues"
+        "url": "https://github.com/js-esm/esmx/issues"
     },
     "template": "library-node",
     "keywords": [
@@ -41,7 +41,7 @@
     ],
     "license": "MIT",
     "bin": {
-        "gez": "./dist/cli/index.mjs"
+        "esmx": "./dist/cli/index.mjs"
     },
     "engines": {
         "node": ">=22.6"
@@ -55,7 +55,7 @@
         "build": "unbuild"
     },
     "dependencies": {
-        "@gez/import": "workspace:*",
+        "@esmx/import": "workspace:*",
         "@types/serialize-javascript": "^5.0.4",
         "es-module-lexer": "^1.6.0",
         "find": "^0.3.0",
@@ -65,7 +65,7 @@
     },
     "devDependencies": {
         "@biomejs/biome": "1.9.4",
-        "@gez/lint": "workspace:*",
+        "@esmx/lint": "workspace:*",
         "@types/find": "^0.2.4",
         "@types/node": "22.13.10",
         "@types/send": "^0.17.4",

@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez フレームワーク モジュール設定 API リファレンス
-description: Gez フレームワークの ModuleConfig 設定インターフェースについて詳しく説明します。モジュールのインポート/エクスポートルール、エイリアス設定、外部依存関係管理などを含み、開発者がフレームワークのモジュールシステムを深く理解するのに役立ちます。
+titleSuffix: Esmx フレームワーク モジュール設定 API リファレンス
+description: Esmx フレームワークの ModuleConfig 設定インターフェースについて詳しく説明します。モジュールのインポート/エクスポートルール、エイリアス設定、外部依存関係管理などを含み、開発者がフレームワークのモジュールシステムを深く理解するのに役立ちます。
 head:
   - - meta
     - property: keywords
-      content: Gez, ModuleConfig, モジュール設定, モジュールインポート/エクスポート, 外部依存関係, エイリアス設定, 依存関係管理, Webアプリケーションフレームワーク
+      content: Esmx, ModuleConfig, モジュール設定, モジュールインポート/エクスポート, 外部依存関係, エイリアス設定, 依存関係管理, Webアプリケーションフレームワーク
 ---
 
 # ModuleConfig
 
-ModuleConfig は、Gez フレームワークのモジュール設定機能を提供し、モジュールのインポート/エクスポートルール、エイリアス設定、外部依存関係などを定義するために使用されます。
+ModuleConfig は、Esmx フレームワークのモジュール設定機能を提供し、モジュールのインポート/エクスポートルール、エイリアス設定、外部依存関係などを定義するために使用されます。
 
 ## 型定義
 
@@ -74,7 +74,7 @@ interface ModuleConfig {
 
 **例**：
 ```ts title="entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
@@ -100,7 +100,7 @@ export default {
       'vue-router': 'ssr-remote/npm/vue-router'
     }
   }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ### ParsedModuleConfig

@@ -1,10 +1,10 @@
 ---
-titleSuffix: Gez Çerçevesi Uyumluluk Rehberi
-description: Gez çerçevesinin ortam gereksinimlerini detaylı olarak açıklar, Node.js sürüm gereksinimlerini ve tarayıcı uyumluluk açıklamalarını içerir, geliştiricilerin geliştirme ortamını doğru şekilde yapılandırmasına yardımcı olur.
+titleSuffix: Esmx Çerçevesi Uyumluluk Rehberi
+description: Esmx çerçevesinin ortam gereksinimlerini detaylı olarak açıklar, Node.js sürüm gereksinimlerini ve tarayıcı uyumluluk açıklamalarını içerir, geliştiricilerin geliştirme ortamını doğru şekilde yapılandırmasına yardımcı olur.
 head:
   - - meta
     - property: keywords
-      content: Gez, Node.js, tarayıcı uyumluluğu, TypeScript, es-module-shims, ortam yapılandırması
+      content: Esmx, Node.js, tarayıcı uyumluluğu, TypeScript, es-module-shims, ortam yapılandırması
 ---
 
 # Ortam Gereksinimleri

@@ -1,15 +1,15 @@
 ---
-titleSuffix: Hướng dẫn cấu hình đường dẫn tài nguyên tĩnh trong Gez Framework
-description: Hướng dẫn chi tiết về cấu hình đường dẫn cơ bản trong Gez Framework, bao gồm triển khai đa môi trường, phân phối CDN và thiết lập đường dẫn truy cập tài nguyên, giúp nhà phát triển quản lý tài nguyên tĩnh một cách linh hoạt.
+titleSuffix: Hướng dẫn cấu hình đường dẫn tài nguyên tĩnh trong Esmx Framework
+description: Hướng dẫn chi tiết về cấu hình đường dẫn cơ bản trong Esmx Framework, bao gồm triển khai đa môi trường, phân phối CDN và thiết lập đường dẫn truy cập tài nguyên, giúp nhà phát triển quản lý tài nguyên tĩnh một cách linh hoạt.
 head:
   - - meta
     - property: keywords
-      content: Gez, Đường dẫn cơ bản, Base Path, CDN, Tài nguyên tĩnh, Triển khai đa môi trường, Quản lý tài nguyên
+      content: Esmx, Đường dẫn cơ bản, Base Path, CDN, Tài nguyên tĩnh, Triển khai đa môi trường, Quản lý tài nguyên
 ---
 
 # Đường dẫn cơ bản
 
-Đường dẫn cơ bản (Base Path) là tiền tố đường dẫn truy cập cho các tài nguyên tĩnh (như JavaScript, CSS, hình ảnh, v.v.) trong ứng dụng. Trong Gez, việc cấu hình đường dẫn cơ bản một cách hợp lý là rất quan trọng cho các tình huống sau:
+Đường dẫn cơ bản (Base Path) là tiền tố đường dẫn truy cập cho các tài nguyên tĩnh (như JavaScript, CSS, hình ảnh, v.v.) trong ứng dụng. Trong Esmx, việc cấu hình đường dẫn cơ bản một cách hợp lý là rất quan trọng cho các tình huống sau:
 
 - **Triển khai đa môi trường**: Hỗ trợ truy cập tài nguyên trong các môi trường khác nhau như môi trường phát triển, môi trường kiểm thử, môi trường sản xuất
 - **Triển khai đa khu vực**: Đáp ứng nhu cầu triển khai cụm ở các khu vực hoặc quốc gia khác nhau
@@ -17,7 +17,7 @@ head:
 
 ## Cơ chế đường dẫn mặc định
 
-Gez sử dụng cơ chế tự động tạo đường dẫn dựa trên tên dịch vụ. Theo mặc định, framework sẽ đọc trường `name` trong `package.json` của dự án để tạo đường dẫn cơ bản cho tài nguyên tĩnh: `/your-app-name/`.
+Esmx sử dụng cơ chế tự động tạo đường dẫn dựa trên tên dịch vụ. Theo mặc định, framework sẽ đọc trường `name` trong `package.json` của dự án để tạo đường dẫn cơ bản cho tài nguyên tĩnh: `/your-app-name/`.
 
 ```json title="package.json"
 {
@@ -33,7 +33,7 @@ Thiết kế này ưu tiên quy ước hơn cấu hình có các ưu điểm sau
 
 ## Cấu hình đường dẫn động
 
-Trong các dự án thực tế, chúng ta thường cần triển khai cùng một bộ mã lên các môi trường hoặc khu vực khác nhau. Gez cung cấp hỗ trợ cho đường dẫn cơ bản động, giúp ứng dụng có thể thích ứng với các tình huống triển khai khác nhau.
+Trong các dự án thực tế, chúng ta thường cần triển khai cùng một bộ mã lên các môi trường hoặc khu vực khác nhau. Esmx cung cấp hỗ trợ cho đường dẫn cơ bản động, giúp ứng dụng có thể thích ứng với các tình huống triển khai khác nhau.
 
 ### Các tình huống sử dụng
 
@@ -53,10 +53,10 @@ Trong các dự án thực tế, chúng ta thường cần triển khai cùng m�
 
 ### Phương pháp cấu hình
 
-Thông qua tham số `base` của phương thức `gez.render()`, bạn có thể thiết lập đường dẫn cơ bản một cách động dựa trên ngữ cảnh yêu cầu:
+Thông qua tham số `base` của phương thức `esmx.render()`, bạn có thể thiết lập đường dẫn cơ bản một cách động dựa trên ngữ cảnh yêu cầu:
 
 ```ts
-const render = await gez.render({
+const render = await esmx.render({
     base: '/cn',  // Thiết lập đường dẫn cơ bản
     params: {
         url: req.url

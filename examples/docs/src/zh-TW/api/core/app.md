@@ -1,22 +1,22 @@
 ---
-titleSuffix: Gez 框架應用抽象介面
-description: 詳細介紹 Gez 框架的 App 介面，包括應用程式生命週期管理、靜態資源處理和伺服器端渲染功能，幫助開發者理解和使用應用核心功能。
+titleSuffix: Esmx 框架應用抽象介面
+description: 詳細介紹 Esmx 框架的 App 介面，包括應用程式生命週期管理、靜態資源處理和伺服器端渲染功能，幫助開發者理解和使用應用核心功能。
 head:
   - - meta
     - property: keywords
-      content: Gez, App, 應用抽象, 生命週期, 靜態資源, 伺服器端渲染, API
+      content: Esmx, App, 應用抽象, 生命週期, 靜態資源, 伺服器端渲染, API
 ---
 
 # App
 
-`App` 是 Gez 框架的應用抽象，提供了統一的介面來管理應用程式的生命週期、靜態資源和伺服器端渲染。
+`App` 是 Esmx 框架的應用抽象，提供了統一的介面來管理應用程式的生命週期、靜態資源和伺服器端渲染。
 
 ```ts title="entry.node.ts"
 export default {
   // 開發環境配置
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(rc) {
           // 自訂 Rspack 配置
         }
@@ -55,7 +55,7 @@ interface App {
 - 最佳化的資源載入策略
 
 ```ts
-server.use(gez.middleware);
+server.use(esmx.middleware);
 ```
 
 #### render
@@ -67,7 +67,7 @@ server.use(gez.middleware);
 - 開發環境（dev）：載入原始碼中的伺服器端入口檔案執行渲染
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: '/page' }
 });
 res.end(rc.html);

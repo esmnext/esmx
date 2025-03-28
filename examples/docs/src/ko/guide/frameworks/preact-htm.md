@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez 프레임워크 Preact+HTM SSR 애플리케이션 예제
-description: Gez를 기반으로 Preact+HTM SSR 애플리케이션을 처음부터 구축하는 방법을 보여주는 예제입니다. 프로젝트 초기화, Preact 설정 및 진입 파일 설정을 포함한 프레임워크의 기본 사용법을 다룹니다.
+titleSuffix: Esmx 프레임워크 Preact+HTM SSR 애플리케이션 예제
+description: Esmx를 기반으로 Preact+HTM SSR 애플리케이션을 처음부터 구축하는 방법을 보여주는 예제입니다. 프로젝트 초기화, Preact 설정 및 진입 파일 설정을 포함한 프레임워크의 기본 사용법을 다룹니다.
 head:
   - - meta
     - property: keywords
-      content: Gez, Preact, HTM, SSR 애플리케이션, TypeScript 설정, 프로젝트 초기화, 서버 사이드 렌더링, 클라이언트 상호작용
+      content: Esmx, Preact, HTM, SSR 애플리케이션, TypeScript 설정, 프로젝트 초기화, 서버 사이드 렌더링, 클라이언트 상호작용
 ---
 
 # Preact+HTM
 
-이 튜토리얼은 Gez를 기반으로 Preact+HTM SSR 애플리케이션을 처음부터 구축하는 방법을 안내합니다. Gez 프레임워크를 사용하여 서버 사이드 렌더링 애플리케이션을 만드는 방법을 완전한 예제를 통해 보여드리겠습니다.
+이 튜토리얼은 Esmx를 기반으로 Preact+HTM SSR 애플리케이션을 처음부터 구축하는 방법을 안내합니다. Esmx 프레임워크를 사용하여 서버 사이드 렌더링 애플리케이션을 만드는 방법을 완전한 예제를 통해 보여드리겠습니다.
 
 ## 프로젝트 구조
 
@@ -40,18 +40,18 @@ head:
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "gez dev",
+    "dev": "esmx dev",
     "build": "npm run build:dts && npm run build:ssr",
-    "build:ssr": "gez build",
-    "preview": "gez preview",
+    "build:ssr": "esmx build",
+    "preview": "esmx preview",
     "start": "NODE_ENV=production node dist/index.js",
     "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src"
   },
   "dependencies": {
-    "@gez/core": "*"
+    "@esmx/core": "*"
   },
   "devDependencies": {
-    "@gez/rspack": "*",
+    "@esmx/rspack": "*",
     "@types/node": "22.8.6",
     "htm": "^3.1.1",
     "preact": "^10.26.2",
@@ -118,7 +118,7 @@ npm install
 ```ts title="src/app.ts"
 /**
  * @file 예제 컴포넌트
- * @description Gez 프레임워크의 기본 기능을 시연하기 위해 자동으로 업데이트되는 시간을 표시하는 페이지 제목을 보여줍니다.
+ * @description Esmx 프레임워크의 기본 기능을 시연하기 위해 자동으로 업데이트되는 시간을 표시하는 페이지 제목을 보여줍니다.
  */
 
 import { Component } from 'preact';
@@ -149,7 +149,7 @@ export default class App extends Component {
         const { time } = this.state;
         return html`
             <div>
-                <h1><a href="https://www.esmnext.com/guide/frameworks/preact-htm.html" target="_blank">Gez 빠른 시작</a></h1>
+                <h1><a href="https://www.esmnext.com/guide/frameworks/preact-htm.html" target="_blank">Esmx 빠른 시작</a></h1>
                 <time datetime=${time}>${time}</time>
             </div>
         `;
@@ -210,18 +210,18 @@ render(app, document.getElementById('app')!);
  */
 
 import http from 'node:http';
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     /**
      * 개발 환경 애플리케이션 생성기 설정
      * @description Rspack 애플리케이션 인스턴스 생성 및 설정, 개발 환경 빌드 및 핫 리로드 지원
-     * @param gez Gez 프레임워크 인스턴스, 핵심 기능 및 설정 인터페이스 제공
+     * @param esmx Esmx 프레임워크 인스턴스, 핵심 기능 및 설정 인터페이스 제공
      * @returns 설정된 Rspack 애플리케이션 인스턴스 반환, HMR 및 실시간 미리보기 지원
      */
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createRspackHtmlApp(gez, {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createRspackHtmlApp(esmx, {
                 config(context) {
                     // 여기서 Rspack 컴파일 설정을 사용자 정의
                 }
@@ -231,15 +231,15 @@ export default {
 
     /**
      * HTTP 서버 설정 및 시작
-     * @description HTTP 서버 인스턴스 생성, Gez 미들웨어 통합, SSR 요청 처리
-     * @param gez Gez 프레임워크 인스턴스, 미들웨어 및 렌더링 기능 제공
+     * @description HTTP 서버 인스턴스 생성, Esmx 미들웨어 통합, SSR 요청 처리
+     * @param esmx Esmx 프레임워크 인스턴스, 미들웨어 및 렌더링 기능 제공
      */
-    async server(gez) {
+    async server(esmx) {
         const server = http.createServer((req, res) => {
-            // Gez 미들웨어를 사용하여 요청 처리
-            gez.middleware(req, res, async () => {
+            // Esmx 미들웨어를 사용하여 요청 처리
+            esmx.middleware(req, res, async () => {
                 // 서버 사이드 렌더링 실행
-                const rc = await gez.render({
+                const rc = await esmx.render({
                     params: { url: req.url }
                 });
                 res.end(rc.html);
@@ -250,13 +250,13 @@ export default {
             console.log('서버 시작: http://localhost:3000');
         });
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 이 파일은 개발 환경 설정 및 서버 시작을 담당하는 진입 파일로, 두 가지 핵심 기능을 포함합니다:
 
 1. `devApp` 함수: 개발 환경의 Rspack 애플리케이션 인스턴스를 생성 및 설정하며, 핫 리로드 및 실시간 미리보기 기능을 지원합니다. 여기서는 `createRspackHtmlApp`을 사용하여 Preact+HTM 전용 Rspack 애플리케이션 인스턴스를 생성합니다.
-2. `server` 함수: HTTP 서버를 생성 및 설정하고, Gez 미들웨어를 통합하여 SSR 요청을 처리합니다.
+2. `server` 함수: HTTP 서버를 생성 및 설정하고, Esmx 미들웨어를 통합하여 SSR 요청을 처리합니다.
 
 ### entry.server.ts
 
@@ -268,7 +268,7 @@ export default {
  * @description 서버 사이드 렌더링 프로세스, HTML 생성 및 리소스 주입 담당
  */
 
-import type { RenderContext } from '@gez/core';
+import type { RenderContext } from '@esmx/core';
 import type { VNode } from 'preact';
 import { render } from 'preact-render-to-string';
 import { createApp } from './create-app';
@@ -288,7 +288,7 @@ export default async (rc: RenderContext) => {
 <html lang="ko">
 <head>
     ${rc.preload()}
-    <title>Gez 빠른 시작</title>
+    <title>Esmx 빠른 시작</title>
     ${rc.css()}
 </head>
 <body>
@@ -321,4 +321,4 @@ npm run build
 npm run start
 ```
 
-이제 Gez를 기반으로 한 Preact+HTM SSR 애플리케이션을 성공적으로 생성했습니다! http://localhost:3000 에 접속하여 결과를 확인할 수 있습니다.
+이제 Esmx를 기반으로 한 Preact+HTM SSR 애플리케이션을 성공적으로 생성했습니다! http://localhost:3000 에 접속하여 결과를 확인할 수 있습니다.

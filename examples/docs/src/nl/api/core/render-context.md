@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework Render Context API Referentie
-description: Gedetailleerde uitleg over de RenderContext kernklasse van het Gez framework, inclusief rendercontrole, resourcebeheer, statussynchronisatie en routeringscontrole, om ontwikkelaars te helpen efficiënte server-side rendering te realiseren.
+titleSuffix: Esmx Framework Render Context API Referentie
+description: Gedetailleerde uitleg over de RenderContext kernklasse van het Esmx framework, inclusief rendercontrole, resourcebeheer, statussynchronisatie en routeringscontrole, om ontwikkelaars te helpen efficiënte server-side rendering te realiseren.
 head:
   - - meta
     - property: keywords
-      content: Gez, RenderContext, SSR, server-side rendering, render context, statussynchronisatie, resourcebeheer, webapplicatieframework
+      content: Esmx, RenderContext, SSR, server-side rendering, render context, statussynchronisatie, resourcebeheer, webapplicatieframework
 ---
 
 # RenderContext
 
-RenderContext is de kernklasse in het Gez framework, verantwoordelijk voor het beheren van de volledige levenscyclus van server-side rendering (SSR). Het biedt een complete API voor het afhandelen van rendercontext, resourcebeheer, statussynchronisatie en andere cruciale taken:
+RenderContext is de kernklasse in het Esmx framework, verantwoordelijk voor het beheren van de volledige levenscyclus van server-side rendering (SSR). Het biedt een complete API voor het afhandelen van rendercontext, resourcebeheer, statussynchronisatie en andere cruciale taken:
 
 - **Rendercontrole**: Beheert het server-side renderingproces, ondersteunt meerdere ingangen, conditionele rendering en andere scenario's
 - **Resourcebeheer**: Verzamelt en injecteert intelligent JS, CSS en andere statische resources om de laadprestaties te optimaliseren
@@ -148,7 +148,7 @@ export const desktop = async (rc: RenderContext) => {
 Renderparameters. Kan willekeurige type parameters doorgeven aan de renderfunctie, vaak gebruikt om verzoekinformatie (URL, query parameters, etc.) door te geven.
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     url: req.url,
     lang: 'zh-CN',
@@ -169,12 +169,12 @@ Generatiemodus van import map:
 
 ## Instantie Eigenschappen
 
-### gez
+### esmx
 
-- **Type**: `Gez`
+- **Type**: `Esmx`
 - **Alleen-lezen**: `true`
 
-Referentie naar Gez instantie. Gebruikt om toegang te krijgen tot kernfunctionaliteiten en configuratie-informatie van het framework.
+Referentie naar Esmx instantie. Gebruikt om toegang te krijgen tot kernfunctionaliteiten en configuratie-informatie van het framework.
 
 ### redirect
 
@@ -264,7 +264,7 @@ export default async (rc: RenderContext) => {
 };
 
 // Dynamisch basispad
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/app',  // Stel basispad in
   params: { url: req.url }
 });
@@ -285,19 +285,19 @@ Basispad voor statische resources. Alle statische resources (JS, CSS, afbeelding
 
 ```ts
 // Basisgebruik
-const rc = await gez.render({
-  base: '/gez',  // Stel basispad in
+const rc = await esmx.render({
+  base: '/esmx',  // Stel basispad in
   params: { url: req.url }
 });
 
 // Voorbeeld van meertalige site
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/nl',  // Nederlandse site
   params: { lang: 'nl-NL' }
 });
 
 // Voorbeeld van microfrontend applicatie
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/app1',  // Subapplicatie 1
   params: { appId: 1 }
 });
@@ -327,7 +327,7 @@ export const desktop = async (rc: RenderContext) => {
 };
 
 // Selecteer ingangsfunctie op basis van apparaattype
-const rc = await gez.render({
+const rc = await esmx.render({
   entryName: isMobile ? 'mobile' : 'desktop',
   params: { url: req.url }
 });
@@ -343,7 +343,7 @@ Renderparameters. Kan worden doorgegeven en benaderd tijdens het server-side ren
 
 ```ts
 // Basisgebruik - Doorgeven van URL en taalinstelling
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     url: req.url,
     lang: 'nl-NL'
@@ -351,7 +351,7 @@ const rc = await gez.render({
 });
 
 // Pagina-configuratie - Instellen van thema en lay-out
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     theme: 'dark',
     layout: 'sidebar'
@@ -359,7 +359,7 @@ const rc = await gez.render({
 });
 
 // Omgevingsconfiguratie - Injecteren van API-adres
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     apiBaseUrl: process.env.API_BASE_URL,
     version: '1.0.0'

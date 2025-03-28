@@ -1,10 +1,10 @@
 ---
-titleSuffix: Guia de Compatibilidade do Framework Gez
-description: Detalha os requisitos de ambiente do framework Gez, incluindo requisitos de versão do Node.js e compatibilidade do navegador, ajudando os desenvolvedores a configurar corretamente o ambiente de desenvolvimento.
+titleSuffix: Guia de Compatibilidade do Framework Esmx
+description: Detalha os requisitos de ambiente do framework Esmx, incluindo requisitos de versão do Node.js e compatibilidade do navegador, ajudando os desenvolvedores a configurar corretamente o ambiente de desenvolvimento.
 head:
   - - meta
     - property: keywords
-      content: Gez, Node.js, Compatibilidade do Navegador, TypeScript, es-module-shims, Configuração do Ambiente
+      content: Esmx, Node.js, Compatibilidade do Navegador, TypeScript, es-module-shims, Configuração do Ambiente
 ---
 
 # Requisitos de Ambiente

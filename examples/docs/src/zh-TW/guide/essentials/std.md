@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez 框架專案結構與規範指南
-description: 詳細介紹 Gez 框架的標準專案結構、入口檔案規範和設定檔規範，幫助開發者建立規範化、可維護的 SSR 應用。
+titleSuffix: Esmx 框架專案結構與規範指南
+description: 詳細介紹 Esmx 框架的標準專案結構、入口檔案規範和設定檔規範，幫助開發者建立規範化、可維護的 SSR 應用。
 head:
   - - meta
     - property: keywords
-      content: Gez, 專案結構, 入口檔案, 設定規範, SSR框架, TypeScript, 專案規範, 開發標準
+      content: Esmx, 專案結構, 入口檔案, 設定規範, SSR框架, TypeScript, 專案規範, 開發標準
 ---
 
 # 標準規範
 
-Gez 是一個現代化的 SSR 框架，採用標準化的專案結構和路徑解析機制，以確保專案在開發和生產環境中的一致性和可維護性。
+Esmx 是一個現代化的 SSR 框架，採用標準化的專案結構和路徑解析機制，以確保專案在開發和生產環境中的一致性和可維護性。
 
 ## 專案結構規範
 
@@ -36,7 +36,7 @@ root
 ```
 
 ::: tip 拓展知識
-- `gez.name` 來源於 `package.json` 的 `name` 欄位
+- `esmx.name` 來源於 `package.json` 的 `name` 欄位
 - `dist/package.json` 來源於根目錄的 `package.json`
 - 設定 `packs.enable` 為 `true` 時，才會對 `dist` 目錄進行歸檔
 
@@ -76,11 +76,11 @@ Node.js 伺服器入口檔案負責：
     "name": "your-app-name",
     "type": "module",
     "scripts": {
-        "dev": "gez dev",
+        "dev": "esmx dev",
         "build": "npm run build:dts && npm run build:ssr",
-        "build:ssr": "gez build",
+        "build:ssr": "esmx build",
         "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src",
-        "preview": "gez preview",
+        "preview": "esmx preview",
         "start": "NODE_ENV=production node dist/index.js"
     }
 }

@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework Module Configuration API Reference
-description: Detailed documentation on the ModuleConfig interface of the Gez framework, including module import/export rules, alias configuration, and external dependency management, helping developers gain a deeper understanding of the framework's modular system.
+titleSuffix: Esmx Framework Module Configuration API Reference
+description: Detailed documentation on the ModuleConfig interface of the Esmx framework, including module import/export rules, alias configuration, and external dependency management, helping developers gain a deeper understanding of the framework's modular system.
 head:
   - - meta
     - property: keywords
-      content: Gez, ModuleConfig, Module Configuration, Module Import/Export, External Dependencies, Alias Configuration, Dependency Management, Web Application Framework
+      content: Esmx, ModuleConfig, Module Configuration, Module Import/Export, External Dependencies, Alias Configuration, Dependency Management, Web Application Framework
 ---
 
 # ModuleConfig
 
-ModuleConfig provides module configuration capabilities for the Gez framework, used to define module import/export rules, alias configuration, and external dependencies.
+ModuleConfig provides module configuration capabilities for the Esmx framework, used to define module import/export rules, alias configuration, and external dependencies.
 
 ## Type Definitions
 
@@ -74,7 +74,7 @@ Each dependency item contains the following properties:
 
 **Example**:
 ```ts title="entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
@@ -100,7 +100,7 @@ export default {
       'vue-router': 'ssr-remote/npm/vue-router'
     }
   }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ### ParsedModuleConfig

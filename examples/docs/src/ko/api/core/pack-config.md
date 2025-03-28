@@ -1,10 +1,10 @@
 ---
-titleSuffix: Gez 프레임워크 패키징 설정 API 참조
-description: Gez 프레임워크의 PackConfig 설정 인터페이스에 대해 자세히 설명합니다. 소프트웨어 패키지 패키징 규칙, 출력 설정 및 라이프사이클 훅을 포함하여 개발자가 표준화된 빌드 프로세스를 구현할 수 있도록 도와줍니다.
+titleSuffix: Esmx 프레임워크 패키징 설정 API 참조
+description: Esmx 프레임워크의 PackConfig 설정 인터페이스에 대해 자세히 설명합니다. 소프트웨어 패키지 패키징 규칙, 출력 설정 및 라이프사이클 훅을 포함하여 개발자가 표준화된 빌드 프로세스를 구현할 수 있도록 도와줍니다.
 head:
   - - meta
     - property: keywords
-      content: Gez, PackConfig, 소프트웨어 패키지 패키징, 빌드 설정, 라이프사이클 훅, 패키징 설정, 웹 애플리케이션 프레임워크
+      content: Esmx, PackConfig, 소프트웨어 패키지 패키징, 빌드 설정, 라이프사이클 훅, 패키징 설정, 웹 애플리케이션 프레임워크
 ---
 
 # PackConfig
@@ -21,9 +21,9 @@ head:
 interface PackConfig {
     enable?: boolean;
     outputs?: string | string[] | boolean;
-    packageJson?: (gez: Gez, pkg: Record<string, any>) => Promise<Record<string, any>>;
-    onBefore?: (gez: Gez, pkg: Record<string, any>) => Promise<void>;
-    onAfter?: (gez: Gez, pkg: Record<string, any>, file: Buffer) => Promise<void>;
+    packageJson?: (esmx: Esmx, pkg: Record<string, any>) => Promise<Record<string, any>>;
+    onBefore?: (esmx: Esmx, pkg: Record<string, any>) => Promise<void>;
+    onAfter?: (esmx: Esmx, pkg: Record<string, any>, file: Buffer) => Promise<void>;
 }
 ```
 
@@ -48,7 +48,7 @@ interface PackConfig {
 package.json 내용을 사용자 정의하는 콜백 함수. 패키징 전에 호출되며, package.json 내용을 사용자 정의하는 데 사용됩니다.
 
 - 매개변수:
-  - `gez: Gez` - Gez 인스턴스
+  - `esmx: Esmx` - Esmx 인스턴스
   - `pkg: any` - 원본 package.json 내용
 - 반환값: `Promise<any>` - 수정된 package.json 내용
 
@@ -60,7 +60,7 @@ package.json 내용을 사용자 정의하는 콜백 함수. 패키징 전에 �
 
 예제:
 ```ts
-packageJson: async (gez, pkg) => {
+packageJson: async (esmx, pkg) => {
   // 패키지 정보 설정
   pkg.name = 'my-app';
   pkg.version = '1.0.0';
@@ -86,7 +86,7 @@ packageJson: async (gez, pkg) => {
 패키징 전 준비 작업을 위한 콜백 함수.
 
 - 매개변수:
-  - `gez: Gez` - Gez 인스턴스
+  - `esmx: Esmx` - Esmx 인스턴스
   - `pkg: Record<string, any>` - package.json 내용
 - 반환값: `Promise<void>`
 
@@ -98,7 +98,7 @@ packageJson: async (gez, pkg) => {
 
 예제:
 ```ts
-onBefore: async (gez, pkg) => {
+onBefore: async (esmx, pkg) => {
   // 문서 추가
   await fs.writeFile('dist/README.md', '# My App');
   await fs.writeFile('dist/LICENSE', 'MIT License');
@@ -119,7 +119,7 @@ onBefore: async (gez, pkg) => {
 패키징 완료 후 처리 작업을 위한 콜백 함수. .tgz 파일 생성 후 호출되며, 패키징 결과물을 처리하는 데 사용됩니다.
 
 - 매개변수:
-  - `gez: Gez` - Gez 인스턴스
+  - `esmx: Esmx` - Esmx 인스턴스
   - `pkg: Record<string, any>` - package.json 내용
   - `file: Buffer` - 패키징된 파일 내용
 - 반환값: `Promise<void>`
@@ -132,7 +132,7 @@ onBefore: async (gez, pkg) => {
 
 예제:
 ```ts
-onAfter: async (gez, pkg, file) => {
+onAfter: async (esmx, pkg, file) => {
   // npm 개인 저장소에 릴리스
   await publishToRegistry(file, {
     registry: 'https://registry.example.com'
@@ -152,7 +152,7 @@ onAfter: async (gez, pkg, file) => {
 ## 사용 예제
 
 ```ts title="entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
@@ -176,13 +176,13 @@ export default {
     ],
 
     // package.json 사용자 정의
-    packageJson: async (gez, pkg) => {
+    packageJson: async (esmx, pkg) => {
       pkg.version = '1.0.0';
       return pkg;
     },
 
     // 패키징 전 준비
-    onBefore: async (gez, pkg) => {
+    onBefore: async (esmx, pkg) => {
       // 필요한 파일 추가
       await fs.writeFile('dist/README.md', '# Your App\n\n모듈 내보내기 설명...');
       // 타입 검사 실행
@@ -190,7 +190,7 @@ export default {
     },
 
     // 패키징 후 처리
-    onAfter: async (gez, pkg, file) => {
+    onAfter: async (esmx, pkg, file) => {
       // 개인 npm 미러에 릴리스
       await publishToRegistry(file, {
         registry: 'https://npm.your-registry.com/'
@@ -199,5 +199,5 @@ export default {
       await uploadToServer(file, 'https://static.example.com/packages');
     }
   }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```

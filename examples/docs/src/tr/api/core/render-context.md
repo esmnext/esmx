@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Çerçevesi RenderContext API Referansı
-description: Gez çerçevesinin RenderContext temel sınıfını detaylı olarak açıklar, sunucu tarafı render (SSR) için render kontrolü, kaynak yönetimi, durum senkronizasyonu ve rota kontrolü gibi işlevleri kapsar, geliştiricilere verimli sunucu tarafı render uygulamaları oluşturmalarında yardımcı olur.
+titleSuffix: Esmx Çerçevesi RenderContext API Referansı
+description: Esmx çerçevesinin RenderContext temel sınıfını detaylı olarak açıklar, sunucu tarafı render (SSR) için render kontrolü, kaynak yönetimi, durum senkronizasyonu ve rota kontrolü gibi işlevleri kapsar, geliştiricilere verimli sunucu tarafı render uygulamaları oluşturmalarında yardımcı olur.
 head:
   - - meta
     - property: keywords
-      content: Gez, RenderContext, SSR, sunucu tarafı render, render context, durum senkronizasyonu, kaynak yönetimi, Web uygulama çerçevesi
+      content: Esmx, RenderContext, SSR, sunucu tarafı render, render context, durum senkronizasyonu, kaynak yönetimi, Web uygulama çerçevesi
 ---
 
 # RenderContext
 
-RenderContext, Gez çerçevesinin temel sınıfıdır ve sunucu tarafı render (SSR) işleminin tüm yaşam döngüsünü yönetir. Render context, kaynak yönetimi, durum senkronizasyonu gibi kritik görevleri gerçekleştirmek için kapsamlı bir API sağlar:
+RenderContext, Esmx çerçevesinin temel sınıfıdır ve sunucu tarafı render (SSR) işleminin tüm yaşam döngüsünü yönetir. Render context, kaynak yönetimi, durum senkronizasyonu gibi kritik görevleri gerçekleştirmek için kapsamlı bir API sağlar:
 
 - **Render Kontrolü**: Sunucu tarafı render sürecini yönetir, çoklu giriş renderı, koşullu render gibi senaryoları destekler
 - **Kaynak Yönetimi**: JS, CSS gibi statik kaynakları akıllıca toplar ve enjekte eder, yükleme performansını optimize eder
@@ -148,7 +148,7 @@ export const desktop = async (rc: RenderContext) => {
 Render parametreleri. Render fonksiyonuna herhangi bir türde parametre geçirmek için kullanılır, genellikle istek bilgilerini (URL, sorgu parametreleri vb.) iletmek için kullanılır.
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     url: req.url,
     lang: 'tr-TR',
@@ -169,12 +169,12 @@ Import map oluşturma modu:
 
 ## Örnek Özellikleri
 
-### gez
+### esmx
 
-- **Tür**: `Gez`
+- **Tür**: `Esmx`
 - **Salt Okunur**: `true`
 
-Gez örneği referansı. Çerçevenin temel işlevlerine ve yapılandırma bilgilerine erişmek için kullanılır.
+Esmx örneği referansı. Çerçevenin temel işlevlerine ve yapılandırma bilgilerine erişmek için kullanılır.
 
 ### redirect
 
@@ -264,7 +264,7 @@ export default async (rc: RenderContext) => {
 };
 
 // Dinamik temel yol
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/uygulama',  // Temel yolu ayarla
   params: { url: req.url }
 });
@@ -285,19 +285,19 @@ Statik kaynakların temel yolu. Tüm statik kaynaklar (JS, CSS, resimler vb.) bu
 
 ```ts
 // Temel kullanım
-const rc = await gez.render({
-  base: '/gez',  // Temel yolu ayarla
+const rc = await esmx.render({
+  base: '/esmx',  // Temel yolu ayarla
   params: { url: req.url }
 });
 
 // Çok dilli site örneği
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/tr',  // Türkçe site
   params: { lang: 'tr-TR' }
 });
 
 // Mikro ön uç uygulama örneği
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/uygulama1',  // Alt uygulama 1
   params: { appId: 1 }
 });
@@ -327,7 +327,7 @@ export const desktop = async (rc: RenderContext) => {
 };
 
 // Cihaz türüne göre giriş fonksiyonu seçimi
-const rc = await gez.render({
+const rc = await esmx.render({
   entryName: isMobile ? 'mobile' : 'desktop',
   params: { url: req.url }
 });
@@ -343,7 +343,7 @@ Render parametreleri. Sunucu tarafı render sürecinde parametreleri iletmek ve 
 
 ```ts
 // Temel kullanım - URL ve dil ayarlarını iletme
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     url: req.url,
     lang: 'tr-TR'
@@ -351,7 +351,7 @@ const rc = await gez.render({
 });
 
 // Sayfa yapılandırması - Tema ve düzen ayarlama
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     theme: 'koyu',
     layout: 'yan-menu'
@@ -359,7 +359,7 @@ const rc = await gez.render({
 });
 
 // Ortam yapılandırması - API adresini enjekte etme
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     apiBaseUrl: process.env.API_BASE_URL,
     version: '1.0.0'

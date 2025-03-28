@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework Inter-Service Code Sharing Mechanism
-description: Detailed introduction to Gez framework's module linking mechanism, including inter-service code sharing, dependency management, and ESM specification implementation, helping developers build efficient micro-frontend applications.
+titleSuffix: Esmx Framework Inter-Service Code Sharing Mechanism
+description: Detailed introduction to Esmx framework's module linking mechanism, including inter-service code sharing, dependency management, and ESM specification implementation, helping developers build efficient micro-frontend applications.
 head:
   - - meta
     - property: keywords
-      content: Gez, Module Linking, Module Link, ESM, Code Sharing, Dependency Management, Micro-frontend
+      content: Esmx, Module Linking, Module Link, ESM, Code Sharing, Dependency Management, Micro-frontend
 ---
 
 # Module Linking
 
-The Gez framework provides a comprehensive module linking mechanism for managing code sharing and dependency relationships between services. This mechanism is implemented based on the ESM (ECMAScript Module) specification, supporting source-level module exports and imports, as well as complete dependency management functionality.
+The Esmx framework provides a comprehensive module linking mechanism for managing code sharing and dependency relationships between services. This mechanism is implemented based on the ESM (ECMAScript Module) specification, supporting source-level module exports and imports, as well as complete dependency management functionality.
 
 ### Core Concepts
 
@@ -30,7 +30,7 @@ Module import is the process of referencing code units exported by other service
 Configure the modules to be exported in `entry.node.ts`:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     modules: {
@@ -43,7 +43,7 @@ export default {
             'npm:vue-router'                   // Vue Router
         ]
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 Export configuration supports two types:
@@ -57,7 +57,7 @@ Export configuration supports two types:
 Configure the modules to be imported in `entry.node.ts`:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     modules: {
@@ -75,7 +75,7 @@ export default {
             'vue-router': 'ssr-remote/npm/vue-router'
         }
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 Configuration item descriptions:
@@ -143,7 +143,7 @@ Install via HTTP/HTTPS protocol:
 Configure build options in `entry.node.ts`:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     // Module export configuration
@@ -166,26 +166,26 @@ export default {
         ],
 
         // Custom package.json
-        packageJson: async (gez, pkg) => {
+        packageJson: async (esmx, pkg) => {
             pkg.version = '1.0.0';
             return pkg;
         },
 
         // Pre-build processing
-        onBefore: async (gez, pkg) => {
+        onBefore: async (esmx, pkg) => {
             // Generate type declarations
             // Execute test cases
             // Update documentation, etc.
         },
 
         // Post-build processing
-        onAfter: async (gez, pkg, file) => {
+        onAfter: async (esmx, pkg, file) => {
             // Upload to CDN
             // Publish to npm registry
             // Deploy to test environment, etc.
         }
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ### Build Artifacts
@@ -205,7 +205,7 @@ your-app-name.tgz
 
 ```bash
 # 1. Build production version
-gez build
+esmx build
 
 # 2. Publish to npm
 npm publish dist/versions/your-app-name.tgz

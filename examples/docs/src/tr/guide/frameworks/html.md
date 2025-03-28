@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework HTML SSR Uygulama Örneği
-description: Gez tabanlı bir HTML SSR uygulamasını sıfırdan oluşturun, proje başlatma, HTML yapılandırması ve giriş dosyası ayarları dahil olmak üzere framework'ün temel kullanımını bir örnekle gösterin.
+titleSuffix: Esmx Framework HTML SSR Uygulama Örneği
+description: Esmx tabanlı bir HTML SSR uygulamasını sıfırdan oluşturun, proje başlatma, HTML yapılandırması ve giriş dosyası ayarları dahil olmak üzere framework'ün temel kullanımını bir örnekle gösterin.
 head:
   - - meta
     - property: keywords
-      content: Gez, HTML, SSR uygulaması, TypeScript yapılandırması, proje başlatma, sunucu tarafı render, istemci etkileşimi
+      content: Esmx, HTML, SSR uygulaması, TypeScript yapılandırması, proje başlatma, sunucu tarafı render, istemci etkileşimi
 ---
 
 # HTML
 
-Bu eğitim, Gez tabanlı bir HTML SSR uygulamasını sıfırdan oluşturmanıza yardımcı olacaktır. Gez framework'ünü kullanarak sunucu tarafı render (SSR) uygulaması oluşturmayı tam bir örnekle göstereceğiz.
+Bu eğitim, Esmx tabanlı bir HTML SSR uygulamasını sıfırdan oluşturmanıza yardımcı olacaktır. Esmx framework'ünü kullanarak sunucu tarafı render (SSR) uygulaması oluşturmayı tam bir örnekle göstereceğiz.
 
 ## Proje Yapısı
 
@@ -40,18 +40,18 @@ Bu eğitim, Gez tabanlı bir HTML SSR uygulamasını sıfırdan oluşturmanıza 
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "gez dev",
+    "dev": "esmx dev",
     "build": "npm run build:dts && npm run build:ssr",
-    "build:ssr": "gez build",
-    "preview": "gez preview",
+    "build:ssr": "esmx build",
+    "preview": "esmx preview",
     "start": "NODE_ENV=production node dist/index.js",
     "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src"
   },
   "dependencies": {
-    "@gez/core": "*"
+    "@esmx/core": "*"
   },
   "devDependencies": {
-    "@gez/rspack": "*",
+    "@esmx/rspack": "*",
     "@types/node": "22.8.6",
     "typescript": "^5.7.3"
   }
@@ -111,7 +111,7 @@ Ana uygulama bileşeni `src/app.ts` dosyasını oluşturun ve sayfa yapısını 
 ```ts title="src/app.ts"
 /**
  * @file Örnek bileşen
- * @description Gez framework'ünün temel işlevlerini göstermek için otomatik güncellenen bir sayfa başlığı gösterir
+ * @description Esmx framework'ünün temel işlevlerini göstermek için otomatik güncellenen bir sayfa başlığı gösterir
  */
 
 export default class App {
@@ -141,7 +141,7 @@ export default class App {
 
         return `
         <div id="app">
-            <h1><a href="https://www.esmnext.com/guide/frameworks/html.html" target="_blank">Gez Hızlı Başlangıç</a></h1>
+            <h1><a href="https://www.esmnext.com/guide/frameworks/html.html" target="_blank">Esmx Hızlı Başlangıç</a></h1>
             <time datetime="${this.time}">${this.time}</time>
         </div>
         `;
@@ -235,18 +235,18 @@ app.onClient();
  */
 
 import http from 'node:http';
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     /**
      * Geliştirme ortamı için uygulama oluşturucuyu yapılandır
      * @description Rspack uygulama örneği oluştur ve yapılandır, geliştirme ortamı için derleme ve sıcak yenileme sağlar
-     * @param gez Gez framework örneği, temel işlevler ve yapılandırma arayüzü sağlar
+     * @param esmx Esmx framework örneği, temel işlevler ve yapılandırma arayüzü sağlar
      * @returns Yapılandırılmış Rspack uygulama örneğini döndürür, HMR ve gerçek zamanlı önizleme desteği sağlar
      */
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createRspackHtmlApp(gez, {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createRspackHtmlApp(esmx, {
                 config(context) {
                     // Burada Rspack derleme yapılandırmasını özelleştirin
                 }
@@ -256,15 +256,15 @@ export default {
 
     /**
      * HTTP sunucusunu yapılandır ve başlat
-     * @description HTTP sunucu örneği oluştur, Gez ara yazılımını entegre et, SSR isteklerini işle
-     * @param gez Gez framework örneği, ara yazılım ve render işlevleri sağlar
+     * @description HTTP sunucu örneği oluştur, Esmx ara yazılımını entegre et, SSR isteklerini işle
+     * @param esmx Esmx framework örneği, ara yazılım ve render işlevleri sağlar
      */
-    async server(gez) {
+    async server(esmx) {
         const server = http.createServer((req, res) => {
-            // Gez ara yazılımını kullanarak isteği işle
-            gez.middleware(req, res, async () => {
+            // Esmx ara yazılımını kullanarak isteği işle
+            esmx.middleware(req, res, async () => {
                 // Sunucu tarafı render işlemini gerçekleştir
-                const rc = await gez.render({
+                const rc = await esmx.render({
                     params: { url: req.url }
                 });
                 res.end(rc.html);
@@ -275,13 +275,13 @@ export default {
             console.log('Sunucu başlatıldı: http://localhost:3000');
         });
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 Bu dosya, geliştirme ortamı yapılandırması ve sunucu başlatma işlevlerini içerir ve iki temel işlevi vardır:
 
 1. `devApp` fonksiyonu: Geliştirme ortamı için Rspack uygulama örneği oluşturur ve yapılandırır, sıcak yenileme ve gerçek zamanlı önizleme desteği sağlar.
-2. `server` fonksiyonu: HTTP sunucusu oluşturur ve yapılandırır, Gez ara yazılımını entegre ederek SSR isteklerini işler.
+2. `server` fonksiyonu: HTTP sunucusu oluşturur ve yapılandırır, Esmx ara yazılımını entegre ederek SSR isteklerini işler.
 
 ### entry.server.ts
 
@@ -293,7 +293,7 @@ Sunucu tarafı render giriş dosyası `src/entry.server.ts` dosyasını oluştur
  * @description Sunucu tarafı render sürecini, HTML oluşturmayı ve kaynak enjeksiyonunu yönetir
  */
 
-import type { RenderContext } from '@gez/core';
+import type { RenderContext } from '@esmx/core';
 import type App from './app';
 import type { SsrContext } from './app';
 import { createApp } from './create-app';
@@ -325,7 +325,7 @@ export default async (rc: RenderContext) => {
 <html lang="tr">
 <head>
     ${rc.preload()}
-    <title>Gez Hızlı Başlangıç</title>
+    <title>Esmx Hızlı Başlangıç</title>
     ${rc.css()}
 </head>
 <body>
@@ -358,4 +358,4 @@ npm run build
 npm run start
 ```
 
-Artık Gez tabanlı bir HTML SSR uygulamasını başarıyla oluşturdunuz! http://localhost:3000 adresini ziyaret ederek sonucu görebilirsiniz.
+Artık Esmx tabanlı bir HTML SSR uygulamasını başarıyla oluşturdunuz! http://localhost:3000 adresini ziyaret ederek sonucu görebilirsiniz.

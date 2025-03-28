@@ -1,6 +1,6 @@
-# Gez SSR HTML
+# Esmx SSR HTML
 
-一个完整的 HTML 服务端渲染示例，展示了如何使用 Gez 构建现代化的 Web 应用，包含路由、组件、样式和资源管理等特性。
+一个完整的 HTML 服务端渲染示例，展示了如何使用 Esmx 构建现代化的 Web 应用，包含路由、组件、样式和资源管理等特性。
 
 ## 特点
 
@@ -13,8 +13,8 @@
 
 1. 克隆仓库
 ```bash
-git clone https://github.com/js-esm/gez.git
-cd gez/examples/ssr-html
+git clone https://github.com/js-esm/esmx.git
+cd esmx/examples/ssr-html
 ```
 
 2. 安装 pnpm（如果未安装）
@@ -54,12 +54,12 @@ src/
 
 ## 在线预览
 
-访问 [在线示例](https://js-esm.github.io/gez/ssr-html/) 查看运行效果。
+访问 [在线示例](https://js-esm.github.io/esmx/ssr-html/) 查看运行效果。
 
 ## 相关链接
 
-- [项目文档](https://js-esm.github.io/gez/)
-- [GitHub 仓库](https://github.com/js-esm/gez)
+- [项目文档](https://js-esm.github.io/esmx/)
+- [GitHub 仓库](https://github.com/js-esm/esmx)
 
 ## 许可证
 

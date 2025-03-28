@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez 框架建構清單檔案參考
-description: 詳細介紹 Gez 框架的建構清單檔案（manifest.json）結構，包括建構產物管理、匯出檔案映射和資源統計功能，幫助開發者理解和使用建構系統。
+titleSuffix: Esmx 框架建構清單檔案參考
+description: 詳細介紹 Esmx 框架的建構清單檔案（manifest.json）結構，包括建構產物管理、匯出檔案映射和資源統計功能，幫助開發者理解和使用建構系統。
 head:
   - - meta
     - property: keywords
-      content: Gez, ManifestJson, 建構清單, 資源管理, 建構產物, 檔案映射, API
+      content: Esmx, ManifestJson, 建構清單, 資源管理, 建構產物, 檔案映射, API
 ---
 
 # ManifestJson
 
-`manifest.json` 是 Gez 框架在建構過程中產生的清單檔案，用於記錄服務建構的產物資訊。它提供了統一的介面來管理建構產物、匯出檔案和資源大小統計。
+`manifest.json` 是 Esmx 框架在建構過程中產生的清單檔案，用於記錄服務建構的產物資訊。它提供了統一的介面來管理建構產物、匯出檔案和資源大小統計。
 
 ```json title="dist/client/manifest.json"
 {
@@ -71,7 +71,7 @@ interface ManifestJson {
 
 - **類型**: `string`
 
-服務名稱，來自於 GezOptions.name 配置。
+服務名稱，來自於 EsmxOptions.name 配置。
 
 #### exports
 

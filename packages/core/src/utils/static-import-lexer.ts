@@ -30,7 +30,7 @@ export async function getImportsFromJsFile(
     return getImportsFromJsCode(source);
 }
 
-import type { ImportMap, SpecifierMap } from '@gez/import';
+import type { ImportMap, SpecifierMap } from '@esmx/import';
 import type { ParsedModuleConfig } from '../module-config';
 
 export type ImportPreloadInfo = SpecifierMap;

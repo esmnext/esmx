@@ -1,22 +1,22 @@
 ---
-titleSuffix: Interface de abstração de aplicação do framework Gez
-description: Detalha a interface App do framework Gez, incluindo gerenciamento do ciclo de vida do aplicativo, manipulação de recursos estáticos e renderização do lado do servidor, ajudando os desenvolvedores a entender e usar as funcionalidades principais do aplicativo.
+titleSuffix: Interface de abstração de aplicação do framework Esmx
+description: Detalha a interface App do framework Esmx, incluindo gerenciamento do ciclo de vida do aplicativo, manipulação de recursos estáticos e renderização do lado do servidor, ajudando os desenvolvedores a entender e usar as funcionalidades principais do aplicativo.
 head:
   - - meta
     - property: keywords
-      content: Gez, App, abstração de aplicação, ciclo de vida, recursos estáticos, renderização do lado do servidor, API
+      content: Esmx, App, abstração de aplicação, ciclo de vida, recursos estáticos, renderização do lado do servidor, API
 ---
 
 # App
 
-`App` é a abstração de aplicação do framework Gez, fornecendo uma interface unificada para gerenciar o ciclo de vida do aplicativo, recursos estáticos e renderização do lado do servidor.
+`App` é a abstração de aplicação do framework Esmx, fornecendo uma interface unificada para gerenciar o ciclo de vida do aplicativo, recursos estáticos e renderização do lado do servidor.
 
 ```ts title="entry.node.ts"
 export default {
   // Configuração do ambiente de desenvolvimento
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(rc) {
           // Configuração personalizada do Rspack
         }
@@ -55,7 +55,7 @@ Ambiente de produção:
 - Estratégia otimizada de carregamento de recursos
 
 ```ts
-server.use(gez.middleware);
+server.use(esmx.middleware);
 ```
 
 #### render
@@ -67,7 +67,7 @@ Função de renderização do lado do servidor. Fornece implementações diferen
 - Ambiente de desenvolvimento (dev): Carrega o arquivo de entrada do servidor do código-fonte e executa a renderização
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: '/page' }
 });
 res.end(rc.html);

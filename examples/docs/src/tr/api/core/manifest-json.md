@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Çerçevesi Manifest Dosyası Referansı
-description: Gez çerçevesinin manifest dosyasının (manifest.json) yapısını detaylı olarak açıklar, derleme çıktılarını yönetme, dosya eşleme ve kaynak istatistikleri gibi özellikleri kapsar, geliştiricilerin derleme sistemini anlamasına ve kullanmasına yardımcı olur.
+titleSuffix: Esmx Çerçevesi Manifest Dosyası Referansı
+description: Esmx çerçevesinin manifest dosyasının (manifest.json) yapısını detaylı olarak açıklar, derleme çıktılarını yönetme, dosya eşleme ve kaynak istatistikleri gibi özellikleri kapsar, geliştiricilerin derleme sistemini anlamasına ve kullanmasına yardımcı olur.
 head:
   - - meta
     - property: keywords
-      content: Gez, ManifestJson, Derleme Manifesti, Kaynak Yönetimi, Derleme Çıktıları, Dosya Eşleme, API
+      content: Esmx, ManifestJson, Derleme Manifesti, Kaynak Yönetimi, Derleme Çıktıları, Dosya Eşleme, API
 ---
 
 # ManifestJson
 
-`manifest.json`, Gez çerçevesinin derleme sürecinde oluşturulan bir manifest dosyasıdır ve hizmet derleme çıktılarını kaydetmek için kullanılır. Derleme çıktılarını yönetmek, dosyaları dışa aktarmak ve kaynak boyut istatistikleri sağlamak için birleşik bir arayüz sunar.
+`manifest.json`, Esmx çerçevesinin derleme sürecinde oluşturulan bir manifest dosyasıdır ve hizmet derleme çıktılarını kaydetmek için kullanılır. Derleme çıktılarını yönetmek, dosyaları dışa aktarmak ve kaynak boyut istatistikleri sağlamak için birleşik bir arayüz sunar.
 
 ```json title="dist/client/manifest.json"
 {
@@ -71,7 +71,7 @@ interface ManifestJson {
 
 - **Tür**: `string`
 
-Hizmet adı, GezOptions.name yapılandırmasından alınır.
+Hizmet adı, EsmxOptions.name yapılandırmasından alınır.
 
 #### exports
 

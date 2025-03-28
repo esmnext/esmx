@@ -1,4 +1,4 @@
-import type { rspack } from '@gez/rspack';
+import type { rspack } from '@esmx/rspack';
 const FIX_ESM = `api.install(require('vue').default)`;
 const ADD_IMPORT = `
 function initImport () {

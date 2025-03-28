@@ -3,7 +3,7 @@
  * @description 负责服务端渲染流程、HTML 生成和资源注入
  */
 
-import type { RenderContext } from '@gez/core';
+import type { RenderContext } from '@esmx/core';
 import type App from './app';
 import type { SsrContext } from './app';
 import { createApp } from './create-app';
@@ -35,7 +35,7 @@ export default async (rc: RenderContext) => {
 <html lang="zh-CN">
 <head>
     ${rc.preload()}
-    <title>Gez 快速开始</title>
+    <title>Esmx 快速开始</title>
     ${rc.css()}
 </head>
 <body>

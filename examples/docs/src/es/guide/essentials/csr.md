@@ -1,15 +1,15 @@
 ---
-titleSuffix: Guía de implementación de renderizado en el cliente del framework Gez
-description: Explicación detallada del mecanismo de renderizado en el cliente del framework Gez, incluyendo construcción estática, estrategias de despliegue y mejores prácticas, para ayudar a los desarrolladores a lograr un renderizado frontend eficiente en entornos sin servidor.
+titleSuffix: Guía de implementación de renderizado en el cliente del framework Esmx
+description: Explicación detallada del mecanismo de renderizado en el cliente del framework Esmx, incluyendo construcción estática, estrategias de despliegue y mejores prácticas, para ayudar a los desarrolladores a lograr un renderizado frontend eficiente en entornos sin servidor.
 head:
   - - meta
     - property: keywords
-      content: Gez, Renderizado en el cliente, CSR, Construcción estática, Renderizado frontend, Despliegue sin servidor, Optimización de rendimiento
+      content: Esmx, Renderizado en el cliente, CSR, Construcción estática, Renderizado frontend, Despliegue sin servidor, Optimización de rendimiento
 ---
 
 # Renderizado en el cliente
 
-El renderizado en el cliente (Client-Side Rendering, CSR) es una técnica de renderizado de páginas que se ejecuta en el navegador. En Gez, cuando tu aplicación no puede desplegar una instancia de servidor Node.js, puedes optar por generar un archivo estático `index.html` durante la fase de construcción, logrando un renderizado puramente en el cliente.
+El renderizado en el cliente (Client-Side Rendering, CSR) es una técnica de renderizado de páginas que se ejecuta en el navegador. En Esmx, cuando tu aplicación no puede desplegar una instancia de servidor Node.js, puedes optar por generar un archivo estático `index.html` durante la fase de construcción, logrando un renderizado puramente en el cliente.
 
 ## Casos de uso
 
@@ -26,7 +26,7 @@ Se recomienda utilizar el renderizado en el cliente en los siguientes escenarios
 En el modo de renderizado en el cliente, necesitas configurar una plantilla HTML genérica. Esta plantilla servirá como contenedor de la aplicación, incluyendo las referencias necesarias a recursos y el punto de montaje.
 
 ```ts title="src/entry.server.ts"
-import type { RenderContext } from '@gez/core';
+import type { RenderContext } from '@esmx/core';
 
 export default async (rc: RenderContext) => {
     // Enviar la recolección de dependencias
@@ -38,7 +38,7 @@ export default async (rc: RenderContext) => {
 <html>
 <head>
     ${rc.preload()}           // Precargar recursos
-    <title>Gez</title>
+    <title>Esmx</title>
     ${rc.css()}               // Inyectar estilos
 </head>
 <body>
@@ -54,20 +54,20 @@ export default async (rc: RenderContext) => {
 
 ### Generación de HTML estático
 
-Para utilizar el renderizado en el cliente en un entorno de producción, es necesario generar un archivo HTML estático durante la fase de construcción. Gez proporciona una función de enlace `postBuild` para implementar esta funcionalidad:
+Para utilizar el renderizado en el cliente en un entorno de producción, es necesario generar un archivo HTML estático durante la fase de construcción. Esmx proporciona una función de enlace `postBuild` para implementar esta funcionalidad:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
-    async postBuild(gez) {
+    async postBuild(esmx) {
         // Generar archivo HTML estático
-        const rc = await gez.render();
+        const rc = await esmx.render();
         // Escribir archivo HTML
-        gez.writeSync(
-            gez.resolvePath('dist/client', 'index.html'),
+        esmx.writeSync(
+            esmx.resolvePath('dist/client', 'index.html'),
             rc.html
         );
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```

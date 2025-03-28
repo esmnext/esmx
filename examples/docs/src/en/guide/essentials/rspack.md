@@ -1,19 +1,19 @@
 ---
-titleSuffix: Gez Framework High-Performance Build Engine
-description: An in-depth analysis of the Rspack build system in the Gez framework, including core features such as high-performance compilation, multi-environment builds, and resource optimization, helping developers build efficient and reliable modern web applications.
+titleSuffix: Esmx Framework High-Performance Build Engine
+description: An in-depth analysis of the Rspack build system in the Esmx framework, including core features such as high-performance compilation, multi-environment builds, and resource optimization, helping developers build efficient and reliable modern web applications.
 head:
   - - meta
     - property: keywords
-      content: Gez, Rspack, Build System, High-Performance Compilation, Hot Module Replacement, Multi-Environment Build, Tree Shaking, Code Splitting, SSR, Resource Optimization, Development Efficiency, Build Tools
+      content: Esmx, Rspack, Build System, High-Performance Compilation, Hot Module Replacement, Multi-Environment Build, Tree Shaking, Code Splitting, SSR, Resource Optimization, Development Efficiency, Build Tools
 ---
 
 # Rspack
 
-Gez is built on the [Rspack](https://rspack.dev/) build system, leveraging its high-performance build capabilities. This document will introduce the role and core features of Rspack in the Gez framework.
+Esmx is built on the [Rspack](https://rspack.dev/) build system, leveraging its high-performance build capabilities. This document will introduce the role and core features of Rspack in the Esmx framework.
 
 ## Features
 
-Rspack is the core build system of the Gez framework, offering the following key features:
+Rspack is the core build system of the Esmx framework, offering the following key features:
 
 - **High-Performance Builds**: A Rust-based build engine that provides extremely fast compilation performance, significantly improving build speeds for large projects.
 - **Optimized Development Experience**: Supports modern development features such as Hot Module Replacement (HMR) and incremental compilation, delivering a smooth development experience.
@@ -22,9 +22,9 @@ Rspack is the core build system of the Gez framework, offering the following key
 
 ## Building Applications
 
-Gez's Rspack build system is designed with a modular architecture, primarily consisting of the following core modules:
+Esmx's Rspack build system is designed with a modular architecture, primarily consisting of the following core modules:
 
-### @gez/rspack
+### @esmx/rspack
 
 The foundational build module, providing the following core capabilities:
 
@@ -33,7 +33,7 @@ The foundational build module, providing the following core capabilities:
 - **Build Optimization**: Features such as code splitting and Tree Shaking for performance optimization.
 - **Development Server**: Integrated high-performance development server with HMR support.
 
-### @gez/rspack-vue
+### @esmx/rspack-vue
 
 A specialized build module for the Vue framework, offering:
 
@@ -43,7 +43,7 @@ A specialized build module for the Vue framework, offering:
 
 ## Build Process
 
-The build process in Gez is divided into the following stages:
+The build process in Esmx is divided into the following stages:
 
 1. **Configuration Initialization**
    - Load project configurations.
@@ -82,12 +82,12 @@ The build process in Gez is divided into the following stages:
 ## Configuration Example
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createRspackHtmlApp(gez, {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createRspackHtmlApp(esmx, {
                 // Custom build configuration
                 config({ config }) {
                     // Add custom Rspack configurations here
@@ -95,7 +95,7 @@ export default {
             })
         );
     },
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ::: tip

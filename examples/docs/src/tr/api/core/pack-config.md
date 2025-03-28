@@ -1,10 +1,10 @@
 ---
-titleSuffix: Gez Çerçevesi Paketleme Yapılandırma API Referansı
-description: Gez çerçevesinin PackConfig yapılandırma arayüzünü detaylı olarak açıklar, yazılım paketi paketleme kurallarını, çıktı yapılandırmasını ve yaşam döngüsü kancalarını içerir, geliştiricilerin standartlaştırılmış yapı süreçlerini uygulamasına yardımcı olur.
+titleSuffix: Esmx Çerçevesi Paketleme Yapılandırma API Referansı
+description: Esmx çerçevesinin PackConfig yapılandırma arayüzünü detaylı olarak açıklar, yazılım paketi paketleme kurallarını, çıktı yapılandırmasını ve yaşam döngüsü kancalarını içerir, geliştiricilerin standartlaştırılmış yapı süreçlerini uygulamasına yardımcı olur.
 head:
   - - meta
     - property: keywords
-      content: Gez, PackConfig, yazılım paketi paketleme, yapı yapılandırması, yaşam döngüsü kancaları, paketleme yapılandırması, Web uygulama çerçevesi
+      content: Esmx, PackConfig, yazılım paketi paketleme, yapı yapılandırması, yaşam döngüsü kancaları, paketleme yapılandırması, Web uygulama çerçevesi
 ---
 
 # PackConfig
@@ -21,9 +21,9 @@ head:
 interface PackConfig {
     enable?: boolean;
     outputs?: string | string[] | boolean;
-    packageJson?: (gez: Gez, pkg: Record<string, any>) => Promise<Record<string, any>>;
-    onBefore?: (gez: Gez, pkg: Record<string, any>) => Promise<void>;
-    onAfter?: (gez: Gez, pkg: Record<string, any>, file: Buffer) => Promise<void>;
+    packageJson?: (esmx: Esmx, pkg: Record<string, any>) => Promise<Record<string, any>>;
+    onBefore?: (esmx: Esmx, pkg: Record<string, any>) => Promise<void>;
+    onAfter?: (esmx: Esmx, pkg: Record<string, any>, file: Buffer) => Promise<void>;
 }
 ```
 
@@ -48,7 +48,7 @@ Paketleme özelliğinin etkinleştirilip etkinleştirilmeyeceği. Etkinleştiril
 package.json içeriğini özelleştirmek için geri çağırma fonksiyonu. Paketlemeden önce çağrılır, package.json içeriğini özelleştirmek için kullanılır.
 
 - Parametreler:
-  - `gez: Gez` - Gez örneği
+  - `esmx: Esmx` - Esmx örneği
   - `pkg: any` - Orijinal package.json içeriği
 - Dönüş değeri: `Promise<any>` - Değiştirilmiş package.json içeriği
 
@@ -60,7 +60,7 @@ Yaygın kullanımlar:
 
 Örnek:
 ```ts
-packageJson: async (gez, pkg) => {
+packageJson: async (esmx, pkg) => {
   // Paket bilgilerini ayarla
   pkg.name = 'my-app';
   pkg.version = '1.0.0';
@@ -86,7 +86,7 @@ packageJson: async (gez, pkg) => {
 Paketleme öncesi hazırlık işlemleri için geri çağırma fonksiyonu.
 
 - Parametreler:
-  - `gez: Gez` - Gez örneği
+  - `esmx: Esmx` - Esmx örneği
   - `pkg: Record<string, any>` - package.json içeriği
 - Dönüş değeri: `Promise<void>`
 
@@ -98,7 +98,7 @@ Yaygın kullanımlar:
 
 Örnek:
 ```ts
-onBefore: async (gez, pkg) => {
+onBefore: async (esmx, pkg) => {
   // Dokümantasyon ekle
   await fs.writeFile('dist/README.md', '# Uygulamam');
   await fs.writeFile('dist/LICENSE', 'MIT Lisansı');
@@ -119,7 +119,7 @@ onBefore: async (gez, pkg) => {
 Paketleme tamamlandıktan sonraki işlemler için geri çağırma fonksiyonu. .tgz dosyası oluşturulduktan sonra çağrılır, paketleme ürünlerini işlemek için kullanılır.
 
 - Parametreler:
-  - `gez: Gez` - Gez örneği
+  - `esmx: Esmx` - Esmx örneği
   - `pkg: Record<string, any>` - package.json içeriği
   - `file: Buffer` - Paketlenmiş dosya içeriği
 - Dönüş değeri: `Promise<void>`
@@ -132,7 +132,7 @@ Yaygın kullanımlar:
 
 Örnek:
 ```ts
-onAfter: async (gez, pkg, file) => {
+onAfter: async (esmx, pkg, file) => {
   // Özel npm deposuna yayınla
   await publishToRegistry(file, {
     registry: 'https://registry.example.com'
@@ -152,7 +152,7 @@ onAfter: async (gez, pkg, file) => {
 ## Kullanım Örneği
 
 ```ts title="entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
@@ -176,13 +176,13 @@ export default {
     ],
 
     // package.json'ı özelleştir
-    packageJson: async (gez, pkg) => {
+    packageJson: async (esmx, pkg) => {
       pkg.version = '1.0.0';
       return pkg;
     },
 
     // Paketleme öncesi hazırlık
-    onBefore: async (gez, pkg) => {
+    onBefore: async (esmx, pkg) => {
       // Gerekli dosyaları ekle
       await fs.writeFile('dist/README.md', '# Uygulamanız\n\nModül dışa aktarma açıklamaları...');
       // Tür kontrolü çalıştır
@@ -190,7 +190,7 @@ export default {
     },
 
     // Paketleme sonrası işlemler
-    onAfter: async (gez, pkg, file) => {
+    onAfter: async (esmx, pkg, file) => {
       // Özel npm kaynağına yayınla
       await publishToRegistry(file, {
         registry: 'https://npm.your-registry.com/'
@@ -199,5 +199,5 @@ export default {
       await uploadToServer(file, 'https://static.example.com/packages');
     }
   }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```

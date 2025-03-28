@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework - Leitfaden zur Pfadaliaskonfiguration
-description: Detaillierte Erläuterung des Pfadaliasmechanismus im Gez-Framework, einschließlich der Vereinfachung von Importpfaden, Vermeidung von tief verschachtelten Pfaden, Typsicherheit und Modulauflösungsoptimierung, um die Wartbarkeit des Codes zu verbessern.
+titleSuffix: Esmx Framework - Leitfaden zur Pfadaliaskonfiguration
+description: Detaillierte Erläuterung des Pfadaliasmechanismus im Esmx-Framework, einschließlich der Vereinfachung von Importpfaden, Vermeidung von tief verschachtelten Pfaden, Typsicherheit und Modulauflösungsoptimierung, um die Wartbarkeit des Codes zu verbessern.
 head:
   - - meta
     - property: keywords
-      content: Gez, Pfadalias, Path Alias, TypeScript, Modulimport, Pfadzuordnung, Code-Wartbarkeit
+      content: Esmx, Pfadalias, Path Alias, TypeScript, Modulimport, Pfadzuordnung, Code-Wartbarkeit
 ---
 
 # Pfadalias
 
-Pfadalias (Path Alias) ist ein Mechanismus zur Zuordnung von Modulimportpfaden, der es Entwicklern ermöglicht, kurze, semantische Bezeichner anstelle vollständiger Modulpfade zu verwenden. Im Gez-Framework bietet der Pfadaliasmechanismus folgende Vorteile:
+Pfadalias (Path Alias) ist ein Mechanismus zur Zuordnung von Modulimportpfaden, der es Entwicklern ermöglicht, kurze, semantische Bezeichner anstelle vollständiger Modulpfade zu verwenden. Im Esmx-Framework bietet der Pfadaliasmechanismus folgende Vorteile:
 
 - **Vereinfachung von Importpfaden**: Verwendung semantischer Aliase anstelle langer relativer Pfade, um die Lesbarkeit des Codes zu verbessern
 - **Vermeidung von tief verschachtelten Pfaden**: Beseitigung von Wartungsschwierigkeiten durch mehrstufige Verzeichnisreferenzen (z.B. `../../../../`)
@@ -18,7 +18,7 @@ Pfadalias (Path Alias) ist ein Mechanismus zur Zuordnung von Modulimportpfaden, 
 
 ## Standard-Aliasmechanismus
 
-Gez verwendet einen automatischen Aliasmechanismus basierend auf dem Dienstnamen (Service Name). Dieser konfigurationsfreie Ansatz bietet folgende Merkmale:
+Esmx verwendet einen automatischen Aliasmechanismus basierend auf dem Dienstnamen (Service Name). Dieser konfigurationsfreie Ansatz bietet folgende Merkmale:
 
 - **Automatische Konfiguration**: Basierend auf dem `name`-Feld in der `package.json` wird automatisch ein Alias generiert, ohne manuelle Konfiguration
 - **Einheitliche Standards**: Sicherstellung, dass alle Dienstmodule einheitlichen Namens- und Referenzstandards folgen
@@ -112,13 +112,13 @@ import { logger } from 'remote-service/src/utils';
 
 ### Benutzerdefinierte Aliase
 
-Für Drittanbieterpakete oder spezielle Szenarien können benutzerdefinierte Aliase über die Gez-Konfigurationsdatei festgelegt werden:
+Für Drittanbieterpakete oder spezielle Szenarien können benutzerdefinierte Aliase über die Esmx-Konfigurationsdatei festgelegt werden:
 
 ```ts title="src/entry.node.ts"
 export default {
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createApp(gez, (buildContext) => {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createApp(esmx, (buildContext) => {
                 buildContext.config.resolve = {
                     ...buildContext.config.resolve,
                     alias: {
@@ -133,7 +133,7 @@ export default {
             })
         );
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ::: warning Hinweise

@@ -1,23 +1,23 @@
 ---
-titleSuffix: Gez 框架 Vue 建置工具
-description: Gez 框架的 Vue 專用建置工具，提供完整的 Vue 2/3 應用程式建置支援，包括元件開發、SSR 渲染和效能最佳化等功能。
+titleSuffix: Esmx 框架 Vue 建置工具
+description: Esmx 框架的 Vue 專用建置工具，提供完整的 Vue 2/3 應用程式建置支援，包括元件開發、SSR 渲染和效能最佳化等功能。
 head:
   - - meta
     - property: keywords
-      content: Gez, Rspack, Vue, Vue2, Vue3, SSR, 建置工具, 元件開發, 伺服器端渲染, 效能最佳化
+      content: Esmx, Rspack, Vue, Vue2, Vue3, SSR, 建置工具, 元件開發, 伺服器端渲染, 效能最佳化
 ---
 
 import { PackageManagerTabs } from '@theme';
 
-# @gez/rspack-vue
+# @esmx/rspack-vue
 
 Rspack Vue 套件提供了一套用於建立和設定基於 Vue 框架的 Rspack 應用程式的 API，支援 Vue 元件的開發、建置與伺服器端渲染。
 
 ## 安裝
 
-使用套件管理器安裝 `@gez/rspack-vue` 開發依賴：
+使用套件管理器安裝 `@esmx/rspack-vue` 開發依賴：
 
-<PackageManagerTabs command="install @gez/rspack-vue -D" />
+<PackageManagerTabs command="install @esmx/rspack-vue -D" />
 
 ## 類型匯出
 
@@ -36,7 +36,7 @@ type BuildTarget = 'node' | 'client' | 'server'
 
 ```ts
 interface RspackAppConfigContext {
-  gez: Gez
+  esmx: Esmx
   buildTarget: BuildTarget
   config: RspackOptions
   options: RspackAppOptions
@@ -44,7 +44,7 @@ interface RspackAppConfigContext {
 ```
 
 Rspack 應用程式設定上下文介面，提供了在設定鉤子函數中可以存取的上下文資訊：
-- `gez`: Gez 框架實例
+- `esmx`: Esmx 框架實例
 - `buildTarget`: 當前的建置目標（client/server/node）
 - `config`: Rspack 設定物件
 - `options`: 應用程式設定選項
@@ -86,13 +86,13 @@ Rspack 應用程式設定選項介面：
 ### createRspackApp
 
 ```ts
-function createRspackApp(gez: Gez, options?: RspackAppOptions): Promise<App>
+function createRspackApp(esmx: Esmx, options?: RspackAppOptions): Promise<App>
 ```
 
 建立一個標準的 Rspack 應用程式實例。
 
 **參數：**
-- `gez`: Gez 框架實例
+- `esmx`: Esmx 框架實例
 - `options`: Rspack 應用程式設定選項
 
 **回傳值：**
@@ -101,13 +101,13 @@ function createRspackApp(gez: Gez, options?: RspackAppOptions): Promise<App>
 ### createRspackHtmlApp
 
 ```ts
-function createRspackHtmlApp(gez: Gez, options?: RspackHtmlAppOptions): Promise<App>
+function createRspackHtmlApp(esmx: Esmx, options?: RspackHtmlAppOptions): Promise<App>
 ```
 
 建立一個 HTML 類型的 Rspack 應用程式實例。
 
 **參數：**
-- `gez`: Gez 框架實例
+- `esmx`: Esmx 框架實例
 - `options`: HTML 應用程式設定選項
 
 **回傳值：**
@@ -141,12 +141,12 @@ Rspack 內建的 loader 識別符映射物件，提供了常用的 loader 名稱
 使用這些常數可以在設定中引用內建的 loader，避免手動輸入字串：
 
 ```ts title="src/entry.node.ts"
-import { RSPACK_LOADER } from '@gez/rspack';
+import { RSPACK_LOADER } from '@esmx/rspack';
 
 export default {
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         loaders: {
           // 使用常數引用 loader
           styleLoader: RSPACK_LOADER.styleLoader,

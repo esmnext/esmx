@@ -124,15 +124,15 @@ const Features = () => html`
 export const App = () => html`
     <div class="container">
         <h1>
-            <img src="https://www.esmnext.com/logo.svg" alt="Gez Logo" class="logo" />
-            Gez + Preact + HTM 示例
+            <img src="https://www.esmnext.com/logo.svg" alt="Esmx Logo" class="logo" />
+            Esmx + Preact + HTM 示例
         </h1>
         <${Counter} />
         <${Form} />
         <${List} />
         <${Features} />
         <footer>
-            <a href="https://github.com/js-esm/gez" target="_blank" rel="noopener">
+            <a href="https://github.com/js-esm/esmx" target="_blank" rel="noopener">
                 在 GitHub 上查看
             </a>
         </footer>

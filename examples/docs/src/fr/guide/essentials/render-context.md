@@ -1,15 +1,15 @@
 ---
-titleSuffix: Mécanisme de rendu côté serveur du framework Gez
-description: Détails sur le mécanisme de contexte de rendu (RenderContext) du framework Gez, incluant la gestion des ressources, la génération de HTML et le système de modules ESM, pour aider les développeurs à comprendre et utiliser la fonctionnalité de rendu côté serveur.
+titleSuffix: Mécanisme de rendu côté serveur du framework Esmx
+description: Détails sur le mécanisme de contexte de rendu (RenderContext) du framework Esmx, incluant la gestion des ressources, la génération de HTML et le système de modules ESM, pour aider les développeurs à comprendre et utiliser la fonctionnalité de rendu côté serveur.
 head:
   - - meta
     - property: keywords
-      content: Gez, contexte de rendu, RenderContext, SSR, rendu côté serveur, ESM, gestion des ressources
+      content: Esmx, contexte de rendu, RenderContext, SSR, rendu côté serveur, ESM, gestion des ressources
 ---
 
 # Contexte de rendu
 
-RenderContext est une classe centrale du framework Gez, principalement responsable de la gestion des ressources et de la génération de HTML pendant le processus de rendu côté serveur (SSR). Il possède les caractéristiques principales suivantes :
+RenderContext est une classe centrale du framework Esmx, principalement responsable de la gestion des ressources et de la génération de HTML pendant le processus de rendu côté serveur (SSR). Il possède les caractéristiques principales suivantes :
 
 1. **Système de modules basé sur ESM**
    - Utilise la norme moderne ECMAScript Modules
@@ -33,15 +33,15 @@ RenderContext est une classe centrale du framework Gez, principalement responsab
 
 ## Mode d'utilisation
 
-Dans le framework Gez, les développeurs n'ont généralement pas besoin de créer directement une instance de RenderContext, mais peuvent obtenir une instance via la méthode `gez.render()` :
+Dans le framework Esmx, les développeurs n'ont généralement pas besoin de créer directement une instance de RenderContext, mais peuvent obtenir une instance via la méthode `esmx.render()` :
 
 ```ts title="src/entry.node.ts"
-async server(gez) {
+async server(esmx) {
     const server = http.createServer((req, res) => {
         // Traitement des fichiers statiques
-        gez.middleware(req, res, async () => {
-            // Obtention d'une instance de RenderContext via gez.render()
-            const rc = await gez.render({
+        esmx.middleware(req, res, async () => {
+            // Obtention d'une instance de RenderContext via esmx.render()
+            const rc = await esmx.render({
                 params: {
                     url: req.url
                 }
@@ -141,8 +141,8 @@ export default async (rc: RenderContext) => {
 RenderContext fournit un mécanisme flexible de configuration dynamique du chemin de base, permettant de définir dynamiquement le chemin de base des ressources statiques lors de l'exécution :
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
-    base: '/gez',  // Définition du chemin de base
+const rc = await esmx.render({
+    base: '/esmx',  // Définition du chemin de base
     params: {
         url: req.url
     }
@@ -179,7 +179,7 @@ RenderContext propose deux modes de mappage d'importation (Import Map) :
 Il est possible de choisir le mode approprié via la configuration :
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     importmapMode: 'js',  // 'inline' | 'js'
     params: {
         url: req.url
@@ -192,7 +192,7 @@ const rc = await gez.render({
 RenderContext prend en charge la configuration de la fonction d'entrée pour le rendu côté serveur via `entryName` :
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     entryName: 'mobile',  // Spécification de la fonction d'entrée pour mobile
     params: {
         url: req.url
@@ -228,7 +228,7 @@ Ce mécanisme est particulièrement utile dans les scénarios suivants :
 ## Bonnes pratiques
 
 1. **Obtention d'une instance de RenderContext**
-   - Toujours obtenir une instance via la méthode `gez.render()`
+   - Toujours obtenir une instance via la méthode `esmx.render()`
    - Passer les paramètres appropriés selon les besoins
    - Éviter de créer manuellement des instances
 

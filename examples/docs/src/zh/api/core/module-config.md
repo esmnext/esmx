@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez 框架模块配置 API 参考
-description: 详细介绍 Gez 框架的 ModuleConfig 配置接口，包括模块导入导出规则、别名配置和外部依赖管理，帮助开发者深入理解框架的模块化系统。
+titleSuffix: Esmx 框架模块配置 API 参考
+description: 详细介绍 Esmx 框架的 ModuleConfig 配置接口，包括模块导入导出规则、别名配置和外部依赖管理，帮助开发者深入理解框架的模块化系统。
 head:
   - - meta
     - property: keywords
-      content: Gez, ModuleConfig, 模块配置, 模块导入导出, 外部依赖, 别名配置, 依赖管理, Web 应用框架
+      content: Esmx, ModuleConfig, 模块配置, 模块导入导出, 外部依赖, 别名配置, 依赖管理, Web 应用框架
 ---
 
 # ModuleConfig
 
-ModuleConfig 提供了 Gez 框架的模块配置功能，用于定义模块的导入导出规则、别名配置和外部依赖等。
+ModuleConfig 提供了 Esmx 框架的模块配置功能，用于定义模块的导入导出规则、别名配置和外部依赖等。
 
 ## 类型定义
 
@@ -74,7 +74,7 @@ interface ModuleConfig {
 
 **示例**：
 ```ts title="entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
@@ -100,7 +100,7 @@ export default {
       'vue-router': 'ssr-remote/npm/vue-router'
     }
   }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ### ParsedModuleConfig

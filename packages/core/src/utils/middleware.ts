@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import path from 'node:path';
 import send from 'send';
-import type { Gez } from '../gez';
+import type { Esmx } from '../esmx';
 
 /**
  * 中间件函数类型定义
@@ -30,7 +30,7 @@ export type Middleware = (
 
 const reFinal = /\.final\.[a-zA-Z0-9]+$/;
 /**
- * 判断文件路径是否是一个符合 gez 规范的不可变文件
+ * 判断文件路径是否是一个符合 esmx 规范的不可变文件
  * @param path 文件路径
  */
 export function isImmutableFile(filename: string) {
@@ -38,9 +38,9 @@ export function isImmutableFile(filename: string) {
 }
 
 /**
- * 创建 Gez 应用的中间件
+ * 创建 Esmx 应用的中间件
  *
- * @param gez - Gez 实例
+ * @param esmx - Esmx 实例
  * @returns 返回一个处理静态资源的中间件
  *
  * @description
@@ -51,17 +51,17 @@ export function isImmutableFile(filename: string) {
  *
  * @example
  * ```ts
- * import { Gez, createMiddleware } from '@gez/core';
+ * import { Esmx, createMiddleware } from '@esmx/core';
  *
- * const gez = new Gez();
- * const middleware = createMiddleware(gez);
+ * const esmx = new Esmx();
+ * const middleware = createMiddleware(esmx);
  *
  * // 在 HTTP 服务器中使用
  * server.use(middleware);
  * ```
  */
-export function createMiddleware(gez: Gez): Middleware {
-    const middlewares = gez.moduleConfig.links.map((item): Middleware => {
+export function createMiddleware(esmx: Esmx): Middleware {
+    const middlewares = esmx.moduleConfig.links.map((item): Middleware => {
         const base = `/${item.name}/`;
         const baseUrl = new URL(`file:`);
         const root = path.resolve(item.root, 'client');

@@ -1,16 +1,16 @@
 ---
-titleSuffix: Overzicht van Gez Framework en Technologische Innovatie
-description: Verdiep je in de projectachtergrond, technologische evolutie en kernvoordelen van het Gez microfrontend-framework, en ontdek moderne server-side rendering (SSR) oplossingen op basis van ESM.
+titleSuffix: Overzicht van Esmx Framework en Technologische Innovatie
+description: Verdiep je in de projectachtergrond, technologische evolutie en kernvoordelen van het Esmx microfrontend-framework, en ontdek moderne server-side rendering (SSR) oplossingen op basis van ESM.
 head:
   - - meta
     - property: keywords
-      content: Gez, microfrontend, ESM, server-side rendering, SSR, technologische innovatie, module federation
+      content: Esmx, microfrontend, ESM, server-side rendering, SSR, technologische innovatie, module federation
 ---
 
 # Introductie
 
 ## Projectachtergrond
-Gez is een modern microfrontend-framework gebaseerd op ECMAScript Modules (ESM), gericht op het bouwen van hoogwaardige, schaalbare server-side rendering (SSR) applicaties. Als derde generatie product van het Genesis-project, blijft Gez innoveren in de technologische evolutie:
+Esmx is een modern microfrontend-framework gebaseerd op ECMAScript Modules (ESM), gericht op het bouwen van hoogwaardige, schaalbare server-side rendering (SSR) applicaties. Als derde generatie product van het Genesis-project, blijft Esmx innoveren in de technologische evolutie:
 
 - **v1.0**: Implementatie van on-demand laden van externe componenten via HTTP-verzoeken
 - **v2.0**: Applicatie-integratie via Webpack Module Federation
@@ -27,7 +27,7 @@ In de ontwikkeling van microfrontend-architectuur hebben traditionele oplossinge
 - **Ecosysteembeperkingen**: Framework-koppeling en aangepaste API's beperken de keuze van technologische stacks
 
 ### Technologische innovatie
-Gez biedt een nieuwe oplossing op basis van moderne webstandaarden:
+Esmx biedt een nieuwe oplossing op basis van moderne webstandaarden:
 
 - **Native modulesysteem**: Gebruik van native browser-ESM en Import Maps voor dependency management, met snellere parsing en uitvoering
 - **Standaard isolatiemechanisme**: Betrouwbare applicatie-isolatie op basis van ECMAScript module scope
@@ -36,7 +36,7 @@ Gez biedt een nieuwe oplossing op basis van moderne webstandaarden:
 - **Extreme prestatieoptimalisatie**: Nul runtime-overhead door native mogelijkheden, gecombineerd met intelligente caching-strategieën
 
 :::tip
-Gez richt zich op het creëren van hoogwaardige, eenvoudig uitbreidbare microfrontend-infrastructuur, met name geschikt voor grootschalige server-side rendering toepassingen.
+Esmx richt zich op het creëren van hoogwaardige, eenvoudig uitbreidbare microfrontend-infrastructuur, met name geschikt voor grootschalige server-side rendering toepassingen.
 :::
 
 ## Technische specificaties
@@ -50,7 +50,7 @@ Raadpleeg het document [Omgevingsvereisten](/guide/start/environment) voor gedet
 - **Ontwikkelingsgereedschapsketen**: Ondersteuning voor ESM hot reload en native TypeScript-uitvoering
 
 ## Framework positionering
-Gez verschilt van [Next.js](https://nextjs.org) of [Nuxt.js](https://nuxt.com/), en richt zich op het bieden van microfrontend-infrastructuur:
+Esmx verschilt van [Next.js](https://nextjs.org) of [Nuxt.js](https://nuxt.com/), en richt zich op het bieden van microfrontend-infrastructuur:
 
 - **Module link systeem**: Efficiënte en betrouwbare module import/export
 - **Server-side rendering**: Flexibele SSR-implementatiemechanismen
@@ -75,4 +75,4 @@ Gez verschilt van [Next.js](https://nextjs.org) of [Nuxt.js](https://nuxt.com/),
 - **On-demand laden**: Verfijnde code-splitsing en dependency management
 
 ## Projectvolwassenheid
-Gez heeft door bijna 5 jaar van iteratieve evolutie (v1.0 tot v3.0) volledige validatie in enterprise-omgevingen ondergaan. Momenteel ondersteunt het tientallen bedrijfsprojecten die stabiel draaien, en blijft het technologische stack-modernisering stimuleren. De stabiliteit, betrouwbaarheid en prestatievoordelen van het framework zijn in de praktijk grondig getest, en bieden een betrouwbare technologische basis voor grootschalige applicatieontwikkeling.
+Esmx heeft door bijna 5 jaar van iteratieve evolutie (v1.0 tot v3.0) volledige validatie in enterprise-omgevingen ondergaan. Momenteel ondersteunt het tientallen bedrijfsprojecten die stabiel draaien, en blijft het technologische stack-modernisering stimuleren. De stabiliteit, betrouwbaarheid en prestatievoordelen van het framework zijn in de praktijk grondig getest, en bieden een betrouwbare technologische basis voor grootschalige applicatieontwikkeling.

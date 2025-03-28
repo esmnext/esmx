@@ -1,15 +1,15 @@
 ---
-titleSuffix: Meccanismo di rendering lato server del framework Gez
-description: Descrizione dettagliata del meccanismo del contesto di rendering (RenderContext) del framework Gez, inclusa la gestione delle risorse, la generazione di HTML e il sistema di moduli ESM, per aiutare gli sviluppatori a comprendere e utilizzare le funzionalità di rendering lato server.
+titleSuffix: Meccanismo di rendering lato server del framework Esmx
+description: Descrizione dettagliata del meccanismo del contesto di rendering (RenderContext) del framework Esmx, inclusa la gestione delle risorse, la generazione di HTML e il sistema di moduli ESM, per aiutare gli sviluppatori a comprendere e utilizzare le funzionalità di rendering lato server.
 head:
   - - meta
     - property: keywords
-      content: Gez, contesto di rendering, RenderContext, SSR, rendering lato server, ESM, gestione delle risorse
+      content: Esmx, contesto di rendering, RenderContext, SSR, rendering lato server, ESM, gestione delle risorse
 ---
 
 # Contesto di Rendering
 
-RenderContext è una classe centrale nel framework Gez, responsabile principalmente della gestione delle risorse e della generazione di HTML durante il processo di rendering lato server (SSR). Presenta le seguenti caratteristiche principali:
+RenderContext è una classe centrale nel framework Esmx, responsabile principalmente della gestione delle risorse e della generazione di HTML durante il processo di rendering lato server (SSR). Presenta le seguenti caratteristiche principali:
 
 1. **Sistema di moduli basato su ESM**
    - Utilizza lo standard moderno ECMAScript Modules
@@ -33,15 +33,15 @@ RenderContext è una classe centrale nel framework Gez, responsabile principalme
 
 ## Modalità di utilizzo
 
-Nel framework Gez, gli sviluppatori generalmente non devono creare direttamente un'istanza di RenderContext, ma possono ottenerla tramite il metodo `gez.render()`:
+Nel framework Esmx, gli sviluppatori generalmente non devono creare direttamente un'istanza di RenderContext, ma possono ottenerla tramite il metodo `esmx.render()`:
 
 ```ts title="src/entry.node.ts"
-async server(gez) {
+async server(esmx) {
     const server = http.createServer((req, res) => {
         // Gestione dei file statici
-        gez.middleware(req, res, async () => {
-            // Ottieni un'istanza di RenderContext tramite gez.render()
-            const rc = await gez.render({
+        esmx.middleware(req, res, async () => {
+            // Ottieni un'istanza di RenderContext tramite esmx.render()
+            const rc = await esmx.render({
                 params: {
                     url: req.url
                 }
@@ -141,8 +141,8 @@ export default async (rc: RenderContext) => {
 RenderContext fornisce un meccanismo flessibile per la configurazione dinamica del percorso di base, supportando l'impostazione dinamica del percorso di base delle risorse statiche in fase di esecuzione:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
-    base: '/gez',  // Imposta il percorso di base
+const rc = await esmx.render({
+    base: '/esmx',  // Imposta il percorso di base
     params: {
         url: req.url
     }
@@ -179,7 +179,7 @@ RenderContext fornisce due modalità di mappatura delle importazioni (Import Map
 È possibile scegliere la modalità appropriata tramite configurazione:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     importmapMode: 'js',  // 'inline' | 'js'
     params: {
         url: req.url
@@ -192,7 +192,7 @@ const rc = await gez.render({
 RenderContext supporta la configurazione tramite `entryName` per specificare la funzione di ingresso per il rendering lato server:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     entryName: 'mobile',  // Specifica l'uso della funzione di ingresso per dispositivi mobili
     params: {
         url: req.url
@@ -228,7 +228,7 @@ Questo meccanismo è particolarmente utile nei seguenti scenari:
 ## Best practice
 
 1. **Ottenere un'istanza di RenderContext**
-   - Ottenere sempre l'istanza tramite il metodo `gez.render()`
+   - Ottenere sempre l'istanza tramite il metodo `esmx.render()`
    - Passare i parametri appropriati secondo necessità
    - Evitare di creare manualmente l'istanza
 

@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez 프레임워크 빌드 매니페스트 파일 참조
-description: Gez 프레임워크의 빌드 매니페스트 파일(manifest.json) 구조를 상세히 설명하며, 빌드 산출물 관리, 파일 매핑 및 리소스 통계 기능을 통해 개발자가 빌드 시스템을 이해하고 사용할 수 있도록 돕습니다.
+titleSuffix: Esmx 프레임워크 빌드 매니페스트 파일 참조
+description: Esmx 프레임워크의 빌드 매니페스트 파일(manifest.json) 구조를 상세히 설명하며, 빌드 산출물 관리, 파일 매핑 및 리소스 통계 기능을 통해 개발자가 빌드 시스템을 이해하고 사용할 수 있도록 돕습니다.
 head:
   - - meta
     - property: keywords
-      content: Gez, ManifestJson, 빌드 매니페스트, 리소스 관리, 빌드 산출물, 파일 매핑, API
+      content: Esmx, ManifestJson, 빌드 매니페스트, 리소스 관리, 빌드 산출물, 파일 매핑, API
 ---
 
 # ManifestJson
 
-`manifest.json`은 Gez 프레임워크가 빌드 과정에서 생성하는 매니페스트 파일로, 서비스 빌드의 산출물 정보를 기록합니다. 이 파일은 빌드 산출물, 내보내기 파일 및 리소스 크기 통계를 관리하기 위한 통합 인터페이스를 제공합니다.
+`manifest.json`은 Esmx 프레임워크가 빌드 과정에서 생성하는 매니페스트 파일로, 서비스 빌드의 산출물 정보를 기록합니다. 이 파일은 빌드 산출물, 내보내기 파일 및 리소스 크기 통계를 관리하기 위한 통합 인터페이스를 제공합니다.
 
 ```json title="dist/client/manifest.json"
 {
@@ -71,7 +71,7 @@ interface ManifestJson {
 
 - **타입**: `string`
 
-서비스 이름으로, GezOptions.name 설정에서 가져옵니다.
+서비스 이름으로, EsmxOptions.name 설정에서 가져옵니다.
 
 #### exports
 

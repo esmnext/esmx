@@ -1,15 +1,15 @@
 ---
-titleSuffix: Dokumentacja API kontekstu renderowania frameworka Gez
-description: Szczegółowy opis klasy RenderContext, rdzenia frameworka Gez, obejmujący kontrolę renderowania, zarządzanie zasobami, synchronizację stanu i kontrolę routingu, pomagający programistom w efektywnym renderowaniu po stronie serwera.
+titleSuffix: Dokumentacja API kontekstu renderowania frameworka Esmx
+description: Szczegółowy opis klasy RenderContext, rdzenia frameworka Esmx, obejmujący kontrolę renderowania, zarządzanie zasobami, synchronizację stanu i kontrolę routingu, pomagający programistom w efektywnym renderowaniu po stronie serwera.
 head:
   - - meta
     - property: keywords
-      content: Gez, RenderContext, SSR, renderowanie po stronie serwera, kontekst renderowania, synchronizacja stanu, zarządzanie zasobami, framework aplikacji webowych
+      content: Esmx, RenderContext, SSR, renderowanie po stronie serwera, kontekst renderowania, synchronizacja stanu, zarządzanie zasobami, framework aplikacji webowych
 ---
 
 # RenderContext
 
-RenderContext to główna klasa w frameworku Gez, odpowiedzialna za zarządzanie pełnym cyklem życia renderowania po stronie serwera (SSR). Dostarcza kompleksowy zestaw API do obsługi kontekstu renderowania, zarządzania zasobami, synchronizacji stanu i innych kluczowych zadań:
+RenderContext to główna klasa w frameworku Esmx, odpowiedzialna za zarządzanie pełnym cyklem życia renderowania po stronie serwera (SSR). Dostarcza kompleksowy zestaw API do obsługi kontekstu renderowania, zarządzania zasobami, synchronizacji stanu i innych kluczowych zadań:
 
 - **Kontrola renderowania**: Zarządzanie procesem renderowania po stronie serwera, wsparcie dla wielu punktów wejścia, renderowanie warunkowe itp.
 - **Zarządzanie zasobami**: Inteligentne zbieranie i wstrzykiwanie zasobów statycznych, takich jak JS, CSS, w celu optymalizacji wydajności ładowania.
@@ -148,7 +148,7 @@ export const desktop = async (rc: RenderContext) => {
 Parametry renderowania. Można przekazać parametry dowolnego typu do funkcji renderowania, często używane do przekazywania informacji o żądaniu (URL, parametry zapytania itp.).
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     url: req.url,
     lang: 'zh-CN',
@@ -169,12 +169,12 @@ Tryb generowania mapy importów (Import Map):
 
 ## Właściwości instancji
 
-### gez
+### esmx
 
-- **Typ**: `Gez`
+- **Typ**: `Esmx`
 - **Tylko do odczytu**: `true`
 
-Referencja do instancji Gez. Służy do dostępu do podstawowych funkcji i informacji konfiguracyjnych frameworka.
+Referencja do instancji Esmx. Służy do dostępu do podstawowych funkcji i informacji konfiguracyjnych frameworka.
 
 ### redirect
 
@@ -264,7 +264,7 @@ export default async (rc: RenderContext) => {
 };
 
 // Dynamiczna podstawowa ścieżka
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/app',  // Ustawienie podstawowej ścieżki
   params: { url: req.url }
 });
@@ -285,19 +285,19 @@ Podstawowa ścieżka zasobów statycznych. Wszystkie zasoby statyczne (JS, CSS, 
 
 ```ts
 // Podstawowe użycie
-const rc = await gez.render({
-  base: '/gez',  // Ustawienie podstawowej ścieżki
+const rc = await esmx.render({
+  base: '/esmx',  // Ustawienie podstawowej ścieżki
   params: { url: req.url }
 });
 
 // Przykład witryny wielojęzycznej
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/cn',  // Witryna chińska
   params: { lang: 'zh-CN' }
 });
 
 // Przykład aplikacji mikrofrontendowej
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/app1',  // Podrzędna aplikacja 1
   params: { appId: 1 }
 });
@@ -327,7 +327,7 @@ export const desktop = async (rc: RenderContext) => {
 };
 
 // Wybór funkcji wejściowej na podstawie typu urządzenia
-const rc = await gez.render({
+const rc = await esmx.render({
   entryName: isMobile ? 'mobile' : 'desktop',
   params: { url: req.url }
 });
@@ -343,7 +343,7 @@ Parametry renderowania. Można przekazywać i uzyskiwać dostęp do parametrów 
 
 ```ts
 // Podstawowe użycie - przekazywanie URL i ustawień języka
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     url: req.url,
     lang: 'zh-CN'
@@ -351,7 +351,7 @@ const rc = await gez.render({
 });
 
 // Konfiguracja strony - ustawienie motywu i układu
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     theme: 'dark',
     layout: 'sidebar'
@@ -359,7 +359,7 @@ const rc = await gez.render({
 });
 
 // Konfiguracja środowiska - wstrzyknięcie adresu API
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     apiBaseUrl: process.env.API_BASE_URL,
     version: '1.0.0'

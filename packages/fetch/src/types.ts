@@ -8,7 +8,7 @@ export interface FetchBaseOptions {
      */
     noCache?: boolean;
     /**
-     * 缓存文件夹路径 默认为 `{system cache dir}/npm-gez/packages`。
+     * 缓存文件夹路径 默认为 `{system cache dir}/npm-esmx/packages`。
      * 当 `noCache` 为 `true` 时，该参数无效。
      * 当 `noCache` 为 `false` 时，省略该参数会导致报错 `cacheDir is empty`。
      */
@@ -121,7 +121,7 @@ export interface FetchResultSuccess extends FetchResultBase {
      */
     filePath: string;
     /**
-     * 缓存文件路径 默认为 `{system cache dir}/npm-gez/packages/hash.ext`
+     * 缓存文件路径 默认为 `{system cache dir}/npm-esmx/packages/hash.ext`
      * 如果不使用缓存，则为空字符串。
      */
     cacheFilePath: string;

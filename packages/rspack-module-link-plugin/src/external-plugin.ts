@@ -1,5 +1,5 @@
 import path from 'node:path';
-import type { ParsedModuleConfig } from '@gez/core';
+import type { ParsedModuleConfig } from '@esmx/core';
 import type { Compiler } from '@rspack/core';
 
 export function externalPlugin(

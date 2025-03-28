@@ -1,10 +1,10 @@
 ---
-titleSuffix: Gez 框架相容性指南
-description: 詳細介紹 Gez 框架的環境要求，包括 Node.js 版本要求和瀏覽器相容性說明，幫助開發者正確配置開發環境。
+titleSuffix: Esmx 框架相容性指南
+description: 詳細介紹 Esmx 框架的環境要求，包括 Node.js 版本要求和瀏覽器相容性說明，幫助開發者正確配置開發環境。
 head:
   - - meta
     - property: keywords
-      content: Gez, Node.js, 瀏覽器相容性, TypeScript, es-module-shims, 環境配置
+      content: Esmx, Node.js, 瀏覽器相容性, TypeScript, es-module-shims, 環境配置
 ---
 
 # 環境要求

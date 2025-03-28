@@ -1,15 +1,15 @@
 ---
-titleSuffix: Przewodnik po mapowaniu ścieżek importu modułów w Gez
-description: Szczegółowy opis mechanizmu aliasów ścieżek w Gez, w tym uproszczenie ścieżek importu, unikanie głębokiego zagnieżdżenia, bezpieczeństwo typów i optymalizacja rozpoznawania modułów, aby pomóc programistom w poprawie utrzymywalności kodu.
+titleSuffix: Przewodnik po mapowaniu ścieżek importu modułów w Esmx
+description: Szczegółowy opis mechanizmu aliasów ścieżek w Esmx, w tym uproszczenie ścieżek importu, unikanie głębokiego zagnieżdżenia, bezpieczeństwo typów i optymalizacja rozpoznawania modułów, aby pomóc programistom w poprawie utrzymywalności kodu.
 head:
   - - meta
     - property: keywords
-      content: Gez, aliasy ścieżek, Path Alias, TypeScript, import modułów, mapowanie ścieżek, utrzymywalność kodu
+      content: Esmx, aliasy ścieżek, Path Alias, TypeScript, import modułów, mapowanie ścieżek, utrzymywalność kodu
 ---
 
 # Aliasy ścieżek
 
-Alias ścieżki (Path Alias) to mechanizm mapowania ścieżek importu modułów, który pozwala programistom używać krótkich, semantycznych identyfikatorów zamiast pełnych ścieżek modułów. W Gez mechanizm aliasów ścieżek oferuje następujące korzyści:
+Alias ścieżki (Path Alias) to mechanizm mapowania ścieżek importu modułów, który pozwala programistom używać krótkich, semantycznych identyfikatorów zamiast pełnych ścieżek modułów. W Esmx mechanizm aliasów ścieżek oferuje następujące korzyści:
 
 - **Uproszczenie ścieżek importu**: Używanie semantycznych aliasów zamiast długich ścieżek względnych, co zwiększa czytelność kodu
 - **Unikanie głębokiego zagnieżdżenia**: Eliminacja trudności w utrzymaniu wynikających z wielopoziomowych odwołań do katalogów (np. `../../../../`)
@@ -18,7 +18,7 @@ Alias ścieżki (Path Alias) to mechanizm mapowania ścieżek importu modułów,
 
 ## Domyślny mechanizm aliasów
 
-Gez wykorzystuje automatyczny mechanizm aliasów oparty na nazwie usługi (Service Name), który charakteryzuje się następującymi cechami:
+Esmx wykorzystuje automatyczny mechanizm aliasów oparty na nazwie usługi (Service Name), który charakteryzuje się następującymi cechami:
 
 - **Automatyczna konfiguracja**: Aliasy są generowane automatycznie na podstawie pola `name` w `package.json`, bez konieczności ręcznej konfiguracji
 - **Jednolita konwencja**: Zapewnienie spójnej konwencji nazewnictwa i odwołań dla wszystkich modułów usług
@@ -112,13 +112,13 @@ import { logger } from 'remote-service/src/utils';
 
 ### Niestandardowe aliasy
 
-W przypadku pakietów stron trzecich lub specjalnych scenariuszy można skonfigurować niestandardowe aliasy za pomocą pliku konfiguracyjnego Gez:
+W przypadku pakietów stron trzecich lub specjalnych scenariuszy można skonfigurować niestandardowe aliasy za pomocą pliku konfiguracyjnego Esmx:
 
 ```ts title="src/entry.node.ts"
 export default {
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createApp(gez, (buildContext) => {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createApp(esmx, (buildContext) => {
                 buildContext.config.resolve = {
                     ...buildContext.config.resolve,
                     alias: {
@@ -133,7 +133,7 @@ export default {
             })
         );
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ::: warning Uwagi

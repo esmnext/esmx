@@ -1,14 +1,14 @@
 ---
-titleSuffix: "Mikro Frontend Zorluklarından ESM Yeniliğine: Gez Çerçevesinin Evrim Yolculuğu"
-description: Gez çerçevesinin geleneksel mikro frontend mimarisinin zorluklarından ESM tabanlı yenilikçi atılımlara kadar olan yolculuğunu derinlemesine inceleyin. Performans optimizasyonu, bağımlılık yönetimi ve yapı araçları seçimi gibi konulardaki teknik deneyimleri paylaşın.
+titleSuffix: "Mikro Frontend Zorluklarından ESM Yeniliğine: Esmx Çerçevesinin Evrim Yolculuğu"
+description: Esmx çerçevesinin geleneksel mikro frontend mimarisinin zorluklarından ESM tabanlı yenilikçi atılımlara kadar olan yolculuğunu derinlemesine inceleyin. Performans optimizasyonu, bağımlılık yönetimi ve yapı araçları seçimi gibi konulardaki teknik deneyimleri paylaşın.
 head:
   - - meta
     - property: keywords
-      content: Gez, Mikro Frontend Çerçevesi, ESM, Import Maps, Rspack, Modül Federasyonu, Bağımlılık Yönetimi, Performans Optimizasyonu, Teknik Evrim, Sunucu Taraflı Render
+      content: Esmx, Mikro Frontend Çerçevesi, ESM, Import Maps, Rspack, Modül Federasyonu, Bağımlılık Yönetimi, Performans Optimizasyonu, Teknik Evrim, Sunucu Taraflı Render
 sidebar: false
 ---
 
-# Bileşen Paylaşımından Yerel Modülerliğe: Gez Mikro Frontend Çerçevesinin Evrim Yolculuğu
+# Bileşen Paylaşımından Yerel Modülerliğe: Esmx Mikro Frontend Çerçevesinin Evrim Yolculuğu
 
 ## Proje Arka Planı
 
@@ -30,7 +30,7 @@ Bu sorunlar, 2019 yılındaki bir kurumsal projemizde özellikle belirgindi. O z
 
 ### v1.0: Uzak Bileşenleri Keşfetmek
 
-Bileşen paylaşımının verimlilik sorununu çözmek için Gez v1.0, HTTP protokolüne dayalı RemoteView bileşen mekanizmasını tanıttı. Bu çözüm, çalışma zamanında dinamik istek yoluyla hizmetler arasında kodun talep üzerine birleştirilmesini sağlayarak, yapı bağımlılık zincirinin çok uzun olma sorununu başarıyla çözdü. Ancak, standartlaştırılmış bir çalışma zamanı iletişim mekanizmasının eksikliği nedeniyle, hizmetler arası durum senkronizasyonu ve olay iletimi hala verimlilik sorunları yaşıyordu.
+Bileşen paylaşımının verimlilik sorununu çözmek için Esmx v1.0, HTTP protokolüne dayalı RemoteView bileşen mekanizmasını tanıttı. Bu çözüm, çalışma zamanında dinamik istek yoluyla hizmetler arasında kodun talep üzerine birleştirilmesini sağlayarak, yapı bağımlılık zincirinin çok uzun olma sorununu başarıyla çözdü. Ancak, standartlaştırılmış bir çalışma zamanı iletişim mekanizmasının eksikliği nedeniyle, hizmetler arası durum senkronizasyonu ve olay iletimi hala verimlilik sorunları yaşıyordu.
 
 ### v2.0: Modül Federasyonu Denemesi
 
@@ -75,7 +75,7 @@ Bu karar, geliştirme deneyimini korurken daha istikrarlı bir üretim ortamı d
 
 ## Gelecek Vizyonu
 
-Gelecekteki gelişim planlarında, Gez çerçevesi aşağıdaki üç yöne odaklanacaktır:
+Gelecekteki gelişim planlarında, Esmx çerçevesi aşağıdaki üç yöne odaklanacaktır:
 
 ### Import Maps Derinlemesine Optimizasyon
 
@@ -95,4 +95,4 @@ Gelecekteki gelişim planlarında, Gez çerçevesi aşağıdaki üç yöne odakl
 - **Durum Senkronizasyonu**: ESM tabanlı hafif durum paylaşımı çözümü
 - **Olay Veri Yolu**: Uygulamalar arası bağlantısız iletişimi destekleyen standartlaştırılmış olay iletişim mekanizması
 
-Bu optimizasyonlar ve genişletmelerle, Gez'i daha kapsamlı ve kullanımı kolay bir mikro frontend çözümü haline getirmeyi ve geliştiricilere daha iyi bir geliştirme deneyimi ve daha yüksek geliştirme verimliliği sunmayı hedefliyoruz.
+Bu optimizasyonlar ve genişletmelerle, Esmx'i daha kapsamlı ve kullanımı kolay bir mikro frontend çözümü haline getirmeyi ve geliştiricilere daha iyi bir geliştirme deneyimi ve daha yüksek geliştirme verimliliği sunmayı hedefliyoruz.

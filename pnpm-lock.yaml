@@ -44,13 +44,13 @@ importers:
 
   examples/ssr-demo-html:
     dependencies:
-      '@gez/core':
-        specifier: '*'
-        version: 3.0.0-rc.6
+      '@esmx/core':
+        specifier: workspace:*
+        version: link:../../packages/core
     devDependencies:
-      '@gez/rspack':
-        specifier: '*'
-        version: 3.0.0-rc.6(@gez/core@3.0.0-rc.6)(@swc/helpers@0.5.15)(less@4.2.2)(webpack@5.98.0)
+      '@esmx/rspack':
+        specifier: workspace:*
+        version: link:../../packages/rspack
       '@types/node':
         specifier: 22.8.6
         version: 22.8.6
@@ -60,13 +60,13 @@ importers:
 
   examples/ssr-demo-preact-htm:
     dependencies:
-      '@gez/core':
-        specifier: '*'
-        version: 3.0.0-rc.6
+      '@esmx/core':
+        specifier: workspace:*
+        version: link:../../packages/core
     devDependencies:
-      '@gez/rspack':
-        specifier: '*'
-        version: 3.0.0-rc.6(@gez/core@3.0.0-rc.6)(@swc/helpers@0.5.15)(less@4.2.2)(webpack@5.98.0)
+      '@esmx/rspack':
+        specifier: workspace:*
+        version: link:../../packages/rspack
       '@types/node':
         specifier: 22.8.6
         version: 22.8.6
@@ -85,13 +85,13 @@ importers:
 
   examples/ssr-demo-vue2:
     dependencies:
-      '@gez/core':
-        specifier: '*'
-        version: 3.0.0-rc.6
+      '@esmx/core':
+        specifier: workspace:*
+        version: link:../../packages/core
     devDependencies:
-      '@gez/rspack-vue':
-        specifier: '*'
-        version: 3.0.0-rc.6(@gez/core@3.0.0-rc.6)(@swc/helpers@0.5.15)(@vue/compiler-sfc@3.5.13)(css-loader@7.1.2(@rspack/core@1.2.8(@swc/helpers@0.5.15))(webpack@5.98.0))(less@4.2.2)(vue@2.7.16)(webpack@5.98.0)
+      '@esmx/rspack-vue':
+        specifier: workspace:*
+        version: link:../../packages/rspack-vue
       '@types/node':
         specifier: 22.8.6
         version: 22.8.6
@@ -110,13 +110,13 @@ importers:
 
   examples/ssr-demo-vue3:
     dependencies:
-      '@gez/core':
-        specifier: '*'
-        version: 3.0.0-rc.6
+      '@esmx/core':
+        specifier: workspace:*
+        version: link:../../packages/core
     devDependencies:
-      '@gez/rspack-vue':
-        specifier: '*'
-        version: 3.0.0-rc.6(@gez/core@3.0.0-rc.6)(@swc/helpers@0.5.15)(@vue/compiler-sfc@3.5.13)(css-loader@7.1.2(@rspack/core@1.2.8(@swc/helpers@0.5.15))(webpack@5.98.0))(less@4.2.2)(vue@3.5.13(typescript@5.7.3))(webpack@5.98.0)
+      '@esmx/rspack-vue':
+        specifier: workspace:*
+        version: link:../../packages/rspack-vue
       '@types/node':
         specifier: 22.8.6
         version: 22.8.6
@@ -135,11 +135,11 @@ importers:
 
   examples/ssr-html:
     dependencies:
-      '@gez/core':
+      '@esmx/core':
         specifier: workspace:*
         version: link:../../packages/core
     devDependencies:
-      '@gez/rspack':
+      '@esmx/rspack':
         specifier: workspace:*
         version: link:../../packages/rspack
       '@types/node':
@@ -151,11 +151,11 @@ importers:
 
   examples/ssr-preact-htm:
     dependencies:
-      '@gez/core':
+      '@esmx/core':
         specifier: workspace:*
         version: link:../../packages/core
     devDependencies:
-      '@gez/rspack':
+      '@esmx/rspack':
         specifier: workspace:*
         version: link:../../packages/rspack
       '@types/node':
@@ -176,17 +176,17 @@ importers:
 
   examples/ssr-vue2-host:
     dependencies:
-      '@gez/core':
+      '@esmx/core':
         specifier: workspace:*
         version: link:../../packages/core
       express:
         specifier: ^4.19.2
         version: 4.21.1
     devDependencies:
-      '@gez/rspack':
+      '@esmx/rspack':
         specifier: workspace:*
         version: link:../../packages/rspack
-      '@gez/rspack-vue':
+      '@esmx/rspack-vue':
         specifier: workspace:*
         version: link:../../packages/rspack-vue
       '@types/express':
@@ -216,17 +216,17 @@ importers:
 
   examples/ssr-vue2-remote:
     dependencies:
-      '@gez/core':
+      '@esmx/core':
         specifier: workspace:*
         version: link:../../packages/core
       express:
         specifier: ^4.19.2
         version: 4.21.1
     devDependencies:
-      '@gez/rspack':
+      '@esmx/rspack':
         specifier: workspace:*
         version: link:../../packages/rspack
-      '@gez/rspack-vue':
+      '@esmx/rspack-vue':
         specifier: workspace:*
         version: link:../../packages/rspack-vue
       '@types/express':
@@ -260,7 +260,7 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
-      '@gez/lint':
+      '@esmx/lint':
         specifier: workspace:*
         version: link:../lint
       '@types/node':
@@ -290,7 +290,7 @@ importers:
 
   packages/core:
     dependencies:
-      '@gez/import':
+      '@esmx/import':
         specifier: workspace:*
         version: link:../import
       '@types/serialize-javascript':
@@ -315,7 +315,7 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
-      '@gez/lint':
+      '@esmx/lint':
         specifier: workspace:*
         version: link:../lint
       '@types/find':
@@ -361,7 +361,7 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
-      '@gez/lint':
+      '@esmx/lint':
         specifier: workspace:*
         version: link:../lint
       '@types/cli-progress':
@@ -395,7 +395,7 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
-      '@gez/lint':
+      '@esmx/lint':
         specifier: workspace:*
         version: link:../lint
       '@types/node':
@@ -441,9 +441,6 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
-      '@gez/lint':
-        specifier: 3.0.0-rc.6
-        version: 3.0.0-rc.6(postcss-html@1.7.0)(postcss@8.5.3)(stylelint@16.15.0(typescript@5.8.2))
       '@types/node':
         specifier: 22.13.10
         version: 22.13.10
@@ -465,10 +462,10 @@ importers:
 
   packages/rspack:
     dependencies:
-      '@gez/import':
+      '@esmx/import':
         specifier: workspace:*
         version: link:../import
-      '@gez/rspack-module-link-plugin':
+      '@esmx/rspack-module-link-plugin':
         specifier: workspace:*
         version: link:../rspack-module-link-plugin
       '@npmcli/arborist':
@@ -511,10 +508,10 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
-      '@gez/core':
+      '@esmx/core':
         specifier: workspace:*
         version: link:../core
-      '@gez/lint':
+      '@esmx/lint':
         specifier: workspace:*
         version: link:../lint
       '@types/node':
@@ -557,10 +554,10 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
-      '@gez/core':
+      '@esmx/core':
         specifier: workspace:*
         version: link:../core
-      '@gez/lint':
+      '@esmx/lint':
         specifier: workspace:*
         version: link:../lint
       '@rspack/core':
@@ -587,7 +584,7 @@ importers:
 
   packages/rspack-vue:
     dependencies:
-      '@gez/rspack':
+      '@esmx/rspack':
         specifier: workspace:*
         version: link:../rspack
       vue:
@@ -606,10 +603,10 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
-      '@gez/core':
+      '@esmx/core':
         specifier: workspace:*
         version: link:../core
-      '@gez/lint':
+      '@esmx/lint':
         specifier: workspace:*
         version: link:../lint
       '@types/node':
@@ -814,7 +811,7 @@ packages:
       '@csstools/css-tokenizer': ^3.0.3
 
   '@csstools/selector-specificity@4.0.0':
-    resolution: {integrity: sha512-189nelqtPd8++phaHNwYovKZI0FOzH1vQEE3QhHHkNIGrg5fSs9CbYP3RvfEH5geztnIA9Jwq91wyOIwAW5JIQ==}
+    resolution: {integrity: sha512-189nelqtPd8++phaHNwYovKZI0FOzH1vQEE3QhHHkNIGrg5fSs9CbYP3RvfEH5esmxtnIA9Jwq91wyOIwAW5JIQ==}
     engines: {node: '>=18'}
     peerDependencies:
       postcss-selector-parser: ^6.1.0
@@ -1403,37 +1400,6 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
-
-  '@gez/core@3.0.0-rc.6':
-    resolution: {integrity: sha512-Eu7UFSakxE6adbsNnwos5ljwQZRSoZabT6uBS3zJH0/Rc0ynZlEw55FM5o3rgwn8fn7o62byh4QiKVS6dmxjEw==}
-    engines: {node: '>=22.6'}
-    hasBin: true
-
-  '@gez/import@3.0.0-rc.6':
-    resolution: {integrity: sha512-loGTtrZ61KcucV1YAZ56fEWb2/fydfi+nOLA1NZouZ7/CCfPL0Xn9dtqDjnGzk84DDosloPmNfU0ryjP3Kh3+A==}
-
-  '@gez/lint@3.0.0-rc.6':
-    resolution: {integrity: sha512-0Y/W8lYCTl7KWV1T2pP1866aCar2UAzcaHIxaU7ou0qiXATGRP21ysr7vHJG84Ma+YmCRIi2njDNbAcaLoq7Vw==}
-    peerDependencies:
-      stylelint: '>=16.5.0'
-
-  '@gez/rspack-module-link-plugin@3.0.0-rc.6':
-    resolution: {integrity: sha512-zbc0nK4kRfdz16iB4mXr5ouyHBMfM+bnopDLfMKsmAfcf7JvT6iWgCOzkd3ddCLqkgZlHpcGi3Y9t7++2hQXiQ==}
-
-  '@gez/rspack-vue@3.0.0-rc.6':
-    resolution: {integrity: sha512-GSHwp3mELkm+niLasakz8ar/9TtrH237RCmDNdmVEXSWer9nAn/lgA/Q/oLHcwvv37AKyTr0RaMBJg5QPh/wBA==}
-    peerDependencies:
-      '@gez/core': '*'
-      vue: '>=2.7.8 || >=3.0.0'
-
-  '@gez/rspack@3.0.0-rc.6':
-    resolution: {integrity: sha512-r/NbIBVnIFi5RI+DkGo7+ap8wbKuFblGu/rgnkqgQWteG5noZIjl5NBxkfzUkrpXyzaMldeLFQq3xfvV++uLQw==}
-    peerDependencies:
-      '@gez/core': '*'
-      less: '*'
-    peerDependenciesMeta:
-      less:
-        optional: true
 
   '@import-maps/resolve@2.0.0':
     resolution: {integrity: sha512-RwzRTpmrrS6Q1ZhQExwuxJGK1Wqhv4stt+OF2JzS+uawewpwNyU7EJL1WpBex7aDiiGLs4FsXGkfUBdYuX7xiQ==}
@@ -4157,7 +4123,7 @@ packages:
     resolution: {integrity: sha512-ixkJoqQvAP88E6wLydLGGqCJsrFUnqoH6HnaczB8XmDH1oaWU+xxdptvikTgaEhtZ53Ky6YXiBuUI2WXLMCwjw==}
 
   is-regex@1.2.1:
-    resolution: {integrity: sha512-MjYsKHO5O7mCsmRGxWcLWheFqN9DJ/2TmngvjKXihe6efViPqc274+Fx/4fYj/r03+ESvBdTXK0V6tA3rgez1g==}
+    resolution: {integrity: sha512-MjYsKHO5O7mCsmRGxWcLWheFqN9DJ/2TmngvjKXihe6efViPqc274+Fx/4fYj/r03+ESvBdTXK0V6tA3resmx1g==}
     engines: {node: '>= 0.4'}
 
   is-stream@3.0.0:
@@ -7259,209 +7225,6 @@ snapshots:
 
   '@esbuild/win32-x64@0.25.1':
     optional: true
-
-  '@gez/core@3.0.0-rc.6':
-    dependencies:
-      '@gez/import': 3.0.0-rc.6
-      '@types/serialize-javascript': 5.0.4
-      es-module-lexer: 1.6.0
-      find: 0.3.0
-      send: 1.1.0
-      serialize-javascript: 6.0.2
-      write: 2.0.0
-    transitivePeerDependencies:
-      - supports-color
-
-  '@gez/import@3.0.0-rc.6':
-    dependencies:
-      '@import-maps/resolve': 2.0.0
-
-  '@gez/lint@3.0.0-rc.6(postcss-html@1.7.0)(postcss@8.5.3)(stylelint@16.15.0(typescript@5.8.2))':
-    dependencies:
-      stylelint: 16.15.0(typescript@5.8.2)
-      stylelint-config-html: 1.1.0(postcss-html@1.7.0)(stylelint@16.15.0(typescript@5.8.2))
-      stylelint-config-recess-order: 5.1.1(stylelint@16.15.0(typescript@5.8.2))
-      stylelint-config-recommended-less: 3.0.1(postcss@8.5.3)(stylelint@16.15.0(typescript@5.8.2))
-      stylelint-config-recommended-vue: 1.5.0(postcss-html@1.7.0)(stylelint@16.15.0(typescript@5.8.2))
-      stylelint-config-standard: 36.0.1(stylelint@16.15.0(typescript@5.8.2))
-      stylelint-order: 6.0.4(stylelint@16.15.0(typescript@5.8.2))
-    transitivePeerDependencies:
-      - postcss
-      - postcss-html
-
-  '@gez/rspack-module-link-plugin@3.0.0-rc.6':
-    dependencies:
-      upath: 2.0.1
-
-  '@gez/rspack-vue@3.0.0-rc.6(@gez/core@3.0.0-rc.6)(@swc/helpers@0.5.15)(@vue/compiler-sfc@3.5.13)(css-loader@7.1.2(@rspack/core@1.2.8(@swc/helpers@0.5.15))(webpack@5.98.0))(less@4.2.2)(vue@2.7.16)(webpack@5.98.0)':
-    dependencies:
-      '@gez/core': 3.0.0-rc.6
-      '@gez/rspack': 3.0.0-rc.6(@gez/core@3.0.0-rc.6)(@swc/helpers@0.5.15)(less@4.2.2)(webpack@5.98.0)
-      vue: 2.7.16
-      vue-style-loader: 4.1.3
-      vue2-loader: vue-loader@15.11.1(@vue/compiler-sfc@3.5.13)(css-loader@7.1.2(@rspack/core@1.2.8(@swc/helpers@0.5.15))(webpack@5.98.0))(webpack@5.98.0)
-      vue3-loader: vue-loader@17.4.2(@vue/compiler-sfc@3.5.13)(vue@2.7.16)(webpack@5.98.0)
-    transitivePeerDependencies:
-      - '@rspack/tracing'
-      - '@swc/helpers'
-      - '@vue/compiler-sfc'
-      - arc-templates
-      - atpl
-      - babel-core
-      - bracket-template
-      - cache-loader
-      - coffee-script
-      - css-loader
-      - dot
-      - dust
-      - dustjs-helpers
-      - dustjs-linkedin
-      - eco
-      - ect
-      - ejs
-      - haml-coffee
-      - hamlet
-      - hamljs
-      - handlebars
-      - hogan.js
-      - htmling
-      - jade
-      - jazz
-      - jqtpl
-      - just
-      - less
-      - liquid-node
-      - liquor
-      - lodash
-      - marko
-      - mote
-      - mustache
-      - nunjucks
-      - plates
-      - prettier
-      - pug
-      - qejs
-      - ractive
-      - razor-tmpl
-      - react
-      - react-dom
-      - slm
-      - squirrelly
-      - supports-color
-      - swig
-      - swig-templates
-      - teacup
-      - templayed
-      - then-jade
-      - then-pug
-      - tinyliquid
-      - toffee
-      - twig
-      - twing
-      - underscore
-      - vash
-      - velocityjs
-      - vue-template-compiler
-      - walrus
-      - webpack
-      - whiskers
-
-  '@gez/rspack-vue@3.0.0-rc.6(@gez/core@3.0.0-rc.6)(@swc/helpers@0.5.15)(@vue/compiler-sfc@3.5.13)(css-loader@7.1.2(@rspack/core@1.2.8(@swc/helpers@0.5.15))(webpack@5.98.0))(less@4.2.2)(vue@3.5.13(typescript@5.7.3))(webpack@5.98.0)':
-    dependencies:
-      '@gez/core': 3.0.0-rc.6
-      '@gez/rspack': 3.0.0-rc.6(@gez/core@3.0.0-rc.6)(@swc/helpers@0.5.15)(less@4.2.2)(webpack@5.98.0)
-      vue: 3.5.13(typescript@5.7.3)
-      vue-style-loader: 4.1.3
-      vue2-loader: vue-loader@15.11.1(@vue/compiler-sfc@3.5.13)(css-loader@7.1.2(@rspack/core@1.2.8(@swc/helpers@0.5.15))(webpack@5.98.0))(webpack@5.98.0)
-      vue3-loader: vue-loader@17.4.2(@vue/compiler-sfc@3.5.13)(vue@3.5.13(typescript@5.7.3))(webpack@5.98.0)
-    transitivePeerDependencies:
-      - '@rspack/tracing'
-      - '@swc/helpers'
-      - '@vue/compiler-sfc'
-      - arc-templates
-      - atpl
-      - babel-core
-      - bracket-template
-      - cache-loader
-      - coffee-script
-      - css-loader
-      - dot
-      - dust
-      - dustjs-helpers
-      - dustjs-linkedin
-      - eco
-      - ect
-      - ejs
-      - haml-coffee
-      - hamlet
-      - hamljs
-      - handlebars
-      - hogan.js
-      - htmling
-      - jade
-      - jazz
-      - jqtpl
-      - just
-      - less
-      - liquid-node
-      - liquor
-      - lodash
-      - marko
-      - mote
-      - mustache
-      - nunjucks
-      - plates
-      - prettier
-      - pug
-      - qejs
-      - ractive
-      - razor-tmpl
-      - react
-      - react-dom
-      - slm
-      - squirrelly
-      - supports-color
-      - swig
-      - swig-templates
-      - teacup
-      - templayed
-      - then-jade
-      - then-pug
-      - tinyliquid
-      - toffee
-      - twig
-      - twing
-      - underscore
-      - vash
-      - velocityjs
-      - vue-template-compiler
-      - walrus
-      - webpack
-      - whiskers
-
-  '@gez/rspack@3.0.0-rc.6(@gez/core@3.0.0-rc.6)(@swc/helpers@0.5.15)(less@4.2.2)(webpack@5.98.0)':
-    dependencies:
-      '@gez/core': 3.0.0-rc.6
-      '@gez/import': 3.0.0-rc.6
-      '@gez/rspack-module-link-plugin': 3.0.0-rc.6
-      '@npmcli/arborist': 8.0.0
-      '@rspack/core': 1.2.8(@swc/helpers@0.5.15)
-      css-loader: 7.1.2(@rspack/core@1.2.8(@swc/helpers@0.5.15))(webpack@5.98.0)
-      less-loader: 12.2.0(@rspack/core@1.2.8(@swc/helpers@0.5.15))(less@4.2.2)(webpack@5.98.0)
-      node-polyfill-webpack-plugin: 4.1.0(webpack@5.98.0)
-      pacote: 21.0.0
-      style-loader: 4.0.0(webpack@5.98.0)
-      style-resources-loader: 1.5.0(webpack@5.98.0)
-      webpack-hot-middleware: 2.26.1
-      webpack-node-externals: 3.0.0
-      worker-rspack-loader: 3.1.2(@rspack/core@1.2.8(@swc/helpers@0.5.15))(webpack@5.98.0)
-    optionalDependencies:
-      less: 4.2.2
-    transitivePeerDependencies:
-      - '@rspack/tracing'
-      - '@swc/helpers'
-      - supports-color
-      - webpack
 
   '@import-maps/resolve@2.0.0': {}
 
@@ -13652,26 +13415,6 @@ snapshots:
       - velocityjs
       - walrus
       - whiskers
-
-  vue-loader@17.4.2(@vue/compiler-sfc@3.5.13)(vue@2.7.16)(webpack@5.98.0):
-    dependencies:
-      chalk: 4.1.2
-      hash-sum: 2.0.0
-      watchpack: 2.4.2
-      webpack: 5.98.0
-    optionalDependencies:
-      '@vue/compiler-sfc': 3.5.13
-      vue: 2.7.16
-
-  vue-loader@17.4.2(@vue/compiler-sfc@3.5.13)(vue@3.5.13(typescript@5.7.3))(webpack@5.98.0):
-    dependencies:
-      chalk: 4.1.2
-      hash-sum: 2.0.0
-      watchpack: 2.4.2
-      webpack: 5.98.0
-    optionalDependencies:
-      '@vue/compiler-sfc': 3.5.13
-      vue: 3.5.13(typescript@5.7.3)
 
   vue-loader@17.4.2(@vue/compiler-sfc@3.5.13)(vue@3.5.13(typescript@5.8.2))(webpack@5.98.0):
     dependencies:

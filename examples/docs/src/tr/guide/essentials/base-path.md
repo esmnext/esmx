@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Çerçevesi Statik Kaynak Yolu Yapılandırma Kılavuzu
-description: Gez çerçevesinin temel yol yapılandırmasını detaylı olarak açıklar, çoklu ortam dağıtımı, CDN dağıtımı ve kaynak erişim yolu ayarlarını içerir, geliştiricilere esnek statik kaynak yönetimi sağlar.
+titleSuffix: Esmx Çerçevesi Statik Kaynak Yolu Yapılandırma Kılavuzu
+description: Esmx çerçevesinin temel yol yapılandırmasını detaylı olarak açıklar, çoklu ortam dağıtımı, CDN dağıtımı ve kaynak erişim yolu ayarlarını içerir, geliştiricilere esnek statik kaynak yönetimi sağlar.
 head:
   - - meta
     - property: keywords
-      content: Gez, Temel Yol, Base Path, CDN, Statik Kaynaklar, Çoklu Ortam Dağıtımı, Kaynak Yönetimi
+      content: Esmx, Temel Yol, Base Path, CDN, Statik Kaynaklar, Çoklu Ortam Dağıtımı, Kaynak Yönetimi
 ---
 
 # Temel Yol
 
-Temel yol (Base Path), uygulamanızdaki statik kaynakların (JavaScript, CSS, resimler vb.) erişim yolu önekidir. Gez'de, temel yolun doğru yapılandırılması aşağıdaki senaryolar için kritik öneme sahiptir:
+Temel yol (Base Path), uygulamanızdaki statik kaynakların (JavaScript, CSS, resimler vb.) erişim yolu önekidir. Esmx'de, temel yolun doğru yapılandırılması aşağıdaki senaryolar için kritik öneme sahiptir:
 
 - **Çoklu Ortam Dağıtımı**: Geliştirme, test ve üretim gibi farklı ortamlarda kaynak erişimini destekler
 - **Çoklu Bölge Dağıtımı**: Farklı bölge veya ülkelerdeki küme dağıtım ihtiyaçlarını karşılar
@@ -17,7 +17,7 @@ Temel yol (Base Path), uygulamanızdaki statik kaynakların (JavaScript, CSS, re
 
 ## Varsayılan Yol Mekanizması
 
-Gez, hizmet adına dayalı otomatik yol oluşturma mekanizmasını kullanır. Varsayılan olarak, çerçeve projenin `package.json` dosyasındaki `name` alanını okuyarak statik kaynakların temel yolunu oluşturur: `/uygulama-adiniz/`.
+Esmx, hizmet adına dayalı otomatik yol oluşturma mekanizmasını kullanır. Varsayılan olarak, çerçeve projenin `package.json` dosyasındaki `name` alanını okuyarak statik kaynakların temel yolunu oluşturur: `/uygulama-adiniz/`.
 
 ```json title="package.json"
 {
@@ -33,7 +33,7 @@ Bu yapılandırma üzerine tasarım aşağıdaki avantajlara sahiptir:
 
 ## Dinamik Yol Yapılandırması
 
-Gerçek projelerde, aynı kodu farklı ortamlara veya bölgelere dağıtmamız gerekebilir. Gez, dinamik temel yol desteği sunarak uygulamanın farklı dağıtım senaryolarına uyum sağlamasını mümkün kılar.
+Gerçek projelerde, aynı kodu farklı ortamlara veya bölgelere dağıtmamız gerekebilir. Esmx, dinamik temel yol desteği sunarak uygulamanın farklı dağıtım senaryolarına uyum sağlamasını mümkün kılar.
 
 ### Kullanım Senaryoları
 
@@ -53,10 +53,10 @@ Gerçek projelerde, aynı kodu farklı ortamlara veya bölgelere dağıtmamız g
 
 ### Yapılandırma Yöntemi
 
-`gez.render()` yönteminin `base` parametresi ile istek bağlamına göre dinamik olarak temel yol ayarlayabilirsiniz:
+`esmx.render()` yönteminin `base` parametresi ile istek bağlamına göre dinamik olarak temel yol ayarlayabilirsiniz:
 
 ```ts
-const render = await gez.render({
+const render = await esmx.render({
     base: '/cn',  // Temel yol ayarı
     params: {
         url: req.url

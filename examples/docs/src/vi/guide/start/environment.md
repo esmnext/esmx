@@ -1,10 +1,10 @@
 ---
-titleSuffix: Hướng dẫn tương thích khung Gez
-description: Chi tiết các yêu cầu môi trường của khung Gez, bao gồm yêu cầu phiên bản Node.js và hướng dẫn tương thích trình duyệt, giúp nhà phát triển cấu hình đúng môi trường phát triển.
+titleSuffix: Hướng dẫn tương thích khung Esmx
+description: Chi tiết các yêu cầu môi trường của khung Esmx, bao gồm yêu cầu phiên bản Node.js và hướng dẫn tương thích trình duyệt, giúp nhà phát triển cấu hình đúng môi trường phát triển.
 head:
   - - meta
     - property: keywords
-      content: Gez, Node.js, tương thích trình duyệt, TypeScript, es-module-shims, cấu hình môi trường
+      content: Esmx, Node.js, tương thích trình duyệt, TypeScript, es-module-shims, cấu hình môi trường
 ---
 
 # Yêu cầu môi trường

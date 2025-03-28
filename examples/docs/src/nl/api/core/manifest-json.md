@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework Bouwmanifest Bestandsreferentie
-description: Gedetailleerde uitleg over de structuur van het bouwmanifestbestand (manifest.json) van het Gez-framework, inclusief beheer van bouwproducten, bestandsmapping en bronstatistieken, om ontwikkelaars te helpen het bouwsysteem te begrijpen en te gebruiken.
+titleSuffix: Esmx Framework Bouwmanifest Bestandsreferentie
+description: Gedetailleerde uitleg over de structuur van het bouwmanifestbestand (manifest.json) van het Esmx-framework, inclusief beheer van bouwproducten, bestandsmapping en bronstatistieken, om ontwikkelaars te helpen het bouwsysteem te begrijpen en te gebruiken.
 head:
   - - meta
     - property: keywords
-      content: Gez, ManifestJson, Bouwmanifest, Bronbeheer, Bouwproducten, Bestandsmapping, API
+      content: Esmx, ManifestJson, Bouwmanifest, Bronbeheer, Bouwproducten, Bestandsmapping, API
 ---
 
 # ManifestJson
 
-`manifest.json` is een manifestbestand dat door het Gez-framework wordt gegenereerd tijdens het bouwproces. Het wordt gebruikt om informatie over de bouwproducten van de service vast te leggen. Het biedt een uniforme interface voor het beheren van bouwproducten, exportbestanden en bronstatistieken.
+`manifest.json` is een manifestbestand dat door het Esmx-framework wordt gegenereerd tijdens het bouwproces. Het wordt gebruikt om informatie over de bouwproducten van de service vast te leggen. Het biedt een uniforme interface voor het beheren van bouwproducten, exportbestanden en bronstatistieken.
 
 ```json title="dist/client/manifest.json"
 {
@@ -71,7 +71,7 @@ interface ManifestJson {
 
 - **Type**: `string`
 
-De servicenaam, afkomstig van de GezOptions.name configuratie.
+De servicenaam, afkomstig van de EsmxOptions.name configuratie.
 
 #### exports
 

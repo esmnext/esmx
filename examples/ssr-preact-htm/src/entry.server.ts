@@ -1,4 +1,4 @@
-import type { RenderContext } from '@gez/core';
+import type { RenderContext } from '@esmx/core';
 import { html } from 'htm/preact';
 import { render } from 'preact-render-to-string';
 import { App } from './app';
@@ -17,7 +17,7 @@ export default async (rc: RenderContext) => {
     ${rc.preload()}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gez + Preact + HTM 示例</title>
+    <title>Esmx + Preact + HTM 示例</title>
     <link rel="icon" type="image/svg+xml" href="https://www.esmnext.com/logo.svg">
     ${rc.css()}
 </head>

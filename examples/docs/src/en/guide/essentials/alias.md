@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework Module Import Path Mapping Guide
-description: Detailed explanation of Gez framework's path alias mechanism, including features such as simplified import paths, avoiding deep nesting, type safety, and module resolution optimization, helping developers improve code maintainability.
+titleSuffix: Esmx Framework Module Import Path Mapping Guide
+description: Detailed explanation of Esmx framework's path alias mechanism, including features such as simplified import paths, avoiding deep nesting, type safety, and module resolution optimization, helping developers improve code maintainability.
 head:
   - - meta
     - property: keywords
-      content: Gez, Path Alias, TypeScript, Module Import, Path Mapping, Code Maintainability
+      content: Esmx, Path Alias, TypeScript, Module Import, Path Mapping, Code Maintainability
 ---
 
 # Path Alias
 
-Path Alias is a module import path mapping mechanism that allows developers to use short, semantic identifiers to replace full module paths. In Gez, the path alias mechanism offers the following advantages:
+Path Alias is a module import path mapping mechanism that allows developers to use short, semantic identifiers to replace full module paths. In Esmx, the path alias mechanism offers the following advantages:
 
 - **Simplified Import Paths**: Use semantic aliases to replace lengthy relative paths, improving code readability.
 - **Avoid Deep Nesting**: Eliminate maintenance difficulties caused by multi-level directory references (e.g., `../../../../`).
@@ -18,7 +18,7 @@ Path Alias is a module import path mapping mechanism that allows developers to u
 
 ## Default Alias Mechanism
 
-Gez adopts an automatic alias mechanism based on service names, which follows the convention-over-configuration design with the following characteristics:
+Esmx adopts an automatic alias mechanism based on service names, which follows the convention-over-configuration design with the following characteristics:
 
 - **Automatic Configuration**: Automatically generates aliases based on the `name` field in `package.json`, eliminating the need for manual configuration.
 - **Unified Standard**: Ensures all service modules follow consistent naming and referencing conventions.
@@ -112,13 +112,13 @@ import { logger } from 'remote-service/src/utils';
 
 ### Custom Aliases
 
-For third-party packages or special scenarios, you can define custom aliases through the Gez configuration file:
+For third-party packages or special scenarios, you can define custom aliases through the Esmx configuration file:
 
 ```ts title="src/entry.node.ts"
 export default {
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createApp(gez, (buildContext) => {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createApp(esmx, (buildContext) => {
                 buildContext.config.resolve = {
                     ...buildContext.config.resolve,
                     alias: {
@@ -133,7 +133,7 @@ export default {
             })
         );
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ::: warning Notes

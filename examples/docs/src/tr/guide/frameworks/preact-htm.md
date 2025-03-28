@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework Preact+HTM SSR Uygulama Örneği
-description: Gez tabanlı Preact+HTM SSR uygulamasını sıfırdan oluşturun, proje başlatma, Preact yapılandırması ve giriş dosyası ayarları dahil olmak üzere temel çerçeve kullanımını örneklerle gösterin.
+titleSuffix: Esmx Framework Preact+HTM SSR Uygulama Örneği
+description: Esmx tabanlı Preact+HTM SSR uygulamasını sıfırdan oluşturun, proje başlatma, Preact yapılandırması ve giriş dosyası ayarları dahil olmak üzere temel çerçeve kullanımını örneklerle gösterin.
 head:
   - - meta
     - property: keywords
-      content: Gez, Preact, HTM, SSR uygulaması, TypeScript yapılandırması, proje başlatma, sunucu tarafı render, istemci etkileşimi
+      content: Esmx, Preact, HTM, SSR uygulaması, TypeScript yapılandırması, proje başlatma, sunucu tarafı render, istemci etkileşimi
 ---
 
 # Preact+HTM
 
-Bu eğitim, Gez tabanlı bir Preact+HTM SSR uygulamasını sıfırdan oluşturmanıza yardımcı olacaktır. Gez çerçevesini kullanarak sunucu tarafı render (SSR) uygulaması oluşturmayı tam bir örnekle göstereceğiz.
+Bu eğitim, Esmx tabanlı bir Preact+HTM SSR uygulamasını sıfırdan oluşturmanıza yardımcı olacaktır. Esmx çerçevesini kullanarak sunucu tarafı render (SSR) uygulaması oluşturmayı tam bir örnekle göstereceğiz.
 
 ## Proje Yapısı
 
@@ -40,18 +40,18 @@ Bu eğitim, Gez tabanlı bir Preact+HTM SSR uygulamasını sıfırdan oluşturma
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "gez dev",
+    "dev": "esmx dev",
     "build": "npm run build:dts && npm run build:ssr",
-    "build:ssr": "gez build",
-    "preview": "gez preview",
+    "build:ssr": "esmx build",
+    "preview": "esmx preview",
     "start": "NODE_ENV=production node dist/index.js",
     "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src"
   },
   "dependencies": {
-    "@gez/core": "*"
+    "@esmx/core": "*"
   },
   "devDependencies": {
-    "@gez/rspack": "*",
+    "@esmx/rspack": "*",
     "@types/node": "22.8.6",
     "htm": "^3.1.1",
     "preact": "^10.26.2",
@@ -118,7 +118,7 @@ Ana uygulama bileşeni `src/app.ts` dosyasını oluşturun, Preact'in sınıf bi
 ```ts title="src/app.ts"
 /**
  * @file Örnek bileşen
- * @description Gez çerçevesinin temel işlevlerini göstermek için otomatik güncellenen bir sayfa başlığı gösterir
+ * @description Esmx çerçevesinin temel işlevlerini göstermek için otomatik güncellenen bir sayfa başlığı gösterir
  */
 
 import { Component } from 'preact';
@@ -149,7 +149,7 @@ export default class App extends Component {
         const { time } = this.state;
         return html`
             <div>
-                <h1><a href="https://www.esmnext.com/guide/frameworks/preact-htm.html" target="_blank">Gez Hızlı Başlangıç</a></h1>
+                <h1><a href="https://www.esmnext.com/guide/frameworks/preact-htm.html" target="_blank">Esmx Hızlı Başlangıç</a></h1>
                 <time datetime=${time}>${time}</time>
             </div>
         `;
@@ -210,18 +210,18 @@ render(app, document.getElementById('app')!);
  */
 
 import http from 'node:http';
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     /**
      * Geliştirme ortamı uygulama oluşturucuyu yapılandır
      * @description Rspack uygulama örneği oluştur ve yapılandır, geliştirme ortamı için derleme ve sıcak yenileme sağlar
-     * @param gez Gez çerçeve örneği, temel işlevler ve yapılandırma arayüzü sağlar
+     * @param esmx Esmx çerçeve örneği, temel işlevler ve yapılandırma arayüzü sağlar
      * @returns Yapılandırılmış Rspack uygulama örneği, HMR ve gerçek zamanlı önizleme desteği
      */
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createRspackHtmlApp(gez, {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createRspackHtmlApp(esmx, {
                 config(context) {
                     // Rspack derleme yapılandırmasını özelleştir
                 }
@@ -231,15 +231,15 @@ export default {
 
     /**
      * HTTP sunucusunu yapılandır ve başlat
-     * @description HTTP sunucu örneği oluştur, Gez ara yazılımını entegre et, SSR isteklerini işle
-     * @param gez Gez çerçeve örneği, ara yazılım ve render işlevleri sağlar
+     * @description HTTP sunucu örneği oluştur, Esmx ara yazılımını entegre et, SSR isteklerini işle
+     * @param esmx Esmx çerçeve örneği, ara yazılım ve render işlevleri sağlar
      */
-    async server(gez) {
+    async server(esmx) {
         const server = http.createServer((req, res) => {
-            // Gez ara yazılımı ile istekleri işle
-            gez.middleware(req, res, async () => {
+            // Esmx ara yazılımı ile istekleri işle
+            esmx.middleware(req, res, async () => {
                 // Sunucu tarafı render işlemini gerçekleştir
-                const rc = await gez.render({
+                const rc = await esmx.render({
                     params: { url: req.url }
                 });
                 res.end(rc.html);
@@ -250,13 +250,13 @@ export default {
             console.log('Sunucu başlatıldı: http://localhost:3000');
         });
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 Bu dosya, geliştirme ortamı yapılandırması ve sunucu başlatma işlemlerinin giriş dosyasıdır ve iki temel işlev içerir:
 
 1. `devApp` fonksiyonu: Geliştirme ortamı için Rspack uygulama örneği oluşturma ve yapılandırmadan sorumludur, sıcak yenileme ve gerçek zamanlı önizleme işlevlerini destekler. Burada, Preact+HTM için özel olarak Rspack uygulama örneği oluşturmak üzere `createRspackHtmlApp` kullanılır.
-2. `server` fonksiyonu: HTTP sunucusu oluşturma ve yapılandırmadan sorumludur, Gez ara yazılımını entegre ederek SSR isteklerini işler.
+2. `server` fonksiyonu: HTTP sunucusu oluşturma ve yapılandırmadan sorumludur, Esmx ara yazılımını entegre ederek SSR isteklerini işler.
 
 ### entry.server.ts
 
@@ -268,7 +268,7 @@ Sunucu tarafı render giriş dosyası `src/entry.server.ts` dosyasını oluştur
  * @description Sunucu tarafı render sürecini, HTML oluşturmayı ve kaynak enjeksiyonunu yönetir
  */
 
-import type { RenderContext } from '@gez/core';
+import type { RenderContext } from '@esmx/core';
 import type { VNode } from 'preact';
 import { render } from 'preact-render-to-string';
 import { createApp } from './create-app';
@@ -288,7 +288,7 @@ export default async (rc: RenderContext) => {
 <html lang="tr-TR">
 <head>
     ${rc.preload()}
-    <title>Gez Hızlı Başlangıç</title>
+    <title>Esmx Hızlı Başlangıç</title>
     ${rc.css()}
 </head>
 <body>
@@ -321,4 +321,4 @@ npm run build
 npm run start
 ```
 
-Artık Gez tabanlı bir Preact+HTM SSR uygulamasını başarıyla oluşturdunuz! http://localhost:3000 adresini ziyaret ederek sonucu görebilirsiniz.
+Artık Esmx tabanlı bir Preact+HTM SSR uygulamasını başarıyla oluşturdunuz! http://localhost:3000 adresini ziyaret ederek sonucu görebilirsiniz.

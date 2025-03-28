@@ -1,15 +1,15 @@
 ---
-titleSuffix: Cơ chế lõi render phía máy chủ của framework Gez
-description: Giới thiệu chi tiết cơ chế RenderContext (Ngữ cảnh Render) trong framework Gez, bao gồm quản lý tài nguyên, tạo HTML và hệ thống module ESM, giúp nhà phát triển hiểu và sử dụng tính năng render phía máy chủ.
+titleSuffix: Cơ chế lõi render phía máy chủ của framework Esmx
+description: Giới thiệu chi tiết cơ chế RenderContext (Ngữ cảnh Render) trong framework Esmx, bao gồm quản lý tài nguyên, tạo HTML và hệ thống module ESM, giúp nhà phát triển hiểu và sử dụng tính năng render phía máy chủ.
 head:
   - - meta
     - property: keywords
-      content: Gez, RenderContext, SSR, Render phía máy chủ, ESM, Quản lý tài nguyên
+      content: Esmx, RenderContext, SSR, Render phía máy chủ, ESM, Quản lý tài nguyên
 ---
 
 # Ngữ cảnh Render (RenderContext)
 
-RenderContext là một lớp lõi trong framework Gez, chịu trách nhiệm chính trong việc quản lý tài nguyên và tạo HTML trong quá trình render phía máy chủ (SSR). Nó có các đặc điểm chính sau:
+RenderContext là một lớp lõi trong framework Esmx, chịu trách nhiệm chính trong việc quản lý tài nguyên và tạo HTML trong quá trình render phía máy chủ (SSR). Nó có các đặc điểm chính sau:
 
 1. **Hệ thống module dựa trên ESM**
    - Sử dụng tiêu chuẩn ECMAScript Modules hiện đại
@@ -33,15 +33,15 @@ RenderContext là một lớp lõi trong framework Gez, chịu trách nhiệm ch
 
 ## Cách sử dụng
 
-Trong framework Gez, nhà phát triển thường không cần tạo trực tiếp instance của RenderContext mà thông qua phương thức `gez.render()` để lấy instance:
+Trong framework Esmx, nhà phát triển thường không cần tạo trực tiếp instance của RenderContext mà thông qua phương thức `esmx.render()` để lấy instance:
 
 ```ts title="src/entry.node.ts"
-async server(gez) {
+async server(esmx) {
     const server = http.createServer((req, res) => {
         // Xử lý tệp tĩnh
-        gez.middleware(req, res, async () => {
-            // Lấy instance RenderContext thông qua gez.render()
-            const rc = await gez.render({
+        esmx.middleware(req, res, async () => {
+            // Lấy instance RenderContext thông qua esmx.render()
+            const rc = await esmx.render({
                 params: {
                     url: req.url
                 }
@@ -141,8 +141,8 @@ export default async (rc: RenderContext) => {
 RenderContext cung cấp một cơ chế cấu hình đường dẫn cơ sở động linh hoạt, hỗ trợ thiết lập đường dẫn cơ sở cho tài nguyên tĩnh trong thời gian chạy:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
-    base: '/gez',  // Thiết lập đường dẫn cơ sở
+const rc = await esmx.render({
+    base: '/esmx',  // Thiết lập đường dẫn cơ sở
     params: {
         url: req.url
     }
@@ -179,7 +179,7 @@ RenderContext cung cấp hai chế độ ánh xạ import (Import Map):
 Có thể chọn chế độ phù hợp thông qua cấu hình:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     importmapMode: 'js',  // 'inline' | 'js'
     params: {
         url: req.url
@@ -192,7 +192,7 @@ const rc = await gez.render({
 RenderContext hỗ trợ cấu hình `entryName` để chỉ định hàm entry cho render phía máy chủ:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     entryName: 'mobile',  // Chỉ định sử dụng hàm entry cho thiết bị di động
     params: {
         url: req.url
@@ -228,7 +228,7 @@ Cơ chế này đặc biệt phù hợp với các kịch bản sau:
 ## Thực hành tốt nhất
 
 1. **Lấy instance RenderContext**
-   - Luôn sử dụng phương thức `gez.render()` để lấy instance
+   - Luôn sử dụng phương thức `esmx.render()` để lấy instance
    - Truyền các tham số phù hợp khi cần
    - Tránh tạo instance thủ công
 

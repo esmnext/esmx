@@ -1,17 +1,17 @@
 ---
 titleSuffix: フレームワークコアクラス API リファレンス
-description: Gez フレームワークのコアクラス API について詳しく説明します。アプリケーションライフサイクル管理、静的リソース処理、サーバーサイドレンダリング機能など、フレームワークのコア機能を深く理解するためのガイドです。
+description: Esmx フレームワークのコアクラス API について詳しく説明します。アプリケーションライフサイクル管理、静的リソース処理、サーバーサイドレンダリング機能など、フレームワークのコア機能を深く理解するためのガイドです。
 head:
   - - meta
     - property: keywords
-      content: Gez, API, ライフサイクル管理, 静的リソース, サーバーサイドレンダリング, Rspack, Web アプリケーションフレームワーク
+      content: Esmx, API, ライフサイクル管理, 静的リソース, サーバーサイドレンダリング, Rspack, Web アプリケーションフレームワーク
 ---
 
-# Gez
+# Esmx
 
 ## はじめに
 
-Gez は Rspack をベースにした高性能な Web アプリケーションフレームワークで、アプリケーションライフサイクル管理、静的リソース処理、サーバーサイドレンダリング機能を提供します。
+Esmx は Rspack をベースにした高性能な Web アプリケーションフレームワークで、アプリケーションライフサイクル管理、静的リソース処理、サーバーサイドレンダリング機能を提供します。
 
 ## 型定義
 
@@ -76,18 +76,18 @@ enum COMMAND {
 
 ## インスタンスオプション
 
-Gez フレームワークのコア設定オプションを定義します。
+Esmx フレームワークのコア設定オプションを定義します。
 
 ```ts
-interface GezOptions {
+interface EsmxOptions {
   root?: string
   isProd?: boolean
   basePathPlaceholder?: string | false
   modules?: ModuleConfig
   packs?: PackConfig
-  devApp?: (gez: Gez) => Promise<App>
-  server?: (gez: Gez) => Promise<void>
-  postBuild?: (gez: Gez) => Promise<void>
+  devApp?: (esmx: Esmx) => Promise<App>
+  server?: (esmx: Esmx) => Promise<void>
+  postBuild?: (esmx: Esmx) => Promise<void>
 }
 ```
 
@@ -128,15 +128,15 @@ interface GezOptions {
 
 #### devApp
 
-- **型**: `(gez: Gez) => Promise<App>`
+- **型**: `(esmx: Esmx) => Promise<App>`
 
 開発環境アプリケーション作成関数。開発環境でのみ使用され、開発サーバーのアプリケーションインスタンスを作成するために使用されます。
 
 ```ts title="entry.node.ts"
 export default {
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(context) {
           // Rspack 設定をカスタマイズ
         }
@@ -148,16 +148,16 @@ export default {
 
 #### server
 
-- **型**: `(gez: Gez) => Promise<void>`
+- **型**: `(esmx: Esmx) => Promise<void>`
 
 サーバー起動設定関数。HTTP サーバーの設定と起動に使用され、開発環境と本番環境の両方で使用できます。
 
 ```ts title="entry.node.ts"
 export default {
-  async server(gez) {
+  async server(esmx) {
     const server = http.createServer((req, res) => {
-      gez.middleware(req, res, async () => {
-        const render = await gez.render({
+      esmx.middleware(req, res, async () => {
+        const render = await esmx.render({
           params: { url: req.url }
         });
         res.end(render.html);
@@ -171,7 +171,7 @@ export default {
 
 #### postBuild
 
-- **型**: `(gez: Gez) => Promise<void>`
+- **型**: `(esmx: Esmx) => Promise<void>`
 
 ビルド後処理関数。プロジェクトのビルドが完了した後に実行され、以下の用途に使用できます：
 - 追加のリソース処理
@@ -235,8 +235,8 @@ export default {
 
 ```ts
 const server = http.createServer((req, res) => {
-  gez.middleware(req, res, async () => {
-    const rc = await gez.render({ url: req.url });
+  esmx.middleware(req, res, async () => {
+    const rc = await esmx.render({ url: req.url });
     res.end(rc.html);
   });
 });
@@ -253,12 +253,12 @@ const server = http.createServer((req, res) => {
 
 ```ts
 // 基本的な使用法
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: req.url }
 });
 
 // 高度な設定
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '',                    // ベースパス
   importmapMode: 'inline',     // インポートマップモード
   entryName: 'default',        // レンダリングエントリ
@@ -297,13 +297,13 @@ const rc = await gez.render({
 ### constructor()
 
 - **パラメータ**: 
-  - `options?: GezOptions` - フレームワーク設定オプション
-- **戻り値**: `Gez`
+  - `options?: EsmxOptions` - フレームワーク設定オプション
+- **戻り値**: `Esmx`
 
-Gez フレームワークインスタンスを作成します。
+Esmx フレームワークインスタンスを作成します。
 
 ```ts
-const gez = new Gez({
+const esmx = new Esmx({
   root: './src',
   isProd: process.env.NODE_ENV === 'production'
 });
@@ -317,7 +317,7 @@ const gez = new Gez({
   - `Error`: 重複初期化時
   - `NotReadyError`: 未初期化インスタンスへのアクセス時
 
-Gez フレームワークインスタンスを初期化します。以下のコア初期化プロセスを実行します：
+Esmx フレームワークインスタンスを初期化します。以下のコア初期化プロセスを実行します：
 
 1. プロジェクト設定の解析（package.json、モジュール設定、パッケージ設定など）
 2. アプリケーションインスタンスの作成（開発環境または本番環境）
@@ -330,26 +330,26 @@ Gez フレームワークインスタンスを初期化します。以下のコ�
 :::
 
 ```ts
-const gez = new Gez({
+const esmx = new Esmx({
   root: './src',
   isProd: process.env.NODE_ENV === 'production'
 });
 
-await gez.init(COMMAND.dev);
+await esmx.init(COMMAND.dev);
 ```
 
 ### destroy()
 
 - **戻り値**: `Promise<boolean>`
 
-Gez フレームワークインスタンスを破棄し、リソースのクリーンアップや接続のクローズなどを実行します。主に以下の用途に使用されます：
+Esmx フレームワークインスタンスを破棄し、リソースのクリーンアップや接続のクローズなどを実行します。主に以下の用途に使用されます：
 - 開発サーバーの停止
 - 一時ファイルやキャッシュのクリーンアップ
 - システムリソースの解放
 
 ```ts
 process.once('SIGTERM', async () => {
-  await gez.destroy();
+  await esmx.destroy();
   process.exit(0);
 });
 ```
@@ -370,14 +370,14 @@ process.once('SIGTERM', async () => {
 
 ```ts title="entry.node.ts"
 export default {
-  async postBuild(gez) {
-    await gez.build();
+  async postBuild(esmx) {
+    await esmx.build();
     // ビルド完了後に静的 HTML を生成
-    const render = await gez.render({
+    const render = await esmx.render({
       params: { url: '/' }
     });
-    gez.writeSync(
-      gez.resolvePath('dist/client', 'index.html'),
+    esmx.writeSync(
+      esmx.resolvePath('dist/client', 'index.html'),
       render.html
     );
   }
@@ -395,12 +395,12 @@ HTTP サーバーと設定サーバーインスタンスを起動します。以
 
 ```ts title="entry.node.ts"
 export default {
-  async server(gez) {
+  async server(esmx) {
     const server = http.createServer((req, res) => {
       // 静的リソースの処理
-      gez.middleware(req, res, async () => {
+      esmx.middleware(req, res, async () => {
         // サーバーサイドレンダリング
-        const render = await gez.render({
+        const render = await esmx.render({
           params: { url: req.url }
         });
         res.end(render.html);
@@ -426,17 +426,17 @@ export default {
 
 ```ts title="entry.node.ts"
 export default {
-  async postBuild(gez) {
+  async postBuild(esmx) {
     // 複数ページの静的 HTML を生成
     const pages = ['/', '/about', '/404'];
 
     for (const url of pages) {
-      const render = await gez.render({
+      const render = await esmx.render({
         params: { url }
       });
 
-      await gez.write(
-        gez.resolvePath('dist/client', url.substring(1), 'index.html'),
+      await esmx.write(
+        esmx.resolvePath('dist/client', url.substring(1), 'index.html'),
         render.html
       );
     }
@@ -456,7 +456,7 @@ export default {
 - **例**:
 ```ts
 // 静的リソースパスを解決
-const htmlPath = gez.resolvePath('dist/client', 'index.html');
+const htmlPath = esmx.resolvePath('dist/client', 'index.html');
 ```
 
 ### writeSync()
@@ -471,9 +471,9 @@ const htmlPath = gez.resolvePath('dist/client', 'index.html');
 - **例**:
 ```ts title="src/entry.node.ts"
 
-async postBuild(gez) {
-  const htmlPath = gez.resolvePath('dist/client', 'index.html');
-  const success = await gez.write(htmlPath, '<html>...</html>');
+async postBuild(esmx) {
+  const htmlPath = esmx.resolvePath('dist/client', 'index.html');
+  const success = await esmx.write(htmlPath, '<html>...</html>');
 }
 ```
 
@@ -489,8 +489,8 @@ JSON ファイルを同期読み取りし、解析します。
 
 - **例**:
 ```ts title="src/entry.node.ts"
-async server(gez) {
-  const manifest = gez.readJsonSync(gez.resolvePath('dist/client', 'manifest.json'));
+async server(esmx) {
+  const manifest = esmx.readJsonSync(esmx.resolvePath('dist/client', 'manifest.json'));
   // manifest オブジェクトを使用
 }
 ```
@@ -507,8 +507,8 @@ JSON ファイルを非同期読み取りし、解析します。
 
 - **例**:
 ```ts title="src/entry.node.ts"
-async server(gez) {
-  const manifest = await gez.readJson(gez.resolvePath('dist/client', 'manifest.json'));
+async server(esmx) {
+  const manifest = await esmx.readJson(esmx.resolvePath('dist/client', 'manifest.json'));
   // manifest オブジェクトを使用
 }
 ```

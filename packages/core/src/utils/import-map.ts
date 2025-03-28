@@ -2,8 +2,8 @@ import path from 'node:path';
 
 import { pathWithoutIndex } from './path-without-index';
 
-import type { ImportMap, SpecifierMap } from '@gez/import';
-import type { RuntimeTarget } from '../gez';
+import type { ImportMap, SpecifierMap } from '@esmx/import';
+import type { RuntimeTarget } from '../esmx';
 import type { ManifestJson } from '../manifest-json';
 import type { ParsedModuleConfig } from '../module-config';
 

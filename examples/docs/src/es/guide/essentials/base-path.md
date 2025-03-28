@@ -1,15 +1,15 @@
 ---
-titleSuffix: Guía de configuración de rutas de recursos estáticos en el marco Gez
-description: Explicación detallada de la configuración de rutas base en el marco Gez, incluyendo implementación en múltiples entornos, distribución CDN y configuración de rutas de acceso a recursos, para ayudar a los desarrolladores a lograr una gestión flexible de recursos estáticos.
+titleSuffix: Guía de configuración de rutas de recursos estáticos en el marco Esmx
+description: Explicación detallada de la configuración de rutas base en el marco Esmx, incluyendo implementación en múltiples entornos, distribución CDN y configuración de rutas de acceso a recursos, para ayudar a los desarrolladores a lograr una gestión flexible de recursos estáticos.
 head:
   - - meta
     - property: keywords
-      content: Gez, Ruta base, Base Path, CDN, Recursos estáticos, Implementación en múltiples entornos, Gestión de recursos
+      content: Esmx, Ruta base, Base Path, CDN, Recursos estáticos, Implementación en múltiples entornos, Gestión de recursos
 ---
 
 # Ruta base
 
-La ruta base (Base Path) es el prefijo de la ruta de acceso a los recursos estáticos (como JavaScript, CSS, imágenes, etc.) en una aplicación. En Gez, una configuración adecuada de la ruta base es crucial para los siguientes escenarios:
+La ruta base (Base Path) es el prefijo de la ruta de acceso a los recursos estáticos (como JavaScript, CSS, imágenes, etc.) en una aplicación. En Esmx, una configuración adecuada de la ruta base es crucial para los siguientes escenarios:
 
 - **Implementación en múltiples entornos**: Soporte para el acceso a recursos en diferentes entornos como desarrollo, pruebas y producción
 - **Implementación en múltiples regiones**: Adaptación a las necesidades de implementación en clústeres de diferentes regiones o países
@@ -17,7 +17,7 @@ La ruta base (Base Path) es el prefijo de la ruta de acceso a los recursos está
 
 ## Mecanismo de ruta predeterminada
 
-Gez utiliza un mecanismo automático de generación de rutas basado en el nombre del servicio. Por defecto, el marco leerá el campo `name` en el archivo `package.json` del proyecto para generar la ruta base de los recursos estáticos: `/your-app-name/`.
+Esmx utiliza un mecanismo automático de generación de rutas basado en el nombre del servicio. Por defecto, el marco leerá el campo `name` en el archivo `package.json` del proyecto para generar la ruta base de los recursos estáticos: `/your-app-name/`.
 
 ```json title="package.json"
 {
@@ -33,7 +33,7 @@ Este diseño de convención sobre configuración tiene las siguientes ventajas:
 
 ## Configuración dinámica de rutas
 
-En proyectos reales, a menudo necesitamos implementar el mismo código en diferentes entornos o regiones. Gez proporciona soporte para rutas base dinámicas, permitiendo que la aplicación se adapte a diferentes escenarios de implementación.
+En proyectos reales, a menudo necesitamos implementar el mismo código en diferentes entornos o regiones. Esmx proporciona soporte para rutas base dinámicas, permitiendo que la aplicación se adapte a diferentes escenarios de implementación.
 
 ### Casos de uso
 
@@ -53,10 +53,10 @@ En proyectos reales, a menudo necesitamos implementar el mismo código en difere
 
 ### Método de configuración
 
-A través del parámetro `base` del método `gez.render()`, puedes establecer dinámicamente la ruta base según el contexto de la solicitud:
+A través del parámetro `base` del método `esmx.render()`, puedes establecer dinámicamente la ruta base según el contexto de la solicitud:
 
 ```ts
-const render = await gez.render({
+const render = await esmx.render({
     base: '/cn',  // Establecer la ruta base
     params: {
         url: req.url

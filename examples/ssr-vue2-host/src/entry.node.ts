@@ -1,10 +1,10 @@
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 import express from 'express';
 
 export default {
-    async devApp(gez) {
-        return import('@gez/rspack-vue').then((m) =>
-            m.createRspackVue2App(gez)
+    async devApp(esmx) {
+        return import('@esmx/rspack-vue').then((m) =>
+            m.createRspackVue2App(esmx)
         );
     },
     modules: {
@@ -21,12 +21,12 @@ export default {
             vue: 'ssr-vue2-remote/npm/vue'
         }
     },
-    async server(gez) {
+    async server(esmx) {
         const server = express();
-        server.use(gez.middleware);
+        server.use(esmx.middleware);
         server.get('*', async (req, res) => {
             res.setHeader('Content-Type', 'text/html;charset=UTF-8');
-            const result = await gez.render({
+            const result = await esmx.render({
                 importmapMode: 'js',
                 params: { url: req.url }
             });
@@ -36,10 +36,10 @@ export default {
             console.log('http://localhost:3004');
         });
     },
-    async postBuild(gez) {
-        const rc = await gez.render({
+    async postBuild(esmx) {
+        const rc = await esmx.render({
             params: { url: '/' }
         });
-        gez.writeSync(gez.resolvePath('dist/client', 'index.html'), rc.html);
+        esmx.writeSync(esmx.resolvePath('dist/client', 'index.html'), rc.html);
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;

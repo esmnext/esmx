@@ -1,14 +1,14 @@
 ---
-titleSuffix: "Từ khó khăn của micro frontend đến đổi mới ESM: Hành trình phát triển của framework Gez"
-description: Khám phá sâu về hành trình phát triển của framework Gez từ những khó khăn của kiến trúc micro frontend truyền thống đến đột phá đổi mới dựa trên ESM, chia sẻ kinh nghiệm thực tiễn về tối ưu hiệu suất, quản lý phụ thuộc và lựa chọn công cụ xây dựng.
+titleSuffix: "Từ khó khăn của micro frontend đến đổi mới ESM: Hành trình phát triển của framework Esmx"
+description: Khám phá sâu về hành trình phát triển của framework Esmx từ những khó khăn của kiến trúc micro frontend truyền thống đến đột phá đổi mới dựa trên ESM, chia sẻ kinh nghiệm thực tiễn về tối ưu hiệu suất, quản lý phụ thuộc và lựa chọn công cụ xây dựng.
 head:
   - - meta
     - property: keywords
-      content: Gez, framework micro frontend, ESM, Import Maps, Rspack, Module Federation, quản lý phụ thuộc, tối ưu hiệu suất, tiến hóa công nghệ, server-side rendering
+      content: Esmx, framework micro frontend, ESM, Import Maps, Rspack, Module Federation, quản lý phụ thuộc, tối ưu hiệu suất, tiến hóa công nghệ, server-side rendering
 sidebar: false
 ---
 
-# Từ chia sẻ component đến module hóa nguyên bản: Hành trình phát triển của framework micro frontend Gez
+# Từ chia sẻ component đến module hóa nguyên bản: Hành trình phát triển của framework micro frontend Esmx
 
 ## Bối cảnh dự án
 
@@ -30,7 +30,7 @@ Những vấn đề này đặc biệt nổi bật trong một dự án cấp do
 
 ### v1.0: Khám phá component từ xa
 
-Để giải quyết vấn đề hiệu quả chia sẻ component, Gez v1.0 đã giới thiệu cơ chế RemoteView component dựa trên giao thức HTTP. Giải pháp này thực hiện lắp ráp mã theo yêu cầu giữa các dịch vụ thông qua yêu cầu động tại thời điểm chạy, giải quyết thành công vấn đề chuỗi phụ thuộc xây dựng quá dài. Tuy nhiên, do thiếu cơ chế giao tiếp tiêu chuẩn tại thời điểm chạy, việc đồng bộ trạng thái và truyền sự kiện giữa các dịch vụ vẫn gặp phải vấn đề về hiệu suất.
+Để giải quyết vấn đề hiệu quả chia sẻ component, Esmx v1.0 đã giới thiệu cơ chế RemoteView component dựa trên giao thức HTTP. Giải pháp này thực hiện lắp ráp mã theo yêu cầu giữa các dịch vụ thông qua yêu cầu động tại thời điểm chạy, giải quyết thành công vấn đề chuỗi phụ thuộc xây dựng quá dài. Tuy nhiên, do thiếu cơ chế giao tiếp tiêu chuẩn tại thời điểm chạy, việc đồng bộ trạng thái và truyền sự kiện giữa các dịch vụ vẫn gặp phải vấn đề về hiệu suất.
 
 ### v2.0: Thử nghiệm Module Federation
 
@@ -75,7 +75,7 @@ Quyết định này giúp chúng tôi duy trì trải nghiệm phát triển đ
 
 ## Triển vọng tương lai
 
-Trong kế hoạch phát triển tương lai, framework Gez sẽ tập trung vào ba hướng chính:
+Trong kế hoạch phát triển tương lai, framework Esmx sẽ tập trung vào ba hướng chính:
 
 ### Tối ưu hóa sâu Import Maps
 
@@ -95,4 +95,4 @@ Trong kế hoạch phát triển tương lai, framework Gez sẽ tập trung và
 - **Đồng bộ trạng thái**: Giải pháp chia sẻ trạng thái nhẹ dựa trên ESM
 - **Bus sự kiện**: Cơ chế giao tiếp sự kiện tiêu chuẩn, hỗ trợ giao tiếp tách rời giữa các ứng dụng
 
-Thông qua các tối ưu hóa và mở rộng này, chúng tôi mong muốn biến Gez thành một giải pháp micro frontend hoàn thiện hơn, dễ sử dụng hơn, mang lại trải nghiệm phát triển tốt hơn và hiệu quả phát triển cao hơn cho các nhà phát triển.
+Thông qua các tối ưu hóa và mở rộng này, chúng tôi mong muốn biến Esmx thành một giải pháp micro frontend hoàn thiện hơn, dễ sử dụng hơn, mang lại trải nghiệm phát triển tốt hơn và hiệu quả phát triển cao hơn cho các nhà phát triển.

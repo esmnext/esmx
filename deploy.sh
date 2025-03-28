@@ -33,14 +33,11 @@ if [ -f "$src_base/docs/doc_build/sitemap.xml" ]; then
 fi
 
 cd dist
-# 如果是发布到自定义域名
-# echo 'www.example.com' > CNAME
 
 git init
 git add -A
 git commit -m 'deploy'
 
-# 如果发布到 https://js-esm.github.io/gez/
-git push -f git@github.com:js-esm/gez.git master:docs
+git push -f git@github.com:esmnext/esmx.git master:docs
 
 cd -

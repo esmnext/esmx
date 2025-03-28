@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez 프레임워크 서버 사이드 렌더링 핵심 메커니즘
-description: Gez 프레임워크의 렌더링 컨텍스트(RenderContext) 메커니즘에 대해 자세히 설명합니다. 리소스 관리, HTML 생성 및 ESM 모듈 시스템을 포함하여 개발자가 서버 사이드 렌더링(SSR) 기능을 이해하고 사용할 수 있도록 돕습니다.
+titleSuffix: Esmx 프레임워크 서버 사이드 렌더링 핵심 메커니즘
+description: Esmx 프레임워크의 렌더링 컨텍스트(RenderContext) 메커니즘에 대해 자세히 설명합니다. 리소스 관리, HTML 생성 및 ESM 모듈 시스템을 포함하여 개발자가 서버 사이드 렌더링(SSR) 기능을 이해하고 사용할 수 있도록 돕습니다.
 head:
   - - meta
     - property: keywords
-      content: Gez, 렌더링 컨텍스트, RenderContext, SSR, 서버 사이드 렌더링, ESM, 리소스 관리
+      content: Esmx, 렌더링 컨텍스트, RenderContext, SSR, 서버 사이드 렌더링, ESM, 리소스 관리
 ---
 
 # 렌더링 컨텍스트
 
-RenderContext는 Gez 프레임워크의 핵심 클래스로, 서버 사이드 렌더링(SSR) 과정에서 리소스 관리와 HTML 생성을 주로 담당합니다. 이 클래스는 다음과 같은 핵심 특징을 가지고 있습니다:
+RenderContext는 Esmx 프레임워크의 핵심 클래스로, 서버 사이드 렌더링(SSR) 과정에서 리소스 관리와 HTML 생성을 주로 담당합니다. 이 클래스는 다음과 같은 핵심 특징을 가지고 있습니다:
 
 1. **ESM 기반 모듈 시스템**
    - 현대적인 ECMAScript Modules 표준을 채택
@@ -33,15 +33,15 @@ RenderContext는 Gez 프레임워크의 핵심 클래스로, 서버 사이드 �
 
 ## 사용 방법
 
-Gez 프레임워크에서 개발자는 일반적으로 RenderContext 인스턴스를 직접 생성하지 않고, `gez.render()` 메서드를 통해 인스턴스를 얻습니다:
+Esmx 프레임워크에서 개발자는 일반적으로 RenderContext 인스턴스를 직접 생성하지 않고, `esmx.render()` 메서드를 통해 인스턴스를 얻습니다:
 
 ```ts title="src/entry.node.ts"
-async server(gez) {
+async server(esmx) {
     const server = http.createServer((req, res) => {
         // 정적 파일 처리
-        gez.middleware(req, res, async () => {
-            // gez.render()를 통해 RenderContext 인스턴스 획득
-            const rc = await gez.render({
+        esmx.middleware(req, res, async () => {
+            // esmx.render()를 통해 RenderContext 인스턴스 획득
+            const rc = await esmx.render({
                 params: {
                     url: req.url
                 }
@@ -141,8 +141,8 @@ export default async (rc: RenderContext) => {
 RenderContext는 유연한 동적 베이스 경로 설정 메커니즘을 제공하며, 런타임에 정적 리소스의 베이스 경로를 동적으로 설정할 수 있습니다:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
-    base: '/gez',  // 베이스 경로 설정
+const rc = await esmx.render({
+    base: '/esmx',  // 베이스 경로 설정
     params: {
         url: req.url
     }
@@ -179,7 +179,7 @@ RenderContext는 두 가지 임포트 매핑(Import Map) 모드를 제공합니�
 설정을 통해 적절한 모드를 선택할 수 있습니다:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     importmapMode: 'js',  // 'inline' | 'js'
     params: {
         url: req.url
@@ -192,7 +192,7 @@ const rc = await gez.render({
 RenderContext는 `entryName` 설정을 통해 서버 사이드 렌더링의 진입 함수를 지정할 수 있습니다:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     entryName: 'mobile',  // 모바일 진입 함수 사용 지정
     params: {
         url: req.url
@@ -228,7 +228,7 @@ const rc = await gez.render({
 ## 모범 사례
 
 1. **RenderContext 인스턴스 획득**
-   - 항상 `gez.render()` 메서드를 통해 인스턴스 획득
+   - 항상 `esmx.render()` 메서드를 통해 인스턴스 획득
    - 필요에 따라 적절한 매개변수 전달
    - 수동으로 인스턴스 생성하지 않기
 

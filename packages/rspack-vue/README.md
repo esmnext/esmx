@@ -1,4 +1,4 @@
-# @gez/rspack-vue
+# @esmx/rspack-vue
 
 为 Vue 框架提供专业的构建支持，包含完整的 Vue 组件开发、构建与服务端渲染能力。
 
@@ -13,16 +13,16 @@
 ## 安装
 
 ```bash
-pnpm add @gez/rspack-vue -D
+pnpm add @esmx/rspack-vue -D
 # 或
-yarn add @gez/rspack-vue -D
+yarn add @esmx/rspack-vue -D
 # 或
-npm install @gez/rspack-vue -D
+npm install @esmx/rspack-vue -D
 ```
 
 ## 文档
 
-访问 [@gez/rspack-vue 官方文档](https://www.esmnext.com/api/app/rspack-vue.html) 获取详细的使用指南和 API 文档。
+访问 [@esmx/rspack-vue 官方文档](https://www.esmnext.com/api/app/rspack-vue.html) 获取详细的使用指南和 API 文档。
 
 ## 许可证
 

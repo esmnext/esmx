@@ -1,23 +1,23 @@
 ---
-titleSuffix: Herramienta de construcción Vue para el framework Gez
-description: Herramienta de construcción especializada en Vue para el framework Gez, que ofrece soporte completo para la construcción de aplicaciones Vue 2/3, incluyendo desarrollo de componentes, renderizado SSR y optimización de rendimiento.
+titleSuffix: Herramienta de construcción Vue para el framework Esmx
+description: Herramienta de construcción especializada en Vue para el framework Esmx, que ofrece soporte completo para la construcción de aplicaciones Vue 2/3, incluyendo desarrollo de componentes, renderizado SSR y optimización de rendimiento.
 head:
   - - meta
     - property: keywords
-      content: Gez, Rspack, Vue, Vue2, Vue3, SSR, herramienta de construcción, desarrollo de componentes, renderizado del lado del servidor, optimización de rendimiento
+      content: Esmx, Rspack, Vue, Vue2, Vue3, SSR, herramienta de construcción, desarrollo de componentes, renderizado del lado del servidor, optimización de rendimiento
 ---
 
 import { PackageManagerTabs } from '@theme';
 
-# @gez/rspack-vue
+# @esmx/rspack-vue
 
 El paquete Rspack Vue proporciona un conjunto de APIs para crear y configurar aplicaciones Rspack basadas en el framework Vue, con soporte para el desarrollo de componentes Vue, construcción y renderizado del lado del servidor.
 
 ## Instalación
 
-Instala la dependencia de desarrollo `@gez/rspack-vue` utilizando un gestor de paquetes:
+Instala la dependencia de desarrollo `@esmx/rspack-vue` utilizando un gestor de paquetes:
 
-<PackageManagerTabs command="install @gez/rspack-vue -D" />
+<PackageManagerTabs command="install @esmx/rspack-vue -D" />
 
 ## Exportación de tipos
 
@@ -36,7 +36,7 @@ Tipo de entorno de construcción, define el entorno objetivo de la aplicación, 
 
 ```ts
 interface RspackAppConfigContext {
-  gez: Gez
+  esmx: Esmx
   buildTarget: BuildTarget
   config: RspackOptions
   options: RspackAppOptions
@@ -44,7 +44,7 @@ interface RspackAppConfigContext {
 ```
 
 Interfaz de contexto de configuración de la aplicación Rspack, proporciona información de contexto accesible en las funciones de enlace de configuración:
-- `gez`: Instancia del framework Gez
+- `esmx`: Instancia del framework Esmx
 - `buildTarget`: Objetivo de construcción actual (client/server/node)
 - `config`: Objeto de configuración de Rspack
 - `options`: Opciones de configuración de la aplicación
@@ -86,13 +86,13 @@ Hereda de `RspackAppOptions`, utilizado para configurar opciones específicas de
 ### createRspackApp
 
 ```ts
-function createRspackApp(gez: Gez, options?: RspackAppOptions): Promise<App>
+function createRspackApp(esmx: Esmx, options?: RspackAppOptions): Promise<App>
 ```
 
 Crea una instancia estándar de aplicación Rspack.
 
 **Parámetros:**
-- `gez`: Instancia del framework Gez
+- `esmx`: Instancia del framework Esmx
 - `options`: Opciones de configuración de la aplicación Rspack
 
 **Valor de retorno:**
@@ -101,13 +101,13 @@ Crea una instancia estándar de aplicación Rspack.
 ### createRspackHtmlApp
 
 ```ts
-function createRspackHtmlApp(gez: Gez, options?: RspackHtmlAppOptions): Promise<App>
+function createRspackHtmlApp(esmx: Esmx, options?: RspackHtmlAppOptions): Promise<App>
 ```
 
 Crea una instancia de aplicación Rspack de tipo HTML.
 
 **Parámetros:**
-- `gez`: Instancia del framework Gez
+- `esmx`: Instancia del framework Esmx
 - `options`: Opciones de configuración de la aplicación HTML
 
 **Valor de retorno:**
@@ -141,12 +141,12 @@ Objeto de mapeo de identificadores de loaders integrados en Rspack, proporciona 
 Usar estas constantes permite referenciar loaders integrados en la configuración, evitando la entrada manual de cadenas:
 
 ```ts title="src/entry.node.ts"
-import { RSPACK_LOADER } from '@gez/rspack';
+import { RSPACK_LOADER } from '@esmx/rspack';
 
 export default {
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         loaders: {
           // Usar constantes para referenciar loaders
           styleLoader: RSPACK_LOADER.styleLoader,

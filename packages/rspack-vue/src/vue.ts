@@ -1,5 +1,5 @@
-import type { Gez } from '@gez/core';
-import type { RspackHtmlAppOptions } from '@gez/rspack';
+import type { Esmx } from '@esmx/core';
+import type { RspackHtmlAppOptions } from '@esmx/rspack';
 import { createRspackVueApp } from './vue-core';
 
 export interface RspackVueAppOptions extends RspackHtmlAppOptions {
@@ -15,55 +15,55 @@ export interface RspackVueAppOptions extends RspackHtmlAppOptions {
 /**
  * 创建 Vue 2 应用构建器
  *
- * @param gez - Gez 实例
+ * @param esmx - Esmx 实例
  * @param options - Rspack Vue 应用配置项
  * @returns 返回一个 Promise，解析为构建好的应用实例
  *
  * @example
  * ```ts
- * import type { GezOptions } from '@gez/core';
+ * import type { EsmxOptions } from '@esmx/core';
  *
  * export default {
- *   async devApp(gez) {
- *     return import('@gez/rspack-vue').then((m) =>
- *       m.createRspackVue2App(gez, {
+ *   async devApp(esmx) {
+ *     return import('@esmx/rspack-vue').then((m) =>
+ *       m.createRspackVue2App(esmx, {
  *         config({ config }) {
  *           // 自定义 Rspack 配置
  *         }
  *       })
  *     );
  *   }
- * } satisfies GezOptions;
+ * } satisfies EsmxOptions;
  * ```
  */
-export function createRspackVue2App(gez: Gez, options?: RspackVueAppOptions) {
-    return createRspackVueApp(gez, '2', options);
+export function createRspackVue2App(esmx: Esmx, options?: RspackVueAppOptions) {
+    return createRspackVueApp(esmx, '2', options);
 }
 
 /**
  * 创建 Vue 3 应用构建器
  *
- * @param gez - Gez 实例
+ * @param esmx - Esmx 实例
  * @param options - Rspack Vue 应用配置项
  * @returns 返回一个 Promise，解析为构建好的应用实例
  *
  * @example
  * ```ts
- * import type { GezOptions } from '@gez/core';
+ * import type { EsmxOptions } from '@esmx/core';
  *
  * export default {
- *   async devApp(gez) {
- *     return import('@gez/rspack-vue').then((m) =>
- *       m.createRspackVue3App(gez, {
+ *   async devApp(esmx) {
+ *     return import('@esmx/rspack-vue').then((m) =>
+ *       m.createRspackVue3App(esmx, {
  *         config({ config }) {
  *           // 自定义 Rspack 配置
  *         }
  *       })
  *     );
  *   }
- * } satisfies GezOptions;
+ * } satisfies EsmxOptions;
  * ```
  */
-export function createRspackVue3App(gez: Gez, options?: RspackVueAppOptions) {
-    return createRspackVueApp(gez, '3', options);
+export function createRspackVue3App(esmx: Esmx, options?: RspackVueAppOptions) {
+    return createRspackVueApp(esmx, '3', options);
 }

@@ -1,6 +1,6 @@
 /*
 
-专门为 gez 框架提供远程的下载库，具有缓存功能。
+专门为 esmx 框架提供远程的下载库，具有缓存功能。
 
 例子：
 
@@ -14,7 +14,7 @@ const outputDir = path.join(path.dirname(fileURLToPath(import.meta.url)), 'outpu
 fetchPkgsWithProgress({
     outputDir,
     axiosReqCfg: {
-        baseURL: 'https://js-esm.github.io/gez/',
+        baseURL: 'https://js-esm.github.io/esmx/',
         timeout: 10000,
     },
     packs: urls.map(url => ({ url, name: url.split('/')[0] })),

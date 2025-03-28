@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez フレームワーク プロジェクト構造と規約ガイド
-description: Gez フレームワークの標準プロジェクト構造、エントリーファイル規約、設定ファイル規約について詳しく説明し、開発者が規範的で保守可能な SSR アプリケーションを構築するのを支援します。
+titleSuffix: Esmx フレームワーク プロジェクト構造と規約ガイド
+description: Esmx フレームワークの標準プロジェクト構造、エントリーファイル規約、設定ファイル規約について詳しく説明し、開発者が規範的で保守可能な SSR アプリケーションを構築するのを支援します。
 head:
   - - meta
     - property: keywords
-      content: Gez, プロジェクト構造, エントリーファイル, 設定規約, SSRフレームワーク, TypeScript, プロジェクト規約, 開発標準
+      content: Esmx, プロジェクト構造, エントリーファイル, 設定規約, SSRフレームワーク, TypeScript, プロジェクト規約, 開発標準
 ---
 
 # 標準規約
 
-Gez はモダンな SSR フレームワークで、標準化されたプロジェクト構造とパス解決メカニズムを採用しており、開発環境と本番環境での一貫性と保守性を確保します。
+Esmx はモダンな SSR フレームワークで、標準化されたプロジェクト構造とパス解決メカニズムを採用しており、開発環境と本番環境での一貫性と保守性を確保します。
 
 ## プロジェクト構造規約
 
@@ -36,7 +36,7 @@ root
 ```
 
 ::: tip 拡張知識
-- `gez.name` は `package.json` の `name` フィールドから取得されます
+- `esmx.name` は `package.json` の `name` フィールドから取得されます
 - `dist/package.json` はルートディレクトリの `package.json` から生成されます
 - `packs.enable` を `true` に設定すると、`dist` ディレクトリがアーカイブされます
 
@@ -76,11 +76,11 @@ Node.js サーバーのエントリーファイルは以下の役割を担いま
     "name": "your-app-name",
     "type": "module",
     "scripts": {
-        "dev": "gez dev",
+        "dev": "esmx dev",
         "build": "npm run build:dts && npm run build:ssr",
-        "build:ssr": "gez build",
+        "build:ssr": "esmx build",
         "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src",
-        "preview": "gez preview",
+        "preview": "esmx preview",
         "start": "NODE_ENV=production node dist/index.js"
     }
 }

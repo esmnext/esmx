@@ -51,7 +51,7 @@ export interface UseThemeReturn {
 function createStyleElement(): HTMLStyleElement {
     const style = document.createElement('style');
     style.setAttribute('type', 'text/css');
-    style.setAttribute('id', 'gez-theme-style');
+    style.setAttribute('id', 'esmx-theme-style');
     document.head.appendChild(style);
     return style;
 }
@@ -78,7 +78,7 @@ export function useTheme(initialTheme: Partial<Theme> = {}): UseThemeReturn {
         if (typeof window === 'undefined') return;
 
         if (!styleElement) {
-            const existingStyle = document.getElementById('gez-theme-style');
+            const existingStyle = document.getElementById('esmx-theme-style');
             styleElement =
                 (existingStyle as HTMLStyleElement) || createStyleElement();
         }

@@ -1,23 +1,23 @@
 ---
-titleSuffix: Gez 프레임워크 Vue 빌드 도구
-description: Gez 프레임워크의 Vue 전용 빌드 도구로, Vue 2/3 애플리케이션 빌드를 완벽하게 지원하며, 컴포넌트 개발, SSR 렌더링 및 성능 최적화 등의 기능을 제공합니다.
+titleSuffix: Esmx 프레임워크 Vue 빌드 도구
+description: Esmx 프레임워크의 Vue 전용 빌드 도구로, Vue 2/3 애플리케이션 빌드를 완벽하게 지원하며, 컴포넌트 개발, SSR 렌더링 및 성능 최적화 등의 기능을 제공합니다.
 head:
   - - meta
     - property: keywords
-      content: Gez, Rspack, Vue, Vue2, Vue3, SSR, 빌드 도구, 컴포넌트 개발, 서버 사이드 렌더링, 성능 최적화
+      content: Esmx, Rspack, Vue, Vue2, Vue3, SSR, 빌드 도구, 컴포넌트 개발, 서버 사이드 렌더링, 성능 최적화
 ---
 
 import { PackageManagerTabs } from '@theme';
 
-# @gez/rspack-vue
+# @esmx/rspack-vue
 
 Rspack Vue 패키지는 Vue 프레임워크 기반의 Rspack 애플리케이션을 생성하고 구성하기 위한 API 세트를 제공하며, Vue 컴포넌트 개발, 빌드 및 서버 사이드 렌더링을 지원합니다.
 
 ## 설치
 
-패키지 매니저를 사용하여 `@gez/rspack-vue` 개발 의존성을 설치합니다:
+패키지 매니저를 사용하여 `@esmx/rspack-vue` 개발 의존성을 설치합니다:
 
-<PackageManagerTabs command="install @gez/rspack-vue -D" />
+<PackageManagerTabs command="install @esmx/rspack-vue -D" />
 
 ## 타입 내보내기
 
@@ -36,7 +36,7 @@ type BuildTarget = 'node' | 'client' | 'server'
 
 ```ts
 interface RspackAppConfigContext {
-  gez: Gez
+  esmx: Esmx
   buildTarget: BuildTarget
   config: RspackOptions
   options: RspackAppOptions
@@ -44,7 +44,7 @@ interface RspackAppConfigContext {
 ```
 
 Rspack 애플리케이션 구성 컨텍스트 인터페이스로, 구성 훅 함수에서 접근할 수 있는 컨텍스트 정보를 제공합니다:
-- `gez`: Gez 프레임워크 인스턴스
+- `esmx`: Esmx 프레임워크 인스턴스
 - `buildTarget`: 현재 빌드 대상 (client/server/node)
 - `config`: Rspack 구성 객체
 - `options`: 애플리케이션 구성 옵션
@@ -86,13 +86,13 @@ Rspack 애플리케이션 구성 옵션 인터페이스:
 ### createRspackApp
 
 ```ts
-function createRspackApp(gez: Gez, options?: RspackAppOptions): Promise<App>
+function createRspackApp(esmx: Esmx, options?: RspackAppOptions): Promise<App>
 ```
 
 표준 Rspack 애플리케이션 인스턴스를 생성합니다.
 
 **매개변수:**
-- `gez`: Gez 프레임워크 인스턴스
+- `esmx`: Esmx 프레임워크 인스턴스
 - `options`: Rspack 애플리케이션 구성 옵션
 
 **반환값:**
@@ -101,13 +101,13 @@ function createRspackApp(gez: Gez, options?: RspackAppOptions): Promise<App>
 ### createRspackHtmlApp
 
 ```ts
-function createRspackHtmlApp(gez: Gez, options?: RspackHtmlAppOptions): Promise<App>
+function createRspackHtmlApp(esmx: Esmx, options?: RspackHtmlAppOptions): Promise<App>
 ```
 
 HTML 타입의 Rspack 애플리케이션 인스턴스를 생성합니다.
 
 **매개변수:**
-- `gez`: Gez 프레임워크 인스턴스
+- `esmx`: Esmx 프레임워크 인스턴스
 - `options`: HTML 애플리케이션 구성 옵션
 
 **반환값:**
@@ -141,12 +141,12 @@ Rspack 내장 로더 식별자 매핑 객체로, 일반적으로 사용되는 �
 이러한 상수를 사용하여 구성에서 내장 로더를 참조할 수 있으며, 수동으로 문자열을 입력할 필요가 없습니다:
 
 ```ts title="src/entry.node.ts"
-import { RSPACK_LOADER } from '@gez/rspack';
+import { RSPACK_LOADER } from '@esmx/rspack';
 
 export default {
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         loaders: {
           // 상수를 사용하여 로더 참조
           styleLoader: RSPACK_LOADER.styleLoader,

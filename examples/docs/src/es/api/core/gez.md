@@ -1,17 +1,17 @@
 ---
 titleSuffix: Referencia de API de las clases principales del framework
-description: Documentación detallada de las API de las clases principales del framework Gez, incluyendo la gestión del ciclo de vida de la aplicación, el manejo de recursos estáticos y la capacidad de renderizado en el servidor, para ayudar a los desarrolladores a comprender en profundidad las funcionalidades centrales del framework.
+description: Documentación detallada de las API de las clases principales del framework Esmx, incluyendo la gestión del ciclo de vida de la aplicación, el manejo de recursos estáticos y la capacidad de renderizado en el servidor, para ayudar a los desarrolladores a comprender en profundidad las funcionalidades centrales del framework.
 head:
   - - meta
     - property: keywords
-      content: Gez, API, Gestión del ciclo de vida, Recursos estáticos, Renderizado en el servidor, Rspack, Framework de aplicaciones web
+      content: Esmx, API, Gestión del ciclo de vida, Recursos estáticos, Renderizado en el servidor, Rspack, Framework de aplicaciones web
 ---
 
-# Gez
+# Esmx
 
 ## Introducción
 
-Gez es un framework de aplicaciones web de alto rendimiento basado en Rspack, que ofrece una gestión completa del ciclo de vida de la aplicación, manejo de recursos estáticos y capacidades de renderizado en el servidor.
+Esmx es un framework de aplicaciones web de alto rendimiento basado en Rspack, que ofrece una gestión completa del ciclo de vida de la aplicación, manejo de recursos estáticos y capacidades de renderizado en el servidor.
 
 ## Definiciones de tipos
 
@@ -76,18 +76,18 @@ Enumeración de tipos de comandos:
 
 ## Opciones de instancia
 
-Define las opciones de configuración centrales del framework Gez.
+Define las opciones de configuración centrales del framework Esmx.
 
 ```ts
-interface GezOptions {
+interface EsmxOptions {
   root?: string
   isProd?: boolean
   basePathPlaceholder?: string | false
   modules?: ModuleConfig
   packs?: PackConfig
-  devApp?: (gez: Gez) => Promise<App>
-  server?: (gez: Gez) => Promise<void>
-  postBuild?: (gez: Gez) => Promise<void>
+  devApp?: (esmx: Esmx) => Promise<App>
+  server?: (esmx: Esmx) => Promise<void>
+  postBuild?: (esmx: Esmx) => Promise<void>
 }
 ```
 
@@ -128,15 +128,15 @@ Opciones de configuración de empaquetado. Se utiliza para empaquetar los artefa
 
 #### devApp
 
-- **Tipo**: `(gez: Gez) => Promise<App>`
+- **Tipo**: `(esmx: Esmx) => Promise<App>`
 
 Función de creación de la aplicación en el entorno de desarrollo. Solo se utiliza en el entorno de desarrollo, para crear instancias de la aplicación del servidor de desarrollo.
 
 ```ts title="entry.node.ts"
 export default {
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(context) {
           // Configuración personalizada de Rspack
         }
@@ -148,16 +148,16 @@ export default {
 
 #### server
 
-- **Tipo**: `(gez: Gez) => Promise<void>`
+- **Tipo**: `(esmx: Esmx) => Promise<void>`
 
 Función de configuración del servidor. Se utiliza para configurar e iniciar el servidor HTTP, tanto en el entorno de desarrollo como en el de producción.
 
 ```ts title="entry.node.ts"
 export default {
-  async server(gez) {
+  async server(esmx) {
     const server = http.createServer((req, res) => {
-      gez.middleware(req, res, async () => {
-        const render = await gez.render({
+      esmx.middleware(req, res, async () => {
+        const render = await esmx.render({
           params: { url: req.url }
         });
         res.end(render.html);
@@ -171,7 +171,7 @@ export default {
 
 #### postBuild
 
-- **Tipo**: `(gez: Gez) => Promise<void>`
+- **Tipo**: `(esmx: Esmx) => Promise<void>`
 
 Función de procesamiento posterior a la construcción. Se ejecuta después de completar la construcción del proyecto, y se puede utilizar para:
 - Ejecutar procesamiento adicional de recursos.
@@ -235,8 +235,8 @@ Obtiene el middleware de manejo de recursos estáticos. Proporciona diferentes i
 
 ```ts
 const server = http.createServer((req, res) => {
-  gez.middleware(req, res, async () => {
-    const rc = await gez.render({ url: req.url });
+  esmx.middleware(req, res, async () => {
+    const rc = await esmx.render({ url: req.url });
     res.end(rc.html);
   });
 });
@@ -253,12 +253,12 @@ Obtiene la función de renderizado en el servidor. Proporciona diferentes implem
 
 ```ts
 // Uso básico
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: req.url }
 });
 
 // Configuración avanzada
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '',                    // Ruta base
   importmapMode: 'inline',     // Modo de mapeo de importación
   entryName: 'default',        // Entrada de renderizado
@@ -297,13 +297,13 @@ Obtiene la configuración relacionada con el empaquetado del módulo actual, inc
 ### constructor()
 
 - **Parámetros**: 
-  - `options?: GezOptions` - Opciones de configuración del framework.
-- **Retorna**: `Gez`
+  - `options?: EsmxOptions` - Opciones de configuración del framework.
+- **Retorna**: `Esmx`
 
-Crea una instancia del framework Gez.
+Crea una instancia del framework Esmx.
 
 ```ts
-const gez = new Gez({
+const esmx = new Esmx({
   root: './src',
   isProd: process.env.NODE_ENV === 'production'
 });
@@ -317,7 +317,7 @@ const gez = new Gez({
   - `Error`: Cuando se intenta inicializar repetidamente.
   - `NotReadyError`: Cuando se accede a una instancia no inicializada.
 
-Inicializa la instancia del framework Gez. Ejecuta los siguientes procesos centrales de inicialización:
+Inicializa la instancia del framework Esmx. Ejecuta los siguientes procesos centrales de inicialización:
 
 1. Analiza la configuración del proyecto (package.json, configuración de módulos, configuración de empaquetado, etc.).
 2. Crea la instancia de la aplicación (entorno de desarrollo o producción).
@@ -330,26 +330,26 @@ Inicializa la instancia del framework Gez. Ejecuta los siguientes procesos centr
 :::
 
 ```ts
-const gez = new Gez({
+const esmx = new Esmx({
   root: './src',
   isProd: process.env.NODE_ENV === 'production'
 });
 
-await gez.init(COMMAND.dev);
+await esmx.init(COMMAND.dev);
 ```
 
 ### destroy()
 
 - **Retorna**: `Promise<boolean>`
 
-Destruye la instancia del framework Gez, ejecuta la limpieza de recursos y el cierre de conexiones. Principalmente utilizado para:
+Destruye la instancia del framework Esmx, ejecuta la limpieza de recursos y el cierre de conexiones. Principalmente utilizado para:
 - Cerrar el servidor de desarrollo.
 - Limpiar archivos temporales y caché.
 - Liberar recursos del sistema.
 
 ```ts
 process.once('SIGTERM', async () => {
-  await gez.destroy();
+  await esmx.destroy();
   process.exit(0);
 });
 ```
@@ -370,14 +370,14 @@ Lanza `NotReadyError` si se llama antes de inicializar la instancia del framewor
 
 ```ts title="entry.node.ts"
 export default {
-  async postBuild(gez) {
-    await gez.build();
+  async postBuild(esmx) {
+    await esmx.build();
     // Genera HTML estático después de la construcción
-    const render = await gez.render({
+    const render = await esmx.render({
       params: { url: '/' }
     });
-    gez.writeSync(
-      gez.resolvePath('dist/client', 'index.html'),
+    esmx.writeSync(
+      esmx.resolvePath('dist/client', 'index.html'),
       render.html
     );
   }
@@ -395,12 +395,12 @@ Inicia el servidor HTTP y configura la instancia del servidor. Se llama en los s
 
 ```ts title="entry.node.ts"
 export default {
-  async server(gez) {
+  async server(esmx) {
     const server = http.createServer((req, res) => {
       // Maneja recursos estáticos
-      gez.middleware(req, res, async () => {
+      esmx.middleware(req, res, async () => {
         // Renderizado en el servidor
-        const render = await gez.render({
+        const render = await esmx.render({
           params: { url: req.url }
         });
         res.end(render.html);
@@ -426,17 +426,17 @@ Ejecuta la lógica de procesamiento posterior a la construcción, utilizada para
 
 ```ts title="entry.node.ts"
 export default {
-  async postBuild(gez) {
+  async postBuild(esmx) {
     // Genera HTML estático para múltiples páginas
     const pages = ['/', '/about', '/404'];
 
     for (const url of pages) {
-      const render = await gez.render({
+      const render = await esmx.render({
         params: { url }
       });
 
-      await gez.write(
-        gez.resolvePath('dist/client', url.substring(1), 'index.html'),
+      await esmx.write(
+        esmx.resolvePath('dist/client', url.substring(1), 'index.html'),
         render.html
       );
     }
@@ -456,7 +456,7 @@ Resuelve las rutas del proyecto, convierte rutas relativas en absolutas.
 - **Ejemplo**:
 ```ts
 // Resuelve la ruta de recursos estáticos
-const htmlPath = gez.resolvePath('dist/client', 'index.html');
+const htmlPath = esmx.resolvePath('dist/client', 'index.html');
 ```
 
 ### writeSync()
@@ -471,9 +471,9 @@ Escribe sincrónicamente el contenido de un archivo.
 - **Ejemplo**:
 ```ts title="src/entry.node.ts"
 
-async postBuild(gez) {
-  const htmlPath = gez.resolvePath('dist/client', 'index.html');
-  const success = await gez.write(htmlPath, '<html>...</html>');
+async postBuild(esmx) {
+  const htmlPath = esmx.resolvePath('dist/client', 'index.html');
+  const success = await esmx.write(htmlPath, '<html>...</html>');
 }
 ```
 
@@ -489,8 +489,8 @@ Lee y analiza sincrónicamente un archivo JSON.
 
 - **Ejemplo**:
 ```ts title="src/entry.node.ts"
-async server(gez) {
-  const manifest = gez.readJsonSync(gez.resolvePath('dist/client', 'manifest.json'));
+async server(esmx) {
+  const manifest = esmx.readJsonSync(esmx.resolvePath('dist/client', 'manifest.json'));
   // Usa el objeto manifest
 }
 ```
@@ -507,8 +507,8 @@ Lee y analiza asincrónicamente un archivo JSON.
 
 - **Ejemplo**:
 ```ts title="src/entry.node.ts"
-async server(gez) {
-  const manifest = await gez.readJson(gez.resolvePath('dist/client', 'manifest.json'));
+async server(esmx) {
+  const manifest = await esmx.readJson(esmx.resolvePath('dist/client', 'manifest.json'));
   // Usa el objeto manifest
 }
 ```

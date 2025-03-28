@@ -1,15 +1,15 @@
 ---
-titleSuffix: Ví dụ ứng dụng Preact+HTM SSR với Gez Framework
-description: Hướng dẫn xây dựng ứng dụng Preact+HTM SSR từ đầu với Gez, qua ví dụ minh họa cách sử dụng cơ bản của framework, bao gồm khởi tạo dự án, cấu hình Preact và thiết lập file entry.
+titleSuffix: Ví dụ ứng dụng Preact+HTM SSR với Esmx Framework
+description: Hướng dẫn xây dựng ứng dụng Preact+HTM SSR từ đầu với Esmx, qua ví dụ minh họa cách sử dụng cơ bản của framework, bao gồm khởi tạo dự án, cấu hình Preact và thiết lập file entry.
 head:
   - - meta
     - property: keywords
-      content: Gez, Preact, HTM, Ứng dụng SSR, Cấu hình TypeScript, Khởi tạo dự án, Render phía server, Tương tác phía client
+      content: Esmx, Preact, HTM, Ứng dụng SSR, Cấu hình TypeScript, Khởi tạo dự án, Render phía server, Tương tác phía client
 ---
 
 # Preact+HTM
 
-Hướng dẫn này sẽ giúp bạn xây dựng một ứng dụng Preact+HTM SSR từ đầu với Gez. Chúng ta sẽ sử dụng một ví dụ hoàn chỉnh để minh họa cách tạo ứng dụng render phía server với Gez framework.
+Hướng dẫn này sẽ giúp bạn xây dựng một ứng dụng Preact+HTM SSR từ đầu với Esmx. Chúng ta sẽ sử dụng một ví dụ hoàn chỉnh để minh họa cách tạo ứng dụng render phía server với Esmx framework.
 
 ## Cấu trúc dự án
 
@@ -40,18 +40,18 @@ Tạo file `package.json`, cấu hình các dependency và script của dự án
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "gez dev",
+    "dev": "esmx dev",
     "build": "npm run build:dts && npm run build:ssr",
-    "build:ssr": "gez build",
-    "preview": "gez preview",
+    "build:ssr": "esmx build",
+    "preview": "esmx preview",
     "start": "NODE_ENV=production node dist/index.js",
     "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src"
   },
   "dependencies": {
-    "@gez/core": "*"
+    "@esmx/core": "*"
   },
   "devDependencies": {
-    "@gez/rspack": "*",
+    "@esmx/rspack": "*",
     "@types/node": "22.8.6",
     "htm": "^3.1.1",
     "preact": "^10.26.2",
@@ -118,7 +118,7 @@ Tạo component chính `src/app.ts`, sử dụng class component của Preact v�
 ```ts title="src/app.ts"
 /**
  * @file Ví dụ component
- * @description Hiển thị tiêu đề trang với thời gian tự động cập nhật, dùng để minh họa các chức năng cơ bản của Gez framework
+ * @description Hiển thị tiêu đề trang với thời gian tự động cập nhật, dùng để minh họa các chức năng cơ bản của Esmx framework
  */
 
 import { Component } from 'preact';
@@ -149,7 +149,7 @@ export default class App extends Component {
         const { time } = this.state;
         return html`
             <div>
-                <h1><a href="https://www.esmnext.com/guide/frameworks/preact-htm.html" target="_blank">Hướng dẫn nhanh Gez</a></h1>
+                <h1><a href="https://www.esmnext.com/guide/frameworks/preact-htm.html" target="_blank">Hướng dẫn nhanh Esmx</a></h1>
                 <time datetime=${time}>${time}</time>
             </div>
         `;
@@ -210,18 +210,18 @@ Tạo file `entry.node.ts`, cấu hình môi trường phát triển và khởi 
  */
 
 import http from 'node:http';
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     /**
      * Cấu hình app creator cho môi trường phát triển
      * @description Tạo và cấu hình instance Rspack app, dùng cho việc build và hot update trong môi trường phát triển
-     * @param gez Instance Gez framework, cung cấp các chức năng và interface cấu hình
+     * @param esmx Instance Esmx framework, cung cấp các chức năng và interface cấu hình
      * @returns Trả về instance Rspack app đã được cấu hình, hỗ trợ HMR và preview trực tiếp
      */
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createRspackHtmlApp(gez, {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createRspackHtmlApp(esmx, {
                 config(context) {
                     // Tùy chỉnh cấu hình biên dịch Rspack tại đây
                 }
@@ -231,15 +231,15 @@ export default {
 
     /**
      * Cấu hình và khởi động HTTP server
-     * @description Tạo instance HTTP server, tích hợp Gez middleware, xử lý các request SSR
-     * @param gez Instance Gez framework, cung cấp middleware và chức năng render
+     * @description Tạo instance HTTP server, tích hợp Esmx middleware, xử lý các request SSR
+     * @param esmx Instance Esmx framework, cung cấp middleware và chức năng render
      */
-    async server(gez) {
+    async server(esmx) {
         const server = http.createServer((req, res) => {
-            // Sử dụng Gez middleware để xử lý request
-            gez.middleware(req, res, async () => {
+            // Sử dụng Esmx middleware để xử lý request
+            esmx.middleware(req, res, async () => {
                 // Thực hiện render phía server
-                const rc = await gez.render({
+                const rc = await esmx.render({
                     params: { url: req.url }
                 });
                 res.end(rc.html);
@@ -250,13 +250,13 @@ export default {
             console.log('Server đã khởi động: http://localhost:3000');
         });
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 File này là file entry cấu hình môi trường phát triển và khởi động server, bao gồm hai chức năng chính:
 
 1. Hàm `devApp`: Chịu trách nhiệm tạo và cấu hình instance Rspack app cho môi trường phát triển, hỗ trợ hot update và preview trực tiếp. Ở đây sử dụng `createRspackHtmlApp` để tạo instance Rspack app dành riêng cho Preact+HTM.
-2. Hàm `server`: Chịu trách nhiệm tạo và cấu hình HTTP server, tích hợp Gez middleware để xử lý các request SSR.
+2. Hàm `server`: Chịu trách nhiệm tạo và cấu hình HTTP server, tích hợp Esmx middleware để xử lý các request SSR.
 
 ### entry.server.ts
 
@@ -268,7 +268,7 @@ Tạo file entry render phía server `src/entry.server.ts`:
  * @description Chịu trách nhiệm quy trình render phía server, tạo HTML và inject tài nguyên
  */
 
-import type { RenderContext } from '@gez/core';
+import type { RenderContext } from '@esmx/core';
 import type { VNode } from 'preact';
 import { render } from 'preact-render-to-string';
 import { createApp } from './create-app';
@@ -288,7 +288,7 @@ export default async (rc: RenderContext) => {
 <html lang="vi">
 <head>
     ${rc.preload()}
-    <title>Hướng dẫn nhanh Gez</title>
+    <title>Hướng dẫn nhanh Esmx</title>
     ${rc.css()}
 </head>
 <body>
@@ -321,4 +321,4 @@ npm run build
 npm run start
 ```
 
-Bây giờ, bạn đã tạo thành công một ứng dụng Preact+HTM SSR với Gez! Truy cập http://localhost:3000 để xem kết quả.
+Bây giờ, bạn đã tạo thành công một ứng dụng Preact+HTM SSR với Esmx! Truy cập http://localhost:3000 để xem kết quả.

@@ -1,19 +1,19 @@
 ---
-titleSuffix: Gez Framework Hochleistungs-Build-Engine
-description: Eine detaillierte Analyse des Rspack-Build-Systems im Gez-Framework, einschließlich Hochleistungs-Kompilierung, Multi-Umgebungs-Builds, Ressourcenoptimierung und anderen Kernfunktionen, die Entwicklern helfen, effiziente und zuverlässige moderne Webanwendungen zu erstellen.
+titleSuffix: Esmx Framework Hochleistungs-Build-Engine
+description: Eine detaillierte Analyse des Rspack-Build-Systems im Esmx-Framework, einschließlich Hochleistungs-Kompilierung, Multi-Umgebungs-Builds, Ressourcenoptimierung und anderen Kernfunktionen, die Entwicklern helfen, effiziente und zuverlässige moderne Webanwendungen zu erstellen.
 head:
   - - meta
     - property: keywords
-      content: Gez, Rspack, Build-System, Hochleistungs-Kompilierung, Hot Module Replacement, Multi-Umgebungs-Build, Tree Shaking, Code-Splitting, SSR, Ressourcenoptimierung, Entwicklungseffizienz, Build-Tool
+      content: Esmx, Rspack, Build-System, Hochleistungs-Kompilierung, Hot Module Replacement, Multi-Umgebungs-Build, Tree Shaking, Code-Splitting, SSR, Ressourcenoptimierung, Entwicklungseffizienz, Build-Tool
 ---
 
 # Rspack
 
-Gez basiert auf dem [Rspack](https://rspack.dev/)-Build-System und nutzt dessen Hochleistungs-Build-Fähigkeiten voll aus. Dieses Dokument beschreibt die Rolle und die Kernfunktionen von Rspack im Gez-Framework.
+Esmx basiert auf dem [Rspack](https://rspack.dev/)-Build-System und nutzt dessen Hochleistungs-Build-Fähigkeiten voll aus. Dieses Dokument beschreibt die Rolle und die Kernfunktionen von Rspack im Esmx-Framework.
 
 ## Funktionen
 
-Rspack ist das zentrale Build-System des Gez-Frameworks und bietet die folgenden Schlüsselfunktionen:
+Rspack ist das zentrale Build-System des Esmx-Frameworks und bietet die folgenden Schlüsselfunktionen:
 
 - **Hochleistungs-Build**: Eine in Rust implementierte Build-Engine, die eine extrem schnelle Kompilierungsleistung bietet und die Build-Geschwindigkeit großer Projekte erheblich verbessert.
 - **Optimierte Entwicklungserfahrung**: Unterstützung für moderne Entwicklungsfunktionen wie Hot Module Replacement (HMR) und inkrementelle Kompilierung, die eine flüssige Entwicklungserfahrung bieten.
@@ -22,9 +22,9 @@ Rspack ist das zentrale Build-System des Gez-Frameworks und bietet die folgenden
 
 ## Anwendungs-Build
 
-Das Rspack-Build-System von Gez ist modular aufgebaut und umfasst die folgenden Kernmodule:
+Das Rspack-Build-System von Esmx ist modular aufgebaut und umfasst die folgenden Kernmodule:
 
-### @gez/rspack
+### @esmx/rspack
 
 Das grundlegende Build-Modul, das die folgenden Kernfähigkeiten bietet:
 
@@ -33,7 +33,7 @@ Das grundlegende Build-Modul, das die folgenden Kernfähigkeiten bietet:
 - **Build-Optimierung**: Funktionen wie Code-Splitting und Tree Shaking zur Leistungsoptimierung.
 - **Entwicklungsserver**: Integration eines Hochleistungs-Entwicklungsservers mit HMR-Unterstützung.
 
-### @gez/rspack-vue
+### @esmx/rspack-vue
 
 Das spezialisierte Build-Modul für das Vue-Framework, das Folgendes bietet:
 
@@ -43,7 +43,7 @@ Das spezialisierte Build-Modul für das Vue-Framework, das Folgendes bietet:
 
 ## Build-Prozess
 
-Der Build-Prozess von Gez gliedert sich in die folgenden Phasen:
+Der Build-Prozess von Esmx gliedert sich in die folgenden Phasen:
 
 1. **Konfigurationsinitialisierung**
    - Laden der Projektkonfiguration
@@ -70,7 +70,7 @@ Der Build-Prozess von Gez gliedert sich in die folgenden Phasen:
 ### Optimierung der Entwicklungsumgebung
 
 - **Inkrementelle Kompilierungskonfiguration**: Angemessene Konfiguration der `cache`-Option, um die Build-Geschwindigkeit durch Caching zu erhöhen.
-- **HMR-Optimierung**: Gezielte Konfiguration des HMR-Bereichs, um unnötige Modulaktualisierungen zu vermeiden.
+- **HMR-Optimierung**: Esmxielte Konfiguration des HMR-Bereichs, um unnötige Modulaktualisierungen zu vermeiden.
 - **Ressourcenverarbeitungsoptimierung**: Verwendung geeigneter Loader-Konfigurationen, um wiederholte Verarbeitung zu vermeiden.
 
 ### Optimierung der Produktionsumgebung
@@ -82,12 +82,12 @@ Der Build-Prozess von Gez gliedert sich in die folgenden Phasen:
 ## Konfigurationsbeispiel
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createRspackHtmlApp(gez, {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createRspackHtmlApp(esmx, {
                 // Benutzerdefinierte Build-Konfiguration
                 config({ config }) {
                     // Hier können benutzerdefinierte Rspack-Konfigurationen hinzugefügt werden
@@ -95,7 +95,7 @@ export default {
             })
         );
     },
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ::: tip

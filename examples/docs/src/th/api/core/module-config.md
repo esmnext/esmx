@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework Module Configuration API Reference
-description: รายละเอียดเกี่ยวกับอินเทอร์เฟซการกำหนดค่า ModuleConfig ของเฟรมเวิร์ก Gez รวมถึงกฎการนำเข้าและส่งออกโมดูล การกำหนดค่าชื่อแฝง และการจัดการการพึ่งพาภายนอก ช่วยให้นักพัฒนามีความเข้าใจลึกซึ้งเกี่ยวกับระบบโมดูลของเฟรมเวิร์ก
+titleSuffix: Esmx Framework Module Configuration API Reference
+description: รายละเอียดเกี่ยวกับอินเทอร์เฟซการกำหนดค่า ModuleConfig ของเฟรมเวิร์ก Esmx รวมถึงกฎการนำเข้าและส่งออกโมดูล การกำหนดค่าชื่อแฝง และการจัดการการพึ่งพาภายนอก ช่วยให้นักพัฒนามีความเข้าใจลึกซึ้งเกี่ยวกับระบบโมดูลของเฟรมเวิร์ก
 head:
   - - meta
     - property: keywords
-      content: Gez, ModuleConfig, การกำหนดค่าโมดูล, การนำเข้าและส่งออกโมดูล, การพึ่งพาภายนอก, การกำหนดค่าชื่อแฝง, การจัดการการพึ่งพา, Web Application Framework
+      content: Esmx, ModuleConfig, การกำหนดค่าโมดูล, การนำเข้าและส่งออกโมดูล, การพึ่งพาภายนอก, การกำหนดค่าชื่อแฝง, การจัดการการพึ่งพา, Web Application Framework
 ---
 
 # ModuleConfig
 
-ModuleConfig ให้ความสามารถในการกำหนดค่าโมดูลของเฟรมเวิร์ก Gez ใช้สำหรับกำหนดกฎการนำเข้าและส่งออกโมดูล การกำหนดค่าชื่อแฝง และการพึ่งพาภายนอก
+ModuleConfig ให้ความสามารถในการกำหนดค่าโมดูลของเฟรมเวิร์ก Esmx ใช้สำหรับกำหนดกฎการนำเข้าและส่งออกโมดูล การกำหนดค่าชื่อแฝง และการพึ่งพาภายนอก
 
 ## นิยามประเภท
 
@@ -74,7 +74,7 @@ interface ModuleConfig {
 
 **ตัวอย่าง**:
 ```ts title="entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
@@ -100,7 +100,7 @@ export default {
       'vue-router': 'ssr-remote/npm/vue-router'
     }
   }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ### ParsedModuleConfig

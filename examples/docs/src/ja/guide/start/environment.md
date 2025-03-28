@@ -1,10 +1,10 @@
 ---
-titleSuffix: Gez フレームワーク互換性ガイド
-description: Gez フレームワークの環境要件について詳しく説明します。Node.js のバージョン要件やブラウザ互換性について解説し、開発者が正しく開発環境を設定できるよう支援します。
+titleSuffix: Esmx フレームワーク互換性ガイド
+description: Esmx フレームワークの環境要件について詳しく説明します。Node.js のバージョン要件やブラウザ互換性について解説し、開発者が正しく開発環境を設定できるよう支援します。
 head:
   - - meta
     - property: keywords
-      content: Gez, Node.js, ブラウザ互換性, TypeScript, es-module-shims, 環境設定
+      content: Esmx, Node.js, ブラウザ互換性, TypeScript, es-module-shims, 環境設定
 ---
 
 # 環境要件

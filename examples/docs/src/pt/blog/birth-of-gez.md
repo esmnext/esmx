@@ -1,14 +1,14 @@
 ---
-titleSuffix: "Do dilema do micro frontend à inovação do ESM: A jornada de evolução do framework Gez"
-description: Explore em profundidade a evolução do framework Gez, desde os desafios da arquitetura tradicional de micro frontend até as inovações baseadas em ESM, compartilhando práticas técnicas em otimização de desempenho, gerenciamento de dependências e seleção de ferramentas de construção.
+titleSuffix: "Do dilema do micro frontend à inovação do ESM: A jornada de evolução do framework Esmx"
+description: Explore em profundidade a evolução do framework Esmx, desde os desafios da arquitetura tradicional de micro frontend até as inovações baseadas em ESM, compartilhando práticas técnicas em otimização de desempenho, gerenciamento de dependências e seleção de ferramentas de construção.
 head:
   - - meta
     - property: keywords
-      content: Gez, framework de micro frontend, ESM, Import Maps, Rspack, Module Federation, gerenciamento de dependências, otimização de desempenho, evolução técnica, renderização no lado do servidor
+      content: Esmx, framework de micro frontend, ESM, Import Maps, Rspack, Module Federation, gerenciamento de dependências, otimização de desempenho, evolução técnica, renderização no lado do servidor
 sidebar: false
 ---
 
-# Do compartilhamento de componentes à modularização nativa: A jornada de evolução do framework Gez de micro frontend
+# Do compartilhamento de componentes à modularização nativa: A jornada de evolução do framework Esmx de micro frontend
 
 ## Contexto do Projeto
 
@@ -30,7 +30,7 @@ Esses problemas foram particularmente evidentes em um projeto corporativo de gra
 
 ### v1.0: Explorando Componentes Remotos
 
-Para resolver o problema de eficiência no compartilhamento de componentes, o Gez v1.0 introduziu o mecanismo de componente RemoteView baseado no protocolo HTTP. Essa solução implementou a montagem de código sob demanda entre serviços por meio de solicitações dinâmicas em tempo de execução, resolvendo com sucesso o problema da cadeia de dependências de construção excessivamente longa. No entanto, devido à falta de um mecanismo padronizado de comunicação em tempo de execução, a sincronização de estado e a passagem de eventos entre serviços ainda apresentavam gargalos de eficiência.
+Para resolver o problema de eficiência no compartilhamento de componentes, o Esmx v1.0 introduziu o mecanismo de componente RemoteView baseado no protocolo HTTP. Essa solução implementou a montagem de código sob demanda entre serviços por meio de solicitações dinâmicas em tempo de execução, resolvendo com sucesso o problema da cadeia de dependências de construção excessivamente longa. No entanto, devido à falta de um mecanismo padronizado de comunicação em tempo de execução, a sincronização de estado e a passagem de eventos entre serviços ainda apresentavam gargalos de eficiência.
 
 ### v2.0: Tentativa de Module Federation
 
@@ -75,7 +75,7 @@ Essa decisão nos permitiu manter a experiência de desenvolvimento enquanto obt
 
 ## Perspectivas Futuras
 
-No planejamento futuro, o framework Gez focará em três direções principais:
+No planejamento futuro, o framework Esmx focará em três direções principais:
 
 ### Otimização Profunda do Import Maps
 
@@ -95,4 +95,4 @@ No planejamento futuro, o framework Gez focará em três direções principais:
 - **Sincronização de estado**: Solução leve de compartilhamento de estado baseada em ESM
 - **Barramento de eventos**: Mecanismo padronizado de comunicação por eventos, suportando comunicação desacoplada entre aplicações
 
-Com essas otimizações e expansões, esperamos tornar o Gez uma solução de micro frontend mais completa e fácil de usar, proporcionando aos desenvolvedores uma melhor experiência de desenvolvimento e maior eficiência.
+Com essas otimizações e expansões, esperamos tornar o Esmx uma solução de micro frontend mais completa e fácil de usar, proporcionando aos desenvolvedores uma melhor experiência de desenvolvimento e maior eficiência.

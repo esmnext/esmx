@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework Gids voor Module Import Pad Mapping
-description: Gedetailleerde uitleg over het pad alias mechanisme van het Gez framework, inclusief vereenvoudiging van importpaden, vermijden van diepe nesting, typeveiligheid en module resolutie optimalisatie, om ontwikkelaars te helpen de onderhoudbaarheid van code te verbeteren.
+titleSuffix: Esmx Framework Gids voor Module Import Pad Mapping
+description: Gedetailleerde uitleg over het pad alias mechanisme van het Esmx framework, inclusief vereenvoudiging van importpaden, vermijden van diepe nesting, typeveiligheid en module resolutie optimalisatie, om ontwikkelaars te helpen de onderhoudbaarheid van code te verbeteren.
 head:
   - - meta
     - property: keywords
-      content: Gez, Pad Alias, Path Alias, TypeScript, Module Import, Pad Mapping, Code Onderhoudbaarheid
+      content: Esmx, Pad Alias, Path Alias, TypeScript, Module Import, Pad Mapping, Code Onderhoudbaarheid
 ---
 
 # Pad Alias
 
-Pad alias (Path Alias) is een mechanisme voor het mappen van module importpaden, waarmee ontwikkelaars korte, semantische identificatoren kunnen gebruiken in plaats van volledige modulepaden. In Gez biedt het pad alias mechanisme de volgende voordelen:
+Pad alias (Path Alias) is een mechanisme voor het mappen van module importpaden, waarmee ontwikkelaars korte, semantische identificatoren kunnen gebruiken in plaats van volledige modulepaden. In Esmx biedt het pad alias mechanisme de volgende voordelen:
 
 - **Vereenvoudiging van importpaden**: Gebruik semantische aliassen in plaats van lange relatieve paden, wat de leesbaarheid van de code verbetert
 - **Vermijden van diepe nesting**: Elimineer onderhoudsproblemen veroorzaakt door meerdere directoryniveaus (bijv. `../../../../`)
@@ -18,7 +18,7 @@ Pad alias (Path Alias) is een mechanisme voor het mappen van module importpaden,
 
 ## Standaard Alias Mechanisme
 
-Gez gebruikt een automatisch aliasmechanisme op basis van servicenaam (Service Name), waarbij conventie boven configuratie staat. Dit ontwerp heeft de volgende kenmerken:
+Esmx gebruikt een automatisch aliasmechanisme op basis van servicenaam (Service Name), waarbij conventie boven configuratie staat. Dit ontwerp heeft de volgende kenmerken:
 
 - **Automatische configuratie**: Genereer automatisch aliassen op basis van het `name` veld in `package.json`, zonder handmatige configuratie
 - **Uniforme normen**: Zorg ervoor dat alle servicemodules consistente naamgevings- en referentienormen volgen
@@ -112,13 +112,13 @@ import { logger } from 'remote-service/src/utils';
 
 ### Aangepaste Aliassen
 
-Voor third-party packages of speciale scenario's kun je aangepaste aliassen configureren via het Gez configuratiebestand:
+Voor third-party packages of speciale scenario's kun je aangepaste aliassen configureren via het Esmx configuratiebestand:
 
 ```ts title="src/entry.node.ts"
 export default {
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createApp(gez, (buildContext) => {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createApp(esmx, (buildContext) => {
                 buildContext.config.resolve = {
                     ...buildContext.config.resolve,
                     alias: {
@@ -133,7 +133,7 @@ export default {
             })
         );
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ::: warning Belangrijke Opmerkingen

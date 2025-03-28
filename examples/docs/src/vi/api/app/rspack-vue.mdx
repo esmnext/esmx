@@ -1,23 +1,23 @@
 ---
-titleSuffix: Công cụ xây dựng Vue của Gez Framework
-description: Công cụ xây dựng chuyên dụng cho Vue của Gez Framework, cung cấp hỗ trợ xây dựng ứng dụng Vue 2/3 đầy đủ, bao gồm phát triển component, kết xuất SSR và tối ưu hiệu năng.
+titleSuffix: Công cụ xây dựng Vue của Esmx Framework
+description: Công cụ xây dựng chuyên dụng cho Vue của Esmx Framework, cung cấp hỗ trợ xây dựng ứng dụng Vue 2/3 đầy đủ, bao gồm phát triển component, kết xuất SSR và tối ưu hiệu năng.
 head:
   - - meta
     - property: keywords
-      content: Gez, Rspack, Vue, Vue2, Vue3, SSR, công cụ xây dựng, phát triển component, kết xuất phía máy chủ, tối ưu hiệu năng
+      content: Esmx, Rspack, Vue, Vue2, Vue3, SSR, công cụ xây dựng, phát triển component, kết xuất phía máy chủ, tối ưu hiệu năng
 ---
 
 import { PackageManagerTabs } from '@theme';
 
-# @gez/rspack-vue
+# @esmx/rspack-vue
 
 Gói Rspack Vue cung cấp một bộ API để tạo và cấu hình ứng dụng Rspack dựa trên framework Vue, hỗ trợ phát triển component Vue, xây dựng và kết xuất phía máy chủ.
 
 ## Cài đặt
 
-Sử dụng trình quản lý gói để cài đặt `@gez/rspack-vue` như một phụ thuộc phát triển:
+Sử dụng trình quản lý gói để cài đặt `@esmx/rspack-vue` như một phụ thuộc phát triển:
 
-<PackageManagerTabs command="install @gez/rspack-vue -D" />
+<PackageManagerTabs command="install @esmx/rspack-vue -D" />
 
 ## Xuất kiểu dữ liệu
 
@@ -36,7 +36,7 @@ Kiểu môi trường đích xây dựng, định nghĩa môi trường đích c
 
 ```ts
 interface RspackAppConfigContext {
-  gez: Gez
+  esmx: Esmx
   buildTarget: BuildTarget
   config: RspackOptions
   options: RspackAppOptions
@@ -44,7 +44,7 @@ interface RspackAppConfigContext {
 ```
 
 Giao diện ngữ cảnh cấu hình ứng dụng Rspack, cung cấp thông tin ngữ cảnh có thể truy cập trong các hàm hook cấu hình:
-- `gez`: Thể hiện của Gez Framework
+- `esmx`: Thể hiện của Esmx Framework
 - `buildTarget`: Mục tiêu xây dựng hiện tại (client/server/node)
 - `config`: Đối tượng cấu hình Rspack
 - `options`: Tùy chọn cấu hình ứng dụng
@@ -86,13 +86,13 @@ Kế thừa từ `RspackAppOptions`, được sử dụng để cấu hình các
 ### createRspackApp
 
 ```ts
-function createRspackApp(gez: Gez, options?: RspackAppOptions): Promise<App>
+function createRspackApp(esmx: Esmx, options?: RspackAppOptions): Promise<App>
 ```
 
 Tạo một thể hiện ứng dụng Rspack tiêu chuẩn.
 
 **Tham số:**
-- `gez`: Thể hiện của Gez Framework
+- `esmx`: Thể hiện của Esmx Framework
 - `options`: Tùy chọn cấu hình ứng dụng Rspack
 
 **Giá trị trả về:**
@@ -101,13 +101,13 @@ Tạo một thể hiện ứng dụng Rspack tiêu chuẩn.
 ### createRspackHtmlApp
 
 ```ts
-function createRspackHtmlApp(gez: Gez, options?: RspackHtmlAppOptions): Promise<App>
+function createRspackHtmlApp(esmx: Esmx, options?: RspackHtmlAppOptions): Promise<App>
 ```
 
 Tạo một thể hiện ứng dụng Rspack kiểu HTML.
 
 **Tham số:**
-- `gez`: Thể hiện của Gez Framework
+- `esmx`: Thể hiện của Esmx Framework
 - `options`: Tùy chọn cấu hình ứng dụng HTML
 
 **Giá trị trả về:**
@@ -141,12 +141,12 @@ const RSPACK_LOADER: Record<string, string> = {
 Sử dụng các hằng số này để tham chiếu đến các loader tích hợp sẵn trong cấu hình, tránh nhập chuỗi thủ công:
 
 ```ts title="src/entry.node.ts"
-import { RSPACK_LOADER } from '@gez/rspack';
+import { RSPACK_LOADER } from '@esmx/rspack';
 
 export default {
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         loaders: {
           // Sử dụng hằng số để tham chiếu loader
           styleLoader: RSPACK_LOADER.styleLoader,

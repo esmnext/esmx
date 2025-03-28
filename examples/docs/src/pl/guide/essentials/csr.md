@@ -1,15 +1,15 @@
 ---
-titleSuffix: Przewodnik implementacji renderowania po stronie klienta w frameworku Gez
-description: Szczegółowy opis mechanizmu renderowania po stronie klienta w frameworku Gez, w tym statyczna kompilacja, strategie wdrażania i najlepsze praktyki, pomagające programistom w osiągnięciu wydajnego renderowania frontendu w środowisku bezserwerowym.
+titleSuffix: Przewodnik implementacji renderowania po stronie klienta w frameworku Esmx
+description: Szczegółowy opis mechanizmu renderowania po stronie klienta w frameworku Esmx, w tym statyczna kompilacja, strategie wdrażania i najlepsze praktyki, pomagające programistom w osiągnięciu wydajnego renderowania frontendu w środowisku bezserwerowym.
 head:
   - - meta
     - property: keywords
-      content: Gez, renderowanie po stronie klienta, CSR, statyczna kompilacja, renderowanie frontendu, wdrażanie bezserwerowe, optymalizacja wydajności
+      content: Esmx, renderowanie po stronie klienta, CSR, statyczna kompilacja, renderowanie frontendu, wdrażanie bezserwerowe, optymalizacja wydajności
 ---
 
 # Renderowanie po stronie klienta
 
-Renderowanie po stronie klienta (Client-Side Rendering, CSR) to technika renderowania stron wykonywana po stronie przeglądarki. W Gez, gdy aplikacja nie może być wdrożona na instancji serwera Node.js, można wygenerować statyczny plik `index.html` podczas etapu kompilacji, umożliwiając czyste renderowanie po stronie klienta.
+Renderowanie po stronie klienta (Client-Side Rendering, CSR) to technika renderowania stron wykonywana po stronie przeglądarki. W Esmx, gdy aplikacja nie może być wdrożona na instancji serwera Node.js, można wygenerować statyczny plik `index.html` podczas etapu kompilacji, umożliwiając czyste renderowanie po stronie klienta.
 
 ## Scenariusze użycia
 
@@ -26,7 +26,7 @@ Renderowanie po stronie klienta jest zalecane w następujących scenariuszach:
 W trybie renderowania po stronie klienta należy skonfigurować uniwersalny szablon HTML. Ten szablon będzie służył jako kontener aplikacji, zawierający niezbędne odwołania do zasobów i punkt montowania.
 
 ```ts title="src/entry.server.ts"
-import type { RenderContext } from '@gez/core';
+import type { RenderContext } from '@esmx/core';
 
 export default async (rc: RenderContext) => {
     // Zatwierdzenie zbierania zależności
@@ -38,7 +38,7 @@ export default async (rc: RenderContext) => {
 <html>
 <head>
     ${rc.preload()}           // Preładowanie zasobów
-    <title>Gez</title>
+    <title>Esmx</title>
     ${rc.css()}               // Wstrzyknięcie stylów
 </head>
 <body>
@@ -54,20 +54,20 @@ export default async (rc: RenderContext) => {
 
 ### Generowanie statycznego HTML
 
-Aby użyć renderowania po stronie klienta w środowisku produkcyjnym, należy wygenerować statyczny plik HTML podczas etapu kompilacji. Gez dostarcza funkcję hooka `postBuild` do realizacji tej funkcjonalności:
+Aby użyć renderowania po stronie klienta w środowisku produkcyjnym, należy wygenerować statyczny plik HTML podczas etapu kompilacji. Esmx dostarcza funkcję hooka `postBuild` do realizacji tej funkcjonalności:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
-    async postBuild(gez) {
+    async postBuild(esmx) {
         // Generowanie statycznego pliku HTML
-        const rc = await gez.render();
+        const rc = await esmx.render();
         // Zapis pliku HTML
-        gez.writeSync(
-            gez.resolvePath('dist/client', 'index.html'),
+        esmx.writeSync(
+            esmx.resolvePath('dist/client', 'index.html'),
             rc.html
         );
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```

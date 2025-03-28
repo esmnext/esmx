@@ -1,15 +1,15 @@
 ---
-titleSuffix: Guida all'implementazione del rendering lato client con il framework Gez
-description: Una guida dettagliata sul meccanismo di rendering lato client del framework Gez, inclusa la costruzione statica, le strategie di distribuzione e le migliori pratiche, per aiutare gli sviluppatori a implementare un rendering front-end efficiente in ambienti senza server.
+titleSuffix: Guida all'implementazione del rendering lato client con il framework Esmx
+description: Una guida dettagliata sul meccanismo di rendering lato client del framework Esmx, inclusa la costruzione statica, le strategie di distribuzione e le migliori pratiche, per aiutare gli sviluppatori a implementare un rendering front-end efficiente in ambienti senza server.
 head:
   - - meta
     - property: keywords
-      content: Gez, Rendering lato client, CSR, Costruzione statica, Rendering front-end, Distribuzione senza server, Ottimizzazione delle prestazioni
+      content: Esmx, Rendering lato client, CSR, Costruzione statica, Rendering front-end, Distribuzione senza server, Ottimizzazione delle prestazioni
 ---
 
 # Rendering lato client
 
-Il rendering lato client (Client-Side Rendering, CSR) è una tecnica di rendering delle pagine eseguita direttamente nel browser. In Gez, quando non è possibile distribuire un'istanza del server Node.js, è possibile generare un file `index.html` statico durante la fase di costruzione, implementando così un rendering puramente lato client.
+Il rendering lato client (Client-Side Rendering, CSR) è una tecnica di rendering delle pagine eseguita direttamente nel browser. In Esmx, quando non è possibile distribuire un'istanza del server Node.js, è possibile generare un file `index.html` statico durante la fase di costruzione, implementando così un rendering puramente lato client.
 
 ## Casi d'uso
 
@@ -26,7 +26,7 @@ Si consiglia di utilizzare il rendering lato client nei seguenti scenari:
 In modalità di rendering lato client, è necessario configurare un template HTML generico. Questo template fungerà da contenitore per l'applicazione, includendo i riferimenti alle risorse necessarie e il punto di montaggio.
 
 ```ts title="src/entry.server.ts"
-import type { RenderContext } from '@gez/core';
+import type { RenderContext } from '@esmx/core';
 
 export default async (rc: RenderContext) => {
     // Invia la raccolta delle dipendenze
@@ -38,7 +38,7 @@ export default async (rc: RenderContext) => {
 <html>
 <head>
     ${rc.preload()}           // Precarica le risorse
-    <title>Gez</title>
+    <title>Esmx</title>
     ${rc.css()}               // Inietta gli stili
 </head>
 <body>
@@ -54,20 +54,20 @@ export default async (rc: RenderContext) => {
 
 ### Generazione di HTML statico
 
-Per utilizzare il rendering lato client in un ambiente di produzione, è necessario generare un file HTML statico durante la fase di costruzione. Gez fornisce una funzione hook `postBuild` per implementare questa funzionalità:
+Per utilizzare il rendering lato client in un ambiente di produzione, è necessario generare un file HTML statico durante la fase di costruzione. Esmx fornisce una funzione hook `postBuild` per implementare questa funzionalità:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
-    async postBuild(gez) {
+    async postBuild(esmx) {
         // Genera il file HTML statico
-        const rc = await gez.render();
+        const rc = await esmx.render();
         // Scrive il file HTML
-        gez.writeSync(
-            gez.resolvePath('dist/client', 'index.html'),
+        esmx.writeSync(
+            esmx.resolvePath('dist/client', 'index.html'),
             rc.html
         );
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```

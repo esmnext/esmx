@@ -1,23 +1,23 @@
 ---
-titleSuffix: Gez Framework Vue Yapı Aracı
-description: Gez Framework'ün Vue için özel yapı aracı, Vue 2/3 uygulamaları için tam destek sunar; bileşen geliştirme, SSR render ve performans optimizasyonu gibi özellikleri içerir.
+titleSuffix: Esmx Framework Vue Yapı Aracı
+description: Esmx Framework'ün Vue için özel yapı aracı, Vue 2/3 uygulamaları için tam destek sunar; bileşen geliştirme, SSR render ve performans optimizasyonu gibi özellikleri içerir.
 head:
   - - meta
     - property: keywords
-      content: Gez, Rspack, Vue, Vue2, Vue3, SSR, yapı aracı, bileşen geliştirme, sunucu tarafı render, performans optimizasyonu
+      content: Esmx, Rspack, Vue, Vue2, Vue3, SSR, yapı aracı, bileşen geliştirme, sunucu tarafı render, performans optimizasyonu
 ---
 
 import { PackageManagerTabs } from '@theme';
 
-# @gez/rspack-vue
+# @esmx/rspack-vue
 
 Rspack Vue paketi, Vue framework'üne dayalı Rspack uygulamaları oluşturmak ve yapılandırmak için bir API seti sunar; Vue bileşenlerinin geliştirilmesi, yapılandırılması ve sunucu tarafı render'ını destekler.
 
 ## Kurulum
 
-Paket yöneticisi kullanarak `@gez/rspack-vue` geliştirme bağımlılığını yükleyin:
+Paket yöneticisi kullanarak `@esmx/rspack-vue` geliştirme bağımlılığını yükleyin:
 
-<PackageManagerTabs command="install @gez/rspack-vue -D" />
+<PackageManagerTabs command="install @esmx/rspack-vue -D" />
 
 ## Tür Dışa Aktarımları
 
@@ -36,7 +36,7 @@ Yapı hedef ortamı türü, uygulamanın yapı hedef ortamını tanımlar ve yap
 
 ```ts
 interface RspackAppConfigContext {
-  gez: Gez
+  esmx: Esmx
   buildTarget: BuildTarget
   config: RspackOptions
   options: RspackAppOptions
@@ -44,7 +44,7 @@ interface RspackAppConfigContext {
 ```
 
 Rspack uygulama yapılandırma bağlamı arayüzü, yapılandırma kancası işlevlerinde erişilebilen bağlam bilgilerini sağlar:
-- `gez`: Gez framework örneği
+- `esmx`: Esmx framework örneği
 - `buildTarget`: Mevcut yapı hedefi (client/server/node)
 - `config`: Rspack yapılandırma nesnesi
 - `options`: Uygulama yapılandırma seçenekleri
@@ -86,13 +86,13 @@ Rspack uygulama yapılandırma seçenekleri arayüzü:
 ### createRspackApp
 
 ```ts
-function createRspackApp(gez: Gez, options?: RspackAppOptions): Promise<App>
+function createRspackApp(esmx: Esmx, options?: RspackAppOptions): Promise<App>
 ```
 
 Standart bir Rspack uygulama örneği oluşturur.
 
 **Parametreler:**
-- `gez`: Gez framework örneği
+- `esmx`: Esmx framework örneği
 - `options`: Rspack uygulama yapılandırma seçenekleri
 
 **Dönüş Değeri:**
@@ -101,13 +101,13 @@ Standart bir Rspack uygulama örneği oluşturur.
 ### createRspackHtmlApp
 
 ```ts
-function createRspackHtmlApp(gez: Gez, options?: RspackHtmlAppOptions): Promise<App>
+function createRspackHtmlApp(esmx: Esmx, options?: RspackHtmlAppOptions): Promise<App>
 ```
 
 HTML tipinde bir Rspack uygulama örneği oluşturur.
 
 **Parametreler:**
-- `gez`: Gez framework örneği
+- `esmx`: Esmx framework örneği
 - `options`: HTML uygulama yapılandırma seçenekleri
 
 **Dönüş Değeri:**
@@ -141,12 +141,12 @@ Rspack'in dahili loader tanımlayıcıları eşleme nesnesi, yaygın kullanılan
 Bu sabitleri kullanarak yapılandırmada dahili loader'lara referans verebilir ve manuel olarak string girmekten kaçınabilirsiniz:
 
 ```ts title="src/entry.node.ts"
-import { RSPACK_LOADER } from '@gez/rspack';
+import { RSPACK_LOADER } from '@esmx/rspack';
 
 export default {
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         loaders: {
           // Sabitleri kullanarak loader'lara referans verin
           styleLoader: RSPACK_LOADER.styleLoader,

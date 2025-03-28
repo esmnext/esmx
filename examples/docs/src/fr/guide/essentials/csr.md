@@ -1,15 +1,15 @@
 ---
-titleSuffix: Guide d'implémentation du rendu côté client avec le framework Gez
-description: Détaille le mécanisme de rendu côté client du framework Gez, incluant la construction statique, les stratégies de déploiement et les meilleures pratiques, pour aider les développeurs à réaliser un rendu front-end efficace dans un environnement sans serveur.
+titleSuffix: Guide d'implémentation du rendu côté client avec le framework Esmx
+description: Détaille le mécanisme de rendu côté client du framework Esmx, incluant la construction statique, les stratégies de déploiement et les meilleures pratiques, pour aider les développeurs à réaliser un rendu front-end efficace dans un environnement sans serveur.
 head:
   - - meta
     - property: keywords
-      content: Gez, rendu côté client, CSR, construction statique, rendu front-end, déploiement sans serveur, optimisation des performances
+      content: Esmx, rendu côté client, CSR, construction statique, rendu front-end, déploiement sans serveur, optimisation des performances
 ---
 
 # Rendu côté client
 
-Le rendu côté client (Client-Side Rendering, CSR) est une technique d'exécution du rendu des pages côté navigateur. Avec Gez, lorsque votre application ne peut pas déployer une instance de serveur Node.js, vous pouvez choisir de générer un fichier `index.html` statique lors de la phase de construction, pour réaliser un rendu purement côté client.
+Le rendu côté client (Client-Side Rendering, CSR) est une technique d'exécution du rendu des pages côté navigateur. Avec Esmx, lorsque votre application ne peut pas déployer une instance de serveur Node.js, vous pouvez choisir de générer un fichier `index.html` statique lors de la phase de construction, pour réaliser un rendu purement côté client.
 
 ## Cas d'utilisation
 
@@ -26,7 +26,7 @@ Les scénarios suivants recommandent l'utilisation du rendu côté client :
 En mode rendu côté client, vous devez configurer un modèle HTML générique. Ce modèle servira de conteneur pour l'application, incluant les références nécessaires aux ressources et le point de montage.
 
 ```ts title="src/entry.server.ts"
-import type { RenderContext } from '@gez/core';
+import type { RenderContext } from '@esmx/core';
 
 export default async (rc: RenderContext) => {
     // Soumission de la collecte des dépendances
@@ -38,7 +38,7 @@ export default async (rc: RenderContext) => {
 <html>
 <head>
     ${rc.preload()}           // Préchargement des ressources
-    <title>Gez</title>
+    <title>Esmx</title>
     ${rc.css()}               // Injection des styles
 </head>
 <body>
@@ -54,20 +54,20 @@ export default async (rc: RenderContext) => {
 
 ### Génération de HTML statique
 
-Pour utiliser le rendu côté client en production, il est nécessaire de générer un fichier HTML statique lors de la phase de construction. Gez fournit une fonction de rappel `postBuild` pour réaliser cette fonctionnalité :
+Pour utiliser le rendu côté client en production, il est nécessaire de générer un fichier HTML statique lors de la phase de construction. Esmx fournit une fonction de rappel `postBuild` pour réaliser cette fonctionnalité :
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
-    async postBuild(gez) {
+    async postBuild(esmx) {
         // Génération du fichier HTML statique
-        const rc = await gez.render();
+        const rc = await esmx.render();
         // Écriture du fichier HTML
-        gez.writeSync(
-            gez.resolvePath('dist/client', 'index.html'),
+        esmx.writeSync(
+            esmx.resolvePath('dist/client', 'index.html'),
             rc.html
         );
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```

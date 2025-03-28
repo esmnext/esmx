@@ -1,4 +1,4 @@
-# @gez/rspack
+# @esmx/rspack
 
 基于 Rspack 提供高性能的构建能力，支持标准应用和 HTML 应用的开发与构建。
 
@@ -13,16 +13,16 @@
 ## 安装
 
 ```bash
-pnpm add @gez/rspack -D
+pnpm add @esmx/rspack -D
 # 或
-yarn add @gez/rspack -D
+yarn add @esmx/rspack -D
 # 或
-npm install @gez/rspack -D
+npm install @esmx/rspack -D
 ```
 
 ## 文档
 
-访问 [@gez/rspack 官方文档](https://www.esmnext.com/api/app/rspack.html) 获取详细的使用指南和 API 文档。
+访问 [@esmx/rspack 官方文档](https://www.esmnext.com/api/app/rspack.html) 获取详细的使用指南和 API 文档。
 
 ## 许可证
 

@@ -4,21 +4,21 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "gez dev",
+        "dev": "esmx dev",
         "build": "npm run build:dts && npm run build:ssr",
-        "build:ssr": "gez build",
-        "preview": "gez preview",
+        "build:ssr": "esmx build",
+        "preview": "esmx preview",
         "start": "NODE_ENV=production node dist/index.js",
         "build:dts": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/src"
     },
     "license": "MIT",
     "dependencies": {
-        "@gez/core": "workspace:*",
+        "@esmx/core": "workspace:*",
         "express": "^4.19.2"
     },
     "devDependencies": {
-        "@gez/rspack": "workspace:*",
-        "@gez/rspack-vue": "workspace:*",
+        "@esmx/rspack": "workspace:*",
+        "@esmx/rspack-vue": "workspace:*",
         "@types/express": "^4.17.21",
         "@types/node": "^20.6.3",
         "less": "^4.2.0",

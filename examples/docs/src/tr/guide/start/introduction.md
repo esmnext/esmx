@@ -1,16 +1,16 @@
 ---
-titleSuffix: Gez Çerçevesine Genel Bakış ve Teknolojik Yenilikler
-description: Gez mikro ön uç çerçevesinin proje arka planını, teknolojik evrimini ve temel avantajlarını derinlemesine inceleyin, ESM tabanlı modern sunucu tarafı render (SSR) çözümlerini keşfedin.
+titleSuffix: Esmx Çerçevesine Genel Bakış ve Teknolojik Yenilikler
+description: Esmx mikro ön uç çerçevesinin proje arka planını, teknolojik evrimini ve temel avantajlarını derinlemesine inceleyin, ESM tabanlı modern sunucu tarafı render (SSR) çözümlerini keşfedin.
 head:
   - - meta
     - property: keywords
-      content: Gez, mikro ön uç, ESM, sunucu tarafı render, SSR, teknolojik yenilik, modül federasyonu
+      content: Esmx, mikro ön uç, ESM, sunucu tarafı render, SSR, teknolojik yenilik, modül federasyonu
 ---
 
 # Giriş
 
 ## Proje Arka Planı
-Gez, yüksek performanslı ve ölçeklenebilir sunucu tarafı render (SSR) uygulamaları oluşturmaya odaklanan, ECMAScript Modules (ESM) tabanlı modern bir mikro ön uç çerçevesidir. Genesis projesinin üçüncü nesil ürünü olarak Gez, teknolojik evrim sürecinde sürekli yenilikler getirmektedir:
+Esmx, yüksek performanslı ve ölçeklenebilir sunucu tarafı render (SSR) uygulamaları oluşturmaya odaklanan, ECMAScript Modules (ESM) tabanlı modern bir mikro ön uç çerçevesidir. Genesis projesinin üçüncü nesil ürünü olarak Esmx, teknolojik evrim sürecinde sürekli yenilikler getirmektedir:
 
 - **v1.0**: HTTP istekleri üzerinden uzak bileşenlerin isteğe bağlı yüklenmesini sağladı
 - **v2.0**: Webpack Module Federation kullanarak uygulama entegrasyonunu gerçekleştirdi
@@ -27,7 +27,7 @@ Mikro ön uç mimarisinin gelişim sürecinde, geleneksel çözümler temel olar
 - **Ekosistem sınırlamaları**: Çerçeve bağımlılıkları ve özel API'ler, teknoloji yığını seçimini kısıtlıyor
 
 ### Teknolojik Yenilikler
-Gez, modern web standartlarını temel alarak yeni bir çözüm sunar:
+Esmx, modern web standartlarını temel alarak yeni bir çözüm sunar:
 
 - **Yerel modül sistemi**: Tarayıcı yerel ESM ve Import Maps kullanarak bağımlılık yönetimi sağlar, daha hızlı çözümleme ve yürütme hızı sunar
 - **Standart izolasyon mekanizması**: ECMAScript modül kapsamına dayalı güvenilir uygulama izolasyonu sağlar
@@ -36,7 +36,7 @@ Gez, modern web standartlarını temel alarak yeni bir çözüm sunar:
 - **Aşırı performans optimizasyonu**: Yerel yeteneklerle sıfır çalışma zamanı maliyeti sağlar, akıllı önbellek stratejileriyle desteklenir
 
 :::tip
-Gez, özellikle büyük ölçekli sunucu tarafı render uygulamaları için yüksek performanslı ve kolayca genişletilebilir mikro ön uç altyapısı oluşturmaya odaklanır.
+Esmx, özellikle büyük ölçekli sunucu tarafı render uygulamaları için yüksek performanslı ve kolayca genişletilebilir mikro ön uç altyapısı oluşturmaya odaklanır.
 :::
 
 ## Teknik Özellikler
@@ -50,7 +50,7 @@ Detaylı tarayıcı ve Node.js ortam gereksinimleri için [ortam gereksinimleri]
 - **Geliştirme araç zinciri**: ESM sıcak güncelleme ve TypeScript yerel yürütme desteği sunar
 
 ## Çerçeve Konumu
-Gez, [Next.js](https://nextjs.org) veya [Nuxt.js](https://nuxt.com/) gibi çerçevelerden farklı olarak, mikro ön uç altyapısı sağlamaya odaklanır:
+Esmx, [Next.js](https://nextjs.org) veya [Nuxt.js](https://nuxt.com/) gibi çerçevelerden farklı olarak, mikro ön uç altyapısı sağlamaya odaklanır:
 
 - **Modül bağlantı sistemi**: Verimli ve güvenilir modül içe/dışa aktarma sağlar
 - **Sunucu tarafı render**: Esnek SSR uygulama mekanizması sunar
@@ -75,4 +75,4 @@ Gez, [Next.js](https://nextjs.org) veya [Nuxt.js](https://nuxt.com/) gibi çerç
 - **İsteğe bağlı yükleme**: İnce ayarlı kod bölme ve bağımlılık yönetimi
 
 ## Proje Olgunluğu
-Gez, yaklaşık 5 yıllık yinelemeli evrim (v1.0'dan v3.0'a) sürecinde, kurumsal düzeyde ortamlarda kapsamlı bir şekilde doğrulanmıştır. Şu anda onlarca iş projesini istikrarlı bir şekilde desteklemekte ve teknoloji yığını modernizasyonunu sürekli olarak ilerletmektedir. Çerçevenin istikrarı, güvenilirliği ve performans avantajları pratikte tam olarak test edilmiş olup, büyük ölçekli uygulama geliştirme için güvenilir bir teknik temel sağlamaktadır.
+Esmx, yaklaşık 5 yıllık yinelemeli evrim (v1.0'dan v3.0'a) sürecinde, kurumsal düzeyde ortamlarda kapsamlı bir şekilde doğrulanmıştır. Şu anda onlarca iş projesini istikrarlı bir şekilde desteklemekte ve teknoloji yığını modernizasyonunu sürekli olarak ilerletmektedir. Çerçevenin istikrarı, güvenilirliği ve performans avantajları pratikte tam olarak test edilmiş olup, büyük ölçekli uygulama geliştirme için güvenilir bir teknik temel sağlamaktadır.

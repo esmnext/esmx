@@ -1,17 +1,17 @@
 ---
 titleSuffix: Dokumentacja API klas rdzeniowych frameworka
-description: Szczegółowy opis API klas rdzeniowych frameworka Gez, obejmujący zarządzanie cyklem życia aplikacji, obsługę zasobów statycznych oraz możliwości renderowania po stronie serwera, pomagający programistom dogłębnie zrozumieć kluczowe funkcje frameworka.
+description: Szczegółowy opis API klas rdzeniowych frameworka Esmx, obejmujący zarządzanie cyklem życia aplikacji, obsługę zasobów statycznych oraz możliwości renderowania po stronie serwera, pomagający programistom dogłębnie zrozumieć kluczowe funkcje frameworka.
 head:
   - - meta
     - property: keywords
-      content: Gez, API, zarządzanie cyklem życia, zasoby statyczne, renderowanie po stronie serwera, Rspack, framework aplikacji webowych
+      content: Esmx, API, zarządzanie cyklem życia, zasoby statyczne, renderowanie po stronie serwera, Rspack, framework aplikacji webowych
 ---
 
-# Gez
+# Esmx
 
 ## Wprowadzenie
 
-Gez to wysokowydajny framework aplikacji webowych oparty na Rspack, zapewniający kompleksowe zarządzanie cyklem życia aplikacji, obsługę zasobów statycznych oraz możliwości renderowania po stronie serwera.
+Esmx to wysokowydajny framework aplikacji webowych oparty na Rspack, zapewniający kompleksowe zarządzanie cyklem życia aplikacji, obsługę zasobów statycznych oraz możliwości renderowania po stronie serwera.
 
 ## Definicje typów
 
@@ -76,18 +76,18 @@ Typ wyliczeniowy poleceń:
 
 ## Opcje instancji
 
-Definiuje kluczowe opcje konfiguracyjne frameworka Gez.
+Definiuje kluczowe opcje konfiguracyjne frameworka Esmx.
 
 ```ts
-interface GezOptions {
+interface EsmxOptions {
   root?: string
   isProd?: boolean
   basePathPlaceholder?: string | false
   modules?: ModuleConfig
   packs?: PackConfig
-  devApp?: (gez: Gez) => Promise<App>
-  server?: (gez: Gez) => Promise<void>
-  postBuild?: (gez: Gez) => Promise<void>
+  devApp?: (esmx: Esmx) => Promise<App>
+  server?: (esmx: Esmx) => Promise<void>
+  postBuild?: (esmx: Esmx) => Promise<void>
 }
 ```
 
@@ -128,15 +128,15 @@ Opcje konfiguracyjne pakowania. Używane do pakowania artefaktów budowania w st
 
 #### devApp
 
-- **Typ**: `(gez: Gez) => Promise<App>`
+- **Typ**: `(esmx: Esmx) => Promise<App>`
 
 Funkcja tworzenia aplikacji dla środowiska deweloperskiego. Używana tylko w środowisku deweloperskim do tworzenia instancji aplikacji serwera deweloperskiego.
 
 ```ts title="entry.node.ts"
 export default {
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(context) {
           // Niestandardowa konfiguracja Rspack
         }
@@ -148,16 +148,16 @@ export default {
 
 #### server
 
-- **Typ**: `(gez: Gez) => Promise<void>`
+- **Typ**: `(esmx: Esmx) => Promise<void>`
 
 Funkcja konfiguracji i uruchamiania serwera HTTP. Używana do konfiguracji i uruchamiania serwera HTTP, dostępna zarówno w środowisku deweloperskim, jak i produkcyjnym.
 
 ```ts title="entry.node.ts"
 export default {
-  async server(gez) {
+  async server(esmx) {
     const server = http.createServer((req, res) => {
-      gez.middleware(req, res, async () => {
-        const render = await gez.render({
+      esmx.middleware(req, res, async () => {
+        const render = await esmx.render({
           params: { url: req.url }
         });
         res.end(render.html);
@@ -171,7 +171,7 @@ export default {
 
 #### postBuild
 
-- **Typ**: `(gez: Gez) => Promise<void>`
+- **Typ**: `(esmx: Esmx) => Promise<void>`
 
 Funkcja przetwarzania po budowaniu. Wykonywana po zakończeniu budowania projektu, może być używana do:
 - Wykonywania dodatkowego przetwarzania zasobów
@@ -235,8 +235,8 @@ Pobiera middleware do obsługi zasobów statycznych. Dostarcza różne implement
 
 ```ts
 const server = http.createServer((req, res) => {
-  gez.middleware(req, res, async () => {
-    const rc = await gez.render({ url: req.url });
+  esmx.middleware(req, res, async () => {
+    const rc = await esmx.render({ url: req.url });
     res.end(rc.html);
   });
 });
@@ -253,12 +253,12 @@ Pobiera funkcję renderowania po stronie serwera. Dostarcza różne implementacj
 
 ```ts
 // Podstawowe użycie
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: req.url }
 });
 
 // Zaawansowana konfiguracja
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '',                    // Ścieżka bazowa
   importmapMode: 'inline',     // Tryb mapowania importów
   entryName: 'default',        // Punkt wejścia renderowania
@@ -297,13 +297,13 @@ Pobiera konfigurację związaną z pakowaniem bieżącego modułu, w tym ścież
 ### constructor()
 
 - **Parametry**: 
-  - `options?: GezOptions` - Opcje konfiguracyjne frameworka
-- **Zwraca**: `Gez`
+  - `options?: EsmxOptions` - Opcje konfiguracyjne frameworka
+- **Zwraca**: `Esmx`
 
-Tworzy instancję frameworka Gez.
+Tworzy instancję frameworka Esmx.
 
 ```ts
-const gez = new Gez({
+const esmx = new Esmx({
   root: './src',
   isProd: process.env.NODE_ENV === 'production'
 });
@@ -317,7 +317,7 @@ const gez = new Gez({
   - `Error`: Przy ponownej inicjalizacji
   - `NotReadyError`: Przy dostępie do nieinicjalizowanej instancji
 
-Inicjalizuje instancję frameworka Gez. Wykonuje następujące kluczowe kroki inicjalizacji:
+Inicjalizuje instancję frameworka Esmx. Wykonuje następujące kluczowe kroki inicjalizacji:
 
 1. Parsuje konfigurację projektu (package.json, konfiguracja modułów, konfiguracja pakowania itp.)
 2. Tworzy instancję aplikacji (środowisko deweloperskie lub produkcyjne)
@@ -330,26 +330,26 @@ Inicjalizuje instancję frameworka Gez. Wykonuje następujące kluczowe kroki in
 :::
 
 ```ts
-const gez = new Gez({
+const esmx = new Esmx({
   root: './src',
   isProd: process.env.NODE_ENV === 'production'
 });
 
-await gez.init(COMMAND.dev);
+await esmx.init(COMMAND.dev);
 ```
 
 ### destroy()
 
 - **Zwraca**: `Promise<boolean>`
 
-Niszczy instancję frameworka Gez, wykonując czyszczenie zasobów i zamykanie połączeń. Głównie używane do:
+Niszczy instancję frameworka Esmx, wykonując czyszczenie zasobów i zamykanie połączeń. Głównie używane do:
 - Zamykania serwera deweloperskiego
 - Czyszczenia plików tymczasowych i pamięci podręcznej
 - Zwolnienia zasobów systemowych
 
 ```ts
 process.once('SIGTERM', async () => {
-  await gez.destroy();
+  await esmx.destroy();
   process.exit(0);
 });
 ```
@@ -370,14 +370,14 @@ Wywołanie przed inicjalizacją instancji frameworka rzuca `NotReadyError`
 
 ```ts title="entry.node.ts"
 export default {
-  async postBuild(gez) {
-    await gez.build();
+  async postBuild(esmx) {
+    await esmx.build();
     // Generowanie statycznego HTML po zakończeniu budowania
-    const render = await gez.render({
+    const render = await esmx.render({
       params: { url: '/' }
     });
-    gez.writeSync(
-      gez.resolvePath('dist/client', 'index.html'),
+    esmx.writeSync(
+      esmx.resolvePath('dist/client', 'index.html'),
       render.html
     );
   }
@@ -395,12 +395,12 @@ Uruchamia serwer HTTP i konfiguruje instancję serwera. Wywoływane w następuj�
 
 ```ts title="entry.node.ts"
 export default {
-  async server(gez) {
+  async server(esmx) {
     const server = http.createServer((req, res) => {
       // Obsługa zasobów statycznych
-      gez.middleware(req, res, async () => {
+      esmx.middleware(req, res, async () => {
         // Renderowanie po stronie serwera
-        const render = await gez.render({
+        const render = await esmx.render({
           params: { url: req.url }
         });
         res.end(render.html);
@@ -426,17 +426,17 @@ Wykonuje logikę przetwarzania po budowaniu, używana do:
 
 ```ts title="entry.node.ts"
 export default {
-  async postBuild(gez) {
+  async postBuild(esmx) {
     // Generowanie statycznego HTML dla wielu stron
     const pages = ['/', '/about', '/404'];
 
     for (const url of pages) {
-      const render = await gez.render({
+      const render = await esmx.render({
         params: { url }
       });
 
-      await gez.write(
-        gez.resolvePath('dist/client', url.substring(1), 'index.html'),
+      await esmx.write(
+        esmx.resolvePath('dist/client', url.substring(1), 'index.html'),
         render.html
       );
     }
@@ -456,7 +456,7 @@ Rozwiązuje ścieżkę projektu, konwertując ścieżkę względną na bezwzglę
 - **Przykład**:
 ```ts
 // Rozwiązanie ścieżki do zasobów statycznych
-const htmlPath = gez.resolvePath('dist/client', 'index.html');
+const htmlPath = esmx.resolvePath('dist/client', 'index.html');
 ```
 
 ### writeSync()
@@ -471,9 +471,9 @@ Synchroniczne zapisywanie zawartości do pliku.
 - **Przykład**:
 ```ts title="src/entry.node.ts"
 
-async postBuild(gez) {
-  const htmlPath = gez.resolvePath('dist/client', 'index.html');
-  const success = await gez.write(htmlPath, '<html>...</html>');
+async postBuild(esmx) {
+  const htmlPath = esmx.resolvePath('dist/client', 'index.html');
+  const success = await esmx.write(htmlPath, '<html>...</html>');
 }
 ```
 
@@ -489,8 +489,8 @@ Synchroniczne odczytywanie i parsowanie pliku JSON.
 
 - **Przykład**:
 ```ts title="src/entry.node.ts"
-async server(gez) {
-  const manifest = gez.readJsonSync(gez.resolvePath('dist/client', 'manifest.json'));
+async server(esmx) {
+  const manifest = esmx.readJsonSync(esmx.resolvePath('dist/client', 'manifest.json'));
   // Użycie obiektu manifest
 }
 ```

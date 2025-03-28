@@ -1,15 +1,15 @@
 ---
-titleSuffix: คู่มือโครงสร้างและมาตรฐานโครงการ Gez Framework
-description: รายละเอียดโครงสร้างโครงการมาตรฐานของ Gez Framework, มาตรฐานไฟล์เข้า และมาตรฐานไฟล์กำหนดค่า เพื่อช่วยให้นักพัฒนาสร้างแอปพลิเคชัน SSR ที่เป็นมาตรฐานและบำรุงรักษาได้ง่าย
+titleSuffix: คู่มือโครงสร้างและมาตรฐานโครงการ Esmx Framework
+description: รายละเอียดโครงสร้างโครงการมาตรฐานของ Esmx Framework, มาตรฐานไฟล์เข้า และมาตรฐานไฟล์กำหนดค่า เพื่อช่วยให้นักพัฒนาสร้างแอปพลิเคชัน SSR ที่เป็นมาตรฐานและบำรุงรักษาได้ง่าย
 head:
   - - meta
     - property: keywords
-      content: Gez, โครงสร้างโครงการ, ไฟล์เข้า, มาตรฐานกำหนดค่า, SSR framework, TypeScript, มาตรฐานโครงการ, มาตรฐานการพัฒนา
+      content: Esmx, โครงสร้างโครงการ, ไฟล์เข้า, มาตรฐานกำหนดค่า, SSR framework, TypeScript, มาตรฐานโครงการ, มาตรฐานการพัฒนา
 ---
 
 # มาตรฐาน
 
-Gez เป็นเฟรมเวิร์ก SSR ที่ทันสมัย ใช้โครงสร้างโครงการและกลไกการแก้ไขเส้นทางที่เป็นมาตรฐาน เพื่อให้มั่นใจว่าการพัฒนาและการใช้งานในสภาพแวดล้อมการผลิตมีความสม่ำเสมอและบำรุงรักษาได้ง่าย
+Esmx เป็นเฟรมเวิร์ก SSR ที่ทันสมัย ใช้โครงสร้างโครงการและกลไกการแก้ไขเส้นทางที่เป็นมาตรฐาน เพื่อให้มั่นใจว่าการพัฒนาและการใช้งานในสภาพแวดล้อมการผลิตมีความสม่ำเสมอและบำรุงรักษาได้ง่าย
 
 ## มาตรฐานโครงสร้างโครงการ
 
@@ -36,7 +36,7 @@ root
 ```
 
 ::: tip ความรู้เพิ่มเติม
-- `gez.name` มาจากฟิลด์ `name` ใน `package.json`
+- `esmx.name` มาจากฟิลด์ `name` ใน `package.json`
 - `dist/package.json` มาจาก `package.json` ในไดเรกทอรีราก
 - เมื่อตั้งค่า `packs.enable` เป็น `true` จะทำการเก็บถาวรไดเรกทอรี `dist`
 
@@ -76,11 +76,11 @@ root
     "name": "your-app-name",
     "type": "module",
     "scripts": {
-        "dev": "gez dev",
+        "dev": "esmx dev",
         "build": "npm run build:dts && npm run build:ssr",
-        "build:ssr": "gez build",
+        "build:ssr": "esmx build",
         "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src",
-        "preview": "gez preview",
+        "preview": "esmx preview",
         "start": "NODE_ENV=production node dist/index.js"
     }
 }

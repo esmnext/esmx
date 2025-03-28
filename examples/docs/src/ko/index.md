@@ -1,13 +1,13 @@
 ---
 pageType: home
 titleSuffix: ESM 기반 고성능 서버 사이드 렌더링 프레임워크
-description: Gez는 ESM 기반의 고성능 서버 사이드 렌더링 프레임워크로, 완전한 SSR 기능, 스마트한 렌더링 컨텍스트, 혁신적인 모듈 링크 시스템을 제공하며 대형 웹 애플리케이션 개발에 적합합니다.
+description: Esmx는 ESM 기반의 고성능 서버 사이드 렌더링 프레임워크로, 완전한 SSR 기능, 스마트한 렌더링 컨텍스트, 혁신적인 모듈 링크 시스템을 제공하며 대형 웹 애플리케이션 개발에 적합합니다.
 head:
   - - meta
     - property: keywords
-      content: Gez, SSR, ESM, 서버 사이드 렌더링, 모듈 링크, Vue, React, TypeScript, 마이크로 프론트엔드
+      content: Esmx, SSR, ESM, 서버 사이드 렌더링, 모듈 링크, Vue, React, TypeScript, 마이크로 프론트엔드
 hero:
-  name: Gez
+  name: Esmx
   text: ESM 기반 서버 사이드 렌더링 프레임워크
   tagline: 고성능, 확장 가능한 모듈 링크 시스템
   actions:
@@ -16,7 +16,7 @@ hero:
       link: /guide/start/getting-started
     - theme: alt
       text: GitHub
-      link: https://github.com/js-esm/gez
+      link: https://github.com/js-esm/esmx
 
 features:
   - icon: ⚡️

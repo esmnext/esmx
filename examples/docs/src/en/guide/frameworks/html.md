@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework HTML SSR Application Example
-description: Build a Gez-based HTML SSR application from scratch. This example demonstrates the basic usage of the framework, including project initialization, HTML configuration, and entry file setup.
+titleSuffix: Esmx Framework HTML SSR Application Example
+description: Build a Esmx-based HTML SSR application from scratch. This example demonstrates the basic usage of the framework, including project initialization, HTML configuration, and entry file setup.
 head:
   - - meta
     - property: keywords
-      content: Gez, HTML, SSR Application, TypeScript Configuration, Project Initialization, Server-Side Rendering, Client-Side Interaction
+      content: Esmx, HTML, SSR Application, TypeScript Configuration, Project Initialization, Server-Side Rendering, Client-Side Interaction
 ---
 
 # HTML
 
-This tutorial will guide you through building a Gez-based HTML SSR application from scratch. We'll demonstrate how to create a server-side rendered application using the Gez framework through a complete example.
+This tutorial will guide you through building a Esmx-based HTML SSR application from scratch. We'll demonstrate how to create a server-side rendered application using the Esmx framework through a complete example.
 
 ## Project Structure
 
@@ -40,18 +40,18 @@ Create the `package.json` file to configure project dependencies and scripts:
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "gez dev",
+    "dev": "esmx dev",
     "build": "npm run build:dts && npm run build:ssr",
-    "build:ssr": "gez build",
-    "preview": "gez preview",
+    "build:ssr": "esmx build",
+    "preview": "esmx preview",
     "start": "NODE_ENV=production node dist/index.js",
     "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src"
   },
   "dependencies": {
-    "@gez/core": "*"
+    "@esmx/core": "*"
   },
   "devDependencies": {
-    "@gez/rspack": "*",
+    "@esmx/rspack": "*",
     "@types/node": "22.8.6",
     "typescript": "^5.7.3"
   }
@@ -111,7 +111,7 @@ Create the main application component `src/app.ts` to implement page structure a
 ```ts title="src/app.ts"
 /**
  * @file Example Component
- * @description Demonstrates a page title with auto-updating time, showcasing basic Gez framework functionality
+ * @description Demonstrates a page title with auto-updating time, showcasing basic Esmx framework functionality
  */
 
 export default class App {
@@ -141,7 +141,7 @@ export default class App {
 
         return `
         <div id="app">
-            <h1><a href="https://www.esmnext.com/guide/frameworks/html.html" target="_blank">Gez Quick Start</a></h1>
+            <h1><a href="https://www.esmnext.com/guide/frameworks/html.html" target="_blank">Esmx Quick Start</a></h1>
             <time datetime="${this.time}">${this.time}</time>
         </div>
         `;
@@ -235,18 +235,18 @@ Create the `entry.node.ts` file to configure the development environment and ser
  */
 
 import http from 'node:http';
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     /**
      * Configure development environment application creator
      * @description Creates and configures Rspack application instance for development environment builds and hot updates
-     * @param gez Gez framework instance, providing core functionality and configuration interfaces
+     * @param esmx Esmx framework instance, providing core functionality and configuration interfaces
      * @returns Returns configured Rspack application instance with HMR and live preview support
      */
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createRspackHtmlApp(gez, {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createRspackHtmlApp(esmx, {
                 config(context) {
                     // Customize Rspack compilation configuration here
                 }
@@ -256,15 +256,15 @@ export default {
 
     /**
      * Configure and start HTTP server
-     * @description Creates HTTP server instance, integrates Gez middleware, and handles SSR requests
-     * @param gez Gez framework instance, providing middleware and rendering functionality
+     * @description Creates HTTP server instance, integrates Esmx middleware, and handles SSR requests
+     * @param esmx Esmx framework instance, providing middleware and rendering functionality
      */
-    async server(gez) {
+    async server(esmx) {
         const server = http.createServer((req, res) => {
-            // Use Gez middleware to handle requests
-            gez.middleware(req, res, async () => {
+            // Use Esmx middleware to handle requests
+            esmx.middleware(req, res, async () => {
                 // Perform server-side rendering
-                const rc = await gez.render({
+                const rc = await esmx.render({
                     params: { url: req.url }
                 });
                 res.end(rc.html);
@@ -275,13 +275,13 @@ export default {
             console.log('Server started: http://localhost:3000');
         });
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 This file serves as the entry point for development environment configuration and server startup, containing two core functions:
 
 1. `devApp` function: Responsible for creating and configuring the Rspack application instance for the development environment, supporting hot updates and live preview.
-2. `server` function: Responsible for creating and configuring the HTTP server, integrating Gez middleware to handle SSR requests.
+2. `server` function: Responsible for creating and configuring the HTTP server, integrating Esmx middleware to handle SSR requests.
 
 ### entry.server.ts
 
@@ -293,7 +293,7 @@ Create the server-side rendering entry file `src/entry.server.ts`:
  * @description Handles server-side rendering process, HTML generation, and resource injection
  */
 
-import type { RenderContext } from '@gez/core';
+import type { RenderContext } from '@esmx/core';
 import type App from './app';
 import type { SsrContext } from './app';
 import { createApp } from './create-app';
@@ -325,7 +325,7 @@ export default async (rc: RenderContext) => {
 <html lang="zh-CN">
 <head>
     ${rc.preload()}
-    <title>Gez Quick Start</title>
+    <title>Esmx Quick Start</title>
     ${rc.css()}
 </head>
 <body>
@@ -358,4 +358,4 @@ npm run build
 npm run start
 ```
 
-Now, you've successfully created a Gez-based HTML SSR application! Visit http://localhost:3000 to see the result.
+Now, you've successfully created a Esmx-based HTML SSR application! Visit http://localhost:3000 to see the result.

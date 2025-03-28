@@ -1,16 +1,16 @@
 ---
-titleSuffix: Überblick über das Gez-Framework und technische Innovationen
-description: Erfahren Sie mehr über den Projektkontext, die technologische Entwicklung und die Kernvorteile des Gez-Micro-Frontend-Frameworks. Entdecken Sie moderne serverseitige Rendering-Lösungen basierend auf ESM.
+titleSuffix: Überblick über das Esmx-Framework und technische Innovationen
+description: Erfahren Sie mehr über den Projektkontext, die technologische Entwicklung und die Kernvorteile des Esmx-Micro-Frontend-Frameworks. Entdecken Sie moderne serverseitige Rendering-Lösungen basierend auf ESM.
 head:
   - - meta
     - property: keywords
-      content: Gez, Micro-Frontend, ESM, Serverseitiges Rendering, SSR, Technische Innovation, Module Federation
+      content: Esmx, Micro-Frontend, ESM, Serverseitiges Rendering, SSR, Technische Innovation, Module Federation
 ---
 
 # Einführung
 
 ## Projektkontext
-Gez ist ein modernes Micro-Frontend-Framework basierend auf ECMAScript Modules (ESM), das sich auf die Erstellung von hochleistungsfähigen, skalierbaren serverseitigen Rendering (SSR)-Anwendungen konzentriert. Als dritte Generation des Genesis-Projekts hat Gez im Laufe der technologischen Entwicklung kontinuierlich Innovationen vorangetrieben:
+Esmx ist ein modernes Micro-Frontend-Framework basierend auf ECMAScript Modules (ESM), das sich auf die Erstellung von hochleistungsfähigen, skalierbaren serverseitigen Rendering (SSR)-Anwendungen konzentriert. Als dritte Generation des Genesis-Projekts hat Esmx im Laufe der technologischen Entwicklung kontinuierlich Innovationen vorangetrieben:
 
 - **v1.0**: Implementierung des bedarfsgerechten Ladens von Remote-Komponenten basierend auf HTTP-Anfragen
 - **v2.0**: Anwendungsintegration basierend auf Webpack Module Federation
@@ -27,7 +27,7 @@ Im Entwicklungsprozess der Micro-Frontend-Architektur weisen traditionelle Lösu
 - **Ökosystembeschränkungen**: Framework-Kopplung und benutzerdefinierte APIs schränken die Technologieauswahl ein
 
 ### Technologische Innovationen
-Gez bietet basierend auf modernen Webstandards eine völlig neue Lösung:
+Esmx bietet basierend auf modernen Webstandards eine völlig neue Lösung:
 
 - **Natives Modulsystem**: Nutzung von nativen ESM und Import Maps im Browser zur Abhängigkeitsverwaltung, was eine schnellere Analyse und Ausführung ermöglicht
 - **Standardisierter Isolationsmechanismus**: Zuverlässige Anwendungsisolation basierend auf dem ECMAScript-Modulbereich
@@ -36,7 +36,7 @@ Gez bietet basierend auf modernen Webstandards eine völlig neue Lösung:
 - **Extreme Leistungsoptimierung**: Null-Laufzeit-Overhead durch native Fähigkeiten in Kombination mit intelligenten Caching-Strategien
 
 :::tip
-Gez konzentriert sich auf die Schaffung einer hochleistungsfähigen, leicht erweiterbaren Micro-Frontend-Infrastruktur, die besonders für groß angelegte serverseitige Rendering-Anwendungen geeignet ist.
+Esmx konzentriert sich auf die Schaffung einer hochleistungsfähigen, leicht erweiterbaren Micro-Frontend-Infrastruktur, die besonders für groß angelegte serverseitige Rendering-Anwendungen geeignet ist.
 :::
 
 ## Technische Spezifikationen
@@ -50,7 +50,7 @@ Bitte lesen Sie die Dokumentation [Umgebungsanforderungen](/guide/start/environm
 - **Entwicklungstoolchain**: Unterstützung von ESM-Hot-Reload und nativer TypeScript-Ausführung
 
 ## Framework-Positionierung
-Gez unterscheidet sich von [Next.js](https://nextjs.org) oder [Nuxt.js](https://nuxt.com/) und konzentriert sich auf die Bereitstellung von Micro-Frontend-Infrastruktur:
+Esmx unterscheidet sich von [Next.js](https://nextjs.org) oder [Nuxt.js](https://nuxt.com/) und konzentriert sich auf die Bereitstellung von Micro-Frontend-Infrastruktur:
 
 - **Modulverknüpfungssystem**: Implementierung effizienter und zuverlässiger Modulimporte und -exporte
 - **Serverseitiges Rendering**: Flexible SSR-Implementierungsmechanismen
@@ -75,4 +75,4 @@ Gez unterscheidet sich von [Next.js](https://nextjs.org) oder [Nuxt.js](https://
 - **Bedarfsgerechtes Laden**: Fein abgestimmte Code-Splitting- und Abhängigkeitsverwaltung
 
 ## Projektreife
-Gez hat durch fast 5 Jahre iterative Entwicklung (v1.0 bis v3.0) umfassende Validierung in Unternehmensumgebungen erhalten. Derzeit unterstützt es Dutzende von Geschäftsprojekten, die stabil laufen, und treibt kontinuierlich die Modernisierung des Technologie-Stacks voran. Die Stabilität, Zuverlässigkeit und Leistungsvorteile des Frameworks wurden in der Praxis umfassend getestet und bieten eine solide technische Grundlage für die Entwicklung groß angelegter Anwendungen.
+Esmx hat durch fast 5 Jahre iterative Entwicklung (v1.0 bis v3.0) umfassende Validierung in Unternehmensumgebungen erhalten. Derzeit unterstützt es Dutzende von Geschäftsprojekten, die stabil laufen, und treibt kontinuierlich die Modernisierung des Technologie-Stacks voran. Die Stabilität, Zuverlässigkeit und Leistungsvorteile des Frameworks wurden in der Praxis umfassend getestet und bieten eine solide technische Grundlage für die Entwicklung groß angelegter Anwendungen.

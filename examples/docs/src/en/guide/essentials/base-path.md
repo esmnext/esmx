@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework Static Resource Path Configuration Guide
-description: A detailed guide on configuring base paths in the Gez framework, including multi-environment deployment, CDN distribution, and resource access path settings, helping developers achieve flexible static resource management.
+titleSuffix: Esmx Framework Static Resource Path Configuration Guide
+description: A detailed guide on configuring base paths in the Esmx framework, including multi-environment deployment, CDN distribution, and resource access path settings, helping developers achieve flexible static resource management.
 head:
   - - meta
     - property: keywords
-      content: Gez, Base Path, CDN, Static Resources, Multi-environment Deployment, Resource Management
+      content: Esmx, Base Path, CDN, Static Resources, Multi-environment Deployment, Resource Management
 ---
 
 # Base Path
 
-The Base Path refers to the prefix of the access path for static resources (such as JavaScript, CSS, images, etc.) in an application. In Gez, proper configuration of the base path is crucial for the following scenarios:
+The Base Path refers to the prefix of the access path for static resources (such as JavaScript, CSS, images, etc.) in an application. In Esmx, proper configuration of the base path is crucial for the following scenarios:
 
 - **Multi-environment Deployment**: Supporting resource access in different environments such as development, testing, and production
 - **Multi-region Deployment**: Adapting to cluster deployment requirements in different regions or countries
@@ -17,7 +17,7 @@ The Base Path refers to the prefix of the access path for static resources (such
 
 ## Default Path Mechanism
 
-Gez employs an automatic path generation mechanism based on the service name. By default, the framework reads the `name` field in the project's `package.json` to generate the base path for static resources: `/your-app-name/`.
+Esmx employs an automatic path generation mechanism based on the service name. By default, the framework reads the `name` field in the project's `package.json` to generate the base path for static resources: `/your-app-name/`.
 
 ```json title="package.json"
 {
@@ -33,7 +33,7 @@ This convention-over-configuration design offers the following advantages:
 
 ## Dynamic Path Configuration
 
-In real-world projects, we often need to deploy the same codebase to different environments or regions. Gez provides support for dynamic base paths, allowing applications to adapt to various deployment scenarios.
+In real-world projects, we often need to deploy the same codebase to different environments or regions. Esmx provides support for dynamic base paths, allowing applications to adapt to various deployment scenarios.
 
 ### Use Cases
 
@@ -53,10 +53,10 @@ In real-world projects, we often need to deploy the same codebase to different e
 
 ### Configuration Method
 
-You can dynamically set the base path based on the request context using the `base` parameter in the `gez.render()` method:
+You can dynamically set the base path based on the request context using the `base` parameter in the `esmx.render()` method:
 
 ```ts
-const render = await gez.render({
+const render = await esmx.render({
     base: '/cn',  // Set the base path
     params: {
         url: req.url

@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework Server-Side Rendering Kernmechanisme
-description: Gedetailleerde uitleg over het RenderContext-mechanisme van het Gez-framework, inclusief resourcebeheer, HTML-generatie en het ESM-modulesysteem, om ontwikkelaars te helpen bij het begrijpen en gebruiken van server-side rendering-functionaliteit.
+titleSuffix: Esmx Framework Server-Side Rendering Kernmechanisme
+description: Gedetailleerde uitleg over het RenderContext-mechanisme van het Esmx-framework, inclusief resourcebeheer, HTML-generatie en het ESM-modulesysteem, om ontwikkelaars te helpen bij het begrijpen en gebruiken van server-side rendering-functionaliteit.
 head:
   - - meta
     - property: keywords
-      content: Gez, RenderContext, SSR, Server-Side Rendering, ESM, Resourcebeheer
+      content: Esmx, RenderContext, SSR, Server-Side Rendering, ESM, Resourcebeheer
 ---
 
 # RenderContext
 
-RenderContext is een kernklasse in het Gez-framework die voornamelijk verantwoordelijk is voor resourcebeheer en HTML-generatie tijdens het server-side rendering (SSR) proces. Het heeft de volgende kernkenmerken:
+RenderContext is een kernklasse in het Esmx-framework die voornamelijk verantwoordelijk is voor resourcebeheer en HTML-generatie tijdens het server-side rendering (SSR) proces. Het heeft de volgende kernkenmerken:
 
 1. **Op ESM gebaseerd modulesysteem**
    - Gebruikt de moderne ECMAScript Modules-standaard
@@ -33,15 +33,15 @@ RenderContext is een kernklasse in het Gez-framework die voornamelijk verantwoor
 
 ## Gebruikswijze
 
-In het Gez-framework hoeven ontwikkelaars meestal geen RenderContext-instantie direct aan te maken, maar kunnen ze deze verkrijgen via de `gez.render()`-methode:
+In het Esmx-framework hoeven ontwikkelaars meestal geen RenderContext-instantie direct aan te maken, maar kunnen ze deze verkrijgen via de `esmx.render()`-methode:
 
 ```ts title="src/entry.node.ts"
-async server(gez) {
+async server(esmx) {
     const server = http.createServer((req, res) => {
         // Statische bestandsverwerking
-        gez.middleware(req, res, async () => {
-            // Verkrijg RenderContext-instantie via gez.render()
-            const rc = await gez.render({
+        esmx.middleware(req, res, async () => {
+            // Verkrijg RenderContext-instantie via esmx.render()
+            const rc = await esmx.render({
                 params: {
                     url: req.url
                 }
@@ -141,8 +141,8 @@ export default async (rc: RenderContext) => {
 RenderContext biedt een flexibel mechanisme voor dynamische basispadconfiguratie, dat ondersteuning biedt voor het dynamisch instellen van het basispad voor statische resources tijdens runtime:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
-    base: '/gez',  // Stel basispad in
+const rc = await esmx.render({
+    base: '/esmx',  // Stel basispad in
     params: {
         url: req.url
     }
@@ -179,7 +179,7 @@ RenderContext biedt twee import mapping (Import Map)-modi:
 De gewenste modus kan worden geselecteerd via configuratie:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     importmapMode: 'js',  // 'inline' | 'js'
     params: {
         url: req.url
@@ -192,7 +192,7 @@ const rc = await gez.render({
 RenderContext ondersteunt configuratie via `entryName` om de server-side rendering entry-functie aan te geven:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     entryName: 'mobile',  // Geef mobiele entry-functie aan
     params: {
         url: req.url
@@ -228,7 +228,7 @@ Dit mechanisme is vooral nuttig in de volgende scenario's:
 ## Best Practices
 
 1. **Verkrijg RenderContext-instantie**
-   - Verkrijg altijd instanties via de `gez.render()`-methode
+   - Verkrijg altijd instanties via de `esmx.render()`-methode
    - Geef indien nodig de juiste parameters door
    - Vermijd handmatige instantiecreatie
 

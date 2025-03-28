@@ -1,4 +1,4 @@
-import type { Gez } from '@gez/core';
+import type { Esmx } from '@esmx/core';
 import {
     type LightningcssLoaderOptions,
     type RuleSetUse,
@@ -21,9 +21,9 @@ import { RSPACK_LOADER } from './loader';
  * ```ts
  * // entry.node.ts
  * export default {
- *   async devApp(gez) {
- *     return import('@gez/rspack').then((m) =>
- *       m.createRspackHtmlApp(gez, {
+ *   async devApp(esmx) {
+ *     return import('@esmx/rspack').then((m) =>
+ *       m.createRspackHtmlApp(esmx, {
  *         // 将 CSS 输出到独立的 CSS 文件中
  *         css: 'css',
  *         // 自定义 loader
@@ -256,7 +256,7 @@ export interface RspackHtmlAppOptions extends RspackAppOptions {
  * - 视频/图片
  * - 字体文件
  *
- * @param gez - Gez 框架实例
+ * @param esmx - Esmx 框架实例
  * @param options - Rspack HTML 应用配置选项
  * @returns 返回应用实例，包含中间件、渲染函数和构建函数
  *
@@ -265,9 +265,9 @@ export interface RspackHtmlAppOptions extends RspackAppOptions {
  * // 开发环境配置
  * // entry.node.ts
  * export default {
- *   async devApp(gez) {
- *     return import('@gez/rspack').then((m) =>
- *       m.createRspackHtmlApp(gez, {
+ *   async devApp(esmx) {
+ *     return import('@esmx/rspack').then((m) =>
+ *       m.createRspackHtmlApp(esmx, {
  *         // 配置 CSS 输出模式
  *         css: 'css',
  *         // 配置 TypeScript 编译选项
@@ -300,9 +300,9 @@ export interface RspackHtmlAppOptions extends RspackAppOptions {
  * // 生产环境配置
  * // entry.node.ts
  * export default {
- *   async buildApp(gez) {
- *     return import('@gez/rspack').then((m) =>
- *       m.createRspackHtmlApp(gez, {
+ *   async buildApp(esmx) {
+ *     return import('@esmx/rspack').then((m) =>
+ *       m.createRspackHtmlApp(esmx, {
  *         // 启用代码压缩
  *         minimize: true,
  *         // 配置全局常量
@@ -320,7 +320,7 @@ export interface RspackHtmlAppOptions extends RspackAppOptions {
  * ```
  */
 export async function createRspackHtmlApp(
-    gez: Gez,
+    esmx: Esmx,
     options?: RspackHtmlAppOptions
 ) {
     options = {
@@ -330,9 +330,9 @@ export async function createRspackHtmlApp(
             node: ['node>=22.6'],
             ...options?.target
         },
-        css: options?.css ? options.css : gez.isProd ? 'css' : 'js'
+        css: options?.css ? options.css : esmx.isProd ? 'css' : 'js'
     };
-    return createRspackApp(gez, {
+    return createRspackApp(esmx, {
         ...options,
         config(context) {
             const { config, buildTarget } = context;
@@ -345,21 +345,21 @@ export async function createRspackHtmlApp(
                         test: /\.(jpe?g|png|gif|bmp|webp|svg)$/i,
                         type: 'asset/resource',
                         generator: {
-                            filename: filename(gez, 'images')
+                            filename: filename(esmx, 'images')
                         }
                     },
                     {
                         test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)$/i,
                         type: 'asset/resource',
                         generator: {
-                            filename: filename(gez, 'media')
+                            filename: filename(esmx, 'media')
                         }
                     },
                     {
                         test: /\.(woff|woff2|eot|ttf|otf)(\?.*)?$/i,
                         type: 'asset/resource',
                         generator: {
-                            filename: filename(gez, 'fonts')
+                            filename: filename(esmx, 'fonts')
                         }
                     },
                     {
@@ -373,7 +373,7 @@ export async function createRspackHtmlApp(
                             RSPACK_LOADER.workerRspackLoader,
                         options: {
                             esModule: false,
-                            filename: `${gez.name}/workers/[name].[contenthash]${gez.isProd ? '.final' : ''}.js`
+                            filename: `${esmx.name}/workers/[name].[contenthash]${esmx.isProd ? '.final' : ''}.js`
                         }
                     },
                     {
@@ -450,20 +450,20 @@ export async function createRspackHtmlApp(
                 ...config.resolve,
                 extensions: ['...', '.ts']
             };
-            addCssConfig(gez, options, context);
+            addCssConfig(esmx, options, context);
             options?.config?.(context);
         }
     });
 }
 
-function filename(gez: Gez, name: string, ext = '[ext]') {
-    return gez.isProd
+function filename(esmx: Esmx, name: string, ext = '[ext]') {
+    return esmx.isProd
         ? `${name}/[name].[contenthash:8].final${ext}`
         : `${name}/[path][name]${ext}`;
 }
 
 function addCssConfig(
-    gez: Gez,
+    esmx: Esmx,
     options: RspackHtmlAppOptions,
     { config }: RspackAppConfigContext
 ) {
@@ -488,7 +488,7 @@ function addCssConfig(
                     RSPACK_LOADER.lightningcssLoader,
                 options: {
                     targets: options.target?.web ?? [],
-                    minify: gez.isProd
+                    minify: esmx.isProd
                 } satisfies LightningcssLoaderOptions
             }
         ];

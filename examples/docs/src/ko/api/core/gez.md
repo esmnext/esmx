@@ -1,17 +1,17 @@
 ---
 titleSuffix: 프레임워크 코어 클래스 API 참조
-description: Gez 프레임워크의 코어 클래스 API에 대해 자세히 설명합니다. 애플리케이션 생명주기 관리, 정적 리소스 처리 및 서버 사이드 렌더링 기능을 포함하여 개발자가 프레임워크의 핵심 기능을 깊이 이해할 수 있도록 돕습니다.
+description: Esmx 프레임워크의 코어 클래스 API에 대해 자세히 설명합니다. 애플리케이션 생명주기 관리, 정적 리소스 처리 및 서버 사이드 렌더링 기능을 포함하여 개발자가 프레임워크의 핵심 기능을 깊이 이해할 수 있도록 돕습니다.
 head:
   - - meta
     - property: keywords
-      content: Gez, API, 생명주기 관리, 정적 리소스, 서버 사이드 렌더링, Rspack, 웹 애플리케이션 프레임워크
+      content: Esmx, API, 생명주기 관리, 정적 리소스, 서버 사이드 렌더링, Rspack, 웹 애플리케이션 프레임워크
 ---
 
-# Gez
+# Esmx
 
 ## 소개
 
-Gez는 Rspack 기반의 고성능 웹 애플리케이션 프레임워크로, 완전한 애플리케이션 생명주기 관리, 정적 리소스 처리 및 서버 사이드 렌더링 기능을 제공합니다.
+Esmx는 Rspack 기반의 고성능 웹 애플리케이션 프레임워크로, 완전한 애플리케이션 생명주기 관리, 정적 리소스 처리 및 서버 사이드 렌더링 기능을 제공합니다.
 
 ## 타입 정의
 
@@ -76,18 +76,18 @@ enum COMMAND {
 
 ## 인스턴스 옵션
 
-Gez 프레임워크의 핵심 설정 옵션을 정의합니다.
+Esmx 프레임워크의 핵심 설정 옵션을 정의합니다.
 
 ```ts
-interface GezOptions {
+interface EsmxOptions {
   root?: string
   isProd?: boolean
   basePathPlaceholder?: string | false
   modules?: ModuleConfig
   packs?: PackConfig
-  devApp?: (gez: Gez) => Promise<App>
-  server?: (gez: Gez) => Promise<void>
-  postBuild?: (gez: Gez) => Promise<void>
+  devApp?: (esmx: Esmx) => Promise<App>
+  server?: (esmx: Esmx) => Promise<void>
+  postBuild?: (esmx: Esmx) => Promise<void>
 }
 ```
 
@@ -128,15 +128,15 @@ interface GezOptions {
 
 #### devApp
 
-- **타입**: `(gez: Gez) => Promise<App>`
+- **타입**: `(esmx: Esmx) => Promise<App>`
 
 개발 환경 애플리케이션 생성 함수. 개발 환경에서만 사용되며, 개발 서버의 애플리케이션 인스턴스를 생성합니다.
 
 ```ts title="entry.node.ts"
 export default {
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(context) {
           // Rspack 설정 커스터마이징
         }
@@ -148,16 +148,16 @@ export default {
 
 #### server
 
-- **타입**: `(gez: Gez) => Promise<void>`
+- **타입**: `(esmx: Esmx) => Promise<void>`
 
 서버 시작 설정 함수. HTTP 서버를 구성하고 시작하는 데 사용되며, 개발 환경 및 프로덕션 환경에서 모두 사용할 수 있습니다.
 
 ```ts title="entry.node.ts"
 export default {
-  async server(gez) {
+  async server(esmx) {
     const server = http.createServer((req, res) => {
-      gez.middleware(req, res, async () => {
-        const render = await gez.render({
+      esmx.middleware(req, res, async () => {
+        const render = await esmx.render({
           params: { url: req.url }
         });
         res.end(render.html);
@@ -171,7 +171,7 @@ export default {
 
 #### postBuild
 
-- **타입**: `(gez: Gez) => Promise<void>`
+- **타입**: `(esmx: Esmx) => Promise<void>`
 
 빌드 후 처리 함수. 프로젝트 빌드가 완료된 후 실행되며, 다음 작업에 사용할 수 있습니다:
 - 추가 리소스 처리
@@ -235,8 +235,8 @@ export default {
 
 ```ts
 const server = http.createServer((req, res) => {
-  gez.middleware(req, res, async () => {
-    const rc = await gez.render({ url: req.url });
+  esmx.middleware(req, res, async () => {
+    const rc = await esmx.render({ url: req.url });
     res.end(rc.html);
   });
 });
@@ -253,12 +253,12 @@ const server = http.createServer((req, res) => {
 
 ```ts
 // 기본 사용법
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: req.url }
 });
 
 // 고급 설정
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '',                    // 기본 경로
   importmapMode: 'inline',     // 임포트 맵 모드
   entryName: 'default',        // 렌더링 엔트리
@@ -297,13 +297,13 @@ const rc = await gez.render({
 ### constructor()
 
 - **매개변수**: 
-  - `options?: GezOptions` - 프레임워크 설정 옵션
-- **반환값**: `Gez`
+  - `options?: EsmxOptions` - 프레임워크 설정 옵션
+- **반환값**: `Esmx`
 
-Gez 프레임워크 인스턴스를 생성합니다.
+Esmx 프레임워크 인스턴스를 생성합니다.
 
 ```ts
-const gez = new Gez({
+const esmx = new Esmx({
   root: './src',
   isProd: process.env.NODE_ENV === 'production'
 });
@@ -317,7 +317,7 @@ const gez = new Gez({
   - `Error`: 중복 초기화 시
   - `NotReadyError`: 초기화되지 않은 인스턴스에 접근 시
 
-Gez 프레임워크 인스턴스를 초기화합니다. 다음 핵심 초기화 프로세스를 실행합니다:
+Esmx 프레임워크 인스턴스를 초기화합니다. 다음 핵심 초기화 프로세스를 실행합니다:
 
 1. 프로젝트 설정 해석 (package.json, 모듈 설정, 패키징 설정 등)
 2. 애플리케이션 인스턴스 생성 (개발 환경 또는 프로덕션 환경)
@@ -330,26 +330,26 @@ Gez 프레임워크 인스턴스를 초기화합니다. 다음 핵심 초기화 
 :::
 
 ```ts
-const gez = new Gez({
+const esmx = new Esmx({
   root: './src',
   isProd: process.env.NODE_ENV === 'production'
 });
 
-await gez.init(COMMAND.dev);
+await esmx.init(COMMAND.dev);
 ```
 
 ### destroy()
 
 - **반환값**: `Promise<boolean>`
 
-Gez 프레임워크 인스턴스를 파괴하고, 리소스 정리 및 연결 종료 등의 작업을 수행합니다. 주로 다음 작업에 사용됩니다:
+Esmx 프레임워크 인스턴스를 파괴하고, 리소스 정리 및 연결 종료 등의 작업을 수행합니다. 주로 다음 작업에 사용됩니다:
 - 개발 서버 종료
 - 임시 파일 및 캐시 정리
 - 시스템 리소스 해제
 
 ```ts
 process.once('SIGTERM', async () => {
-  await gez.destroy();
+  await esmx.destroy();
   process.exit(0);
 });
 ```
@@ -370,14 +370,14 @@ process.once('SIGTERM', async () => {
 
 ```ts title="entry.node.ts"
 export default {
-  async postBuild(gez) {
-    await gez.build();
+  async postBuild(esmx) {
+    await esmx.build();
     // 빌드 완료 후 정적 HTML 생성
-    const render = await gez.render({
+    const render = await esmx.render({
       params: { url: '/' }
     });
-    gez.writeSync(
-      gez.resolvePath('dist/client', 'index.html'),
+    esmx.writeSync(
+      esmx.resolvePath('dist/client', 'index.html'),
       render.html
     );
   }
@@ -395,12 +395,12 @@ HTTP 서버 및 설정 서버 인스턴스를 시작합니다. 다음 생명주�
 
 ```ts title="entry.node.ts"
 export default {
-  async server(gez) {
+  async server(esmx) {
     const server = http.createServer((req, res) => {
       // 정적 리소스 처리
-      gez.middleware(req, res, async () => {
+      esmx.middleware(req, res, async () => {
         // 서버 사이드 렌더링
-        const render = await gez.render({
+        const render = await esmx.render({
           params: { url: req.url }
         });
         res.end(render.html);
@@ -426,17 +426,17 @@ export default {
 
 ```ts title="entry.node.ts"
 export default {
-  async postBuild(gez) {
+  async postBuild(esmx) {
     // 여러 페이지의 정적 HTML 생성
     const pages = ['/', '/about', '/404'];
 
     for (const url of pages) {
-      const render = await gez.render({
+      const render = await esmx.render({
         params: { url }
       });
 
-      await gez.write(
-        gez.resolvePath('dist/client', url.substring(1), 'index.html'),
+      await esmx.write(
+        esmx.resolvePath('dist/client', url.substring(1), 'index.html'),
         render.html
       );
     }
@@ -456,7 +456,7 @@ export default {
 - **예제**:
 ```ts
 // 정적 리소스 경로 해석
-const htmlPath = gez.resolvePath('dist/client', 'index.html');
+const htmlPath = esmx.resolvePath('dist/client', 'index.html');
 ```
 
 ### writeSync()
@@ -471,9 +471,9 @@ const htmlPath = gez.resolvePath('dist/client', 'index.html');
 - **예제**:
 ```ts title="src/entry.node.ts"
 
-async postBuild(gez) {
-  const htmlPath = gez.resolvePath('dist/client', 'index.html');
-  const success = await gez.write(htmlPath, '<html>...</html>');
+async postBuild(esmx) {
+  const htmlPath = esmx.resolvePath('dist/client', 'index.html');
+  const success = await esmx.write(htmlPath, '<html>...</html>');
 }
 ```
 
@@ -489,8 +489,8 @@ JSON 파일을 동기적으로 읽고 해석합니다.
 
 - **예제**:
 ```ts title="src/entry.node.ts"
-async server(gez) {
-  const manifest = gez.readJsonSync(gez.resolvePath('dist/client', 'manifest.json'));
+async server(esmx) {
+  const manifest = esmx.readJsonSync(esmx.resolvePath('dist/client', 'manifest.json'));
   // manifest 객체 사용
 }
 ```
@@ -507,8 +507,8 @@ JSON 파일을 비동기적으로 읽고 해석합니다.
 
 - **예제**:
 ```ts title="src/entry.node.ts"
-async server(gez) {
-  const manifest = await gez.readJson(gez.resolvePath('dist/client', 'manifest.json'));
+async server(esmx) {
+  const manifest = await esmx.readJson(esmx.resolvePath('dist/client', 'manifest.json'));
   // manifest 객체 사용
 }
 ```

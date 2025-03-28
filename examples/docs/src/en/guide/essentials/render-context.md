@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework Server-Side Rendering Core Mechanism
-description: Detailed introduction to the RenderContext mechanism of the Gez framework, including resource management, HTML generation, and ESM module system, helping developers understand and utilize server-side rendering capabilities.
+titleSuffix: Esmx Framework Server-Side Rendering Core Mechanism
+description: Detailed introduction to the RenderContext mechanism of the Esmx framework, including resource management, HTML generation, and ESM module system, helping developers understand and utilize server-side rendering capabilities.
 head:
   - - meta
     - property: keywords
-      content: Gez, RenderContext, SSR, Server-Side Rendering, ESM, Resource Management
+      content: Esmx, RenderContext, SSR, Server-Side Rendering, ESM, Resource Management
 ---
 
 # Render Context
 
-RenderContext is a core class in the Gez framework, primarily responsible for resource management and HTML generation during server-side rendering (SSR). It has the following key features:
+RenderContext is a core class in the Esmx framework, primarily responsible for resource management and HTML generation during server-side rendering (SSR). It has the following key features:
 
 1. **ESM-based Module System**
    - Adopts modern ECMAScript Modules standards
@@ -33,15 +33,15 @@ RenderContext is a core class in the Gez framework, primarily responsible for re
 
 ## Usage
 
-In the Gez framework, developers typically do not need to create RenderContext instances directly, but instead obtain instances through the `gez.render()` method:
+In the Esmx framework, developers typically do not need to create RenderContext instances directly, but instead obtain instances through the `esmx.render()` method:
 
 ```ts title="src/entry.node.ts"
-async server(gez) {
+async server(esmx) {
     const server = http.createServer((req, res) => {
         // Static file handling
-        gez.middleware(req, res, async () => {
-            // Obtain RenderContext instance via gez.render()
-            const rc = await gez.render({
+        esmx.middleware(req, res, async () => {
+            // Obtain RenderContext instance via esmx.render()
+            const rc = await esmx.render({
                 params: {
                     url: req.url
                 }
@@ -141,8 +141,8 @@ export default async (rc: RenderContext) => {
 RenderContext provides a flexible dynamic base path configuration mechanism, supporting runtime dynamic setting of static resource base paths:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
-    base: '/gez',  // Set base path
+const rc = await esmx.render({
+    base: '/esmx',  // Set base path
     params: {
         url: req.url
     }
@@ -179,7 +179,7 @@ RenderContext provides two import map modes:
 You can choose the appropriate mode through configuration:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     importmapMode: 'js',  // 'inline' | 'js'
     params: {
         url: req.url
@@ -192,7 +192,7 @@ const rc = await gez.render({
 RenderContext supports specifying server-side rendering entry functions through the `entryName` configuration:
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     entryName: 'mobile',  // Specify mobile entry function
     params: {
         url: req.url
@@ -228,7 +228,7 @@ This mechanism is particularly suitable for the following scenarios:
 ## Best Practices
 
 1. **Obtaining RenderContext Instances**
-   - Always obtain instances through the `gez.render()` method
+   - Always obtain instances through the `esmx.render()` method
    - Pass appropriate parameters as needed
    - Avoid manually creating instances
 

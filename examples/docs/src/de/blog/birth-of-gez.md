@@ -1,14 +1,14 @@
 ---
-titleSuffix: "Vom Mikrofrontend-Dilemma zur ESM-Innovation: Der Entwicklungsweg des Gez-Frameworks"
-description: Eine tiefgehende Betrachtung des Gez-Frameworks, von den Herausforderungen traditioneller Mikrofrontend-Architekturen bis hin zu innovativen Durchbrüchen basierend auf ESM. Es werden technische Praxiserfahrungen in den Bereichen Leistungsoptimierung, Abhängigkeitsmanagement und Auswahl von Build-Tools geteilt.
+titleSuffix: "Vom Mikrofrontend-Dilemma zur ESM-Innovation: Der Entwicklungsweg des Esmx-Frameworks"
+description: Eine tiefgehende Betrachtung des Esmx-Frameworks, von den Herausforderungen traditioneller Mikrofrontend-Architekturen bis hin zu innovativen Durchbrüchen basierend auf ESM. Es werden technische Praxiserfahrungen in den Bereichen Leistungsoptimierung, Abhängigkeitsmanagement und Auswahl von Build-Tools geteilt.
 head:
   - - meta
     - property: keywords
-      content: Gez, Mikrofrontend-Framework, ESM, Import Maps, Rspack, Module Federation, Abhängigkeitsmanagement, Leistungsoptimierung, technische Entwicklung, Server-Side Rendering
+      content: Esmx, Mikrofrontend-Framework, ESM, Import Maps, Rspack, Module Federation, Abhängigkeitsmanagement, Leistungsoptimierung, technische Entwicklung, Server-Side Rendering
 sidebar: false
 ---
 
-# Von der Komponentenfreigabe zur nativen Modularität: Der Entwicklungsweg des Gez-Mikrofrontend-Frameworks
+# Von der Komponentenfreigabe zur nativen Modularität: Der Entwicklungsweg des Esmx-Mikrofrontend-Frameworks
 
 ## Projektkontext
 
@@ -30,7 +30,7 @@ Diese Probleme traten besonders deutlich in einem unserer Unternehmensprojekte i
 
 ### v1.0: Erkundung von Remote-Komponenten
 
-Um die Effizienzprobleme bei der Komponentenfreigabe zu lösen, führte Gez v1.0 einen RemoteView-Komponentenmechanismus basierend auf dem HTTP-Protokoll ein. Diese Lösung ermöglichte die dynamische Anforderung von Code zur Laufzeit und löste das Problem zu langer Build-Abhängigkeitsketten. Aufgrund des Mangels an standardisierten Laufzeitkommunikationsmechanismen gab es jedoch weiterhin Effizienzengpässe bei der Zustandssynchronisation und Ereignisübertragung zwischen den Diensten.
+Um die Effizienzprobleme bei der Komponentenfreigabe zu lösen, führte Esmx v1.0 einen RemoteView-Komponentenmechanismus basierend auf dem HTTP-Protokoll ein. Diese Lösung ermöglichte die dynamische Anforderung von Code zur Laufzeit und löste das Problem zu langer Build-Abhängigkeitsketten. Aufgrund des Mangels an standardisierten Laufzeitkommunikationsmechanismen gab es jedoch weiterhin Effizienzengpässe bei der Zustandssynchronisation und Ereignisübertragung zwischen den Diensten.
 
 ### v2.0: Versuch mit Module Federation
 
@@ -75,7 +75,7 @@ Diese Entscheidung ermöglichte es uns, bei gleichbleibendem Entwicklungserlebni
 
 ## Zukunftsaussichten
 
-In den zukünftigen Entwicklungsplänen wird das Gez-Framework sich auf die folgenden drei Richtungen konzentrieren:
+In den zukünftigen Entwicklungsplänen wird das Esmx-Framework sich auf die folgenden drei Richtungen konzentrieren:
 
 ### Tiefgehende Optimierung von Import Maps
 
@@ -95,4 +95,4 @@ In den zukünftigen Entwicklungsplänen wird das Gez-Framework sich auf die folg
 - **Status-Synchronisation**: Leichtgewichtige Statusfreigabelösung basierend auf ESM
 - **Event-Bus**: Standardisierter Ereigniskommunikationsmechanismus zur Unterstützung entkoppelter Kommunikation zwischen Anwendungen
 
-Durch diese Optimierungen und Erweiterungen streben wir an, Gez zu einer noch vollständigeren und benutzerfreundlicheren Mikrofrontend-Lösung zu machen, die Entwicklern ein besseres Entwicklungserlebnis und höhere Entwicklungseffizienz bietet.
+Durch diese Optimierungen und Erweiterungen streben wir an, Esmx zu einer noch vollständigeren und benutzerfreundlicheren Mikrofrontend-Lösung zu machen, die Entwicklern ein besseres Entwicklungserlebnis und höhere Entwicklungseffizienz bietet.

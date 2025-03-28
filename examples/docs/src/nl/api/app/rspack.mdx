@@ -1,23 +1,23 @@
 ---
-titleSuffix: Gez Framework Rspack Bouwhulpmiddel
-description: Het Rspack bouwhulpmiddel van het Gez framework biedt hoogwaardige applicatiebouwcapaciteiten, ondersteunt de ontwikkeling en bouw van standaardapplicaties en HTML-applicaties, en bevat ingebouwde resourceverwerkers en optimalisatieconfiguraties.
+titleSuffix: Esmx Framework Rspack Bouwhulpmiddel
+description: Het Rspack bouwhulpmiddel van het Esmx framework biedt hoogwaardige applicatiebouwcapaciteiten, ondersteunt de ontwikkeling en bouw van standaardapplicaties en HTML-applicaties, en bevat ingebouwde resourceverwerkers en optimalisatieconfiguraties.
 head:
   - - meta
     - property: keywords
-      content: Gez, Rspack, bouwhulpmiddel, applicatiebouw, HTML-applicatie, TypeScript, CSS, resourceverwerking, prestatieoptimalisatie
+      content: Esmx, Rspack, bouwhulpmiddel, applicatiebouw, HTML-applicatie, TypeScript, CSS, resourceverwerking, prestatieoptimalisatie
 ---
 
 import { PackageManagerTabs } from '@theme';
 
-# @gez/rspack
+# @esmx/rspack
 
 Het Rspack-pakket biedt een set API's voor het maken en configureren van Rspack-applicaties, en ondersteunt de bouw en ontwikkeling van standaardapplicaties en HTML-applicaties.
 
 ## Installatie
 
-Installeer `@gez/rspack` als ontwikkelingsafhankelijkheid met behulp van een pakketbeheerder:
+Installeer `@esmx/rspack` als ontwikkelingsafhankelijkheid met behulp van een pakketbeheerder:
 
-<PackageManagerTabs command="install @gez/rspack -D" />
+<PackageManagerTabs command="install @esmx/rspack -D" />
 
 ## Type-exporten
 
@@ -36,7 +36,7 @@ Het type bouwdoelomgeving, dat de doelomgeving van de applicatie definieert, geb
 
 ```ts
 interface RspackAppConfigContext {
-  gez: Gez
+  esmx: Esmx
   buildTarget: BuildTarget
   config: RspackOptions
   options: RspackAppOptions
@@ -44,7 +44,7 @@ interface RspackAppConfigContext {
 ```
 
 De Rspack-applicatieconfiguratiecontextinterface, die contextinformatie biedt die toegankelijk is in configuratiehookfuncties:
-- `gez`: Gez framework-instantie
+- `esmx`: Esmx framework-instantie
 - `buildTarget`: Het huidige bouwdoel (client/server/node)
 - `config`: Rspack-configuratieobject
 - `options`: Applicatieconfiguratieopties
@@ -86,13 +86,13 @@ Erft over van `RspackAppOptions`, gebruikt voor het configureren van specifieke 
 ### createRspackApp
 
 ```ts
-function createRspackApp(gez: Gez, options?: RspackAppOptions): Promise<App>
+function createRspackApp(esmx: Esmx, options?: RspackAppOptions): Promise<App>
 ```
 
 Maakt een standaard Rspack-applicatie-instantie.
 
 **Parameters:**
-- `gez`: Gez framework-instantie
+- `esmx`: Esmx framework-instantie
 - `options`: Rspack-applicatieconfiguratieopties
 
 **Retourwaarde:**
@@ -101,13 +101,13 @@ Maakt een standaard Rspack-applicatie-instantie.
 ### createRspackHtmlApp
 
 ```ts
-function createRspackHtmlApp(gez: Gez, options?: RspackHtmlAppOptions): Promise<App>
+function createRspackHtmlApp(esmx: Esmx, options?: RspackHtmlAppOptions): Promise<App>
 ```
 
 Maakt een HTML-type Rspack-applicatie-instantie.
 
 **Parameters:**
-- `gez`: Gez framework-instantie
+- `esmx`: Esmx framework-instantie
 - `options`: HTML-applicatieconfiguratieopties
 
 **Retourwaarde:**
@@ -141,12 +141,12 @@ De ingebouwde loader-identificatietoewijzingsobject van Rspack, biedt veelgebrui
 Het gebruik van deze constanten maakt het mogelijk om in configuraties naar ingebouwde loaders te verwijzen, waardoor handmatige invoer van strings wordt vermeden:
 
 ```ts title="src/entry.node.ts"
-import { RSPACK_LOADER } from '@gez/rspack';
+import { RSPACK_LOADER } from '@esmx/rspack';
 
 export default {
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         loaders: {
           // Gebruik constanten om naar loaders te verwijzen
           styleLoader: RSPACK_LOADER.styleLoader,

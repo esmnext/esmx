@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez フレームワーク モジュールインポートパスマッピングガイド
-description: Gez フレームワークのパスエイリアスメカニズムについて詳しく説明します。インポートパスの簡略化、深いネストの回避、型安全性、モジュール解決の最適化などの機能を紹介し、開発者がコードの保守性を向上させるのに役立ちます。
+titleSuffix: Esmx フレームワーク モジュールインポートパスマッピングガイド
+description: Esmx フレームワークのパスエイリアスメカニズムについて詳しく説明します。インポートパスの簡略化、深いネストの回避、型安全性、モジュール解決の最適化などの機能を紹介し、開発者がコードの保守性を向上させるのに役立ちます。
 head:
   - - meta
     - property: keywords
-      content: Gez, パスエイリアス, Path Alias, TypeScript, モジュールインポート, パスマッピング, コード保守性
+      content: Esmx, パスエイリアス, Path Alias, TypeScript, モジュールインポート, パスマッピング, コード保守性
 ---
 
 # パスエイリアス
 
-パスエイリアス（Path Alias）は、モジュールインポートパスをマッピングするメカニズムで、開発者が完全なモジュールパスの代わりに短くて意味のある識別子を使用できるようにします。Gez では、パスエイリアスメカニズムには以下の利点があります：
+パスエイリアス（Path Alias）は、モジュールインポートパスをマッピングするメカニズムで、開発者が完全なモジュールパスの代わりに短くて意味のある識別子を使用できるようにします。Esmx では、パスエイリアスメカニズムには以下の利点があります：
 
 - **インポートパスの簡略化**：冗長な相対パスの代わりに意味のあるエイリアスを使用し、コードの可読性を向上させます
 - **深いネストの回避**：`../../../../` のような多階層ディレクトリ参照による保守の困難さを解消します
@@ -18,7 +18,7 @@ head:
 
 ## デフォルトのエイリアスメカニズム
 
-Gez はサービス名（Service Name）に基づく自動エイリアスメカニズムを採用しており、この設定より優れた設計には以下の特徴があります：
+Esmx はサービス名（Service Name）に基づく自動エイリアスメカニズムを採用しており、この設定より優れた設計には以下の特徴があります：
 
 - **自動設定**：`package.json` の `name` フィールドに基づいてエイリアスを自動生成し、手動設定は不要です
 - **統一された規約**：すべてのサービスモジュールが一貫した命名と参照規約に従うことを保証します
@@ -112,13 +112,13 @@ import { logger } from 'remote-service/src/utils';
 
 ### カスタムエイリアス
 
-サードパーティパッケージや特殊なシナリオでは、Gez 設定ファイルでカスタムエイリアスを設定できます：
+サードパーティパッケージや特殊なシナリオでは、Esmx 設定ファイルでカスタムエイリアスを設定できます：
 
 ```ts title="src/entry.node.ts"
 export default {
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createApp(gez, (buildContext) => {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createApp(esmx, (buildContext) => {
                 buildContext.config.resolve = {
                     ...buildContext.config.resolve,
                     alias: {
@@ -133,7 +133,7 @@ export default {
             })
         );
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ::: warning 注意事項

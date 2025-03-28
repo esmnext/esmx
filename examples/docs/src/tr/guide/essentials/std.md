@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Çerçevesi Proje Yapısı ve Standartları Kılavuzu
-description: Gez çerçevesinin standart proje yapısını, giriş dosyası standartlarını ve yapılandırma dosyası standartlarını detaylı bir şekilde açıklar, geliştiricilerin standartlaştırılmış ve bakımı kolay SSR uygulamaları oluşturmasına yardımcı olur.
+titleSuffix: Esmx Çerçevesi Proje Yapısı ve Standartları Kılavuzu
+description: Esmx çerçevesinin standart proje yapısını, giriş dosyası standartlarını ve yapılandırma dosyası standartlarını detaylı bir şekilde açıklar, geliştiricilerin standartlaştırılmış ve bakımı kolay SSR uygulamaları oluşturmasına yardımcı olur.
 head:
   - - meta
     - property: keywords
-      content: Gez, Proje Yapısı, Giriş Dosyası, Yapılandırma Standartları, SSR Çerçevesi, TypeScript, Proje Standartları, Geliştirme Standartları
+      content: Esmx, Proje Yapısı, Giriş Dosyası, Yapılandırma Standartları, SSR Çerçevesi, TypeScript, Proje Standartları, Geliştirme Standartları
 ---
 
 # Standartlar
 
-Gez, modern bir SSR çerçevesidir ve projelerin geliştirme ve üretim ortamlarında tutarlılığını ve bakımını sağlamak için standartlaştırılmış proje yapısı ve yol çözümleme mekanizması kullanır.
+Esmx, modern bir SSR çerçevesidir ve projelerin geliştirme ve üretim ortamlarında tutarlılığını ve bakımını sağlamak için standartlaştırılmış proje yapısı ve yol çözümleme mekanizması kullanır.
 
 ## Proje Yapısı Standartları
 
@@ -36,7 +36,7 @@ root
 ```
 
 ::: tip Ek Bilgi
-- `gez.name`, `package.json` dosyasındaki `name` alanından alınır
+- `esmx.name`, `package.json` dosyasındaki `name` alanından alınır
 - `dist/package.json`, kök dizindeki `package.json` dosyasından alınır
 - `packs.enable` değeri `true` olarak ayarlandığında, `dist` dizini arşivlenir
 
@@ -47,7 +47,7 @@ root
 ### entry.client.ts
 İstemci tarafı giriş dosyası şunlardan sorumludur:
 - **Uygulama Başlatma**: İstemci tarafı uygulamanın temel ayarlarını yapılandırır
-- **Rota Yönetimi**: İstemci tarafı rotaları ve gezinmeyi işler
+- **Rota Yönetimi**: İstemci tarafı rotaları ve esmxinmeyi işler
 - **Durum Yönetimi**: İstemci tarafı durumlarının saklanmasını ve güncellenmesini sağlar
 - **Etkileşim Yönetimi**: Kullanıcı olaylarını ve arayüz etkileşimlerini yönetir
 
@@ -76,11 +76,11 @@ Node.js sunucu giriş dosyası şunlardan sorumludur:
     "name": "your-app-name",
     "type": "module",
     "scripts": {
-        "dev": "gez dev",
+        "dev": "esmx dev",
         "build": "npm run build:dts && npm run build:ssr",
-        "build:ssr": "gez build",
+        "build:ssr": "esmx build",
         "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src",
-        "preview": "gez preview",
+        "preview": "esmx preview",
         "start": "NODE_ENV=production node dist/index.js"
     }
 }

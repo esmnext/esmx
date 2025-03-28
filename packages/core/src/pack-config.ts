@@ -1,4 +1,4 @@
-import type { Gez } from './gez';
+import type { Esmx } from './esmx';
 
 /**
  * 软件包打包配置接口。
@@ -17,7 +17,7 @@ import type { Gez } from './gez';
  * @example
  * ```ts
  * // entry.node.ts
- * import type { GezOptions } from '@gez/core';
+ * import type { EsmxOptions } from '@esmx/core';
  *
  * export default {
  *   modules: {
@@ -41,21 +41,21 @@ import type { Gez } from './gez';
  *     ],
  *
  *     // 自定义 package.json
- *     packageJson: async (gez, pkg) => {
+ *     packageJson: async (esmx, pkg) => {
  *       pkg.name = '@your-scope/your-app';
  *       pkg.version = '1.0.0';
  *       // 添加构建脚本
  *       pkg.scripts = {
  *         "prepare": "npm run build",
  *         "build": "npm run build:dts && npm run build:ssr",
- *         "build:ssr": "gez build",
+ *         "build:ssr": "esmx build",
  *         "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src"
  *       };
  *       return pkg;
  *     },
  *
  *     // 打包前准备
- *     onBefore: async (gez, pkg) => {
+ *     onBefore: async (esmx, pkg) => {
  *       // 添加必要文件
  *       await fs.writeFile('dist/README.md', '# Your App\n\n模块导出说明...');
  *       // 执行类型检查
@@ -63,7 +63,7 @@ import type { Gez } from './gez';
  *     },
  *
  *     // 打包后处理
- *     onAfter: async (gez, pkg, file) => {
+ *     onAfter: async (esmx, pkg, file) => {
  *       // 发布到私有 npm 镜像源
  *       await publishToRegistry(file, {
  *         registry: 'https://npm.your-registry.com/'
@@ -72,7 +72,7 @@ import type { Gez } from './gez';
  *       await uploadToServer(file, 'https://static.example.com/packages');
  *     }
  *   }
- * } satisfies GezOptions;
+ * } satisfies EsmxOptions;
  * ```
  */
 export interface PackConfig {
@@ -119,13 +119,13 @@ export interface PackConfig {
      * - 添加自定义字段
      * - 配置发布相关信息
      *
-     * @param gez - Gez 实例
+     * @param esmx - Esmx 实例
      * @param pkgJson - 原始的 package.json 内容
      * @returns 处理后的 package.json 内容
      *
      * @example
      * ```ts
-     * packageJson: async (gez, pkg) => {
+     * packageJson: async (esmx, pkg) => {
      *   // 设置包信息
      *   pkg.name = 'my-app';
      *   pkg.version = '1.0.0';
@@ -147,7 +147,7 @@ export interface PackConfig {
      * ```
      */
     packageJson?: (
-        gez: Gez,
+        esmx: Esmx,
         pkgJson: Record<string, any>
     ) => Promise<Record<string, any>>;
 
@@ -161,12 +161,12 @@ export interface PackConfig {
      * - 生成文档或元数据
      * - 清理临时文件
      *
-     * @param gez - Gez 实例
+     * @param esmx - Esmx 实例
      * @param pkgJson - 处理后的 package.json 内容
      *
      * @example
      * ```ts
-     * onBefore: async (gez, pkg) => {
+     * onBefore: async (esmx, pkg) => {
      *   // 添加文档
      *   await fs.writeFile('dist/README.md', '# My App');
      *   await fs.writeFile('dist/LICENSE', 'MIT License');
@@ -179,7 +179,7 @@ export interface PackConfig {
      * }
      * ```
      */
-    onBefore?: (gez: Gez, pkgJson: Record<string, any>) => Promise<void>;
+    onBefore?: (esmx: Esmx, pkgJson: Record<string, any>) => Promise<void>;
 
     /**
      * 打包后的钩子函数。
@@ -191,13 +191,13 @@ export interface PackConfig {
      * - 执行版本管理
      * - 触发 CI/CD 流程
      *
-     * @param gez - Gez 实例
+     * @param esmx - Esmx 实例
      * @param pkgJson - 最终的 package.json 内容
      * @param file - 生成的 .tgz 文件内容
      *
      * @example
      * ```ts
-     * onAfter: async (gez, pkg, file) => {
+     * onAfter: async (esmx, pkg, file) => {
      *   // 发布到 npm 私有仓库
      *   await publishToRegistry(file, {
      *     registry: 'https://registry.example.com'
@@ -215,7 +215,7 @@ export interface PackConfig {
      * ```
      */
     onAfter?: (
-        gez: Gez,
+        esmx: Esmx,
         pkgJson: Record<string, any>,
         file: Buffer
     ) => Promise<void>;
@@ -252,7 +252,7 @@ export interface ParsedPackConfig {
      * 未配置时使用默认函数，保持原始内容不变。
      */
     packageJson: (
-        gez: Gez,
+        esmx: Esmx,
         pkgJson: Record<string, any>
     ) => Promise<Record<string, any>>;
 
@@ -260,14 +260,14 @@ export interface ParsedPackConfig {
      * 标准化的打包前钩子函数。
      * 未配置时使用空函数。
      */
-    onBefore: (gez: Gez, pkgJson: Record<string, any>) => Promise<void>;
+    onBefore: (esmx: Esmx, pkgJson: Record<string, any>) => Promise<void>;
 
     /**
      * 标准化的打包后钩子函数。
      * 未配置时使用空函数。
      */
     onAfter: (
-        gez: Gez,
+        esmx: Esmx,
         pkgJson: Record<string, any>,
         file: Buffer
     ) => Promise<void>;
@@ -285,17 +285,17 @@ export function parsePackConfig(config: PackConfig = {}): ParsedPackConfig {
     return {
         enable: config.enable ?? false,
         outputs,
-        async packageJson(gez, pkgJson) {
+        async packageJson(esmx, pkgJson) {
             if (config.packageJson) {
-                pkgJson = await config.packageJson(gez, pkgJson);
+                pkgJson = await config.packageJson(esmx, pkgJson);
             }
             return pkgJson;
         },
-        async onBefore(gez, pkgJson: Record<string, any>) {
-            await config.onBefore?.(gez, pkgJson);
+        async onBefore(esmx, pkgJson: Record<string, any>) {
+            await config.onBefore?.(esmx, pkgJson);
         },
-        async onAfter(gez, pkgJson, file) {
-            await config.onAfter?.(gez, pkgJson, file);
+        async onAfter(esmx, pkgJson, file) {
+            await config.onAfter?.(esmx, pkgJson, file);
         }
     };
 }

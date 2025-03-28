@@ -1,10 +1,10 @@
 ---
-titleSuffix: Gez Framework Kompatibilitätsleitfaden
-description: Detaillierte Anforderungen an die Umgebung des Gez-Frameworks, einschließlich Node.js-Versionsanforderungen und Browserkompatibilitätshinweise, um Entwicklern bei der korrekten Konfiguration der Entwicklungsumgebung zu helfen.
+titleSuffix: Esmx Framework Kompatibilitätsleitfaden
+description: Detaillierte Anforderungen an die Umgebung des Esmx-Frameworks, einschließlich Node.js-Versionsanforderungen und Browserkompatibilitätshinweise, um Entwicklern bei der korrekten Konfiguration der Entwicklungsumgebung zu helfen.
 head:
   - - meta
     - property: keywords
-      content: Gez, Node.js, Browserkompatibilität, TypeScript, es-module-shims, Umgebungskonfiguration
+      content: Esmx, Node.js, Browserkompatibilität, TypeScript, es-module-shims, Umgebungskonfiguration
 ---
 
 # Umgebungsanforderungen

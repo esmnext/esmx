@@ -3,7 +3,7 @@
     <app-nav current="remote" />
     
     <ui-module-header
-      title="Gez Module Link Remote"
+      title="Esmx Module Link Remote"
       description="这是一个 Module Link 远程模块示例，用于展示可复用的组件。通过 Module Link，你可以轻松地在不同项目间共享和复用组件，实现真正的模块化开发。"
     />
 

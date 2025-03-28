@@ -1,6 +1,6 @@
-# Gez SSR Vue2 Remote
+# Esmx SSR Vue2 Remote
 
-一个基于 Vue2 的微前端 Remote 应用示例，展示了如何使用 Gez 构建可被 Host 应用集成的独立模块，支持服务端渲染。
+一个基于 Vue2 的微前端 Remote 应用示例，展示了如何使用 Esmx 构建可被 Host 应用集成的独立模块，支持服务端渲染。
 
 ## 特点
 
@@ -13,8 +13,8 @@
 
 1. 克隆仓库
 ```bash
-git clone https://github.com/js-esm/gez.git
-cd gez/examples/ssr-vue2-remote
+git clone https://github.com/js-esm/esmx.git
+cd esmx/examples/ssr-vue2-remote
 ```
 
 2. 安装 pnpm（如果未安装）
@@ -48,12 +48,12 @@ src/
 
 ## 在线预览
 
-访问 [在线示例](https://js-esm.github.io/gez/ssr-vue2-remote/) 查看运行效果。
+访问 [在线示例](https://js-esm.github.io/esmx/ssr-vue2-remote/) 查看运行效果。
 
 ## 相关链接
 
-- [项目文档](https://js-esm.github.io/gez/)
-- [GitHub 仓库](https://github.com/js-esm/gez)
+- [项目文档](https://js-esm.github.io/esmx/)
+- [GitHub 仓库](https://github.com/js-esm/esmx)
 
 ## 许可证
 

@@ -1,15 +1,15 @@
 ---
-titleSuffix: Référence de l'API de configuration des modules du framework Gez
-description: Documentation détaillée de l'interface de configuration ModuleConfig du framework Gez, incluant les règles d'import/export de modules, la configuration des alias et la gestion des dépendances externes, pour aider les développeurs à comprendre en profondeur le système de modularité du framework.
+titleSuffix: Référence de l'API de configuration des modules du framework Esmx
+description: Documentation détaillée de l'interface de configuration ModuleConfig du framework Esmx, incluant les règles d'import/export de modules, la configuration des alias et la gestion des dépendances externes, pour aider les développeurs à comprendre en profondeur le système de modularité du framework.
 head:
   - - meta
     - property: keywords
-      content: Gez, ModuleConfig, configuration de modules, import/export de modules, dépendances externes, configuration d'alias, gestion des dépendances, framework d'application Web
+      content: Esmx, ModuleConfig, configuration de modules, import/export de modules, dépendances externes, configuration d'alias, gestion des dépendances, framework d'application Web
 ---
 
 # ModuleConfig
 
-ModuleConfig fournit les fonctionnalités de configuration des modules du framework Gez, permettant de définir les règles d'import/export de modules, la configuration des alias et les dépendances externes.
+ModuleConfig fournit les fonctionnalités de configuration des modules du framework Esmx, permettant de définir les règles d'import/export de modules, la configuration des alias et les dépendances externes.
 
 ## Définitions de types
 
@@ -74,7 +74,7 @@ Chaque dépendance contient les propriétés suivantes :
 
 **Exemple** :
 ```ts title="entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
@@ -100,7 +100,7 @@ export default {
       'vue-router': 'ssr-remote/npm/vue-router'
     }
   }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ### ParsedModuleConfig

@@ -1,4 +1,4 @@
-import type { rspack } from '@gez/rspack';
+import type { rspack } from '@esmx/rspack';
 
 const ADD_IMPORT = `
 import { useSSRContext } from 'vue';

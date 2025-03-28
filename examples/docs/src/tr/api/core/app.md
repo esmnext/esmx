@@ -1,22 +1,22 @@
 ---
-titleSuffix: Gez Çerçevesi Uygulama Soyutlama Arayüzü
-description: Gez çerçevesinin App arayüzünü detaylı olarak açıklar, uygulama yaşam döngüsü yönetimi, statik kaynak işleme ve sunucu tarafı renderlama özelliklerini içerir, geliştiricilerin uygulama çekirdek işlevlerini anlamasına ve kullanmasına yardımcı olur.
+titleSuffix: Esmx Çerçevesi Uygulama Soyutlama Arayüzü
+description: Esmx çerçevesinin App arayüzünü detaylı olarak açıklar, uygulama yaşam döngüsü yönetimi, statik kaynak işleme ve sunucu tarafı renderlama özelliklerini içerir, geliştiricilerin uygulama çekirdek işlevlerini anlamasına ve kullanmasına yardımcı olur.
 head:
   - - meta
     - property: keywords
-      content: Gez, App, Uygulama Soyutlama, Yaşam Döngüsü, Statik Kaynaklar, Sunucu Tarafı Renderlama, API
+      content: Esmx, App, Uygulama Soyutlama, Yaşam Döngüsü, Statik Kaynaklar, Sunucu Tarafı Renderlama, API
 ---
 
 # App
 
-`App`, Gez çerçevesinin uygulama soyutlamasıdır ve uygulamanın yaşam döngüsünü, statik kaynakları ve sunucu tarafı renderlamayı yönetmek için birleşik bir arayüz sağlar.
+`App`, Esmx çerçevesinin uygulama soyutlamasıdır ve uygulamanın yaşam döngüsünü, statik kaynakları ve sunucu tarafı renderlamayı yönetmek için birleşik bir arayüz sağlar.
 
 ```ts title="entry.node.ts"
 export default {
   // Geliştirme ortamı yapılandırması
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(rc) {
           // Özel Rspack yapılandırması
         }
@@ -55,7 +55,7 @@ Geliştirme ortamı:
 - Optimize edilmiş kaynak yükleme stratejisi
 
 ```ts
-server.use(gez.middleware);
+server.use(esmx.middleware);
 ```
 
 #### render
@@ -67,7 +67,7 @@ Sunucu tarafı renderlama fonksiyonu. Çalışma ortamına göre farklı uygulam
 - Geliştirme ortamı (dev): Kaynak kodundaki sunucu giriş dosyasını yükleyerek renderlama yapar
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: '/page' }
 });
 res.end(rc.html);

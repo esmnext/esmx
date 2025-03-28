@@ -1,5 +1,5 @@
-import type { Gez } from '@gez/core';
-import { createRspackHtmlApp, rspack } from '@gez/rspack';
+import type { Esmx } from '@esmx/core';
+import { createRspackHtmlApp, rspack } from '@esmx/rspack';
 import { VueLoaderPlugin as VueLoader2Plugin } from 'vue2-loader';
 import { VueLoaderPlugin as VueLoader3Plugin } from 'vue3-loader';
 import type { RspackVueAppOptions } from './vue';
@@ -9,11 +9,11 @@ import { vue3Loader } from './vue3-loader';
 type VueType = '2' | '3';
 
 export function createRspackVueApp(
-    gez: Gez,
+    esmx: Esmx,
     vueType: VueType,
     options?: RspackVueAppOptions
 ) {
-    return createRspackHtmlApp(gez, {
+    return createRspackHtmlApp(esmx, {
         ...options,
         loaders: {
             styleLoader: new URL(import.meta.resolve('vue-style-loader'))

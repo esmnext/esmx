@@ -1,15 +1,15 @@
 ---
-titleSuffix: Cơ chế chia sẻ mã giữa các dịch vụ trong framework Gez
-description: Giới thiệu chi tiết cơ chế liên kết module trong framework Gez, bao gồm chia sẻ mã giữa các dịch vụ, quản lý phụ thuộc và triển khai tiêu chuẩn ESM, giúp nhà phát triển xây dựng ứng dụng micro frontend hiệu quả.
+titleSuffix: Cơ chế chia sẻ mã giữa các dịch vụ trong framework Esmx
+description: Giới thiệu chi tiết cơ chế liên kết module trong framework Esmx, bao gồm chia sẻ mã giữa các dịch vụ, quản lý phụ thuộc và triển khai tiêu chuẩn ESM, giúp nhà phát triển xây dựng ứng dụng micro frontend hiệu quả.
 head:
   - - meta
     - property: keywords
-      content: Gez, liên kết module, Module Link, ESM, chia sẻ mã, quản lý phụ thuộc, micro frontend
+      content: Esmx, liên kết module, Module Link, ESM, chia sẻ mã, quản lý phụ thuộc, micro frontend
 ---
 
 # Liên kết module
 
-Framework Gez cung cấp một cơ chế liên kết module hoàn chỉnh để quản lý việc chia sẻ mã và các mối quan hệ phụ thuộc giữa các dịch vụ. Cơ chế này được triển khai dựa trên tiêu chuẩn ESM (ECMAScript Module), hỗ trợ xuất và nhập module ở cấp độ mã nguồn, cùng với các chức năng quản lý phụ thuộc đầy đủ.
+Framework Esmx cung cấp một cơ chế liên kết module hoàn chỉnh để quản lý việc chia sẻ mã và các mối quan hệ phụ thuộc giữa các dịch vụ. Cơ chế này được triển khai dựa trên tiêu chuẩn ESM (ECMAScript Module), hỗ trợ xuất và nhập module ở cấp độ mã nguồn, cùng với các chức năng quản lý phụ thuộc đầy đủ.
 
 ### Khái niệm cốt lõi
 
@@ -30,7 +30,7 @@ Nhập module là quá trình tham chiếu các đơn vị mã được xuất t
 Cấu hình các module cần xuất trong `entry.node.ts`:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     modules: {
@@ -43,7 +43,7 @@ export default {
             'npm:vue-router'                   // Vue Router
         ]
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 Cấu hình xuất hỗ trợ hai loại:
@@ -57,7 +57,7 @@ Cấu hình xuất hỗ trợ hai loại:
 Cấu hình các module cần nhập trong `entry.node.ts`:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     modules: {
@@ -75,7 +75,7 @@ export default {
             'vue-router': 'ssr-remote/npm/vue-router'
         }
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 Giải thích các mục cấu hình:
@@ -143,7 +143,7 @@ Cài đặt qua giao thức HTTP/HTTPS:
 Cấu hình các tùy chọn build trong `entry.node.ts`:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     // Cấu hình xuất module
@@ -166,26 +166,26 @@ export default {
         ],
 
         // Tùy chỉnh package.json
-        packageJson: async (gez, pkg) => {
+        packageJson: async (esmx, pkg) => {
             pkg.version = '1.0.0';
             return pkg;
         },
 
         // Xử lý trước khi build
-        onBefore: async (gez, pkg) => {
+        onBefore: async (esmx, pkg) => {
             // Tạo khai báo kiểu
             // Chạy test case
             // Cập nhật tài liệu, v.v.
         },
 
         // Xử lý sau khi build
-        onAfter: async (gez, pkg, file) => {
+        onAfter: async (esmx, pkg, file) => {
             // Tải lên CDN
             // Phát hành lên npm repository
             // Triển khai lên môi trường test, v.v.
         }
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ### Sản phẩm build
@@ -205,7 +205,7 @@ your-app-name.tgz
 
 ```bash
 # 1. Build phiên bản sản xuất
-gez build
+esmx build
 
 # 2. Phát hành lên npm
 npm publish dist/versions/your-app-name.tgz

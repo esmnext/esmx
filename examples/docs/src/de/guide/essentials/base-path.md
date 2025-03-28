@@ -1,15 +1,15 @@
 ---
-titleSuffix: Leitfaden zur Konfiguration statischer Ressourcenpfade im Gez-Framework
-description: Detaillierte Anleitung zur Konfiguration von Basis-Pfaden im Gez-Framework, einschließlich Multi-Umgebungs-Bereitstellung, CDN-Verteilung und Ressourcenzugriffspfade, um Entwicklern bei der flexiblen Verwaltung statischer Ressourcen zu helfen.
+titleSuffix: Leitfaden zur Konfiguration statischer Ressourcenpfade im Esmx-Framework
+description: Detaillierte Anleitung zur Konfiguration von Basis-Pfaden im Esmx-Framework, einschließlich Multi-Umgebungs-Bereitstellung, CDN-Verteilung und Ressourcenzugriffspfade, um Entwicklern bei der flexiblen Verwaltung statischer Ressourcen zu helfen.
 head:
   - - meta
     - property: keywords
-      content: Gez, Basis-Pfad, Base Path, CDN, statische Ressourcen, Multi-Umgebungs-Bereitstellung, Ressourcenverwaltung
+      content: Esmx, Basis-Pfad, Base Path, CDN, statische Ressourcen, Multi-Umgebungs-Bereitstellung, Ressourcenverwaltung
 ---
 
 # Basis-Pfad
 
-Der Basis-Pfad (Base Path) bezieht sich auf das Präfix des Zugriffspfads für statische Ressourcen (wie JavaScript, CSS, Bilder usw.) in einer Anwendung. In Gez ist die korrekte Konfiguration des Basis-Pfads für folgende Szenarien entscheidend:
+Der Basis-Pfad (Base Path) bezieht sich auf das Präfix des Zugriffspfads für statische Ressourcen (wie JavaScript, CSS, Bilder usw.) in einer Anwendung. In Esmx ist die korrekte Konfiguration des Basis-Pfads für folgende Szenarien entscheidend:
 
 - **Multi-Umgebungs-Bereitstellung**: Unterstützung des Ressourcenzugriffs in verschiedenen Umgebungen wie Entwicklung, Test und Produktion
 - **Multi-Regionen-Bereitstellung**: Anpassung an die Bereitstellungsanforderungen in verschiedenen Regionen oder Ländern
@@ -17,7 +17,7 @@ Der Basis-Pfad (Base Path) bezieht sich auf das Präfix des Zugriffspfads für s
 
 ## Standardpfad-Mechanismus
 
-Gez verwendet einen automatischen Pfadgenerierungsmechanismus basierend auf dem Dienstnamen. Standardmäßig liest das Framework das `name`-Feld in der `package.json` des Projekts, um den Basis-Pfad für statische Ressourcen zu generieren: `/your-app-name/`.
+Esmx verwendet einen automatischen Pfadgenerierungsmechanismus basierend auf dem Dienstnamen. Standardmäßig liest das Framework das `name`-Feld in der `package.json` des Projekts, um den Basis-Pfad für statische Ressourcen zu generieren: `/your-app-name/`.
 
 ```json title="package.json"
 {
@@ -33,7 +33,7 @@ Dieses Design, das Konvention über Konfiguration stellt, bietet folgende Vortei
 
 ## Dynamische Pfadkonfiguration
 
-In realen Projekten müssen wir oft denselben Code in verschiedenen Umgebungen oder Regionen bereitstellen. Gez bietet Unterstützung für dynamische Basis-Pfade, sodass Anwendungen sich an verschiedene Bereitstellungsszenarien anpassen können.
+In realen Projekten müssen wir oft denselben Code in verschiedenen Umgebungen oder Regionen bereitstellen. Esmx bietet Unterstützung für dynamische Basis-Pfade, sodass Anwendungen sich an verschiedene Bereitstellungsszenarien anpassen können.
 
 ### Anwendungsfälle
 
@@ -53,10 +53,10 @@ In realen Projekten müssen wir oft denselben Code in verschiedenen Umgebungen o
 
 ### Konfigurationsmethode
 
-Über den `base`-Parameter der `gez.render()`-Methode können Sie den Basis-Pfad basierend auf dem Anfragekontext dynamisch festlegen:
+Über den `base`-Parameter der `esmx.render()`-Methode können Sie den Basis-Pfad basierend auf dem Anfragekontext dynamisch festlegen:
 
 ```ts
-const render = await gez.render({
+const render = await esmx.render({
     base: '/cn',  // Basis-Pfad festlegen
     params: {
         url: req.url

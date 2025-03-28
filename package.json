@@ -1,5 +1,5 @@
 {
-    "name": "gez",
+    "name": "esmx",
     "template": "monorepo",
     "version": "1.0.0",
     "type": "module",
@@ -35,7 +35,7 @@
     "pnpm": {
         "onlyBuiltDependencies": [
             "@biomejs/biome",
-            "@gez/router-vue",
+            "@esmx/router-vue",
             "esbuild"
         ],
         "ignoredBuiltDependencies": [

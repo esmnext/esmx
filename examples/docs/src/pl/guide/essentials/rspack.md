@@ -1,19 +1,19 @@
 ---
-titleSuffix: Gez Framework - Wysokowydajny silnik budowania
-description: Szczegółowa analiza systemu budowania Rspack w frameworku Gez, obejmująca kluczowe funkcje takie jak wysokowydajna kompilacja, budowanie w wielu środowiskach, optymalizacja zasobów, które pomagają programistom tworzyć wydajne i niezawodne nowoczesne aplikacje webowe.
+titleSuffix: Esmx Framework - Wysokowydajny silnik budowania
+description: Szczegółowa analiza systemu budowania Rspack w frameworku Esmx, obejmująca kluczowe funkcje takie jak wysokowydajna kompilacja, budowanie w wielu środowiskach, optymalizacja zasobów, które pomagają programistom tworzyć wydajne i niezawodne nowoczesne aplikacje webowe.
 head:
   - - meta
     - property: keywords
-      content: Gez, Rspack, system budowania, wysokowydajna kompilacja, hot reload, budowanie w wielu środowiskach, Tree Shaking, podział kodu, SSR, optymalizacja zasobów, efektywność programistyczna, narzędzia budowania
+      content: Esmx, Rspack, system budowania, wysokowydajna kompilacja, hot reload, budowanie w wielu środowiskach, Tree Shaking, podział kodu, SSR, optymalizacja zasobów, efektywność programistyczna, narzędzia budowania
 ---
 
 # Rspack
 
-Gez opiera się na systemie budowania [Rspack](https://rspack.dev/), w pełni wykorzystując jego wysokowydajne możliwości budowania. Ten dokument przedstawia rolę i kluczowe funkcje Rspack w frameworku Gez.
+Esmx opiera się na systemie budowania [Rspack](https://rspack.dev/), w pełni wykorzystując jego wysokowydajne możliwości budowania. Ten dokument przedstawia rolę i kluczowe funkcje Rspack w frameworku Esmx.
 
 ## Funkcje
 
-Rspack jest podstawowym systemem budowania frameworku Gez, oferując następujące kluczowe funkcje:
+Rspack jest podstawowym systemem budowania frameworku Esmx, oferując następujące kluczowe funkcje:
 
 - **Wysokowydajne budowanie**: Silnik budowania oparty na Rust, zapewniający błyskawiczną kompilację, znacząco przyspieszając budowanie dużych projektów
 - **Optymalizacja doświadczenia programistycznego**: Obsługa hot reload (HMR), kompilacja przyrostowa i inne nowoczesne funkcje programistyczne, zapewniając płynne doświadczenie programistyczne
@@ -22,9 +22,9 @@ Rspack jest podstawowym systemem budowania frameworku Gez, oferując następują
 
 ## Budowanie aplikacji
 
-System budowania Rspack w Gez ma modułową strukturę i obejmuje następujące kluczowe moduły:
+System budowania Rspack w Esmx ma modułową strukturę i obejmuje następujące kluczowe moduły:
 
-### @gez/rspack
+### @esmx/rspack
 
 Podstawowy moduł budowania, zapewniający następujące kluczowe możliwości:
 
@@ -33,7 +33,7 @@ Podstawowy moduł budowania, zapewniający następujące kluczowe możliwości:
 - **Optymalizacja budowania**: Zapewnia funkcje optymalizacji wydajności, takie jak podział kodu i Tree Shaking
 - **Serwer programistyczny**: Zintegrowany wysokowydajny serwer programistyczny z obsługą HMR
 
-### @gez/rspack-vue
+### @esmx/rspack-vue
 
 Specjalny moduł budowania dla frameworku Vue, zapewniający:
 
@@ -43,7 +43,7 @@ Specjalny moduł budowania dla frameworku Vue, zapewniający:
 
 ## Proces budowania
 
-Proces budowania w Gez składa się z następujących etapów:
+Proces budowania w Esmx składa się z następujących etapów:
 
 1. **Inicjalizacja konfiguracji**
    - Ładowanie konfiguracji projektu
@@ -82,12 +82,12 @@ Proces budowania w Gez składa się z następujących etapów:
 ## Przykład konfiguracji
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createRspackHtmlApp(gez, {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createRspackHtmlApp(esmx, {
                 // Niestandardowa konfiguracja budowania
                 config({ config }) {
                     // Dodaj niestandardowe konfiguracje Rspack tutaj
@@ -95,7 +95,7 @@ export default {
             })
         );
     },
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ::: tip

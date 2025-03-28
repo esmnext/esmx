@@ -1,13 +1,13 @@
 ---
 pageType: home
 titleSuffix: ESM आधारित उच्च प्रदर्शन सर्वर-साइड रेंडरिंग फ्रेमवर्क
-description: Gez एक ESM आधारित उच्च प्रदर्शन सर्वर-साइड रेंडरिंग फ्रेमवर्क है, जो पूर्ण SSR क्षमता, बुद्धिमान रेंडरिंग संदर्भ और नवीन मॉड्यूल लिंकिंग सिस्टम प्रदान करता है, जो बड़े वेब एप्लिकेशन विकास के लिए उपयुक्त है।
+description: Esmx एक ESM आधारित उच्च प्रदर्शन सर्वर-साइड रेंडरिंग फ्रेमवर्क है, जो पूर्ण SSR क्षमता, बुद्धिमान रेंडरिंग संदर्भ और नवीन मॉड्यूल लिंकिंग सिस्टम प्रदान करता है, जो बड़े वेब एप्लिकेशन विकास के लिए उपयुक्त है।
 head:
   - - meta
     - property: keywords
-      content: Gez, SSR, ESM, सर्वर-साइड रेंडरिंग, मॉड्यूल लिंकिंग, Vue, React, TypeScript, माइक्रोफ्रंटेंड
+      content: Esmx, SSR, ESM, सर्वर-साइड रेंडरिंग, मॉड्यूल लिंकिंग, Vue, React, TypeScript, माइक्रोफ्रंटेंड
 hero:
-  name: Gez
+  name: Esmx
   text: ESM आधारित सर्वर-साइड रेंडरिंग फ्रेमवर्क
   tagline: उच्च प्रदर्शन, विस्तार योग्य मॉड्यूल लिंकिंग सिस्टम
   actions:
@@ -16,7 +16,7 @@ hero:
       link: /guide/start/getting-started
     - theme: alt
       text: GitHub
-      link: https://github.com/js-esm/gez
+      link: https://github.com/js-esm/esmx
 
 features:
   - icon: ⚡️

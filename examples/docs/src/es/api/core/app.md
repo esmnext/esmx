@@ -1,22 +1,22 @@
 ---
-titleSuffix: Interfaz de abstracción de aplicaciones del framework Gez
-description: Detalles sobre la interfaz App del framework Gez, incluyendo la gestión del ciclo de vida de la aplicación, el manejo de recursos estáticos y la renderización del lado del servidor, para ayudar a los desarrolladores a comprender y utilizar las funciones principales de la aplicación.
+titleSuffix: Interfaz de abstracción de aplicaciones del framework Esmx
+description: Detalles sobre la interfaz App del framework Esmx, incluyendo la gestión del ciclo de vida de la aplicación, el manejo de recursos estáticos y la renderización del lado del servidor, para ayudar a los desarrolladores a comprender y utilizar las funciones principales de la aplicación.
 head:
   - - meta
     - property: keywords
-      content: Gez, App, abstracción de aplicación, ciclo de vida, recursos estáticos, renderización del lado del servidor, API
+      content: Esmx, App, abstracción de aplicación, ciclo de vida, recursos estáticos, renderización del lado del servidor, API
 ---
 
 # App
 
-`App` es la abstracción de la aplicación en el framework Gez, que proporciona una interfaz unificada para gestionar el ciclo de vida de la aplicación, los recursos estáticos y la renderización del lado del servidor.
+`App` es la abstracción de la aplicación en el framework Esmx, que proporciona una interfaz unificada para gestionar el ciclo de vida de la aplicación, los recursos estáticos y la renderización del lado del servidor.
 
 ```ts title="entry.node.ts"
 export default {
   // Configuración del entorno de desarrollo
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(rc) {
           // Configuración personalizada de Rspack
         }
@@ -55,7 +55,7 @@ Entorno de producción:
 - Estrategia optimizada para la carga de recursos
 
 ```ts
-server.use(gez.middleware);
+server.use(esmx.middleware);
 ```
 
 #### render
@@ -67,7 +67,7 @@ Función de renderización del lado del servidor. Proporciona diferentes impleme
 - Entorno de desarrollo (dev): Carga el archivo de entrada del servidor desde el código fuente y ejecuta la renderización
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: '/page' }
 });
 res.end(rc.html);

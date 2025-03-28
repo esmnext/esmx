@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework Rendering Context API Reference
-description: Detailed documentation of the RenderContext core class in the Gez framework, including rendering control, resource management, state synchronization, and routing control, helping developers achieve efficient server-side rendering.
+titleSuffix: Esmx Framework Rendering Context API Reference
+description: Detailed documentation of the RenderContext core class in the Esmx framework, including rendering control, resource management, state synchronization, and routing control, helping developers achieve efficient server-side rendering.
 head:
   - - meta
     - property: keywords
-      content: Gez, RenderContext, SSR, Server-Side Rendering, Rendering Context, State Synchronization, Resource Management, Web Application Framework
+      content: Esmx, RenderContext, SSR, Server-Side Rendering, Rendering Context, State Synchronization, Resource Management, Web Application Framework
 ---
 
 # RenderContext
 
-RenderContext is the core class in the Gez framework, responsible for managing the complete lifecycle of server-side rendering (SSR). It provides a comprehensive API to handle key tasks such as rendering context, resource management, and state synchronization:
+RenderContext is the core class in the Esmx framework, responsible for managing the complete lifecycle of server-side rendering (SSR). It provides a comprehensive API to handle key tasks such as rendering context, resource management, and state synchronization:
 
 - **Rendering Control**: Manages the server-side rendering process, supporting scenarios like multi-entry rendering and conditional rendering
 - **Resource Management**: Intelligently collects and injects static resources like JS and CSS to optimize loading performance
@@ -148,7 +148,7 @@ export const desktop = async (rc: RenderContext) => {
 Rendering parameters. Can pass any type of parameters to the rendering function, commonly used to pass request information (URL, query parameters, etc.).
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     url: req.url,
     lang: 'zh-CN',
@@ -169,12 +169,12 @@ Import Map generation mode:
 
 ## Instance Properties
 
-### gez
+### esmx
 
-- **Type**: `Gez`
+- **Type**: `Esmx`
 - **Read-only**: `true`
 
-Reference to the Gez instance. Used to access core framework functionality and configuration information.
+Reference to the Esmx instance. Used to access core framework functionality and configuration information.
 
 ### redirect
 
@@ -264,7 +264,7 @@ export default async (rc: RenderContext) => {
 };
 
 // Dynamic base path
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/app',  // Set base path
   params: { url: req.url }
 });
@@ -285,19 +285,19 @@ Base path for static resources. All static resources (JS, CSS, images, etc.) wil
 
 ```ts
 // Basic usage
-const rc = await gez.render({
-  base: '/gez',  // Set base path
+const rc = await esmx.render({
+  base: '/esmx',  // Set base path
   params: { url: req.url }
 });
 
 // Multi-language site example
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/cn',  // Chinese site
   params: { lang: 'zh-CN' }
 });
 
 // Micro-frontend application example
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/app1',  // Sub-application 1
   params: { appId: 1 }
 });
@@ -327,7 +327,7 @@ export const desktop = async (rc: RenderContext) => {
 };
 
 // Select entry function based on device type
-const rc = await gez.render({
+const rc = await esmx.render({
   entryName: isMobile ? 'mobile' : 'desktop',
   params: { url: req.url }
 });
@@ -343,7 +343,7 @@ Rendering parameters. Can pass and access parameters during server-side renderin
 
 ```ts
 // Basic usage - passing URL and language settings
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     url: req.url,
     lang: 'zh-CN'
@@ -351,7 +351,7 @@ const rc = await gez.render({
 });
 
 // Page configuration - setting theme and layout
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     theme: 'dark',
     layout: 'sidebar'
@@ -359,7 +359,7 @@ const rc = await gez.render({
 });
 
 // Environment configuration - injecting API address
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     apiBaseUrl: process.env.API_BASE_URL,
     version: '1.0.0'

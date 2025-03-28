@@ -1,5 +1,5 @@
 {
-    "name": "@gez/fetch",
+    "name": "@esmx/fetch",
     "template": "library-node",
     "scripts": {
         "lint:css": "stylelint '**/*.{css,vue}' --fix --aei",
@@ -16,7 +16,7 @@
     },
     "devDependencies": {
         "@biomejs/biome": "1.9.4",
-        "@gez/lint": "workspace:*",
+        "@esmx/lint": "workspace:*",
         "@types/cli-progress": "^3.11.6",
         "@types/node": "22.9.0",
         "@vitest/coverage-v8": "2.1.5",

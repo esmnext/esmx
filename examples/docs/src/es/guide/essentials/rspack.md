@@ -1,19 +1,19 @@
 ---
-titleSuffix: Motor de construcción de alto rendimiento del framework Gez
-description: Análisis en profundidad del sistema de construcción Rspack del framework Gez, incluyendo compilación de alto rendimiento, construcción multi-entorno, optimización de recursos y otras características clave, para ayudar a los desarrolladores a construir aplicaciones web modernas eficientes y confiables.
+titleSuffix: Motor de construcción de alto rendimiento del framework Esmx
+description: Análisis en profundidad del sistema de construcción Rspack del framework Esmx, incluyendo compilación de alto rendimiento, construcción multi-entorno, optimización de recursos y otras características clave, para ayudar a los desarrolladores a construir aplicaciones web modernas eficientes y confiables.
 head:
   - - meta
     - property: keywords
-      content: Gez, Rspack, sistema de construcción, compilación de alto rendimiento, actualización en caliente, construcción multi-entorno, Tree Shaking, división de código, SSR, optimización de recursos, eficiencia de desarrollo, herramientas de construcción
+      content: Esmx, Rspack, sistema de construcción, compilación de alto rendimiento, actualización en caliente, construcción multi-entorno, Tree Shaking, división de código, SSR, optimización de recursos, eficiencia de desarrollo, herramientas de construcción
 ---
 
 # Rspack
 
-Gez se basa en el sistema de construcción [Rspack](https://rspack.dev/), aprovechando al máximo su capacidad de construcción de alto rendimiento. Este documento presenta el posicionamiento y las funciones principales de Rspack en el framework Gez.
+Esmx se basa en el sistema de construcción [Rspack](https://rspack.dev/), aprovechando al máximo su capacidad de construcción de alto rendimiento. Este documento presenta el posicionamiento y las funciones principales de Rspack en el framework Esmx.
 
 ## Características
 
-Rspack es el sistema de construcción central del framework Gez y ofrece las siguientes características clave:
+Rspack es el sistema de construcción central del framework Esmx y ofrece las siguientes características clave:
 
 - **Construcción de alto rendimiento**: Motor de construcción implementado en Rust, proporciona una velocidad de compilación extremadamente rápida, mejorando significativamente la velocidad de construcción de proyectos grandes.
 - **Optimización de la experiencia de desarrollo**: Soporta características modernas como actualización en caliente (HMR) y compilación incremental, ofreciendo una experiencia de desarrollo fluida.
@@ -22,9 +22,9 @@ Rspack es el sistema de construcción central del framework Gez y ofrece las sig
 
 ## Construcción de aplicaciones
 
-El sistema de construcción Rspack de Gez sigue un diseño modular e incluye los siguientes módulos principales:
+El sistema de construcción Rspack de Esmx sigue un diseño modular e incluye los siguientes módulos principales:
 
-### @gez/rspack
+### @esmx/rspack
 
 Módulo de construcción básico que proporciona las siguientes capacidades centrales:
 
@@ -33,7 +33,7 @@ Módulo de construcción básico que proporciona las siguientes capacidades cent
 - **Optimización de construcción**: Proporciona características de optimización de rendimiento como división de código y Tree Shaking.
 - **Servidor de desarrollo**: Integra un servidor de desarrollo de alto rendimiento con soporte para HMR.
 
-### @gez/rspack-vue
+### @esmx/rspack-vue
 
 Módulo de construcción específico para el framework Vue, ofrece:
 
@@ -43,7 +43,7 @@ Módulo de construcción específico para el framework Vue, ofrece:
 
 ## Flujo de construcción
 
-El flujo de construcción de Gez se divide principalmente en las siguientes etapas:
+El flujo de construcción de Esmx se divide principalmente en las siguientes etapas:
 
 1. **Inicialización de configuración**
    - Carga la configuración del proyecto
@@ -82,12 +82,12 @@ El flujo de construcción de Gez se divide principalmente en las siguientes etap
 ## Ejemplo de configuración
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createRspackHtmlApp(gez, {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createRspackHtmlApp(esmx, {
                 // Configuración de construcción personalizada
                 config({ config }) {
                     // Agrega configuraciones personalizadas de Rspack aquí
@@ -95,7 +95,7 @@ export default {
             })
         );
     },
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ::: tip

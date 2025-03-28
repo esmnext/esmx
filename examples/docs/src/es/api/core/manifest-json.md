@@ -1,15 +1,15 @@
 ---
-titleSuffix: Referencia del archivo de manifiesto de construcción del framework Gez
-description: Descripción detallada de la estructura del archivo de manifiesto de construcción (manifest.json) del framework Gez, incluyendo la gestión de artefactos de construcción, mapeo de archivos exportados y estadísticas de recursos, para ayudar a los desarrolladores a comprender y utilizar el sistema de construcción.
+titleSuffix: Referencia del archivo de manifiesto de construcción del framework Esmx
+description: Descripción detallada de la estructura del archivo de manifiesto de construcción (manifest.json) del framework Esmx, incluyendo la gestión de artefactos de construcción, mapeo de archivos exportados y estadísticas de recursos, para ayudar a los desarrolladores a comprender y utilizar el sistema de construcción.
 head:
   - - meta
     - property: keywords
-      content: Gez, ManifestJson, Manifiesto de construcción, Gestión de recursos, Artefactos de construcción, Mapeo de archivos, API
+      content: Esmx, ManifestJson, Manifiesto de construcción, Gestión de recursos, Artefactos de construcción, Mapeo de archivos, API
 ---
 
 # ManifestJson
 
-`manifest.json` es un archivo de manifiesto generado por el framework Gez durante el proceso de construcción, utilizado para registrar la información de los artefactos generados en la construcción del servicio. Proporciona una interfaz unificada para gestionar los artefactos de construcción, los archivos exportados y las estadísticas de tamaño de los recursos.
+`manifest.json` es un archivo de manifiesto generado por el framework Esmx durante el proceso de construcción, utilizado para registrar la información de los artefactos generados en la construcción del servicio. Proporciona una interfaz unificada para gestionar los artefactos de construcción, los archivos exportados y las estadísticas de tamaño de los recursos.
 
 ```json title="dist/client/manifest.json"
 {
@@ -71,7 +71,7 @@ interface ManifestJson {
 
 - **Tipo**: `string`
 
-Nombre del servicio, proviene de la configuración GezOptions.name.
+Nombre del servicio, proviene de la configuración EsmxOptions.name.
 
 #### exports
 

@@ -1,17 +1,17 @@
 ---
 titleSuffix: Framework-Kernklassen-API-Referenz
-description: Detaillierte Dokumentation der Kernklassen-API des Gez-Frameworks, einschließlich Anwendungslebenszyklusverwaltung, statischer Ressourcenverarbeitung und serverseitiger Rendering-Fähigkeiten, um Entwicklern ein tieferes Verständnis der Kernfunktionen des Frameworks zu vermitteln.
+description: Detaillierte Dokumentation der Kernklassen-API des Esmx-Frameworks, einschließlich Anwendungslebenszyklusverwaltung, statischer Ressourcenverarbeitung und serverseitiger Rendering-Fähigkeiten, um Entwicklern ein tieferes Verständnis der Kernfunktionen des Frameworks zu vermitteln.
 head:
   - - meta
     - property: keywords
-      content: Gez, API, Lebenszyklusverwaltung, statische Ressourcen, serverseitiges Rendering, Rspack, Web-Anwendungsframework
+      content: Esmx, API, Lebenszyklusverwaltung, statische Ressourcen, serverseitiges Rendering, Rspack, Web-Anwendungsframework
 ---
 
-# Gez
+# Esmx
 
 ## Einführung
 
-Gez ist ein leistungsstarkes Web-Anwendungsframework, das auf Rspack basiert und eine vollständige Verwaltung des Anwendungslebenszyklus, die Verarbeitung statischer Ressourcen und serverseitige Rendering-Fähigkeiten bietet.
+Esmx ist ein leistungsstarkes Web-Anwendungsframework, das auf Rspack basiert und eine vollständige Verwaltung des Anwendungslebenszyklus, die Verarbeitung statischer Ressourcen und serverseitige Rendering-Fähigkeiten bietet.
 
 ## Typdefinitionen
 
@@ -76,18 +76,18 @@ Enumeration der Befehlstypen:
 
 ## Instanzoptionen
 
-Definiert die Kernkonfigurationsoptionen des Gez-Frameworks.
+Definiert die Kernkonfigurationsoptionen des Esmx-Frameworks.
 
 ```ts
-interface GezOptions {
+interface EsmxOptions {
   root?: string
   isProd?: boolean
   basePathPlaceholder?: string | false
   modules?: ModuleConfig
   packs?: PackConfig
-  devApp?: (gez: Gez) => Promise<App>
-  server?: (gez: Gez) => Promise<void>
-  postBuild?: (gez: Gez) => Promise<void>
+  devApp?: (esmx: Esmx) => Promise<App>
+  server?: (esmx: Esmx) => Promise<void>
+  postBuild?: (esmx: Esmx) => Promise<void>
 }
 ```
 
@@ -128,15 +128,15 @@ Build-Konfigurationsoptionen. Wird verwendet, um Build-Artefakte in standardmä�
 
 #### devApp
 
-- **Typ**: `(gez: Gez) => Promise<App>`
+- **Typ**: `(esmx: Esmx) => Promise<App>`
 
 Funktion zur Erstellung der Anwendung in der Entwicklungsumgebung. Wird nur in der Entwicklungsumgebung verwendet, um eine Anwendungsinstanz für den Entwicklungsserver zu erstellen.
 
 ```ts title="entry.node.ts"
 export default {
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(context) {
           // Benutzerdefinierte Rspack-Konfiguration
         }
@@ -148,16 +148,16 @@ export default {
 
 #### server
 
-- **Typ**: `(gez: Gez) => Promise<void>`
+- **Typ**: `(esmx: Esmx) => Promise<void>`
 
 Funktion zur Konfiguration und zum Starten des HTTP-Servers. Wird verwendet, um den HTTP-Server zu konfigurieren und zu starten, sowohl in der Entwicklungsumgebung als auch in der Produktionsumgebung.
 
 ```ts title="entry.node.ts"
 export default {
-  async server(gez) {
+  async server(esmx) {
     const server = http.createServer((req, res) => {
-      gez.middleware(req, res, async () => {
-        const render = await gez.render({
+      esmx.middleware(req, res, async () => {
+        const render = await esmx.render({
           params: { url: req.url }
         });
         res.end(render.html);
@@ -171,7 +171,7 @@ export default {
 
 #### postBuild
 
-- **Typ**: `(gez: Gez) => Promise<void>`
+- **Typ**: `(esmx: Esmx) => Promise<void>`
 
 Funktion zur Nachbearbeitung nach dem Build. Wird nach Abschluss des Projektbuilds ausgeführt und kann verwendet werden für:
 - Zusätzliche Ressourcenverarbeitung
@@ -235,8 +235,8 @@ Ruft das Middleware für die Verarbeitung statischer Ressourcen ab. Bietet je na
 
 ```ts
 const server = http.createServer((req, res) => {
-  gez.middleware(req, res, async () => {
-    const rc = await gez.render({ url: req.url });
+  esmx.middleware(req, res, async () => {
+    const rc = await esmx.render({ url: req.url });
     res.end(rc.html);
   });
 });
@@ -253,12 +253,12 @@ Ruft die serverseitige Rendering-Funktion ab. Bietet je nach Umgebung unterschie
 
 ```ts
 // Grundlegende Verwendung
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: req.url }
 });
 
 // Erweiterte Konfiguration
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '',                    // Basis-Pfad
   importmapMode: 'inline',     // Importzuordnungsmodus
   entryName: 'default',        // Rendering-Einstiegspunkt
@@ -297,13 +297,13 @@ Ruft die Build-bezogenen Konfigurationen des aktuellen Moduls ab, einschließlic
 ### constructor()
 
 - **Parameter**: 
-  - `options?: GezOptions` - Framework-Konfigurationsoptionen
-- **Rückgabewert**: `Gez`
+  - `options?: EsmxOptions` - Framework-Konfigurationsoptionen
+- **Rückgabewert**: `Esmx`
 
-Erstellt eine Gez-Framework-Instanz.
+Erstellt eine Esmx-Framework-Instanz.
 
 ```ts
-const gez = new Gez({
+const esmx = new Esmx({
   root: './src',
   isProd: process.env.NODE_ENV === 'production'
 });
@@ -317,7 +317,7 @@ const gez = new Gez({
   - `Error`: Bei wiederholter Initialisierung
   - `NotReadyError`: Beim Zugriff auf eine nicht initialisierte Instanz
 
-Initialisiert die Gez-Framework-Instanz. Führt die folgenden Kerninitialisierungsprozesse aus:
+Initialisiert die Esmx-Framework-Instanz. Führt die folgenden Kerninitialisierungsprozesse aus:
 
 1. Projektkonfiguration analysieren (package.json, Modulkonfiguration, Build-Konfiguration usw.)
 2. Anwendungsinstanz erstellen (Entwicklungsumgebung oder Produktionsumgebung)
@@ -330,26 +330,26 @@ Initialisiert die Gez-Framework-Instanz. Führt die folgenden Kerninitialisierun
 :::
 
 ```ts
-const gez = new Gez({
+const esmx = new Esmx({
   root: './src',
   isProd: process.env.NODE_ENV === 'production'
 });
 
-await gez.init(COMMAND.dev);
+await esmx.init(COMMAND.dev);
 ```
 
 ### destroy()
 
 - **Rückgabewert**: `Promise<boolean>`
 
-Zerstört die Gez-Framework-Instanz und führt Ressourcenbereinigung und Verbindungsschließung durch. Wird hauptsächlich verwendet für:
+Zerstört die Esmx-Framework-Instanz und führt Ressourcenbereinigung und Verbindungsschließung durch. Wird hauptsächlich verwendet für:
 - Schließen des Entwicklungsservers
 - Bereinigung temporärer Dateien und Caches
 - Freigabe von Systemressourcen
 
 ```ts
 process.once('SIGTERM', async () => {
-  await gez.destroy();
+  await esmx.destroy();
   process.exit(0);
 });
 ```
@@ -370,14 +370,14 @@ Beim Aufruf auf eine nicht initialisierte Framework-Instanz wird `NotReadyError`
 
 ```ts title="entry.node.ts"
 export default {
-  async postBuild(gez) {
-    await gez.build();
+  async postBuild(esmx) {
+    await esmx.build();
     // Generierung statischer HTML-Dateien nach dem Build
-    const render = await gez.render({
+    const render = await esmx.render({
       params: { url: '/' }
     });
-    gez.writeSync(
-      gez.resolvePath('dist/client', 'index.html'),
+    esmx.writeSync(
+      esmx.resolvePath('dist/client', 'index.html'),
       render.html
     );
   }
@@ -395,12 +395,12 @@ Startet den HTTP-Server und konfiguriert die Serverinstanz. Wird in den folgende
 
 ```ts title="entry.node.ts"
 export default {
-  async server(gez) {
+  async server(esmx) {
     const server = http.createServer((req, res) => {
       // Verarbeitung statischer Ressourcen
-      gez.middleware(req, res, async () => {
+      esmx.middleware(req, res, async () => {
         // Serverseitiges Rendering
-        const render = await gez.render({
+        const render = await esmx.render({
           params: { url: req.url }
         });
         res.end(render.html);
@@ -426,17 +426,17 @@ Führt die Nachbearbeitungslogik nach dem Build aus, verwendet für:
 
 ```ts title="entry.node.ts"
 export default {
-  async postBuild(gez) {
+  async postBuild(esmx) {
     // Generierung statischer HTML-Dateien für mehrere Seiten
     const pages = ['/', '/about', '/404'];
 
     for (const url of pages) {
-      const render = await gez.render({
+      const render = await esmx.render({
         params: { url }
       });
 
-      await gez.write(
-        gez.resolvePath('dist/client', url.substring(1), 'index.html'),
+      await esmx.write(
+        esmx.resolvePath('dist/client', url.substring(1), 'index.html'),
         render.html
       );
     }
@@ -456,7 +456,7 @@ Löst Projektpfade auf und konvertiert relative Pfade in absolute Pfade.
 - **Beispiel**:
 ```ts
 // Auflösen des Pfads zu statischen Ressourcen
-const htmlPath = gez.resolvePath('dist/client', 'index.html');
+const htmlPath = esmx.resolvePath('dist/client', 'index.html');
 ```
 
 ### writeSync()
@@ -471,9 +471,9 @@ Schreibt Dateiinhalte synchron.
 - **Beispiel**:
 ```ts title="src/entry.node.ts"
 
-async postBuild(gez) {
-  const htmlPath = gez.resolvePath('dist/client', 'index.html');
-  const success = await gez.write(htmlPath, '<html>...</html>');
+async postBuild(esmx) {
+  const htmlPath = esmx.resolvePath('dist/client', 'index.html');
+  const success = await esmx.write(htmlPath, '<html>...</html>');
 }
 ```
 
@@ -489,8 +489,8 @@ Liest und analysiert eine JSON-Datei synchron.
 
 - **Beispiel**:
 ```ts title="src/entry.node.ts"
-async server(gez) {
-  const manifest = gez.readJsonSync(gez.resolvePath('dist/client', 'manifest.json'));
+async server(esmx) {
+  const manifest = esmx.readJsonSync(esmx.resolvePath('dist/client', 'manifest.json'));
   // Verwendung des Manifest-Objekts
 }
 ```
@@ -507,8 +507,8 @@ Liest und analysiert eine JSON-Datei asynchron.
 
 - **Beispiel**:
 ```ts title="src/entry.node.ts"
-async server(gez) {
-  const manifest = await gez.readJson(gez.resolvePath('dist/client', 'manifest.json'));
+async server(esmx) {
+  const manifest = await esmx.readJson(esmx.resolvePath('dist/client', 'manifest.json'));
   // Verwendung des Manifest-Objekts
 }
 ```

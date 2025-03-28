@@ -1,10 +1,10 @@
 ---
-titleSuffix: Dokumentacja API konfiguracji pakowania frameworku Gez
-description: Szczegółowy opis interfejsu konfiguracyjnego PackConfig frameworku Gez, obejmujący reguły pakowania pakietów, konfigurację wyjściową i hooki cyklu życia, pomagający programistom w implementacji standardowych procesów budowania.
+titleSuffix: Dokumentacja API konfiguracji pakowania frameworku Esmx
+description: Szczegółowy opis interfejsu konfiguracyjnego PackConfig frameworku Esmx, obejmujący reguły pakowania pakietów, konfigurację wyjściową i hooki cyklu życia, pomagający programistom w implementacji standardowych procesów budowania.
 head:
   - - meta
     - property: keywords
-      content: Gez, PackConfig, pakowanie pakietów, konfiguracja budowania, hooki cyklu życia, konfiguracja pakowania, framework aplikacji webowych
+      content: Esmx, PackConfig, pakowanie pakietów, konfiguracja budowania, hooki cyklu życia, konfiguracja pakowania, framework aplikacji webowych
 ---
 
 # PackConfig
@@ -21,9 +21,9 @@ head:
 interface PackConfig {
     enable?: boolean;
     outputs?: string | string[] | boolean;
-    packageJson?: (gez: Gez, pkg: Record<string, any>) => Promise<Record<string, any>>;
-    onBefore?: (gez: Gez, pkg: Record<string, any>) => Promise<void>;
-    onAfter?: (gez: Gez, pkg: Record<string, any>, file: Buffer) => Promise<void>;
+    packageJson?: (esmx: Esmx, pkg: Record<string, any>) => Promise<Record<string, any>>;
+    onBefore?: (esmx: Esmx, pkg: Record<string, any>) => Promise<void>;
+    onAfter?: (esmx: Esmx, pkg: Record<string, any>, file: Buffer) => Promise<void>;
 }
 ```
 
@@ -48,7 +48,7 @@ Określa ścieżkę wyjściową pliku pakietu. Obsługiwane są następujące sp
 Funkcja zwrotna do dostosowywania zawartości pliku package.json. Wywoływana przed pakowaniem, służy do dostosowywania zawartości pliku package.json.
 
 - Parametry:
-  - `gez: Gez` - Instancja Gez
+  - `esmx: Esmx` - Instancja Esmx
   - `pkg: any` - Oryginalna zawartość pliku package.json
 - Wartość zwracana: `Promise<any>` - Zmodyfikowana zawartość pliku package.json
 
@@ -60,7 +60,7 @@ Typowe zastosowania:
 
 Przykład:
 ```ts
-packageJson: async (gez, pkg) => {
+packageJson: async (esmx, pkg) => {
   // Ustawienie informacji o pakiecie
   pkg.name = 'my-app';
   pkg.version = '1.0.0';
@@ -86,7 +86,7 @@ packageJson: async (gez, pkg) => {
 Funkcja zwrotna do przygotowań przed pakowaniem.
 
 - Parametry:
-  - `gez: Gez` - Instancja Gez
+  - `esmx: Esmx` - Instancja Esmx
   - `pkg: Record<string, any>` - Zawartość pliku package.json
 - Wartość zwracana: `Promise<void>`
 
@@ -98,7 +98,7 @@ Typowe zastosowania:
 
 Przykład:
 ```ts
-onBefore: async (gez, pkg) => {
+onBefore: async (esmx, pkg) => {
   // Dodanie dokumentacji
   await fs.writeFile('dist/README.md', '# My App');
   await fs.writeFile('dist/LICENSE', 'MIT License');
@@ -119,7 +119,7 @@ onBefore: async (gez, pkg) => {
 Funkcja zwrotna do przetwarzania po zakończeniu pakowania. Wywoływana po wygenerowaniu pliku .tgz, służy do przetwarzania wyników pakowania.
 
 - Parametry:
-  - `gez: Gez` - Instancja Gez
+  - `esmx: Esmx` - Instancja Esmx
   - `pkg: Record<string, any>` - Zawartość pliku package.json
   - `file: Buffer` - Zawartość spakowanego pliku
 - Wartość zwracana: `Promise<void>`
@@ -132,7 +132,7 @@ Typowe zastosowania:
 
 Przykład:
 ```ts
-onAfter: async (gez, pkg, file) => {
+onAfter: async (esmx, pkg, file) => {
   // Publikacja do prywatnego repozytorium npm
   await publishToRegistry(file, {
     registry: 'https://registry.example.com'
@@ -152,7 +152,7 @@ onAfter: async (gez, pkg, file) => {
 ## Przykład użycia
 
 ```ts title="entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
@@ -176,13 +176,13 @@ export default {
     ],
 
     // Dostosowanie pliku package.json
-    packageJson: async (gez, pkg) => {
+    packageJson: async (esmx, pkg) => {
       pkg.version = '1.0.0';
       return pkg;
     },
 
     // Przygotowanie przed pakowaniem
-    onBefore: async (gez, pkg) => {
+    onBefore: async (esmx, pkg) => {
       // Dodanie niezbędnych plików
       await fs.writeFile('dist/README.md', '# Your App\n\nOpis eksportu modułów...');
       // Wykonanie sprawdzania typów
@@ -190,7 +190,7 @@ export default {
     },
 
     // Przetwarzanie po pakowaniu
-    onAfter: async (gez, pkg, file) => {
+    onAfter: async (esmx, pkg, file) => {
       // Publikacja do prywatnego repozytorium npm
       await publishToRegistry(file, {
         registry: 'https://npm.your-registry.com/'
@@ -199,5 +199,5 @@ export default {
       await uploadToServer(file, 'https://static.example.com/packages');
     }
   }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```

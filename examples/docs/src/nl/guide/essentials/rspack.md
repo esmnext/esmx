@@ -1,19 +1,19 @@
 ---
-titleSuffix: Gez Framework High-Performance Build Engine
-description: Diepgaande analyse van het Rspack build-systeem van het Gez framework, inclusief kernfuncties zoals high-performance compilatie, multi-omgeving builds, en resource-optimalisatie, om ontwikkelaars te helpen bij het bouwen van efficiënte en betrouwbare moderne webapplicaties.
+titleSuffix: Esmx Framework High-Performance Build Engine
+description: Diepgaande analyse van het Rspack build-systeem van het Esmx framework, inclusief kernfuncties zoals high-performance compilatie, multi-omgeving builds, en resource-optimalisatie, om ontwikkelaars te helpen bij het bouwen van efficiënte en betrouwbare moderne webapplicaties.
 head:
   - - meta
     - property: keywords
-      content: Gez, Rspack, build-systeem, high-performance compilatie, hot reload, multi-omgeving builds, Tree Shaking, code-splitting, SSR, resource-optimalisatie, ontwikkelingsproductiviteit, build-tools
+      content: Esmx, Rspack, build-systeem, high-performance compilatie, hot reload, multi-omgeving builds, Tree Shaking, code-splitting, SSR, resource-optimalisatie, ontwikkelingsproductiviteit, build-tools
 ---
 
 # Rspack
 
-Gez is gebaseerd op het [Rspack](https://rspack.dev/) build-systeem en maakt optimaal gebruik van de high-performance build-capaciteiten van Rspack. Dit document beschrijft de rol en kernfuncties van Rspack binnen het Gez framework.
+Esmx is gebaseerd op het [Rspack](https://rspack.dev/) build-systeem en maakt optimaal gebruik van de high-performance build-capaciteiten van Rspack. Dit document beschrijft de rol en kernfuncties van Rspack binnen het Esmx framework.
 
 ## Kenmerken
 
-Rspack is het kern build-systeem van het Gez framework en biedt de volgende belangrijke kenmerken:
+Rspack is het kern build-systeem van het Esmx framework en biedt de volgende belangrijke kenmerken:
 
 - **High-performance builds**: Een build-engine gebaseerd op Rust, die extreem snelle compilatiesnelheden biedt en de build-snelheid van grote projecten aanzienlijk verbetert.
 - **Ontwikkelingservaring optimalisatie**: Ondersteuning voor moderne ontwikkelingsfuncties zoals hot module replacement (HMR) en incrementele compilatie, wat zorgt voor een soepele ontwikkelingservaring.
@@ -22,9 +22,9 @@ Rspack is het kern build-systeem van het Gez framework en biedt de volgende bela
 
 ## Applicatie bouwen
 
-Het Rspack build-systeem van Gez is modulair opgebouwd en bestaat uit de volgende kernmodules:
+Het Rspack build-systeem van Esmx is modulair opgebouwd en bestaat uit de volgende kernmodules:
 
-### @gez/rspack
+### @esmx/rspack
 
 De basis build-module, die de volgende kernmogelijkheden biedt:
 
@@ -33,7 +33,7 @@ De basis build-module, die de volgende kernmogelijkheden biedt:
 - **Build-optimalisatie**: Biedt functies zoals code-splitting en Tree Shaking voor prestatie-optimalisatie.
 - **Ontwikkelingsserver**: Geïntegreerde high-performance ontwikkelingsserver met ondersteuning voor HMR.
 
-### @gez/rspack-vue
+### @esmx/rspack-vue
 
 Speciale build-module voor het Vue framework, die het volgende biedt:
 
@@ -43,7 +43,7 @@ Speciale build-module voor het Vue framework, die het volgende biedt:
 
 ## Build-proces
 
-Het build-proces van Gez bestaat uit de volgende fasen:
+Het build-proces van Esmx bestaat uit de volgende fasen:
 
 1. **Configuratie-initialisatie**
    - Laad projectconfiguratie
@@ -82,12 +82,12 @@ Het build-proces van Gez bestaat uit de volgende fasen:
 ## Configuratievoorbeeld
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createRspackHtmlApp(gez, {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createRspackHtmlApp(esmx, {
                 // Aangepaste build-configuratie
                 config({ config }) {
                     // Voeg hier aangepaste Rspack-configuratie toe
@@ -95,7 +95,7 @@ export default {
             })
         );
     },
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ::: tip

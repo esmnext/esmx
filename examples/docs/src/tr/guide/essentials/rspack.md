@@ -1,19 +1,19 @@
 ---
-titleSuffix: Gez Çerçevesi Yüksek Performanslı Derleme Motoru
-description: Gez çerçevesinin Rspack derleme sistemini derinlemesine inceleyin, yüksek performanslı derleme, çoklu ortam derleme, kaynak optimizasyonu gibi temel özelliklerle modern Web uygulamaları oluşturmanıza yardımcı olur.
+titleSuffix: Esmx Çerçevesi Yüksek Performanslı Derleme Motoru
+description: Esmx çerçevesinin Rspack derleme sistemini derinlemesine inceleyin, yüksek performanslı derleme, çoklu ortam derleme, kaynak optimizasyonu gibi temel özelliklerle modern Web uygulamaları oluşturmanıza yardımcı olur.
 head:
   - - meta
     - property: keywords
-      content: Gez, Rspack, derleme sistemi, yüksek performanslı derleme, sıcak güncelleme, çoklu ortam derleme, Tree Shaking, kod bölme, SSR, kaynak optimizasyonu, geliştirme verimliliği, derleme araçları
+      content: Esmx, Rspack, derleme sistemi, yüksek performanslı derleme, sıcak güncelleme, çoklu ortam derleme, Tree Shaking, kod bölme, SSR, kaynak optimizasyonu, geliştirme verimliliği, derleme araçları
 ---
 
 # Rspack
 
-Gez, [Rspack](https://rspack.dev/) derleme sistemi üzerine inşa edilmiştir ve Rspack'in yüksek performanslı derleme yeteneklerinden tam olarak yararlanır. Bu belge, Rspack'in Gez çerçevesindeki konumunu ve temel işlevlerini açıklamaktadır.
+Esmx, [Rspack](https://rspack.dev/) derleme sistemi üzerine inşa edilmiştir ve Rspack'in yüksek performanslı derleme yeteneklerinden tam olarak yararlanır. Bu belge, Rspack'in Esmx çerçevesindeki konumunu ve temel işlevlerini açıklamaktadır.
 
 ## Özellikler
 
-Rspack, Gez çerçevesinin temel derleme sistemidir ve aşağıdaki temel özellikleri sunar:
+Rspack, Esmx çerçevesinin temel derleme sistemidir ve aşağıdaki temel özellikleri sunar:
 
 - **Yüksek Performanslı Derleme**: Rust ile uygulanan derleme motoru, büyük projelerde derleme hızını önemli ölçüde artıran son derece hızlı derleme performansı sağlar.
 - **Geliştirme Deneyimi Optimizasyonu**: Sıcak güncelleme (HMR), artımlı derleme gibi modern geliştirme özelliklerini destekler ve akıcı bir geliştirme deneyimi sunar.
@@ -22,9 +22,9 @@ Rspack, Gez çerçevesinin temel derleme sistemidir ve aşağıdaki temel özell
 
 ## Uygulama Derleme
 
-Gez'in Rspack derleme sistemi modüler bir tasarıma sahiptir ve aşağıdaki temel modülleri içerir:
+Esmx'in Rspack derleme sistemi modüler bir tasarıma sahiptir ve aşağıdaki temel modülleri içerir:
 
-### @gez/rspack
+### @esmx/rspack
 
 Temel derleme modülü, aşağıdaki temel yetenekleri sağlar:
 
@@ -33,7 +33,7 @@ Temel derleme modülü, aşağıdaki temel yetenekleri sağlar:
 - **Derleme Optimizasyonu**: Kod bölme, Tree Shaking gibi performans optimizasyon özellikleri.
 - **Geliştirme Sunucusu**: Yüksek performanslı bir geliştirme sunucusu entegre eder ve HMR'yi destekler.
 
-### @gez/rspack-vue
+### @esmx/rspack-vue
 
 Vue çerçevesi için özel derleme modülü, aşağıdakileri sağlar:
 
@@ -43,7 +43,7 @@ Vue çerçevesi için özel derleme modülü, aşağıdakileri sağlar:
 
 ## Derleme Süreci
 
-Gez'in derleme süreci temel olarak aşağıdaki aşamalara ayrılır:
+Esmx'in derleme süreci temel olarak aşağıdaki aşamalara ayrılır:
 
 1. **Yapılandırma Başlatma**
    - Proje yapılandırmasını yükleme
@@ -82,12 +82,12 @@ Gez'in derleme süreci temel olarak aşağıdaki aşamalara ayrılır:
 ## Yapılandırma Örneği
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createRspackHtmlApp(gez, {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createRspackHtmlApp(esmx, {
                 // Özel derleme yapılandırması
                 config({ config }) {
                     // Buraya özel Rspack yapılandırması ekleyin
@@ -95,7 +95,7 @@ export default {
             })
         );
     },
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ::: ipucu

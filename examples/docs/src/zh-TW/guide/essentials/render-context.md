@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez 框架服務端渲染核心機制
-description: 詳細介紹 Gez 框架的渲染上下文（RenderContext）機制，包括資源管理、HTML 生成和 ESM 模組系統，幫助開發者理解和使用服務端渲染功能。
+titleSuffix: Esmx 框架服務端渲染核心機制
+description: 詳細介紹 Esmx 框架的渲染上下文（RenderContext）機制，包括資源管理、HTML 生成和 ESM 模組系統，幫助開發者理解和使用服務端渲染功能。
 head:
   - - meta
     - property: keywords
-      content: Gez, 渲染上下文, RenderContext, SSR, 服務端渲染, ESM, 資源管理
+      content: Esmx, 渲染上下文, RenderContext, SSR, 服務端渲染, ESM, 資源管理
 ---
 
 # 渲染上下文
 
-RenderContext 是 Gez 框架中的一個核心類別，主要負責服務端渲染（SSR）過程中的資源管理和 HTML 生成。它具有以下核心特點：
+RenderContext 是 Esmx 框架中的一個核心類別，主要負責服務端渲染（SSR）過程中的資源管理和 HTML 生成。它具有以下核心特點：
 
 1. **基於 ESM 的模組系統**
    - 採用現代的 ECMAScript Modules 標準
@@ -33,15 +33,15 @@ RenderContext 是 Gez 框架中的一個核心類別，主要負責服務端渲�
 
 ## 使用方式
 
-在 Gez 框架中，開發者通常不需要直接建立 RenderContext 實例，而是透過 `gez.render()` 方法來取得實例：
+在 Esmx 框架中，開發者通常不需要直接建立 RenderContext 實例，而是透過 `esmx.render()` 方法來取得實例：
 
 ```ts title="src/entry.node.ts"
-async server(gez) {
+async server(esmx) {
     const server = http.createServer((req, res) => {
         // 靜態檔案處理
-        gez.middleware(req, res, async () => {
-            // 透過 gez.render() 取得 RenderContext 實例
-            const rc = await gez.render({
+        esmx.middleware(req, res, async () => {
+            // 透過 esmx.render() 取得 RenderContext 實例
+            const rc = await esmx.render({
                 params: {
                     url: req.url
                 }
@@ -141,8 +141,8 @@ export default async (rc: RenderContext) => {
 RenderContext 提供了一個靈活的動態基礎路徑配置機制，支援在執行時動態設定靜態資源的基礎路徑：
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
-    base: '/gez',  // 設定基礎路徑
+const rc = await esmx.render({
+    base: '/esmx',  // 設定基礎路徑
     params: {
         url: req.url
     }
@@ -179,7 +179,7 @@ RenderContext 提供了兩種導入映射（Import Map）模式：
 可以透過配置選擇合適的模式：
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     importmapMode: 'js',  // 'inline' | 'js'
     params: {
         url: req.url
@@ -192,7 +192,7 @@ const rc = await gez.render({
 RenderContext 支援透過 `entryName` 配置來指定服務端渲染的入口函數：
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     entryName: 'mobile',  // 指定使用行動端入口函數
     params: {
         url: req.url
@@ -228,7 +228,7 @@ const rc = await gez.render({
 ## 最佳實踐
 
 1. **取得 RenderContext 實例**
-   - 始終透過 `gez.render()` 方法取得實例
+   - 始終透過 `esmx.render()` 方法取得實例
    - 根據需要傳入適當的參數
    - 避免手動建立實例
 

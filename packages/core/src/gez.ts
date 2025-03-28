@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
 import { cwd } from 'node:process';
-import type { ImportMap, ScopesMap, SpecifierMap } from '@gez/import';
+import type { ImportMap, ScopesMap, SpecifierMap } from '@esmx/import';
 import write from 'write';
 
 import serialize from 'serialize-javascript';
@@ -28,9 +28,9 @@ import { type ProjectPath, resolvePath } from './utils/resolve-path';
 import { getImportPreloadInfo as getStaticImportPaths } from './utils/static-import-lexer';
 
 /**
- * Gez 框架的核心配置选项接口
+ * Esmx 框架的核心配置选项接口
  */
-export interface GezOptions {
+export interface EsmxOptions {
     /**
      * 项目根目录路径
      * - 可以是绝对路径或相对路径
@@ -73,25 +73,25 @@ export interface GezOptions {
      * 开发环境应用创建函数
      * - 仅在开发环境中使用
      * - 用于创建开发服务器的应用实例
-     * @param gez Gez实例
+     * @param esmx Esmx实例
      */
-    devApp?: (gez: Gez) => Promise<App>;
+    devApp?: (esmx: Esmx) => Promise<App>;
 
     /**
      * 服务器启动配置函数
      * - 用于配置和启动 HTTP 服务器
      * - 在开发环境和生产环境中都可使用
-     * @param gez Gez实例
+     * @param esmx Esmx实例
      */
-    server?: (gez: Gez) => Promise<void>;
+    server?: (esmx: Esmx) => Promise<void>;
 
     /**
      * 构建后置处理函数
      * - 在项目构建完成后执行
      * - 可用于执行额外的资源处理、部署等操作
-     * @param gez Gez实例
+     * @param esmx Esmx实例
      */
-    postBuild?: (gez: Gez) => Promise<void>;
+    postBuild?: (esmx: Esmx) => Promise<void>;
 }
 
 /**
@@ -102,7 +102,7 @@ export interface GezOptions {
 export type RuntimeTarget = 'client' | 'server';
 
 /**
- * Gez 框架的命令枚举。
+ * Esmx 框架的命令枚举。
  * 用于控制框架的运行模式和生命周期。
  */
 export enum COMMAND {
@@ -149,9 +149,9 @@ interface Readied {
     cache: CacheHandle;
 }
 
-export class Gez {
+export class Esmx {
     // 基础属性和构造函数
-    private readonly _options: GezOptions;
+    private readonly _options: EsmxOptions;
     private _readied: Readied | null = null;
     private _importmapHash: string | null = null;
 
@@ -271,8 +271,8 @@ export class Gez {
      * ```ts
      * const server = http.createServer((req, res) => {
      *     // 使用中间件处理静态资源请求
-     *     gez.middleware(req, res, async () => {
-     *         const rc = await gez.render({ url: req.url });
+     *     esmx.middleware(req, res, async () => {
+     *         const rc = await esmx.render({ url: req.url });
      *         res.end(rc.html);
      *     });
      * });
@@ -295,13 +295,13 @@ export class Gez {
      * @example
      * ```ts
      * // 基本用法
-     * const rc = await gez.render({
+     * const rc = await esmx.render({
      *     params: { url: req.url }
      * });
      * res.end(rc.html);
      *
      * // 高级配置
-     * const rc = await gez.render({
+     * const rc = await esmx.render({
      *     base: '',           // 设置基础路径
      *     importmapMode: 'inline',    // 设置导入映射模式
      *     entryName: 'default',    // 指定渲染入口
@@ -317,11 +317,11 @@ export class Gez {
     ) => Promise<RenderContext> {
         return this.readied.app.render;
     }
-    public constructor(options: GezOptions = {}) {
+    public constructor(options: EsmxOptions = {}) {
         this._options = options;
     }
     /**
-     * 初始化 Gez 框架实例。
+     * 初始化 Esmx 框架实例。
      *
      * 该方法执行以下核心初始化流程：
      * 1. 解析项目配置（package.json、模块配置、打包配置等）
@@ -340,13 +340,13 @@ export class Gez {
      * @example
      * ```ts
      * // entry.node.ts
-     * import type { GezOptions } from '@gez/core';
+     * import type { EsmxOptions } from '@esmx/core';
      *
      * export default {
      *   // 开发环境配置
-     *   async devApp(gez) {
-     *     return import('@gez/rspack').then((m) =>
-     *       m.createRspackHtmlApp(gez, {
+     *   async devApp(esmx) {
+     *     return import('@esmx/rspack').then((m) =>
+     *       m.createRspackHtmlApp(esmx, {
      *         config(context) {
      *           // 自定义 Rspack 配置
      *         }
@@ -355,12 +355,12 @@ export class Gez {
      *   },
      *
      *   // HTTP 服务器配置
-     *   async server(gez) {
+     *   async server(esmx) {
      *     const server = http.createServer((req, res) => {
      *       // 静态文件处理
-     *       gez.middleware(req, res, async () => {
+     *       esmx.middleware(req, res, async () => {
      *         // 传入渲染的参数
-     *         const render = await gez.render({
+     *         const render = await esmx.render({
      *           params: { url: req.url }
      *         });
      *         // 响应 HTML 内容
@@ -373,7 +373,7 @@ export class Gez {
      *       console.log('http://localhost:3000');
      *     });
      *   }
-     * } satisfies GezOptions;
+     * } satisfies EsmxOptions;
      * ```
      */
     public async init(command: COMMAND): Promise<boolean> {
@@ -426,7 +426,7 @@ export class Gez {
     }
 
     /**
-     * 销毁 Gez 框架实例，执行资源清理和连接关闭等操作。
+     * 销毁 Esmx 框架实例，执行资源清理和连接关闭等操作。
      *
      * 该方法主要用于开发环境下的资源清理，包括：
      * - 关闭开发服务器（如 Rspack Dev Server）
@@ -444,7 +444,7 @@ export class Gez {
      * ```ts
      * // 在需要自定义清理逻辑时使用
      * process.once('SIGTERM', async () => {
-     *   await gez.destroy(); // 清理资源
+     *   await esmx.destroy(); // 清理资源
      *   process.exit(0);
      * });
      * ```
@@ -477,13 +477,13 @@ export class Gez {
      * @example
      * ```ts
      * // entry.node.ts
-     * import type { GezOptions } from '@gez/core';
+     * import type { EsmxOptions } from '@esmx/core';
      *
      * export default {
      *   // 开发环境配置
-     *   async devApp(gez) {
-     *     return import('@gez/rspack').then((m) =>
-     *       m.createRspackHtmlApp(gez, {
+     *   async devApp(esmx) {
+     *     return import('@esmx/rspack').then((m) =>
+     *       m.createRspackHtmlApp(esmx, {
      *         config(context) {
      *           // 自定义 Rspack 配置
      *         }
@@ -492,27 +492,27 @@ export class Gez {
      *   },
      *
      *   // 构建后处理
-     *   async postBuild(gez) {
+     *   async postBuild(esmx) {
      *     // 构建完成后生成静态 HTML
-     *     const render = await gez.render({
+     *     const render = await esmx.render({
      *       params: { url: '/' }
      *     });
-     *     gez.writeSync(
-     *       gez.resolvePath('dist/client', 'index.html'),
+     *     esmx.writeSync(
+     *       esmx.resolvePath('dist/client', 'index.html'),
      *       render.html
      *     );
      *   }
-     * } satisfies GezOptions;
+     * } satisfies EsmxOptions;
      * ```
      */
     public async build(): Promise<boolean> {
         const startTime = Date.now();
-        console.log('[gez]: build start');
+        console.log('[esmx]: build start');
 
         const successful = await this.readied.app.build?.();
 
         const endTime = Date.now();
-        console.log(`[gez]: build end, cost: ${endTime - startTime}ms`);
+        console.log(`[esmx]: build end, cost: ${endTime - startTime}ms`);
 
         return successful ?? true;
     }
@@ -524,7 +524,7 @@ export class Gez {
      * - 开发环境（dev）：启动开发服务器，提供热更新等功能
      * - 生产环境（start）：启动生产服务器，提供生产级性能
      *
-     * 服务器的具体实现由用户通过 GezOptions 的 server 配置函数提供。
+     * 服务器的具体实现由用户通过 EsmxOptions 的 server 配置函数提供。
      * 该函数负责：
      * - 创建 HTTP 服务器实例
      * - 配置中间件和路由
@@ -538,16 +538,16 @@ export class Gez {
      * ```ts
      * // entry.node.ts
      * import http from 'node:http';
-     * import type { GezOptions } from '@gez/core';
+     * import type { EsmxOptions } from '@esmx/core';
      *
      * export default {
      *   // 服务器配置
-     *   async server(gez) {
+     *   async server(esmx) {
      *     const server = http.createServer((req, res) => {
      *       // 处理静态资源
-     *       gez.middleware(req, res, async () => {
+     *       esmx.middleware(req, res, async () => {
      *         // 服务端渲染
-     *         const render = await gez.render({
+     *         const render = await esmx.render({
      *           params: { url: req.url }
      *         });
      *         res.end(render.html);
@@ -559,7 +559,7 @@ export class Gez {
      *       console.log('Server running at http://localhost:3000');
      *     });
      *   }
-     * } satisfies GezOptions;
+     * } satisfies EsmxOptions;
      * ```
      */
     public async server(): Promise<void> {
@@ -584,27 +584,27 @@ export class Gez {
      * @example
      * ```ts
      * // entry.node.ts
-     * import type { GezOptions } from '@gez/core';
+     * import type { EsmxOptions } from '@esmx/core';
      *
      * export default {
      *   // 构建后处理
-     *   async postBuild(gez) {
+     *   async postBuild(esmx) {
      *     // 生成多个页面的静态 HTML
      *     const pages = ['/', '/about', '/404'];
      *
      *     for (const url of pages) {
-     *       const render = await gez.render({
+     *       const render = await esmx.render({
      *         params: { url }
      *       });
      *
      *       // 写入静态 HTML 文件
-     *       gez.writeSync(
-     *         gez.resolvePath('dist/client', url.substring(1), 'index.html'),
+     *       esmx.writeSync(
+     *         esmx.resolvePath('dist/client', url.substring(1), 'index.html'),
      *         render.html
      *       );
      *     }
      *   }
-     * } satisfies GezOptions;
+     * } satisfies EsmxOptions;
      * ```
      */
     public async postBuild(): Promise<boolean> {
@@ -626,8 +626,8 @@ export class Gez {
      * @example
      * ```ts
      * // 在 entry.node.ts 中使用
-     * async postBuild(gez) {
-     *   const outputPath = gez.resolvePath('dist/client', 'index.html');
+     * async postBuild(esmx) {
+     *   const outputPath = esmx.resolvePath('dist/client', 'index.html');
      *   // 输出: /project/root/dist/client/index.html
      * }
      * ```
@@ -646,9 +646,9 @@ export class Gez {
      * @example
      * ```ts
      * // 在 entry.node.ts 中使用
-     * async postBuild(gez) {
-     *   const htmlPath = gez.resolvePath('dist/client', 'index.html');
-     *   const success = gez.writeSync(htmlPath, '<html>...</html>');
+     * async postBuild(esmx) {
+     *   const htmlPath = esmx.resolvePath('dist/client', 'index.html');
+     *   const success = esmx.writeSync(htmlPath, '<html>...</html>');
      * }
      * ```
      */
@@ -671,9 +671,9 @@ export class Gez {
      * @example
      * ```ts
      * // 在 entry.node.ts 中使用
-     * async postBuild(gez) {
-     *   const htmlPath = gez.resolvePath('dist/client', 'index.html');
-     *   const success = await gez.write(htmlPath, '<html>...</html>');
+     * async postBuild(esmx) {
+     *   const htmlPath = esmx.resolvePath('dist/client', 'index.html');
+     *   const success = await esmx.write(htmlPath, '<html>...</html>');
      * }
      * ```
      */
@@ -696,8 +696,8 @@ export class Gez {
      * @example
      * ```ts
      * // 在 entry.node.ts 中使用
-     * async server(gez) {
-     *   const manifest = gez.readJsonSync(gez.resolvePath('dist/client', 'manifest.json'));
+     * async server(esmx) {
+     *   const manifest = esmx.readJsonSync(esmx.resolvePath('dist/client', 'manifest.json'));
      *   // 使用 manifest 对象
      * }
      * ```
@@ -716,8 +716,8 @@ export class Gez {
      * @example
      * ```ts
      * // 在 entry.node.ts 中使用
-     * async server(gez) {
-     *   const manifest = await gez.readJson(gez.resolvePath('dist/client', 'manifest.json'));
+     * async server(esmx) {
+     *   const manifest = await esmx.readJson(esmx.resolvePath('dist/client', 'manifest.json'));
      *   // 使用 manifest 对象
      * }
      * ```
@@ -752,9 +752,9 @@ export class Gez {
      * @example
      * ```ts
      * // 在 entry.node.ts 中使用
-     * async server(gez) {
+     * async server(esmx) {
      *   // 获取客户端构建清单
-     *   const manifests = await gez.getManifestList('client');
+     *   const manifests = await esmx.getManifestList('client');
      *
      *   // 查找特定模块的构建信息
      *   const appModule = manifests.find(m => m.name === 'my-app');
@@ -800,9 +800,9 @@ export class Gez {
      * @example
      * ```ts
      * // 在 entry.node.ts 中使用
-     * async server(gez) {
+     * async server(esmx) {
      *   // 获取客户端导入映射
-     *   const importmap = await gez.getImportMap('client');
+     *   const importmap = await esmx.getImportMap('client');
      *
      *   // 自定义 HTML 模板
      *   const html = `
@@ -867,13 +867,13 @@ export class Gez {
      * @example
      * ```ts
      * // 在 entry.node.ts 中使用
-     * async server(gez) {
+     * async server(esmx) {
      *   const server = express();
-     *   server.use(gez.middleware);
+     *   server.use(esmx.middleware);
      *
      *   server.get('*', async (req, res) => {
      *     // 使用 JS 文件模式
-     *     const result = await gez.render({
+     *     const result = await esmx.render({
      *       importmapMode: 'js',
      *       params: { url: req.url }
      *     });
@@ -882,7 +882,7 @@ export class Gez {
      *
      *   // 或者使用内联模式
      *   server.get('/inline', async (req, res) => {
-     *     const result = await gez.render({
+     *     const result = await esmx.render({
      *       importmapMode: 'inline',
      *       params: { url: req.url }
      *     });
@@ -982,7 +982,7 @@ innerHTML: JSON.stringify(importmap)
      * @example
      * ```ts
      * // 获取客户端入口模块的静态导入路径
-     * const paths = await gez.getStaticImportPaths(
+     * const paths = await esmx.getStaticImportPaths(
      *   'client',
      *   `your-app-name/src/entry.client`
      * );
@@ -1015,7 +1015,7 @@ async function defaultDevApp(): Promise<App> {
 
 class NotReadyError extends Error {
     constructor() {
-        super(`The Gez has not been initialized yet`);
+        super(`The Esmx has not been initialized yet`);
     }
 }
 

@@ -12,7 +12,7 @@ export enum PathType {
  * @example
  * ```ts
  * // entry.node.ts
- * import type { GezOptions } from '@gez/core';
+ * import type { EsmxOptions } from '@esmx/core';
  *
  * export default {
  *   modules: {
@@ -38,7 +38,7 @@ export enum PathType {
  *       'vue-router': 'ssr-remote/npm/vue-router'
  *     }
  *   }
- * } satisfies GezOptions;
+ * } satisfies EsmxOptions;
  * ```
  */
 export interface ModuleConfig {

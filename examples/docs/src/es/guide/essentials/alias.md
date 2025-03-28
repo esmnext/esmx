@@ -1,15 +1,15 @@
 ---
-titleSuffix: Guía de mapeo de rutas de importación de módulos en el marco Gez
-description: Explicación detallada del mecanismo de alias de rutas en el marco Gez, incluyendo características como la simplificación de rutas de importación, evitación de anidamientos profundos, seguridad de tipos y optimización de resolución de módulos, para ayudar a los desarrolladores a mejorar la mantenibilidad del código.
+titleSuffix: Guía de mapeo de rutas de importación de módulos en el marco Esmx
+description: Explicación detallada del mecanismo de alias de rutas en el marco Esmx, incluyendo características como la simplificación de rutas de importación, evitación de anidamientos profundos, seguridad de tipos y optimización de resolución de módulos, para ayudar a los desarrolladores a mejorar la mantenibilidad del código.
 head:
   - - meta
     - property: keywords
-      content: Gez, alias de rutas, Path Alias, TypeScript, importación de módulos, mapeo de rutas, mantenibilidad del código
+      content: Esmx, alias de rutas, Path Alias, TypeScript, importación de módulos, mapeo de rutas, mantenibilidad del código
 ---
 
 # Alias de Rutas
 
-El alias de rutas (Path Alias) es un mecanismo de mapeo de rutas de importación de módulos que permite a los desarrolladores utilizar identificadores cortos y semánticos en lugar de rutas completas de módulos. En Gez, el mecanismo de alias de rutas ofrece las siguientes ventajas:
+El alias de rutas (Path Alias) es un mecanismo de mapeo de rutas de importación de módulos que permite a los desarrolladores utilizar identificadores cortos y semánticos en lugar de rutas completas de módulos. En Esmx, el mecanismo de alias de rutas ofrece las siguientes ventajas:
 
 - **Simplificación de rutas de importación**: Uso de alias semánticos en lugar de rutas relativas largas, mejorando la legibilidad del código.
 - **Evitación de anidamientos profundos**: Elimina las dificultades de mantenimiento causadas por referencias a directorios con múltiples niveles (como `../../../../`).
@@ -18,7 +18,7 @@ El alias de rutas (Path Alias) es un mecanismo de mapeo de rutas de importación
 
 ## Mecanismo de Alias Predeterminado
 
-Gez utiliza un mecanismo de alias automático basado en el nombre del servicio (Service Name), un diseño que prioriza la convención sobre la configuración y tiene las siguientes características:
+Esmx utiliza un mecanismo de alias automático basado en el nombre del servicio (Service Name), un diseño que prioriza la convención sobre la configuración y tiene las siguientes características:
 
 - **Configuración automática**: Genera automáticamente alias basados en el campo `name` en `package.json`, sin necesidad de configuración manual.
 - **Normativa unificada**: Asegura que todos los módulos de servicio sigan una normativa consistente de nomenclatura y referencia.
@@ -112,13 +112,13 @@ import { logger } from 'remote-service/src/utils';
 
 ### Alias Personalizados
 
-Para paquetes de terceros o escenarios especiales, se pueden personalizar alias a través del archivo de configuración de Gez:
+Para paquetes de terceros o escenarios especiales, se pueden personalizar alias a través del archivo de configuración de Esmx:
 
 ```ts title="src/entry.node.ts"
 export default {
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createApp(gez, (buildContext) => {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createApp(esmx, (buildContext) => {
                 buildContext.config.resolve = {
                     ...buildContext.config.resolve,
                     alias: {
@@ -133,7 +133,7 @@ export default {
             })
         );
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ::: warning Consideraciones

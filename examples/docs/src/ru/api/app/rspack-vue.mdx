@@ -1,23 +1,23 @@
 ---
-titleSuffix: Gez Framework Vue Build Tool
-description: Специализированный инструмент сборки Gez Framework для Vue, предоставляющий полную поддержку сборки приложений Vue 2/3, включая разработку компонентов, SSR-рендеринг и оптимизацию производительности.
+titleSuffix: Esmx Framework Vue Build Tool
+description: Специализированный инструмент сборки Esmx Framework для Vue, предоставляющий полную поддержку сборки приложений Vue 2/3, включая разработку компонентов, SSR-рендеринг и оптимизацию производительности.
 head:
   - - meta
     - property: keywords
-      content: Gez, Rspack, Vue, Vue2, Vue3, SSR, инструмент сборки, разработка компонентов, серверный рендеринг, оптимизация производительности
+      content: Esmx, Rspack, Vue, Vue2, Vue3, SSR, инструмент сборки, разработка компонентов, серверный рендеринг, оптимизация производительности
 ---
 
 import { PackageManagerTabs } from '@theme';
 
-# @gez/rspack-vue
+# @esmx/rspack-vue
 
 Пакет Rspack Vue предоставляет набор API для создания и настройки приложений на основе фреймворка Vue с использованием Rspack, поддерживая разработку компонентов Vue, сборку и серверный рендеринг.
 
 ## Установка
 
-Установите `@gez/rspack-vue` как зависимость для разработки с помощью менеджера пакетов:
+Установите `@esmx/rspack-vue` как зависимость для разработки с помощью менеджера пакетов:
 
-<PackageManagerTabs command="install @gez/rspack-vue -D" />
+<PackageManagerTabs command="install @esmx/rspack-vue -D" />
 
 ## Экспорт типов
 
@@ -36,7 +36,7 @@ type BuildTarget = 'node' | 'client' | 'server'
 
 ```ts
 interface RspackAppConfigContext {
-  gez: Gez
+  esmx: Esmx
   buildTarget: BuildTarget
   config: RspackOptions
   options: RspackAppOptions
@@ -44,7 +44,7 @@ interface RspackAppConfigContext {
 ```
 
 Интерфейс контекста конфигурации приложения Rspack, предоставляющий информацию, доступную в функциях-хуках конфигурации:
-- `gez`: Экземпляр фреймворка Gez
+- `esmx`: Экземпляр фреймворка Esmx
 - `buildTarget`: Текущая цель сборки (client/server/node)
 - `config`: Объект конфигурации Rspack
 - `options`: Опции конфигурации приложения
@@ -86,13 +86,13 @@ interface RspackAppOptions {
 ### createRspackApp
 
 ```ts
-function createRspackApp(gez: Gez, options?: RspackAppOptions): Promise<App>
+function createRspackApp(esmx: Esmx, options?: RspackAppOptions): Promise<App>
 ```
 
 Создает стандартный экземпляр приложения Rspack.
 
 **Параметры:**
-- `gez`: Экземпляр фреймворка Gez
+- `esmx`: Экземпляр фреймворка Esmx
 - `options`: Опции конфигурации приложения Rspack
 
 **Возвращаемое значение:**
@@ -101,13 +101,13 @@ function createRspackApp(gez: Gez, options?: RspackAppOptions): Promise<App>
 ### createRspackHtmlApp
 
 ```ts
-function createRspackHtmlApp(gez: Gez, options?: RspackHtmlAppOptions): Promise<App>
+function createRspackHtmlApp(esmx: Esmx, options?: RspackHtmlAppOptions): Promise<App>
 ```
 
 Создает экземпляр HTML-приложения Rspack.
 
 **Параметры:**
-- `gez`: Экземпляр фреймворка Gez
+- `esmx`: Экземпляр фреймворка Esmx
 - `options`: Опции конфигурации HTML-приложения
 
 **Возвращаемое значение:**
@@ -141,12 +141,12 @@ const RSPACK_LOADER: Record<string, string> = {
 Использование этих констант позволяет ссылаться на встроенные загрузчики в конфигурации, избегая ручного ввода строк:
 
 ```ts title="src/entry.node.ts"
-import { RSPACK_LOADER } from '@gez/rspack';
+import { RSPACK_LOADER } from '@esmx/rspack';
 
 export default {
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         loaders: {
           // Использование констант для ссылки на загрузчики
           styleLoader: RSPACK_LOADER.styleLoader,

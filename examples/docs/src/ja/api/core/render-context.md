@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez フレームワーク レンダリングコンテキスト API リファレンス
-description: Gez フレームワークの RenderContext コアクラスの詳細説明。レンダリング制御、リソース管理、状態同期、ルーティング制御などの機能を提供し、開発者が効率的なサーバーサイドレンダリングを実現するのを支援します。
+titleSuffix: Esmx フレームワーク レンダリングコンテキスト API リファレンス
+description: Esmx フレームワークの RenderContext コアクラスの詳細説明。レンダリング制御、リソース管理、状態同期、ルーティング制御などの機能を提供し、開発者が効率的なサーバーサイドレンダリングを実現するのを支援します。
 head:
   - - meta
     - property: keywords
-      content: Gez, RenderContext, SSR, サーバーサイドレンダリング, レンダリングコンテキスト, 状態同期, リソース管理, Web アプリケーションフレームワーク
+      content: Esmx, RenderContext, SSR, サーバーサイドレンダリング, レンダリングコンテキスト, 状態同期, リソース管理, Web アプリケーションフレームワーク
 ---
 
 # RenderContext
 
-RenderContext は Gez フレームワークのコアクラスで、サーバーサイドレンダリング（SSR）のライフサイクル全体を管理します。レンダリングコンテキスト、リソース管理、状態同期などの重要なタスクを処理するための完全な API を提供します：
+RenderContext は Esmx フレームワークのコアクラスで、サーバーサイドレンダリング（SSR）のライフサイクル全体を管理します。レンダリングコンテキスト、リソース管理、状態同期などの重要なタスクを処理するための完全な API を提供します：
 
 - **レンダリング制御**：サーバーサイドレンダリングプロセスを管理し、マルチエントリーレンダリング、条件付きレンダリングなどのシナリオをサポート
 - **リソース管理**：JS、CSS などの静的リソースをインテリジェントに収集して注入し、ロードパフォーマンスを最適化
@@ -148,7 +148,7 @@ export const desktop = async (rc: RenderContext) => {
 レンダリングパラメータ。レンダリング関数に任意の型のパラメータを渡すことができ、リクエスト情報（URL、クエリパラメータなど）を渡すためによく使用されます。
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     url: req.url,
     lang: 'zh-CN',
@@ -169,12 +169,12 @@ const rc = await gez.render({
 
 ## インスタンスプロパティ
 
-### gez
+### esmx
 
-- **型**: `Gez`
+- **型**: `Esmx`
 - **読み取り専用**: `true`
 
-Gez インスタンスの参照。フレームワークのコア機能と設定情報にアクセスするために使用されます。
+Esmx インスタンスの参照。フレームワークのコア機能と設定情報にアクセスするために使用されます。
 
 ### redirect
 
@@ -264,7 +264,7 @@ export default async (rc: RenderContext) => {
 };
 
 // 動的ベースパス
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/app',  // ベースパスを設定
   params: { url: req.url }
 });
@@ -285,19 +285,19 @@ const rc = await gez.render({
 
 ```ts
 // 基本的な使用法
-const rc = await gez.render({
-  base: '/gez',  // ベースパスを設定
+const rc = await esmx.render({
+  base: '/esmx',  // ベースパスを設定
   params: { url: req.url }
 });
 
 // 多言語サイトの例
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/cn',  // 中国語サイト
   params: { lang: 'zh-CN' }
 });
 
 // マイクロフロントエンドアプリケーションの例
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/app1',  // サブアプリケーション1
   params: { appId: 1 }
 });
@@ -327,7 +327,7 @@ export const desktop = async (rc: RenderContext) => {
 };
 
 // デバイスタイプに基づいてエントリー関数を選択
-const rc = await gez.render({
+const rc = await esmx.render({
   entryName: isMobile ? 'mobile' : 'desktop',
   params: { url: req.url }
 });
@@ -343,7 +343,7 @@ const rc = await gez.render({
 
 ```ts
 // 基本的な使用法 - URL と言語設定を渡す
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     url: req.url,
     lang: 'zh-CN'
@@ -351,7 +351,7 @@ const rc = await gez.render({
 });
 
 // ページ設定 - テーマとレイアウトを設定
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     theme: 'dark',
     layout: 'sidebar'
@@ -359,7 +359,7 @@ const rc = await gez.render({
 });
 
 // 環境設定 - API アドレスを注入
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     apiBaseUrl: process.env.API_BASE_URL,
     version: '1.0.0'

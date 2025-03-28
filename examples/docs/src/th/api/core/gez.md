@@ -1,17 +1,17 @@
 ---
 titleSuffix: กรอบ API คลาสหลัก
-description: รายละเอียด API คลาสหลักของเฟรมเวิร์ก Gez รวมถึงการจัดการวงจรชีวิตแอปพลิเคชัน การจัดการทรัพยากรคงที่ และความสามารถในการเรนเดอร์ฝั่งเซิร์ฟเวอร์ ช่วยให้นักพัฒนาทำความเข้าใจฟังก์ชันหลักของเฟรมเวิร์กได้อย่างลึกซึ้ง
+description: รายละเอียด API คลาสหลักของเฟรมเวิร์ก Esmx รวมถึงการจัดการวงจรชีวิตแอปพลิเคชัน การจัดการทรัพยากรคงที่ และความสามารถในการเรนเดอร์ฝั่งเซิร์ฟเวอร์ ช่วยให้นักพัฒนาทำความเข้าใจฟังก์ชันหลักของเฟรมเวิร์กได้อย่างลึกซึ้ง
 head:
   - - meta
     - property: keywords
-      content: Gez, API, การจัดการวงจรชีวิต, ทรัพยากรคงที่, การเรนเดอร์ฝั่งเซิร์ฟเวอร์, Rspack, เว็บเฟรมเวิร์ก
+      content: Esmx, API, การจัดการวงจรชีวิต, ทรัพยากรคงที่, การเรนเดอร์ฝั่งเซิร์ฟเวอร์, Rspack, เว็บเฟรมเวิร์ก
 ---
 
-# Gez
+# Esmx
 
 ## บทนำ
 
-Gez เป็นเว็บเฟรมเวิร์กประสิทธิภาพสูงที่สร้างบน Rspack ให้ความสามารถในการจัดการวงจรชีวิตแอปพลิเคชัน การจัดการทรัพยากรคงที่ และการเรนเดอร์ฝั่งเซิร์ฟเวอร์อย่างครบถ้วน
+Esmx เป็นเว็บเฟรมเวิร์กประสิทธิภาพสูงที่สร้างบน Rspack ให้ความสามารถในการจัดการวงจรชีวิตแอปพลิเคชัน การจัดการทรัพยากรคงที่ และการเรนเดอร์ฝั่งเซิร์ฟเวอร์อย่างครบถ้วน
 
 ## นิยามประเภท
 
@@ -76,18 +76,18 @@ enum COMMAND {
 
 ## ตัวเลือกอินสแตนซ์
 
-กำหนดตัวเลือกการกำหนดค่าหลักของเฟรมเวิร์ก Gez
+กำหนดตัวเลือกการกำหนดค่าหลักของเฟรมเวิร์ก Esmx
 
 ```ts
-interface GezOptions {
+interface EsmxOptions {
   root?: string
   isProd?: boolean
   basePathPlaceholder?: string | false
   modules?: ModuleConfig
   packs?: PackConfig
-  devApp?: (gez: Gez) => Promise<App>
-  server?: (gez: Gez) => Promise<void>
-  postBuild?: (gez: Gez) => Promise<void>
+  devApp?: (esmx: Esmx) => Promise<App>
+  server?: (esmx: Esmx) => Promise<void>
+  postBuild?: (esmx: Esmx) => Promise<void>
 }
 ```
 
@@ -128,15 +128,15 @@ interface GezOptions {
 
 #### devApp
 
-- **ประเภท**: `(gez: Gez) => Promise<App>`
+- **ประเภท**: `(esmx: Esmx) => Promise<App>`
 
 ฟังก์ชันการสร้างแอปพลิเคชันสำหรับสภาพแวดล้อมการพัฒนา ใช้เฉพาะในสภาพแวดล้อมการพัฒนา เพื่อสร้างอินสแตนซ์แอปพลิเคชันสำหรับเซิร์ฟเวอร์พัฒนา
 
 ```ts title="entry.node.ts"
 export default {
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(context) {
           // กำหนดค่า Rspack แบบกำหนดเอง
         }
@@ -148,16 +148,16 @@ export default {
 
 #### server
 
-- **ประเภท**: `(gez: Gez) => Promise<void>`
+- **ประเภท**: `(esmx: Esmx) => Promise<void>`
 
 ฟังก์ชันการกำหนดค่าและเริ่มต้นเซิร์ฟเวอร์ HTTP ใช้ได้ทั้งในสภาพแวดล้อมการพัฒนาและการผลิต
 
 ```ts title="entry.node.ts"
 export default {
-  async server(gez) {
+  async server(esmx) {
     const server = http.createServer((req, res) => {
-      gez.middleware(req, res, async () => {
-        const render = await gez.render({
+      esmx.middleware(req, res, async () => {
+        const render = await esmx.render({
           params: { url: req.url }
         });
         res.end(render.html);
@@ -171,7 +171,7 @@ export default {
 
 #### postBuild
 
-- **ประเภท**: `(gez: Gez) => Promise<void>`
+- **ประเภท**: `(esmx: Esmx) => Promise<void>`
 
 ฟังก์ชันการประมวลผลหลังการสร้าง ทำงานหลังจากสร้างโปรเจกต์เสร็จสิ้น ใช้สำหรับ:
 - การประมวลผลทรัพยากรเพิ่มเติม
@@ -235,8 +235,8 @@ export default {
 
 ```ts
 const server = http.createServer((req, res) => {
-  gez.middleware(req, res, async () => {
-    const rc = await gez.render({ url: req.url });
+  esmx.middleware(req, res, async () => {
+    const rc = await esmx.render({ url: req.url });
     res.end(rc.html);
   });
 });
@@ -253,12 +253,12 @@ const server = http.createServer((req, res) => {
 
 ```ts
 // การใช้งานพื้นฐาน
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: req.url }
 });
 
 // การกำหนดค่าขั้นสูง
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '',                    // เส้นทางฐาน
   importmapMode: 'inline',     // โหมดการแมปการนำเข้า
   entryName: 'default',        // จุดเข้าเรนเดอร์
@@ -297,13 +297,13 @@ const rc = await gez.render({
 ### constructor()
 
 - **พารามิเตอร์**: 
-  - `options?: GezOptions` - ตัวเลือกการกำหนดค่าเฟรมเวิร์ก
-- **ส่งคืนค่า**: `Gez`
+  - `options?: EsmxOptions` - ตัวเลือกการกำหนดค่าเฟรมเวิร์ก
+- **ส่งคืนค่า**: `Esmx`
 
-สร้างอินสแตนซ์เฟรมเวิร์ก Gez
+สร้างอินสแตนซ์เฟรมเวิร์ก Esmx
 
 ```ts
-const gez = new Gez({
+const esmx = new Esmx({
   root: './src',
   isProd: process.env.NODE_ENV === 'production'
 });
@@ -317,7 +317,7 @@ const gez = new Gez({
   - `Error`: เมื่อพยายามเตรียมใช้งานซ้ำ
   - `NotReadyError`: เมื่อเข้าถึงอินสแตนซ์ที่ยังไม่ถูกเตรียมใช้งาน
 
-เตรียมใช้งานอินสแตนซ์เฟรมเวิร์ก Gez ดำเนินการกระบวนการเตรียมใช้งานหลักดังนี้:
+เตรียมใช้งานอินสแตนซ์เฟรมเวิร์ก Esmx ดำเนินการกระบวนการเตรียมใช้งานหลักดังนี้:
 
 1. แก้ไขการกำหนดค่าโปรเจกต์ (package.json, การกำหนดค่าโมดูล, การกำหนดค่าการแพ็คเกจ ฯลฯ)
 2. สร้างอินสแตนซ์แอปพลิเคชัน (สภาพแวดล้อมการพัฒนาหรือการผลิต)
@@ -330,26 +330,26 @@ const gez = new Gez({
 :::
 
 ```ts
-const gez = new Gez({
+const esmx = new Esmx({
   root: './src',
   isProd: process.env.NODE_ENV === 'production'
 });
 
-await gez.init(COMMAND.dev);
+await esmx.init(COMMAND.dev);
 ```
 
 ### destroy()
 
 - **ส่งคืนค่า**: `Promise<boolean>`
 
-ทำลายอินสแตนซ์เฟรมเวิร์ก Gez ดำเนินการล้างทรัพยากรและปิดการเชื่อมต่อ ใช้สำหรับ:
+ทำลายอินสแตนซ์เฟรมเวิร์ก Esmx ดำเนินการล้างทรัพยากรและปิดการเชื่อมต่อ ใช้สำหรับ:
 - ปิดเซิร์ฟเวอร์พัฒนา
 - ล้างไฟล์ชั่วคราวและแคช
 - ปลดปล่อยทรัพยากรระบบ
 
 ```ts
 process.once('SIGTERM', async () => {
-  await gez.destroy();
+  await esmx.destroy();
   process.exit(0);
 });
 ```
@@ -370,14 +370,14 @@ process.once('SIGTERM', async () => {
 
 ```ts title="entry.node.ts"
 export default {
-  async postBuild(gez) {
-    await gez.build();
+  async postBuild(esmx) {
+    await esmx.build();
     // สร้าง HTML คงที่หลังการสร้าง
-    const render = await gez.render({
+    const render = await esmx.render({
       params: { url: '/' }
     });
-    gez.writeSync(
-      gez.resolvePath('dist/client', 'index.html'),
+    esmx.writeSync(
+      esmx.resolvePath('dist/client', 'index.html'),
       render.html
     );
   }
@@ -395,12 +395,12 @@ export default {
 
 ```ts title="entry.node.ts"
 export default {
-  async server(gez) {
+  async server(esmx) {
     const server = http.createServer((req, res) => {
       // จัดการทรัพยากรคงที่
-      gez.middleware(req, res, async () => {
+      esmx.middleware(req, res, async () => {
         // การเรนเดอร์ฝั่งเซิร์ฟเวอร์
-        const render = await gez.render({
+        const render = await esmx.render({
           params: { url: req.url }
         });
         res.end(render.html);
@@ -426,17 +426,17 @@ export default {
 
 ```ts title="entry.node.ts"
 export default {
-  async postBuild(gez) {
+  async postBuild(esmx) {
     // สร้าง HTML คงที่สำหรับหลายหน้า
     const pages = ['/', '/about', '/404'];
 
     for (const url of pages) {
-      const render = await gez.render({
+      const render = await esmx.render({
         params: { url }
       });
 
-      await gez.write(
-        gez.resolvePath('dist/client', url.substring(1), 'index.html'),
+      await esmx.write(
+        esmx.resolvePath('dist/client', url.substring(1), 'index.html'),
         render.html
       );
     }
@@ -456,7 +456,7 @@ export default {
 - **ตัวอย่าง**:
 ```ts
 // แก้ไขเส้นทางทรัพยากรคงที่
-const htmlPath = gez.resolvePath('dist/client', 'index.html');
+const htmlPath = esmx.resolvePath('dist/client', 'index.html');
 ```
 
 ### writeSync()
@@ -471,9 +471,9 @@ const htmlPath = gez.resolvePath('dist/client', 'index.html');
 - **ตัวอย่าง**:
 ```ts title="src/entry.node.ts"
 
-async postBuild(gez) {
-  const htmlPath = gez.resolvePath('dist/client', 'index.html');
-  const success = await gez.write(htmlPath, '<html>...</html>');
+async postBuild(esmx) {
+  const htmlPath = esmx.resolvePath('dist/client', 'index.html');
+  const success = await esmx.write(htmlPath, '<html>...</html>');
 }
 ```
 
@@ -489,8 +489,8 @@ async postBuild(gez) {
 
 - **ตัวอย่าง**:
 ```ts title="src/entry.node.ts"
-async server(gez) {
-  const manifest = gez.readJsonSync(gez.resolvePath('dist/client', 'manifest.json'));
+async server(esmx) {
+  const manifest = esmx.readJsonSync(esmx.resolvePath('dist/client', 'manifest.json'));
   // ใช้ออบเจ็กต์ manifest
 }
 ```

@@ -1,15 +1,15 @@
 ---
-titleSuffix: Exemple d'application Vue3 SSR avec le framework Gez
-description: Créez une application Vue3 SSR basée sur Gez à partir de zéro. Ce guide pratique montre les utilisations de base du framework, y compris l'initialisation du projet, la configuration de Vue3 et la configuration des fichiers d'entrée.
+titleSuffix: Exemple d'application Vue3 SSR avec le framework Esmx
+description: Créez une application Vue3 SSR basée sur Esmx à partir de zéro. Ce guide pratique montre les utilisations de base du framework, y compris l'initialisation du projet, la configuration de Vue3 et la configuration des fichiers d'entrée.
 head:
   - - meta
     - property: keywords
-      content: Gez, Vue3, Application SSR, Configuration TypeScript, Initialisation de projet, Rendu côté serveur, Interaction côté client, API de composition
+      content: Esmx, Vue3, Application SSR, Configuration TypeScript, Initialisation de projet, Rendu côté serveur, Interaction côté client, API de composition
 ---
 
 # Vue3
 
-Ce tutoriel vous guidera dans la création d'une application Vue3 SSR basée sur Gez à partir de zéro. Nous allons utiliser un exemple complet pour montrer comment créer une application de rendu côté serveur avec le framework Gez.
+Ce tutoriel vous guidera dans la création d'une application Vue3 SSR basée sur Esmx à partir de zéro. Nous allons utiliser un exemple complet pour montrer comment créer une application de rendu côté serveur avec le framework Esmx.
 
 ## Structure du projet
 
@@ -40,18 +40,18 @@ Créez le fichier `package.json` pour configurer les dépendances et les scripts
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "gez dev",
+    "dev": "esmx dev",
     "build": "npm run build:dts && npm run build:ssr",
-    "build:ssr": "gez build",
-    "preview": "gez preview",
+    "build:ssr": "esmx build",
+    "preview": "esmx preview",
     "start": "NODE_ENV=production node dist/index.js",
     "build:dts": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/src"
   },
   "dependencies": {
-    "@gez/core": "*"
+    "@esmx/core": "*"
   },
   "devDependencies": {
-    "@gez/rspack-vue": "*",
+    "@esmx/rspack-vue": "*",
     "@types/node": "22.8.6",
     "@vue/server-renderer": "^3.5.13",
     "typescript": "^5.7.3",
@@ -114,7 +114,7 @@ Créez le composant principal de l'application `src/app.vue`, en utilisant l'API
 ```html title="src/app.vue"
 <template>
     <div>
-        <h1><a href="https://www.esmnext.com/guide/frameworks/vue3.html" target="_blank">Démarrage rapide avec Gez</a></h1>
+        <h1><a href="https://www.esmnext.com/guide/frameworks/vue3.html" target="_blank">Démarrage rapide avec Esmx</a></h1>
         <time :datetime="time">{{ time }}</time>
     </div>
 </template>
@@ -122,7 +122,7 @@ Créez le composant principal de l'application `src/app.vue`, en utilisant l'API
 <script setup lang="ts">
 /**
  * @file Composant d'exemple
- * @description Affiche un titre de page avec une horloge mise à jour automatiquement, pour démontrer les fonctionnalités de base de Gez
+ * @description Affiche un titre de page avec une horloge mise à jour automatiquement, pour démontrer les fonctionnalités de base de Esmx
  */
 
 import { onMounted, onUnmounted, ref } from 'vue';
@@ -194,18 +194,18 @@ Créez le fichier `entry.node.ts`, configurant l'environnement de développement
  */
 
 import http from 'node:http';
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     /**
      * Configurer le créateur d'application pour l'environnement de développement
      * @description Crée et configure l'instance Rspack, utilisée pour la construction et la mise à jour en temps réel en environnement de développement
-     * @param gez Instance du framework Gez, fournissant les fonctionnalités de base et les interfaces de configuration
+     * @param esmx Instance du framework Esmx, fournissant les fonctionnalités de base et les interfaces de configuration
      * @returns Retourne l'instance Rspack configurée, prenant en charge HMR et la prévisualisation en temps réel
      */
-    async devApp(gez) {
-        return import('@gez/rspack-vue').then((m) =>
-            m.createRspackVue3App(gez, {
+    async devApp(esmx) {
+        return import('@esmx/rspack-vue').then((m) =>
+            m.createRspackVue3App(esmx, {
                 config(context) {
                     // Personnaliser la configuration de compilation Rspack ici
                 }
@@ -215,15 +215,15 @@ export default {
 
     /**
      * Configurer et démarrer le serveur HTTP
-     * @description Crée une instance de serveur HTTP, intègre le middleware Gez, et gère les requêtes SSR
-     * @param gez Instance du framework Gez, fournissant le middleware et les fonctionnalités de rendu
+     * @description Crée une instance de serveur HTTP, intègre le middleware Esmx, et gère les requêtes SSR
+     * @param esmx Instance du framework Esmx, fournissant le middleware et les fonctionnalités de rendu
      */
-    async server(gez) {
+    async server(esmx) {
         const server = http.createServer((req, res) => {
-            // Utiliser le middleware Gez pour gérer les requêtes
-            gez.middleware(req, res, async () => {
+            // Utiliser le middleware Esmx pour gérer les requêtes
+            esmx.middleware(req, res, async () => {
                 // Exécuter le rendu côté serveur
-                const rc = await gez.render({
+                const rc = await esmx.render({
                     params: { url: req.url }
                 });
                 res.end(rc.html);
@@ -234,13 +234,13 @@ export default {
             console.log('Serveur démarré : http://localhost:3000');
         });
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 Ce fichier est le point d'entrée pour la configuration de l'environnement de développement et le démarrage du serveur, contenant deux fonctionnalités principales :
 
 1. Fonction `devApp` : Responsable de la création et de la configuration de l'instance Rspack pour l'environnement de développement, prenant en charge la mise à jour en temps réel et la prévisualisation. Ici, `createRspackVue3App` est utilisé pour créer une instance Rspack spécifique à Vue3.
-2. Fonction `server` : Responsable de la création et de la configuration du serveur HTTP, intégrant le middleware Gez pour gérer les requêtes SSR.
+2. Fonction `server` : Responsable de la création et de la configuration du serveur HTTP, intégrant le middleware Esmx pour gérer les requêtes SSR.
 
 ### entry.server.ts
 
@@ -252,7 +252,7 @@ Créez le fichier d'entrée pour le rendu côté serveur `src/entry.server.ts` :
  * @description Responsable du processus de rendu côté serveur, de la génération HTML et de l'injection des ressources
  */
 
-import type { RenderContext } from '@gez/core';
+import type { RenderContext } from '@esmx/core';
 import { renderToString } from '@vue/server-renderer';
 import { createApp } from './create-app';
 
@@ -273,7 +273,7 @@ export default async (rc: RenderContext) => {
 <html lang="fr-FR">
 <head>
     ${rc.preload()}
-    <title>Démarrage rapide avec Gez</title>
+    <title>Démarrage rapide avec Esmx</title>
     ${rc.css()}
 </head>
 <body>
@@ -306,4 +306,4 @@ npm run build
 npm run start
 ```
 
-Vous avez maintenant créé avec succès une application Vue3 SSR basée sur Gez ! Visitez http://localhost:3000 pour voir le résultat.
+Vous avez maintenant créé avec succès une application Vue3 SSR basée sur Esmx ! Visitez http://localhost:3000 pour voir le résultat.

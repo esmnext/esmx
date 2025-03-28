@@ -1,4 +1,4 @@
-import type { ManifestJson, ParsedModuleConfig } from '@gez/core';
+import type { ManifestJson, ParsedModuleConfig } from '@esmx/core';
 import type { Compilation, Compiler, StatsCompilation } from '@rspack/core';
 import { generateIdentifier } from './identifier';
 

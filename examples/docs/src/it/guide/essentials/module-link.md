@@ -1,15 +1,15 @@
 ---
-titleSuffix: Meccanismo di condivisione del codice tra servizi nel framework Gez
-description: Descrizione dettagliata del meccanismo di collegamento dei moduli nel framework Gez, inclusa la condivisione del codice tra servizi, la gestione delle dipendenze e l'implementazione delle specifiche ESM, per aiutare gli sviluppatori a costruire applicazioni micro-frontend efficienti.
+titleSuffix: Meccanismo di condivisione del codice tra servizi nel framework Esmx
+description: Descrizione dettagliata del meccanismo di collegamento dei moduli nel framework Esmx, inclusa la condivisione del codice tra servizi, la gestione delle dipendenze e l'implementazione delle specifiche ESM, per aiutare gli sviluppatori a costruire applicazioni micro-frontend efficienti.
 head:
   - - meta
     - property: keywords
-      content: Gez, collegamento moduli, Module Link, ESM, condivisione codice, gestione dipendenze, micro-frontend
+      content: Esmx, collegamento moduli, Module Link, ESM, condivisione codice, gestione dipendenze, micro-frontend
 ---
 
 # Collegamento Moduli
 
-Il framework Gez fornisce un meccanismo completo di collegamento moduli per gestire la condivisione del codice e le relazioni di dipendenza tra i servizi. Questo meccanismo è basato sulle specifiche ESM (ECMAScript Module) e supporta l'esportazione e l'importazione di moduli a livello di codice sorgente, oltre a una completa gestione delle dipendenze.
+Il framework Esmx fornisce un meccanismo completo di collegamento moduli per gestire la condivisione del codice e le relazioni di dipendenza tra i servizi. Questo meccanismo è basato sulle specifiche ESM (ECMAScript Module) e supporta l'esportazione e l'importazione di moduli a livello di codice sorgente, oltre a una completa gestione delle dipendenze.
 
 ### Concetti Chiave
 
@@ -30,7 +30,7 @@ L'importazione di moduli è il processo di riferimento a unità di codice esport
 Configura i moduli da esportare in `entry.node.ts`:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     modules: {
@@ -43,7 +43,7 @@ export default {
             'npm:vue-router'                   // Vue Router
         ]
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 La configurazione dell'esportazione supporta due tipi:
@@ -57,7 +57,7 @@ La configurazione dell'esportazione supporta due tipi:
 Configura i moduli da importare in `entry.node.ts`:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     modules: {
@@ -75,7 +75,7 @@ export default {
             'vue-router': 'ssr-remote/npm/vue-router'
         }
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 Descrizione delle opzioni di configurazione:
@@ -143,7 +143,7 @@ Installazione tramite protocollo HTTP/HTTPS:
 Configura le opzioni di build in `entry.node.ts`:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     // Configurazione dell'esportazione dei moduli
@@ -166,26 +166,26 @@ export default {
         ],
 
         // Personalizzazione di package.json
-        packageJson: async (gez, pkg) => {
+        packageJson: async (esmx, pkg) => {
             pkg.version = '1.0.0';
             return pkg;
         },
 
         // Pre-elaborazione della build
-        onBefore: async (gez, pkg) => {
+        onBefore: async (esmx, pkg) => {
             // Genera dichiarazioni di tipo
             // Esegui test case
             // Aggiorna documentazione, ecc.
         },
 
         // Post-elaborazione della build
-        onAfter: async (gez, pkg, file) => {
+        onAfter: async (esmx, pkg, file) => {
             // Carica su CDN
             // Pubblica su repository npm
             // Distribuisci in ambiente di test, ecc.
         }
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ### Prodotti della Build
@@ -205,7 +205,7 @@ your-app-name.tgz
 
 ```bash
 # 1. Costruisci la versione di produzione
-gez build
+esmx build
 
 # 2. Pubblica su npm
 npm publish dist/versions/your-app-name.tgz

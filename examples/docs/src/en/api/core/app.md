@@ -1,22 +1,22 @@
 ---
-titleSuffix: Gez Framework Application Abstraction Interface
-description: Detailed introduction to the App interface of the Gez framework, including application lifecycle management, static resource handling, and server-side rendering functionality, helping developers understand and use core application features.
+titleSuffix: Esmx Framework Application Abstraction Interface
+description: Detailed introduction to the App interface of the Esmx framework, including application lifecycle management, static resource handling, and server-side rendering functionality, helping developers understand and use core application features.
 head:
   - - meta
     - property: keywords
-      content: Gez, App, Application Abstraction, Lifecycle, Static Resources, Server-Side Rendering, API
+      content: Esmx, App, Application Abstraction, Lifecycle, Static Resources, Server-Side Rendering, API
 ---
 
 # App
 
-`App` is the application abstraction in the Gez framework, providing a unified interface to manage the application lifecycle, static resources, and server-side rendering.
+`App` is the application abstraction in the Esmx framework, providing a unified interface to manage the application lifecycle, static resources, and server-side rendering.
 
 ```ts title="entry.node.ts"
 export default {
   // Development environment configuration
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(rc) {
           // Custom Rspack configuration
         }
@@ -55,7 +55,7 @@ Production environment:
 - Optimized resource loading strategy
 
 ```ts
-server.use(gez.middleware);
+server.use(esmx.middleware);
 ```
 
 #### render
@@ -67,7 +67,7 @@ Server-side rendering function. Provides different implementations based on the 
 - Development environment (dev): Loads and executes the server entry file from the source code for rendering
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: '/page' }
 });
 res.end(rc.html);

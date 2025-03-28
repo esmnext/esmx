@@ -1,22 +1,22 @@
 ---
-titleSuffix: Gez Framework Application Abstract Interface
-description: Chi tiết về giao diện App của framework Gez, bao gồm quản lý vòng đời ứng dụng, xử lý tài nguyên tĩnh và chức năng render phía máy chủ, giúp nhà phát triển hiểu và sử dụng các chức năng cốt lõi của ứng dụng.
+titleSuffix: Esmx Framework Application Abstract Interface
+description: Chi tiết về giao diện App của framework Esmx, bao gồm quản lý vòng đời ứng dụng, xử lý tài nguyên tĩnh và chức năng render phía máy chủ, giúp nhà phát triển hiểu và sử dụng các chức năng cốt lõi của ứng dụng.
 head:
   - - meta
     - property: keywords
-      content: Gez, App, Application Abstract, Lifecycle, Static Resources, Server-side Rendering, API
+      content: Esmx, App, Application Abstract, Lifecycle, Static Resources, Server-side Rendering, API
 ---
 
 # App
 
-`App` là một abstraction (trừu tượng hóa) ứng dụng của framework Gez, cung cấp một giao diện thống nhất để quản lý vòng đời ứng dụng, tài nguyên tĩnh và render phía máy chủ.
+`App` là một abstraction (trừu tượng hóa) ứng dụng của framework Esmx, cung cấp một giao diện thống nhất để quản lý vòng đời ứng dụng, tài nguyên tĩnh và render phía máy chủ.
 
 ```ts title="entry.node.ts"
 export default {
   // Cấu hình môi trường phát triển
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(rc) {
           // Tùy chỉnh cấu hình Rspack
         }
@@ -55,7 +55,7 @@ Môi trường sản xuất:
 - Chiến lược tải tài nguyên tối ưu
 
 ```ts
-server.use(gez.middleware);
+server.use(esmx.middleware);
 ```
 
 #### render
@@ -67,7 +67,7 @@ Hàm render phía máy chủ. Cung cấp các triển khai khác nhau tùy theo 
 - Môi trường phát triển (dev): Tải file entry phía máy chủ từ mã nguồn để thực hiện render
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: '/page' }
 });
 res.end(rc.html);

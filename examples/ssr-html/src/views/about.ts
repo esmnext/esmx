@@ -12,7 +12,7 @@ export default class Home extends Page {
         return layout(
             `<div class="about-page">
                 <section class="about-hero">
-                    <h2>关于 Gez</h2>
+                    <h2>关于 Esmx</h2>
                     <p>现代化的微前端模块共享解决方案</p>
                 </section>
                 

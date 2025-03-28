@@ -1,15 +1,15 @@
 ---
-titleSuffix: Riferimento del file di manifestazione del framework Gez
-description: Descrizione dettagliata della struttura del file di manifestazione (manifest.json) del framework Gez, inclusa la gestione degli artefatti di build, il mapping dei file esportati e le funzionalità di statistica delle risorse, per aiutare gli sviluppatori a comprendere e utilizzare il sistema di build.
+titleSuffix: Riferimento del file di manifestazione del framework Esmx
+description: Descrizione dettagliata della struttura del file di manifestazione (manifest.json) del framework Esmx, inclusa la gestione degli artefatti di build, il mapping dei file esportati e le funzionalità di statistica delle risorse, per aiutare gli sviluppatori a comprendere e utilizzare il sistema di build.
 head:
   - - meta
     - property: keywords
-      content: Gez, ManifestJson, Manifestazione di build, Gestione delle risorse, Artefatti di build, Mapping dei file, API
+      content: Esmx, ManifestJson, Manifestazione di build, Gestione delle risorse, Artefatti di build, Mapping dei file, API
 ---
 
 # ManifestJson
 
-`manifest.json` è un file di manifestazione generato durante il processo di build del framework Gez, utilizzato per registrare le informazioni sugli artefatti di build del servizio. Fornisce un'interfaccia unificata per gestire gli artefatti di build, i file esportati e le statistiche sulle dimensioni delle risorse.
+`manifest.json` è un file di manifestazione generato durante il processo di build del framework Esmx, utilizzato per registrare le informazioni sugli artefatti di build del servizio. Fornisce un'interfaccia unificata per gestire gli artefatti di build, i file esportati e le statistiche sulle dimensioni delle risorse.
 
 ```json title="dist/client/manifest.json"
 {
@@ -71,7 +71,7 @@ interface ManifestJson {
 
 - **Tipo**: `string`
 
-Nome del servizio, derivato dalla configurazione GezOptions.name.
+Nome del servizio, derivato dalla configurazione EsmxOptions.name.
 
 #### exports
 

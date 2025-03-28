@@ -1,13 +1,13 @@
 ---
 pageType: home
 titleSuffix: ESM ベースの高性能サーバーサイドレンダリングフレームワーク
-description: Gez は ESM ベースの高性能サーバーサイドレンダリングフレームワークで、完全な SSR 機能、インテリジェントなレンダリングコンテキスト、革新的なモジュールリンクシステムを提供し、大規模な Web アプリケーション開発に適しています。
+description: Esmx は ESM ベースの高性能サーバーサイドレンダリングフレームワークで、完全な SSR 機能、インテリジェントなレンダリングコンテキスト、革新的なモジュールリンクシステムを提供し、大規模な Web アプリケーション開発に適しています。
 head:
   - - meta
     - property: keywords
-      content: Gez, SSR, ESM, サーバーサイドレンダリング, モジュールリンク, Vue, React, TypeScript, マイクロフロントエンド
+      content: Esmx, SSR, ESM, サーバーサイドレンダリング, モジュールリンク, Vue, React, TypeScript, マイクロフロントエンド
 hero:
-  name: Gez
+  name: Esmx
   text: ESM ベースのサーバーサイドレンダリングフレームワーク
   tagline: 高性能で拡張可能なモジュールリンクシステム
   actions:
@@ -16,7 +16,7 @@ hero:
       link: /guide/start/getting-started
     - theme: alt
       text: GitHub
-      link: https://github.com/js-esm/gez
+      link: https://github.com/js-esm/esmx
 
 features:
   - icon: ⚡️

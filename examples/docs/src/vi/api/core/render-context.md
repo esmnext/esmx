@@ -1,15 +1,15 @@
 ---
-titleSuffix: Tài liệu tham khảo API RenderContext của framework Gez
-description: Tài liệu chi tiết về lớp RenderContext cốt lõi của framework Gez, bao gồm các chức năng như điều khiển render, quản lý tài nguyên, đồng bộ trạng thái và điều khiển định tuyến, giúp nhà phát triển thực hiện render phía máy chủ hiệu quả.
+titleSuffix: Tài liệu tham khảo API RenderContext của framework Esmx
+description: Tài liệu chi tiết về lớp RenderContext cốt lõi của framework Esmx, bao gồm các chức năng như điều khiển render, quản lý tài nguyên, đồng bộ trạng thái và điều khiển định tuyến, giúp nhà phát triển thực hiện render phía máy chủ hiệu quả.
 head:
   - - meta
     - property: keywords
-      content: Gez, RenderContext, SSR, render phía máy chủ, render context, đồng bộ trạng thái, quản lý tài nguyên, framework ứng dụng web
+      content: Esmx, RenderContext, SSR, render phía máy chủ, render context, đồng bộ trạng thái, quản lý tài nguyên, framework ứng dụng web
 ---
 
 # RenderContext
 
-RenderContext là lớp cốt lõi trong framework Gez, chịu trách nhiệm quản lý vòng đời hoàn chỉnh của render phía máy chủ (SSR). Nó cung cấp một bộ API hoàn chỉnh để xử lý các tác vụ chính như render context, quản lý tài nguyên, đồng bộ trạng thái:
+RenderContext là lớp cốt lõi trong framework Esmx, chịu trách nhiệm quản lý vòng đời hoàn chỉnh của render phía máy chủ (SSR). Nó cung cấp một bộ API hoàn chỉnh để xử lý các tác vụ chính như render context, quản lý tài nguyên, đồng bộ trạng thái:
 
 - **Điều khiển render**: Quản lý quy trình render phía máy chủ, hỗ trợ các tình huống như render nhiều entry, render có điều kiện
 - **Quản lý tài nguyên**: Thu thập và chèn thông minh các tài nguyên tĩnh như JS, CSS để tối ưu hiệu suất tải
@@ -148,7 +148,7 @@ export const desktop = async (rc: RenderContext) => {
 Các tham số render. Có thể truyền bất kỳ loại tham số nào cho hàm render, thường được sử dụng để truyền thông tin yêu cầu (URL, tham số query, v.v.).
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     url: req.url,
     lang: 'zh-CN',
@@ -169,12 +169,12 @@ Chế độ tạo import map:
 
 ## Thuộc tính thể hiện
 
-### gez
+### esmx
 
-- **Kiểu**: `Gez`
+- **Kiểu**: `Esmx`
 - **Chỉ đọc**: `true`
 
-Tham chiếu đến thể hiện Gez. Dùng để truy cập các chức năng và thông tin cấu hình cốt lõi của framework.
+Tham chiếu đến thể hiện Esmx. Dùng để truy cập các chức năng và thông tin cấu hình cốt lõi của framework.
 
 ### redirect
 
@@ -264,7 +264,7 @@ export default async (rc: RenderContext) => {
 };
 
 // Đường dẫn cơ sở động
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/app',  // Thiết lập đường dẫn cơ sở
   params: { url: req.url }
 });
@@ -285,19 +285,19 @@ const rc = await gez.render({
 
 ```ts
 // Cách sử dụng cơ bản
-const rc = await gez.render({
-  base: '/gez',  // Thiết lập đường dẫn cơ sở
+const rc = await esmx.render({
+  base: '/esmx',  // Thiết lập đường dẫn cơ sở
   params: { url: req.url }
 });
 
 // Ví dụ trang web đa ngôn ngữ
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/cn',  // Trang web tiếng Trung
   params: { lang: 'zh-CN' }
 });
 
 // Ví dụ ứng dụng micro frontend
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/app1',  // Ứng dụng con 1
   params: { appId: 1 }
 });
@@ -327,7 +327,7 @@ export const desktop = async (rc: RenderContext) => {
 };
 
 // Chọn hàm entry dựa trên loại thiết bị
-const rc = await gez.render({
+const rc = await esmx.render({
   entryName: isMobile ? 'mobile' : 'desktop',
   params: { url: req.url }
 });
@@ -343,7 +343,7 @@ Các tham số render. Có thể truyền và truy cập các tham số trong qu
 
 ```ts
 // Cách sử dụng cơ bản - Truyền URL và cài đặt ngôn ngữ
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     url: req.url,
     lang: 'zh-CN'
@@ -351,7 +351,7 @@ const rc = await gez.render({
 });
 
 // Cấu hình trang - Thiết lập chủ đề và bố cục
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     theme: 'dark',
     layout: 'sidebar'
@@ -359,7 +359,7 @@ const rc = await gez.render({
 });
 
 // Cấu hình môi trường - Chèn địa chỉ API
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     apiBaseUrl: process.env.API_BASE_URL,
     version: '1.0.0'

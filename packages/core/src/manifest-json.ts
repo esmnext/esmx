@@ -1,7 +1,7 @@
 import fsp from 'node:fs/promises';
 import path from 'node:path';
 
-import type { RuntimeTarget } from './gez';
+import type { RuntimeTarget } from './esmx';
 import type { ParsedModuleConfig } from './module-config';
 
 export interface ManifestJsonChunks {
@@ -31,7 +31,7 @@ export interface ManifestJsonChunkSizes {
 
 export interface ManifestJson {
     /**
-     * 服务名字，来自于：GezOptions.name
+     * 服务名字，来自于：EsmxOptions.name
      */
     name: string;
     /**

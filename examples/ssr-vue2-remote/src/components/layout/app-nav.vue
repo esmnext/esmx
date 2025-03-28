@@ -3,8 +3,8 @@
     <div class="container">
       <div class="nav-content">
         <div class="nav-brand">
-          <img src="https://www.esmnext.com/logo.svg" alt="Gez Logo" class="nav-logo" />
-          <span class="nav-title">Gez</span>
+          <img src="https://www.esmnext.com/logo.svg" alt="Esmx Logo" class="nav-logo" />
+          <span class="nav-title">Esmx</span>
         </div>
         <div class="nav-links">
           <a href="https://www.esmnext.com/" class="nav-link" :class="{ active: current === 'home' }">首页</a>

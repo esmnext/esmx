@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework Vue2 SSR Applicatievoorbeeld
-description: Leer hoe je een Vue2 SSR-applicatie bouwt met Gez vanaf nul. Dit voorbeeld demonstreert de basisgebruik van het framework, inclusief projectinitialisatie, Vue2-configuratie en instellingen voor toegangsbestanden.
+titleSuffix: Esmx Framework Vue2 SSR Applicatievoorbeeld
+description: Leer hoe je een Vue2 SSR-applicatie bouwt met Esmx vanaf nul. Dit voorbeeld demonstreert de basisgebruik van het framework, inclusief projectinitialisatie, Vue2-configuratie en instellingen voor toegangsbestanden.
 head:
   - - meta
     - property: keywords
-      content: Gez, Vue2, SSR-applicatie, TypeScript-configuratie, projectinitialisatie, server-side rendering, client-side interactie
+      content: Esmx, Vue2, SSR-applicatie, TypeScript-configuratie, projectinitialisatie, server-side rendering, client-side interactie
 ---
 
 # Vue2
 
-Deze tutorial helpt je bij het opzetten van een Vue2 SSR-applicatie met Gez vanaf nul. We gebruiken een compleet voorbeeld om te laten zien hoe je een server-side rendering applicatie maakt met het Gez-framework.
+Deze tutorial helpt je bij het opzetten van een Vue2 SSR-applicatie met Esmx vanaf nul. We gebruiken een compleet voorbeeld om te laten zien hoe je een server-side rendering applicatie maakt met het Esmx-framework.
 
 ## Projectstructuur
 
@@ -40,18 +40,18 @@ Maak het `package.json` bestand aan en configureer projectafhankelijkheden en sc
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "gez dev",
+    "dev": "esmx dev",
     "build": "npm run build:dts && npm run build:ssr",
-    "build:ssr": "gez build",
-    "preview": "gez preview",
+    "build:ssr": "esmx build",
+    "preview": "esmx preview",
     "start": "NODE_ENV=production node dist/index.js",
     "build:dts": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/src"
   },
   "dependencies": {
-    "@gez/core": "*"
+    "@esmx/core": "*"
   },
   "devDependencies": {
-    "@gez/rspack-vue": "*",
+    "@esmx/rspack-vue": "*",
     "@types/node": "22.8.6",
     "typescript": "^5.7.3",
     "vue": "^2.7.16",
@@ -114,7 +114,7 @@ Maak de hoofdapplicatiecomponent `src/app.vue` aan, gebruikmakend van `<script s
 ```html title="src/app.vue"
 <template>
     <div id="app">
-        <h1><a href="https://www.esmnext.com/guide/frameworks/vue2.html" target="_blank">Gez Snel Starten</a></h1>
+        <h1><a href="https://www.esmnext.com/guide/frameworks/vue2.html" target="_blank">Esmx Snel Starten</a></h1>
         <time :datetime="time">{{ time }}</time>
     </div>
 </template>
@@ -122,7 +122,7 @@ Maak de hoofdapplicatiecomponent `src/app.vue` aan, gebruikmakend van `<script s
 <script setup lang="ts">
 /**
  * @file Voorbeeldcomponent
- * @description Toont een paginatitel met automatisch bijgewerkte tijd, ter demonstratie van de basisfunctionaliteit van het Gez-framework
+ * @description Toont een paginatitel met automatisch bijgewerkte tijd, ter demonstratie van de basisfunctionaliteit van het Esmx-framework
  */
 
 import { onMounted, onUnmounted, ref } from 'vue';
@@ -196,18 +196,18 @@ Maak het `entry.node.ts` bestand aan, configureer de ontwikkelomgeving en server
  */
 
 import http from 'node:http';
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     /**
      * Configureer de applicatiecreatie voor de ontwikkelomgeving
      * @description Creëert en configureert Rspack-applicatie-instantie, gebruikt voor build en hot updates in de ontwikkelomgeving
-     * @param gez Gez-frameworkinstantie, biedt kernfunctionaliteit en configuratie-interfaces
+     * @param esmx Esmx-frameworkinstantie, biedt kernfunctionaliteit en configuratie-interfaces
      * @returns Retourneert geconfigureerde Rspack-applicatie-instantie, ondersteunt HMR en live preview
      */
-    async devApp(gez) {
-        return import('@gez/rspack-vue').then((m) =>
-            m.createRspackVue2App(gez, {
+    async devApp(esmx) {
+        return import('@esmx/rspack-vue').then((m) =>
+            m.createRspackVue2App(esmx, {
                 config(context) {
                     // Pas hier Rspack-compilatieconfiguratie aan
                 }
@@ -217,15 +217,15 @@ export default {
 
     /**
      * Configureer en start HTTP-server
-     * @description Creëert HTTP-serverinstantie, integreert Gez-middleware, verwerkt SSR-verzoeken
-     * @param gez Gez-frameworkinstantie, biedt middleware en renderingfunctionaliteit
+     * @description Creëert HTTP-serverinstantie, integreert Esmx-middleware, verwerkt SSR-verzoeken
+     * @param esmx Esmx-frameworkinstantie, biedt middleware en renderingfunctionaliteit
      */
-    async server(gez) {
+    async server(esmx) {
         const server = http.createServer((req, res) => {
-            // Gebruik Gez-middleware om verzoeken te verwerken
-            gez.middleware(req, res, async () => {
+            // Gebruik Esmx-middleware om verzoeken te verwerken
+            esmx.middleware(req, res, async () => {
                 // Voer server-side rendering uit
-                const rc = await gez.render({
+                const rc = await esmx.render({
                     params: { url: req.url }
                 });
                 res.end(rc.html);
@@ -236,13 +236,13 @@ export default {
             console.log('Server gestart: http://localhost:3000');
         });
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 Dit bestand is het toegangsbestand voor ontwikkelomgevingconfiguratie en serverstart, en bevat twee kernfunctionaliteiten:
 
 1. `devApp` functie: Verantwoordelijk voor het creëren en configureren van de Rspack-applicatie-instantie voor de ontwikkelomgeving, ondersteunt hot updates en live preview-functionaliteit. Hier wordt `createRspackVue2App` gebruikt om een Rspack-applicatie-instantie specifiek voor Vue2 te creëren.
-2. `server` functie: Verantwoordelijk voor het creëren en configureren van de HTTP-server, integreert Gez-middleware om SSR-verzoeken te verwerken.
+2. `server` functie: Verantwoordelijk voor het creëren en configureren van de HTTP-server, integreert Esmx-middleware om SSR-verzoeken te verwerken.
 
 ### entry.server.ts
 
@@ -254,7 +254,7 @@ Maak het server-side rendering toegangsbestand `src/entry.server.ts` aan:
  * @description Verantwoordelijk voor server-side renderingproces, HTML-generatie en resource-injectie
  */
 
-import type { RenderContext } from '@gez/core';
+import type { RenderContext } from '@esmx/core';
 import { createRenderer } from 'vue-server-renderer';
 import { createApp } from './create-app';
 
@@ -278,7 +278,7 @@ export default async (rc: RenderContext) => {
 <html lang="nl-NL">
 <head>
     ${rc.preload()}
-    <title>Gez Snel Starten</title>
+    <title>Esmx Snel Starten</title>
     ${rc.css()}
 </head>
 <body>
@@ -311,4 +311,4 @@ npm run build
 npm run start
 ```
 
-Nu heb je succesvol een Vue2 SSR-applicatie met Gez gemaakt! Bezoek http://localhost:3000 om het resultaat te zien.
+Nu heb je succesvol een Vue2 SSR-applicatie met Esmx gemaakt! Bezoek http://localhost:3000 om het resultaat te zien.

@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework - กลไกการแชร์โค้ดระหว่างเซอร์วิส
-description: รายละเอียดเกี่ยวกับกลไกการเชื่อมโยงโมดูลของ Gez Framework รวมถึงการแชร์โค้ดระหว่างเซอร์วิส การจัดการ dependencies และการใช้งาน ESM specification เพื่อช่วยให้นักพัฒนาสามารถสร้างแอปพลิเคชันไมโครฟรอนต์เอนด์ได้อย่างมีประสิทธิภาพ
+titleSuffix: Esmx Framework - กลไกการแชร์โค้ดระหว่างเซอร์วิส
+description: รายละเอียดเกี่ยวกับกลไกการเชื่อมโยงโมดูลของ Esmx Framework รวมถึงการแชร์โค้ดระหว่างเซอร์วิส การจัดการ dependencies และการใช้งาน ESM specification เพื่อช่วยให้นักพัฒนาสามารถสร้างแอปพลิเคชันไมโครฟรอนต์เอนด์ได้อย่างมีประสิทธิภาพ
 head:
   - - meta
     - property: keywords
-      content: Gez, Module Link, ESM, Code Sharing, Dependency Management, Micro Frontend
+      content: Esmx, Module Link, ESM, Code Sharing, Dependency Management, Micro Frontend
 ---
 
 # การเชื่อมโยงโมดูล
 
-Gez Framework มีกลไกการเชื่อมโยงโมดูลที่สมบูรณ์สำหรับการจัดการการแชร์โค้ดและ dependencies ระหว่างเซอร์วิส กลไกนี้ถูกพัฒนาบนพื้นฐานของ ESM (ECMAScript Module) specification ซึ่งรองรับการ export และ import โมดูลในระดับ source code พร้อมทั้งมีฟังก์ชันการจัดการ dependencies ที่ครบถ้วน
+Esmx Framework มีกลไกการเชื่อมโยงโมดูลที่สมบูรณ์สำหรับการจัดการการแชร์โค้ดและ dependencies ระหว่างเซอร์วิส กลไกนี้ถูกพัฒนาบนพื้นฐานของ ESM (ECMAScript Module) specification ซึ่งรองรับการ export และ import โมดูลในระดับ source code พร้อมทั้งมีฟังก์ชันการจัดการ dependencies ที่ครบถ้วน
 
 ### แนวคิดหลัก
 
@@ -30,7 +30,7 @@ Gez Framework มีกลไกการเชื่อมโยงโมดู
 ตั้งค่าโมดูลที่ต้องการส่งออกใน `entry.node.ts`:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     modules: {
@@ -43,7 +43,7 @@ export default {
             'npm:vue-router'                   // Vue Router
         ]
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 การตั้งค่าการส่งออกรองรับ 2 ประเภท:
@@ -57,7 +57,7 @@ export default {
 ตั้งค่าโมดูลที่ต้องการนำเข้าใน `entry.node.ts`:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     modules: {
@@ -75,7 +75,7 @@ export default {
             'vue-router': 'ssr-remote/npm/vue-router'
         }
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 คำอธิบายการตั้งค่า:
@@ -143,7 +143,7 @@ export default {
 ตั้งค่าตัวเลือกการ build ใน `entry.node.ts`:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     // ตั้งค่าการส่งออกโมดูล
@@ -166,26 +166,26 @@ export default {
         ],
 
         // ปรับแต่ง package.json
-        packageJson: async (gez, pkg) => {
+        packageJson: async (esmx, pkg) => {
             pkg.version = '1.0.0';
             return pkg;
         },
 
         // การประมวลผลก่อน build
-        onBefore: async (gez, pkg) => {
+        onBefore: async (esmx, pkg) => {
             // สร้าง type declarations
             // รัน test cases
             // อัปเดตเอกสาร ฯลฯ
         },
 
         // การประมวลผลหลัง build
-        onAfter: async (gez, pkg, file) => {
+        onAfter: async (esmx, pkg, file) => {
             // อัปโหลดไปยัง CDN
             // เผยแพร่ไปยัง npm registry
             // deploy ไปยัง test environment ฯลฯ
         }
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ### ผลลัพธ์การ build
@@ -205,7 +205,7 @@ your-app-name.tgz
 
 ```bash
 # 1. build production version
-gez build
+esmx build
 
 # 2. เผยแพร่ไปยัง npm
 npm publish dist/versions/your-app-name.tgz

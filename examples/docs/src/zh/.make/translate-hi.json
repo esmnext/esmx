@@ -35,7 +35,7 @@
         "source": "1e7a130ce7b7ff61935448a3c45ba1de9d0c5687f1448ab92099bf60604d6287",
         "target": "2cecf89ed2b10e766ccff27e437ed0551d308275cf74822301cb240e5d35a174"
     },
-    "api/core/gez.md": {
+    "api/core/esmx.md": {
         "source": "b8e863f42b65930cce68ab96f2d32a93a75afa72446cad4ce07fb97559a45795",
         "target": "a276b70d0612172c814a1d55e56e1fad2f17328a3e88c6446eb6a68af4cc03f0"
     },
@@ -83,7 +83,7 @@
         "source": "9164bf1fa749aeda9ed717b7e910d140c156b18b330de82d4c2739100a0c917b",
         "target": "60b6c8cc7804521935cea1b2bb7b907f9bb71be75e743de9489e88782931d812"
     },
-    "blog/birth-of-gez.md": {
+    "blog/birth-of-esmx.md": {
         "source": "eae5d43c8b86538e167d6b5dabddc87052996c074ac6e9b87e95a7d5f2383209",
         "target": "46f37435400c6f7a243de02abd3d17f5eb5f0061a353ed64a8be4ee590c840b2"
     },

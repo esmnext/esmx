@@ -1,15 +1,15 @@
 ---
-titleSuffix: Referencia de API de configuración de módulos del framework Gez
-description: Documentación detallada de la interfaz de configuración ModuleConfig del framework Gez, incluyendo reglas de importación/exportación de módulos, configuración de alias y gestión de dependencias externas, para ayudar a los desarrolladores a comprender en profundidad el sistema modular del framework.
+titleSuffix: Referencia de API de configuración de módulos del framework Esmx
+description: Documentación detallada de la interfaz de configuración ModuleConfig del framework Esmx, incluyendo reglas de importación/exportación de módulos, configuración de alias y gestión de dependencias externas, para ayudar a los desarrolladores a comprender en profundidad el sistema modular del framework.
 head:
   - - meta
     - property: keywords
-      content: Gez, ModuleConfig, configuración de módulos, importación/exportación de módulos, dependencias externas, configuración de alias, gestión de dependencias, framework de aplicaciones web
+      content: Esmx, ModuleConfig, configuración de módulos, importación/exportación de módulos, dependencias externas, configuración de alias, gestión de dependencias, framework de aplicaciones web
 ---
 
 # ModuleConfig
 
-ModuleConfig proporciona la funcionalidad de configuración de módulos en el framework Gez, utilizada para definir reglas de importación/exportación de módulos, configuración de alias y dependencias externas.
+ModuleConfig proporciona la funcionalidad de configuración de módulos en el framework Esmx, utilizada para definir reglas de importación/exportación de módulos, configuración de alias y dependencias externas.
 
 ## Definición de tipos
 
@@ -74,7 +74,7 @@ Cada dependencia contiene los siguientes atributos:
 
 **Ejemplo**:
 ```ts title="entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
@@ -100,7 +100,7 @@ export default {
       'vue-router': 'ssr-remote/npm/vue-router'
     }
   }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ### ParsedModuleConfig

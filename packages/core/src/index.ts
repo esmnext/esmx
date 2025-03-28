@@ -1,12 +1,12 @@
 export {
-    type GezOptions,
+    type EsmxOptions,
     type COMMAND,
     type RuntimeTarget,
     type ImportMap,
     type SpecifierMap,
     type ScopesMap,
-    Gez
-} from './gez';
+    Esmx
+} from './esmx';
 export {
     PathType,
     type ModuleConfig,

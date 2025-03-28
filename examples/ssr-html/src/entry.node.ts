@@ -1,15 +1,15 @@
 import http from 'node:http';
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     packs: {
         enable: true
     },
     // 本地执行 dev 和 build 时会使用
-    async devApp(gez) {
+    async devApp(esmx) {
         // 这里应使用动态模块。生产依赖不存在。
-        return import('@gez/rspack').then((m) =>
-            m.createRspackHtmlApp(gez, {
+        return import('@esmx/rspack').then((m) =>
+            m.createRspackHtmlApp(esmx, {
                 minimize: false,
                 config(context) {
                     // 可以在这里修改 Rspack 编译的配置
@@ -18,13 +18,13 @@ export default {
             })
         );
     },
-    async server(gez) {
+    async server(esmx) {
         const server = http.createServer((req, res) => {
             // 静态文件处理
-            gez.middleware(req, res, async () => {
+            esmx.middleware(req, res, async () => {
                 res.setHeader('Content-Type', 'text/html;charset=UTF-8');
                 // 传入渲染的参数
-                const rc = await gez.render({
+                const rc = await esmx.render({
                     importmapMode: 'js',
                     params: {
                         url: req.url
@@ -40,14 +40,14 @@ export default {
             console.log('http://localhost:3000');
         });
     },
-    async postBuild(gez) {
+    async postBuild(esmx) {
         const list: string[] = ['/', '/about', '/404'];
         for (const url of list) {
-            const rc = await gez.render({
+            const rc = await esmx.render({
                 params: { url: url, base: '/ssr-html/' }
             });
-            gez.writeSync(
-                gez.resolvePath('dist/client', url.substring(1), 'index.html'),
+            esmx.writeSync(
+                esmx.resolvePath('dist/client', url.substring(1), 'index.html'),
                 rc.html
             );
         }
@@ -55,4 +55,4 @@ export default {
     modules: {
         exports: ['root:src/title/index.ts']
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;

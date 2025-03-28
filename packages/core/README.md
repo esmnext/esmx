@@ -1,4 +1,4 @@
-# @gez/core
+# @esmx/core
 
 提供现代化的微前端解决方案和模块链接能力，为应用开发提供强大的基础支持。
 
@@ -13,16 +13,16 @@
 ## 安装
 
 ```bash
-pnpm add @gez/core
+pnpm add @esmx/core
 # 或
-yarn add @gez/core
+yarn add @esmx/core
 # 或
-npm install @gez/core
+npm install @esmx/core
 ```
 
 ## 文档
 
-访问 [@gez/core 官方文档](https://www.esmnext.com) 获取详细的使用指南和 API 文档。
+访问 [@esmx/core 官方文档](https://www.esmnext.com) 获取详细的使用指南和 API 文档。
 
 ## 许可证
 

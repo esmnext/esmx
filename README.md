@@ -1,18 +1,18 @@
 <p align="center">
-  <img src="https://www.esmnext.com/logo.svg" width="180" alt="Gez Logo" />
+  <img src="https://www.esmnext.com/logo.svg" width="180" alt="Esmx Logo" />
 </p>
 
-<h1 align="center">Gez</h1>
+<h1 align="center">Esmx</h1>
 <p align="center">🚀 基于 ESM 的高性能微前端框架</p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@gez/core"><img src="https://img.shields.io/npm/v/@gez/core.svg" alt="npm"></a>
-  <a href="https://www.npmjs.com/package/@gez/core"><img src="https://img.shields.io/npm/dm/@gez/core.svg" alt="npm"></a>
-  <a href="https://www.npmjs.com/package/@gez/core"><img src="https://img.shields.io/npm/dt/@gez/core.svg" alt="npm"></a>
+  <a href="https://www.npmjs.com/package/@esmx/core"><img src="https://img.shields.io/npm/v/@esmx/core.svg" alt="npm"></a>
+  <a href="https://www.npmjs.com/package/@esmx/core"><img src="https://img.shields.io/npm/dm/@esmx/core.svg" alt="npm"></a>
+  <a href="https://www.npmjs.com/package/@esmx/core"><img src="https://img.shields.io/npm/dt/@esmx/core.svg" alt="npm"></a>
 </p>
 
 <p align="center">
-  <a href="https://www.esmnext.com">Gez</a> 基于 <a href="https://rspack.dev/">Rspack</a> 编译，通过 <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/script/type/importmap">importmap</a> 将模块映射到具有强缓存、基于内容哈希的 URL 中。
+  <a href="https://www.esmnext.com">Esmx</a> 基于 <a href="https://rspack.dev/">Rspack</a> 编译，通过 <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/script/type/importmap">importmap</a> 将模块映射到具有强缓存、基于内容哈希的 URL 中。
 </p>
 
 <p align="center">
@@ -64,7 +64,7 @@ Web 标准的进化为我们带来了新的可能。现在，我们可以用最�
 
 ### ⚡️ 核心优势对比
 
-| 核心特性 | Gez | 传统微前端框架 |
+| 核心特性 | Esmx | 传统微前端框架 |
 |---------|-----|---------------|
 | **依赖管理** | ✅ ESM + importmap 原生加载<br>✅ 基于内容哈希的强缓存<br>✅ 中心化管理，一次生效 | ❌ 运行时注入，性能损耗<br>❌ 缓存策略不可靠<br>❌ 依赖版本冲突风险 |
 | **应用隔离** | ✅ ESM 原生模块隔离<br>✅ 零运行时开销<br>✅ 浏览器标准特性保障 | ❌ JS 沙箱性能开销<br>❌ 复杂的状态维护<br>❌ 隔离实现不稳定 |
@@ -75,7 +75,7 @@ Web 标准的进化为我们带来了新的可能。现在，我们可以用最�
 ## 🎯 示例项目
 
 ### [轻量级 HTML 应用](https://www.esmnext.com/ssr-html/)
-一个完整的 HTML 服务端渲染示例，展示了如何使用 Gez 构建现代化的 Web 应用：
+一个完整的 HTML 服务端渲染示例，展示了如何使用 Esmx 构建现代化的 Web 应用：
 - 🚀 基于 Rust 构建的 Rspack，提供极致的构建性能
 - 💡 包含路由、组件、样式、图片等完整功能支持
 - 🛠 快速的热更新、友好的错误提示和完整的类型支持
@@ -105,7 +105,7 @@ Web 标准的进化为我们带来了新的可能。现在，我们可以用最�
 - 🎯 性能优先的架构设计
 - 🛠 适用于资源受限场景
 
-所有示例都包含完整的工程配置和最佳实践指南，帮助你快速上手并应用到生产环境。查看 [examples](https://github.com/js-esm/gez/tree/master/examples) 目录了解更多详情。
+所有示例都包含完整的工程配置和最佳实践指南，帮助你快速上手并应用到生产环境。查看 [examples](https://github.com/js-esm/esmx/tree/master/examples) 目录了解更多详情。
 
 ## 📚 版本说明
 
@@ -115,17 +115,17 @@ Web 标准的进化为我们带来了新的可能。现在，我们可以用最�
 > **已知问题**：
 > - ESM 模块导出优化中：`modern-module` 的 `export *` 语法存在稳定性问题 [#8557](https://github.com/web-infra-dev/rspack/issues/8557)
 
-### [v2.x](https://github.com/js-esm/gez/blob/v2/docs/zh-CN/README.md) - 不推荐生产使用
+### [v2.x](https://github.com/js-esm/esmx/blob/v2/docs/zh-CN/README.md) - 不推荐生产使用
 此版本不再推荐用于生产环境，建议使用最新版本。
 
 ### [v1.x](https://fmfe.github.io/genesis-docs/guide/) - 已停止维护
-原名 Genesis，是 Gez 的前身。不再接受新功能和非关键性 bug 修复。
+原名 Genesis，是 Esmx 的前身。不再接受新功能和非关键性 bug 修复。
 
 ## 👥 贡献者
 
-感谢所有为 Gez 做出贡献的开发者！
+感谢所有为 Esmx 做出贡献的开发者！
 
-[![Contributors](https://contrib.rocks/image?repo=js-esm/gez)](https://github.com/js-esm/gez/graphs/contributors)
+[![Contributors](https://contrib.rocks/image?repo=js-esm/esmx)](https://github.com/js-esm/esmx/graphs/contributors)
 
 ## 📄 许可证
 

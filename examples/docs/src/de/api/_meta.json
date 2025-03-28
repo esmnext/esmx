@@ -2,7 +2,7 @@
     {
         "type": "dir",
         "name": "core",
-        "label": "@gez/core"
+        "label": "@esmx/core"
     },
     {
         "type": "dir",

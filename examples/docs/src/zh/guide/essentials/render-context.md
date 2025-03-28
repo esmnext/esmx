@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez 框架服务端渲染核心机制
-description: 详细介绍 Gez 框架的渲染上下文（RenderContext）机制，包括资源管理、HTML 生成和 ESM 模块系统，帮助开发者理解和使用服务端渲染功能。
+titleSuffix: Esmx 框架服务端渲染核心机制
+description: 详细介绍 Esmx 框架的渲染上下文（RenderContext）机制，包括资源管理、HTML 生成和 ESM 模块系统，帮助开发者理解和使用服务端渲染功能。
 head:
   - - meta
     - property: keywords
-      content: Gez, 渲染上下文, RenderContext, SSR, 服务端渲染, ESM, 资源管理
+      content: Esmx, 渲染上下文, RenderContext, SSR, 服务端渲染, ESM, 资源管理
 ---
 
 # 渲染上下文
 
-RenderContext 是 Gez 框架中的一个核心类，主要负责服务端渲染（SSR）过程中的资源管理和 HTML 生成。它具有以下核心特点：
+RenderContext 是 Esmx 框架中的一个核心类，主要负责服务端渲染（SSR）过程中的资源管理和 HTML 生成。它具有以下核心特点：
 
 1. **基于 ESM 的模块系统**
    - 采用现代的 ECMAScript Modules 标准
@@ -33,15 +33,15 @@ RenderContext 是 Gez 框架中的一个核心类，主要负责服务端渲染�
 
 ## 使用方式
 
-在 Gez 框架中，开发者通常不需要直接创建 RenderContext 实例，而是通过 `gez.render()` 方法来获取实例：
+在 Esmx 框架中，开发者通常不需要直接创建 RenderContext 实例，而是通过 `esmx.render()` 方法来获取实例：
 
 ```ts title="src/entry.node.ts"
-async server(gez) {
+async server(esmx) {
     const server = http.createServer((req, res) => {
         // 静态文件处理
-        gez.middleware(req, res, async () => {
-            // 通过 gez.render() 获取 RenderContext 实例
-            const rc = await gez.render({
+        esmx.middleware(req, res, async () => {
+            // 通过 esmx.render() 获取 RenderContext 实例
+            const rc = await esmx.render({
                 params: {
                     url: req.url
                 }
@@ -141,8 +141,8 @@ export default async (rc: RenderContext) => {
 RenderContext 提供了一个灵活的动态基础路径配置机制，支持在运行时动态设置静态资源的基础路径：
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
-    base: '/gez',  // 设置基础路径
+const rc = await esmx.render({
+    base: '/esmx',  // 设置基础路径
     params: {
         url: req.url
     }
@@ -179,7 +179,7 @@ RenderContext 提供了两种导入映射（Import Map）模式：
 可以通过配置选择合适的模式：
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     importmapMode: 'js',  // 'inline' | 'js'
     params: {
         url: req.url
@@ -192,7 +192,7 @@ const rc = await gez.render({
 RenderContext 支持通过 `entryName` 配置来指定服务端渲染的入口函数：
 
 ```ts title="src/entry.node.ts"
-const rc = await gez.render({
+const rc = await esmx.render({
     entryName: 'mobile',  // 指定使用移动端入口函数
     params: {
         url: req.url
@@ -228,7 +228,7 @@ const rc = await gez.render({
 ## 最佳实践
 
 1. **获取 RenderContext 实例**
-   - 始终通过 `gez.render()` 方法获取实例
+   - 始终通过 `esmx.render()` 方法获取实例
    - 根据需要传入适当的参数
    - 避免手动创建实例
 

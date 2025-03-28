@@ -1,10 +1,10 @@
 ---
-titleSuffix: Gez Framework Pack Configuration API Reference
-description: Detailed documentation on the PackConfig configuration interface of the Gez framework, including package bundling rules, output configurations, and lifecycle hooks, helping developers implement standardized build processes.
+titleSuffix: Esmx Framework Pack Configuration API Reference
+description: Detailed documentation on the PackConfig configuration interface of the Esmx framework, including package bundling rules, output configurations, and lifecycle hooks, helping developers implement standardized build processes.
 head:
   - - meta
     - property: keywords
-      content: Gez, PackConfig, Package Bundling, Build Configuration, Lifecycle Hooks, Bundling Configuration, Web Application Framework
+      content: Esmx, PackConfig, Package Bundling, Build Configuration, Lifecycle Hooks, Bundling Configuration, Web Application Framework
 ---
 
 # PackConfig
@@ -21,9 +21,9 @@ head:
 interface PackConfig {
     enable?: boolean;
     outputs?: string | string[] | boolean;
-    packageJson?: (gez: Gez, pkg: Record<string, any>) => Promise<Record<string, any>>;
-    onBefore?: (gez: Gez, pkg: Record<string, any>) => Promise<void>;
-    onAfter?: (gez: Gez, pkg: Record<string, any>, file: Buffer) => Promise<void>;
+    packageJson?: (esmx: Esmx, pkg: Record<string, any>) => Promise<Record<string, any>>;
+    onBefore?: (esmx: Esmx, pkg: Record<string, any>) => Promise<void>;
+    onAfter?: (esmx: Esmx, pkg: Record<string, any>, file: Buffer) => Promise<void>;
 }
 ```
 
@@ -48,7 +48,7 @@ Specifies the output package file path. Supports the following configuration met
 A callback function to customize the package.json content. Called before bundling to customize the package.json content.
 
 - Parameters:
-  - `gez: Gez` - Gez instance
+  - `esmx: Esmx` - Esmx instance
   - `pkg: any` - Original package.json content
 - Return Value: `Promise<any>` - Modified package.json content
 
@@ -60,7 +60,7 @@ Common Use Cases:
 
 Example:
 ```ts
-packageJson: async (gez, pkg) => {
+packageJson: async (esmx, pkg) => {
   // Set package information
   pkg.name = 'my-app';
   pkg.version = '1.0.0';
@@ -86,7 +86,7 @@ packageJson: async (gez, pkg) => {
 A callback function for pre-bundling preparations.
 
 - Parameters:
-  - `gez: Gez` - Gez instance
+  - `esmx: Esmx` - Esmx instance
   - `pkg: Record<string, any>` - package.json content
 - Return Value: `Promise<void>`
 
@@ -98,7 +98,7 @@ Common Use Cases:
 
 Example:
 ```ts
-onBefore: async (gez, pkg) => {
+onBefore: async (esmx, pkg) => {
   // Add documentation
   await fs.writeFile('dist/README.md', '# My App');
   await fs.writeFile('dist/LICENSE', 'MIT License');
@@ -119,7 +119,7 @@ onBefore: async (gez, pkg) => {
 A callback function for post-bundling processing. Called after the .tgz file is generated to handle the bundled artifacts.
 
 - Parameters:
-  - `gez: Gez` - Gez instance
+  - `esmx: Esmx` - Esmx instance
   - `pkg: Record<string, any>` - package.json content
   - `file: Buffer` - Bundled file content
 - Return Value: `Promise<void>`
@@ -132,7 +132,7 @@ Common Use Cases:
 
 Example:
 ```ts
-onAfter: async (gez, pkg, file) => {
+onAfter: async (esmx, pkg, file) => {
   // Publish to private npm registry
   await publishToRegistry(file, {
     registry: 'https://registry.example.com'
@@ -152,7 +152,7 @@ onAfter: async (gez, pkg, file) => {
 ## Usage Example
 
 ```ts title="entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
@@ -176,13 +176,13 @@ export default {
     ],
 
     // Customize package.json
-    packageJson: async (gez, pkg) => {
+    packageJson: async (esmx, pkg) => {
       pkg.version = '1.0.0';
       return pkg;
     },
 
     // Pre-bundling preparations
-    onBefore: async (gez, pkg) => {
+    onBefore: async (esmx, pkg) => {
       // Add necessary files
       await fs.writeFile('dist/README.md', '# Your App\n\nModule export instructions...');
       // Execute type checking
@@ -190,7 +190,7 @@ export default {
     },
 
     // Post-bundling processing
-    onAfter: async (gez, pkg, file) => {
+    onAfter: async (esmx, pkg, file) => {
       // Publish to private npm registry
       await publishToRegistry(file, {
         registry: 'https://npm.your-registry.com/'
@@ -199,5 +199,5 @@ export default {
       await uploadToServer(file, 'https://static.example.com/packages');
     }
   }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```

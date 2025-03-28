@@ -1,6 +1,6 @@
-# Gez SSR Preact HTM
+# Esmx SSR Preact HTM
 
-一个基于 Preact 和 HTM 的服务端渲染示例，展示了如何使用 Gez 构建现代化的组件化应用。HTM (Hyperscript Tagged Markup) 提供了一种不需要编译器的 JSX 替代方案。
+一个基于 Preact 和 HTM 的服务端渲染示例，展示了如何使用 Esmx 构建现代化的组件化应用。HTM (Hyperscript Tagged Markup) 提供了一种不需要编译器的 JSX 替代方案。
 
 ## 特点
 
@@ -13,8 +13,8 @@
 
 1. 克隆仓库
 ```bash
-git clone https://github.com/js-esm/gez.git
-cd gez/examples/ssr-preact-htm
+git clone https://github.com/js-esm/esmx.git
+cd esmx/examples/ssr-preact-htm
 ```
 
 2. 安装 pnpm（如果未安装）
@@ -46,12 +46,12 @@ src/
 
 ## 在线预览
 
-访问 [在线示例](https://js-esm.github.io/gez/ssr-preact-htm/) 查看运行效果。
+访问 [在线示例](https://js-esm.github.io/esmx/ssr-preact-htm/) 查看运行效果。
 
 ## 相关链接
 
-- [项目文档](https://js-esm.github.io/gez/)
-- [GitHub 仓库](https://github.com/js-esm/gez)
+- [项目文档](https://js-esm.github.io/esmx/)
+- [GitHub 仓库](https://github.com/js-esm/esmx)
 
 ## 许可证
 

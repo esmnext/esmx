@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework Render Context API Referenz
-description: Detaillierte Beschreibung der RenderContext-Kernklasse des Gez-Frameworks, einschließlich Rendering-Steuerung, Ressourcenverwaltung, Zustandssynchronisierung und Routing-Kontrolle, um Entwicklern bei der Implementierung effizienter serverseitiger Rendering-Lösungen zu helfen.
+titleSuffix: Esmx Framework Render Context API Referenz
+description: Detaillierte Beschreibung der RenderContext-Kernklasse des Esmx-Frameworks, einschließlich Rendering-Steuerung, Ressourcenverwaltung, Zustandssynchronisierung und Routing-Kontrolle, um Entwicklern bei der Implementierung effizienter serverseitiger Rendering-Lösungen zu helfen.
 head:
   - - meta
     - property: keywords
-      content: Gez, RenderContext, SSR, Serverseitiges Rendering, Rendering-Kontext, Zustandssynchronisierung, Ressourcenverwaltung, Webanwendungsframework
+      content: Esmx, RenderContext, SSR, Serverseitiges Rendering, Rendering-Kontext, Zustandssynchronisierung, Ressourcenverwaltung, Webanwendungsframework
 ---
 
 # RenderContext
 
-RenderContext ist die Kernklasse im Gez-Framework und verantwortlich für die Verwaltung des gesamten Lebenszyklus des serverseitigen Renderings (SSR). Sie bietet eine umfassende API zur Handhabung von Rendering-Kontexten, Ressourcenverwaltung, Zustandssynchronisierung und anderen wichtigen Aufgaben:
+RenderContext ist die Kernklasse im Esmx-Framework und verantwortlich für die Verwaltung des gesamten Lebenszyklus des serverseitigen Renderings (SSR). Sie bietet eine umfassende API zur Handhabung von Rendering-Kontexten, Ressourcenverwaltung, Zustandssynchronisierung und anderen wichtigen Aufgaben:
 
 - **Rendering-Steuerung**: Verwaltung des serverseitigen Rendering-Prozesses, Unterstützung für Mehrfach-Eintrags-Rendering, bedingtes Rendering usw.
 - **Ressourcenverwaltung**: Intelligente Sammlung und Einbindung von statischen Ressourcen wie JS, CSS usw. zur Optimierung der Ladeleistung
@@ -148,7 +148,7 @@ export const desktop = async (rc: RenderContext) => {
 Rendering-Parameter. Kann beliebige Parameter an die Rendering-Funktion übergeben, häufig verwendet für die Übergabe von Anfrageinformationen (URL, Query-Parameter usw.).
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     url: req.url,
     lang: 'zh-CN',
@@ -169,12 +169,12 @@ Generierungsmodus für Import Maps:
 
 ## Instanzeigenschaften
 
-### gez
+### esmx
 
-- **Typ**: `Gez`
+- **Typ**: `Esmx`
 - **Nur Lesen**: `true`
 
-Referenz auf die Gez-Instanz. Wird verwendet, um auf Kernfunktionen und Konfigurationsinformationen des Frameworks zuzugreifen.
+Referenz auf die Esmx-Instanz. Wird verwendet, um auf Kernfunktionen und Konfigurationsinformationen des Frameworks zuzugreifen.
 
 ### redirect
 
@@ -264,7 +264,7 @@ export default async (rc: RenderContext) => {
 };
 
 // Dynamischer Basispfad
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/app',  // Festlegen des Basispfads
   params: { url: req.url }
 });
@@ -285,19 +285,19 @@ Der Basispfad für statische Ressourcen. Alle statischen Ressourcen (JS, CSS, Bi
 
 ```ts
 // Grundlegende Verwendung
-const rc = await gez.render({
-  base: '/gez',  // Festlegen des Basispfads
+const rc = await esmx.render({
+  base: '/esmx',  // Festlegen des Basispfads
   params: { url: req.url }
 });
 
 // Beispiel für mehrsprachige Websites
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/cn',  // Chinesische Website
   params: { lang: 'zh-CN' }
 });
 
 // Beispiel für Micro-Frontend-Anwendungen
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/app1',  // Unteranwendung 1
   params: { appId: 1 }
 });
@@ -327,7 +327,7 @@ export const desktop = async (rc: RenderContext) => {
 };
 
 // Auswahl der Eintrittsfunktion basierend auf dem Gerätetyp
-const rc = await gez.render({
+const rc = await esmx.render({
   entryName: isMobile ? 'mobile' : 'desktop',
   params: { url: req.url }
 });
@@ -343,7 +343,7 @@ Rendering-Parameter. Kann während des serverseitigen Renderings übergeben und 
 
 ```ts
 // Grundlegende Verwendung - Übergabe von URL und Spracheinstellungen
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     url: req.url,
     lang: 'zh-CN'
@@ -351,7 +351,7 @@ const rc = await gez.render({
 });
 
 // Seitenkonfiguration - Festlegen von Thema und Layout
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     theme: 'dark',
     layout: 'sidebar'
@@ -359,7 +359,7 @@ const rc = await gez.render({
 });
 
 // Umgebungskonfiguration - Einbindung der API-Adresse
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     apiBaseUrl: process.env.API_BASE_URL,
     version: '1.0.0'
@@ -371,7 +371,7 @@ const rc = await gez.render({
 
 - **Typ**: `Set<ImportMeta>`
 
-Sammlung von Modulabhängigkeiten. Während des Komponenten-Renderings werden automatisch Modulabhängigkeiten verfolgt und aufgezeichnet, wobei nur die tatsächlich verwendeten Ressourcen gesammelt werden.
+Sammlung von Modulabhängigkeiten. Während des Komponenten-Renderings werden automatisch Modulabhängigkeiten verfolgt und aufesmxeichnet, wobei nur die tatsächlich verwendeten Ressourcen gesammelt werden.
 
 ```ts
 // Grundlegende Verwendung

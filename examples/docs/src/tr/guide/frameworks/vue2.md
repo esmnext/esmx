@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework Vue2 SSR Uygulama Örneği
-description: Gez tabanlı Vue2 SSR uygulamasını sıfırdan oluşturun, proje başlatma, Vue2 yapılandırması ve giriş dosyası ayarları dahil olmak üzere temel çerçeve kullanımını örneklerle gösterin.
+titleSuffix: Esmx Framework Vue2 SSR Uygulama Örneği
+description: Esmx tabanlı Vue2 SSR uygulamasını sıfırdan oluşturun, proje başlatma, Vue2 yapılandırması ve giriş dosyası ayarları dahil olmak üzere temel çerçeve kullanımını örneklerle gösterin.
 head:
   - - meta
     - property: keywords
-      content: Gez, Vue2, SSR uygulaması, TypeScript yapılandırması, proje başlatma, sunucu tarafı render, istemci etkileşimi
+      content: Esmx, Vue2, SSR uygulaması, TypeScript yapılandırması, proje başlatma, sunucu tarafı render, istemci etkileşimi
 ---
 
 # Vue2
 
-Bu eğitim, Gez tabanlı bir Vue2 SSR uygulamasını sıfırdan oluşturmanıza yardımcı olacaktır. Gez çerçevesini kullanarak sunucu tarafı render (SSR) uygulaması oluşturmayı tam bir örnekle göstereceğiz.
+Bu eğitim, Esmx tabanlı bir Vue2 SSR uygulamasını sıfırdan oluşturmanıza yardımcı olacaktır. Esmx çerçevesini kullanarak sunucu tarafı render (SSR) uygulaması oluşturmayı tam bir örnekle göstereceğiz.
 
 ## Proje Yapısı
 
@@ -40,18 +40,18 @@ Bu eğitim, Gez tabanlı bir Vue2 SSR uygulamasını sıfırdan oluşturmanıza 
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "gez dev",
+    "dev": "esmx dev",
     "build": "npm run build:dts && npm run build:ssr",
-    "build:ssr": "gez build",
-    "preview": "gez preview",
+    "build:ssr": "esmx build",
+    "preview": "esmx preview",
     "start": "NODE_ENV=production node dist/index.js",
     "build:dts": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/src"
   },
   "dependencies": {
-    "@gez/core": "*"
+    "@esmx/core": "*"
   },
   "devDependencies": {
-    "@gez/rspack-vue": "*",
+    "@esmx/rspack-vue": "*",
     "@types/node": "22.8.6",
     "typescript": "^5.7.3",
     "vue": "^2.7.16",
@@ -114,7 +114,7 @@ Ana uygulama bileşeni `src/app.vue`'yi oluşturun, `<script setup>` sözdizimin
 ```html title="src/app.vue"
 <template>
     <div id="app">
-        <h1><a href="https://www.esmnext.com/guide/frameworks/vue2.html" target="_blank">Gez Hızlı Başlangıç</a></h1>
+        <h1><a href="https://www.esmnext.com/guide/frameworks/vue2.html" target="_blank">Esmx Hızlı Başlangıç</a></h1>
         <time :datetime="time">{{ time }}</time>
     </div>
 </template>
@@ -122,7 +122,7 @@ Ana uygulama bileşeni `src/app.vue`'yi oluşturun, `<script setup>` sözdizimin
 <script setup lang="ts">
 /**
  * @file Örnek bileşen
- * @description Gez çerçevesinin temel işlevlerini göstermek için otomatik güncellenen bir zaman damgası içeren bir sayfa başlığı gösterir
+ * @description Esmx çerçevesinin temel işlevlerini göstermek için otomatik güncellenen bir zaman damgası içeren bir sayfa başlığı gösterir
  */
 
 import { onMounted, onUnmounted, ref } from 'vue';
@@ -196,18 +196,18 @@ app.$mount('#app');
  */
 
 import http from 'node:http';
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     /**
      * Geliştirme ortamı uygulama oluşturucuyu yapılandır
      * @description Geliştirme ortamı için Rspack uygulama örneği oluşturur ve yapılandırır, HMR ve gerçek zamanlı önizleme desteği sağlar
-     * @param gez Gez çerçevesi örneği, temel işlevler ve yapılandırma arayüzleri sağlar
+     * @param esmx Esmx çerçevesi örneği, temel işlevler ve yapılandırma arayüzleri sağlar
      * @returns Yapılandırılmış Rspack uygulama örneğini döndürür, HMR ve gerçek zamanlı önizleme desteği sağlar
      */
-    async devApp(gez) {
-        return import('@gez/rspack-vue').then((m) =>
-            m.createRspackVue2App(gez, {
+    async devApp(esmx) {
+        return import('@esmx/rspack-vue').then((m) =>
+            m.createRspackVue2App(esmx, {
                 config(context) {
                     // Rspack derleme yapılandırmasını özelleştirin
                 }
@@ -217,15 +217,15 @@ export default {
 
     /**
      * HTTP sunucusunu yapılandır ve başlat
-     * @description HTTP sunucu örneği oluşturur, Gez ara yazılımını entegre eder ve SSR isteklerini işler
-     * @param gez Gez çerçevesi örneği, ara yazılım ve render işlevleri sağlar
+     * @description HTTP sunucu örneği oluşturur, Esmx ara yazılımını entegre eder ve SSR isteklerini işler
+     * @param esmx Esmx çerçevesi örneği, ara yazılım ve render işlevleri sağlar
      */
-    async server(gez) {
+    async server(esmx) {
         const server = http.createServer((req, res) => {
-            // Gez ara yazılımını kullanarak isteği işle
-            gez.middleware(req, res, async () => {
+            // Esmx ara yazılımını kullanarak isteği işle
+            esmx.middleware(req, res, async () => {
                 // Sunucu tarafı render işlemini gerçekleştir
-                const rc = await gez.render({
+                const rc = await esmx.render({
                     params: { url: req.url }
                 });
                 res.end(rc.html);
@@ -236,13 +236,13 @@ export default {
             console.log('Sunucu başlatıldı: http://localhost:3000');
         });
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 Bu dosya, geliştirme ortamı yapılandırması ve sunucu başlatma için giriş dosyasıdır ve iki temel işlev içerir:
 
 1. `devApp` fonksiyonu: Geliştirme ortamı için Rspack uygulama örneği oluşturmak ve yapılandırmaktan sorumludur, sıcak yeniden yükleme ve gerçek zamanlı önizleme desteği sağlar. Burada, Vue2 için özel olarak Rspack uygulama örneği oluşturmak için `createRspackVue2App` kullanılır.
-2. `server` fonksiyonu: HTTP sunucusu oluşturmak ve yapılandırmaktan sorumludur, Gez ara yazılımını entegre eder ve SSR isteklerini işler.
+2. `server` fonksiyonu: HTTP sunucusu oluşturmak ve yapılandırmaktan sorumludur, Esmx ara yazılımını entegre eder ve SSR isteklerini işler.
 
 ### entry.server.ts
 
@@ -254,7 +254,7 @@ Sunucu tarafı render giriş dosyası `src/entry.server.ts`'yi oluşturun:
  * @description Sunucu tarafı render sürecini, HTML oluşturmayı ve kaynak enjeksiyonunu yönetir
  */
 
-import type { RenderContext } from '@gez/core';
+import type { RenderContext } from '@esmx/core';
 import { createRenderer } from 'vue-server-renderer';
 import { createApp } from './create-app';
 
@@ -278,7 +278,7 @@ export default async (rc: RenderContext) => {
 <html lang="tr-TR">
 <head>
     ${rc.preload()}
-    <title>Gez Hızlı Başlangıç</title>
+    <title>Esmx Hızlı Başlangıç</title>
     ${rc.css()}
 </head>
 <body>
@@ -311,4 +311,4 @@ npm run build
 npm run start
 ```
 
-Artık Gez tabanlı bir Vue2 SSR uygulamasını başarıyla oluşturdunuz! http://localhost:3000 adresini ziyaret ederek sonucu görebilirsiniz.
+Artık Esmx tabanlı bir Vue2 SSR uygulamasını başarıyla oluşturdunuz! http://localhost:3000 adresini ziyaret ederek sonucu görebilirsiniz.

@@ -1,16 +1,16 @@
 ---
-titleSuffix: Tổng quan về khung Gez và đổi mới công nghệ
-description: Tìm hiểu sâu về bối cảnh dự án, tiến hóa công nghệ và lợi thế cốt lõi của khung vi frontend Gez, khám phá giải pháp render phía máy chủ hiện đại dựa trên ESM.
+titleSuffix: Tổng quan về khung Esmx và đổi mới công nghệ
+description: Tìm hiểu sâu về bối cảnh dự án, tiến hóa công nghệ và lợi thế cốt lõi của khung vi frontend Esmx, khám phá giải pháp render phía máy chủ hiện đại dựa trên ESM.
 head:
   - - meta
     - property: keywords
-      content: Gez, vi frontend, ESM, render phía máy chủ, SSR, đổi mới công nghệ, liên bang module
+      content: Esmx, vi frontend, ESM, render phía máy chủ, SSR, đổi mới công nghệ, liên bang module
 ---
 
 # Giới thiệu
 
 ## Bối cảnh dự án
-Gez là một khung vi frontend hiện đại dựa trên ECMAScript Modules (ESM), tập trung vào việc xây dựng các ứng dụng render phía máy chủ (SSR) hiệu suất cao và có thể mở rộng. Là sản phẩm thế hệ thứ ba của dự án Genesis, Gez không ngừng đổi mới trong quá trình tiến hóa công nghệ:
+Esmx là một khung vi frontend hiện đại dựa trên ECMAScript Modules (ESM), tập trung vào việc xây dựng các ứng dụng render phía máy chủ (SSR) hiệu suất cao và có thể mở rộng. Là sản phẩm thế hệ thứ ba của dự án Genesis, Esmx không ngừng đổi mới trong quá trình tiến hóa công nghệ:
 
 - **v1.0**: Thực hiện tải các thành phần từ xa theo yêu cầu dựa trên yêu cầu HTTP
 - **v2.0**: Thực hiện tích hợp ứng dụng dựa trên Webpack Module Federation
@@ -27,7 +27,7 @@ Trong quá trình phát triển kiến trúc vi frontend, các giải pháp truy
 - **Giới hạn hệ sinh thái**: Khung kết hợp và API tùy chỉnh hạn chế lựa chọn công nghệ
 
 ### Đổi mới công nghệ
-Gez dựa trên tiêu chuẩn Web hiện đại, cung cấp giải pháp mới:
+Esmx dựa trên tiêu chuẩn Web hiện đại, cung cấp giải pháp mới:
 
 - **Hệ thống module gốc**: Sử dụng ESM gốc của trình duyệt và Import Maps để quản lý phụ thuộc, có tốc độ phân tích và thực thi nhanh hơn
 - **Cơ chế cách ly chuẩn**: Thực hiện cách ly ứng dụng đáng tin cậy dựa trên phạm vi module ECMAScript
@@ -36,7 +36,7 @@ Gez dựa trên tiêu chuẩn Web hiện đại, cung cấp giải pháp mới:
 - **Tối ưu hiệu suất tối đa**: Đạt được chi phí thời gian chạy bằng không thông qua khả năng gốc, kết hợp với chiến lược bộ nhớ đệm thông minh
 
 :::tip
-Gez tập trung vào việc xây dựng cơ sở hạ tầng vi frontend hiệu suất cao, dễ mở rộng, đặc biệt phù hợp với các ứng dụng render phía máy chủ quy mô lớn.
+Esmx tập trung vào việc xây dựng cơ sở hạ tầng vi frontend hiệu suất cao, dễ mở rộng, đặc biệt phù hợp với các ứng dụng render phía máy chủ quy mô lớn.
 :::
 
 ## Quy chuẩn công nghệ
@@ -50,7 +50,7 @@ Vui lòng tham khảo tài liệu [yêu cầu môi trường](/guide/start/envir
 - **Công cụ phát triển**: Hỗ trợ cập nhật nóng ESM và thực thi TypeScript gốc
 
 ## Định vị khung
-Gez khác với [Next.js](https://nextjs.org) hoặc [Nuxt.js](https://nuxt.com/), tập trung vào việc cung cấp cơ sở hạ tầng vi frontend:
+Esmx khác với [Next.js](https://nextjs.org) hoặc [Nuxt.js](https://nuxt.com/), tập trung vào việc cung cấp cơ sở hạ tầng vi frontend:
 
 - **Hệ thống liên kết module**: Thực hiện nhập xuất module hiệu quả, đáng tin cậy
 - **Render phía máy chủ**: Cung cấp cơ chế thực hiện SSR linh hoạt
@@ -75,4 +75,4 @@ Gez khác với [Next.js](https://nextjs.org) hoặc [Nuxt.js](https://nuxt.com/
 - **Tải theo yêu cầu**: Quản lý phụ thuộc và phân chia mã tinh vi
 
 ## Độ trưởng thành dự án
-Gez đã trải qua gần 5 năm lặp lại và tiến hóa (từ v1.0 đến v3.0), đã được kiểm chứng toàn diện trong môi trường doanh nghiệp. Hiện tại hỗ trợ hàng chục dự án nghiệp vụ hoạt động ổn định và tiếp tục thúc đẩy nâng cấp công nghệ hiện đại. Tính ổn định, độ tin cậy và lợi thế hiệu suất của khung đã được kiểm chứng đầy đủ trong thực tế, cung cấp nền tảng công nghệ đáng tin cậy cho phát triển ứng dụng quy mô lớn.
+Esmx đã trải qua gần 5 năm lặp lại và tiến hóa (từ v1.0 đến v3.0), đã được kiểm chứng toàn diện trong môi trường doanh nghiệp. Hiện tại hỗ trợ hàng chục dự án nghiệp vụ hoạt động ổn định và tiếp tục thúc đẩy nâng cấp công nghệ hiện đại. Tính ổn định, độ tin cậy và lợi thế hiệu suất của khung đã được kiểm chứng đầy đủ trong thực tế, cung cấp nền tảng công nghệ đáng tin cậy cho phát triển ứng dụng quy mô lớn.

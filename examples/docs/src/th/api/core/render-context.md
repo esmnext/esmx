@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework Render Context API Reference
-description: Detailed explanation of the RenderContext core class in the Gez framework, including rendering control, resource management, state synchronization, and routing control, helping developers achieve efficient server-side rendering.
+titleSuffix: Esmx Framework Render Context API Reference
+description: Detailed explanation of the RenderContext core class in the Esmx framework, including rendering control, resource management, state synchronization, and routing control, helping developers achieve efficient server-side rendering.
 head:
   - - meta
     - property: keywords
-      content: Gez, RenderContext, SSR, Server-Side Rendering, Rendering Context, State Synchronization, Resource Management, Web Application Framework
+      content: Esmx, RenderContext, SSR, Server-Side Rendering, Rendering Context, State Synchronization, Resource Management, Web Application Framework
 ---
 
 # RenderContext
 
-RenderContext เป็นคลาสหลักในเฟรมเวิร์ก Gez ที่รับผิดชอบในการจัดการวงจรชีวิตทั้งหมดของการเรนเดอร์ฝั่งเซิร์ฟเวอร์ (SSR) มันให้ชุด API ที่สมบูรณ์สำหรับการจัดการบริบทการเรนเดอร์ การจัดการทรัพยากร การซิงโครไนซ์สถานะ และงานสำคัญอื่นๆ:
+RenderContext เป็นคลาสหลักในเฟรมเวิร์ก Esmx ที่รับผิดชอบในการจัดการวงจรชีวิตทั้งหมดของการเรนเดอร์ฝั่งเซิร์ฟเวอร์ (SSR) มันให้ชุด API ที่สมบูรณ์สำหรับการจัดการบริบทการเรนเดอร์ การจัดการทรัพยากร การซิงโครไนซ์สถานะ และงานสำคัญอื่นๆ:
 
 - **การควบคุมการเรนเดอร์**: จัดการกระบวนการเรนเดอร์ฝั่งเซิร์ฟเวอร์ รองรับการเรนเดอร์หลายทางเข้า การเรนเดอร์ตามเงื่อนไข และสถานการณ์อื่นๆ
 - **การจัดการทรัพยากร**: รวบรวมและฉีดทรัพยากรสแตติกเช่น JS, CSS อย่างชาญฉลาด เพื่อเพิ่มประสิทธิภาพการโหลด
@@ -148,7 +148,7 @@ export const desktop = async (rc: RenderContext) => {
 พารามิเตอร์การเรนเดอร์ สามารถส่งพารามิเตอร์ประเภทใดก็ได้ไปยังฟังก์ชันการเรนเดอร์ มักใช้สำหรับส่งข้อมูลคำขอ (URL, พารามิเตอร์ query, ฯลฯ)
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     url: req.url,
     lang: 'zh-CN',
@@ -169,12 +169,12 @@ const rc = await gez.render({
 
 ## คุณสมบัติอินสแตนซ์
 
-### gez
+### esmx
 
-- **ประเภท**: `Gez`
+- **ประเภท**: `Esmx`
 - **อ่านได้อย่างเดียว**: `true`
 
-การอ้างอิงอินสแตนซ์ Gez ใช้สำหรับเข้าถึงฟังก์ชันหลักและการกำหนดค่าของเฟรมเวิร์ก
+การอ้างอิงอินสแตนซ์ Esmx ใช้สำหรับเข้าถึงฟังก์ชันหลักและการกำหนดค่าของเฟรมเวิร์ก
 
 ### redirect
 
@@ -264,7 +264,7 @@ export default async (rc: RenderContext) => {
 };
 
 // เส้นทางพื้นฐานแบบไดนามิก
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/app',  // ตั้งค่าเส้นทางพื้นฐาน
   params: { url: req.url }
 });
@@ -285,19 +285,19 @@ const rc = await gez.render({
 
 ```ts
 // การใช้งานพื้นฐาน
-const rc = await gez.render({
-  base: '/gez',  // ตั้งค่าเส้นทางพื้นฐาน
+const rc = await esmx.render({
+  base: '/esmx',  // ตั้งค่าเส้นทางพื้นฐาน
   params: { url: req.url }
 });
 
 // ตัวอย่างเว็บไซต์หลายภาษา
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/cn',  // เว็บไซต์ภาษาจีน
   params: { lang: 'zh-CN' }
 });
 
 // ตัวอย่างแอปพลิเคชันไมโครฟรอนต์เอนด์
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '/app1',  // แอปพลิเคชันย่อย 1
   params: { appId: 1 }
 });
@@ -327,7 +327,7 @@ export const desktop = async (rc: RenderContext) => {
 };
 
 // เลือกฟังก์ชันทางเข้าตามประเภทอุปกรณ์
-const rc = await gez.render({
+const rc = await esmx.render({
   entryName: isMobile ? 'mobile' : 'desktop',
   params: { url: req.url }
 });
@@ -343,7 +343,7 @@ const rc = await gez.render({
 
 ```ts
 // การใช้งานพื้นฐาน - ส่ง URL และการตั้งค่าภาษา
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     url: req.url,
     lang: 'zh-CN'
@@ -351,7 +351,7 @@ const rc = await gez.render({
 });
 
 // การกำหนดค่าหน้า - ตั้งค่าธีมและเลย์เอาต์
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     theme: 'dark',
     layout: 'sidebar'
@@ -359,7 +359,7 @@ const rc = await gez.render({
 });
 
 // การกำหนดค่าสภาพแวดล้อม - ฉีดที่อยู่ API
-const rc = await gez.render({
+const rc = await esmx.render({
   params: {
     apiBaseUrl: process.env.API_BASE_URL,
     version: '1.0.0'

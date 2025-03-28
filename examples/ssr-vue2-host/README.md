@@ -1,6 +1,6 @@
-# Gez SSR Vue2 Host
+# Esmx SSR Vue2 Host
 
-一个基于 Vue2 的微前端 Host 应用示例，展示了如何使用 Gez 构建现代化的服务端渲染应用，并通过 Module Link 集成 Remote 应用。
+一个基于 Vue2 的微前端 Host 应用示例，展示了如何使用 Esmx 构建现代化的服务端渲染应用，并通过 Module Link 集成 Remote 应用。
 
 ## 特点
 
@@ -13,8 +13,8 @@
 
 1. 克隆仓库
 ```bash
-git clone https://github.com/js-esm/gez.git
-cd gez/examples/ssr-vue2-host
+git clone https://github.com/js-esm/esmx.git
+cd esmx/examples/ssr-vue2-host
 ```
 
 2. 安装 pnpm（如果未安装）
@@ -51,12 +51,12 @@ src/
 
 ## 在线预览
 
-访问 [在线示例](https://js-esm.github.io/gez/ssr-vue2-host/) 查看运行效果。
+访问 [在线示例](https://js-esm.github.io/esmx/ssr-vue2-host/) 查看运行效果。
 
 ## 相关链接
 
-- [项目文档](https://js-esm.github.io/gez/)
-- [GitHub 仓库](https://github.com/js-esm/gez)
+- [项目文档](https://js-esm.github.io/esmx/)
+- [GitHub 仓库](https://github.com/js-esm/esmx)
 
 ## 许可证
 

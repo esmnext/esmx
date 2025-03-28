@@ -1,23 +1,23 @@
 ---
-titleSuffix: Gez Framework Vue Build-Tool
-description: Spezialisiertes Build-Tool des Gez Frameworks für Vue, bietet umfassende Unterstützung für den Aufbau von Vue 2/3-Anwendungen, einschließlich Komponentenentwicklung, SSR-Rendering und Leistungsoptimierung.
+titleSuffix: Esmx Framework Vue Build-Tool
+description: Spezialisiertes Build-Tool des Esmx Frameworks für Vue, bietet umfassende Unterstützung für den Aufbau von Vue 2/3-Anwendungen, einschließlich Komponentenentwicklung, SSR-Rendering und Leistungsoptimierung.
 head:
   - - meta
     - property: keywords
-      content: Gez, Rspack, Vue, Vue2, Vue3, SSR, Build-Tool, Komponentenentwicklung, Server-Side Rendering, Leistungsoptimierung
+      content: Esmx, Rspack, Vue, Vue2, Vue3, SSR, Build-Tool, Komponentenentwicklung, Server-Side Rendering, Leistungsoptimierung
 ---
 
 import { PackageManagerTabs } from '@theme';
 
-# @gez/rspack-vue
+# @esmx/rspack-vue
 
 Das Rspack Vue-Paket bietet eine API zum Erstellen und Konfigurieren von Rspack-Anwendungen basierend auf dem Vue-Framework und unterstützt die Entwicklung, den Build und das Server-Side Rendering von Vue-Komponenten.
 
 ## Installation
 
-Installieren Sie `@gez/rspack-vue` als Entwicklungsabhängigkeit mit einem Paketmanager:
+Installieren Sie `@esmx/rspack-vue` als Entwicklungsabhängigkeit mit einem Paketmanager:
 
-<PackageManagerTabs command="install @gez/rspack-vue -D" />
+<PackageManagerTabs command="install @esmx/rspack-vue -D" />
 
 ## Typenexporte
 
@@ -36,7 +36,7 @@ Der BuildTarget-Typ definiert die Zielumgebung für den Build der Anwendung und 
 
 ```ts
 interface RspackAppConfigContext {
-  gez: Gez
+  esmx: Esmx
   buildTarget: BuildTarget
   config: RspackOptions
   options: RspackAppOptions
@@ -44,7 +44,7 @@ interface RspackAppConfigContext {
 ```
 
 Das RspackAppConfigContext-Interface bietet Kontextinformationen, die in Konfigurations-Hook-Funktionen zugänglich sind:
-- `gez`: Gez Framework-Instanz
+- `esmx`: Esmx Framework-Instanz
 - `buildTarget`: Aktuelles Build-Ziel (client/server/node)
 - `config`: Rspack-Konfigurationsobjekt
 - `options`: Anwendungskonfigurationsoptionen
@@ -86,13 +86,13 @@ Erbt von `RspackAppOptions` und wird zur Konfiguration spezifischer Optionen fü
 ### createRspackApp
 
 ```ts
-function createRspackApp(gez: Gez, options?: RspackAppOptions): Promise<App>
+function createRspackApp(esmx: Esmx, options?: RspackAppOptions): Promise<App>
 ```
 
 Erstellt eine Standard-Rspack-Anwendungsinstanz.
 
 **Parameter:**
-- `gez`: Gez Framework-Instanz
+- `esmx`: Esmx Framework-Instanz
 - `options`: Rspack-Anwendungskonfigurationsoptionen
 
 **Rückgabewert:**
@@ -101,13 +101,13 @@ Erstellt eine Standard-Rspack-Anwendungsinstanz.
 ### createRspackHtmlApp
 
 ```ts
-function createRspackHtmlApp(gez: Gez, options?: RspackHtmlAppOptions): Promise<App>
+function createRspackHtmlApp(esmx: Esmx, options?: RspackHtmlAppOptions): Promise<App>
 ```
 
 Erstellt eine HTML-Rspack-Anwendungsinstanz.
 
 **Parameter:**
-- `gez`: Gez Framework-Instanz
+- `esmx`: Esmx Framework-Instanz
 - `options`: HTML-Anwendungskonfigurationsoptionen
 
 **Rückgabewert:**
@@ -141,12 +141,12 @@ Ein Mapping-Objekt für die integrierten Loader-Identifikatoren von Rspack, das 
 Diese Konstanten können in der Konfiguration verwendet werden, um auf integrierte Loader zu verweisen, anstatt Zeichenketten manuell einzugeben:
 
 ```ts title="src/entry.node.ts"
-import { RSPACK_LOADER } from '@gez/rspack';
+import { RSPACK_LOADER } from '@esmx/rspack';
 
 export default {
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         loaders: {
           // Verwendung von Konstanten zur Referenzierung von Loadern
           styleLoader: RSPACK_LOADER.styleLoader,

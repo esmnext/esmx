@@ -1,22 +1,22 @@
 ---
-titleSuffix: Interfaccia astratta dell'applicazione del framework Gez
-description: Descrizione dettagliata dell'interfaccia App del framework Gez, inclusa la gestione del ciclo di vita dell'applicazione, la gestione delle risorse statiche e il rendering lato server, per aiutare gli sviluppatori a comprendere e utilizzare le funzionalità principali dell'applicazione.
+titleSuffix: Interfaccia astratta dell'applicazione del framework Esmx
+description: Descrizione dettagliata dell'interfaccia App del framework Esmx, inclusa la gestione del ciclo di vita dell'applicazione, la gestione delle risorse statiche e il rendering lato server, per aiutare gli sviluppatori a comprendere e utilizzare le funzionalità principali dell'applicazione.
 head:
   - - meta
     - property: keywords
-      content: Gez, App, astrazione applicazione, ciclo di vita, risorse statiche, rendering lato server, API
+      content: Esmx, App, astrazione applicazione, ciclo di vita, risorse statiche, rendering lato server, API
 ---
 
 # App
 
-`App` è l'astrazione dell'applicazione del framework Gez, che fornisce un'interfaccia unificata per gestire il ciclo di vita dell'applicazione, le risorse statiche e il rendering lato server.
+`App` è l'astrazione dell'applicazione del framework Esmx, che fornisce un'interfaccia unificata per gestire il ciclo di vita dell'applicazione, le risorse statiche e il rendering lato server.
 
 ```ts title="entry.node.ts"
 export default {
   // Configurazione dell'ambiente di sviluppo
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(rc) {
           // Configurazione personalizzata di Rspack
         }
@@ -55,7 +55,7 @@ Ambiente di produzione:
 - Strategia di caricamento delle risorse ottimizzata
 
 ```ts
-server.use(gez.middleware);
+server.use(esmx.middleware);
 ```
 
 #### render
@@ -67,7 +67,7 @@ Funzione di rendering lato server. Fornisce implementazioni diverse in base all'
 - Ambiente di sviluppo (dev): Carica il file di ingresso del server dal codice sorgente ed esegue il rendering
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: '/page' }
 });
 res.end(rc.html);

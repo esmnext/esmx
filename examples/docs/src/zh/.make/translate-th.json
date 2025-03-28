@@ -71,7 +71,7 @@
         "source": "c1ce3d5ad2abaefad4d377141421babfa9e7145028df621b773a8887b4691e35",
         "target": "c77ccf3fe6ab3f01e3fd9b46559bd2b1e3d5135f947c88829b930a2e845ba285"
     },
-    "api/core/gez.md": {
+    "api/core/esmx.md": {
         "source": "b8e863f42b65930cce68ab96f2d32a93a75afa72446cad4ce07fb97559a45795",
         "target": "ae38bea53f5b3c4058c917f6ba5cf4e5d66d1088974df1d7fcb0b6f54988272e"
     },
@@ -95,7 +95,7 @@
         "source": "1dc3102433647c988044f3cce92675d876e235fdc8829ebd1f5a203d20631161",
         "target": "2db0857760f8074901cdd7cc3c6a1f34feb4a5da391de7207e813f9a964d007c"
     },
-    "blog/birth-of-gez.md": {
+    "blog/birth-of-esmx.md": {
         "source": "eae5d43c8b86538e167d6b5dabddc87052996c074ac6e9b87e95a7d5f2383209",
         "target": "76232a23b90dfddf4a6ce12319119d6ec2faeebe0a6caeb1e7975fafc9919932"
     }

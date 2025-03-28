@@ -1,15 +1,15 @@
 ---
-titleSuffix: Mechanizm udostępniania kodu między usługami w frameworku Gez
-description: Szczegółowy opis mechanizmu łączenia modułów w frameworku Gez, obejmujący udostępnianie kodu między usługami, zarządzanie zależnościami oraz implementację specyfikacji ESM, pomagający programistom w budowaniu wydajnych aplikacji mikrofrontendowych.
+titleSuffix: Mechanizm udostępniania kodu między usługami w frameworku Esmx
+description: Szczegółowy opis mechanizmu łączenia modułów w frameworku Esmx, obejmujący udostępnianie kodu między usługami, zarządzanie zależnościami oraz implementację specyfikacji ESM, pomagający programistom w budowaniu wydajnych aplikacji mikrofrontendowych.
 head:
   - - meta
     - property: keywords
-      content: Gez, łączenie modułów, Module Link, ESM, udostępnianie kodu, zarządzanie zależnościami, mikrofrontendy
+      content: Esmx, łączenie modułów, Module Link, ESM, udostępnianie kodu, zarządzanie zależnościami, mikrofrontendy
 ---
 
 # Łączenie modułów
 
-Framework Gez zapewnia kompleksowy mechanizm łączenia modułów, służący do zarządzania udostępnianiem kodu i zależnościami między usługami. Mechanizm ten jest oparty na specyfikacji ESM (ECMAScript Module) i obsługuje eksportowanie oraz importowanie modułów na poziomie kodu źródłowego, a także pełne zarządzanie zależnościami.
+Framework Esmx zapewnia kompleksowy mechanizm łączenia modułów, służący do zarządzania udostępnianiem kodu i zależnościami między usługami. Mechanizm ten jest oparty na specyfikacji ESM (ECMAScript Module) i obsługuje eksportowanie oraz importowanie modułów na poziomie kodu źródłowego, a także pełne zarządzanie zależnościami.
 
 ### Kluczowe pojęcia
 
@@ -30,7 +30,7 @@ Importowanie modułów to proces odwoływania się do jednostek kodu eksportowan
 W pliku `entry.node.ts` należy skonfigurować moduły do eksportu:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     modules: {
@@ -43,7 +43,7 @@ export default {
             'npm:vue-router'                   // Vue Router
         ]
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 Konfiguracja eksportu obsługuje dwa typy:
@@ -57,7 +57,7 @@ Konfiguracja eksportu obsługuje dwa typy:
 W pliku `entry.node.ts` należy skonfigurować moduły do importu:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     modules: {
@@ -75,7 +75,7 @@ export default {
             'vue-router': 'ssr-remote/npm/vue-router'
         }
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 Opis konfiguracji:
@@ -143,7 +143,7 @@ Instalacja przez protokół HTTP/HTTPS:
 W pliku `entry.node.ts` należy skonfigurować opcje budowania:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     // Konfiguracja eksportu modułów
@@ -166,26 +166,26 @@ export default {
         ],
 
         // Niestandardowy package.json
-        packageJson: async (gez, pkg) => {
+        packageJson: async (esmx, pkg) => {
             pkg.version = '1.0.0';
             return pkg;
         },
 
         // Przetwarzanie przed budowaniem
-        onBefore: async (gez, pkg) => {
+        onBefore: async (esmx, pkg) => {
             // Generowanie deklaracji typów
             // Uruchamianie testów
             // Aktualizacja dokumentacji itp.
         },
 
         // Przetwarzanie po budowaniu
-        onAfter: async (gez, pkg, file) => {
+        onAfter: async (esmx, pkg, file) => {
             // Przesyłanie do CDN
             // Publikowanie w repozytorium npm
             // Wdrażanie w środowisku testowym itp.
         }
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ### Wyniki budowania
@@ -205,7 +205,7 @@ your-app-name.tgz
 
 ```bash
 # 1. Budowanie wersji produkcyjnej
-gez build
+esmx build
 
 # 2. Publikowanie w npm
 npm publish dist/versions/your-app-name.tgz

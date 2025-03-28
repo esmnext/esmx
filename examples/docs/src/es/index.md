@@ -1,13 +1,13 @@
 ---
 pageType: home
 titleSuffix: Marco de renderizado en el servidor de alto rendimiento basado en ESM
-description: Gez es un marco de renderizado en el servidor de alto rendimiento basado en ESM, que ofrece capacidades completas de SSR, un contexto de renderizado inteligente y un innovador sistema de enlace de módulos, ideal para el desarrollo de aplicaciones web a gran escala.
+description: Esmx es un marco de renderizado en el servidor de alto rendimiento basado en ESM, que ofrece capacidades completas de SSR, un contexto de renderizado inteligente y un innovador sistema de enlace de módulos, ideal para el desarrollo de aplicaciones web a gran escala.
 head:
   - - meta
     - property: keywords
-      content: Gez, SSR, ESM, Renderizado en el servidor, Enlace de módulos, Vue, React, TypeScript, Microfrontends
+      content: Esmx, SSR, ESM, Renderizado en el servidor, Enlace de módulos, Vue, React, TypeScript, Microfrontends
 hero:
-  name: Gez
+  name: Esmx
   text: Marco de renderizado en el servidor basado en ESM
   tagline: Sistema de enlace de módulos de alto rendimiento y escalable
   actions:
@@ -16,7 +16,7 @@ hero:
       link: /guide/start/getting-started
     - theme: alt
       text: GitHub
-      link: https://github.com/js-esm/gez
+      link: https://github.com/js-esm/esmx
 
 features:
   - icon: ⚡️

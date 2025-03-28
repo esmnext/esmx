@@ -1,5 +1,5 @@
 {
-    "name": "@gez/import",
+    "name": "@esmx/import",
     "template": "library-node",
     "license": "MIT",
     "scripts": {
@@ -15,7 +15,7 @@
     },
     "devDependencies": {
         "@biomejs/biome": "1.9.4",
-        "@gez/lint": "workspace:*",
+        "@esmx/lint": "workspace:*",
         "@types/node": "22.13.10",
         "@vitest/coverage-v8": "3.0.8",
         "stylelint": "16.15.0",

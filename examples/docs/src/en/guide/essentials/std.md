@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework Project Structure and Specification Guide
-description: Detailed introduction to the standard project structure, entry file specifications, and configuration file specifications of the Gez framework, helping developers build standardized and maintainable SSR applications.
+titleSuffix: Esmx Framework Project Structure and Specification Guide
+description: Detailed introduction to the standard project structure, entry file specifications, and configuration file specifications of the Esmx framework, helping developers build standardized and maintainable SSR applications.
 head:
   - - meta
     - property: keywords
-      content: Gez, Project Structure, Entry Files, Configuration Specifications, SSR Framework, TypeScript, Project Standards, Development Standards
+      content: Esmx, Project Structure, Entry Files, Configuration Specifications, SSR Framework, TypeScript, Project Standards, Development Standards
 ---
 
 # Standard Specifications
 
-Gez is a modern SSR framework that adopts standardized project structures and path resolution mechanisms to ensure consistency and maintainability across development and production environments.
+Esmx is a modern SSR framework that adopts standardized project structures and path resolution mechanisms to ensure consistency and maintainability across development and production environments.
 
 ## Project Structure Specifications
 
@@ -36,7 +36,7 @@ root
 ```
 
 ::: tip Extended Knowledge
-- `gez.name` is derived from the `name` field in `package.json`
+- `esmx.name` is derived from the `name` field in `package.json`
 - `dist/package.json` is derived from the root directory's `package.json`
 - The `dist` directory is archived only when `packs.enable` is set to `true`
 
@@ -76,11 +76,11 @@ The Node.js server entry file is responsible for:
     "name": "your-app-name",
     "type": "module",
     "scripts": {
-        "dev": "gez dev",
+        "dev": "esmx dev",
         "build": "npm run build:dts && npm run build:ssr",
-        "build:ssr": "gez build",
+        "build:ssr": "esmx build",
         "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src",
-        "preview": "gez preview",
+        "preview": "esmx preview",
         "start": "NODE_ENV=production node dist/index.js"
     }
 }

@@ -1,22 +1,22 @@
 ---
-titleSuffix: Gez 프레임워크 애플리케이션 추상 인터페이스
-description: Gez 프레임워크의 App 인터페이스에 대해 자세히 설명합니다. 애플리케이션 생명주기 관리, 정적 리소스 처리 및 서버 사이드 렌더링 기능을 포함하여 개발자가 애플리케이션의 핵심 기능을 이해하고 사용할 수 있도록 돕습니다.
+titleSuffix: Esmx 프레임워크 애플리케이션 추상 인터페이스
+description: Esmx 프레임워크의 App 인터페이스에 대해 자세히 설명합니다. 애플리케이션 생명주기 관리, 정적 리소스 처리 및 서버 사이드 렌더링 기능을 포함하여 개발자가 애플리케이션의 핵심 기능을 이해하고 사용할 수 있도록 돕습니다.
 head:
   - - meta
     - property: keywords
-      content: Gez, App, 애플리케이션 추상, 생명주기, 정적 리소스, 서버 사이드 렌더링, API
+      content: Esmx, App, 애플리케이션 추상, 생명주기, 정적 리소스, 서버 사이드 렌더링, API
 ---
 
 # App
 
-`App`은 Gez 프레임워크의 애플리케이션 추상화로, 애플리케이션의 생명주기, 정적 리소스 및 서버 사이드 렌더링을 관리하기 위한 통합 인터페이스를 제공합니다.
+`App`은 Esmx 프레임워크의 애플리케이션 추상화로, 애플리케이션의 생명주기, 정적 리소스 및 서버 사이드 렌더링을 관리하기 위한 통합 인터페이스를 제공합니다.
 
 ```ts title="entry.node.ts"
 export default {
   // 개발 환경 설정
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(rc) {
           // Rspack 설정 커스터마이징
         }
@@ -55,7 +55,7 @@ interface App {
 - 최적화된 리소스 로딩 전략
 
 ```ts
-server.use(gez.middleware);
+server.use(esmx.middleware);
 ```
 
 #### render
@@ -67,7 +67,7 @@ server.use(gez.middleware);
 - 개발 환경 (dev): 소스 코드의 서버 진입 파일 로드 및 렌더링 실행
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: '/page' }
 });
 res.end(rc.html);

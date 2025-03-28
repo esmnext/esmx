@@ -1,10 +1,10 @@
 ---
-titleSuffix: Gez Framework Compatibiliteitsgids
-description: Gedetailleerde uitleg over de omgevingseisen van het Gez-framework, inclusief Node.js-versievereisten en browsercompatibiliteit, om ontwikkelaars te helpen bij het correct configureren van de ontwikkelomgeving.
+titleSuffix: Esmx Framework Compatibiliteitsgids
+description: Gedetailleerde uitleg over de omgevingseisen van het Esmx-framework, inclusief Node.js-versievereisten en browsercompatibiliteit, om ontwikkelaars te helpen bij het correct configureren van de ontwikkelomgeving.
 head:
   - - meta
     - property: keywords
-      content: Gez, Node.js, browsercompatibiliteit, TypeScript, es-module-shims, omgevingsconfiguratie
+      content: Esmx, Node.js, browsercompatibiliteit, TypeScript, es-module-shims, omgevingsconfiguratie
 ---
 
 # Omgevingseisen

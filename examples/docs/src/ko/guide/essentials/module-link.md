@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez 프레임워크 서비스 간 코드 공유 메커니즘
-description: Gez 프레임워크의 모듈 링크 메커니즘에 대해 자세히 설명합니다. 서비스 간 코드 공유, 의존성 관리 및 ESM 규격 구현을 포함하여 개발자가 효율적인 마이크로 프론트엔드 애플리케이션을 구축할 수 있도록 돕습니다.
+titleSuffix: Esmx 프레임워크 서비스 간 코드 공유 메커니즘
+description: Esmx 프레임워크의 모듈 링크 메커니즘에 대해 자세히 설명합니다. 서비스 간 코드 공유, 의존성 관리 및 ESM 규격 구현을 포함하여 개발자가 효율적인 마이크로 프론트엔드 애플리케이션을 구축할 수 있도록 돕습니다.
 head:
   - - meta
     - property: keywords
-      content: Gez, 모듈 링크, Module Link, ESM, 코드 공유, 의존성 관리, 마이크로 프론트엔드
+      content: Esmx, 모듈 링크, Module Link, ESM, 코드 공유, 의존성 관리, 마이크로 프론트엔드
 ---
 
 # 모듈 링크
 
-Gez 프레임워크는 서비스 간 코드 공유 및 의존성 관리를 위한 완전한 모듈 링크 메커니즘을 제공합니다. 이 메커니즘은 ESM(ECMAScript Module) 규격을 기반으로 구현되었으며, 소스 코드 수준의 모듈 내보내기 및 가져오기와 완전한 의존성 관리 기능을 지원합니다.
+Esmx 프레임워크는 서비스 간 코드 공유 및 의존성 관리를 위한 완전한 모듈 링크 메커니즘을 제공합니다. 이 메커니즘은 ESM(ECMAScript Module) 규격을 기반으로 구현되었으며, 소스 코드 수준의 모듈 내보내기 및 가져오기와 완전한 의존성 관리 기능을 지원합니다.
 
 ### 핵심 개념
 
@@ -30,7 +30,7 @@ Gez 프레임워크는 서비스 간 코드 공유 및 의존성 관리를 위�
 `entry.node.ts`에서 내보낼 모듈을 설정합니다:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     modules: {
@@ -43,7 +43,7 @@ export default {
             'npm:vue-router'                   // Vue Router
         ]
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 내보내기 설정은 두 가지 유형을 지원합니다:
@@ -57,7 +57,7 @@ export default {
 `entry.node.ts`에서 가져올 모듈을 설정합니다:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     modules: {
@@ -75,7 +75,7 @@ export default {
             'vue-router': 'ssr-remote/npm/vue-router'
         }
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 설정 항목 설명:
@@ -143,7 +143,7 @@ HTTP/HTTPS 프로토콜을 통해 설치:
 `entry.node.ts`에서 빌드 옵션을 설정합니다:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     // 모듈 내보내기 설정
@@ -166,26 +166,26 @@ export default {
         ],
 
         // 사용자 정의 package.json
-        packageJson: async (gez, pkg) => {
+        packageJson: async (esmx, pkg) => {
             pkg.version = '1.0.0';
             return pkg;
         },
 
         // 빌드 전 처리
-        onBefore: async (gez, pkg) => {
+        onBefore: async (esmx, pkg) => {
             // 타입 선언 생성
             // 테스트 케이스 실행
             // 문서 업데이트 등
         },
 
         // 빌드 후 처리
-        onAfter: async (gez, pkg, file) => {
+        onAfter: async (esmx, pkg, file) => {
             // CDN에 업로드
             // npm 저장소에 배포
             // 테스트 환경에 배포 등
         }
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ### 빌드 결과물
@@ -205,7 +205,7 @@ your-app-name.tgz
 
 ```bash
 # 1. 프로덕션 버전 빌드
-gez build
+esmx build
 
 # 2. npm에 배포
 npm publish dist/versions/your-app-name.tgz

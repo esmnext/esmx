@@ -3,7 +3,7 @@ import { pathToFileURL } from 'node:url';
 import { styleText } from 'node:util';
 import {
     type App,
-    type Gez,
+    type Esmx,
     type Middleware,
     PathType,
     RenderContext,
@@ -11,8 +11,8 @@ import {
     type ServerRenderHandle,
     createApp,
     mergeMiddlewares
-} from '@gez/core';
-import { createVmImport } from '@gez/import';
+} from '@esmx/core';
+import { createVmImport } from '@esmx/import';
 import type { RspackOptions } from '@rspack/core';
 import hotMiddleware from 'webpack-hot-middleware';
 import type { BuildTarget } from './build-target';
@@ -24,7 +24,7 @@ import { createRsBuild } from './utils';
  * Rspack 应用配置上下文接口。
  *
  * 该接口提供了在配置钩子函数中可以访问的上下文信息，允许你：
- * - 访问 Gez 框架实例
+ * - 访问 Esmx 框架实例
  * - 获取当前的构建目标（client/server/node）
  * - 修改 Rspack 配置
  * - 访问应用选项
@@ -33,9 +33,9 @@ import { createRsBuild } from './utils';
  * ```ts
  * // entry.node.ts
  * export default {
- *   async devApp(gez) {
- *     return import('@gez/rspack').then((m) =>
- *       m.createRspackApp(gez, {
+ *   async devApp(esmx) {
+ *     return import('@esmx/rspack').then((m) =>
+ *       m.createRspackApp(esmx, {
  *         // 配置钩子函数
  *         config(context) {
  *           // 访问构建目标
@@ -57,10 +57,10 @@ import { createRsBuild } from './utils';
  */
 export interface RspackAppConfigContext {
     /**
-     * Gez 框架实例。
+     * Esmx 框架实例。
      * 可用于访问框架提供的 API 和工具函数。
      */
-    gez: Gez;
+    esmx: Esmx;
 
     /**
      * 当前的构建目标。
@@ -93,9 +93,9 @@ export interface RspackAppConfigContext {
  * ```ts
  * // entry.node.ts
  * export default {
- *   async devApp(gez) {
- *     return import('@gez/rspack').then((m) =>
- *       m.createRspackApp(gez, {
+ *   async devApp(esmx) {
+ *     return import('@esmx/rspack').then((m) =>
+ *       m.createRspackApp(esmx, {
  *         // 禁用代码压缩
  *         minimize: false,
  *         // 自定义 Rspack 配置
@@ -142,7 +142,7 @@ export interface RspackAppOptions {
  * - 开发环境：配置热更新中间件和实时渲染
  * - 生产环境：配置构建任务
  *
- * @param gez - Gez 框架实例
+ * @param esmx - Esmx 框架实例
  * @param options - Rspack 应用配置选项
  * @returns 返回应用实例
  *
@@ -150,9 +150,9 @@ export interface RspackAppOptions {
  * ```ts
  * // entry.node.ts
  * export default {
- *   async devApp(gez) {
- *     return import('@gez/rspack').then((m) =>
- *       m.createRspackApp(gez, {
+ *   async devApp(esmx) {
+ *     return import('@esmx/rspack').then((m) =>
+ *       m.createRspackApp(esmx, {
  *         config(context) {
  *           // 配置 loader 处理不同类型的文件
  *           context.config.module = {
@@ -183,46 +183,46 @@ export interface RspackAppOptions {
  * ```
  */
 export async function createRspackApp(
-    gez: Gez,
+    esmx: Esmx,
     options?: RspackAppOptions
 ): Promise<App> {
-    const app = await createApp(gez, gez.command);
-    switch (gez.command) {
-        case gez.COMMAND.dev:
+    const app = await createApp(esmx, esmx.command);
+    switch (esmx.command) {
+        case esmx.COMMAND.dev:
             app.middleware = mergeMiddlewares([
-                ...(await createMiddleware(gez, options)),
+                ...(await createMiddleware(esmx, options)),
                 app.middleware
             ]);
-            app.render = rewriteRender(gez);
+            app.render = rewriteRender(esmx);
             break;
-        case gez.COMMAND.build:
-            app.build = rewriteBuild(gez, options);
+        case esmx.COMMAND.build:
+            app.build = rewriteBuild(esmx, options);
             break;
     }
     return app;
 }
 async function createMiddleware(
-    gez: Gez,
+    esmx: Esmx,
     options: RspackAppOptions = {}
 ): Promise<Middleware[]> {
-    if (gez.command !== gez.COMMAND.dev) {
+    if (esmx.command !== esmx.COMMAND.dev) {
         return [];
     }
     // const middlewares: Middleware[] = [];
 
     const rsBuild = createRsBuild([
-        generateBuildConfig(gez, options, 'client'),
-        generateBuildConfig(gez, options, 'server')
+        generateBuildConfig(esmx, options, 'client'),
+        generateBuildConfig(esmx, options, 'server')
     ]);
     rsBuild.watch();
 
     // @ts-ignore
     const hot = hotMiddleware(rsBuild.compilers[0], {
-        path: `${gez.basePath}hot-middleware`
+        path: `${esmx.basePath}hot-middleware`
     });
     return [
         (req, res, next) => {
-            if (req.url?.startsWith(`${gez.basePath}hot-middleware`)) {
+            if (req.url?.startsWith(`${esmx.basePath}hot-middleware`)) {
                 // @ts-ignore
                 return hot(req, res, next);
             }
@@ -232,24 +232,24 @@ async function createMiddleware(
 }
 
 function generateBuildConfig(
-    gez: Gez,
+    esmx: Esmx,
     options: RspackAppOptions,
     buildTarget: BuildTarget
 ) {
-    const config = createRspackConfig(gez, buildTarget, options);
-    options.config?.({ gez, options, buildTarget, config });
+    const config = createRspackConfig(esmx, buildTarget, options);
+    options.config?.({ esmx, options, buildTarget, config });
 
     return config;
 }
 
-function rewriteRender(gez: Gez) {
+function rewriteRender(esmx: Esmx) {
     return async (options?: RenderContextOptions): Promise<RenderContext> => {
-        const baseURL = pathToFileURL(gez.root);
-        const importMap = await gez.getImportMap('server');
+        const baseURL = pathToFileURL(esmx.root);
+        const importMap = await esmx.getImportMap('server');
         const vmImport = createVmImport(baseURL, importMap);
-        const rc = new RenderContext(gez, options);
+        const rc = new RenderContext(esmx, options);
         const module = await vmImport(
-            `${gez.name}/src/entry.server`,
+            `${esmx.name}/src/entry.server`,
             import.meta.url,
             {
                 console,
@@ -268,12 +268,12 @@ function rewriteRender(gez: Gez) {
     };
 }
 
-function rewriteBuild(gez: Gez, options: RspackAppOptions = {}) {
+function rewriteBuild(esmx: Esmx, options: RspackAppOptions = {}) {
     return async (): Promise<boolean> => {
-        for (const item of gez.moduleConfig.exports) {
+        for (const item of esmx.moduleConfig.exports) {
             if (item.type === PathType.root) {
                 const text = fs.readFileSync(
-                    gez.resolvePath('./', item.exportPath),
+                    esmx.resolvePath('./', item.exportPath),
                     'utf-8'
                 );
                 if (/\bexport\s+\*\s+from\b/.test(text)) {
@@ -294,26 +294,26 @@ function rewriteBuild(gez: Gez, options: RspackAppOptions = {}) {
             }
         }
         await createRsBuild([
-            generateBuildConfig(gez, options, 'client'),
-            generateBuildConfig(gez, options, 'server'),
-            generateBuildConfig(gez, options, 'node')
+            generateBuildConfig(esmx, options, 'client'),
+            generateBuildConfig(esmx, options, 'server'),
+            generateBuildConfig(esmx, options, 'node')
         ]).build();
-        gez.writeSync(
-            gez.resolvePath('dist/index.js'),
+        esmx.writeSync(
+            esmx.resolvePath('dist/index.js'),
             `
 async function start() {
     const options = await import('./node/src/entry.node.js').then(
         (mod) => mod.default
     );
-    const { Gez } = await import('@gez/core');
-    const gez = new Gez(options);
+    const { Esmx } = await import('@esmx/core');
+    const esmx = new Esmx(options);
 
-    await gez.init(gez.COMMAND.start);
+    await esmx.init(esmx.COMMAND.start);
 }
 
 start();
 `.trim()
         );
-        return pack(gez);
+        return pack(esmx);
     };
 }

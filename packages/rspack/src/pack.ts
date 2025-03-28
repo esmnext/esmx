@@ -1,17 +1,17 @@
 import crypto from 'node:crypto';
-import type { Gez } from '@gez/core';
+import type { Esmx } from '@esmx/core';
 import Arborist from '@npmcli/arborist';
 import pacote from 'pacote';
 
-export async function pack(gez: Gez): Promise<boolean> {
-    const { packConfig } = gez;
+export async function pack(esmx: Esmx): Promise<boolean> {
+    const { packConfig } = esmx;
 
     const pkgJson = await packConfig.packageJson(
-        gez,
-        await buildPackageJson(gez)
+        esmx,
+        await buildPackageJson(esmx)
     );
-    gez.writeSync(
-        gez.resolvePath('dist/package.json'),
+    esmx.writeSync(
+        esmx.resolvePath('dist/package.json'),
         JSON.stringify(pkgJson, null, 4)
     );
 
@@ -19,28 +19,28 @@ export async function pack(gez: Gez): Promise<boolean> {
         return true;
     }
 
-    await packConfig.onBefore(gez, pkgJson);
+    await packConfig.onBefore(esmx, pkgJson);
 
-    const data = await pacote.tarball(gez.resolvePath('dist'), {
+    const data = await pacote.tarball(esmx.resolvePath('dist'), {
         Arborist
     });
     const hash = contentHash(data);
     packConfig.outputs.forEach((file) => {
-        const tgz = gez.resolvePath('./', file);
+        const tgz = esmx.resolvePath('./', file);
         const txt = tgz.replace(/\.tgz$/, '.txt');
-        gez.writeSync(tgz, data);
-        gez.writeSync(txt, hash);
+        esmx.writeSync(tgz, data);
+        esmx.writeSync(txt, hash);
     });
 
-    await packConfig.onAfter(gez, pkgJson, data);
+    await packConfig.onAfter(esmx, pkgJson, data);
     return true;
 }
 
-async function buildPackageJson(gez: Gez): Promise<Record<string, any>> {
+async function buildPackageJson(esmx: Esmx): Promise<Record<string, any>> {
     const [clientJson, serverJson, curJson] = await Promise.all([
-        gez.readJson(gez.resolvePath('dist/client/manifest.json')),
-        gez.readJson(gez.resolvePath('dist/server/manifest.json')),
-        gez.readJson(gez.resolvePath('package.json'))
+        esmx.readJson(esmx.resolvePath('dist/client/manifest.json')),
+        esmx.readJson(esmx.resolvePath('dist/server/manifest.json')),
+        esmx.readJson(esmx.resolvePath('package.json'))
     ]);
     const exports: Record<string, any> = {
         ...curJson?.exports

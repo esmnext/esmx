@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Çerçevesi Hizmetler Arası Kod Paylaşım Mekanizması
-description: Gez çerçevesinin modül bağlantı mekanizmasını detaylı olarak açıklar, hizmetler arası kod paylaşımı, bağımlılık yönetimi ve ESM spesifikasyonu uygulamasını içerir, geliştiricilere verimli mikro ön uç uygulamaları oluşturmalarına yardımcı olur.
+titleSuffix: Esmx Çerçevesi Hizmetler Arası Kod Paylaşım Mekanizması
+description: Esmx çerçevesinin modül bağlantı mekanizmasını detaylı olarak açıklar, hizmetler arası kod paylaşımı, bağımlılık yönetimi ve ESM spesifikasyonu uygulamasını içerir, geliştiricilere verimli mikro ön uç uygulamaları oluşturmalarına yardımcı olur.
 head:
   - - meta
     - property: keywords
-      content: Gez, Modül Bağlantısı, Module Link, ESM, Kod Paylaşımı, Bağımlılık Yönetimi, Mikro Ön Uç
+      content: Esmx, Modül Bağlantısı, Module Link, ESM, Kod Paylaşımı, Bağımlılık Yönetimi, Mikro Ön Uç
 ---
 
 # Modül Bağlantısı
 
-Gez çerçevesi, hizmetler arası kod paylaşımını ve bağımlılık ilişkilerini yönetmek için kapsamlı bir modül bağlantı mekanizması sunar. Bu mekanizma ESM (ECMAScript Module) spesifikasyonu temelinde uygulanır ve kaynak kodu seviyesinde modül dışa aktarma ve içe aktarma ile tam bağımlılık yönetimi işlevlerini destekler.
+Esmx çerçevesi, hizmetler arası kod paylaşımını ve bağımlılık ilişkilerini yönetmek için kapsamlı bir modül bağlantı mekanizması sunar. Bu mekanizma ESM (ECMAScript Module) spesifikasyonu temelinde uygulanır ve kaynak kodu seviyesinde modül dışa aktarma ve içe aktarma ile tam bağımlılık yönetimi işlevlerini destekler.
 
 ### Temel Kavramlar
 
@@ -30,7 +30,7 @@ Modül içe aktarma, bir hizmette diğer hizmetler tarafından dışa aktarılan
 `entry.node.ts` dosyasında dışa aktarılacak modülleri yapılandırın:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     modules: {
@@ -43,7 +43,7 @@ export default {
             'npm:vue-router'                   // Vue Router
         ]
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 Dışa aktarma yapılandırması iki türü destekler:
@@ -57,7 +57,7 @@ Dışa aktarma yapılandırması iki türü destekler:
 `entry.node.ts` dosyasında içe aktarılacak modülleri yapılandırın:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     modules: {
@@ -75,7 +75,7 @@ export default {
             'vue-router': 'ssr-remote/npm/vue-router'
         }
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 Yapılandırma seçenekleri açıklaması:
@@ -143,7 +143,7 @@ HTTP/HTTPS protokolü üzerinden kurulum:
 `entry.node.ts` dosyasında yapı seçeneklerini yapılandırın:
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     // Modül dışa aktarma yapılandırması
@@ -166,26 +166,26 @@ export default {
         ],
 
         // Özel package.json
-        packageJson: async (gez, pkg) => {
+        packageJson: async (esmx, pkg) => {
             pkg.version = '1.0.0';
             return pkg;
         },
 
         // Yapı öncesi işlemler
-        onBefore: async (gez, pkg) => {
+        onBefore: async (esmx, pkg) => {
             // Tür bildirimleri oluştur
             // Test senaryolarını çalıştır
             // Dokümantasyonu güncelle vb.
         },
 
         // Yapı sonrası işlemler
-        onAfter: async (gez, pkg, file) => {
+        onAfter: async (esmx, pkg, file) => {
             // CDN'e yükle
             // npm deposuna yayınla
             // Test ortamına dağıt vb.
         }
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ### Yapı Ürünleri
@@ -205,7 +205,7 @@ your-app-name.tgz
 
 ```bash
 # 1. Üretim sürümünü oluştur
-gez build
+esmx build
 
 # 2. npm'e yayınla
 npm publish dist/versions/your-app-name.tgz

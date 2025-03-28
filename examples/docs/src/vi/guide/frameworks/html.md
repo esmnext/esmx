@@ -1,15 +1,15 @@
 ---
-titleSuffix: Ví dụ ứng dụng HTML SSR với Gez Framework
-description: Hướng dẫn xây dựng ứng dụng HTML SSR từ đầu dựa trên Gez, thông qua ví dụ minh họa cách sử dụng cơ bản của framework, bao gồm khởi tạo dự án, cấu hình HTML và thiết lập tệp đầu vào.
+titleSuffix: Ví dụ ứng dụng HTML SSR với Esmx Framework
+description: Hướng dẫn xây dựng ứng dụng HTML SSR từ đầu dựa trên Esmx, thông qua ví dụ minh họa cách sử dụng cơ bản của framework, bao gồm khởi tạo dự án, cấu hình HTML và thiết lập tệp đầu vào.
 head:
   - - meta
     - property: keywords
-      content: Gez, HTML, Ứng dụng SSR, Cấu hình TypeScript, Khởi tạo dự án, Render phía máy chủ, Tương tác phía máy khách
+      content: Esmx, HTML, Ứng dụng SSR, Cấu hình TypeScript, Khởi tạo dự án, Render phía máy chủ, Tương tác phía máy khách
 ---
 
 # HTML
 
-Hướng dẫn này sẽ giúp bạn xây dựng một ứng dụng HTML SSR từ đầu dựa trên Gez. Chúng ta sẽ sử dụng một ví dụ hoàn chỉnh để minh họa cách tạo ứng dụng render phía máy chủ bằng Gez framework.
+Hướng dẫn này sẽ giúp bạn xây dựng một ứng dụng HTML SSR từ đầu dựa trên Esmx. Chúng ta sẽ sử dụng một ví dụ hoàn chỉnh để minh họa cách tạo ứng dụng render phía máy chủ bằng Esmx framework.
 
 ## Cấu trúc dự án
 
@@ -40,18 +40,18 @@ Tạo tệp `package.json`, cấu hình các phụ thuộc và script của dự
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "gez dev",
+    "dev": "esmx dev",
     "build": "npm run build:dts && npm run build:ssr",
-    "build:ssr": "gez build",
-    "preview": "gez preview",
+    "build:ssr": "esmx build",
+    "preview": "esmx preview",
     "start": "NODE_ENV=production node dist/index.js",
     "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src"
   },
   "dependencies": {
-    "@gez/core": "*"
+    "@esmx/core": "*"
   },
   "devDependencies": {
-    "@gez/rspack": "*",
+    "@esmx/rspack": "*",
     "@types/node": "22.8.6",
     "typescript": "^5.7.3"
   }
@@ -111,7 +111,7 @@ Tạo thành phần chính của ứng dụng `src/app.ts`, triển khai cấu t
 ```ts title="src/app.ts"
 /**
  * @file Ví dụ thành phần
- * @description Hiển thị tiêu đề trang với thời gian cập nhật tự động, dùng để minh họa các chức năng cơ bản của Gez framework
+ * @description Hiển thị tiêu đề trang với thời gian cập nhật tự động, dùng để minh họa các chức năng cơ bản của Esmx framework
  */
 
 export default class App {
@@ -141,7 +141,7 @@ export default class App {
 
         return `
         <div id="app">
-            <h1><a href="https://www.esmnext.com/guide/frameworks/html.html" target="_blank">Bắt đầu nhanh với Gez</a></h1>
+            <h1><a href="https://www.esmnext.com/guide/frameworks/html.html" target="_blank">Bắt đầu nhanh với Esmx</a></h1>
             <time datetime="${this.time}">${this.time}</time>
         </div>
         `;
@@ -235,18 +235,18 @@ Tạo tệp `entry.node.ts`, cấu hình môi trường phát triển và khởi
  */
 
 import http from 'node:http';
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     /**
      * Cấu hình trình tạo ứng dụng cho môi trường phát triển
      * @description Tạo và cấu hình thể hiện ứng dụng Rspack, dùng để xây dựng và cập nhật nóng trong môi trường phát triển
-     * @param gez Thể hiện Gez framework, cung cấp các chức năng và giao diện cấu hình cốt lõi
+     * @param esmx Thể hiện Esmx framework, cung cấp các chức năng và giao diện cấu hình cốt lõi
      * @returns Trả về thể hiện ứng dụng Rspack đã được cấu hình, hỗ trợ HMR và xem trước thời gian thực
      */
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createRspackHtmlApp(gez, {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createRspackHtmlApp(esmx, {
                 config(context) {
                     // Tùy chỉnh cấu hình biên dịch Rspack tại đây
                 }
@@ -256,15 +256,15 @@ export default {
 
     /**
      * Cấu hình và khởi động HTTP server
-     * @description Tạo thể hiện HTTP server, tích hợp middleware Gez, xử lý yêu cầu SSR
-     * @param gez Thể hiện Gez framework, cung cấp middleware và chức năng render
+     * @description Tạo thể hiện HTTP server, tích hợp middleware Esmx, xử lý yêu cầu SSR
+     * @param esmx Thể hiện Esmx framework, cung cấp middleware và chức năng render
      */
-    async server(gez) {
+    async server(esmx) {
         const server = http.createServer((req, res) => {
-            // Sử dụng middleware Gez để xử lý yêu cầu
-            gez.middleware(req, res, async () => {
+            // Sử dụng middleware Esmx để xử lý yêu cầu
+            esmx.middleware(req, res, async () => {
                 // Thực hiện render phía máy chủ
-                const rc = await gez.render({
+                const rc = await esmx.render({
                     params: { url: req.url }
                 });
                 res.end(rc.html);
@@ -275,13 +275,13 @@ export default {
             console.log('Dịch vụ đã khởi động: http://localhost:3000');
         });
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 Tệp này là tệp đầu vào cấu hình môi trường phát triển và khởi động server, chứa hai chức năng chính:
 
 1. Hàm `devApp`: Chịu trách nhiệm tạo và cấu hình thể hiện ứng dụng Rspack cho môi trường phát triển, hỗ trợ cập nhật nóng và xem trước thời gian thực.
-2. Hàm `server`: Chịu trách nhiệm tạo và cấu hình HTTP server, tích hợp middleware Gez để xử lý yêu cầu SSR.
+2. Hàm `server`: Chịu trách nhiệm tạo và cấu hình HTTP server, tích hợp middleware Esmx để xử lý yêu cầu SSR.
 
 ### entry.server.ts
 
@@ -293,7 +293,7 @@ Tạo tệp đầu vào render phía máy chủ `src/entry.server.ts`:
  * @description Chịu trách nhiệm quy trình render phía máy chủ, tạo HTML và chèn tài nguyên
  */
 
-import type { RenderContext } from '@gez/core';
+import type { RenderContext } from '@esmx/core';
 import type App from './app';
 import type { SsrContext } from './app';
 import { createApp } from './create-app';
@@ -325,7 +325,7 @@ export default async (rc: RenderContext) => {
 <html lang="vi">
 <head>
     ${rc.preload()}
-    <title>Bắt đầu nhanh với Gez</title>
+    <title>Bắt đầu nhanh với Esmx</title>
     ${rc.css()}
 </head>
 <body>
@@ -358,4 +358,4 @@ npm run build
 npm run start
 ```
 
-Bây giờ, bạn đã tạo thành công một ứng dụng HTML SSR dựa trên Gez! Truy cập http://localhost:3000 để xem kết quả.
+Bây giờ, bạn đã tạo thành công một ứng dụng HTML SSR dựa trên Esmx! Truy cập http://localhost:3000 để xem kết quả.

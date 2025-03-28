@@ -1,13 +1,13 @@
 ---
 pageType: home
 titleSuffix: Wysokowydajny framework do renderowania po stronie serwera oparty na ESM
-description: Gez to wysokowydajny framework do renderowania po stronie serwera (SSR) oparty na ESM, oferujący pełną funkcjonalność SSR, inteligentny kontekst renderowania oraz innowacyjny system łączenia modułów, idealny do tworzenia dużych aplikacji webowych.
+description: Esmx to wysokowydajny framework do renderowania po stronie serwera (SSR) oparty na ESM, oferujący pełną funkcjonalność SSR, inteligentny kontekst renderowania oraz innowacyjny system łączenia modułów, idealny do tworzenia dużych aplikacji webowych.
 head:
   - - meta
     - property: keywords
-      content: Gez, SSR, ESM, renderowanie po stronie serwera, łączenie modułów, Vue, React, TypeScript, mikrofrontendy
+      content: Esmx, SSR, ESM, renderowanie po stronie serwera, łączenie modułów, Vue, React, TypeScript, mikrofrontendy
 hero:
-  name: Gez
+  name: Esmx
   text: Framework do renderowania po stronie serwera oparty na ESM
   tagline: Wysokowydajny, skalowalny system łączenia modułów
   actions:
@@ -16,7 +16,7 @@ hero:
       link: /guide/start/getting-started
     - theme: alt
       text: GitHub
-      link: https://github.com/js-esm/gez
+      link: https://github.com/js-esm/esmx
 
 features:
   - icon: ⚡️

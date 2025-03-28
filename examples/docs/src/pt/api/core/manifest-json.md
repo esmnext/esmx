@@ -1,15 +1,15 @@
 ---
-titleSuffix: Referência do arquivo de manifesto de construção do framework Gez
-description: Detalha a estrutura do arquivo de manifesto de construção (manifest.json) do framework Gez, incluindo gerenciamento de artefatos de construção, mapeamento de arquivos exportados e estatísticas de recursos, ajudando os desenvolvedores a entender e usar o sistema de construção.
+titleSuffix: Referência do arquivo de manifesto de construção do framework Esmx
+description: Detalha a estrutura do arquivo de manifesto de construção (manifest.json) do framework Esmx, incluindo gerenciamento de artefatos de construção, mapeamento de arquivos exportados e estatísticas de recursos, ajudando os desenvolvedores a entender e usar o sistema de construção.
 head:
   - - meta
     - property: keywords
-      content: Gez, ManifestJson, Manifesto de Construção, Gerenciamento de Recursos, Artefatos de Construção, Mapeamento de Arquivos, API
+      content: Esmx, ManifestJson, Manifesto de Construção, Gerenciamento de Recursos, Artefatos de Construção, Mapeamento de Arquivos, API
 ---
 
 # ManifestJson
 
-O `manifest.json` é um arquivo de manifesto gerado durante o processo de construção do framework Gez, usado para registrar informações sobre os artefatos de construção do serviço. Ele fornece uma interface unificada para gerenciar artefatos de construção, arquivos exportados e estatísticas de tamanho de recursos.
+O `manifest.json` é um arquivo de manifesto gerado durante o processo de construção do framework Esmx, usado para registrar informações sobre os artefatos de construção do serviço. Ele fornece uma interface unificada para gerenciar artefatos de construção, arquivos exportados e estatísticas de tamanho de recursos.
 
 ```json title="dist/client/manifest.json"
 {
@@ -71,7 +71,7 @@ interface ManifestJson {
 
 - **Tipo**: `string`
 
-Nome do serviço, proveniente da configuração GezOptions.name.
+Nome do serviço, proveniente da configuração EsmxOptions.name.
 
 #### exports
 

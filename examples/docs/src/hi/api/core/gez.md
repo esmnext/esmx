@@ -1,13 +1,13 @@
 ---
 titleSuffix: फ्रेमवर्क कोर क्लास API संदर्भ
-description: Gez फ्रेमवर्क के कोर क्लास API का विस्तृत विवरण, जिसमें एप्लिकेशन लाइफसाइकल प्रबंधन, स्टेटिक संसाधन प्रसंस्करण और सर्वर-साइड रेंडरिंग क्षमताएं शामिल हैं, जो डेवलपर्स को फ्रेमवर्क की मुख्य कार्यक्षमताओं को गहराई से समझने में मदद करती हैं।
+description: Esmx फ्रेमवर्क के कोर क्लास API का विस्तृत विवरण, जिसमें एप्लिकेशन लाइफसाइकल प्रबंधन, स्टेटिक संसाधन प्रसंस्करण और सर्वर-साइड रेंडरिंग क्षमताएं शामिल हैं, जो डेवलपर्स को फ्रेमवर्क की मुख्य कार्यक्षमताओं को गहराई से समझने में मदद करती हैं।
 head:
   - - meta
     - property: keywords
-      content: Gez, API, लाइफसाइकल प्रबंधन, स्टेटिक संसाधन, सर्वर-साइड रेंडरिंग, Rspack, वेब एप्लिकेशन फ्रेमवर्क
+      content: Esmx, API, लाइफसाइकल प्रबंधन, स्टेटिक संसाधन, सर्वर-साइड रेंडरिंग, Rspack, वेब एप्लिकेशन फ्रेमवर्क
 ---
 
-# Gez
+# Esmx
 
 ## परिचय
 
@@ -76,18 +76,18 @@ enum COMMAND {
 
 ## इंस्टेंस विकल्प
 
-Gez फ्रेमवर्क के मुख्य कॉन्फ़िगरेशन विकल्पों को परिभाषित करता है।
+Esmx फ्रेमवर्क के मुख्य कॉन्फ़िगरेशन विकल्पों को परिभाषित करता है।
 
 ```ts
-interface GezOptions {
+interface EsmxOptions {
   root?: string
   isProd?: boolean
   basePathPlaceholder?: string | false
   modules?: ModuleConfig
   packs?: PackConfig
-  devApp?: (gez: Gez) => Promise<App>
-  server?: (gez: Gez) => Promise<void>
-  postBuild?: (gez: Gez) => Promise<void>
+  devApp?: (esmx: Esmx) => Promise<App>
+  server?: (esmx: Esmx) => Promise<void>
+  postBuild?: (esmx: Esmx) => Promise<void>
 }
 ```
 
@@ -128,15 +128,15 @@ interface GezOptions {
 
 #### devApp
 
-- **प्रकार**: `(gez: Gez) => Promise<App>`
+- **प्रकार**: `(esmx: Esmx) => Promise<App>`
 
 डेवलपमेंट वातावरण एप्लिकेशन निर्माण फ़ंक्शन। केवल डेवलपमेंट वातावरण में उपयोग किया जाता है, डेवलपमेंट सर्वर के लिए एप्लिकेशन इंस्टेंस बनाने के लिए।
 
 ```ts title="entry.node.ts"
 export default {
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(context) {
           // कस्टम Rspack कॉन्फ़िगरेशन
         }
@@ -148,16 +148,16 @@ export default {
 
 #### server
 
-- **प्रकार**: `(gez: Gez) => Promise<void>`
+- **प्रकार**: `(esmx: Esmx) => Promise<void>`
 
 सर्वर स्टार्ट कॉन्फ़िगरेशन फ़ंक्शन। HTTP सर्वर को कॉन्फ़िगर और शुरू करने के लिए उपयोग किया जाता है, डेवलपमेंट और प्रोडक्शन दोनों वातावरणों में उपयोग किया जा सकता है।
 
 ```ts title="entry.node.ts"
 export default {
-  async server(gez) {
+  async server(esmx) {
     const server = http.createServer((req, res) => {
-      gez.middleware(req, res, async () => {
-        const render = await gez.render({
+      esmx.middleware(req, res, async () => {
+        const render = await esmx.render({
           params: { url: req.url }
         });
         res.end(render.html);
@@ -171,7 +171,7 @@ export default {
 
 #### postBuild
 
-- **प्रकार**: `(gez: Gez) => Promise<void>`
+- **प्रकार**: `(esmx: Esmx) => Promise<void>`
 
 बिल्ड पोस्ट-प्रोसेसिंग फ़ंक्शन। प्रोजेक्ट बिल्ड पूरा होने के बाद निष्पादित किया जाता है, निम्नलिखित के लिए उपयोग किया जा सकता है:
 - अतिरिक्त संसाधन प्रसंस्करण
@@ -235,8 +235,8 @@ export default {
 
 ```ts
 const server = http.createServer((req, res) => {
-  gez.middleware(req, res, async () => {
-    const rc = await gez.render({ url: req.url });
+  esmx.middleware(req, res, async () => {
+    const rc = await esmx.render({ url: req.url });
     res.end(rc.html);
   });
 });
@@ -253,12 +253,12 @@ const server = http.createServer((req, res) => {
 
 ```ts
 // बेसिक उपयोग
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: req.url }
 });
 
 // एडवांस्ड कॉन्फ़िगरेशन
-const rc = await gez.render({
+const rc = await esmx.render({
   base: '',                    // बेस पथ
   importmapMode: 'inline',     // आयात मैपिंग मोड
   entryName: 'default',        // रेंडरिंग एंट्री
@@ -297,13 +297,13 @@ const rc = await gez.render({
 ### constructor()
 
 - **पैरामीटर्स**: 
-  - `options?: GezOptions` - फ्रेमवर्क कॉन्फ़िगरेशन विकल्प
-- **रिटर्न वैल्यू**: `Gez`
+  - `options?: EsmxOptions` - फ्रेमवर्क कॉन्फ़िगरेशन विकल्प
+- **रिटर्न वैल्यू**: `Esmx`
 
-Gez फ्रेमवर्क इंस्टेंस बनाएं।
+Esmx फ्रेमवर्क इंस्टेंस बनाएं।
 
 ```ts
-const gez = new Gez({
+const esmx = new Esmx({
   root: './src',
   isProd: process.env.NODE_ENV === 'production'
 });
@@ -317,7 +317,7 @@ const gez = new Gez({
   - `Error`: डुप्लिकेट इनिशियलाइज़ेशन पर
   - `NotReadyError`: अनइनिशियलाइज़्ड इंस्टेंस एक्सेस करने पर
 
-Gez फ्रेमवर्क इंस्टेंस को इनिशियलाइज़ करें। निम्नलिखित कोर इनिशियलाइज़ेशन प्रक्रिया निष्पादित करता है:
+Esmx फ्रेमवर्क इंस्टेंस को इनिशियलाइज़ करें। निम्नलिखित कोर इनिशियलाइज़ेशन प्रक्रिया निष्पादित करता है:
 
 1. प्रोजेक्ट कॉन्फ़िगरेशन पार्स करें (package.json, मॉड्यूल कॉन्फ़िगरेशन, पैकेजिंग कॉन्फ़िगरेशन आदि)
 2. एप्लिकेशन इंस्टेंस बनाएं (डेवलपमेंट या प्रोडक्शन वातावरण)

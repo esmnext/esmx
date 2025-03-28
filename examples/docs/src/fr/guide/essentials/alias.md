@@ -1,15 +1,15 @@
 ---
-titleSuffix: Guide de mappage des chemins d'importation des modules du framework Gez
-description: Détaille le mécanisme d'alias de chemin du framework Gez, y compris la simplification des chemins d'importation, l'évitement des imbrications profondes, la sécurité des types et l'optimisation de la résolution des modules, aidant les développeurs à améliorer la maintenabilité du code.
+titleSuffix: Guide de mappage des chemins d'importation des modules du framework Esmx
+description: Détaille le mécanisme d'alias de chemin du framework Esmx, y compris la simplification des chemins d'importation, l'évitement des imbrications profondes, la sécurité des types et l'optimisation de la résolution des modules, aidant les développeurs à améliorer la maintenabilité du code.
 head:
   - - meta
     - property: keywords
-      content: Gez, Alias de chemin, Path Alias, TypeScript, Importation de modules, Mappage de chemin, Maintenabilité du code
+      content: Esmx, Alias de chemin, Path Alias, TypeScript, Importation de modules, Mappage de chemin, Maintenabilité du code
 ---
 
 # Alias de chemin
 
-L'alias de chemin (Path Alias) est un mécanisme de mappage des chemins d'importation des modules qui permet aux développeurs d'utiliser des identifiants courts et sémantiques pour remplacer les chemins de module complets. Dans Gez, le mécanisme d'alias de chemin offre les avantages suivants :
+L'alias de chemin (Path Alias) est un mécanisme de mappage des chemins d'importation des modules qui permet aux développeurs d'utiliser des identifiants courts et sémantiques pour remplacer les chemins de module complets. Dans Esmx, le mécanisme d'alias de chemin offre les avantages suivants :
 
 - **Simplification des chemins d'importation** : Utilisation d'alias sémantiques pour remplacer les chemins relatifs longs, améliorant la lisibilité du code
 - **Évitement des imbrications profondes** : Élimination des difficultés de maintenance causées par les références à des répertoires multi-niveaux (par exemple `../../../../`)
@@ -18,7 +18,7 @@ L'alias de chemin (Path Alias) est un mécanisme de mappage des chemins d'import
 
 ## Mécanisme d'alias par défaut
 
-Gez utilise un mécanisme d'alias automatique basé sur le nom du service (Service Name). Cette conception basée sur des conventions plutôt que sur la configuration présente les caractéristiques suivantes :
+Esmx utilise un mécanisme d'alias automatique basé sur le nom du service (Service Name). Cette conception basée sur des conventions plutôt que sur la configuration présente les caractéristiques suivantes :
 
 - **Configuration automatique** : Génération automatique d'alias basée sur le champ `name` dans `package.json`, sans configuration manuelle
 - **Uniformité des normes** : Assure que tous les modules de service suivent une norme de nommage et de référence cohérente
@@ -112,13 +112,13 @@ import { logger } from 'remote-service/src/utils';
 
 ### Alias personnalisés
 
-Pour les packages tiers ou des scénarios spécifiques, vous pouvez personnaliser les alias via le fichier de configuration de Gez :
+Pour les packages tiers ou des scénarios spécifiques, vous pouvez personnaliser les alias via le fichier de configuration de Esmx :
 
 ```ts title="src/entry.node.ts"
 export default {
-    async devApp(gez) {
-        return import('@gez/rspack').then((m) =>
-            m.createApp(gez, (buildContext) => {
+    async devApp(esmx) {
+        return import('@esmx/rspack').then((m) =>
+            m.createApp(esmx, (buildContext) => {
                 buildContext.config.resolve = {
                     ...buildContext.config.resolve,
                     alias: {
@@ -133,7 +133,7 @@ export default {
             })
         );
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ::: warning Remarques

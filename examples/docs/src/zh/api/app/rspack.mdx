@@ -1,23 +1,23 @@
 ---
-titleSuffix: Gez 框架 Rspack 构建工具
-description: Gez 框架的 Rspack 构建工具，提供高性能的应用构建能力，支持标准应用和 HTML 应用的开发与构建，内置多种资源处理器和优化配置。
+titleSuffix: Esmx 框架 Rspack 构建工具
+description: Esmx 框架的 Rspack 构建工具，提供高性能的应用构建能力，支持标准应用和 HTML 应用的开发与构建，内置多种资源处理器和优化配置。
 head:
   - - meta
     - property: keywords
-      content: Gez, Rspack, 构建工具, 应用构建, HTML 应用, TypeScript, CSS, 资源处理, 性能优化
+      content: Esmx, Rspack, 构建工具, 应用构建, HTML 应用, TypeScript, CSS, 资源处理, 性能优化
 ---
 
 import { PackageManagerTabs } from '@theme';
 
-# @gez/rspack
+# @esmx/rspack
 
 Rspack 包提供了一套用于创建和配置 Rspack 应用的 API，支持标准应用和 HTML 应用的构建与开发。
 
 ## 安装
 
-使用包管理器安装 `@gez/rspack` 开发依赖：
+使用包管理器安装 `@esmx/rspack` 开发依赖：
 
-<PackageManagerTabs command="install @gez/rspack -D" />
+<PackageManagerTabs command="install @esmx/rspack -D" />
 
 ## 类型导出
 
@@ -36,7 +36,7 @@ type BuildTarget = 'node' | 'client' | 'server'
 
 ```ts
 interface RspackAppConfigContext {
-  gez: Gez
+  esmx: Esmx
   buildTarget: BuildTarget
   config: RspackOptions
   options: RspackAppOptions
@@ -44,7 +44,7 @@ interface RspackAppConfigContext {
 ```
 
 Rspack 应用配置上下文接口，提供了在配置钩子函数中可以访问的上下文信息：
-- `gez`: Gez 框架实例
+- `esmx`: Esmx 框架实例
 - `buildTarget`: 当前的构建目标（client/server/node）
 - `config`: Rspack 配置对象
 - `options`: 应用配置选项
@@ -86,13 +86,13 @@ Rspack 应用配置选项接口：
 ### createRspackApp
 
 ```ts
-function createRspackApp(gez: Gez, options?: RspackAppOptions): Promise<App>
+function createRspackApp(esmx: Esmx, options?: RspackAppOptions): Promise<App>
 ```
 
 创建一个标准的 Rspack 应用实例。
 
 **参数：**
-- `gez`: Gez 框架实例
+- `esmx`: Esmx 框架实例
 - `options`: Rspack 应用配置选项
 
 **返回值：**
@@ -101,13 +101,13 @@ function createRspackApp(gez: Gez, options?: RspackAppOptions): Promise<App>
 ### createRspackHtmlApp
 
 ```ts
-function createRspackHtmlApp(gez: Gez, options?: RspackHtmlAppOptions): Promise<App>
+function createRspackHtmlApp(esmx: Esmx, options?: RspackHtmlAppOptions): Promise<App>
 ```
 
 创建一个 HTML 类型的 Rspack 应用实例。
 
 **参数：**
-- `gez`: Gez 框架实例
+- `esmx`: Esmx 框架实例
 - `options`: HTML 应用配置选项
 
 **返回值：**
@@ -141,12 +141,12 @@ Rspack 内置的 loader 标识符映射对象，提供了常用的 loader 名称
 使用这些常量可以在配置中引用内置的 loader，避免手动输入字符串：
 
 ```ts title="src/entry.node.ts"
-import { RSPACK_LOADER } from '@gez/rspack';
+import { RSPACK_LOADER } from '@esmx/rspack';
 
 export default {
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         loaders: {
           // 使用常量引用 loader
           styleLoader: RSPACK_LOADER.styleLoader,

@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez Framework Projectstructuur en Richtlijnenhandleiding
-description: Gedetailleerde uitleg over de standaard projectstructuur, ingangsbestandsrichtlijnen en configuratiebestandsrichtlijnen van het Gez framework, om ontwikkelaars te helpen gestandaardiseerde en onderhoudbare SSR-toepassingen te bouwen.
+titleSuffix: Esmx Framework Projectstructuur en Richtlijnenhandleiding
+description: Gedetailleerde uitleg over de standaard projectstructuur, ingangsbestandsrichtlijnen en configuratiebestandsrichtlijnen van het Esmx framework, om ontwikkelaars te helpen gestandaardiseerde en onderhoudbare SSR-toepassingen te bouwen.
 head:
   - - meta
     - property: keywords
-      content: Gez, projectstructuur, ingangsbestand, configuratierichtlijnen, SSR-framework, TypeScript, projectrichtlijnen, ontwikkelingsstandaarden
+      content: Esmx, projectstructuur, ingangsbestand, configuratierichtlijnen, SSR-framework, TypeScript, projectrichtlijnen, ontwikkelingsstandaarden
 ---
 
 # Standaardrichtlijnen
 
-Gez is een modern SSR-framework dat gebruikmaakt van gestandaardiseerde projectstructuren en padresolutiemechanismen om consistentie en onderhoudbaarheid van projecten in ontwikkelings- en productieomgevingen te waarborgen.
+Esmx is een modern SSR-framework dat gebruikmaakt van gestandaardiseerde projectstructuren en padresolutiemechanismen om consistentie en onderhoudbaarheid van projecten in ontwikkelings- en productieomgevingen te waarborgen.
 
 ## Projectstructuurrichtlijnen
 
@@ -36,7 +36,7 @@ root
 ```
 
 ::: tip Uitbreidingskennis
-- `gez.name` is afkomstig van het `name`-veld in `package.json`
+- `esmx.name` is afkomstig van het `name`-veld in `package.json`
 - `dist/package.json` is afkomstig van de `package.json` in de hoofdmap
 - Het archief van de `dist`-map wordt alleen gemaakt als `packs.enable` is ingesteld op `true`
 
@@ -76,11 +76,11 @@ Het Node.js server-ingangsbestand is verantwoordelijk voor:
     "name": "your-app-name",
     "type": "module",
     "scripts": {
-        "dev": "gez dev",
+        "dev": "esmx dev",
         "build": "npm run build:dts && npm run build:ssr",
-        "build:ssr": "gez build",
+        "build:ssr": "esmx build",
         "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src",
-        "preview": "gez preview",
+        "preview": "esmx preview",
         "start": "NODE_ENV=production node dist/index.js"
     }
 }

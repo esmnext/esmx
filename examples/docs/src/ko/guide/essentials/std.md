@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez 프레임워크 프로젝트 구조 및 규범 가이드
-description: Gez 프레임워크의 표준 프로젝트 구조, 진입 파일 규범 및 설정 파일 규범을 상세히 설명하여 개발자가 표준화되고 유지보수 가능한 SSR 애플리케이션을 구축할 수 있도록 돕습니다.
+titleSuffix: Esmx 프레임워크 프로젝트 구조 및 규범 가이드
+description: Esmx 프레임워크의 표준 프로젝트 구조, 진입 파일 규범 및 설정 파일 규범을 상세히 설명하여 개발자가 표준화되고 유지보수 가능한 SSR 애플리케이션을 구축할 수 있도록 돕습니다.
 head:
   - - meta
     - property: keywords
-      content: Gez, 프로젝트 구조, 진입 파일, 설정 규범, SSR 프레임워크, TypeScript, 프로젝트 규범, 개발 표준
+      content: Esmx, 프로젝트 구조, 진입 파일, 설정 규범, SSR 프레임워크, TypeScript, 프로젝트 규범, 개발 표준
 ---
 
 # 표준 규범
 
-Gez는 현대적인 SSR 프레임워크로, 표준화된 프로젝트 구조와 경로 해석 메커니즘을 채택하여 개발 및 프로덕션 환경에서의 일관성과 유지보수성을 보장합니다.
+Esmx는 현대적인 SSR 프레임워크로, 표준화된 프로젝트 구조와 경로 해석 메커니즘을 채택하여 개발 및 프로덕션 환경에서의 일관성과 유지보수성을 보장합니다.
 
 ## 프로젝트 구조 규범
 
@@ -36,7 +36,7 @@ root
 ```
 
 ::: tip 확장 지식
-- `gez.name`은 `package.json`의 `name` 필드에서 유래
+- `esmx.name`은 `package.json`의 `name` 필드에서 유래
 - `dist/package.json`은 루트 디렉토리의 `package.json`에서 유래
 - `packs.enable`을 `true`로 설정할 경우에만 `dist` 디렉토리를 아카이브
 
@@ -76,11 +76,11 @@ Node.js 서버 진입 파일은 다음을 담당합니다:
     "name": "your-app-name",
     "type": "module",
     "scripts": {
-        "dev": "gez dev",
+        "dev": "esmx dev",
         "build": "npm run build:dts && npm run build:ssr",
-        "build:ssr": "gez build",
+        "build:ssr": "esmx build",
         "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src",
-        "preview": "gez preview",
+        "preview": "esmx preview",
         "start": "NODE_ENV=production node dist/index.js"
     }
 }

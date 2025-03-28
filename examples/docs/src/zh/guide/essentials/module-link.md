@@ -1,15 +1,15 @@
 ---
-titleSuffix: Gez 框架服务间代码共享机制
-description: 详细介绍 Gez 框架的模块链接机制，包括服务间代码共享、依赖管理和 ESM 规范实现，帮助开发者构建高效的微前端应用。
+titleSuffix: Esmx 框架服务间代码共享机制
+description: 详细介绍 Esmx 框架的模块链接机制，包括服务间代码共享、依赖管理和 ESM 规范实现，帮助开发者构建高效的微前端应用。
 head:
   - - meta
     - property: keywords
-      content: Gez, 模块链接, Module Link, ESM, 代码共享, 依赖管理, 微前端
+      content: Esmx, 模块链接, Module Link, ESM, 代码共享, 依赖管理, 微前端
 ---
 
 # 模块链接
 
-Gez 框架提供了一套完整的模块链接机制，用于管理服务间的代码共享和依赖关系。该机制基于 ESM（ECMAScript Module）规范实现，支持源码级别的模块导出和导入，以及完整的依赖管理功能。
+Esmx 框架提供了一套完整的模块链接机制，用于管理服务间的代码共享和依赖关系。该机制基于 ESM（ECMAScript Module）规范实现，支持源码级别的模块导出和导入，以及完整的依赖管理功能。
 
 ### 核心概念
 
@@ -30,7 +30,7 @@ Gez 框架提供了一套完整的模块链接机制，用于管理服务间的�
 在 `entry.node.ts` 中配置需要导出的模块：
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     modules: {
@@ -43,7 +43,7 @@ export default {
             'npm:vue-router'                   // Vue Router
         ]
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 导出配置支持两种类型：
@@ -57,7 +57,7 @@ export default {
 在 `entry.node.ts` 中配置需要导入的模块：
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     modules: {
@@ -75,7 +75,7 @@ export default {
             'vue-router': 'ssr-remote/npm/vue-router'
         }
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 配置项说明：
@@ -143,7 +143,7 @@ export default {
 在 `entry.node.ts` 中配置构建选项：
 
 ```ts title="src/entry.node.ts"
-import type { GezOptions } from '@gez/core';
+import type { EsmxOptions } from '@esmx/core';
 
 export default {
     // 模块导出配置
@@ -166,26 +166,26 @@ export default {
         ],
 
         // 自定义 package.json
-        packageJson: async (gez, pkg) => {
+        packageJson: async (esmx, pkg) => {
             pkg.version = '1.0.0';
             return pkg;
         },
 
         // 构建前处理
-        onBefore: async (gez, pkg) => {
+        onBefore: async (esmx, pkg) => {
             // 生成类型声明
             // 执行测试用例
             // 更新文档等
         },
 
         // 构建后处理
-        onAfter: async (gez, pkg, file) => {
+        onAfter: async (esmx, pkg, file) => {
             // 上传到 CDN
             // 发布到 npm 仓库
             // 部署到测试环境等
         }
     }
-} satisfies GezOptions;
+} satisfies EsmxOptions;
 ```
 
 ### 构建产物
@@ -205,7 +205,7 @@ your-app-name.tgz
 
 ```bash
 # 1. 构建生产版本
-gez build
+esmx build
 
 # 2. 发布到 npm
 npm publish dist/versions/your-app-name.tgz

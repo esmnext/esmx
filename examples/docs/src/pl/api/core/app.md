@@ -1,22 +1,22 @@
 ---
-titleSuffix: Abstrakcyjny interfejs aplikacji frameworku Gez
-description: Szczegółowy opis interfejsu App frameworku Gez, obejmujący zarządzanie cyklem życia aplikacji, obsługę zasobów statycznych oraz renderowanie po stronie serwera, pomagający programistom zrozumieć i wykorzystać kluczowe funkcje aplikacji.
+titleSuffix: Abstrakcyjny interfejs aplikacji frameworku Esmx
+description: Szczegółowy opis interfejsu App frameworku Esmx, obejmujący zarządzanie cyklem życia aplikacji, obsługę zasobów statycznych oraz renderowanie po stronie serwera, pomagający programistom zrozumieć i wykorzystać kluczowe funkcje aplikacji.
 head:
   - - meta
     - property: keywords
-      content: Gez, App, abstrakcja aplikacji, cykl życia, zasoby statyczne, renderowanie po stronie serwera, API
+      content: Esmx, App, abstrakcja aplikacji, cykl życia, zasoby statyczne, renderowanie po stronie serwera, API
 ---
 
 # App
 
-`App` to abstrakcja aplikacji w frameworku Gez, która zapewnia ujednolicony interfejs do zarządzania cyklem życia aplikacji, zasobami statycznymi oraz renderowaniem po stronie serwera.
+`App` to abstrakcja aplikacji w frameworku Esmx, która zapewnia ujednolicony interfejs do zarządzania cyklem życia aplikacji, zasobami statycznymi oraz renderowaniem po stronie serwera.
 
 ```ts title="entry.node.ts"
 export default {
   // Konfiguracja środowiska deweloperskiego
-  async devApp(gez) {
-    return import('@gez/rspack').then((m) =>
-      m.createRspackHtmlApp(gez, {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) =>
+      m.createRspackHtmlApp(esmx, {
         config(rc) {
           // Niestandardowa konfiguracja Rspack
         }
@@ -55,7 +55,7 @@ Middleware do obsługi zasobów statycznych.
 - Zoptymalizowana strategia ładowania zasobów
 
 ```ts
-server.use(gez.middleware);
+server.use(esmx.middleware);
 ```
 
 #### render
@@ -67,7 +67,7 @@ Funkcja renderowania po stronie serwera. Zapewnia różne implementacje w zależ
 - Środowisko deweloperskie (dev): Ładuje plik wejściowy serwera z kodu źródłowego i wykonuje renderowanie
 
 ```ts
-const rc = await gez.render({
+const rc = await esmx.render({
   params: { url: '/page' }
 });
 res.end(rc.html);
