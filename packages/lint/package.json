@@ -30,7 +30,7 @@
         "stylelint-config-standard": "36.0.1",
         "stylelint-order": "6.0.4"
     },
-    "version": "3.0.0-rc.9",
+    "version": "3.0.0-rc.10",
     "type": "module",
     "private": false,
     "exports": {
