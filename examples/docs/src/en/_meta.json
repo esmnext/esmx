@@ -1,16 +1,16 @@
 [
   {
-    "text": "指南",
+    "text": "Guide",
     "link": "/guide/start/introduction",
     "activeMatch": "/guide/"
   },
   {
     "text": "API",
-    "link": "/api/core/esmx",
+    "link": "/api/core/esmx", 
     "activeMatch": "/api/"
   },
   {
-    "text": "博客",
+    "text": "Blog",
     "link": "/blog/index",
     "activeMatch": "/blog/"
   }

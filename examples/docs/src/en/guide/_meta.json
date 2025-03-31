@@ -2,16 +2,16 @@
     {
         "type": "dir",
         "name": "start",
-        "label": "开始"
+        "label": "Getting Started"
     },
     {
         "type": "dir",
         "name": "essentials",
-        "label": "基础"
+        "label": "Essentials"
     },
     {
         "type": "dir",
         "name": "frameworks",
-        "label": "框架"
+        "label": "Frameworks"
     }
 ]
