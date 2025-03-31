@@ -80,6 +80,8 @@ export async function getImportPreloadInfo(
         }
         needHandle.length && needHandles.push(needHandle);
     }
+    // 将入口文件的路径添加到最后
+    ans[specifier] = importInfo[specifier];
 
     return ans;
 }
