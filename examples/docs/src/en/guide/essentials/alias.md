@@ -1,6 +1,6 @@
 ---
 titleSuffix: Esmx Framework Module Import Path Mapping Guide
-description: Detailed explanation of Esmx framework's path alias mechanism, including features such as simplified import paths, avoiding deep nesting, type safety, and module resolution optimization, helping developers improve code maintainability.
+description: Detailed explanation of Esmx framework's path alias mechanism, including simplified import paths, avoidance of deep nesting, type safety, and module resolution optimization features to help developers improve code maintainability.
 head:
   - - meta
     - property: keywords
@@ -9,21 +9,21 @@ head:
 
 # Path Alias
 
-Path Alias is a module import path mapping mechanism that allows developers to use short, semantic identifiers to replace full module paths. In Esmx, the path alias mechanism offers the following advantages:
+Path Alias is a module import path mapping mechanism that allows developers to use concise, semantic identifiers instead of complete module paths. In Esmx, the path alias mechanism offers the following advantages:
 
-- **Simplified Import Paths**: Use semantic aliases to replace lengthy relative paths, improving code readability.
-- **Avoid Deep Nesting**: Eliminate maintenance difficulties caused by multi-level directory references (e.g., `../../../../`).
-- **Type Safety**: Fully integrated with TypeScript's type system, providing code completion and type checking.
-- **Module Resolution Optimization**: Improve module resolution performance through predefined path mappings.
+- **Simplified Import Paths**: Replace lengthy relative paths with semantic aliases to improve code readability
+- **Avoid Deep Nesting**: Eliminate maintenance difficulties caused by multi-level directory references (e.g., `../../../../`)
+- **Type Safety**: Fully integrated with TypeScript's type system, providing code completion and type checking
+- **Module Resolution Optimization**: Improve module resolution performance through predefined path mappings
 
 ## Default Alias Mechanism
 
-Esmx adopts an automatic alias mechanism based on service names, which follows the convention-over-configuration design with the following characteristics:
+Esmx adopts an automatic alias mechanism based on service names (Service Name), featuring a convention-over-configuration design with the following characteristics:
 
-- **Automatic Configuration**: Automatically generates aliases based on the `name` field in `package.json`, eliminating the need for manual configuration.
-- **Unified Standard**: Ensures all service modules follow consistent naming and referencing conventions.
-- **Type Support**: Works with the `npm run build:dts` command to automatically generate type declaration files, enabling cross-service type inference.
-- **Predictability**: Allows inferring module reference paths from service names, reducing maintenance costs.
+- **Automatic Configuration**: Automatically generates aliases based on the `name` field in `package.json`, requiring no manual setup
+- **Unified Standard**: Ensures all service modules follow consistent naming and reference conventions
+- **Type Support**: Works with the `npm run build:dts` command to automatically generate type declaration files, enabling cross-service type inference
+- **Predictability**: Module reference paths can be inferred from service names, reducing maintenance costs
 
 ## Configuration Instructions
 
@@ -79,13 +79,12 @@ import { utils } from 'other-service/src/utils';
 ```
 
 ::: tip Best Practices
-- Prefer using alias paths over relative paths.
-- Maintain semantic and consistent alias paths.
-- Avoid excessive directory levels in alias paths.
-
+- Prefer alias paths over relative paths
+- Maintain semantic and consistent alias paths
+- Avoid excessive directory levels in alias paths
 :::
 
-``` ts
+```ts
 // Importing components
 import { Button } from 'your-app-name/src/components';
 import { Layout } from 'your-app-name/src/components/layout';
@@ -100,7 +99,7 @@ import type { UserInfo } from 'your-app-name/src/types';
 
 ### Cross-Service Imports
 
-When module linking (Module Link) is configured, you can import modules from other services in the same way:
+When module linking (Module Link) is configured, modules from other services can be imported in the same way:
 
 ```ts
 // Importing components from a remote service
@@ -112,7 +111,7 @@ import { logger } from 'remote-service/src/utils';
 
 ### Custom Aliases
 
-For third-party packages or special scenarios, you can define custom aliases through the Esmx configuration file:
+For third-party packages or special scenarios, custom aliases can be defined through the Esmx configuration file:
 
 ```ts title="src/entry.node.ts"
 export default {
@@ -125,7 +124,7 @@ export default {
                         ...buildContext.config.resolve?.alias,
                         // Configure a specific build version for Vue
                         'vue$': 'vue/dist/vue.esm.js',
-                        // Configure short aliases for commonly used directories
+                        // Configure short aliases for common directories
                         '@': './src',
                         '@components': './src/components'
                     }
@@ -137,8 +136,7 @@ export default {
 ```
 
 ::: warning Notes
-1. For business modules, it is recommended to always use the default alias mechanism to maintain project consistency.
-2. Custom aliases are primarily used for handling special requirements of third-party packages or optimizing development experience.
-3. Excessive use of custom aliases may impact code maintainability and build optimization.
-
+1. For business modules, always use the default alias mechanism to maintain project consistency
+2. Custom aliases are primarily used for handling special requirements of third-party packages or optimizing development experience
+3. Excessive use of custom aliases may impact code maintainability and build optimization
 :::

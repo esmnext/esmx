@@ -1,15 +1,15 @@
 ---
 titleSuffix: Esmx Framework Vue2 SSR Application Example
-description: Build a Vue2 SSR application from scratch using Esmx framework. This example demonstrates the basic usage of the framework, including project initialization, Vue2 configuration, and entry file setup.
+description: Build a Vue2 SSR application with Esmx from scratch, demonstrating the framework's basic usage including project initialization, Vue2 configuration, and entry file setup.
 head:
   - - meta
     - property: keywords
-      content: Esmx, Vue2, SSR Application, TypeScript Configuration, Project Initialization, Server-Side Rendering, Client-Side Interaction
+      content: Esmx, Vue2, SSR application, TypeScript configuration, project initialization, server-side rendering, client-side interaction
 ---
 
 # Vue2
 
-This tutorial will guide you through building a Vue2 SSR application from scratch using the Esmx framework. We'll demonstrate how to create a server-side rendered application with a complete example.
+This tutorial will guide you through building a Vue2 SSR application with Esmx from the ground up. We'll demonstrate how to create a server-side rendered application using the Esmx framework through a complete example.
 
 ## Project Structure
 
@@ -17,14 +17,14 @@ First, let's understand the basic project structure:
 
 ```bash
 .
-├── package.json         # Project configuration file, defining dependencies and script commands
-├── tsconfig.json        # TypeScript configuration file, setting compilation options
-└── src                  # Source code directory
-    ├── app.vue          # Main application component, defining page structure and interaction logic
-    ├── create-app.ts    # Vue instance factory, responsible for initializing the application
-    ├── entry.client.ts  # Client entry file, handling browser-side rendering
-    ├── entry.node.ts    # Node.js server entry file, responsible for development environment configuration and server startup
-    └── entry.server.ts  # Server entry file, handling SSR rendering logic
+├── package.json         # Project configuration file defining dependencies and scripts
+├── tsconfig.json       # TypeScript configuration file with compilation options
+└── src                 # Source code directory
+    ├── app.vue         # Main application component defining page structure and logic
+    ├── create-app.ts   # Vue instance factory for application initialization
+    ├── entry.client.ts # Client entry file handling browser-side rendering
+    ├── entry.node.ts   # Node.js server entry file for dev environment setup
+    └── entry.server.ts # Server entry file handling SSR rendering logic
 ```
 
 ## Project Configuration
@@ -61,7 +61,7 @@ Create the `package.json` file to configure project dependencies and scripts:
 }
 ```
 
-After creating the `package.json` file, you need to install the project dependencies. You can use any of the following commands to install them:
+After creating the `package.json` file, install project dependencies using any of these commands:
 ```bash
 pnpm install
 # or
@@ -70,11 +70,11 @@ yarn install
 npm install
 ```
 
-This will install all the necessary dependencies, including Vue2, TypeScript, and SSR-related packages.
+This will install all required dependencies including Vue2, TypeScript, and SSR-related packages.
 
 ### tsconfig.json
 
-Create the `tsconfig.json` file to configure TypeScript compilation options:
+Create the `tsconfig.json` file to configure TypeScript compilation:
 
 ```json title="tsconfig.json"
 {
@@ -109,7 +109,7 @@ Create the `tsconfig.json` file to configure TypeScript compilation options:
 
 ### app.vue
 
-Create the main application component `src/app.vue`, using the `<script setup>` syntax:
+Create the main application component `src/app.vue` using `<script setup>` syntax:
 
 ```html title="src/app.vue"
 <template>
@@ -121,13 +121,13 @@ Create the main application component `src/app.vue`, using the `<script setup>` 
 
 <script setup lang="ts">
 /**
- * @file Example Component
- * @description Displays a page title with an auto-updating timestamp, demonstrating basic Esmx framework functionality
+ * @file Example component
+ * @description Displays a page title with auto-updating time to demonstrate Esmx framework basics
  */
 
 import { onMounted, onUnmounted, ref } from 'vue';
 
-// Current time, updated every second
+// Current time updating every second
 const time = ref(new Date().toISOString());
 let timer: NodeJS.Timeout;
 
@@ -145,12 +145,12 @@ onUnmounted(() => {
 
 ### create-app.ts
 
-Create the `src/create-app.ts` file, responsible for creating the Vue application instance:
+Create `src/create-app.ts` to handle Vue application instance creation:
 
 ```ts title="src/create-app.ts"
 /**
- * @file Vue Instance Creation
- * @description Responsible for creating and configuring the Vue application instance
+ * @file Vue instance creation
+ * @description Creates and configures Vue application instances
  */
 
 import Vue from 'vue';
@@ -172,7 +172,7 @@ Create the client entry file `src/entry.client.ts`:
 
 ```ts title="src/entry.client.ts"
 /**
- * @file Client Entry File
+ * @file Client entry file
  * @description Handles client-side interaction logic and dynamic updates
  */
 
@@ -187,12 +187,12 @@ app.$mount('#app');
 
 ### entry.node.ts
 
-Create the `entry.node.ts` file to configure the development environment and server startup:
+Create `entry.node.ts` for development environment configuration:
 
 ```ts title="src/entry.node.ts"
 /**
- * @file Node.js Server Entry File
- * @description Responsible for development environment configuration and server startup, providing the SSR runtime environment
+ * @file Node.js server entry file
+ * @description Configures development environment and server startup for SSR runtime
  */
 
 import http from 'node:http';
@@ -200,29 +200,29 @@ import type { EsmxOptions } from '@esmx/core';
 
 export default {
     /**
-     * Configures the development environment application creator
-     * @description Creates and configures the Rspack application instance for development environment builds and hot updates
-     * @param esmx Esmx framework instance, providing core functionality and configuration interfaces
-     * @returns Returns the configured Rspack application instance, supporting HMR and live preview
+     * Configures development environment application creator
+     * @description Creates and configures Rspack application instance for development builds and HMR
+     * @param esmx Esmx framework instance providing core functionality
+     * @returns Configured Rspack application instance with HMR support
      */
     async devApp(esmx) {
         return import('@esmx/rspack-vue').then((m) =>
             m.createRspackVue2App(esmx, {
                 config(context) {
-                    // Customize Rspack compilation configuration here
+                    // Custom Rspack compilation configuration
                 }
             })
         );
     },
 
     /**
-     * Configures and starts the HTTP server
-     * @description Creates an HTTP server instance, integrates Esmx middleware, and handles SSR requests
-     * @param esmx Esmx framework instance, providing middleware and rendering functionality
+     * Configures and starts HTTP server
+     * @description Creates HTTP server with Esmx middleware for SSR requests
+     * @param esmx Esmx framework instance providing middleware and rendering
      */
     async server(esmx) {
         const server = http.createServer((req, res) => {
-            // Use Esmx middleware to handle requests
+            // Process requests with Esmx middleware
             esmx.middleware(req, res, async () => {
                 // Perform server-side rendering
                 const rc = await esmx.render({
@@ -239,19 +239,19 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-This file is the entry point for development environment configuration and server startup, containing two core functions:
+This file serves as the entry point for development environment configuration and server startup, containing two core functions:
 
-1. `devApp` function: Responsible for creating and configuring the Rspack application instance for the development environment, supporting hot updates and live preview. It uses `createRspackVue2App` to create a Rspack application instance specifically for Vue2.
-2. `server` function: Responsible for creating and configuring the HTTP server, integrating Esmx middleware to handle SSR requests.
+1. `devApp`: Creates and configures the Rspack application instance for development with HMR support using `createRspackVue2App`.
+2. `server`: Creates and configures the HTTP server with Esmx middleware for SSR requests.
 
 ### entry.server.ts
 
-Create the server-side rendering entry file `src/entry.server.ts`:
+Create the SSR entry file `src/entry.server.ts`:
 
 ```ts title="src/entry.server.ts"
 /**
- * @file Server-Side Rendering Entry File
- * @description Handles server-side rendering process, HTML generation, and resource injection
+ * @file Server-side rendering entry file
+ * @description Handles SSR process, HTML generation and resource injection
  */
 
 import type { RenderContext } from '@esmx/core';
@@ -265,12 +265,12 @@ export default async (rc: RenderContext) => {
     // Create Vue application instance
     const { app } = createApp();
 
-    // Use Vue's renderToString to generate page content
+    // Generate page content with Vue's renderToString
     const html = await renderer.renderToString(app, {
         importMetaSet: rc.importMetaSet
     });
 
-    // Commit dependency collection to ensure all necessary resources are loaded
+    // Commit dependency collection to ensure all required resources are loaded
     await rc.commit();
 
     // Generate complete HTML structure
@@ -294,21 +294,21 @@ export default async (rc: RenderContext) => {
 
 ## Running the Project
 
-After completing the above file configurations, you can use the following commands to run the project:
+After completing the configuration, use these commands to run the project:
 
 1. Development mode:
 ```bash
 npm run dev
 ```
 
-2. Build the project:
+2. Build project:
 ```bash
 npm run build
 ```
 
-3. Run in production environment:
+3. Production run:
 ```bash
 npm run start
 ```
 
-Now, you have successfully created a Vue2 SSR application using the Esmx framework! Visit http://localhost:3000 to see the result.
+Congratulations! You've successfully created a Vue2 SSR application with Esmx. Visit http://localhost:3000 to see the result.

@@ -1,15 +1,15 @@
 ---
 titleSuffix: Esmx Framework Application Abstraction Interface
-description: Detailed introduction to the App interface of the Esmx framework, including application lifecycle management, static resource handling, and server-side rendering functionality, helping developers understand and use core application features.
+description: Detailed introduction to the App interface in the Esmx framework, covering application lifecycle management, static asset handling, and server-side rendering capabilities to help developers understand and utilize core application functionalities.
 head:
   - - meta
     - property: keywords
-      content: Esmx, App, Application Abstraction, Lifecycle, Static Resources, Server-Side Rendering, API
+      content: Esmx, App, Application Abstraction, Lifecycle, Static Assets, Server-Side Rendering, API
 ---
 
 # App
 
-`App` is the application abstraction in the Esmx framework, providing a unified interface to manage the application lifecycle, static resources, and server-side rendering.
+`App` is the application abstraction in the Esmx framework, providing a unified interface for managing application lifecycle, static assets, and server-side rendering.
 
 ```ts title="entry.node.ts"
 export default {
@@ -42,17 +42,17 @@ interface App {
 
 - **Type**: `Middleware`
 
-Static resource handling middleware.
+Static asset handling middleware.
 
 Development environment:
-- Handles static resource requests for source code
-- Supports real-time compilation and hot updates
+- Processes static asset requests for source code
+- Supports real-time compilation and hot module replacement
 - Uses no-cache policy
 
 Production environment:
-- Handles built static resources
+- Handles built static assets
 - Supports long-term caching for immutable files (.final.xxx)
-- Optimized resource loading strategy
+- Optimized asset loading strategy
 
 ```ts
 server.use(esmx.middleware);
@@ -62,9 +62,9 @@ server.use(esmx.middleware);
 
 - **Type**: `(options?: RenderContextOptions) => Promise<RenderContext>`
 
-Server-side rendering function. Provides different implementations based on the environment:
-- Production environment (start): Loads and executes the built server entry file (entry.server) for rendering
-- Development environment (dev): Loads and executes the server entry file from the source code for rendering
+Server-side rendering function. Provides different implementations based on environment:
+- Production (start): Loads and executes the built server entry file (entry.server) for rendering
+- Development (dev): Loads and executes the source server entry file for rendering
 
 ```ts
 const rc = await esmx.render({
@@ -77,10 +77,10 @@ res.end(rc.html);
 
 - **Type**: `() => Promise<boolean>`
 
-Production environment build function. Used for resource bundling and optimization. Returns true on successful build, false on failure.
+Production build function. Used for asset bundling and optimization. Returns true on successful build, false on failure.
 
 #### destroy
 
 - **Type**: `() => Promise<boolean>`
 
-Resource cleanup function. Used for shutting down servers, disconnecting connections, etc. Returns true on successful cleanup, false on failure.
+Resource cleanup function. Used for server shutdown, connection termination, etc. Returns true on successful cleanup, false on failure.

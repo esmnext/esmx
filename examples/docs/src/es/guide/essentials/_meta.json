@@ -1,9 +1,0 @@
-[
-    "std",
-    "rspack",
-    "render-context",
-    "csr",
-    "alias",
-    "base-path",
-    "module-link"
-]

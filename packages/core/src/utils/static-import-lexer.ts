@@ -75,8 +75,7 @@ export async function getImportPreloadInfo(
         const imports = await getImportsFromJsFile(filepath);
         for (const specifier of imports) {
             // 如果模块名在 importMap 中不存在，或已经处理过
-            if (!(specifier in importInfo) || (specifier in ans))
-                continue;
+            if (!(specifier in importInfo) || specifier in ans) continue;
             ans[specifier] = importInfo[specifier];
             needHandles.push(specifier);
         }

@@ -9,25 +9,25 @@ head:
 
 # Module Linking
 
-The Esmx framework provides a comprehensive module linking mechanism for managing code sharing and dependency relationships between services. This mechanism is implemented based on the ESM (ECMAScript Module) specification, supporting source-level module exports and imports, as well as complete dependency management functionality.
+The Esmx framework provides a comprehensive module linking mechanism for managing code sharing and dependency relationships between services. This mechanism is implemented based on the ESM (ECMAScript Module) specification, supporting source-level module exports/imports and complete dependency management functionality.
 
 ### Core Concepts
 
 #### Module Export
-Module export is the process of exposing specific code units (such as components, utility functions, etc.) from a service in ESM format. Two types of exports are supported:
-- **Source Code Export**: Directly exporting source code files from the project
-- **Dependency Export**: Exporting third-party dependency packages used by the project
+Module export is the process of exposing specific code units (such as components, utility functions, etc.) from a service in ESM format. Two export types are supported:
+- **Source Export**: Directly exports source code files from the project
+- **Dependency Export**: Exports third-party dependency packages used by the project
 
 #### Module Linking
-Module import is the process of referencing code units exported by other services within a service. Multiple installation methods are supported:
-- **Source Code Installation**: Suitable for development environments, supports real-time modifications and hot updates
-- **Package Installation**: Suitable for production environments, directly using build artifacts
+Module import is the process of referencing code units exported by other services. Multiple installation methods are supported:
+- **Source Installation**: Suitable for development environments, supports real-time modifications and hot updates
+- **Package Installation**: Suitable for production environments, uses build artifacts directly
 
 ## Module Export
 
 ### Configuration Instructions
 
-Configure the modules to be exported in `entry.node.ts`:
+Configure modules to be exported in `entry.node.ts`:
 
 ```ts title="src/entry.node.ts"
 import type { EsmxOptions } from '@esmx/core';
@@ -35,7 +35,7 @@ import type { EsmxOptions } from '@esmx/core';
 export default {
     modules: {
         exports: [
-            // Export source code files
+            // Export source files
             'root:src/components/button.vue',  // Vue component
             'root:src/utils/format.ts',        // Utility function
             // Export third-party dependencies
@@ -47,14 +47,14 @@ export default {
 ```
 
 Export configuration supports two types:
-- `root:*`: Export source code files, with paths relative to the project root directory
-- `npm:*`: Export third-party dependencies, directly specifying the package name
+- `root:*`: Exports source files, with paths relative to the project root
+- `npm:*`: Exports third-party dependencies, specified by package name directly
 
 ## Module Import
 
 ### Configuration Instructions
 
-Configure the modules to be imported in `entry.node.ts`:
+Configure modules to be imported in `entry.node.ts`:
 
 ```ts title="src/entry.node.ts"
 import type { EsmxOptions } from '@esmx/core';
@@ -63,9 +63,9 @@ export default {
     modules: {
         // Link configuration
         links: {
-            // Source code installation: points to the build artifact directory
+            // Source installation: points to build output directory
             'ssr-remote': 'root:./node_modules/ssr-remote/dist',
-            // Package installation: points to the package directory
+            // Package installation: points to package directory
             'other-remote': 'root:./node_modules/other-remote'
         },
         // Import mapping settings
@@ -78,23 +78,23 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-Configuration item descriptions:
-1. **imports**: Configure the local paths of remote modules
-   - Source code installation: points to the build artifact directory (dist)
-   - Package installation: directly points to the package directory
+Configuration items explanation:
+1. **imports**: Configures local paths for remote modules
+   - Source installation: Points to build output directory (dist)
+   - Package installation: Directly points to package directory
 
-2. **externals**: Configure external dependencies
+2. **externals**: Configures external dependencies
    - Used for sharing dependencies from remote modules
-   - Avoids duplicate packaging of the same dependencies
-   - Supports multiple modules sharing dependencies
+   - Avoids duplicate packaging of same dependencies
+   - Supports dependency sharing across multiple modules
 
 ### Installation Methods
 
-#### Source Code Installation
+#### Source Installation
 Suitable for development environments, supports real-time modifications and hot updates.
 
 1. **Workspace Method**
-Recommended for use in Monorepo projects:
+Recommended for Monorepo projects:
 ```ts title="package.json"
 {
     "devDependencies": {
@@ -104,7 +104,7 @@ Recommended for use in Monorepo projects:
 ```
 
 2. **Link Method**
-Used for local development and debugging:
+For local development and debugging:
 ```ts title="package.json"
 {
     "devDependencies": {
@@ -114,7 +114,7 @@ Used for local development and debugging:
 ```
 
 #### Package Installation
-Suitable for production environments, directly using build artifacts.
+Suitable for production environments, uses build artifacts directly.
 
 1. **NPM Registry**
 Install via npm registry:
@@ -156,7 +156,7 @@ export default {
     },
     // Build configuration
     pack: {
-        // Enable build
+        // Enable building
         enable: true,
 
         // Output configuration
@@ -193,12 +193,12 @@ export default {
 ```
 your-app-name.tgz
 ├── package.json        # Package information
-├── index.js            # Production environment entry
-├── server/             # Server-side resources
-│   └── manifest.json   # Server-side resource mapping
+├── index.js            # Production entry
+├── server/             # Server resources
+│   └── manifest.json   # Server resource mapping
 ├── node/               # Node.js runtime
-└── client/             # Client-side resources
-    └── manifest.json   # Client-side resource mapping
+└── client/             # Client resources
+    └── manifest.json   # Client resource mapping
 ```
 
 ### Publishing Process

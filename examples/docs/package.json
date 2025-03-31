@@ -14,7 +14,7 @@
     "find": "^0.3.0",
     "@types/find": "^0.2.4",
     "rspress-plugin-sitemap": "^1.1.1",
-    "rspress": "1.41.2",
+    "rspress": "1.43.9",
     "@types/node": "22.13.4",
     "typescript": "5.7.3"
   }

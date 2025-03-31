@@ -1,15 +1,15 @@
 ---
 titleSuffix: Esmx Framework HTML SSR Application Example
-description: Build a Esmx-based HTML SSR application from scratch. This example demonstrates the basic usage of the framework, including project initialization, HTML configuration, and entry file setup.
+description: Build an HTML SSR application from scratch based on Esmx framework, demonstrating basic usage through examples including project initialization, HTML configuration, and entry file setup.
 head:
   - - meta
     - property: keywords
-      content: Esmx, HTML, SSR Application, TypeScript Configuration, Project Initialization, Server-Side Rendering, Client-Side Interaction
+      content: Esmx, HTML, SSR application, TypeScript configuration, project initialization, server-side rendering, client-side interaction
 ---
 
 # HTML
 
-This tutorial will guide you through building a Esmx-based HTML SSR application from scratch. We'll demonstrate how to create a server-side rendered application using the Esmx framework through a complete example.
+This tutorial will guide you through building an HTML SSR application from scratch using the Esmx framework. We'll demonstrate how to create a server-side rendered application through a complete example.
 
 ## Project Structure
 
@@ -17,14 +17,14 @@ First, let's understand the basic project structure:
 
 ```bash
 .
-├── package.json         # Project configuration file, defines dependencies and script commands
-├── tsconfig.json        # TypeScript configuration file, sets compilation options
+├── package.json         # Project configuration file defining dependencies and scripts
+├── tsconfig.json        # TypeScript configuration file with compilation options
 └── src                  # Source code directory
-    ├── app.ts           # Main application component, defines page structure and interaction logic
-    ├── create-app.ts    # Application instance factory, responsible for initializing the application
-    ├── entry.client.ts  # Client entry file, handles browser-side rendering
-    ├── entry.node.ts    # Node.js server entry file, responsible for development environment configuration and server startup
-    └── entry.server.ts  # Server entry file, handles SSR rendering logic
+    ├── app.ts           # Main application component defining page structure and logic
+    ├── create-app.ts    # Application instance factory for initialization
+    ├── entry.client.ts  # Client entry file handling browser-side rendering
+    ├── entry.node.ts    # Node.js server entry file for dev environment setup
+    └── entry.server.ts  # Server entry file handling SSR rendering logic
 ```
 
 ## Project Configuration
@@ -58,7 +58,7 @@ Create the `package.json` file to configure project dependencies and scripts:
 }
 ```
 
-After creating the `package.json` file, install the project dependencies using one of the following commands:
+After creating the `package.json` file, install project dependencies using any of these commands:
 ```bash
 pnpm install
 # or
@@ -67,11 +67,11 @@ yarn install
 npm install
 ```
 
-This will install all necessary dependencies, including TypeScript and SSR-related packages.
+This will install all required dependencies including TypeScript and SSR-related packages.
 
 ### tsconfig.json
 
-Create the `tsconfig.json` file to configure TypeScript compilation options:
+Create the `tsconfig.json` file to configure TypeScript compilation:
 
 ```json title="tsconfig.json"
 {
@@ -106,11 +106,11 @@ Create the `tsconfig.json` file to configure TypeScript compilation options:
 
 ### app.ts
 
-Create the main application component `src/app.ts` to implement page structure and interaction logic:
+Create the main application component `src/app.ts` implementing page structure and interaction logic:
 
 ```ts title="src/app.ts"
 /**
- * @file Example Component
+ * @file Example component
  * @description Demonstrates a page title with auto-updating time, showcasing basic Esmx framework functionality
  */
 
@@ -122,19 +122,19 @@ export default class App {
     public time = '';
 
     /**
-     * Create application instance
-     * @param {SsrContext} [ssrContext] - Server-side context containing import metadata collection
+     * Creates application instance
+     * @param {SsrContext} [ssrContext] - Server context containing import metadata collection
      */
     public constructor(public ssrContext?: SsrContext) {
         // No additional initialization needed in constructor
     }
 
     /**
-     * Render page content
+     * Renders page content
      * @returns {string} Returns page HTML structure
      */
     public render(): string {
-        // Ensure correct collection of import metadata in server-side environment
+        // Ensure proper import metadata collection in server environment
         if (this.ssrContext) {
             this.ssrContext.importMetaSet.add(import.meta);
         }
@@ -149,7 +149,7 @@ export default class App {
 
     /**
      * Client-side initialization
-     * @throws {Error} Throws error if time display element is not found
+     * @throws {Error} Throws error when time display element is not found
      */
     public onClient(): void {
         // Get time display element
@@ -175,7 +175,7 @@ export default class App {
 }
 
 /**
- * Server-side context interface
+ * Server context interface
  * @interface
  */
 export interface SsrContext {
@@ -189,11 +189,11 @@ export interface SsrContext {
 
 ### create-app.ts
 
-Create the `src/create-app.ts` file to handle application instance creation:
+Create `src/create-app.ts` file responsible for application instance creation:
 
 ```ts title="src/create-app.ts"
 /**
- * @file Application Instance Creation
+ * @file Application instance creation
  * @description Responsible for creating and configuring application instances
  */
 
@@ -209,11 +209,11 @@ export function createApp() {
 
 ### entry.client.ts
 
-Create the client entry file `src/entry.client.ts`:
+Create client entry file `src/entry.client.ts`:
 
 ```ts title="src/entry.client.ts"
 /**
- * @file Client Entry File
+ * @file Client entry file
  * @description Handles client-side interaction logic and dynamic updates
  */
 
@@ -226,12 +226,12 @@ app.onClient();
 
 ### entry.node.ts
 
-Create the `entry.node.ts` file to configure the development environment and server startup:
+Create `entry.node.ts` file for development environment configuration:
 
 ```ts title="src/entry.node.ts"
 /**
- * @file Node.js Server Entry File
- * @description Responsible for development environment configuration and server startup, providing SSR runtime environment
+ * @file Node.js server entry file
+ * @description Configures development environment and server startup, providing SSR runtime
  */
 
 import http from 'node:http';
@@ -239,10 +239,10 @@ import type { EsmxOptions } from '@esmx/core';
 
 export default {
     /**
-     * Configure development environment application creator
-     * @description Creates and configures Rspack application instance for development environment builds and hot updates
-     * @param esmx Esmx framework instance, providing core functionality and configuration interfaces
-     * @returns Returns configured Rspack application instance with HMR and live preview support
+     * Configures development environment application creator
+     * @description Creates and configures Rspack application instance for development builds and HMR
+     * @param esmx Esmx framework instance providing core functionality
+     * @returns Configured Rspack application instance supporting HMR and live preview
      */
     async devApp(esmx) {
         return import('@esmx/rspack').then((m) =>
@@ -255,13 +255,13 @@ export default {
     },
 
     /**
-     * Configure and start HTTP server
-     * @description Creates HTTP server instance, integrates Esmx middleware, and handles SSR requests
-     * @param esmx Esmx framework instance, providing middleware and rendering functionality
+     * Configures and starts HTTP server
+     * @description Creates HTTP server instance with Esmx middleware for SSR requests
+     * @param esmx Esmx framework instance providing middleware and rendering
      */
     async server(esmx) {
         const server = http.createServer((req, res) => {
-            // Use Esmx middleware to handle requests
+            // Process requests with Esmx middleware
             esmx.middleware(req, res, async () => {
                 // Perform server-side rendering
                 const rc = await esmx.render({
@@ -280,17 +280,17 @@ export default {
 
 This file serves as the entry point for development environment configuration and server startup, containing two core functions:
 
-1. `devApp` function: Responsible for creating and configuring the Rspack application instance for the development environment, supporting hot updates and live preview.
-2. `server` function: Responsible for creating and configuring the HTTP server, integrating Esmx middleware to handle SSR requests.
+1. `devApp`: Creates and configures Rspack application instance for development with HMR support.
+2. `server`: Creates and configures HTTP server with Esmx middleware for SSR requests.
 
 ### entry.server.ts
 
-Create the server-side rendering entry file `src/entry.server.ts`:
+Create server-side rendering entry file `src/entry.server.ts`:
 
 ```ts title="src/entry.server.ts"
 /**
- * @file Server-Side Rendering Entry File
- * @description Handles server-side rendering process, HTML generation, and resource injection
+ * @file Server-side rendering entry file
+ * @description Handles SSR process, HTML generation and resource injection
  */
 
 import type { RenderContext } from '@esmx/core';
@@ -298,9 +298,9 @@ import type App from './app';
 import type { SsrContext } from './app';
 import { createApp } from './create-app';
 
-// Encapsulate page content generation logic
+// Encapsulates page content generation logic
 const renderToString = (app: App, ssrContext: SsrContext): string => {
-    // Inject server-side rendering context into application instance
+    // Inject server context into application instance
     app.ssrContext = ssrContext;
     // Initialize server-side
     app.onServer();
@@ -310,19 +310,19 @@ const renderToString = (app: App, ssrContext: SsrContext): string => {
 };
 
 export default async (rc: RenderContext) => {
-    // Create application instance, returning an object containing the app instance
+    // Create application instance
     const { app } = createApp();
-    // Use renderToString to generate page content
+    // Generate page content using renderToString
     const html = renderToString(app, {
         importMetaSet: rc.importMetaSet
     });
 
-    // Commit dependency collection to ensure all necessary resources are loaded
+    // Commit dependency collection to ensure all required resources are loaded
     await rc.commit();
 
     // Generate complete HTML structure
     rc.html = `<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     ${rc.preload()}
     <title>Esmx Quick Start</title>
@@ -341,21 +341,21 @@ export default async (rc: RenderContext) => {
 
 ## Running the Project
 
-After completing the above file configurations, you can run the project using the following commands:
+After completing all configurations, use these commands to run the project:
 
 1. Development mode:
 ```bash
 npm run dev
 ```
 
-2. Build the project:
+2. Build project:
 ```bash
 npm run build
 ```
 
-3. Run in production environment:
+3. Production environment:
 ```bash
 npm run start
 ```
 
-Now, you've successfully created a Esmx-based HTML SSR application! Visit http://localhost:3000 to see the result.
+Congratulations! You've successfully created an HTML SSR application using Esmx framework. Visit http://localhost:3000 to see the result.

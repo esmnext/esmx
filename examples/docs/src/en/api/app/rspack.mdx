@@ -1,6 +1,6 @@
 ---
 titleSuffix: Esmx Framework Rspack Build Tool
-description: The Rspack build tool for the Esmx framework provides high-performance application building capabilities, supporting the development and building of standard applications and HTML applications, with built-in multiple resource processors and optimization configurations.
+description: The Rspack build tool for the Esmx framework provides high-performance application building capabilities, supporting the development and construction of standard applications and HTML applications, with built-in multiple resource processors and optimization configurations.
 head:
   - - meta
     - property: keywords
@@ -11,11 +11,11 @@ import { PackageManagerTabs } from '@theme';
 
 # @esmx/rspack
 
-The Rspack package provides a set of APIs for creating and configuring Rspack applications, supporting the building and development of standard applications and HTML applications.
+The Rspack package provides a set of APIs for creating and configuring Rspack applications, supporting the building and development of both standard applications and HTML applications.
 
 ## Installation
 
-Install `@esmx/rspack` as a development dependency using a package manager:
+Install `@esmx/rspack` as a development dependency using your package manager:
 
 <PackageManagerTabs command="install @esmx/rspack -D" />
 
@@ -27,10 +27,10 @@ Install `@esmx/rspack` as a development dependency using a package manager:
 type BuildTarget = 'node' | 'client' | 'server'
 ```
 
-The build target environment type defines the target environment for the application build, used to configure specific optimizations and features during the build process:
-- `node`: Build code to run in a Node.js environment
-- `client`: Build code to run in a browser environment
-- `server`: Build code to run in a server environment
+The build target environment type defines the target environment for application building, used to configure specific optimizations and features during the build process:
+- `node`: Builds code to run in Node.js environments
+- `client`: Builds code to run in browser environments
+- `server`: Builds code to run in server environments
 
 ### RspackAppConfigContext
 
@@ -43,7 +43,7 @@ interface RspackAppConfigContext {
 }
 ```
 
-The Rspack application configuration context interface provides context information accessible within configuration hook functions:
+The Rspack application configuration context interface provides contextual information accessible within configuration hook functions:
 - `esmx`: Esmx framework instance
 - `buildTarget`: Current build target (client/server/node)
 - `config`: Rspack configuration object
@@ -69,17 +69,17 @@ interface RspackAppOptions {
 ```
 
 Rspack application configuration options interface:
-- `css`: CSS output method, either 'css' (separate file) or 'js' (bundled into JS), automatically selected based on environment: production uses 'css' for cache optimization and parallel loading, development uses 'js' to support hot module replacement (HMR)
+- `css`: CSS output method, either 'css' (standalone files) or 'js' (bundled into JS). Defaults to automatic selection based on environment: production uses 'css' for cache optimization and parallel loading, development uses 'js' to support HMR
 - `loaders`: Custom loader configurations
 - `styleLoader`: style-loader configuration options
 - `cssLoader`: css-loader configuration options
-- `target`: Build target compatibility configuration
+- `target`: Build target compatibility configurations
 - `definePlugin`: Global constant definitions
 - `config`: Configuration hook function
 
 ### RspackHtmlAppOptions
 
-Extends `RspackAppOptions`, used to configure specific options for HTML applications.
+Extends `RspackAppOptions`, used to configure HTML application-specific options.
 
 ## Function Exports
 
@@ -96,7 +96,7 @@ Creates a standard Rspack application instance.
 - `options`: Rspack application configuration options
 
 **Returns:**
-- Returns a Promise that resolves to the created application instance
+- A Promise that resolves to the created application instance
 
 ### createRspackHtmlApp
 
@@ -111,7 +111,7 @@ Creates an HTML-type Rspack application instance.
 - `options`: HTML application configuration options
 
 **Returns:**
-- Returns a Promise that resolves to the created HTML application instance
+- A Promise that resolves to the created HTML application instance
 
 ## Constant Exports
 ### RSPACK_LOADER
@@ -160,12 +160,12 @@ export default {
 ```
 
 **Notes:**
-- These loaders are built into Rspack and do not require additional installation
+- These loaders are already built into Rspack and require no additional installation
 - When customizing loader configurations, these constants can be used to replace default loader implementations
-- Some loaders (e.g., `builtinSwcLoader`) have specific configuration options, refer to the respective documentation
+- Certain loaders (e.g., `builtinSwcLoader`) have specific configuration options - refer to their respective documentation
 
 ## Module Exports
 
 ### rspack
 
-Re-exports all contents of the `@rspack/core` package, providing full Rspack core functionality.
+Re-exports all contents from the `@rspack/core` package, providing complete Rspack core functionality.

@@ -4,7 +4,7 @@ description: The Vue-specific build tool for the Esmx framework, providing compr
 head:
   - - meta
     - property: keywords
-      content: Esmx, Rspack, Vue, Vue2, Vue3, SSR, Build Tool, Component Development, Server-Side Rendering, Performance Optimization
+      content: Esmx, Rspack, Vue, Vue2, Vue3, SSR, build tool, component development, server-side rendering, performance optimization
 ---
 
 import { PackageManagerTabs } from '@theme';
@@ -27,10 +27,10 @@ Install `@esmx/rspack-vue` as a development dependency using your package manage
 type BuildTarget = 'node' | 'client' | 'server'
 ```
 
-The build target environment type defines the target environment for the application build, used to configure specific optimizations and features during the build process:
-- `node`: Build code to run in a Node.js environment
-- `client`: Build code to run in a browser environment
-- `server`: Build code to run in a server environment
+Build target environment type, defining the target environment for application building, used to configure specific optimizations and features during the build process:
+- `node`: Build code for Node.js environment
+- `client`: Build code for browser environment
+- `server`: Build code for server environment
 
 ### RspackAppConfigContext
 
@@ -43,7 +43,7 @@ interface RspackAppConfigContext {
 }
 ```
 
-The Rspack application configuration context interface provides context information accessible within configuration hook functions:
+Rspack application configuration context interface, providing contextual information accessible in configuration hook functions:
 - `esmx`: Esmx framework instance
 - `buildTarget`: Current build target (client/server/node)
 - `config`: Rspack configuration object
@@ -69,8 +69,8 @@ interface RspackAppOptions {
 ```
 
 Rspack application configuration options interface:
-- `css`: CSS output method, either 'css' (separate file) or 'js' (bundled into JS), automatically selected based on the environment: production uses 'css' for cache and parallel loading optimization, development uses 'js' to support HMR
-- `loaders`: Custom loader configuration
+- `css`: CSS output method, either 'css' (standalone file) or 'js' (bundled into JS), defaults to automatic selection based on environment: production uses 'css' for cache and parallel loading optimization, development uses 'js' for HMR support
+- `loaders`: Custom loader configurations
 - `styleLoader`: style-loader configuration options
 - `cssLoader`: css-loader configuration options
 - `target`: Build target compatibility configuration
@@ -128,10 +128,10 @@ const RSPACK_LOADER: Record<string, string> = {
 }
 ```
 
-Rspack built-in loader identifier mapping object, providing commonly used loader name constants:
+Mapping object of Rspack built-in loader identifiers, providing commonly used loader name constants:
 
 - `builtinSwcLoader`: Rspack built-in SWC loader for processing TypeScript/JavaScript files
-- `lightningcssLoader`: Rspack built-in lightningcss loader for high-performance CSS file compilation
+- `lightningcssLoader`: Rspack built-in lightningcss loader, a high-performance compiler for CSS files
 - `styleLoader`: Loader for injecting CSS into the DOM
 - `cssLoader`: Loader for parsing CSS files and handling CSS modularization
 - `lessLoader`: Loader for compiling Less files into CSS
@@ -160,12 +160,12 @@ export default {
 ```
 
 **Notes:**
-- These loaders are built into Rspack and do not require additional installation
+- These loaders are built into Rspack and require no additional installation
 - When customizing loader configurations, these constants can be used to replace default loader implementations
-- Some loaders (e.g., `builtinSwcLoader`) have specific configuration options; refer to the respective documentation
+- Certain loaders (e.g., `builtinSwcLoader`) have specific configuration options—refer to the respective documentation
 
 ## Module Exports
 
 ### rspack
 
-Re-exports all contents of the `@rspack/core` package, providing full Rspack core functionality.
+Re-exports all contents from the `@rspack/core` package, providing complete Rspack core functionality.

@@ -1,30 +1,30 @@
 ---
 titleSuffix: Esmx Framework Preact+HTM SSR Application Example
-description: Build a Preact+HTM SSR application from scratch using the Esmx framework. This example demonstrates the basic usage of the framework, including project initialization, Preact configuration, and entry file setup.
+description: Build a Preact+HTM SSR application from scratch using the Esmx framework, demonstrating basic usage through practical examples including project initialization, Preact configuration, and entry file setup.
 head:
   - - meta
     - property: keywords
-      content: Esmx, Preact, HTM, SSR Application, TypeScript Configuration, Project Initialization, Server-Side Rendering, Client-Side Interaction
+      content: Esmx, Preact, HTM, SSR application, TypeScript configuration, project initialization, server-side rendering, client-side interaction
 ---
 
 # Preact+HTM
 
-This tutorial will guide you through building a Preact+HTM SSR application from scratch using the Esmx framework. We'll walk through a complete example to demonstrate how to create a server-side rendered application with Esmx.
+This tutorial will guide you through building a Preact+HTM SSR application from scratch using the Esmx framework. We'll demonstrate how to create a server-side rendered application through a complete example.
 
 ## Project Structure
 
-First, let's understand the basic structure of the project:
+First, let's examine the basic project structure:
 
 ```bash
 .
-├── package.json         # Project configuration file, defining dependencies and script commands
-├── tsconfig.json        # TypeScript configuration file, setting compilation options
+├── package.json         # Project configuration file defining dependencies and scripts
+├── tsconfig.json        # TypeScript configuration file with compilation options
 └── src                  # Source code directory
-    ├── app.ts           # Main application component, defining page structure and interaction logic
-    ├── create-app.ts    # Application instance factory, responsible for initializing the application
-    ├── entry.client.ts  # Client entry file, handling browser-side rendering
-    ├── entry.node.ts    # Node.js server entry file, responsible for development environment configuration and server startup
-    └── entry.server.ts  # Server entry file, handling SSR rendering logic
+    ├── app.ts           # Main application component defining page structure and logic
+    ├── create-app.ts    # Application instance factory for initialization
+    ├── entry.client.ts  # Client entry file handling browser-side rendering
+    ├── entry.node.ts    # Node.js server entry file for dev environment setup
+    └── entry.server.ts  # Server entry file handling SSR rendering logic
 ```
 
 ## Project Configuration
@@ -61,7 +61,7 @@ Create the `package.json` file to configure project dependencies and scripts:
 }
 ```
 
-After creating the `package.json` file, you need to install the project dependencies. You can use any of the following commands to install them:
+After creating the `package.json` file, install project dependencies using any of these commands:
 ```bash
 pnpm install
 # or
@@ -70,7 +70,7 @@ yarn install
 npm install
 ```
 
-This will install all the necessary dependencies, including Preact, HTM, TypeScript, and SSR-related dependencies.
+This will install all required dependencies including Preact, HTM, TypeScript, and SSR-related packages.
 
 ### tsconfig.json
 
@@ -113,12 +113,12 @@ Create the `tsconfig.json` file to configure TypeScript compilation options:
 
 ### app.ts
 
-Create the main application component `src/app.ts`, using Preact's class component and HTM:
+Create the main application component `src/app.ts` using Preact class components with HTM:
 
 ```ts title="src/app.ts"
 /**
- * @file Example Component
- * @description Demonstrates a page title with an automatically updating timestamp, showcasing the basic functionality of the Esmx framework
+ * @file Example component
+ * @description Demonstrates a page title with auto-updating time, showcasing basic Esmx framework functionality
  */
 
 import { Component } from 'preact';
@@ -159,12 +159,12 @@ export default class App extends Component {
 
 ### create-app.ts
 
-Create the `src/create-app.ts` file, responsible for creating the application instance:
+Create `src/create-app.ts` to handle application instance creation:
 
 ```ts title="src/create-app.ts"
 /**
- * @file Application Instance Creation
- * @description Responsible for creating and configuring the application instance
+ * @file Application instance creation
+ * @description Handles creating and configuring application instances
  */
 
 import type { VNode } from 'preact';
@@ -185,28 +185,28 @@ Create the client entry file `src/entry.client.ts`:
 
 ```ts title="src/entry.client.ts"
 /**
- * @file Client Entry File
+ * @file Client entry file
  * @description Handles client-side interaction logic and dynamic updates
  */
 
 import { render } from 'preact';
 import { createApp } from './create-app';
 
-// Create the application instance
+// Create application instance
 const { app } = createApp();
 
-// Mount the application instance
+// Mount application instance
 render(app, document.getElementById('app')!);
 ```
 
 ### entry.node.ts
 
-Create the `entry.node.ts` file to configure the development environment and server startup:
+Create `entry.node.ts` to configure the development environment and server startup:
 
 ```ts title="src/entry.node.ts"
 /**
- * @file Node.js Server Entry File
- * @description Responsible for development environment configuration and server startup, providing the SSR runtime environment
+ * @file Node.js server entry file
+ * @description Configures development environment and server startup, providing SSR runtime
  */
 
 import http from 'node:http';
@@ -214,29 +214,29 @@ import type { EsmxOptions } from '@esmx/core';
 
 export default {
     /**
-     * Configures the development environment application creator
-     * @description Creates and configures the Rspack application instance for development environment builds and hot updates
-     * @param esmx Esmx framework instance, providing core functionality and configuration interfaces
-     * @returns Returns the configured Rspack application instance, supporting HMR and live preview
+     * Configures development environment application creator
+     * @description Creates and configures Rspack application instance for development builds and HMR
+     * @param esmx Esmx framework instance providing core functionality
+     * @returns Configured Rspack application instance with HMR support
      */
     async devApp(esmx) {
         return import('@esmx/rspack').then((m) =>
             m.createRspackHtmlApp(esmx, {
                 config(context) {
-                    // Customize Rspack compilation configuration here
+                    // Custom Rspack compilation configuration can be added here
                 }
             })
         );
     },
 
     /**
-     * Configures and starts the HTTP server
-     * @description Creates an HTTP server instance, integrating Esmx middleware to handle SSR requests
-     * @param esmx Esmx framework instance, providing middleware and rendering functionality
+     * Configures and starts HTTP server
+     * @description Creates HTTP server instance with Esmx middleware for SSR requests
+     * @param esmx Esmx framework instance providing middleware and rendering
      */
     async server(esmx) {
         const server = http.createServer((req, res) => {
-            // Use Esmx middleware to handle requests
+            // Process requests with Esmx middleware
             esmx.middleware(req, res, async () => {
                 // Perform server-side rendering
                 const rc = await esmx.render({
@@ -253,10 +253,10 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-This file is the entry point for development environment configuration and server startup, containing two core functions:
+This file serves as the entry point for development environment configuration and server startup, containing two core functions:
 
-1. `devApp` function: Responsible for creating and configuring the Rspack application instance for the development environment, supporting hot updates and live preview. It uses `createRspackHtmlApp` to create a Rspack application instance specifically for Preact+HTM.
-2. `server` function: Responsible for creating and configuring the HTTP server, integrating Esmx middleware to handle SSR requests.
+1. `devApp`: Creates and configures the Rspack application instance for development with HMR support.
+2. `server`: Creates and configures the HTTP server with Esmx middleware for SSR requests.
 
 ### entry.server.ts
 
@@ -264,8 +264,8 @@ Create the server-side rendering entry file `src/entry.server.ts`:
 
 ```ts title="src/entry.server.ts"
 /**
- * @file Server-Side Rendering Entry File
- * @description Handles the server-side rendering process, HTML generation, and resource injection
+ * @file Server-side rendering entry file
+ * @description Handles SSR workflow, HTML generation and resource injection
  */
 
 import type { RenderContext } from '@esmx/core';
@@ -274,16 +274,16 @@ import { render } from 'preact-render-to-string';
 import { createApp } from './create-app';
 
 export default async (rc: RenderContext) => {
-    // Create the application instance
+    // Create application instance
     const { app } = createApp();
 
-    // Use Preact's renderToString to generate the page content
+    // Generate page content using Preact's renderToString
     const html = render(app);
 
-    // Commit dependency collection to ensure all necessary resources are loaded
+    // Commit dependency collection to ensure all required resources are loaded
     await rc.commit();
 
-    // Generate the complete HTML structure
+    // Generate complete HTML structure
     rc.html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -304,21 +304,21 @@ export default async (rc: RenderContext) => {
 
 ## Running the Project
 
-After completing the above file configurations, you can use the following commands to run the project:
+After completing the file configurations, use these commands to run the project:
 
 1. Development mode:
 ```bash
 npm run dev
 ```
 
-2. Build the project:
+2. Build project:
 ```bash
 npm run build
 ```
 
-3. Run in production environment:
+3. Production environment:
 ```bash
 npm run start
 ```
 
-Now, you have successfully created a Preact+HTM SSR application using the Esmx framework! Visit http://localhost:3000 to see the result.
+Congratulations! You've successfully created a Preact+HTM SSR application using the Esmx framework. Visit http://localhost:3000 to see the result.
