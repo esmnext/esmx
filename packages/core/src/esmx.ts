@@ -915,7 +915,7 @@ export class Esmx {
                 if (this._importmapHash === null) {
                     let wrote = false;
                     const code = `(() => {
-const base = document.currentScript.getAttribute('data-base');
+const base = document.currentScript.getAttribute("data-base");
 const importmap = ${serialize(importmap, { isJSON: true })};
 if (importmap.imports && base) {
     const imports = importmap.imports;
@@ -923,10 +923,10 @@ if (importmap.imports && base) {
         imports[k] = base + v;
     });
 }
-document.head.appendChild(Object.assign(document.createElement('script'), {
-type: 'importmap',
-innerHTML: JSON.stringify(importmap)
-}));
+const script = document.createElement("script");
+script.type = "importmap";
+script.innerHTML = JSON.stringify(importmap);
+document.head.appendChild(script);
 })();`;
                     const hash = contentHash(code);
                     filepath = this.resolvePath(
