@@ -3,6 +3,7 @@
         "source.fixAll": "explicit"
     },
     "cSpell.words": [
+        "esmx",
         "Importmap",
         "rspack"
     ]
