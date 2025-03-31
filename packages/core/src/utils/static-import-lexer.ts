@@ -53,35 +53,35 @@ export async function getImportPreloadInfo(
         return null;
     }
 
-    const ans: ImportPreloadInfo = {};
+    const ans: ImportPreloadInfo = {
+        // 入口文件也放入预加载列表
+        [specifier]: importInfo[specifier]
+    };
 
-    const needHandles: string[][] = [[specifier]];
     // 词法分析是耗时操作，因此处理的文件越少越快，换句话说就是深度越浅越快，因此这里使用广度优先搜索
+    const needHandles: string[] = [specifier];
     while (needHandles.length) {
-        const needHandle: string[] = [];
-        for (const specifier of needHandles.shift()!) {
-            let filepath = importInfo[specifier];
-            const splitRes = filepath.split('/');
-            if (splitRes[0] === '') splitRes.shift();
-            const name = splitRes.shift() + '';
-            const link = moduleConfig.links.find((item) => item.name === name);
-            if (!link) {
-                continue;
-            }
-            filepath = path.join(link.root, 'client', ...splitRes);
-            const imports = await getImportsFromJsFile(filepath);
-            imports.forEach((specifier) => {
-                // 如果模块名在 importMap 中存在，且没处理过
-                if (specifier in importInfo && !ans[specifier]) {
-                    ans[specifier] = importInfo[specifier];
-                    needHandle.push(specifier);
-                }
-            });
+        const specifier = needHandles.shift()!;
+        let filepath = importInfo[specifier];
+        const splitRes = filepath.split('/');
+        if (splitRes[0] === '') splitRes.shift();
+        // 这里默认路径的第一个目录是软包名称
+        const name = splitRes.shift() + '';
+        const link = moduleConfig.links.find((item) => item.name === name);
+        if (!link) {
+            continue;
         }
-        needHandle.length && needHandles.push(needHandle);
+        filepath = path.join(link.root, 'client', ...splitRes);
+        const imports = await getImportsFromJsFile(filepath);
+        for (const specifier of imports) {
+            // 如果模块名在 importMap 中不存在，或已经处理过
+            if (!(specifier in importInfo) || (specifier in ans))
+                continue;
+            ans[specifier] = importInfo[specifier];
+            needHandles.push(specifier);
+        }
     }
-    // 将入口文件的路径添加到最后
-    ans[specifier] = importInfo[specifier];
 
-    return ans;
+    // 倒序，理论上倒序后浏览器解析可能会更快
+    return Object.fromEntries(Object.entries(ans).reverse());
 }
