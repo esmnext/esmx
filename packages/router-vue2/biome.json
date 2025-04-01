@@ -1,0 +1,122 @@
+{
+    "$schema": "https://biomejs.dev/schemas/1.9.2/schema.json",
+    "vcs": {
+        "enabled": false
+    },
+    "overrides": [
+        {
+            "include": [
+                "*.vue"
+            ],
+            "linter": {
+                "rules": {
+                    "style": {
+                        "useConst": "off",
+                        "useImportType": "off"
+                    }
+                }
+            }
+        }
+    ],
+    "files": {
+        "ignoreUnknown": false,
+        "ignore": [
+            "node_modules/**/*",
+            "node_modules_back/**/*",
+            "dist/**/*",
+            "types/**/*",
+            ".rpt2_cache/**/*",
+            "coverage/**/*",
+            ".idea/**/*",
+            ".git/**/*",
+            "public/**/*",
+            ".root/**/*",
+            "**/i18n/**",
+            "**/svg-icons.ts",
+            "build.config.ts",
+            "*.min.js"
+        ]
+    },
+    "formatter": {
+        "enabled": true,
+        "indentStyle": "space",
+        "indentWidth": 4
+    },
+    "organizeImports": {
+        "enabled": true
+    },
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "recommended": true,
+            "suspicious": {
+                "noEmptyInterface": "off",
+                "noExplicitAny": "off",
+                "noAssignInExpressions": "off",
+                "useGetterReturn": "warn",
+                "noGlobalIsNan": "warn",
+                "noImplicitAnyLet": "warn",
+                "noShadowRestrictedNames": "warn",
+                "useIsArray": "warn",
+                "noThenProperty": "warn"
+            },
+            "security": {
+                "noGlobalEval": "warn"
+            },
+            "complexity": {
+                "noForEach": "off",
+                "noThisInStatic": "off",
+                "noBannedTypes": "off",
+                "useOptionalChain": "warn",
+                "noUselessConstructor": "warn",
+                "noUselessSwitchCase": "warn",
+                "noStaticOnlyClass": "warn"
+            },
+            "style": {
+                "useFilenamingConvention": {
+                    "level": "warn",
+                    "options": {
+                        "strictCase": true,
+                        "requireAscii": true,
+                        "filenameCases": [
+                            "kebab-case"
+                        ]
+                    }
+                },
+                "useExponentiationOperator": "off",
+                "noUselessElse": "off",
+                "useTemplate": "off",
+                "noUnusedTemplateLiteral": "off",
+                "noNonNullAssertion": "off",
+                "noParameterAssign": "off",
+                "noArguments": "warn",
+                "useNodejsImportProtocol": "warn",
+                "useDefaultParameterLast": "warn"
+            },
+            "performance": {
+                "noDelete": "warn",
+                "noAccumulatingSpread": "warn"
+            },
+            "correctness": {
+                "noUnsafeOptionalChaining": "warn",
+                "noVoidTypeReturn": "warn"
+            }
+        }
+    },
+    "javascript": {
+        "formatter": {
+            "quoteStyle": "single",
+            "trailingCommas": "none"
+        }
+    },
+    "json": {
+        "formatter": {
+            "enabled": false
+        }
+    },
+    "css": {
+        "formatter": {
+            "enabled": false
+        }
+    }
+}

@@ -6,6 +6,9 @@
         "packages/lint",
         "packages/rspack",
         "packages/rspack-module-link-plugin",
-        "packages/rspack-vue"
+        "packages/rspack-vue",
+        "packages/router",
+        "packages/router-vue",
+        "packages/router-vue2"
     ]
 }

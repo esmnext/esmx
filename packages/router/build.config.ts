@@ -11,15 +11,13 @@ export default defineBuildConfig({
             cleanDist: true,
             declaration: true,
             esbuild: {
-                target: 'es2015'
-            }
-        },
-        {
-            input: './src/',
-            ext: 'cjs',
-            format: 'cjs',
-            esbuild: {
-                target: 'es2015'
+                target: [
+                    'chrome87',
+                    'firefox78',
+                    'safari14',
+                    'edge88',
+                    'node22'
+                ]
             }
         }
     ]

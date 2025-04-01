@@ -1,19 +1,20 @@
 {
     "compilerOptions": {
-        "preserveSymlinks": true,
+        "isolatedModules": true,
+        "allowJs": false,
         "experimentalDecorators": true,
         "resolveJsonModule": true,
         "types": [
             "@types/node"
         ],
         "target": "ESNext",
-        "module": "esnext",
+        "module": "ESNext",
         "importHelpers": false,
         "declaration": true,
         "sourceMap": true,
         "strict": true,
         "noImplicitAny": false,
-        "noImplicitReturns": true,
+        "noImplicitReturns": false,
         "noFallthroughCasesInSwitch": true,
         "noUnusedLocals": false,
         "noUnusedParameters": false,
@@ -31,7 +32,13 @@
         "bin",
         ".eslintrc.cjs",
         "*.mjs",
-        "./build.config.ts"
+        "./build.config.ts",
+        "private",
+        "public",
+        "**.cjs",
+        "**.js",
+        "**.mjs",
+        "**.ts"
     ],
     "exclude": [
         "dist"

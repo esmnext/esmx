@@ -11,3 +11,4 @@ coverage
 template
 public
 *_back
+.root
