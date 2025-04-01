@@ -3,17 +3,13 @@
 </p>
 
 <h1 align="center">Esmx</h1>
-<p align="center">🚀 基于 ESM 的高性能微前端框架</p>
-
 <p align="center">
-  <a href="https://www.npmjs.com/package/@esmx/core"><img src="https://img.shields.io/npm/v/@esmx/core.svg" alt="npm"></a>
-  <a href="https://www.npmjs.com/package/@esmx/core"><img src="https://img.shields.io/npm/dm/@esmx/core.svg" alt="npm"></a>
-  <a href="https://www.npmjs.com/package/@esmx/core"><img src="https://img.shields.io/npm/dt/@esmx/core.svg" alt="npm"></a>
+  <a href="https://www.npmjs.com/package/@esmx/core"><img src="https://img.shields.io/npm/v/@esmx/core.svg" alt="npm version"></a>
+  <a href="https://nodejs.org/"><img src="https://img.shields.io/node/v/@esmx/core.svg" alt="node version"></a>
+  <a href="https://bundlephobia.com/package/@esmx/core"><img src="https://img.shields.io/bundlephobia/minzip/@esmx/core" alt="size"></a>
+  <a href="https://www.npmjs.com/package/@esmx/core"><img src="https://img.shields.io/npm/dm/@esmx/core.svg" alt="downloads monthly"></a>
 </p>
-
-<p align="center">
-  <a href="https://www.esmnext.com">Esmx</a> 基于 <a href="https://rspack.dev/">Rspack</a> 编译，通过 <a href="https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/script/type/importmap">importmap</a> 将模块映射到具有强缓存、基于内容哈希的 URL 中。
-</p>
+<p align="center">Esmx 是基于原生 ESM 的下一代微前端框架，无沙盒无运行时，支持多框架混合开发，并提供高性能服务端渲染能力。</p>
 
 <p align="center">
   📚 <b>文档：</b>
@@ -21,41 +17,33 @@
   <a href="https://www.esmnext.com/en/">English</a>
 </p>
 
+
+
 ## 💫 拥抱现代微前端
 
 **是时候告别过去，拥抱真正的微前端架构了。**
 
-在过去的几年里，微前端架构一直在寻找一条正确的道路。然而，我们看到的是各种复杂的技术方案，它们用层层包装和人工隔离来模拟一个理想的微前端世界。这些方案带来了沉重的性能负担，让简单的开发变得复杂，让标准的流程变得晦涩。
+在过去的几年里，当巨石应用变得臃肿不堪，微前端架构应运而生。然而，现有的微前端方案为了实现应用隔离，不得不在原有架构之上增加层层包装：人工打造的沙箱环境、复杂的依赖处理、繁重的运行时。这些妥协带来了沉重的性能负担，让简单的开发变得复杂，让标准的流程变得晦涩。
 
 ### 🔧 旧世界的枷锁
 
-传统微前端方案的种种限制，正在阻碍我们前进的步伐：
+这些历史包袱，正在阻碍我们前进的步伐：
 
-- **性能噩梦**：运行时注入依赖、JS 沙箱代理，每一次操作都在消耗宝贵的性能
-- **脆弱的隔离**：人工打造的沙箱环境，始终无法企及浏览器原生的隔离能力
-- **复杂的构建**：为了处理依赖关系，不得不魔改构建工具，让简单的项目变得难以维护
-- **定制的规则**：特殊的部署策略、运行时处理，让每一步都偏离了现代开发的标准流程
-- **有限的生态**：框架耦合、定制API，让技术选型被迫绑定在特定的生态中
+- **人工隔离**：用沙箱模拟隔离环境，却始终无法企及浏览器原生的模块隔离能力
+- **繁重运行时**：注入依赖、代理 JS 执行，每一次操作都在消耗宝贵的性能
+- **复杂工具链**：为了处理依赖关系，不得不改造构建工具，让简单的项目变得难以维护
+- **割裂体验**：特殊的部署策略、运行时处理，让开发流程偏离了现代前端的标准实践
+- **封闭生态**：框架耦合、定制接口，让技术选型被迫绑定在特定的生态中
 
 ### 🌟 新时代的曙光
 
-Web 标准的进化为我们带来了新的可能。现在，我们可以用最纯粹的方式构建微前端：
+而今天，Web 标准的进化为我们带来了新的可能。我们终于可以用最纯粹的方式构建微前端：
 
 - **回归原生**：拥抱 ESM 和 importmap，让依赖管理回归浏览器标准
 - **天然隔离**：模块作用域提供了最可靠的隔离，无需任何额外的运行时开销
 - **开放共赢**：任何现代前端框架都能无缝接入，技术选型不再受限
 - **开发体验**：符合直觉的开发模式，熟悉的调试流程，一切都那么自然
 - **极致性能**：零运行时开销，可靠的缓存策略，让应用真正轻量起来
-
-### ⚡️ 核心优势对比
-
-| 核心特性 | Esmx | 传统微前端框架 |
-|---------|-----|---------------|
-| **依赖管理** | ✅ ESM + importmap 原生加载<br>✅ 基于内容哈希的强缓存<br>✅ 中心化管理，一次生效 | ❌ 运行时注入，性能损耗<br>❌ 缓存策略不可靠<br>❌ 依赖版本冲突风险 |
-| **应用隔离** | ✅ ESM 原生模块隔离<br>✅ 零运行时开销<br>✅ 浏览器标准特性保障 | ❌ JS 沙箱性能开销<br>❌ 复杂的状态维护<br>❌ 隔离实现不稳定 |
-| **构建部署** | ✅ Rspack 高性能构建<br>✅ 开箱即用配置<br>✅ 增量构建，按需加载 | ❌ 构建配置繁琐<br>❌ 部署流程复杂<br>❌ 全量构建更新 |
-| **服务端渲染** | ✅ 原生 SSR 支持<br>✅ 支持任意前端框架<br>✅ 灵活的渲染策略 | ❌ SSR 支持有限<br>❌ 框架耦合严重<br>❌ 渲染策略单一 |
-| **开发体验** | ✅ 完整 TypeScript 支持<br>✅ 原生模块链接<br>✅ 开箱即用的调试能力 | ❌ 类型支持不完善<br>❌ 模块关系难以追踪<br>❌ 调试成本高 |
 
 ## 🎯 示例项目
 
