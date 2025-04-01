@@ -293,11 +293,14 @@ function rewriteBuild(esmx: Esmx, options: RspackAppOptions = {}) {
                 }
             }
         }
-        await createRsBuild([
+        const ok = await createRsBuild([
             generateBuildConfig(esmx, options, 'client'),
             generateBuildConfig(esmx, options, 'server'),
             generateBuildConfig(esmx, options, 'node')
         ]).build();
+        if (!ok) {
+            return false;
+        }
         esmx.writeSync(
             esmx.resolvePath('dist/index.js'),
             `
