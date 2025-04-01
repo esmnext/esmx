@@ -12,12 +12,12 @@
 <p align="center">Esmx is a next-generation microfrontend framework based on native ESM, featuring no sandbox, no runtime overhead, multi-framework support, and high-performance server-side rendering capabilities.</p>
 
 <p align="center">
-  <a href="./README.md">简体中文</a>|English
+  <a href="./README.md">简体中文</a> | English
 </p>
 
 ## 💫 Embrace Modern Microfrontend
 
-**It's time to bid farewell to the past and embrace true microfrontend architecture.**
+**It's time to bid farewell to the past and embrace true microfrontend architecture!**
 
 In recent years, as monolithic applications became increasingly unwieldy, microfrontend architecture emerged as a solution. However, existing microfrontend solutions, in their pursuit of application isolation, had to add layers of complexity on top of the original architecture: artificially created sandbox environments, complex dependency handling, and heavy runtime overhead. These compromises have resulted in significant performance burdens, making simple development complex and standard processes obscure.
 
@@ -42,7 +42,7 @@ Today, the evolution of Web standards brings us new possibilities. We can finall
 - **Ultimate Performance**: Zero runtime overhead, reliable caching strategy, making applications truly lightweight
 
 ## Quick Start
-Please read the [Getting Started Guide](https://www.esmnext.com/en/guide/start/getting-started.html)
+Please read the [Getting Started Guide](https://www.esmnext.com/guide/start/getting-started.html).
 
 ## 🎯 Example Projects
 
