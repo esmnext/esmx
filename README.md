@@ -12,9 +12,7 @@
 <p align="center">Esmx 是基于原生 ESM 的下一代微前端框架，无沙盒无运行时，支持多框架混合开发，并提供高性能服务端渲染能力。</p>
 
 <p align="center">
-  📚 <b>文档：</b>
-  <a href="https://www.esmnext.com">简体中文</a>|
-  <a href="https://www.esmnext.com/en/">English</a>
+  简体中文|<a href="./README.en.md">English</a>
 </p>
 
 
@@ -44,6 +42,9 @@
 - **开放共赢**：任何现代前端框架都能无缝接入，技术选型不再受限
 - **开发体验**：符合直觉的开发模式，熟悉的调试流程，一切都那么自然
 - **极致性能**：零运行时开销，可靠的缓存策略，让应用真正轻量起来
+
+## 快速开始
+请阅读[快速开始](https://www.esmnext.com/guide/start/getting-started.html)
 
 ## 🎯 示例项目
 
