@@ -41,7 +41,8 @@
         "typescript": "5.8.2",
         "unbuild": "2.0.0",
         "vitest": "3.0.8",
-        "vue": "^3.5.13"
+        "vue": "^3.5.13",
+        "@gez/lint": "3.0.0-rc.9"
     },
     "version": "3.0.0-rc.11",
     "type": "module",

@@ -1,0 +1,50 @@
+{
+    "name": "@esmx/router-vue",
+    "template": "library",
+    "scripts": {
+        "lint:js": "eslint . --ext .js,.mjs,.cjs,.ts,.vue --fix",
+        "lint:css": "stylelint '**/*.{css,vue}' --fix --aei",
+        "lint:type": "tsc --noEmit",
+        "test": "vitest --pass-with-no-tests",
+        "coverage": "vitest run --coverage --pass-with-no-tests",
+        "build": "unbuild"
+    },
+    "peerDependencies": {
+        "vue": "^3.0.0"
+    },
+    "dependencies": {
+        "@esmx/router": "workspace:*"
+    },
+    "devDependencies": {
+        "@esmx/lint": "workspace:*",
+        "@types/node": "20.12.12",
+        "@vitest/coverage-v8": "1.6.0",
+        "@vue/runtime-core": "^3.4.27",
+        "@vue/runtime-dom": "^3.4.27",
+        "eslint": "8.57.0",
+        "stylelint": "16.5.0",
+        "typescript": "5.4.5",
+        "unbuild": "2.0.0",
+        "vitest": "1.6.0",
+        "vue": "^3.4.27"
+    },
+    "version": "0.0.75-alpha.2",
+    "type": "module",
+    "private": false,
+    "exports": {
+        ".": {
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.cjs"
+        }
+    },
+    "main": "./dist/index.cjs",
+    "module": "dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "src",
+        "dist",
+        "*.mjs",
+        "template"
+    ],
+    "gitHead": "3e692857ccb65e7d1fdf689e30eb5d935e8bda77"
+}
