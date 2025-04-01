@@ -130,7 +130,7 @@ importers:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.8.2)
       vue-tsc:
-        specifier: ^2.1.6
+        specifier: ^2.2.8
         version: 2.2.8(typescript@5.8.2)
 
   examples/ssr-html:
