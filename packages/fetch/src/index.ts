@@ -14,7 +14,7 @@ const outputDir = path.join(path.dirname(fileURLToPath(import.meta.url)), 'outpu
 fetchPkgsWithProgress({
     outputDir,
     axiosReqCfg: {
-        baseURL: 'https://js-esm.github.io/esmx/',
+        baseURL: 'https://www.esmnext.com/',
         timeout: 10000,
     },
     packs: urls.map(url => ({ url, name: url.split('/')[0] })),

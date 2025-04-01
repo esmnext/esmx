@@ -46,11 +46,11 @@ src/
 
 ## 在线预览
 
-访问 [在线示例](https://js-esm.github.io/esmx/ssr-preact-htm/) 查看运行效果。
+访问 [在线示例](https://www.esmnext.com/ssr-preact-htm/) 查看运行效果。
 
 ## 相关链接
 
-- [项目文档](https://js-esm.github.io/esmx/)
+- [项目文档](https://www.esmnext.com/)
 - [GitHub 仓库](https://github.com/esmnext/esmx)
 
 ## 许可证
