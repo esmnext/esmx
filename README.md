@@ -54,8 +54,8 @@
 export default {
   modules: {
     exports: [
-      'npm:axios',         // 导出第三方依赖
-      'root:src/utils.ts'   // 导出本地模块
+      'npm:axios',
+      'root:src/utils.ts'
     ]
   }
 }
@@ -68,10 +68,10 @@ export default {
 export default {
   modules: {
     links: {
-      'remote': 'root:./node_modules/remote'  // 链接子应用
+      'remote': 'root:./node_modules/remote'
     },
     imports: {
-      'axios': 'remote/npm/axios'  // 配置导入路径
+      'axios': 'remote/npm/axios'
     }
   }
 }

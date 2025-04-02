@@ -52,8 +52,8 @@ Configure `remote` to expose modules:
 export default {
   modules: {
     exports: [
-      'npm:axios',         // Export third-party dependencies
-      'root:src/utils.ts'   // Export local modules
+      'npm:axios',
+      'root:src/utils.ts'
     ]
   }
 }
@@ -66,10 +66,10 @@ Configure `host` module import mapping:
 export default {
   modules: {
     links: {
-      'remote': 'root:./node_modules/remote'  // Link sub-applications
+      'remote': 'root:./node_modules/remote'
     },
     imports: {
-      'axios': 'remote/npm/axios'  // Configure import paths
+      'axios': 'remote/npm/axios'
     }
   }
 }
