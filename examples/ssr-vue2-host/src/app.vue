@@ -18,7 +18,7 @@
 <span class="keyword">export</span> <span class="keyword">default</span> {
   <span class="property">modules</span>: {
     <span class="comment">// 导入的模块基本配置</span>
-    <span class="property">imports</span>: {
+    <span class="property">links</span>: {
       <span class="string">'ssr-vue2-remote'</span>: <span class="string">'root:../ssr-vue2-remote/dist'</span>
     },
     <span class="comment">// 外部依赖映射</span>
