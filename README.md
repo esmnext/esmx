@@ -43,6 +43,47 @@
 - **开发体验**：符合直觉的开发模式，熟悉的调试流程，一切都那么自然。
 - **极致性能**：零运行时开销，可靠的缓存策略，让应用真正轻量起来。
 
+## 基本概念
+
+在 Esmx 中，模块的导入导出配置简单直观，只需几行代码即可完成应用间的无缝集成。
+
+### 模块导出
+`remote`配置需要对外暴露的模块：
+
+```ts
+export default {
+  modules: {
+    exports: [
+      'npm:axios',         // 导出第三方依赖
+      'root:src/utils.ts'   // 导出本地模块
+    ]
+  }
+}
+```
+
+### 模块导入
+`host`配置模块导入映射：
+
+```ts
+export default {
+  modules: {
+    links: {
+      'remote': 'root:./node_modules/remote'  // 链接子应用
+    },
+    imports: {
+      'axios': 'remote/npm/axios'  // 配置导入路径
+    }
+  }
+}
+```
+
+在代码中直接导入使用：
+
+```ts
+import axios from 'axios';
+import utils from 'remote/src/utils';
+```
+
 ## 快速开始
 请阅读[快速开始](https://www.esmnext.com/guide/start/getting-started.html)。
 

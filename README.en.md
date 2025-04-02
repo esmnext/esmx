@@ -9,96 +9,137 @@
   <a href="https://bundlephobia.com/package/@esmx/core"><img src="https://img.shields.io/bundlephobia/minzip/@esmx/core" alt="size"></a>
   <a href="https://www.npmjs.com/package/@esmx/core"><img src="https://img.shields.io/npm/dm/@esmx/core.svg" alt="downloads monthly"></a>
 </p>
-<p align="center">Esmx is a next-generation microfrontend framework based on native ESM, featuring no sandbox, no runtime overhead, multi-framework support, and high-performance server-side rendering capabilities.</p>
+<p align="center">Esmx is a next-generation micro-frontend framework based on native ESM, featuring sandboxless and runtime-free architecture, supporting multi-framework development, and providing high-performance server-side rendering capabilities.</p>
 
 <p align="center">
   <a href="./README.md">简体中文</a> | English
 </p>
 
-## 💫 Embrace Modern Microfrontend
+## 💫 Embracing Modern Micro-frontends
 
-**It's time to bid farewell to the past and embrace true microfrontend architecture!**
+**It's time to bid farewell to the past and embrace true micro-frontend architecture!**
 
-In recent years, as monolithic applications became increasingly unwieldy, microfrontend architecture emerged as a solution. However, existing microfrontend solutions, in their pursuit of application isolation, had to add layers of complexity on top of the original architecture: artificially created sandbox environments, complex dependency handling, and heavy runtime overhead. These compromises have resulted in significant performance burdens, making simple development complex and standard processes obscure.
+In recent years, as monolithic applications became increasingly unwieldy, micro-frontend architecture emerged as a solution. However, existing micro-frontend solutions, in their pursuit of application isolation, had to add layers of wrapping on top of the original architecture: artificially crafted sandbox environments, complex dependency handling, and heavy runtime overhead. These compromises resulted in significant performance burdens, making simple development complex and standard processes obscure.
 
 ### 🔧 Shackles of the Old World
 
 These historical burdens are hindering our progress:
 
-- **Artificial Isolation**: Using sandboxes to simulate isolation environments, yet never achieving the native module isolation capabilities of browsers
-- **Heavy Runtime**: Injecting dependencies and proxying JS execution, each operation consuming valuable performance
-- **Complex Toolchain**: Having to modify build tools to handle dependencies, making simple projects difficult to maintain
-- **Fragmented Experience**: Special deployment strategies and runtime processing that deviate from modern frontend standard practices
-- **Closed Ecosystem**: Framework coupling and custom interfaces that force technology choices to be bound to specific ecosystems
+- **Artificial Isolation**: Using sandboxes to simulate isolation environments, yet never achieving the native module isolation capabilities of browsers.
+- **Heavy Runtime**: Injecting dependencies and proxying JS execution, each operation consuming precious performance.
+- **Complex Toolchain**: Having to modify build tools to handle dependencies, making simple projects difficult to maintain.
+- **Fragmented Experience**: Special deployment strategies and runtime processing that deviate from modern frontend standard practices.
+- **Closed Ecosystem**: Framework coupling and custom interfaces forcing technology choices to be bound to specific ecosystems.
 
 ### 🌟 Dawn of a New Era
 
-Today, the evolution of Web standards brings us new possibilities. We can finally build microfrontends in the purest way:
+Today, the evolution of Web standards brings us new possibilities. We can finally build micro-frontends in the purest way:
 
-- **Back to Native**: Embracing ESM and importmap, returning dependency management to browser standards
-- **Natural Isolation**: Module scope provides the most reliable isolation without any additional runtime overhead
-- **Open Win-Win**: Any modern frontend framework can seamlessly integrate, no more technology constraints
-- **Development Experience**: Intuitive development mode, familiar debugging process, everything feels natural
-- **Ultimate Performance**: Zero runtime overhead, reliable caching strategy, making applications truly lightweight
+- **Back to Native**: Embracing ESM and importmap, returning dependency management to browser standards.
+- **Natural Isolation**: Module scope provides the most reliable isolation without any additional runtime overhead.
+- **Open Collaboration**: Any modern frontend framework can seamlessly integrate, with no technology restrictions.
+- **Development Experience**: Intuitive development mode and familiar debugging process, everything feels natural.
+- **Ultimate Performance**: Zero runtime overhead and reliable caching strategies make applications truly lightweight.
+
+## Basic Concepts
+
+In Esmx, module import and export configuration is simple and intuitive. Just a few lines of code can achieve seamless integration between applications.
+
+### Module Export
+Configure `remote` to expose modules:
+
+```ts
+export default {
+  modules: {
+    exports: [
+      'npm:axios',         // Export third-party dependencies
+      'root:src/utils.ts'   // Export local modules
+    ]
+  }
+}
+```
+
+### Module Import
+Configure `host` module import mapping:
+
+```ts
+export default {
+  modules: {
+    links: {
+      'remote': 'root:./node_modules/remote'  // Link sub-applications
+    },
+    imports: {
+      'axios': 'remote/npm/axios'  // Configure import paths
+    }
+  }
+}
+```
+
+Direct import usage in code:
+
+```ts
+import axios from 'axios';
+import utils from 'remote/src/utils';
+```
 
 ## Quick Start
-Please read the [Getting Started Guide](https://www.esmnext.com/guide/start/getting-started.html).
+Please read the [Getting Started](https://www.esmnext.com/guide/start/getting-started.html) guide.
 
 ## 🎯 Example Projects
 
 ### [Lightweight HTML Application](https://www.esmnext.com/ssr-html/)
 A complete HTML server-side rendering example showcasing how to build modern web applications with Esmx:
-- 🚀 Built with Rust-based Rspack for ultimate build performance
-- 💡 Complete support for routing, components, styles, images, and more
-- 🛠 Fast hot updates, friendly error messages, and complete type support
-- 📱 Modern responsive design, perfect for all devices
+- 🚀 Built with Rust-based Rspack for ultimate build performance.
+- 💡 Complete support for routing, components, styles, and images.
+- 🛠 Fast hot updates, friendly error messages, and complete type support.
+- 📱 Modern responsive design, perfectly adapting to various devices.
 
-### [Vue2 Microfrontend Example](https://www.esmnext.com/ssr-vue2-host/)
-Demonstrates Vue2-based microfrontend architecture with host and child applications:
+### [Vue2 Micro-frontend Example](https://www.esmnext.com/ssr-vue2-host/)
+Demonstrates Vue2-based micro-frontend architecture with host and remote applications:
 
 **Host Application:**
-- 🔗 ESM-based child application module imports
-- 🛠 Unified dependency management (e.g., Vue version)
-- 🌐 Server-side rendering support
+- 🔗 ESM-based remote module import.
+- 🛠 Unified dependency management (e.g., Vue version).
+- 🌐 Server-side rendering support.
 
-**Child Application:**
-- 📦 Modular exports (components, composables)
-- 🚀 Independent development server
-- 💡 Development environment hot updates
+**Remote Application:**
+- 📦 Modular exports (components, composables).
+- 🚀 Independent development server.
+- 💡 Development environment hot updates.
 
-This example shows:
-1. How to reuse child application components and features through ESM
-2. How to ensure host and child applications use the same dependency versions
-3. How to independently debug child applications in development environment
+This example demonstrates:
+1. How to reuse remote application components and functionality through ESM.
+2. How to ensure host and remote applications use the same dependency versions.
+3. How to independently debug remote applications in development environment.
 
 ### [Preact + HTM](https://www.esmnext.com/ssr-preact-htm/)
 High-performance implementation based on Preact + HTM:
-- ⚡️ Extreme bundle size optimization
-- 🎯 Performance-first architecture design
-- 🛠 Suitable for resource-constrained scenarios
+- ⚡️ Ultimate bundle size optimization.
+- 🎯 Performance-first architecture design.
+- 🛠 Suitable for resource-constrained scenarios.
 
-All examples include complete engineering configuration and best practice guides to help you quickly get started and apply to production environments. Check the [examples](https://github.com/esmnext/esmx/tree/master/examples) directory for more details.
+All examples include complete engineering configurations and best practice guides to help you quickly get started and apply to production environments. Check the [examples](https://github.com/esmnext/esmx/tree/master/examples) directory for more details.
 
 ## 📚 Version Information
 
-### [v3.x](https://www.esmnext.com) - In Development
+### [v3.x](https://www.esmnext.com) - Development Stage
 Current version is built on Rspack, providing better development experience and build performance.
 
 > **Known Issues**:
-> - ESM module export optimization in progress: `export *` syntax in `modern-module` has stability issues [#8557](https://github.com/web-infra-dev/rspack/issues/8557)
+> - ESM module export optimization in progress: `modern-module`'s `export *` syntax has stability issues [#8557](https://github.com/web-infra-dev/rspack/issues/8557)
 
 ### [v2.x](https://github.com/esmnext/esmx/blob/v2/docs/zh-CN/README.md) - Not Recommended for Production
 This version is no longer recommended for production use. Please use the latest version.
 
-### [v1.x](https://fmfe.github.io/genesis-docs/guide/) - Maintenance Ended
-Originally named Genesis, it is the predecessor of Esmx. No longer accepting new features or non-critical bug fixes.
+### [v1.x](https://fmfe.github.io/genesis-docs/guide/) - Maintenance Stopped
+Originally named Genesis, it was the predecessor of Esmx. No longer accepting new features or non-critical bug fixes.
 
 ## 👥 Contributors
 
-Thanks to all developers who contributed to Esmx!
+Thanks to all the developers who have contributed to Esmx!
 
 [![Contributors](https://contrib.rocks/image?repo=esmnext/esmx)](https://github.com/esmnext/esmx/graphs/contributors)
 
 ## 📄 License
 
-This project is licensed under the [MIT](./LICENSE) license.
+This project is licensed under the [MIT](./LICENSE) License.
