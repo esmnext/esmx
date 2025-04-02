@@ -101,7 +101,7 @@ Read the [Getting Started Guide](https://www.esmnext.com/guide/start/getting-sta
   - 💡 Full routing, component, and styling support
   - 📱 Responsive design for multiple devices
 
-- [Vue2 Micro-frontend Example](https://www.esmnext.com/ssr-vue2-host/)
+- [Vue2 Micro-frontend](https://www.esmnext.com/ssr-vue2-host/)
   - 🔗 ESM-based module integration
   - 📦 Independent development for host/child apps
   - 🌐 Unified dependency management with SSR
