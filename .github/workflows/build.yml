@@ -39,7 +39,7 @@ jobs:
       run: ./build.sh
 
     - name: Deploy
-      uses: JamesIves/github-pages-deploy-action@v4
+      uses: JamesIves/github-pages-deploy-action@4.1.1
       with:
+        branch: docs
         folder: dist
-        ssh-key: ${{ secrets.DEPLOY_KEY }}
