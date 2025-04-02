@@ -48,7 +48,7 @@
         "esmx": "./dist/cli/index.mjs"
     },
     "engines": {
-        "node": ">=22.6"
+        "node": ">=22.11.0"
     },
     "scripts": {
         "lint:js": "biome check --write --no-errors-on-unmatched",

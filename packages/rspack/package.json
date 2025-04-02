@@ -50,6 +50,9 @@
         "coverage": "vitest run --coverage --pass-with-no-tests",
         "build": "unbuild"
     },
+    "engines": {
+        "node": ">=22.11.0"
+    },
     "peerDependencies": {
         "@esmx/core": "*",
         "less": "*"
