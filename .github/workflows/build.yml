@@ -40,12 +40,8 @@ jobs:
     - name: Deploy to docs branch
       if: github.ref == 'refs/heads/master'
       run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git fetch origin docs
-        git checkout docs
-        rm -rf *
-        cp -r ../dist/* .
-        git add .
-        git commit -m "chore: update docs from main branch build" || echo "No changes to commit"
-        git push -f origin docs
+          cd dist
+          git init
+          git add -A
+          git commit -m 'deploy'
+          git push -f git@github.com:esmnext/esmx.git master:docs
