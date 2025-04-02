@@ -194,7 +194,7 @@ importers:
         version: 4.17.21
       '@types/node':
         specifier: ^20.6.3
-        version: 20.17.29
+        version: 20.17.30
       less:
         specifier: ^4.2.0
         version: 4.2.2
@@ -234,7 +234,7 @@ importers:
         version: 4.17.21
       '@types/node':
         specifier: ^20.6.3
-        version: 20.17.29
+        version: 20.17.30
       less:
         specifier: ^4.2.0
         version: 4.2.2
@@ -730,7 +730,7 @@ importers:
         version: link:../rspack
       vue:
         specifier: '>=2.7.8 || >=3.0.0'
-        version: 2.7.16
+        version: 3.5.13(typescript@5.8.2)
       vue-style-loader:
         specifier: ^4.1.3
         version: 4.1.3
@@ -739,7 +739,7 @@ importers:
         version: vue-loader@15.11.1(@vue/compiler-sfc@3.5.13)(css-loader@7.1.2(@rspack/core@1.3.0(@swc/helpers@0.5.15))(webpack@5.98.0))(webpack@5.98.0)
       vue3-loader:
         specifier: npm:vue-loader@^17.4.2
-        version: vue-loader@17.4.2(@vue/compiler-sfc@3.5.13)(vue@2.7.16)(webpack@5.98.0)
+        version: vue-loader@17.4.2(@vue/compiler-sfc@3.5.13)(vue@3.5.13(typescript@5.8.2))(webpack@5.98.0)
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.4
@@ -2124,8 +2124,8 @@ packages:
   '@types/node-fetch@2.6.12':
     resolution: {integrity: sha512-8nneRWKCg3rMtF69nLQJnOYUcbafYeFSjqkw3jCRLsqkWFlHaoQrr5mXmofFGOx3DKn7UfmBMyov8ySvLRVldA==}
 
-  '@types/node@20.17.29':
-    resolution: {integrity: sha512-6rbekrnsa5WWCo5UnPYEKfNuoF2yqAmigUKXM8wBzfEbZc+E/CITqjCrHqiq+6QBifsw0ZDaA5VdTFONOtG7+A==}
+  '@types/node@20.17.30':
+    resolution: {integrity: sha512-7zf4YyHA+jvBNfVrk2Gtvs6x7E8V+YDW05bNfG2XkWDJfYRXrTiP/DsB2zSYTaHX0bGIujTBQdMVAhb+j7mwpg==}
 
   '@types/node@22.13.10':
     resolution: {integrity: sha512-I6LPUvlRH+O6VRUqYOcMudhaIdUVWfsjnZavnsraHvpBwaEyMN29ry+0UVJhImYL16xsscu0aske3yA+uPOWfw==}
@@ -4532,8 +4532,8 @@ packages:
   neo-async@2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
 
-  node-gyp@11.1.0:
-    resolution: {integrity: sha512-/+7TuHKnBpnMvUQnsYEb0JOozDZqarQbfNuSGLXIjhStMT0fbw7IdSqWgopOP5xhRZE+lsbIvAHcekddruPZgQ==}
+  node-gyp@11.2.0:
+    resolution: {integrity: sha512-T0S1zqskVUSxcsSTkAsLc7xCycrRYmtDHadDinzocrThjyQCn5kMlEBSj6H4qDbgsIOSLmmlRIeb0lZXj+UArA==}
     engines: {node: ^18.17.0 || >=20.5.0}
     hasBin: true
 
@@ -5933,8 +5933,8 @@ packages:
     resolution: {integrity: sha512-+68OP1ZzSF84rTckf3FA95vJ1Zlx/uaXyiiKyPd1pA4rZNkpEvDAKmsu1xUSmbF/chCRYgZ6UZkDwC7PmzmAyA==}
     engines: {node: ^18.17.0 || >=20.5.0}
 
-  type-fest@4.38.0:
-    resolution: {integrity: sha512-2dBz5D5ycHIoliLYLi0Q2V7KRaDlH0uWIvmk7TYlAg5slqwiPv1ezJdZm1QEM0xgk29oYWMCbIG7E6gHpvChlg==}
+  type-fest@4.39.0:
+    resolution: {integrity: sha512-w2IGJU1tIgcrepg9ZJ82d8UmItNQtOFJG0HCUE3SzMokKkTsruVDALl2fAdiEzJlfduoU+VyXJWIIUZ+6jV+nw==}
     engines: {node: '>=16'}
 
   type-is@1.6.18:
@@ -7029,7 +7029,7 @@ snapshots:
       '@npmcli/node-gyp': 4.0.0
       '@npmcli/package-json': 6.1.1
       '@npmcli/promise-spawn': 8.0.2
-      node-gyp: 11.1.0
+      node-gyp: 11.2.0
       proc-log: 5.0.0
       which: 5.0.0
     transitivePeerDependencies:
@@ -7527,7 +7527,7 @@ snapshots:
   '@types/body-parser@1.19.5':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 20.17.29
+      '@types/node': 20.17.30
 
   '@types/cacache@17.0.2':
     dependencies:
@@ -7563,7 +7563,7 @@ snapshots:
 
   '@types/express-serve-static-core@4.19.6':
     dependencies:
-      '@types/node': 20.17.29
+      '@types/node': 20.17.30
       '@types/qs': 6.9.18
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
@@ -7604,7 +7604,7 @@ snapshots:
       '@types/node': 22.13.10
       form-data: 4.0.2
 
-  '@types/node@20.17.29':
+  '@types/node@20.17.30':
     dependencies:
       undici-types: 6.19.8
 
@@ -7671,7 +7671,7 @@ snapshots:
   '@types/serve-static@1.15.7':
     dependencies:
       '@types/http-errors': 2.0.4
-      '@types/node': 20.17.29
+      '@types/node': 20.17.30
       '@types/send': 0.17.4
 
   '@types/ssri@7.1.5':
@@ -10450,17 +10450,17 @@ snapshots:
 
   neo-async@2.6.2: {}
 
-  node-gyp@11.1.0:
+  node-gyp@11.2.0:
     dependencies:
       env-paths: 2.2.1
       exponential-backoff: 3.1.2
-      glob: 10.4.5
       graceful-fs: 4.2.11
       make-fetch-happen: 14.0.3
       nopt: 8.1.0
       proc-log: 5.0.0
       semver: 7.7.1
       tar: 7.4.3
+      tinyglobby: 0.2.12
       which: 5.0.0
     transitivePeerDependencies:
       - supports-color
@@ -10468,7 +10468,7 @@ snapshots:
   node-polyfill-webpack-plugin@4.1.0(webpack@5.98.0):
     dependencies:
       node-stdlib-browser: 1.3.1
-      type-fest: 4.38.0
+      type-fest: 4.39.0
       webpack: 5.98.0
 
   node-releases@2.0.19: {}
@@ -11993,7 +11993,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  type-fest@4.38.0: {}
+  type-fest@4.39.0: {}
 
   type-is@1.6.18:
     dependencies:
@@ -12360,7 +12360,7 @@ snapshots:
       - walrus
       - whiskers
 
-  vue-loader@17.4.2(@vue/compiler-sfc@3.5.13)(vue@2.7.16)(webpack@5.98.0):
+  vue-loader@17.4.2(@vue/compiler-sfc@3.5.13)(vue@3.5.13(typescript@5.8.2))(webpack@5.98.0):
     dependencies:
       chalk: 4.1.2
       hash-sum: 2.0.0
@@ -12368,7 +12368,7 @@ snapshots:
       webpack: 5.98.0
     optionalDependencies:
       '@vue/compiler-sfc': 3.5.13
-      vue: 2.7.16
+      vue: 3.5.13(typescript@5.8.2)
 
   vue-server-renderer@2.7.16:
     dependencies:
