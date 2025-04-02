@@ -41,11 +41,12 @@ cd dist
 # 设置Git配置
 git config --global user.name "${GITHUB_ACTOR:-github-actions[bot]}"
 git config --global user.email "github-actions[bot]@users.noreply.github.com"
+git config --global init.defaultBranch main
 
 git init
 git add -A
 git commit -m 'deploy'
 
-git push -f git@github.com:esmnext/esmx.git master:docs
+git push -f git@github.com:esmnext/esmx.git main:docs
 
 cd -
