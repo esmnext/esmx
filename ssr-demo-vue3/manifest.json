@@ -1,0 +1,21 @@
+{
+    "name": "ssr-demo-vue3",
+    "exports": {
+        "src/entry.client": "src/entry.client.df90e500.final.js"
+    },
+    "buildFiles": [
+        "src/entry.client.df90e500.final.js"
+    ],
+    "chunks": {
+        "ssr-demo-vue3@src/entry.client.ts": {
+            "js": "./src/entry.client.df90e500.final.js",
+            "css": [],
+            "resources": [],
+            "sizes": {
+                "js": 368694,
+                "css": 0,
+                "resource": 0
+            }
+        }
+    }
+}
