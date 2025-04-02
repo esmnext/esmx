@@ -22,7 +22,7 @@
       <span class="string">'ssr-vue2-remote'</span>: <span class="string">'root:../ssr-vue2-remote/dist'</span>
     },
     <span class="comment">// 外部依赖映射</span>
-    <span class="property">externals</span>: {
+    <span class="property">imports</span>: {
       <span class="property">vue</span>: <span class="string">'ssr-vue2-remote/npm/vue'</span>
     }
   }
