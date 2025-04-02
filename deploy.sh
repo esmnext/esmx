@@ -47,6 +47,8 @@ git init
 git add -A
 git commit -m 'deploy'
 
-git push -f https://${GITHUB_TOKEN}@github.com/esmnext/esmx.git main:docs
+# 使用更安全的方式设置远程仓库
+git remote add origin "https://oauth2:${GITHUB_TOKEN}@github.com/esmnext/esmx.git"
+git push -f origin main:docs
 
 cd -
