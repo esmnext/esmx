@@ -11,6 +11,7 @@
         "test": "pnpm --filter \"*\" test",
         "build": "pnpm -r build",
         "build:packages": "pnpm --filter \"./packages/**\" build",
+        "build:examples": "pnpm --filter \"./examples/**\" build",
         "release": "npm run build:packages && lerna publish --force-publish --exact",
         "deploy": "npm run build && ./deploy.sh"
     },

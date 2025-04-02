@@ -3,9 +3,13 @@
 # 确保脚本抛出遇到的错误
 set -e
 
-rm -rf dist
+rm -rf dist node_modules
+pnpm i
+pnpm build:packages
+rm -rf node_modules
+pnpm i
 # 编译代码
-npm run build
+pnpm build:examples
 
 # 文心一言提供的脚本
 src_base="examples"  
