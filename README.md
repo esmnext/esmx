@@ -1,20 +1,21 @@
-<p align="center">
+<div align="center">
   <img src="https://www.esmnext.com/logo.svg?t=2025" width="180" alt="Esmx Logo" />
-</p>
-
-<h1 align="center">Esmx</h1>
-<p align="center">
-  <a href="https://www.npmjs.com/package/@esmx/core"><img src="https://img.shields.io/npm/v/@esmx/core.svg" alt="npm version" /></a>
-  <a href="https://github.com/esmnext/esmx/actions/workflows/build.yml"><img src="https://github.com/esmnext/esmx/actions/workflows/build.yml/badge.svg" alt="Build" /></a>
-  <a href="https://nodejs.org/"><img src="https://img.shields.io/node/v/@esmx/core.svg" alt="node version" /></a>
-  <a href="https://www.npmjs.com/package/@esmx/core"><img src="https://img.shields.io/npm/dm/@esmx/core.svg" alt="downloads monthly" /></a>
-  <a href="https://bundlephobia.com/package/@esmx/core"><img src="https://img.shields.io/bundlephobia/minzip/@esmx/core" alt="size" /></a>
-</p>
-<p align="center">Esmx 是基于原生 ESM 的下一代微前端框架，无沙盒无运行时，支持多框架混合开发，并提供高性能服务端渲染能力。</p>
-
-<p align="center">
-  简体中文 | <a href="./README.en.md">English</a>
-</p>
+  <h1>Esmx</h1>
+  
+  <div>
+    <a href="https://www.npmjs.com/package/@esmx/core"><img src="https://img.shields.io/npm/v/@esmx/core.svg" alt="npm version" /></a>
+    <a href="https://github.com/esmnext/esmx/actions/workflows/build.yml"><img src="https://github.com/esmnext/esmx/actions/workflows/build.yml/badge.svg" alt="Build" /></a>
+    <a href="https://nodejs.org/"><img src="https://img.shields.io/node/v/@esmx/core.svg" alt="node version" /></a>
+    <a href="https://www.npmjs.com/package/@esmx/core"><img src="https://img.shields.io/npm/dm/@esmx/core.svg" alt="downloads monthly" /></a>
+    <a href="https://bundlephobia.com/package/@esmx/core"><img src="https://img.shields.io/bundlephobia/minzip/@esmx/core" alt="size" /></a>
+  </div>
+  
+  <p>Esmx 是基于原生 ESM 的下一代微前端框架，无沙盒无运行时，支持多框架混合开发，并提供高性能服务端渲染能力。</p>
+  
+  <p>
+    简体中文 | <a href="./README.en.md">English</a>
+  </p>
+</div>
 
 
 
@@ -22,17 +23,23 @@
 
 **是时候告别过去，拥抱真正的微前端架构了！**
 
-在过去的几年里，当巨石应用变得臃肿不堪，微前端架构应运而生。然而，现有的微前端方案为了实现应用隔离，不得不在原有架构之上增加层层包装：人工打造的沙箱环境、复杂的依赖处理、繁重的运行时。这些妥协带来了沉重的性能负担，让简单的开发变得复杂，让标准的流程变得晦涩。
+在过去的几年里，当巨石应用变得臃肿不堪，微前端架构应运而生。然而，现有的微前端方案为了实现应用隔离，不得不在原有架构之上增加层层包装：
+
+- 人工打造的沙箱环境
+- 复杂的依赖处理
+- 繁重的运行时
+
+这些妥协带来了沉重的性能负担，让简单的开发变得复杂，让标准的流程变得晦涩。
 
 ### 🔧 旧世界的枷锁
 
 这些历史包袱，正在阻碍我们前进的步伐：
 
-- **人工隔离**：用沙箱模拟隔离环境，却始终无法企及浏览器原生的模块隔离能力。
-- **繁重运行时**：注入依赖、代理 JS 执行，每一次操作都在消耗宝贵的性能。
-- **复杂工具链**：为了处理依赖关系，不得不改造构建工具，让简单的项目变得难以维护。
-- **割裂体验**：特殊的部署策略、运行时处理，让开发流程偏离了现代前端的标准实践。
-- **封闭生态**：框架耦合、定制接口，让技术选型被迫绑定在特定的生态中。
+- **人工隔离**：用沙箱模拟隔离环境，却始终无法企及浏览器原生的模块隔离能力
+- **繁重运行时**：注入依赖、代理 JS 执行，每一次操作都在消耗宝贵的性能
+- **复杂工具链**：为了处理依赖关系，不得不改造构建工具，让简单的项目变得难以维护
+- **割裂体验**：特殊的部署策略、运行时处理，让开发流程偏离了现代前端的标准实践
+- **封闭生态**：框架耦合、定制接口，让技术选型被迫绑定在特定的生态中
 
 ### 🌟 新时代的曙光
 
@@ -137,11 +144,15 @@ import utils from 'remote/src/utils';
 ### [v1.x](https://fmfe.github.io/genesis-docs/guide/) - 已停止维护
 原名 Genesis，是 Esmx 的前身。不再接受新功能和非关键性 bug 修复。
 
+
 ## 👥 贡献者
 
 感谢所有为 Esmx 做出贡献的开发者！
 
 [![Contributors](https://contrib.rocks/image?repo=esmnext/esmx)](https://github.com/esmnext/esmx/graphs/contributors)
+
+## 🌟 趋势
+![Star growth chart](https://starchart.cc/esmnext/esmx.svg)
 
 ## 📄 许可证
 
