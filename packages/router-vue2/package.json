@@ -9,6 +9,24 @@
         "coverage": "vitest run --coverage --pass-with-no-tests",
         "build": "unbuild"
     },
+    "contributors": [
+        {
+            "name": "lzxb",
+            "url": "https://github.com/lzxb"
+        },
+        {
+            "name": "RockShi1994",
+            "url": "https://github.com/RockShi1994"
+        },
+        {
+            "name": "jerrychan7",
+            "url": "https://github.com/jerrychan7"
+        },
+        {
+            "name": "wesloong",
+            "url": "https://github.com/wesloong"
+        }
+    ],
     "peerDependencies": {
         "vue": "^2.7.8"
     },

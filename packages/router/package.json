@@ -9,6 +9,24 @@
         "coverage": "vitest run --coverage --pass-with-no-tests",
         "build": "unbuild"
     },
+    "contributors": [
+        {
+            "name": "lzxb",
+            "url": "https://github.com/lzxb"
+        },
+        {
+            "name": "RockShi1994",
+            "url": "https://github.com/RockShi1994"
+        },
+        {
+            "name": "jerrychan7",
+            "url": "https://github.com/jerrychan7"
+        },
+        {
+            "name": "wesloong",
+            "url": "https://github.com/wesloong"
+        }
+    ],
     "dependencies": {
         "path-to-regexp": "^6.2.2",
         "url-parse": "^1.5.10"
