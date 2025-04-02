@@ -3,7 +3,8 @@ name: Build
 on:
   push:
   pull_request:
-
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -37,16 +38,8 @@ jobs:
     - name: Build
       run: ./build.sh
 
-    - name: Deploy to docs branch
-      if: github.ref == 'refs/heads/master'
-      run: |
-          cd dist
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-          git init
-          git add -A
-          git commit -m 'deploy'
-          git remote add origin "https://github.com/esmnext/esmx.git"
-          git push -f "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/esmnext/esmx.git" master:docs
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Deploy
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: dist
+        ssh-key: ${{ secrets.DEPLOY_KEY }}
