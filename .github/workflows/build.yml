@@ -41,7 +41,11 @@ jobs:
       if: github.ref == 'refs/heads/master'
       run: |
           cd dist
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
           git init
           git add -A
           git commit -m 'deploy'
-          git push -f git@github.com:esmnext/esmx.git master:docs
+          git push -f https://${GITHUB_TOKEN}@github.com/esmnext/esmx.git master:docs
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
