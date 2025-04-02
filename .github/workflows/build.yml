@@ -38,7 +38,7 @@ jobs:
       run: ./build.sh
 
     - name: Deploy to docs branch
-      if: github.ref == 'refs/heads/main'
+      if: github.ref == 'refs/heads/master'
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
