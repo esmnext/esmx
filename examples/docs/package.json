@@ -6,16 +6,16 @@
   "license": "MIT",
   "scripts": {
     "dev": "rspress dev",
-    "build": "rspress build",
+    "build": "rm -rf doc_build && mkdir doc_build && rspress build",
     "preview": "rspress preview"
   },
   "devDependencies": {
-    "write": "^2.0.0",
-    "find": "^0.3.0",
     "@types/find": "^0.2.4",
+    "@types/node": "22.13.17",
+    "find": "^0.3.0",
+    "rspress": "1.43.10",
     "rspress-plugin-sitemap": "^1.1.1",
-    "rspress": "1.43.9",
-    "@types/node": "22.13.4",
-    "typescript": "5.7.3"
+    "typescript": "5.8.2",
+    "write": "^2.0.0"
   }
 }
