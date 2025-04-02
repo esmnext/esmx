@@ -47,6 +47,6 @@ git init
 git add -A
 git commit -m 'deploy'
 
-git push -f git@github.com:esmnext/esmx.git main:docs
+git push -f https://${GITHUB_TOKEN}@github.com/esmnext/esmx.git main:docs
 
 cd -
