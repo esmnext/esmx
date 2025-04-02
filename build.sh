@@ -35,20 +35,3 @@ if [ -f "$src_base/docs/doc_build/sitemap.xml" ]; then
   cp "$src_base/docs/doc_build/sitemap.xml" "$target_base/sitemap.xml"
   echo "Copied sitemap.xml to $target_base"
 fi
-
-cd dist
-
-# 设置Git配置
-git config --global user.name "${GITHUB_ACTOR:-github-actions[bot]}"
-git config --global user.email "github-actions[bot]@users.noreply.github.com"
-git config --global init.defaultBranch main
-
-git init
-git add -A
-git commit -m 'deploy'
-
-# 使用更安全的方式设置远程仓库
-git remote add origin "https://oauth2:${GITHUB_TOKEN}@github.com/esmnext/esmx.git"
-git push -f origin main:docs
-
-cd -

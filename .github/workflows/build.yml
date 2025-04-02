@@ -34,5 +34,5 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-pnpm-store-
 
-    - name: deploy
-      run: ./deploy.sh
+    - name: Build
+      run: ./build.sh
