@@ -38,6 +38,10 @@ fi
 
 cd dist
 
+# 设置Git配置
+git config --global user.name "${GITHUB_ACTOR:-github-actions[bot]}"
+git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
 git init
 git add -A
 git commit -m 'deploy'
