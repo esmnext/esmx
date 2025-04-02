@@ -32,18 +32,18 @@
         "url-parse": "^1.5.10"
     },
     "devDependencies": {
+        "@biomejs/biome": "1.9.4",
         "@esmx/lint": "workspace:*",
+        "@gez/lint": "3.0.0-rc.9",
         "@types/node": "22.13.10",
         "@types/url-parse": "^1.4.11",
         "@vitest/coverage-v8": "3.0.8",
         "stylelint": "16.15.0",
         "typescript": "5.8.2",
         "unbuild": "2.0.0",
-        "vitest": "3.0.8",
-        "@gez/lint": "3.0.0-rc.9",
-        "@biomejs/biome": "1.9.4"
+        "vitest": "3.0.8"
     },
-    "version": "0.0.75-alpha.2",
+    "version": "3.0.0-rc.12",
     "type": "module",
     "private": false,
     "exports": {
