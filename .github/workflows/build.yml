@@ -46,6 +46,6 @@ jobs:
           git init
           git add -A
           git commit -m 'deploy'
-          git push -f https://${GITHUB_TOKEN}@github.com/esmnext/esmx.git master:docs
+          git push -f "https://${{ secrets.GITHUB_TOKEN }}@github.com/esmnext/esmx.git" master:docs
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
