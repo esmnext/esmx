@@ -141,3 +141,7 @@ import utils from 'remote/src/utils';
 ## ⚖️ 许可证
 
 本项目采用 [MIT](./LICENSE) 许可证。
+
+## 💬 社区
+
+- 可以在 [飞书](https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=3c3vca77-bfc0-4ef5-b62b-9c5c9c92f1b4) 上和我们交流
