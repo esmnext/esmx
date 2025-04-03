@@ -15,7 +15,6 @@ export class AbstractHistory extends BaseRouterHistory {
         super(router);
         this.index = -1;
         this.stack = [];
-        this.init();
     }
 
     async init({ replace }: { replace?: boolean } = { replace: true }) {
@@ -55,7 +54,8 @@ export class AbstractHistory extends BaseRouterHistory {
         replace = false,
         isTriggerWithWindow = false
     ) {
-        const { flag, route } = isPathWithProtocolOrDomain(location);
+        const base = this.router.base;
+        const { flag, route } = isPathWithProtocolOrDomain(location, base);
         if (!flag) {
             // 如果不以域名开头则跳出
             return false;
@@ -111,7 +111,7 @@ export class AbstractHistory extends BaseRouterHistory {
         await this._jump(location, replace);
     }
 
-    private async _jump(
+    async _jump(
         location: RouterRawLocation,
         replace = false,
         isTriggerWithWindow = false

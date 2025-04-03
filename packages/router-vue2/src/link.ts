@@ -2,7 +2,6 @@ import {
     type RouteRecord,
     type RouterRawLocation,
     isEqualRoute,
-    isPathWithProtocolOrDomain,
     isSameRoute
 } from '@esmx/router';
 import { type PropType, defineComponent } from 'vue';

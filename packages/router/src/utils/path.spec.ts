@@ -1,18 +1,6 @@
 import { describe, it } from 'vitest';
 
-import {
-    isPathWithProtocolOrDomain,
-    normalizeLocation,
-    normalizePath
-} from './path';
-
-// console.log(normalizeLocation({ path: '/' }));
-
-// console.log(isPathWithProtocolOrDomain('/'));
-// console.log(isPathWithProtocolOrDomain('www.a.b'));
-// console.log(isPathWithProtocolOrDomain('a.b.cm'));
-// console.log(isPathWithProtocolOrDomain('http://a.cn'));
-// console.log(isPathWithProtocolOrDomain('a.b/path'));
+import { normalizeLocation, normalizePath } from './path';
 
 describe('testing normalizeLocation', () => {
     it('testing normal domain', ({ expect }) => {

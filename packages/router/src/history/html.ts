@@ -1,8 +1,4 @@
-import {
-    type RouterInstance,
-    type RouterRawLocation,
-    StateLayerConfigKey
-} from '../types';
+import type { RouterInstance, RouterRawLocation } from '../types';
 import {
     computeScrollPosition,
     getKeepScrollPosition,
@@ -119,7 +115,8 @@ export class HtmlHistory extends BaseRouterHistory {
         // 是否是 pushWindow/replaceWindow 触发的
         isTriggerWithWindow = false
     ) {
-        const { flag, route } = isPathWithProtocolOrDomain(location);
+        const base = this.router.base;
+        const { flag, route } = isPathWithProtocolOrDomain(location, base);
         const router = this.router;
         const { handleOutside, validateOutside } = router.options;
 
@@ -136,15 +133,15 @@ export class HtmlHistory extends BaseRouterHistory {
 
         // 如果有配置跳转外站函数，则执行配置函数
         // 如果配置函数返回 true 则认为其处理了打开逻辑，跳出
-        if (
-            handleOutside?.({
-                router,
-                route,
-                replace,
-                isTriggerWithWindow,
-                isSameHost
-            })
-        ) {
+        const res = handleOutside?.({
+            router,
+            route,
+            replace,
+            isTriggerWithWindow,
+            isSameHost
+        });
+        if (res === false) {
+            // 如果配置函数返回 false 则跳出
             return true;
         }
 

@@ -28,6 +28,7 @@
         }
     ],
     "dependencies": {
+        "normalize-url": "^8.0.1",
         "path-to-regexp": "^6.2.2",
         "url-parse": "^1.5.10"
     },

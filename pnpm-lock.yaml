@@ -477,6 +477,9 @@ importers:
 
   packages/router:
     dependencies:
+      normalize-url:
+        specifier: ^8.0.1
+        version: 8.0.1
       path-to-regexp:
         specifier: ^6.2.2
         version: 6.3.0
@@ -4563,6 +4566,10 @@ packages:
     resolution: {integrity: sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==}
     engines: {node: '>=0.10.0'}
 
+  normalize-url@8.0.1:
+    resolution: {integrity: sha512-IO9QvjUMWxPQQhs60oOu10CRkWCiZzSUkzbXGGV9pviYl1fXYcvkzQ5jV9z8Y6un8ARoVRl4EtC6v6jNqbaJ/w==}
+    engines: {node: '>=14.16'}
+
   npm-bundled@4.0.0:
     resolution: {integrity: sha512-IxaQZDMsqfQ2Lz37VvyyEtKLe8FsRZuysmedy/N06TU1RyVppYKXrO4xIhR0F+7ubIBox6Q7nir6fQI3ej39iA==}
     engines: {node: ^18.17.0 || >=20.5.0}
@@ -7527,15 +7534,15 @@ snapshots:
 
   '@types/cacache@17.0.2':
     dependencies:
-      '@types/node': 22.13.10
+      '@types/node': 20.17.30
 
   '@types/cli-progress@3.11.6':
     dependencies:
-      '@types/node': 22.13.10
+      '@types/node': 20.17.30
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 22.13.10
+      '@types/node': 20.17.30
 
   '@types/debug@4.1.12':
     dependencies:
@@ -7597,7 +7604,7 @@ snapshots:
 
   '@types/node-fetch@2.6.12':
     dependencies:
-      '@types/node': 22.13.10
+      '@types/node': 20.17.30
       form-data: 4.0.2
 
   '@types/node@20.17.30':
@@ -7620,7 +7627,7 @@ snapshots:
 
   '@types/npm-registry-fetch@8.0.7':
     dependencies:
-      '@types/node': 22.13.10
+      '@types/node': 20.17.30
       '@types/node-fetch': 2.6.12
       '@types/npm-package-arg': 6.1.4
       '@types/npmlog': 7.0.0
@@ -7630,7 +7637,7 @@ snapshots:
     dependencies:
       '@npm/types': 1.0.2
       '@types/cacache': 17.0.2
-      '@types/node': 22.13.10
+      '@types/node': 20.17.30
       '@types/npmcli__package-json': 4.0.4
       '@types/pacote': 11.1.8
 
@@ -7638,11 +7645,11 @@ snapshots:
 
   '@types/npmlog@7.0.0':
     dependencies:
-      '@types/node': 22.13.10
+      '@types/node': 20.17.30
 
   '@types/pacote@11.1.8':
     dependencies:
-      '@types/node': 22.13.10
+      '@types/node': 20.17.30
       '@types/npm-registry-fetch': 8.0.7
       '@types/npmlog': 7.0.0
       '@types/ssri': 7.1.5
@@ -7660,7 +7667,7 @@ snapshots:
   '@types/send@0.17.4':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 22.13.10
+      '@types/node': 20.17.30
 
   '@types/serialize-javascript@5.0.4': {}
 
@@ -7672,7 +7679,7 @@ snapshots:
 
   '@types/ssri@7.1.5':
     dependencies:
-      '@types/node': 22.13.10
+      '@types/node': 20.17.30
 
   '@types/unist@2.0.11': {}
 
@@ -7693,7 +7700,7 @@ snapshots:
 
   '@types/webpack-node-externals@3.0.4':
     dependencies:
-      '@types/node': 22.13.10
+      '@types/node': 20.17.30
       webpack: 5.98.0
     transitivePeerDependencies:
       - '@swc/core'
@@ -7703,7 +7710,7 @@ snapshots:
 
   '@types/write@2.0.4':
     dependencies:
-      '@types/node': 22.13.10
+      '@types/node': 20.17.30
 
   '@ungap/structured-clone@1.3.0': {}
 
@@ -9616,7 +9623,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 22.13.10
+      '@types/node': 20.17.30
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -10506,6 +10513,8 @@ snapshots:
   normalize-path@3.0.0: {}
 
   normalize-range@0.1.2: {}
+
+  normalize-url@8.0.1: {}
 
   npm-bundled@4.0.0:
     dependencies:
