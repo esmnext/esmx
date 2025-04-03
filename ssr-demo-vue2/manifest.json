@@ -1,14 +1,14 @@
 {
     "name": "ssr-demo-vue2",
     "exports": {
-        "src/entry.client": "src/entry.client.50c45ba0.final.js"
+        "src/entry.client": "src/entry.client.5814b62f.final.js"
     },
     "buildFiles": [
-        "src/entry.client.50c45ba0.final.js"
+        "src/entry.client.5814b62f.final.js"
     ],
     "chunks": {
         "ssr-demo-vue2@src/entry.client.ts": {
-            "js": "./src/entry.client.50c45ba0.final.js",
+            "js": "./src/entry.client.5814b62f.final.js",
             "css": [],
             "resources": [],
             "sizes": {

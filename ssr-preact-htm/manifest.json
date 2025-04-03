@@ -4,8 +4,8 @@
         "src/entry.client": "src/entry.client.52aca09b.final.js"
     },
     "buildFiles": [
-        "src/entry.client.52aca09b.final.js",
-        "src/entry.client.480d2198.final.css"
+        "src/entry.client.480d2198.final.css",
+        "src/entry.client.52aca09b.final.js"
     ],
     "chunks": {
         "ssr-preact-htm@src/entry.client.ts": {
