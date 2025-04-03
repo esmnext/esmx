@@ -507,12 +507,17 @@ export class Esmx {
      */
     public async build(): Promise<boolean> {
         const startTime = Date.now();
-        console.log('[esmx]: build start');
 
         const successful = await this.readied.app.build?.();
 
         const endTime = Date.now();
-        console.log(`[esmx]: build end, cost: ${endTime - startTime}ms`);
+        const duration = endTime - startTime;
+        const status = successful
+            ? '\x1b[32m✓\x1b[0m'.padEnd(3)
+            : '\x1b[31m✗\x1b[0m'.padEnd(3);
+        console.log(
+            `${status.padEnd(2)} Build ${successful ? 'completed' : 'failed'} in ${duration}ms`
+        );
 
         return successful ?? true;
     }
