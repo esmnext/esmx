@@ -88,6 +88,9 @@ export function createRspackConfig(
                 }
             })(),
             environment: {
+                dynamicImport: true,
+                dynamicImportInWorker: true,
+                module: true,
                 nodePrefixForCoreModules: true
             }
         },
