@@ -1,18 +1,18 @@
 {
     "name": "ssr-vue2-host",
     "exports": {
-        "src/entry.client": "src/entry.client.314a0739.final.js"
+        "src/entry.client": "src/entry.client.e397afef.final.js"
     },
     "buildFiles": [
-        "src/entry.client.314a0739.final.js",
-        "chunks/542.6b62004c.final.css",
-        "chunks/542.476b204c.final.js"
+        "src/entry.client.e397afef.final.js",
+        "chunks/474.a8cd2b28.final.js",
+        "chunks/474.6b62004c.final.css"
     ],
     "chunks": {
         "ssr-vue2-host@src/app.vue": {
-            "js": "chunks/542.476b204c.final.js",
+            "js": "chunks/474.a8cd2b28.final.js",
             "css": [
-                "chunks/542.6b62004c.final.css"
+                "chunks/474.6b62004c.final.css"
             ],
             "resources": [],
             "sizes": {
@@ -22,7 +22,7 @@
             }
         },
         "ssr-vue2-host@src/entry.client.ts": {
-            "js": "./src/entry.client.314a0739.final.js",
+            "js": "./src/entry.client.e397afef.final.js",
             "css": [],
             "resources": [],
             "sizes": {
