@@ -1,6 +1,9 @@
 import module from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { styleText } from 'node:util';
+import pkg from '../../package.json' with { type: 'json' };
+
 import { COMMAND, Esmx, type EsmxOptions } from '../esmx';
 
 async function getSrcOptions(): Promise<EsmxOptions> {
@@ -10,6 +13,8 @@ async function getSrcOptions(): Promise<EsmxOptions> {
 }
 
 export async function cli(command: string) {
+    console.log(`🔥 ${styleText('yellow', 'Esmx')} v${pkg.version}
+    `);
     if (command !== COMMAND.dev) {
         process.env.NODE_ENV = 'production';
     }
