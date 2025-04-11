@@ -4,7 +4,66 @@ import path from 'node:path';
 import type { RuntimeTarget } from './esmx';
 import type { ParsedModuleConfig } from './module-config';
 
-export interface ManifestJsonChunks {
+export interface ManifestJson {
+    /**
+     * 模块名称
+     */
+    name: string;
+    /**
+     * 导出项配置
+     * 类型：Record<导出路径, 导出项信息>
+     */
+    exports: ManifestJsonExports;
+    /**
+     * 构建产物文件列表
+     */
+    buildFiles: string[];
+    /**
+     * 编译的文件信息
+     * 类型：Record<源文件, 编译信息>
+     */
+    chunks: ManifestJsonChunks;
+}
+
+/**
+ * 导出项配置映射
+ * 类型：Record<导出路径, 导出项信息>
+ */
+export type ManifestJsonExports = Record<string, ManifestJsonExportItem>;
+
+/**
+ * 导出项类型
+ * - npm: NPM 包导出
+ * - public: 公共资源导出
+ */
+export type ManifestJsonExportType = 'npm' | 'public';
+
+/**
+ * 导出项信息
+ */
+export interface ManifestJsonExportItem {
+    /**
+     * 导出项名称
+     */
+    name: string;
+    /**
+     * 导出项类型
+     */
+    type: ManifestJsonExportType;
+    /**
+     * 导出项对应的文件路径
+     */
+    file: string;
+    /**
+     * 导出项的唯一标识符
+     */
+    identifier: string;
+}
+
+export type ManifestJsonChunks = Record<string, ManifestJsonChunkItem>;
+
+export interface ManifestJsonChunkItem {
+    name: string;
     /**
      * 当前编译的 JS 文件。
      */
@@ -24,29 +83,18 @@ export interface ManifestJsonChunks {
 }
 
 export interface ManifestJsonChunkSizes {
+    /**
+     * JavaScript 文件的大小，单位：字节
+     */
     js: number;
+    /**
+     * CSS 文件的大小，单位：字节
+     */
     css: number;
+    /**
+     * 资源文件的大小，单位：字节
+     */
     resource: number;
-}
-
-export interface ManifestJson {
-    /**
-     * 服务名字，来自于：EsmxOptions.name
-     */
-    name: string;
-    /**
-     * 对外导出的文件
-     */
-    exports: Record<string, string>;
-    /**
-     * 构建的全部文件清单
-     */
-    buildFiles: string[];
-    /**
-     * 编译的文件信息
-     * 类型：Record<源文件, 编译信息>
-     */
-    chunks: Record<string, ManifestJsonChunks>;
 }
 
 /**
