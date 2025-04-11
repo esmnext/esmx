@@ -59,7 +59,7 @@ export async function downloadFile(
     const hashStream = hash ? crypto.createHash(hashAlg) : null;
     const fileStream = fs.createWriteStream(filePath);
 
-    const streamPromise = new Promise((resolve, reject) => {
+    const streamPromise = new Promise<void>((resolve, reject) => {
         fileStream.on('finish', resolve);
         fileStream.on('error', reject);
     });
