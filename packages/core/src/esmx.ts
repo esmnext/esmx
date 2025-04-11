@@ -936,7 +936,7 @@ document.head.appendChild(script);
                     const hash = contentHash(code);
                     filepath = this.resolvePath(
                         'dist/client/importmap',
-                        `${hash}.final.js`
+                        `${hash}.final.mjs`
                     );
                     try {
                         const existingContent = await fsp.readFile(
@@ -954,7 +954,7 @@ document.head.appendChild(script);
                     this._importmapHash = wrote ? hash : '';
                 }
                 if (mode === 'js' && this._importmapHash) {
-                    const src = `${basePathPlaceholder}${this.basePath}importmap/${this._importmapHash}.final.js`;
+                    const src = `${basePathPlaceholder}${this.basePath}importmap/${this._importmapHash}.final.mjs`;
                     return {
                         src,
                         filepath,
