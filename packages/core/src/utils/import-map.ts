@@ -37,7 +37,7 @@ export async function getImportMap(
                 imports[`${manifest.name}/${name}`] = path.resolve(
                     link.root,
                     'server',
-                    value
+                    value.name
                 );
             }
         }
