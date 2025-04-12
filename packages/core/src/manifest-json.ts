@@ -1,7 +1,7 @@
 import fsp from 'node:fs/promises';
 import path from 'node:path';
 
-import type { RuntimeTarget } from './esmx';
+import type { RuntimeTarget } from './core';
 import type { ParsedModuleConfig } from './module-config';
 
 export interface ManifestJson {
@@ -112,8 +112,8 @@ export async function getManifestList(
     moduleConfig: ParsedModuleConfig
 ): Promise<ManifestJson[]> {
     return Promise.all(
-        moduleConfig.links.map(async (item) => {
-            const filename = path.resolve(item.root, target, 'manifest.json');
+        Object.values(moduleConfig.links).map(async (item) => {
+            const filename = path.resolve(item[target], 'manifest.json');
             try {
                 const data: ManifestJson = await readJson(filename);
                 data.name = item.name;

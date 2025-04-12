@@ -1,6 +1,8 @@
 import type fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
+import type { ImportMap, SpecifierMap } from '@esmx/import';
+import type { ParsedModuleConfig } from '../module-config';
 
 import * as esmLexer from 'es-module-lexer';
 
@@ -29,9 +31,6 @@ export async function getImportsFromJsFile(
     const source = await fsp.readFile(filepath, 'utf-8');
     return getImportsFromJsCode(source);
 }
-
-import type { ImportMap, SpecifierMap } from '@esmx/import';
-import type { ParsedModuleConfig } from '../module-config';
 
 export type ImportPreloadInfo = SpecifierMap;
 /**
@@ -67,7 +66,7 @@ export async function getImportPreloadInfo(
         if (splitRes[0] === '') splitRes.shift();
         // 这里默认路径的第一个目录是软包名称
         const name = splitRes.shift() + '';
-        const link = moduleConfig.links.find((item) => item.name === name);
+        const link = moduleConfig.links[name];
         if (!link) {
             continue;
         }

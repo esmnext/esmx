@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import path from 'node:path';
 import send from 'send';
-import type { Esmx } from '../esmx';
+import type { Esmx } from '../core';
 
 /**
  * 中间件函数类型定义
@@ -61,36 +61,37 @@ export function isImmutableFile(filename: string) {
  * ```
  */
 export function createMiddleware(esmx: Esmx): Middleware {
-    const middlewares = esmx.moduleConfig.links.map((item): Middleware => {
-        const base = `/${item.name}/`;
-        const baseUrl = new URL(`file:`);
-        const root = path.resolve(item.root, 'client');
-        // const reFinal = /\.final\.[a-zA-Z0-9]+$/;
-        return (req, res, next) => {
-            const url = req.url ?? '/';
-            const { pathname } = new URL(req.url ?? '/', baseUrl);
+    const middlewares = Object.values(esmx.moduleConfig.links).map(
+        (item): Middleware => {
+            const base = `/${item.name}/`;
+            const baseUrl = new URL(`file:`);
+            const root = item.client;
+            return (req, res, next) => {
+                const url = req.url ?? '/';
+                const { pathname } = new URL(req.url ?? '/', baseUrl);
 
-            if (!url.startsWith(base) || req.method !== 'GET') {
-                next();
-                return;
-            }
+                if (!url.startsWith(base) || req.method !== 'GET') {
+                    next();
+                    return;
+                }
 
-            send(req, pathname.substring(base.length - 1), {
-                root
-            })
-                .on('headers', () => {
-                    if (isImmutableFile(pathname)) {
-                        res.setHeader(
-                            'cache-control',
-                            'public, max-age=31536000, immutable'
-                        );
-                    } else {
-                        res.setHeader('cache-control', 'no-cache');
-                    }
+                send(req, pathname.substring(base.length - 1), {
+                    root
                 })
-                .pipe(res);
-        };
-    });
+                    .on('headers', () => {
+                        if (isImmutableFile(pathname)) {
+                            res.setHeader(
+                                'cache-control',
+                                'public, max-age=31536000, immutable'
+                            );
+                        } else {
+                            res.setHeader('cache-control', 'no-cache');
+                        }
+                    })
+                    .pipe(res);
+            };
+        }
+    );
     return mergeMiddlewares(middlewares);
 }
 

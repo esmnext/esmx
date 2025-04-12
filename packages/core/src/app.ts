@@ -1,6 +1,6 @@
 import { pathToFileURL } from 'node:url';
 import { createLoaderImport } from '@esmx/import';
-import type { COMMAND, Esmx } from './esmx';
+import type { COMMAND, Esmx } from './core';
 import {
     RenderContext,
     type RenderContextOptions,

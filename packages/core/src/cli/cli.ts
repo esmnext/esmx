@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { styleText } from 'node:util';
 import pkg from '../../package.json' with { type: 'json' };
 
-import { COMMAND, Esmx, type EsmxOptions } from '../esmx';
+import { COMMAND, Esmx, type EsmxOptions } from '../core';
 
 async function getSrcOptions(): Promise<EsmxOptions> {
     return import(path.resolve(process.cwd(), './src/entry.node.ts')).then(

@@ -102,7 +102,7 @@ export function createRspackConfig(
                     prefix: buildTarget
                 }),
                 // 模块链接插件
-                isWebApp ? moduleLinkPlugin(esmx.moduleConfig) : false,
+                // isWebApp ? moduleLinkPlugin(esmx.moduleConfig) : false,
                 // 热更新插件
                 isHot ? new rspack.HotModuleReplacementPlugin() : false
             ];

@@ -6,9 +6,8 @@ export {
     type SpecifierMap,
     type ScopesMap,
     Esmx
-} from './esmx';
+} from './core';
 export {
-    PathType,
     type ModuleConfig,
     type ParsedModuleConfig,
     parseModuleConfig

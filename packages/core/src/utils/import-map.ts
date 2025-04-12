@@ -3,7 +3,7 @@ import path from 'node:path';
 import { pathWithoutIndex } from './path-without-index';
 
 import type { ImportMap, SpecifierMap } from '@esmx/import';
-import type { RuntimeTarget } from '../esmx';
+import type { RuntimeTarget } from '../core';
 import type { ManifestJson } from '../manifest-json';
 import type { ParsedModuleConfig } from '../module-config';
 
@@ -25,9 +25,7 @@ export async function getImportMap(
         }
     } else {
         for (const manifest of manifests) {
-            const link = moduleConfig.links.find(
-                (item) => item.name === manifest.name
-            );
+            const link = moduleConfig.links[manifest.name];
             if (!link) {
                 throw new Error(
                     `'${manifest.name}' service did not find module config`
@@ -35,8 +33,7 @@ export async function getImportMap(
             }
             for (const [name, value] of Object.entries(manifest.exports)) {
                 imports[`${manifest.name}/${name}`] = path.resolve(
-                    link.root,
-                    'server',
+                    link.server,
                     value.name
                 );
             }
