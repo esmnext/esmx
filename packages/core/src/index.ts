@@ -36,6 +36,5 @@ export type {
     ManifestJsonChunkItem,
     ManifestJsonChunkSizes,
     ManifestJsonExports,
-    ManifestJsonExportItem,
-    ManifestJsonExportType
+    ManifestJsonExportItem
 } from './manifest-json';

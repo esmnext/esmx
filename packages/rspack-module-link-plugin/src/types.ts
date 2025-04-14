@@ -5,8 +5,7 @@ export type {
     ManifestJsonChunkItem,
     ManifestJsonChunkSizes,
     ManifestJsonExports,
-    ManifestJsonExportItem,
-    ManifestJsonExportType
+    ManifestJsonExportItem
 } from '@esmx/core';
 
 export interface ModuleLinkPluginOptions {
@@ -26,7 +25,7 @@ export interface ModuleLinkPluginOptions {
     /**
      * 导出模块
      */
-    exports?: Array<string | Record<string, string>>;
+    exports?: Record<string, { pkg?: boolean; file: string }>;
     /**
      * 是否注入 chunk name，默认为 `false`，通常只有构建服务端渲染产物时才需要设置为 `true`
      * @default false

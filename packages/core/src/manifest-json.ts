@@ -32,13 +32,6 @@ export interface ManifestJson {
 export type ManifestJsonExports = Record<string, ManifestJsonExportItem>;
 
 /**
- * 导出项类型
- * - npm: NPM 包导出
- * - public: 公共资源导出
- */
-export type ManifestJsonExportType = 'npm' | 'public';
-
-/**
  * 导出项信息
  */
 export interface ManifestJsonExportItem {
@@ -47,9 +40,9 @@ export interface ManifestJsonExportItem {
      */
     name: string;
     /**
-     * 导出项类型
+     * 是否是软件包
      */
-    type: ManifestJsonExportType;
+    pkg: boolean;
     /**
      * 导出项对应的文件路径
      */
