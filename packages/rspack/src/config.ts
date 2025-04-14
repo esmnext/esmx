@@ -26,27 +26,13 @@ export function createRspackConfig(
          */
         context: esmx.root,
         entry: (() => {
-            const importPaths: string[] = [];
-            switch (buildTarget) {
-                case 'client':
-                    importPaths.push(esmx.resolvePath('src/entry.client.ts'));
-                    isHot &&
-                        importPaths.push(
-                            `${resolve('webpack-hot-middleware/client')}?path=${esmx.basePath}hot-middleware&timeout=5000&overlay=false`
-                        );
-                    break;
-                case 'server':
-                    importPaths.push(esmx.resolvePath('src/entry.server.ts'));
-                    break;
-                case 'node':
-                    importPaths.push(esmx.resolvePath('src/entry.node.ts'));
-                    break;
+            if (buildTarget === 'node') {
+                return {
+                    [`./src/entry.${buildTarget}`]: {
+                        import: esmx.resolvePath('src/entry.node.ts')
+                    }
+                };
             }
-            return {
-                [`./src/entry.${buildTarget}`]: {
-                    import: importPaths
-                }
-            };
         })(),
         output: {
             clean: esmx.isProd,
@@ -167,8 +153,4 @@ export function createRspackConfig(
         mode: esmx.isProd ? 'production' : 'development',
         cache: !esmx.isProd
     };
-}
-
-function resolve(name: string) {
-    return new URL(import.meta.resolve(name)).pathname;
 }
