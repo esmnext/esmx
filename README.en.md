@@ -61,7 +61,7 @@ Configure modules to expose in `remote`:
 export default {
   modules: {
     exports: [
-      'npm:axios',
+      'pkg:axios',
       'root:src/utils.ts'
     ]
   }

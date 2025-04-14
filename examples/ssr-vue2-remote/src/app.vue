@@ -38,7 +38,7 @@
   <span class="property">modules</span>: {
     <span class="property">exports</span>: [
       <span class="comment">// 导出 Vue 实例</span>
-      <span class="string">'npm:vue'</span>,
+      <span class="string">'pkg:vue'</span>,
       <span class="comment">// UI 组件</span>
       <span class="string">'root:src/components/index.ts'</span>,
       <span class="comment">// 组合式函数</span>
@@ -64,7 +64,7 @@
               <h3>导出类型</h3>
               <div class="export-types">
                 <div class="export-type">
-                  <code class="highlight">npm:package</code>
+                  <code class="highlight">pkg:package</code>
                   <p>用于共享核心依赖包（如 Vue），确保所有应用使用相同版本。</p>
                 </div>
                 <div class="export-type">

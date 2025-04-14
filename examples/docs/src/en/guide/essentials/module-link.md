@@ -39,8 +39,8 @@ export default {
             'root:src/components/button.vue',  // Vue component
             'root:src/utils/format.ts',        // Utility function
             // Export third-party dependencies
-            'npm:vue',                         // Vue framework
-            'npm:vue-router'                   // Vue Router
+            'pkg:vue',                         // Vue framework
+            'pkg:vue-router'                   // Vue Router
         ]
     }
 } satisfies EsmxOptions;
@@ -48,7 +48,7 @@ export default {
 
 Export configuration supports two types:
 - `root:*`: Exports source files, with paths relative to the project root
-- `npm:*`: Exports third-party dependencies, specified by package name directly
+- `pkg:*`: Exports third-party dependencies, specified by package name directly
 
 ## Module Import
 
@@ -151,7 +151,7 @@ export default {
         exports: [
             'root:src/components/button.vue',
             'root:src/utils/format.ts',
-            'npm:vue'
+            'pkg:vue'
         ]
     },
     // Build configuration
