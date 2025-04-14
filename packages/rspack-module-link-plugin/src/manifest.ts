@@ -1,5 +1,5 @@
 import type { Compilation, Compiler, StatsCompilation } from '@rspack/core';
-import * as upath from 'upath';
+import upath from 'upath';
 import type {
     ManifestJson,
     ManifestJsonChunks,

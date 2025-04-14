@@ -87,7 +87,11 @@ export function parseModuleConfig(
     });
 
     const exports: ParsedModuleConfig['exports'] = {};
-    config.exports?.forEach((value) => {
+    [
+        'client:./src/entry.client',
+        'server:./src/entry.server',
+        ...(config.exports ?? [])
+    ].forEach((value) => {
         const item = parseExport(value);
         exports[item.name] = item;
     });

@@ -2,6 +2,7 @@ import type { Esmx } from '@esmx/core';
 import { moduleLinkPlugin } from '@esmx/rspack-module-link-plugin';
 import {
     type ExternalItem,
+    type Plugin,
     type Plugins,
     type RspackOptions,
     rspack
@@ -87,8 +88,7 @@ export function createRspackConfig(
                 new rspack.ProgressPlugin({
                     prefix: buildTarget
                 }),
-                // 模块链接插件
-                // isWebApp ? moduleLinkPlugin(esmx.moduleConfig) : false,
+                createModuleLinkPlugin(esmx, buildTarget),
                 // 热更新插件
                 isHot ? new rspack.HotModuleReplacementPlugin() : false
             ];
@@ -153,4 +153,17 @@ export function createRspackConfig(
         mode: esmx.isProd ? 'production' : 'development',
         cache: !esmx.isProd
     };
+}
+
+function createModuleLinkPlugin(esmx: Esmx, buildTarget: BuildTarget): Plugin {
+    if (buildTarget === 'node') {
+        return;
+    }
+    return moduleLinkPlugin({
+        name: esmx.name,
+        ext: 'mjs',
+        injectChunkName: buildTarget === 'server',
+        imports: esmx.moduleConfig.imports,
+        exports: esmx.moduleConfig.exports
+    });
 }
