@@ -39,7 +39,7 @@ export interface ModuleConfig {
      * ```ts
      * exports: [
      *   'pkg:vue',
-     *   ['npm.server:react', './src/react.ts']
+     *   ['pkg.server:react', './src/react.ts']
      * ]
      * ```
      */
