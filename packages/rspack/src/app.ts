@@ -5,7 +5,6 @@ import {
     type App,
     type Esmx,
     type Middleware,
-    PathType,
     RenderContext,
     type RenderContextOptions,
     type ServerRenderHandle,
@@ -270,29 +269,6 @@ function rewriteRender(esmx: Esmx) {
 
 function rewriteBuild(esmx: Esmx, options: RspackAppOptions = {}) {
     return async (): Promise<boolean> => {
-        for (const item of esmx.moduleConfig.exports) {
-            if (item.type === PathType.root) {
-                const text = fs.readFileSync(
-                    esmx.resolvePath('./', item.exportPath),
-                    'utf-8'
-                );
-                if (/\bexport\s+\*\s+from\b/.test(text)) {
-                    console.log(
-                        styleText(
-                            'red',
-                            `The export * syntax is used in the file '${item.exportPath}', which will cause the packaging to fail.`
-                        )
-                    );
-                    console.log(
-                        styleText(
-                            'red',
-                            `Please use specific export syntax, such as export { a, b } from './a';`
-                        )
-                    );
-                    return false;
-                }
-            }
-        }
         const ok = await createRsBuild([
             generateBuildConfig(esmx, options, 'client'),
             generateBuildConfig(esmx, options, 'server'),

@@ -1,54 +1,54 @@
 import { assert, test } from 'vitest';
-import { parseExport } from './parse-export';
+import { type ParsedExport, parseExport } from './parse-export';
 
 test('parseExport', () => {
     assert.deepEqual(parseExport('vue'), {
         name: 'vue',
         file: 'vue',
-        npm: false,
+        pkg: false,
         client: true,
         server: true
-    });
-    assert.deepEqual(parseExport('npm:vue'), {
+    } satisfies ParsedExport);
+    assert.deepEqual(parseExport('pkg:vue'), {
         name: 'vue',
         file: 'vue',
-        npm: true,
+        pkg: true,
         client: true,
         server: true
-    });
-    assert.deepEqual(parseExport('npm.client:vue'), {
+    } satisfies ParsedExport);
+    assert.deepEqual(parseExport('pkg.client:vue'), {
         name: 'vue',
         file: 'vue',
-        npm: true,
+        pkg: true,
         client: true,
         server: false
-    });
-    assert.deepEqual(parseExport('npm.server:vue'), {
+    } satisfies ParsedExport);
+    assert.deepEqual(parseExport('pkg.server:vue'), {
         name: 'vue',
         file: 'vue',
-        npm: true,
+        pkg: true,
         client: false,
         server: true
-    });
-    assert.deepEqual(parseExport('npm.client.server:vue'), {
+    } satisfies ParsedExport);
+    assert.deepEqual(parseExport('pkg.client.server:vue'), {
         name: 'vue',
         file: 'vue',
-        npm: true,
+        pkg: true,
         client: true,
         server: true
-    });
+    } satisfies ParsedExport);
     assert.deepEqual(parseExport('./src/index.ts'), {
         name: 'src/index',
         file: './src/index.ts',
-        npm: false,
+        pkg: false,
         client: true,
         server: true
-    });
+    } satisfies ParsedExport);
     assert.deepEqual(parseExport('client:./src/index.ts'), {
         name: 'src/index',
         file: './src/index.ts',
-        npm: false,
+        pkg: false,
         client: true,
         server: false
-    });
+    } satisfies ParsedExport);
 });

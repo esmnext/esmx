@@ -1,13 +1,15 @@
 const FILE_EXT_REGEX =
     /\.(js|mjs|cjs|jsx|mjsx|cjsx|ts|mts|cts|tsx|mtsx|ctsx)$/i;
 
-export function parseExport(exports: string | string[]): {
+export interface ParsedExport {
     name: string;
-    npm: boolean;
+    pkg: boolean;
     client: boolean;
     server: boolean;
     file: string;
-} {
+}
+
+export function parseExport(exports: string | string[]): ParsedExport {
     let left = '';
     let right = '';
     if (Array.isArray(exports)) {
@@ -23,7 +25,7 @@ export function parseExport(exports: string | string[]): {
 
     // 处理修饰符
     const modifiers = left.split(':', 1)[0].split('.');
-    const npm = modifiers.includes('npm');
+    const pkg = modifiers.includes('pkg');
     let client = modifiers.includes('client');
     let server = modifiers.includes('server');
 
@@ -50,7 +52,7 @@ export function parseExport(exports: string | string[]): {
     const file = right;
     return {
         name,
-        npm,
+        pkg: pkg,
         client,
         server,
         file
