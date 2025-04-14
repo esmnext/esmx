@@ -1,7 +1,7 @@
 import fsp from 'node:fs/promises';
 import path from 'node:path';
 
-import type { RuntimeTarget } from './core';
+import type { BuildSsrTarget } from './core';
 import type { ParsedModuleConfig } from './module-config';
 
 export interface ManifestJson {
@@ -101,7 +101,7 @@ async function readJson(filename: string): Promise<any> {
  * 获取服务清单文件
  */
 export async function getManifestList(
-    target: RuntimeTarget,
+    target: BuildSsrTarget,
     moduleConfig: ParsedModuleConfig
 ): Promise<ManifestJson[]> {
     return Promise.all(

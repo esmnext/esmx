@@ -3,7 +3,7 @@ import path from 'node:path';
 import { pathWithoutIndex } from './path-without-index';
 
 import type { ImportMap, SpecifierMap } from '@esmx/import';
-import type { RuntimeTarget } from '../core';
+import type { BuildSsrTarget } from '../core';
 import type { ManifestJson } from '../manifest-json';
 import type { ParsedModuleConfig } from '../module-config';
 
@@ -11,7 +11,7 @@ import type { ParsedModuleConfig } from '../module-config';
  * 获取导入映射对象
  */
 export async function getImportMap(
-    target: RuntimeTarget,
+    target: BuildSsrTarget,
     manifests: readonly ManifestJson[],
     moduleConfig: ParsedModuleConfig
 ): Promise<ImportMap> {

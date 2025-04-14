@@ -1,4 +1,5 @@
 import path from 'node:path';
+import type { BuildSsrTarget } from './core';
 import { parseExport } from './utils/parse-export';
 
 /**
@@ -43,7 +44,10 @@ export interface ModuleConfig {
      * ]
      * ```
      */
-    exports?: Array<string | [string, string]>;
+    exports?: Record<
+        string,
+        string | { input?: string; env?: Record<BuildSsrTarget, string> }
+    >;
 }
 
 export interface ParsedModuleConfig {
@@ -59,16 +63,13 @@ export interface ParsedModuleConfig {
         }
     >;
     imports: Record<string, string>;
-    exports: Record<
-        string,
-        {
-            name: string;
-            pkg: boolean;
-            client: boolean;
-            server: boolean;
-            file: string;
-        }
-    >;
+    exports: Array<{
+        name: string;
+        pkg: boolean;
+        client: boolean;
+        server: boolean;
+        file: string;
+    }>;
 }
 
 export function parseModuleConfig(
@@ -86,7 +87,7 @@ export function parseModuleConfig(
         };
     });
 
-    const exports: ParsedModuleConfig['exports'] = {};
+    const exports: ParsedModuleConfig['exports'] = [];
     [
         'client:./src/entry.client',
         'server:./src/entry.server',

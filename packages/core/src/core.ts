@@ -99,7 +99,7 @@ export interface EsmxOptions {
  * - client: 客户端构建目标，用于生成浏览器端运行的代码
  * - server: 服务端构建目标，用于生成 Node.js 环境运行的代码
  */
-export type RuntimeTarget = 'client' | 'server';
+export type BuildSsrTarget = 'client' | 'server';
 
 /**
  * Esmx 框架的命令枚举。
@@ -771,7 +771,7 @@ export class Esmx {
      * ```
      */
     public async getManifestList(
-        target: RuntimeTarget
+        target: BuildSsrTarget
     ): Promise<readonly ManifestJson[]> {
         return this.readied.cache(`getManifestList-${target}`, async () =>
             Object.freeze(await getManifestList(target, this.moduleConfig))
@@ -827,7 +827,7 @@ export class Esmx {
      * ```
      */
     public async getImportMap(
-        target: RuntimeTarget
+        target: BuildSsrTarget
     ): Promise<Readonly<ImportMap>> {
         return this.readied.cache(`getImportMap-${target}`, async () => {
             const json = await getImportMap(
@@ -994,7 +994,7 @@ document.head.appendChild(script);
      * ```
      */
     public async getStaticImportPaths(
-        target: RuntimeTarget,
+        target: BuildSsrTarget,
         specifier: string
     ) {
         return this.readied.cache(
