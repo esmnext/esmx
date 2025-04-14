@@ -21,9 +21,9 @@ export function parseOptions(
             }
             exports[name] = {
                 name,
-                pkg: !!item.pkg,
+                rewrite: !!item.rewrite,
                 file: item.file,
-                identifier: item.pkg ? name : `${options.name}/${name}`
+                identifier: item.rewrite ? `${options.name}/${name}` : name
             };
         }
     }

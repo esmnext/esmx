@@ -32,9 +32,9 @@ export {
 } from './utils/middleware';
 export type {
     ManifestJson,
-    ManifestJsonChunks,
-    ManifestJsonChunkItem,
+    ManifestJsonChunk,
     ManifestJsonChunkSizes,
-    ManifestJsonExports,
-    ManifestJsonExportItem
+    ManifestJsonChunks,
+    ManifestJsonExport,
+    ManifestJsonExports
 } from './manifest-json';

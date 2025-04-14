@@ -20,35 +20,47 @@ export interface ModuleConfig {
      * ```
      */
     links?: Record<string, string>;
-
+    imports?: Record<string, string>;
     /**
-     * 模块导入
+     * 模块导出配置对象
      *
      * @example
      * ```ts
-     * imports: {
-     *   'vue': 'ssr-remote/npm/vue',
-     *   'vue-router': 'ssr-remote/npm/vue-router'
+     * exports: {
+     *   // 1. 基础导出
+     *   'utils': './src/utils.ts',
+     *
+     *   // 2. 自定义构建目标导出
+     *   'ssr': {
+     *     input: './src/entry.ts',
+     *     inputTarget: {
+     *       client: './src/entry.client.ts',
+     *       server: './src/entry.server.ts'
+     *     }
+     *   },
+     *
+     *   // 3. 导出第三方库
+     *   // rewrite 设为 false 可以避免模块内的 import 被重写为 '{服务名}/xxx' 格式
+     *   'vue': {
+     *     rewrite: false
+     *   },
+     *
+     *   // 4. 导出包装后的第三方库
+     *   'react': {
+     *     rewrite: false,
+     *     input: './src/react.ts'  // 自定义包装层
+     *   }
      * }
      * ```
      */
-    imports?: Record<string, string>;
-    /**
-     * 模块导出
-     *
-     * @example
-     * ```ts
-     * exports: [
-     *   'pkg:vue',
-     *   ['pkg.server:react', './src/react.ts']
-     * ]
-     * ```
-     */
-    exports?: Record<
-        string,
-        string | { input?: string; env?: Record<BuildSsrTarget, string> }
-    >;
+    exports?: Record<string, string | ModuleConfigExportObject>;
 }
+
+export type ModuleConfigExportObject = {
+    rewrite?: boolean;
+    input?: string;
+    inputTarget?: Record<BuildSsrTarget, string | false>;
+};
 
 export interface ParsedModuleConfig {
     name: string;
@@ -59,17 +71,37 @@ export interface ParsedModuleConfig {
             name: string;
             root: string;
             client: string;
+            clientManifestJson: string;
             server: string;
+            serverManifestJson: string;
         }
     >;
     imports: Record<string, string>;
-    exports: Array<{
-        name: string;
-        pkg: boolean;
-        client: boolean;
-        server: boolean;
-        file: string;
-    }>;
+    exports: ParsedModuleConfigExports;
+}
+
+export type ParsedModuleConfigExports = Record<
+    string,
+    ParsedModuleConfigExport
+>;
+export interface ParsedModuleConfigExport {
+    /**
+     * 导出项的唯一标识名称
+     */
+    name: string;
+
+    /**
+     * 是否重写模块内的导入路径
+     * - true: 重写为 '{服务名}/{导出名}' 格式
+     * - false: 保持原始导入路径
+     */
+    rewrite: boolean;
+
+    /**
+     * 特定目标的构建入口文件路径
+     * 用于配置不同目标（client/server）的专用入口文件
+     */
+    inputTarget: Record<BuildSsrTarget, string | false>;
 }
 
 export function parseModuleConfig(
@@ -83,24 +115,63 @@ export function parseModuleConfig(
             name: key,
             root: value,
             client: path.resolve(root, value, 'client'),
-            server: path.resolve(root, value, 'server')
+            clientManifestJson: path.resolve(
+                root,
+                value,
+                'client/manifest.json'
+            ),
+            server: path.resolve(root, value, 'server'),
+            serverManifestJson: path.resolve(
+                root,
+                value,
+                'server/manifest.json'
+            )
         };
-    });
-
-    const exports: ParsedModuleConfig['exports'] = [];
-    [
-        'client:./src/entry.client',
-        'server:./src/entry.server',
-        ...(config.exports ?? [])
-    ].forEach((value) => {
-        const item = parseExport(value);
-        exports[item.name] = item;
     });
     return {
         name,
         root,
         links,
         imports: config.imports ?? {},
-        exports
+        exports: getExports(name, root, config)
     };
+}
+
+function getExports(name: string, root: string, config: ModuleConfig = {}) {
+    const result: ParsedModuleConfig['exports'] = {};
+    const exports: Record<string, ModuleConfigExportObject | string> = {
+        'entry.client': {
+            inputTarget: {
+                client: './src/entry.client',
+                server: false
+            }
+        },
+        'entry.server': {
+            inputTarget: {
+                client: false,
+                server: './src/entry.server'
+            }
+        },
+        ...config.exports
+    };
+    for (const [name, value] of Object.entries(exports)) {
+        const opts =
+            typeof value === 'string'
+                ? {
+                      input: value
+                  }
+                : value;
+        const client = opts.inputTarget?.client ?? opts.input ?? name;
+        const server = opts.inputTarget?.server ?? opts.input ?? name;
+        result[name] = {
+            name,
+            rewrite: opts.rewrite ?? true,
+            inputTarget: {
+                client,
+                server
+            }
+        };
+    }
+
+    return result;
 }

@@ -19,7 +19,6 @@ export function createRspackConfig(
     buildTarget: BuildTarget,
     options: RspackAppOptions
 ): RspackOptions {
-    const isWebApp = buildTarget === 'client' || buildTarget === 'server';
     const isHot = buildTarget === 'client' && !esmx.isProd;
     return {
         /**
@@ -41,21 +40,21 @@ export function createRspackConfig(
             chunkFormat: esmx.isProd ? 'module' : undefined,
             chunkLoading: esmx.isProd ? 'import' : undefined,
             chunkFilename: esmx.isProd
-                ? 'chunks/[name].[contenthash:8].final.mjs'
-                : 'chunks/[name].js',
+                ? 'js/[name].[contenthash:8].final.mjs'
+                : 'js/[name].js',
             library: {
                 type: esmx.isProd ? 'modern-module' : 'module'
             },
             filename:
                 buildTarget !== 'node' && esmx.isProd
-                    ? '[name].[contenthash:8].final.mjs'
-                    : '[name].js',
+                    ? 'js/[name].[contenthash:8].final.mjs'
+                    : 'js/[name].js',
             cssFilename: esmx.isProd
                 ? '[name].[contenthash:8].final.css'
                 : '[name].css',
             cssChunkFilename: esmx.isProd
-                ? 'chunks/[name].[contenthash:8].final.css'
-                : 'chunks/[name].css',
+                ? 'js/[name].[contenthash:8].final.css'
+                : 'js/[name].css',
             publicPath:
                 buildTarget === 'client'
                     ? 'auto'
@@ -159,11 +158,26 @@ function createModuleLinkPlugin(esmx: Esmx, buildTarget: BuildTarget): Plugin {
     if (buildTarget === 'node') {
         return;
     }
+    const exports: Record<
+        string,
+        {
+            rewrite: boolean;
+            file: string;
+        }
+    > = {};
+    for (const [name, item] of Object.entries(esmx.moduleConfig.exports)) {
+        if (item.inputTarget[buildTarget]) {
+            exports[name] = {
+                rewrite: item.rewrite,
+                file: item.inputTarget[buildTarget]
+            };
+        }
+    }
     return moduleLinkPlugin({
         name: esmx.name,
         ext: 'mjs',
         injectChunkName: buildTarget === 'server',
         imports: esmx.moduleConfig.imports,
-        exports: esmx.moduleConfig.exports
+        exports
     });
 }

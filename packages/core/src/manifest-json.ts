@@ -29,33 +29,35 @@ export interface ManifestJson {
  * 导出项配置映射
  * 类型：Record<导出路径, 导出项信息>
  */
-export type ManifestJsonExports = Record<string, ManifestJsonExportItem>;
+export type ManifestJsonExports = Record<string, ManifestJsonExport>;
 
 /**
  * 导出项信息
  */
-export interface ManifestJsonExportItem {
+export interface ManifestJsonExport {
     /**
      * 导出项名称
      */
     name: string;
     /**
-     * 是否是软件包
+     * 是否重写模块内的导入路径
+     * - true: 重写为 '{服务名}/{导出名}' 格式
+     * - false: 保持原始导入路径
      */
-    pkg: boolean;
+    rewrite: boolean;
     /**
      * 导出项对应的文件路径
      */
     file: string;
     /**
-     * 导出项的唯一标识符
+     * 导出项的标识符
      */
     identifier: string;
 }
 
-export type ManifestJsonChunks = Record<string, ManifestJsonChunkItem>;
+export type ManifestJsonChunks = Record<string, ManifestJsonChunk>;
 
-export interface ManifestJsonChunkItem {
+export interface ManifestJsonChunk {
     name: string;
     /**
      * 当前编译的 JS 文件。

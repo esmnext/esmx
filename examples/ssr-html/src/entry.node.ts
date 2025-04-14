@@ -53,6 +53,8 @@ export default {
         }
     },
     modules: {
-        exports: ['./src/title/index.ts']
+        exports: {
+            'src/title/index': './src/title/index.ts'
+        }
     }
 } satisfies EsmxOptions;
