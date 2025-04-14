@@ -63,7 +63,7 @@ export interface ParsedModuleConfig {
         string,
         {
             name: string;
-            npm: boolean;
+            pkg: boolean;
             client: boolean;
             server: boolean;
             file: string;
