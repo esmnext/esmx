@@ -281,7 +281,7 @@ function rewriteBuild(esmx: Esmx, options: RspackAppOptions = {}) {
             esmx.resolvePath('dist/index.mjs'),
             `
 async function start() {
-    const options = await import('./node/js/src/entry.node.mjs').then(
+    const options = await import('./node/src/entry.node.mjs').then(
         (mod) => mod.default
     );
     const { Esmx } = await import('@esmx/core');

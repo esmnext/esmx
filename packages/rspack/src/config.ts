@@ -40,21 +40,21 @@ export function createRspackConfig(
             chunkFormat: esmx.isProd ? 'module' : undefined,
             chunkLoading: esmx.isProd ? 'import' : undefined,
             chunkFilename: esmx.isProd
-                ? 'js/[name].[contenthash:8].final.mjs'
-                : 'js/[name].mjs',
+                ? '[name].[contenthash:8].final.mjs'
+                : '[name].mjs',
             library: {
                 type: esmx.isProd ? 'modern-module' : 'module'
             },
             filename:
                 buildTarget !== 'node' && esmx.isProd
-                    ? 'js/[name].[contenthash:8].final.mjs'
-                    : 'js/[name].mjs',
+                    ? '[name].[contenthash:8].final.mjs'
+                    : '[name].mjs',
             cssFilename: esmx.isProd
                 ? '[name].[contenthash:8].final.css'
                 : '[name].css',
             cssChunkFilename: esmx.isProd
-                ? 'js/[name].[contenthash:8].final.css'
-                : 'js/[name].css',
+                ? '[name].[contenthash:8].final.css'
+                : '[name].css',
             publicPath:
                 buildTarget === 'client'
                     ? 'auto'
