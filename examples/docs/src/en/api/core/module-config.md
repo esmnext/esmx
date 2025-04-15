@@ -18,7 +18,7 @@ ModuleConfig provides module configuration capabilities for the Esmx framework, 
 - **Type Definition**:
 ```ts
 enum PathType {
-  npm = 'pkg:', 
+  npm = 'npm:', 
   root = 'root:'
 }
 ```
@@ -46,10 +46,10 @@ Export configuration list that exposes specific code units (such as components, 
 
 Supports two types:
 - `root:*`: Exports source files, e.g., `root:src/components/button.vue`
-- `pkg:*`: Exports third-party dependencies, e.g., `pkg:vue`
+- `npm:*`: Exports third-party dependencies, e.g., `npm:vue`
 
 Each export item contains the following properties:
-- `name`: Original export path, e.g., `pkg:vue` or `root:src/components`
+- `name`: Original export path, e.g., `npm:vue` or `root:src/components`
 - `type`: Path type (`npm` or `root`)
 - `importName`: Import name in the format: `${serviceName}/${type}/${path}`
 - `exportName`: Export path relative to the service root directory
@@ -82,8 +82,8 @@ export default {
     exports: [
       'root:src/components/button.vue',  // Export source file
       'root:src/utils/format.ts',
-      'pkg:vue',  // Export third-party dependency
-      'pkg:vue-router'
+      'npm:vue',  // Export third-party dependency
+      'npm:vue-router'
     ],
 
     // Import configuration
@@ -144,7 +144,7 @@ Current service root directory path
 
 #### exports
 Export configuration list
-- `name`: Original export path, e.g., 'pkg:vue' or 'root:src/components'
+- `name`: Original export path, e.g., 'npm:vue' or 'root:src/components'
 - `type`: Path type (npm or root)
 - `importName`: Import name in the format: '${serviceName}/${type}/${path}'
 - `exportName`: Export path relative to the service root directory

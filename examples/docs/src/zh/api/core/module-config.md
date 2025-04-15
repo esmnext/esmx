@@ -18,7 +18,7 @@ ModuleConfig 提供了 Esmx 框架的模块配置功能，用于定义模块的�
 - **类型定义**:
 ```ts
 enum PathType {
-  npm = 'pkg:', 
+  npm = 'npm:', 
   root = 'root:'
 }
 ```
@@ -46,10 +46,10 @@ interface ModuleConfig {
 
 支持两种类型：
 - `root:*`: 导出源码文件，如：`root:src/components/button.vue`
-- `pkg:*`: 导出第三方依赖，如：`pkg:vue`
+- `npm:*`: 导出第三方依赖，如：`npm:vue`
 
 每个导出项包含以下属性：
-- `name`: 原始导出路径，如：`pkg:vue` 或 `root:src/components`
+- `name`: 原始导出路径，如：`npm:vue` 或 `root:src/components`
 - `type`: 路径类型（`npm` 或 `root`）
 - `importName`: 导入名称，格式：`${serviceName}/${type}/${path}`
 - `exportName`: 导出路径，相对于服务根目录
@@ -82,8 +82,8 @@ export default {
     exports: [
       'root:src/components/button.vue',  // 导出源码文件
       'root:src/utils/format.ts',
-      'pkg:vue',  // 导出第三方依赖
-      'pkg:vue-router'
+      'npm:vue',  // 导出第三方依赖
+      'npm:vue-router'
     ],
 
     // 导入配置
@@ -144,7 +144,7 @@ interface ParsedModuleConfig {
 
 #### exports
 导出配置列表
-- `name`: 原始导出路径，如：'pkg:vue' 或 'root:src/components'
+- `name`: 原始导出路径，如：'npm:vue' 或 'root:src/components'
 - `type`: 路径类型（npm 或 root）
 - `importName`: 导入名称，格式：'${serviceName}/${type}/${path}'
 - `exportName`: 导出路径，相对于服务根目录

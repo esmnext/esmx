@@ -39,8 +39,8 @@ export default {
             'root:src/components/button.vue',  // Vue 组件
             'root:src/utils/format.ts',        // 工具函数
             // 导出第三方依赖
-            'pkg:vue',                         // Vue 框架
-            'pkg:vue-router'                   // Vue Router
+            'npm:vue',                         // Vue 框架
+            'npm:vue-router'                   // Vue Router
         ]
     }
 } satisfies EsmxOptions;
@@ -48,7 +48,7 @@ export default {
 
 导出配置支持两种类型：
 - `root:*`：导出源码文件，路径相对于项目根目录
-- `pkg:*`：导出第三方依赖，直接指定包名
+- `npm:*`：导出第三方依赖，直接指定包名
 
 ## 模块导入
 
@@ -151,7 +151,7 @@ export default {
         exports: [
             'root:src/components/button.vue',
             'root:src/utils/format.ts',
-            'pkg:vue'
+            'npm:vue'
         ]
     },
     // 构建配置
