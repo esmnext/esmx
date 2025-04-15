@@ -694,40 +694,42 @@ export class Esmx {
     /**
      * 同步读取并解析 JSON 文件
      *
+     * @template T - 期望返回的JSON对象类型
      * @param filename - JSON 文件的绝对路径
-     * @returns 解析后的 JSON 对象
+     * @returns {T} 解析后的 JSON 对象
      * @throws 当文件不存在或 JSON 格式错误时抛出异常
      *
      * @example
      * ```ts
      * // 在 entry.node.ts 中使用
      * async server(esmx) {
-     *   const manifest = esmx.readJsonSync(esmx.resolvePath('dist/client', 'manifest.json'));
+     *   const manifest = esmx.readJsonSync<Manifest>(esmx.resolvePath('dist/client', 'manifest.json'));
      *   // 使用 manifest 对象
      * }
      * ```
      */
-    public readJsonSync(filename: string): any {
+    public readJsonSync<T = any>(filename: string): T {
         return JSON.parse(fs.readFileSync(filename, 'utf-8'));
     }
 
     /**
      * 异步读取并解析 JSON 文件
      *
+     * @template T - 期望返回的JSON对象类型
      * @param filename - JSON 文件的绝对路径
-     * @returns Promise<any> 解析后的 JSON 对象
+     * @returns {Promise<T>} 解析后的 JSON 对象
      * @throws 当文件不存在或 JSON 格式错误时抛出异常
      *
      * @example
      * ```ts
      * // 在 entry.node.ts 中使用
      * async server(esmx) {
-     *   const manifest = await esmx.readJson(esmx.resolvePath('dist/client', 'manifest.json'));
+     *   const manifest = await esmx.readJson<Manifest>(esmx.resolvePath('dist/client', 'manifest.json'));
      *   // 使用 manifest 对象
      * }
      * ```
      */
-    public async readJson(filename: string): Promise<any> {
+    public async readJson<T = any>(filename: string): Promise<T> {
         return JSON.parse(await fsp.readFile(filename, 'utf-8'));
     }
 
