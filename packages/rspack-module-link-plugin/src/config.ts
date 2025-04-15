@@ -20,7 +20,6 @@ export function initConfig(
         library: {
             type: isProduction ? 'modern-module' : 'module'
         },
-        publicPath: `/${opts.name}/`,
         environment: {
             ...compiler.options.output.environment,
             dynamicImport: true,
