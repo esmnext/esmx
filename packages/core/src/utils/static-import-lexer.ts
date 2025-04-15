@@ -70,7 +70,7 @@ export async function getImportPreloadInfo(
         if (!link) {
             continue;
         }
-        filepath = path.join(link.root, 'client', ...splitRes);
+        filepath = path.join(link.client, ...splitRes);
         const imports = await getImportsFromJsFile(filepath);
         for (const specifier of imports) {
             // 如果模块名在 importMap 中不存在，或已经处理过
