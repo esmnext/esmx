@@ -108,10 +108,23 @@ export function parseModuleConfig(
     root: string,
     config: ModuleConfig = {}
 ): ParsedModuleConfig {
-    const links: ParsedModuleConfig['links'] = {};
-    Object.entries(config.links || {}).forEach(([key, value]) => {
-        links[key] = {
-            name: key,
+    return {
+        name,
+        root,
+        links: getLinks(name, root, config),
+        imports: config.imports ?? {},
+        exports: getExports(config)
+    };
+}
+
+function getLinks(name: string, root: string, config: ModuleConfig) {
+    const result: ParsedModuleConfig['links'] = {};
+    Object.entries({
+        [name]: path.resolve(root, 'dist'),
+        ...config.links
+    }).forEach(([name, value]) => {
+        result[name] = {
+            name: name,
             root: value,
             client: path.resolve(root, value, 'client'),
             clientManifestJson: path.resolve(
@@ -127,25 +140,19 @@ export function parseModuleConfig(
             )
         };
     });
-    return {
-        name,
-        root,
-        links,
-        imports: config.imports ?? {},
-        exports: getExports(name, root, config)
-    };
+    return result;
 }
 
-function getExports(name: string, root: string, config: ModuleConfig = {}) {
+function getExports(config: ModuleConfig = {}) {
     const result: ParsedModuleConfig['exports'] = {};
     const exports: Record<string, ModuleConfigExportObject | string> = {
-        'entry.client': {
+        'src/entry.client': {
             inputTarget: {
                 client: './src/entry.client',
                 server: false
             }
         },
-        'entry.server': {
+        'src/entry.server': {
             inputTarget: {
                 client: false,
                 server: './src/entry.server'

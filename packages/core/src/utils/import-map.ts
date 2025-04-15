@@ -20,7 +20,7 @@ export async function getImportMap(
         for (const manifest of manifests) {
             for (const [name, value] of Object.entries(manifest.exports)) {
                 imports[`${manifest.name}/${name}`] =
-                    `/${manifest.name}/${value}`;
+                    `/${manifest.name}/${value.file}`;
             }
         }
     } else {
