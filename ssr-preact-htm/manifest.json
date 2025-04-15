@@ -1,17 +1,23 @@
 {
     "name": "ssr-preact-htm",
     "exports": {
-        "src/entry.client": "src/entry.client.52aca09b.final.js"
+        "src/entry.client": {
+            "name": "src/entry.client",
+            "rewrite": true,
+            "file": "src/entry.client.52aca09b.final.mjs",
+            "identifier": "ssr-preact-htm/src/entry.client"
+        }
     },
     "buildFiles": [
-        "src/entry.client.480d2198.final.css",
-        "src/entry.client.52aca09b.final.js"
+        "src/entry.client.52aca09b.final.mjs",
+        "src/entry.client.480d2198.final.css"
     ],
     "chunks": {
         "ssr-preact-htm@src/entry.client.ts": {
-            "js": "./src/entry.client.52aca09b.final.js",
+            "name": "ssr-preact-htm@src/entry.client.ts",
+            "js": "src/entry.client.52aca09b.final.mjs",
             "css": [
-                "./src/entry.client.480d2198.final.css"
+                "src/entry.client.480d2198.final.css"
             ],
             "resources": [],
             "sizes": {
