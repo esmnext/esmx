@@ -41,14 +41,14 @@ export function createRspackConfig(
             chunkLoading: esmx.isProd ? 'import' : undefined,
             chunkFilename: esmx.isProd
                 ? 'js/[name].[contenthash:8].final.mjs'
-                : 'js/[name].js',
+                : 'js/[name].mjs',
             library: {
                 type: esmx.isProd ? 'modern-module' : 'module'
             },
             filename:
                 buildTarget !== 'node' && esmx.isProd
                     ? 'js/[name].[contenthash:8].final.mjs'
-                    : 'js/[name].js',
+                    : 'js/[name].mjs',
             cssFilename: esmx.isProd
                 ? '[name].[contenthash:8].final.css'
                 : '[name].css',
@@ -60,7 +60,7 @@ export function createRspackConfig(
                     ? 'auto'
                     : `${esmx.basePathPlaceholder}${esmx.basePath}`,
             uniqueName: esmx.varName,
-            hotUpdateChunkFilename: '__hot__/[id].[fullhash].hot-update.js',
+            hotUpdateChunkFilename: '__hot__/[id].[fullhash].hot-update.mjs',
             hotUpdateMainFilename:
                 '__hot__/[runtime].[fullhash].hot-update.json',
             path: ((): string => {

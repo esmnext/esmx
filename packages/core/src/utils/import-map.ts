@@ -34,7 +34,7 @@ export async function getImportMap(
             for (const [name, value] of Object.entries(manifest.exports)) {
                 imports[`${manifest.name}/${name}`] = path.resolve(
                     link.server,
-                    value.name
+                    value.file
                 );
             }
         }
