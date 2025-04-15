@@ -62,7 +62,7 @@
 export default {
   modules: {
     exports: [
-      'pkg:axios',
+      'npm:axios',
       'root:src/utils.ts'
     ]
   }
