@@ -121,6 +121,11 @@ export function parseModuleConfig(
     };
 }
 
+const PREFIX = {
+    npm: 'npm:',
+    root: 'root:'
+};
+
 function getLinks(name: string, root: string, config: ModuleConfig) {
     const result: ParsedModuleConfig['links'] = {};
     Object.entries({
@@ -164,10 +169,6 @@ function getExports(config: ModuleConfig = {}) {
         }
     };
     if (Array.isArray(config.exports)) {
-        const PREFIX = {
-            npm: 'npm:',
-            root: 'root:'
-        };
         const FILE_EXT_REGEX =
             /\.(js|mjs|cjs|jsx|mjsx|cjsx|ts|mts|cts|tsx|mtsx|ctsx)$/i;
         config.exports.forEach((item) => {
