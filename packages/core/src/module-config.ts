@@ -1,6 +1,5 @@
 import path from 'node:path';
 import type { BuildSsrTarget } from './core';
-import { parseExport } from './utils/parse-export';
 
 /**
  * 模块链接配置

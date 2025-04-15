@@ -4,7 +4,7 @@ import type {
     ExternalItemFunctionData
 } from '@rspack/core';
 import type {
-    ManifestJsonExportItem,
+    ManifestJsonExport,
     ParsedModuleLinkPluginOptions
 } from './types';
 
@@ -21,8 +21,8 @@ export function initExternal(
 
     const defaultContext = compiler.options.context ?? process.cwd();
 
-    const absolutePathMap = new Map<string, ManifestJsonExportItem>();
-    const identifierMap = new Map<string, ManifestJsonExportItem>();
+    const absolutePathMap = new Map<string, ManifestJsonExport>();
+    const identifierMap = new Map<string, ManifestJsonExport>();
 
     externals.push(async (data: ExternalItemFunctionData) => {
         if (!data.request || !data.context || !data.contextInfo?.issuer) return;
