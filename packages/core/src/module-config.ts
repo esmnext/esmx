@@ -52,8 +52,12 @@ export interface ModuleConfig {
      * }
      * ```
      */
-    exports?: Record<string, string | ModuleConfigExportObject>;
+    exports?: ModuleConfigExportExports;
 }
+
+export type ModuleConfigExportExports =
+    | Array<string | Record<string, string | ModuleConfigExportObject>>
+    | Record<string, string | ModuleConfigExportObject>;
 
 export type ModuleConfigExportObject = {
     rewrite?: boolean;
@@ -157,9 +161,40 @@ function getExports(config: ModuleConfig = {}) {
                 client: false,
                 server: './src/entry.server'
             }
-        },
-        ...config.exports
+        }
     };
+    if (Array.isArray(config.exports)) {
+        const PREFIX = {
+            npm: 'npm:',
+            root: 'root:'
+        };
+        const FILE_EXT_REGEX =
+            /\.(js|mjs|cjs|jsx|mjsx|cjsx|ts|mts|cts|tsx|mtsx|ctsx)$/i;
+        config.exports.forEach((item) => {
+            if (typeof item === 'string') {
+                if (item.startsWith(PREFIX.npm)) {
+                    item = item.substring(PREFIX.npm.length);
+                    exports[item] = {
+                        rewrite: false,
+                        input: item
+                    };
+                } else if (item.startsWith(PREFIX.root)) {
+                    item = item
+                        .substring(PREFIX.root.length)
+                        .replace(FILE_EXT_REGEX, '');
+                    exports[item] = {
+                        input: './' + item
+                    };
+                } else {
+                    console.error(`Invalid module export: ${item}`);
+                }
+            } else {
+                Object.assign(exports, item);
+            }
+        });
+    } else if (config.exports) {
+        Object.assign(exports, config.exports);
+    }
     for (const [name, value] of Object.entries(exports)) {
         const opts =
             typeof value === 'string'
@@ -178,6 +213,5 @@ function getExports(config: ModuleConfig = {}) {
             }
         };
     }
-
     return result;
 }
