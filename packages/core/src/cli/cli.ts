@@ -32,7 +32,7 @@ export async function cli(command: string) {
             break;
         case COMMAND.start:
             throw new Error(
-                `Please use 'NODE_ENV=production node dist/index.js' to run the built program`
+                `Please use 'NODE_ENV=production node dist/index.mjs' to run the built program`
             );
         case COMMAND.build:
             // 编译代码。
