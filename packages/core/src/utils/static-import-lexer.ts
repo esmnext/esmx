@@ -11,7 +11,7 @@ import * as esmLexer from 'es-module-lexer';
  * @param code js 代码
  * @returns `Promise<string[]>` 静态 import 的模块名列表
  */
-export async function getImportsFromJsCode(code: string) {
+export async function getImportsFromJsCode(code: string): Promise<string[]> {
     await esmLexer.init;
     const [imports] = esmLexer.parse(code);
     // 静态导入 && 拥有模块名
