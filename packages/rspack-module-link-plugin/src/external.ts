@@ -21,37 +21,40 @@ export function initExternal(
 
     const defaultContext = compiler.options.context ?? process.cwd();
 
-    const absolutePathMap = new Map<string, ManifestJsonExport>();
-    const identifierMap = new Map<string, ManifestJsonExport>();
-
+    const importMap = new Map<string, string>();
     externals.push(async (data: ExternalItemFunctionData) => {
         if (!data.request || !data.context || !data.contextInfo?.issuer) return;
 
-        if (absolutePathMap.size === 0) {
+        if (importMap.size === 0) {
             await Promise.all(
                 Object.values(opts.exports).map(async (value) => {
-                    identifierMap.set(value.identifier, value);
+                    importMap.set(value.identifier, value.identifier);
                     const entry = await resolvePath(
                         data,
                         defaultContext,
                         value.file
                     );
                     if (entry) {
-                        absolutePathMap.set(entry, value);
+                        importMap.set(entry, value.identifier);
                     }
                 })
             );
+            for (const [key] of Object.entries(opts.imports)) {
+                importMap.set(key, key);
+            }
         }
-        let exportItem = identifierMap.get(data.request);
-        if (!exportItem) {
+        // 1、先按照标识符查找
+        let importName = importMap.get(data.request);
+        if (!importName) {
+            // 2、再按照路径查找
             const result = await resolvePath(data, data.context, data.request);
             if (result) {
-                exportItem = absolutePathMap.get(result);
+                importName = importMap.get(result);
             }
         }
 
-        if (exportItem) {
-            return `module-import ${exportItem.identifier}`;
+        if (importName) {
+            return `module-import ${importName}`;
         }
     });
     compiler.options.externals = externals;

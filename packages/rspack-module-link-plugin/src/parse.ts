@@ -31,6 +31,7 @@ export function parseOptions(
         name: options.name,
         ext: options.ext ? `.${options.ext}` : '.mjs',
         exports,
+        imports: options.imports ?? {},
         injectChunkName: options.injectChunkName ?? false
     };
 }

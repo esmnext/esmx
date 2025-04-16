@@ -50,6 +50,10 @@ export interface ParsedModuleLinkPluginOptions {
      */
     exports: ManifestJsonExports;
     /**
+     * 导入映射
+     */
+    imports: Record<string, string>;
+    /**
      * 是否注入 chunk name，通常只有构建服务端渲染产物时才需要设置为 `true`
      */
     injectChunkName: boolean;
