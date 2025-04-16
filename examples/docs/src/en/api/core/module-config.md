@@ -89,9 +89,9 @@ export default {
     // Import configuration
     links: {
       // Source installation: Needs to point to dist directory
-      'ssr-remote': 'root:./node_modules/ssr-remote/dist',
+      'ssr-remote': './node_modules/ssr-remote/dist',
       // Package installation: Directly points to package directory
-      'other-remote': 'root:./node_modules/other-remote'
+      'other-remote': './node_modules/other-remote'
     },
 
     // External dependency configuration

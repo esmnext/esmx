@@ -75,7 +75,7 @@ Configure module linking and import mapping in `host`:
 export default {
   modules: {
     links: {
-      'remote': 'root:./node_modules/remote'
+      'remote': './node_modules/remote'
     },
     imports: {
       'axios': 'remote/npm/axios'

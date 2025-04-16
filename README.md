@@ -76,7 +76,7 @@ export default {
 export default {
   modules: {
     links: {
-      'remote': 'root:./node_modules/remote'
+      'remote': './node_modules/remote'
     },
     imports: {
       'axios': 'remote/npm/axios'

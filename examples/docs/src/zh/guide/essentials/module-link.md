@@ -64,9 +64,9 @@ export default {
         // 链接配置
         links: {
             // 源码安装：指向构建产物目录
-            'ssr-remote': 'root:./node_modules/ssr-remote/dist',
+            'ssr-remote': './node_modules/ssr-remote/dist',
             // 软件包安装：指向包目录
-            'other-remote': 'root:./node_modules/other-remote'
+            'other-remote': './node_modules/other-remote'
         },
         // 导入映射设置
         imports: {

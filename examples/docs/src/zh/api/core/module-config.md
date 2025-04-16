@@ -89,9 +89,9 @@ export default {
     // 导入配置
     links: {
       // 源码安装方式：需要指向 dist 目录
-      'ssr-remote': 'root:./node_modules/ssr-remote/dist',
+      'ssr-remote': './node_modules/ssr-remote/dist',
       // 软件包安装方式：直接指向包目录
-      'other-remote': 'root:./node_modules/other-remote'
+      'other-remote': './node_modules/other-remote'
     },
 
     // 外部依赖配置

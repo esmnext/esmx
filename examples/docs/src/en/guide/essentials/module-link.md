@@ -64,9 +64,9 @@ export default {
         // Link configuration
         links: {
             // Source installation: points to build output directory
-            'ssr-remote': 'root:./node_modules/ssr-remote/dist',
+            'ssr-remote': './node_modules/ssr-remote/dist',
             // Package installation: points to package directory
-            'other-remote': 'root:./node_modules/other-remote'
+            'other-remote': './node_modules/other-remote'
         },
         // Import mapping settings
         imports: {
