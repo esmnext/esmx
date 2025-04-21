@@ -18,7 +18,7 @@ export default {
          * 导入映射配置
          */
         imports: {
-            vue: 'ssr-vue2-remote/npm/vue'
+            vue: 'ssr-vue2-remote/vue'
         }
     },
     async server(esmx) {

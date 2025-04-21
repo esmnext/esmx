@@ -10,6 +10,10 @@ export interface ManifestJson {
      */
     name: string;
     /**
+     * 导入映射
+     */
+    imports: Record<string, string>;
+    /**
      * 导出项配置
      * 类型：Record<导出路径, 导出项信息>
      */
