@@ -1,4 +1,5 @@
 {
+    "imports": {},
     "name": "ssr-demo-vue3",
     "exports": {
         "src/entry.client": {

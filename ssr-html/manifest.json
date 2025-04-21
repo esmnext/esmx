@@ -1,4 +1,5 @@
 {
+    "imports": {},
     "name": "ssr-html",
     "exports": {
         "src/entry.client": {
