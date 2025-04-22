@@ -1,101 +1,28 @@
 {
-    "imports": {},
     "name": "ssr-vue2-remote",
     "exports": {
-        "src/entry.client": {
-            "name": "src/entry.client",
-            "rewrite": true,
-            "file": "src/entry.client.71bc1fc7.final.mjs",
-            "identifier": "ssr-vue2-remote/src/entry.client"
-        },
-        "vue": {
-            "name": "vue",
-            "rewrite": false,
-            "file": "vue.94c707fc.final.mjs",
-            "identifier": "vue"
-        },
-        "src/components/index": {
-            "name": "src/components/index",
-            "rewrite": true,
-            "file": "src/components/index.ea6adf5c.final.mjs",
-            "identifier": "ssr-vue2-remote/src/components/index"
-        },
-        "src/composables/index": {
-            "name": "src/composables/index",
-            "rewrite": true,
-            "file": "src/composables/index.fb511c82.final.mjs",
-            "identifier": "ssr-vue2-remote/src/composables/index"
-        },
-        "src/examples/index": {
-            "name": "src/examples/index",
-            "rewrite": true,
-            "file": "src/examples/index.22bf3520.final.mjs",
-            "identifier": "ssr-vue2-remote/src/examples/index"
-        }
+        "src/entry.client": "src/entry.client.bd09659e.final.js",
+        "npm/vue": "npm/vue.94c707fc.final.js",
+        "src/components/index": "src/components/index.8815958e.final.js",
+        "src/composables/index": "src/composables/index.5c38a5da.final.js",
+        "src/examples/index": "src/examples/index.2abc6dc1.final.js"
     },
     "buildFiles": [
-        "src/examples/index.22bf3520.final.mjs",
-        "src/examples/index.84b37e4f.final.css",
-        "src/components/index.ea6adf5c.final.mjs",
-        "vue.94c707fc.final.mjs",
+        "chunks/384.023bbc2f.final.js",
+        "src/examples/index.2abc6dc1.final.js",
+        "src/entry.client.bd09659e.final.js",
         "src/components/index.ecb7607c.final.css",
-        "src/composables/index.fb511c82.final.mjs",
-        "src/entry.client.71bc1fc7.final.mjs",
-        "715.bcf10f2c.final.css",
-        "715.561f23e9.final.mjs"
+        "chunks/384.bcf10f2c.final.css",
+        "src/examples/index.84b37e4f.final.css",
+        "npm/vue.94c707fc.final.js",
+        "src/components/index.8815958e.final.js",
+        "src/composables/index.5c38a5da.final.js"
     ],
     "chunks": {
-        "ssr-vue2-remote@src/examples/index.ts": {
-            "name": "ssr-vue2-remote@src/examples/index.ts",
-            "js": "src/examples/index.22bf3520.final.mjs",
-            "css": [
-                "src/examples/index.84b37e4f.final.css"
-            ],
-            "resources": [],
-            "sizes": {
-                "js": 27452,
-                "css": 8255,
-                "resource": 0
-            }
-        },
-        "ssr-vue2-remote@../../node_modules/.pnpm/vue@2.7.16/node_modules/vue/dist/vue.esm.js": {
-            "name": "ssr-vue2-remote@../../node_modules/.pnpm/vue@2.7.16/node_modules/vue/dist/vue.esm.js",
-            "js": "vue.94c707fc.final.mjs",
-            "css": [],
-            "resources": [],
-            "sizes": {
-                "js": 419330,
-                "css": 0,
-                "resource": 0
-            }
-        },
-        "ssr-vue2-remote@src/entry.client.ts": {
-            "name": "ssr-vue2-remote@src/entry.client.ts",
-            "js": "src/entry.client.71bc1fc7.final.mjs",
-            "css": [],
-            "resources": [],
-            "sizes": {
-                "js": 9038,
-                "css": 0,
-                "resource": 0
-            }
-        },
-        "ssr-vue2-remote@src/composables/index.ts": {
-            "name": "ssr-vue2-remote@src/composables/index.ts",
-            "js": "src/composables/index.fb511c82.final.mjs",
-            "css": [],
-            "resources": [],
-            "sizes": {
-                "js": 1421,
-                "css": 0,
-                "resource": 0
-            }
-        },
         "ssr-vue2-remote@src/components/index.ts": {
-            "name": "ssr-vue2-remote@src/components/index.ts",
-            "js": "src/components/index.ea6adf5c.final.mjs",
+            "js": "./src/components/index.8815958e.final.js",
             "css": [
-                "src/components/index.ecb7607c.final.css"
+                "./src/components/index.ecb7607c.final.css"
             ],
             "resources": [],
             "sizes": {
@@ -105,15 +32,56 @@
             }
         },
         "ssr-vue2-remote@src/app.vue": {
-            "name": "ssr-vue2-remote@src/app.vue",
-            "js": "715.561f23e9.final.mjs",
+            "js": "chunks/384.023bbc2f.final.js",
             "css": [
-                "715.bcf10f2c.final.css"
+                "chunks/384.bcf10f2c.final.css"
             ],
             "resources": [],
             "sizes": {
                 "js": 10481,
                 "css": 4691,
+                "resource": 0
+            }
+        },
+        "ssr-vue2-remote@src/examples/index.ts": {
+            "js": "./src/examples/index.2abc6dc1.final.js",
+            "css": [
+                "./src/examples/index.84b37e4f.final.css"
+            ],
+            "resources": [],
+            "sizes": {
+                "js": 27452,
+                "css": 8255,
+                "resource": 0
+            }
+        },
+        "ssr-vue2-remote@src/entry.client.ts": {
+            "js": "./src/entry.client.bd09659e.final.js",
+            "css": [],
+            "resources": [],
+            "sizes": {
+                "js": 9055,
+                "css": 0,
+                "resource": 0
+            }
+        },
+        "ssr-vue2-remote@../../node_modules/.pnpm/vue@2.7.16/node_modules/vue/dist/vue.esm.js": {
+            "js": "./npm/vue.94c707fc.final.js",
+            "css": [],
+            "resources": [],
+            "sizes": {
+                "js": 419330,
+                "css": 0,
+                "resource": 0
+            }
+        },
+        "ssr-vue2-remote@src/composables/index.ts": {
+            "js": "./src/composables/index.5c38a5da.final.js",
+            "css": [],
+            "resources": [],
+            "sizes": {
+                "js": 1421,
+                "css": 0,
                 "resource": 0
             }
         }
