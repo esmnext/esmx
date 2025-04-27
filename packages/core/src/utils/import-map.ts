@@ -2,43 +2,40 @@ import path from 'node:path';
 
 import { pathWithoutIndex } from './path-without-index';
 
-import type { ImportMap, SpecifierMap } from '@esmx/import';
+import type { ImportMap, ScopesMap, SpecifierMap } from '@esmx/import';
 import type { BuildSsrTarget } from '../core';
 import type { ManifestJson } from '../manifest-json';
-import type { ParsedModuleConfig } from '../module-config';
 
 /**
  * 获取导入映射对象
  */
 export async function getImportMap(
-    target: BuildSsrTarget,
     manifests: readonly ManifestJson[],
-    moduleConfig: ParsedModuleConfig
+    rootMap: Record<string, string>
 ): Promise<ImportMap> {
     const imports: SpecifierMap = {};
-    if (target === 'client') {
-        for (const manifest of manifests) {
-            for (const [name, value] of Object.entries(manifest.exports)) {
-                imports[`${manifest.name}/${name}`] =
-                    `/${manifest.name}/${value.file}`;
+    const scopes: ScopesMap = {};
+    for (const manifest of Object.values(manifests)) {
+        for (const exportItem of Object.values(manifest.exports)) {
+            const root = rootMap[manifest.name] + '/';
+            if (!root) {
+                throw new Error(`Cannot find root for ${manifest.name}`);
             }
-        }
-    } else {
-        for (const manifest of manifests) {
-            const link = moduleConfig.links[manifest.name];
-            if (!link) {
-                throw new Error(
-                    `'${manifest.name}' service did not find module config`
+            if (exportItem.rewrite) {
+                imports[exportItem.identifier] = path.resolve(
+                    root,
+                    exportItem.file
                 );
-            }
-            for (const [name, value] of Object.entries(manifest.exports)) {
-                imports[`${manifest.name}/${name}`] = path.resolve(
-                    link.server,
-                    value.file
+            } else {
+                scopes[root] = scopes[root] ?? {};
+                scopes[root][exportItem.identifier] = path.resolve(
+                    root,
+                    exportItem.file
                 );
             }
         }
     }
-    pathWithoutIndex(imports);
-    return { imports };
+    // pathWithoutIndex(imports);
+    console.log('>> import', { scopes, imports });
+    return { scopes, imports };
 }
