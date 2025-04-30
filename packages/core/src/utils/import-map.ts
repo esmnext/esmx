@@ -3,7 +3,6 @@ import path from 'node:path';
 import { pathWithoutIndex } from './path-without-index';
 
 import type { ImportMap, ScopesMap, SpecifierMap } from '@esmx/import';
-import type { BuildSsrTarget } from '../core';
 import type { ManifestJson } from '../manifest-json';
 
 /**
@@ -17,7 +16,7 @@ export async function getImportMap(
     const scopes: ScopesMap = {};
     for (const manifest of Object.values(manifests)) {
         for (const exportItem of Object.values(manifest.exports)) {
-            const root = rootMap[manifest.name] + '/';
+            const root = path.join(rootMap[manifest.name], '/');
             if (!root) {
                 throw new Error(`Cannot find root for ${manifest.name}`);
             }
@@ -35,7 +34,6 @@ export async function getImportMap(
             }
         }
     }
-    // pathWithoutIndex(imports);
-    console.log('>> import', { scopes, imports });
+    pathWithoutIndex(imports);
     return { scopes, imports };
 }

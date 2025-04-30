@@ -1,6 +1,4 @@
-import fs from 'node:fs';
 import { pathToFileURL } from 'node:url';
-import { styleText } from 'node:util';
 import {
     type App,
     type Esmx,
