@@ -55,7 +55,7 @@
 
 在 Esmx 中，模块的导入导出配置简单直观，只需几行代码即可完成应用间的无缝集成。
 
-**模块导出**    
+**模块导出**  
 `remote` 配置需要对外暴露的模块：
 
 ```ts
@@ -69,7 +69,7 @@ export default {
 }
 ```
 
-**模块导入**    
+**模块导入**  
 `host` 配置模块链接和导入映射
 
 ```ts
@@ -93,6 +93,7 @@ import utils from 'remote/src/utils';
 ```
 
 ## 🚀 快速开始
+
 请阅读[快速开始](https://www.esmnext.com/guide/start/getting-started.html)。
 
 ## 🔧 示例项目
@@ -107,7 +108,7 @@ import utils from 'remote/src/utils';
   - 📦 主/子应用独立开发
   - 🌐 统一依赖管理与 SSR
 
-- [Preact + HTM](https://www.esmnext.com/ssr-preact-htm/)
+- [Preact + HTML](https://www.esmnext.com/ssr-preact-htm/)
   - ⚡️ 极致轻量的包体积
   - 🎯 高性能 SSR 实现
   - 🛠 低资源消耗场景优化
@@ -117,17 +118,15 @@ import utils from 'remote/src/utils';
 ## 📜 版本说明
 
 - [v3.x](https://www.esmnext.com) - 开发阶段
-当前版本基于 Rspack 构建，提供更优的开发体验和构建性能。
-
-> **已知问题**：
-> - ESM 模块导出优化中：`modern-module` 的 `export *` 语法存在稳定性问题 [#8557](https://github.com/web-infra-dev/rspack/issues/8557)
+  当前版本基于 Rspack 构建，提供更优的开发体验和构建性能。
+  > **已知问题**：
+  > - ESM 模块导出优化中：`modern-module` 的 `export *` 语法存在稳定性问题 [#8557](https://github.com/web-infra-dev/rspack/issues/8557)
 
 - [v2.x](https://github.com/esmnext/esmx/blob/v2/docs/zh-CN/README.md) - 不推荐生产使用
-此版本不再推荐用于生产环境，建议使用最新版本。
+  此版本不再推荐用于生产环境，建议使用最新版本。
 
 - [v1.x](https://fmfe.github.io/genesis-docs/guide/) - 已停止维护
-原名 Genesis，是 Esmx 的前身。不再接受新功能和非关键性 bug 修复。
-
+  原名 Genesis，是 Esmx 的前身。不再接受新功能和非关键性 bug 修复。
 
 ## 👥 贡献者
 
@@ -136,6 +135,7 @@ import utils from 'remote/src/utils';
 [![Contributors](https://contrib.rocks/image?repo=esmnext/esmx)](https://github.com/esmnext/esmx/graphs/contributors)
 
 ## 📈 趋势
+
 ![Star growth chart](https://starchart.cc/esmnext/esmx.svg)
 
 ## ⚖️ 许可证
