@@ -65,7 +65,6 @@ export function createMiddleware(esmx: Esmx): Middleware {
         const base = `/${item.name}/`;
         const baseUrl = new URL(`file:`);
         const root = path.resolve(item.root, 'client');
-        // const reFinal = /\.final\.[a-zA-Z0-9]+$/;
         return (req, res, next) => {
             const url = req.url ?? '/';
             const { pathname } = new URL(req.url ?? '/', baseUrl);
