@@ -32,7 +32,7 @@ interface RouterRegisterApp {
   // 应用销毁函数
   unmount: () => void;
   // 服务端渲染时的渲染函数
-  renderToString: () => string;
+  renderToString?: () => string;
 }
 
 const router = new Router({
@@ -59,7 +59,7 @@ await router.push('/about');
 // 路由共存
 await router.pushLayer('/setting');
 // 服务端渲染时调用
-await router.renderToString();
+await router.renderToString?.();
 ```
 
 ## 跨站点URL转换
@@ -103,9 +103,10 @@ const router = new Router({
        * 2. 使用当前站点域名重建URL
        * 3. 保持单页应用的无刷新体验
        */
-      return new URL(url.href.substring(
+      const fullPath = url.href.substring(
         url.href.indexOf(url.host) + url.host.length
-      ), router.options.baseURL);
+      );
+      return new URL(fullPath, router.options.baseURL);
     }
 
     // 非支持域名（如第三方链接）保持原样
@@ -134,12 +135,6 @@ const router = new Router({
 
 ```ts
 const router = new Router({
-  baseURL: new URL('https://www.esmx.cn'),
-  isExternalUrl({ url, router }: { url: URL; router: RouterInstance; }) {
-    // 这里自定义的规则 判断某些链接是否是外站
-    // 这是路由库内部的默认逻辑：
-    return url.hostname !== router.options.baseURL.hostname;
-  }
   externalUrlHandler({ url, router }: { url: URL; router: RouterInstance; }) {
     if (url.hostname !== 'www.some-website-you-trusted.com') {
       const ok = window.confirm('您即将访问不安全的网站，是否继续？');
@@ -170,6 +165,8 @@ router.push('https://www.google.com');
 
 挂载组件之类的，是通过监听 route 变化来进行的。
 
+构建路由时选项：
+
 ```ts
 export interface RouterOptions {
   /**
@@ -194,15 +191,6 @@ export interface RouterOptions {
   }) => URL | Promise<URL>;
 
   /**
-   * 自定义外部链接匹配规则，用于判断一个URL是否为外部链接。
-   * @default (url) => url.hostname !== baseURL.hostname;
-   */
-  isExternalUrl?: (context: {
-    url: URL;
-    router: RouterInstance;
-  }) => boolean | Promise<boolean>;
-
-  /**
    * 自定义外部链接处理函数。返回 `true` 表示已处理，返回 `false` 则继续使用默认策略。
    * 目前的默认策略是根据 `replace` 来决定是当前标签页还是新标签页打开。
    */
@@ -211,6 +199,38 @@ export interface RouterOptions {
     router: RouterInstance;
     replace: boolean;
   }) => boolean | Promise<boolean>;
+
+  /**
+   * 路由中全局上下文。在导航时会和单次导航任务的上下文对象合并，导航任务上下文的优先级会更高。
+   */
+  context: Object;
+}
+```
+
+路由实例：
+
+```ts
+interface RegisterConfig {
+  // 应用挂载函数
+  mount: () => void;
+  // 应用销毁函数
+  unmount: () => void;
+  // 服务端渲染时的渲染函数
+  renderToString?: () => string;
+}
+
+interface RouterInstance {
+  init(options?: RouterInitOptions);
+  register(name: string, config: (router: RouterInstance): RegisterConfig);
+  push: {
+    (url: string | URL, options: {}): Promise<void>;
+  };
+  replace();
+  reload();
+  forceReload();
+  pushWindow();
+  pushLayer();
+  renderToString();
 }
 ```
 
@@ -305,5 +325,157 @@ type CloseLayer = {
 
 1. pushLayer 后，所有的路由都切换到内存模式，此时浏览器 URL 的变更和 UI 的更新脱节。
    此时对于顶层非 layer 模式打开的页面，会在其下所有的 layer 都被关闭才还原回非内存模式，期间产生的所有记录都会同步到其 history 中。
-3. 每个 layer 都有父layer，不存在例外。关闭时，如果存在子layer，则可以决定是关闭所有子layer，还是不关闭，不关闭时会将子layer的父layer指向当前layer的父layer。
-2. 提供一个可以改变浏览器 URL 的便捷方法
+2. 每个 layer 都有父layer，不存在例外。关闭时，如果存在子layer，则可以决定是关闭所有子layer，还是不关闭，不关闭时会将子layer的父layer指向当前layer的父layer。
+3. 每个单独的layer都是一个单独的路由实例
+4. 提供一个可以改变浏览器 URL 的便捷方法
+
+
+
+
+
+路由添加上下文选项
+跨区域 改return例子
+
+同域
+  应用控制
+  非应用内控制
+    单独注册一个应用去处理
+不同域
+
+
+1. 路由添加上下文选项
+2. 跨区域 改return例子
+3. 同域情况下 通过路由配置是否由应用来控制
+4. 同域 非应用内控制 路由表匹配之后添加一个钩子 允许强刷页面或新开窗口
+5. state/ctx  可与全局options里的合并
+6. 在beforeEach之前加一个是否关闭layer的钩子
+7. push的返回值
+
+router.rootContext
+router.
+  
+  // context
+
+
+  router.push('https://baidu.com', {
+    webOpen: false,
+    appOpen: true,
+  })
+
+
+
+
+router.pushLayer('', {
+  hooks: {}
+})
+
+```mermaid
+flowchart TD
+    start(["Start"]):::Terminal --> decodeURL["解析 URL"]
+    decodeURL --> isExternalUrl{"是站内地址"}:::Decision
+    isExternalUrl -- Yes --> matchInRouteTable["在路由表内匹配"]
+    isExternalUrl -- No --> externalUrlHandler["外站跳转逻辑"] --> End
+    matchInRouteTable --> tmpHook["钩子<br>(暂定，用于强制刷新/开新窗口等操作)"] & isExist{"存在匹配项"}:::Decision
+    isExist -- No --> End
+    isExist -- Yes --> execGuard["执行回调钩子/守卫"] -.-> End
+    execGuard --> updateRoute["更新路由<br>(mount &amp; 更新 route)"] --> End(["End"]):::Terminal
+    decodeURL ~~~ externalUrlHandler
+    subgraph s1["执行回调钩子/守卫"]
+        direction LR
+        start2(["Start"]):::Terminal --> sameRoute{"是否是相同路由"}:::Decision
+        sameRoute -- No --> beforeLeave["beforeLeave"]
+        sameRoute -- Yes --> layerAction["layerAction"]
+        beforeLeave --> layerAction --> beforeEach["beforeEach"] --> sameRoute2{"是否是相同路由"}:::Decision
+        sameRoute2 -- No --> beforeEnter["beforeEnter"]
+        sameRoute2 -- Yes --> beforeUpdate["beforeUpdate"]
+        beforeEnter --> loadRoute["loadRoute<br>(内部)"]
+        loadRoute --> afterEach["afterEach"]
+        afterEach --> End2(["End"]):::Terminal
+        beforeUpdate --> afterEach
+    end
+    End ~~~ s1
+    classDef Terminal fill:#FFF9C4,color:#000
+    classDef Decision fill:#C8E6C9,color:#000
+```
+
+
+update({ type: 'push' })
+update({ type: 'push-layer' })
+update({ type: 'push-window' })
+update({ type: 'replace' })
+update({ type: 'reload' })
+
+// 无刷新
+push
+replace
+reload
+layer
+// 页面强刷
+force-reload
+// 新窗口打开
+push-window
+
+router.push()
+router.replace()
+router.reload()
+router.forceReload()
+router.pushWindow()
+router.pushLayer()
+
+1. error 跳转的地址，被终止
+2. updated
+3. 打开层，操作成功，操作失败
+4. hybrid
+layer
+ close
+ success
+ data
+ goUrl
+
+
+router.pushLayer({
+  canClose (route, router) {
+    router.layerResult = { ...router.layerResult }
+    return router.layerResult !== null
+  }
+});
+
+
+// 成功
+// GoToTrade
+// router.closeLayer({});
+
+hooks:
+if (url === 风险提示)
+layerRouter.close()
+rootRouter.push(url)
+
+
+// opts
+{
+    hybrid: 'app'
+}
+// routeRule
+{
+    path: '/u/:id'
+    hybrid: {
+        app: {
+            canUse: () => version > 6500,
+            hans() {
+                (route) => {
+                    return native('ssss', { id: route.params.id })
+                }
+            }
+        },
+        'zhu': () => {
+
+        }
+    }
+}
+
+router.push('/u/1000');
+router.context
+router.layerParams
+router.layerReturn;
+
+router.pushLayer('/');
