@@ -22,7 +22,7 @@ export class Tasks<T extends func = func> {
     protected handlers: T[] = [];
 
     public add(handler: T | T[]) {
-        const params: T[] = handler instanceof Array ? handler : [handler];
+        const params: T[] = Array.isArray(handler) ? handler : [handler];
         this.handlers.push(...params);
     }
 

@@ -321,7 +321,8 @@ export function isPathWithProtocolOrDomain(
     try {
         url = normalizeUrl(url, {
             stripWWW: false,
-            removeQueryParameters: false
+            removeQueryParameters: false,
+            sortQueryParameters: false
         });
     } catch (error) {
         try {

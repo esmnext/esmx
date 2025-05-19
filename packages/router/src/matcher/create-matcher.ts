@@ -176,8 +176,7 @@ function createRouteMatches(
             ...createRouteMatch(
                 {
                     ...route,
-                    path:
-                        route.path instanceof Array ? route.path : [route.path]
+                    path: Array.isArray(route.path) ? route.path : [route.path]
                 },
                 parent
             )
@@ -201,7 +200,7 @@ function createRouteMatch(
     route: RouteConfig,
     parent?: RouteMatch
 ): RouteMatch | RouteMatch[] {
-    const pathList = route.path instanceof Array ? route.path : [route.path];
+    const pathList = Array.isArray(route.path) ? route.path : [route.path];
     const routeMatches: RouteMatch[] = pathList.reduce<RouteMatch[]>(
         (acc, item, index) => {
             const { children } = route;
@@ -287,7 +286,7 @@ function createRouteMatch(
         },
         []
     );
-    return route.path instanceof Array
+    return Array.isArray(route.path)
         ? routeMatches
         : routeMatches[routeMatches.length - 1];
 }
