@@ -1,30 +1,53 @@
 {
+    "imports": {},
     "name": "ssr-html",
     "exports": {
-        "src/entry.client": "src/entry.client.c02f1885.final.js",
-        "src/title/index": "src/title/index.2d79c0c2.final.js"
+        "src/entry.client": {
+            "name": "src/entry.client",
+            "rewrite": true,
+            "file": "src/entry.client.2bd0c29c.final.mjs",
+            "identifier": "ssr-html/src/entry.client"
+        },
+        "src/title/index": {
+            "name": "src/title/index",
+            "rewrite": true,
+            "file": "src/title/index.2d79c0c2.final.mjs",
+            "identifier": "ssr-html/src/title/index"
+        }
     },
     "buildFiles": [
         "images/sun.429a7bc5.final.png",
+        "534.c24a7359.final.mjs",
         "images/starry.d914a632.final.jpg",
-        "chunks/830.63b8fd4f.final.css",
-        "images/running-dog.76197e20.final.gif",
-        "images/logo.3923d727.final.svg",
-        "chunks/534.63b8fd4f.final.css",
-        "chunks/830.645cc00e.final.js",
-        "chunks/473.63b8fd4f.final.css",
-        "src/entry.client.c02f1885.final.js",
+        "src/entry.client.2bd0c29c.final.mjs",
         "src/entry.client.2e0a89bc.final.css",
-        "chunks/534.c24a7359.final.js",
-        "images/cat.ed79ef6b.final.jpeg",
-        "chunks/473.fb9665e0.final.js",
-        "src/title/index.2d79c0c2.final.js"
+        "src/title/index.2d79c0c2.final.mjs",
+        "images/logo.3923d727.final.svg",
+        "images/running-dog.76197e20.final.gif",
+        "473.63b8fd4f.final.css",
+        "534.63b8fd4f.final.css",
+        "473.fb9665e0.final.mjs",
+        "830.63b8fd4f.final.css",
+        "830.645cc00e.final.mjs",
+        "images/cat.ed79ef6b.final.jpeg"
     ],
     "chunks": {
+        "ssr-html@src/title/index.ts": {
+            "name": "ssr-html@src/title/index.ts",
+            "js": "src/title/index.2d79c0c2.final.mjs",
+            "css": [],
+            "resources": [],
+            "sizes": {
+                "js": 90,
+                "css": 0,
+                "resource": 0
+            }
+        },
         "ssr-html@src/views/about.ts": {
-            "js": "chunks/473.fb9665e0.final.js",
+            "name": "ssr-html@src/views/about.ts",
+            "js": "473.fb9665e0.final.mjs",
             "css": [
-                "chunks/473.63b8fd4f.final.css"
+                "473.63b8fd4f.final.css"
             ],
             "resources": [],
             "sizes": {
@@ -33,10 +56,24 @@
                 "resource": 0
             }
         },
-        "ssr-html@src/views/home.ts": {
-            "js": "chunks/534.c24a7359.final.js",
+        "ssr-html@src/entry.client.ts": {
+            "name": "ssr-html@src/entry.client.ts",
+            "js": "src/entry.client.2bd0c29c.final.mjs",
             "css": [
-                "chunks/534.63b8fd4f.final.css"
+                "src/entry.client.2e0a89bc.final.css"
+            ],
+            "resources": [],
+            "sizes": {
+                "js": 9730,
+                "css": 6471,
+                "resource": 0
+            }
+        },
+        "ssr-html@src/views/home.ts": {
+            "name": "ssr-html@src/views/home.ts",
+            "js": "534.c24a7359.final.mjs",
+            "css": [
+                "534.63b8fd4f.final.css"
             ],
             "resources": [
                 "images/cat.ed79ef6b.final.jpeg",
@@ -52,36 +89,15 @@
             }
         },
         "ssr-html@src/views/not-found.ts": {
-            "js": "chunks/830.645cc00e.final.js",
+            "name": "ssr-html@src/views/not-found.ts",
+            "js": "830.645cc00e.final.mjs",
             "css": [
-                "chunks/830.63b8fd4f.final.css"
+                "830.63b8fd4f.final.css"
             ],
             "resources": [],
             "sizes": {
                 "js": 4479,
                 "css": 5739,
-                "resource": 0
-            }
-        },
-        "ssr-html@src/entry.client.ts": {
-            "js": "./src/entry.client.c02f1885.final.js",
-            "css": [
-                "./src/entry.client.2e0a89bc.final.css"
-            ],
-            "resources": [],
-            "sizes": {
-                "js": 9747,
-                "css": 6471,
-                "resource": 0
-            }
-        },
-        "ssr-html@src/title/index.ts": {
-            "js": "./src/title/index.2d79c0c2.final.js",
-            "css": [],
-            "resources": [],
-            "sizes": {
-                "js": 90,
-                "css": 0,
                 "resource": 0
             }
         }

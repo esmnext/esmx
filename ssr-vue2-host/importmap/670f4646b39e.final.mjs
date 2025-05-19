@@ -1,0 +1,14 @@
+(() => {
+const base = document.currentScript.getAttribute("data-base");
+const importmap = {"scopes":{"\u002Fhome\u002Frunner\u002Fwork\u002Fesmx\u002Fesmx\u002Fexamples\u002Fssr-vue2-host\u002Fnode_modules\u002Fssr-vue2-remote\u002Fdist\u002Fserver\u002F":{"vue":"\u002Fhome\u002Frunner\u002Fwork\u002Fesmx\u002Fesmx\u002Fexamples\u002Fssr-vue2-host\u002Fnode_modules\u002Fssr-vue2-remote\u002Fdist\u002Fserver\u002Fvue.94c707fc.final.mjs"}},"imports":{"ssr-vue2-host\u002Fsrc\u002Fentry.client":"\u002Fhome\u002Frunner\u002Fwork\u002Fesmx\u002Fesmx\u002Fexamples\u002Fssr-vue2-host\u002Fdist\u002Fserver\u002Fsrc\u002Fentry.client.3fa4a3c4.final.mjs","ssr-vue2-remote\u002Fsrc\u002Fentry.client":"\u002Fhome\u002Frunner\u002Fwork\u002Fesmx\u002Fesmx\u002Fexamples\u002Fssr-vue2-host\u002Fnode_modules\u002Fssr-vue2-remote\u002Fdist\u002Fserver\u002Fsrc\u002Fentry.client.60b13bfc.final.mjs","ssr-vue2-remote\u002Fsrc\u002Fcomponents\u002Findex":"\u002Fhome\u002Frunner\u002Fwork\u002Fesmx\u002Fesmx\u002Fexamples\u002Fssr-vue2-host\u002Fnode_modules\u002Fssr-vue2-remote\u002Fdist\u002Fserver\u002Fsrc\u002Fcomponents\u002Findex.06daf086.final.mjs","ssr-vue2-remote\u002Fsrc\u002Fcomposables\u002Findex":"\u002Fhome\u002Frunner\u002Fwork\u002Fesmx\u002Fesmx\u002Fexamples\u002Fssr-vue2-host\u002Fnode_modules\u002Fssr-vue2-remote\u002Fdist\u002Fserver\u002Fsrc\u002Fcomposables\u002Findex.fb511c82.final.mjs","ssr-vue2-remote\u002Fsrc\u002Fexamples\u002Findex":"\u002Fhome\u002Frunner\u002Fwork\u002Fesmx\u002Fesmx\u002Fexamples\u002Fssr-vue2-host\u002Fnode_modules\u002Fssr-vue2-remote\u002Fdist\u002Fserver\u002Fsrc\u002Fexamples\u002Findex.3137e5b1.final.mjs","ssr-vue2-remote\u002Fsrc\u002Fcomponents":"\u002Fhome\u002Frunner\u002Fwork\u002Fesmx\u002Fesmx\u002Fexamples\u002Fssr-vue2-host\u002Fnode_modules\u002Fssr-vue2-remote\u002Fdist\u002Fserver\u002Fsrc\u002Fcomponents\u002Findex.06daf086.final.mjs","ssr-vue2-remote\u002Fsrc\u002Fcomposables":"\u002Fhome\u002Frunner\u002Fwork\u002Fesmx\u002Fesmx\u002Fexamples\u002Fssr-vue2-host\u002Fnode_modules\u002Fssr-vue2-remote\u002Fdist\u002Fserver\u002Fsrc\u002Fcomposables\u002Findex.fb511c82.final.mjs","ssr-vue2-remote\u002Fsrc\u002Fexamples":"\u002Fhome\u002Frunner\u002Fwork\u002Fesmx\u002Fesmx\u002Fexamples\u002Fssr-vue2-host\u002Fnode_modules\u002Fssr-vue2-remote\u002Fdist\u002Fserver\u002Fsrc\u002Fexamples\u002Findex.3137e5b1.final.mjs"}};
+if (importmap.imports && base) {
+    const imports = importmap.imports;
+    Object.entries(imports).forEach(([k, v]) => {
+        imports[k] = base + v;
+    });
+}
+const script = document.createElement("script");
+script.type = "importmap";
+script.innerHTML = JSON.stringify(importmap);
+document.head.appendChild(script);
+})();
