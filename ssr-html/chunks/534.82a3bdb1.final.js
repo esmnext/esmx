@@ -1,4 +1,4 @@
-export const __webpack_ids__ = ["534"];
+export const __webpack_ids__ = ['534'];
 export const __webpack_modules__ = {
 878: (function (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 __webpack_require__.d(__webpack_exports__, {
@@ -39,9 +39,9 @@ function layout(slot) {
         <div class="container">
             <h1><img src="https://www.esmnext.com/logo.svg" alt="Esmx Logo" width="48" height="48"></h1>
             <nav class="nav">
-                <a href="${resolvePath('/')} " class="${isActive('/')}">\u{9996}\u{9875}</a>
-                <a href="${resolvePath('about')}" class="${isActive('/about')}">\u{5173}\u{4E8E}\u{6211}\u{4EEC}</a>
-                <a href="https://github.com/esmnext/esmx/tree/master/examples/ssr-html" target="_blank">\u{793A}\u{4F8B}\u{4EE3}\u{7801}</a>
+                <a href="${resolvePath('/')} " class="${isActive('/')}">首页</a>
+                <a href="${resolvePath('about')}" class="${isActive('/about')}">关于我们</a>
+                <a href="https://github.com/esmnext/esmx/tree/master/examples/ssr-html" target="_blank">示例代码</a>
             </nav>
         </div>
     </header>
@@ -168,70 +168,70 @@ class Home extends page/* Page */.T {
         const { count } = this.state;
         return (0,layout/* layout */.b)(`
         <section>
-            <h2>\u{8BA1}\u{6570}\u{5668}</h2>
+            <h2>计数器</h2>
             <div class="content-area counter">
                 <div id="count" class="counter-value">${count}</div>
             </div>
         </section>
 
         <section>
-            <h2>\u{8BF7}\u{6C42}\u{5730}\u{5740}</h2>
+            <h2>请求地址</h2>
             <div class="content-area url-section">
                 <pre>${url}</pre>
             </div>
         </section>
 
         <section>
-            <h2>\u{56FE}\u{7247}\u{5C55}\u{793A}</h2>
+            <h2>图片展示</h2>
             <ul class="image-grid">
                 <li>
                     <div class="image-wrapper">
-                        <img src="${logo_namespaceObject}" alt="SVG\u{793A}\u{4F8B}" width="200" height="200">
+                        <img src="${logo_namespaceObject}" alt="SVG示例" width="200" height="200">
                     </div>
                     <div class="image-info">
-                        <h3>SVG \u{793A}\u{4F8B}</h3>
-                        <p>\u{7C7B}\u{578B}\u{FF1A}SVG</p>
-                        <p>\u{5C3A}\u{5BF8}\u{FF1A}200 x 200</p>
+                        <h3>SVG 示例</h3>
+                        <p>类型：SVG</p>
+                        <p>尺寸：200 x 200</p>
                     </div>
                 </li>
                 <li>
                     <div class="image-wrapper">
-                        <img src="${starry_namespaceObject}" alt="JPG\u{793A}\u{4F8B}" width="1024" height="768">
+                        <img src="${starry_namespaceObject}" alt="JPG示例" width="1024" height="768">
                     </div>
                     <div class="image-info">
-                        <h3>JPG \u{793A}\u{4F8B}</h3>
-                        <p>\u{7C7B}\u{578B}\u{FF1A}JPG</p>
-                        <p>\u{5C3A}\u{5BF8}\u{FF1A}1024 x 768</p>
+                        <h3>JPG 示例</h3>
+                        <p>类型：JPG</p>
+                        <p>尺寸：1024 x 768</p>
                     </div>
                 </li>
                 <li>
                     <div class="image-wrapper">
-                        <img src="${cat_namespaceObject}" alt="\u{732B}\u{54AA}\u{56FE}\u{7247}" width="769" height="225">
+                        <img src="${cat_namespaceObject}" alt="猫咪图片" width="769" height="225">
                     </div>
                     <div class="image-info">
-                        <h3>\u{732B}\u{54AA}\u{56FE}\u{7247}</h3>
-                        <p>\u{7C7B}\u{578B}\u{FF1A}PNG</p>
-                        <p>\u{5C3A}\u{5BF8}\u{FF1A}769 x 225</p>
+                        <h3>猫咪图片</h3>
+                        <p>类型：PNG</p>
+                        <p>尺寸：769 x 225</p>
                     </div>
                 </li>
                 <li>
                     <div class="image-wrapper">
-                        <img src="${running_dog_namespaceObject}" alt="\u{75AF}\u{72C2}\u{7F16}\u{7801}" width="480" height="297">
+                        <img src="${running_dog_namespaceObject}" alt="疯狂编码" width="480" height="297">
                     </div>
                     <div class="image-info">
-                        <h3>\u{75AF}\u{72C2}\u{7F16}\u{7801}</h3>
-                        <p>\u{7C7B}\u{578B}\u{FF1A}GIF</p>
-                        <p>\u{5C3A}\u{5BF8}\u{FF1A}480 x 297</p>
+                        <h3>疯狂编码</h3>
+                        <p>类型：GIF</p>
+                        <p>尺寸：480 x 297</p>
                     </div>
                 </li>
                 <li>
                     <div class="image-wrapper">
-                        <img src="${sun_namespaceObject}" alt="\u{592A}\u{9633}\u{56FE}\u{6807}" width="351" height="300">
+                        <img src="${sun_namespaceObject}" alt="太阳图标" width="351" height="300">
                     </div>
                     <div class="image-info">
-                        <h3>\u{592A}\u{9633}\u{56FE}\u{6807}</h3>
-                        <p>\u{7C7B}\u{578B}\u{FF1A}SVG</p>
-                        <p>\u{5C3A}\u{5BF8}\u{FF1A}351 x 300</p>
+                        <h3>太阳图标</h3>
+                        <p>类型：SVG</p>
+                        <p>尺寸：351 x 300</p>
                     </div>
                 </li>
             </ul>
@@ -239,7 +239,7 @@ class Home extends page/* Page */.T {
 
         <section class="update-section">
             <div class="update-info">
-                <span>\u{6700}\u{540E}\u{66F4}\u{65B0}\u{FF1A}${new Date(this.state.time).toLocaleString('zh-CN', {
+                <span>最后更新：${new Date(this.state.time).toLocaleString('zh-CN', {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',

@@ -4,8 +4,8 @@
         "src/entry.client": "src/entry.client.c533ce6a.final.js"
     },
     "buildFiles": [
-        "src/entry.client.c533ce6a.final.js",
-        "src/entry.client.480d2198.final.css"
+        "src/entry.client.480d2198.final.css",
+        "src/entry.client.c533ce6a.final.js"
     ],
     "chunks": {
         "ssr-preact-htm@src/entry.client.ts": {
@@ -15,7 +15,7 @@
             ],
             "resources": [],
             "sizes": {
-                "js": 22199,
+                "js": 22145,
                 "css": 8754,
                 "resource": 0
             }

@@ -1,40 +1,40 @@
 {
     "name": "ssr-html",
     "exports": {
-        "src/entry.client": "src/entry.client.c02f1885.final.js",
+        "src/entry.client": "src/entry.client.74ae461e.final.js",
         "src/title/index": "src/title/index.2d79c0c2.final.js"
     },
     "buildFiles": [
         "images/sun.429a7bc5.final.png",
         "images/starry.d914a632.final.jpg",
-        "chunks/830.63b8fd4f.final.css",
+        "chunks/473.c6f811ea.final.js",
         "images/running-dog.76197e20.final.gif",
         "images/logo.3923d727.final.svg",
         "chunks/534.63b8fd4f.final.css",
-        "chunks/830.645cc00e.final.js",
+        "chunks/830.63b8fd4f.final.css",
         "chunks/473.63b8fd4f.final.css",
-        "src/entry.client.c02f1885.final.js",
-        "src/entry.client.2e0a89bc.final.css",
-        "chunks/534.c24a7359.final.js",
+        "chunks/830.b760cb75.final.js",
+        "chunks/534.82a3bdb1.final.js",
+        "src/entry.client.74ae461e.final.js",
+        "src/title/index.2d79c0c2.final.js",
         "images/cat.ed79ef6b.final.jpeg",
-        "chunks/473.fb9665e0.final.js",
-        "src/title/index.2d79c0c2.final.js"
+        "src/entry.client.2e0a89bc.final.css"
     ],
     "chunks": {
         "ssr-html@src/views/about.ts": {
-            "js": "chunks/473.fb9665e0.final.js",
+            "js": "chunks/473.c6f811ea.final.js",
             "css": [
                 "chunks/473.63b8fd4f.final.css"
             ],
             "resources": [],
             "sizes": {
-                "js": 7094,
+                "js": 6224,
                 "css": 5739,
                 "resource": 0
             }
         },
         "ssr-html@src/views/home.ts": {
-            "js": "chunks/534.c24a7359.final.js",
+            "js": "chunks/534.82a3bdb1.final.js",
             "css": [
                 "chunks/534.63b8fd4f.final.css"
             ],
@@ -46,25 +46,25 @@
                 "images/sun.429a7bc5.final.png"
             ],
             "sizes": {
-                "js": 8420,
+                "js": 7980,
                 "css": 5739,
                 "resource": 796974
             }
         },
         "ssr-html@src/views/not-found.ts": {
-            "js": "chunks/830.645cc00e.final.js",
+            "js": "chunks/830.b760cb75.final.js",
             "css": [
                 "chunks/830.63b8fd4f.final.css"
             ],
             "resources": [],
             "sizes": {
-                "js": 4479,
+                "js": 4274,
                 "css": 5739,
                 "resource": 0
             }
         },
         "ssr-html@src/entry.client.ts": {
-            "js": "./src/entry.client.c02f1885.final.js",
+            "js": "./src/entry.client.74ae461e.final.js",
             "css": [
                 "./src/entry.client.2e0a89bc.final.css"
             ],
