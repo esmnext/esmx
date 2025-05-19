@@ -28,11 +28,15 @@ declare module 'vue/types/options' {
     }
 }
 
-export class RouterVuePlugin {
-    static installed: boolean;
-    static _Vue: VueConstructor;
+export const RouterVuePlugin: {
+    installed: boolean;
+    _Vue: VueConstructor | undefined;
+    install(Vue: VueConstructor): void;
+} = {
+    installed: false,
+    _Vue: void 0,
 
-    static install(Vue: VueConstructor) {
+    install(Vue: VueConstructor) {
         // 已安装则跳出
         if (this.installed && this._Vue === Vue) return;
 
@@ -94,4 +98,4 @@ export class RouterVuePlugin {
             }
         });
     }
-}
+};

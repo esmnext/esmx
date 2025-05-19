@@ -213,14 +213,14 @@ export class HtmlHistory extends BaseRouterHistory {
         const oldState = history.state;
         const noBackNavigation = this.router.options.noBackNavigation;
         if (oldState._ancientRoute === true) {
-            noBackNavigation && noBackNavigation(this.router);
+            noBackNavigation?.(this.router);
             return;
         }
 
         window.history.back();
         this.timer = setTimeout(() => {
             if (history.state === oldState) {
-                noBackNavigation && noBackNavigation(this.router);
+                noBackNavigation?.(this.router);
             }
             this.timer = null;
         }, 80);

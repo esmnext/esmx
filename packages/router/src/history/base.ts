@@ -252,7 +252,7 @@ export abstract class BaseRouterHistory implements RouterHistory {
             this.tasks = null;
             guardAfterTasks.run();
 
-            onComplete && onComplete(to);
+            onComplete?.(to);
             this.updateRoute(to);
         }
     }

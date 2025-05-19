@@ -110,7 +110,7 @@ export const RouterLink = defineComponent({
                 break;
 
             /* 是否包含 */
-            case 'include':
+            // case 'include':
             default:
                 compare = (current: RouteRecord, route: RouteRecord) => {
                     return current.fullPath.startsWith(route.fullPath);
@@ -135,10 +135,11 @@ export const RouterLink = defineComponent({
             on[eventName.toLocaleLowerCase()] = handler;
         });
 
-        const className =
-            (ctx.data.class instanceof Array
-                ? ctx.data.class
-                : [ctx.data.class]) || [];
+        const className = !ctx.data.class
+            ? []
+            : Array.isArray(ctx.data.class)
+              ? ctx.data.class
+              : [ctx.data.class];
 
         return h(
             tag,
@@ -163,7 +164,7 @@ export const RouterLink = defineComponent({
 });
 
 function getEventTypeList(eventType: string | string[]): string[] {
-    if (eventType instanceof Array) {
+    if (Array.isArray(eventType)) {
         if (eventType.length > 0) {
             return eventType;
         }
