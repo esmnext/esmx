@@ -8,7 +8,7 @@
         "packages/rspack-module-link-plugin",
         "packages/rspack-vue",
         "packages/router",
-        "packages/router-vue",
-        "packages/router-vue2"
+        "packages/router-vue2",
+        "packages/router-vue3"
     ]
 }
