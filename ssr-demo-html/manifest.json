@@ -1,21 +1,14 @@
 {
-    "imports": {},
     "name": "ssr-demo-html",
     "exports": {
-        "src/entry.client": {
-            "name": "src/entry.client",
-            "rewrite": true,
-            "file": "src/entry.client.08463ee5.final.mjs",
-            "identifier": "ssr-demo-html/src/entry.client"
-        }
+        "src/entry.client": "src/entry.client.08463ee5.final.js"
     },
     "buildFiles": [
-        "src/entry.client.08463ee5.final.mjs"
+        "src/entry.client.08463ee5.final.js"
     ],
     "chunks": {
         "ssr-demo-html@src/entry.client.ts": {
-            "name": "ssr-demo-html@src/entry.client.ts",
-            "js": "src/entry.client.08463ee5.final.mjs",
+            "js": "./src/entry.client.08463ee5.final.js",
             "css": [],
             "resources": [],
             "sizes": {
