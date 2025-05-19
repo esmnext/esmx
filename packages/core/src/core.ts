@@ -824,13 +824,10 @@ export class Esmx {
         target: BuildSsrTarget
     ): Promise<Readonly<ImportMap>> {
         return this.readied.cache(`getImportMap-${target}`, async () => {
-            const rootMap: Record<string, string> = {};
-            Object.values(this.moduleConfig.links).forEach((link) => {
-                rootMap[link.name] = link.server;
-            });
             const json = await getImportMap(
+                target,
                 await this.getManifestList(target),
-                rootMap
+                this.moduleConfig
             );
             return Object.freeze(json);
         });
