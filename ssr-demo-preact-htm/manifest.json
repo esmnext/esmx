@@ -1,18 +1,18 @@
 {
     "name": "ssr-demo-preact-htm",
     "exports": {
-        "src/entry.client": "src/entry.client.a451eded.final.js"
+        "src/entry.client": "src/entry.client.54f170b6.final.js"
     },
     "buildFiles": [
-        "src/entry.client.a451eded.final.js"
+        "src/entry.client.54f170b6.final.js"
     ],
     "chunks": {
         "ssr-demo-preact-htm@src/entry.client.ts": {
-            "js": "./src/entry.client.a451eded.final.js",
+            "js": "./src/entry.client.54f170b6.final.js",
             "css": [],
             "resources": [],
             "sizes": {
-                "js": 14800,
+                "js": 14775,
                 "css": 0,
                 "resource": 0
             }
