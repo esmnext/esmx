@@ -1,5 +1,5 @@
 {
-    "name": "@esmx/router-vue",
+    "name": "@esmx/router-vue3",
     "template": "library",
     "scripts": {
         "lint:js": "biome check --write --no-errors-on-unmatched",
