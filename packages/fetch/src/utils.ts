@@ -60,7 +60,7 @@ export async function downloadFile(
     const fileStream = fs.createWriteStream(filePath);
 
     const streamPromise = new Promise((resolve, reject) => {
-        fileStream.on('finish', resolve);
+        fileStream.on('finish', resolve as () => void);
         fileStream.on('error', reject);
     });
     result.data.on('data', (chunk: crypto.BinaryLike) => {
