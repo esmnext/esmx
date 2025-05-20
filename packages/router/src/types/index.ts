@@ -619,7 +619,7 @@ export interface RegisteredConfig {
     mount: () => any;
 
     /**
-     * 更新
+     * 更新。在 updateRoute 和 closeLayer({ descendantStrategy: 'hoisting' }) 时会调用。
      */
     updated: () => any;
 
@@ -638,7 +638,7 @@ export interface RouterLayerInfo {
     /**
      * 路由弹层深度
      */
-    depth: number;
+    get depth(): number;
 
     /**
      * 当前路由对象的父路由对象
@@ -649,6 +649,28 @@ export interface RouterLayerInfo {
      * 当前路由对象的子路由对象数组
      */
     children: RouterInstance[];
+}
+
+export interface CloseLayerArgs {
+    /**
+     * 关闭的类型。
+     * `back`：表明是通过路由back触发的关闭
+     * `close`(default)：表明是通过close触发的关闭
+     */
+    type?: 'back' | 'close';
+
+    /**
+     * 关闭时 layer 返回的数据
+     */
+    data?: any;
+
+    /**
+     * 对后代 layer 的策略：
+     * * `clear`(default)：关闭所有后代 layer，可以在顶层路由调用
+     * * `hoisting`：将直接子 layer 挂载到直接父 layer 上。顶层路由调用不会有任何效果。
+     * * 顶层路由调用不会销毁顶层路由。
+     */
+    descendantStrategy?: 'clear' | 'hoisting';
 }
 
 /**
@@ -664,6 +686,8 @@ export interface RouterInstance {
      * 是否是弹层路由实例
      */
     get isLayer(): boolean;
+
+    closeLayer: (options?: CloseLayerArgs) => void;
 
     /**
      * 路由配置

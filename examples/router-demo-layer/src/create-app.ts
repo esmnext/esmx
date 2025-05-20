@@ -5,7 +5,7 @@
 
 import { createRouter } from '@esmx/router';
 import { RouterView, RouterVuePlugin } from '@esmx/router-vue2';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import { routes } from './routes';
 
 const isBrowser = typeof window === 'object' && typeof document === 'object';
@@ -26,6 +26,7 @@ export async function createApp(routerBase = 'http://localhost:3000') {
             router
         });
         app = vm;
+        let ele: HTMLElement | null = null;
         return {
             mount() {
                 if (!isBrowser) return;
@@ -36,7 +37,7 @@ export async function createApp(routerBase = 'http://localhost:3000') {
                     return;
                 }
                 // 如果是弹层路由，则挂载到一个新的 DOM 元素上
-                const ele = document.createElement('div');
+                ele = document.createElement('div');
                 ele.dataset.layerId = '' + router.layer.id;
                 ele.id = `router-layer-${router.layer.id}`;
                 ele.classList.add('router-layer');
@@ -44,14 +45,34 @@ export async function createApp(routerBase = 'http://localhost:3000') {
                 document.body.appendChild(ele);
                 vm.$mount(ele.children[0]);
             },
-            updated() {},
+            updated() {
+                if (!ele) return;
+                // 由于 closeLayer({ descendantStrategy: 'hoisting' }) 只会调用直接子路由的 updated
+                // 因此这里手动更新下所有子类的 DOM 元素中的父id列表
+                // 该属性仅调试使用
+                const oldIds = ele.dataset.layerParentId || '';
+                const parentIds = [];
+                let p = router.layer.parent;
+                while (p) {
+                    parentIds.push(p.layer.id);
+                    p = p.layer.parent;
+                }
+                const currentIds = (ele.dataset.layerParentId =
+                    parentIds.join(','));
+                console.log('updated', router, oldIds, currentIds);
+                document
+                    .querySelectorAll(`[data-layer-parent-id$="${oldIds}"]`)
+                    .forEach((el) => {
+                        let ids = (el as HTMLElement).dataset.layerParentId;
+                        ids = ids?.replace(oldIds, currentIds) || '';
+                        (el as HTMLElement).dataset.layerParentId = ids;
+                    });
+            },
             destroy() {
                 if (!isBrowser) return;
                 vm.$destroy();
                 if (!router.isLayer) return;
-                document
-                    .getElementById(`router-layer-${router.layer.id}`)
-                    ?.remove();
+                ele?.remove();
             }
         };
     });

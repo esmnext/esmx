@@ -3,6 +3,7 @@ import URLParse from 'url-parse';
 import { createHistory } from './history';
 import { createRouterMatcher } from './matcher';
 import {
+    type CloseLayerArgs,
     type NavigationGuard,
     type NavigationGuardAfter,
     type RegisteredConfig,
@@ -29,7 +30,12 @@ export class Router implements RouterInstance {
 
     layer: RouterLayerInfo = {
         id: -1,
-        depth: 0,
+        get depth() {
+            let depth = 0;
+            let p = this.parent;
+            while (p && ++depth) p = p.layer.parent;
+            return depth;
+        },
         parent: null,
         children: []
     };
@@ -201,13 +207,12 @@ export class Router implements RouterInstance {
     /**
      * 卸载方法
      */
-    async destroy() {
+    destroy() {
         this.history.destroy();
         Object.values(this.registeredConfigMap).forEach((config) => {
-            if (config.mounted) {
-                config.config?.destroy();
-                config.mounted = false;
-            }
+            if (!config.mounted) return;
+            config.config?.destroy();
+            config.mounted = false;
         });
         this.layer.children.forEach((layer) => {
             layer.destroy();
@@ -293,7 +298,6 @@ export class Router implements RouterInstance {
             mode: RouterMode.ABSTRACT
         });
         layerRouter.layer.parent = this;
-        layerRouter.layer.depth = this.layer.depth + 1;
         this.layer.children.push(layerRouter);
         Object.entries(this.registeredConfigMap).forEach(
             ([appType, config]) => {
@@ -336,6 +340,40 @@ export class Router implements RouterInstance {
     /* 根据获取当前所有活跃的路由Record对象 */
     getRoutes() {
         return this.matcher.getRoutes();
+    }
+
+    closeLayer({
+        data,
+        type = 'close',
+        descendantStrategy = 'clear'
+    }: CloseLayerArgs = {}) {
+        const layerInfo = this.layer;
+        // 如果 descendantStrategy 为 clear，则将所有的子路由都关闭，无论是否是顶层路由
+        if (descendantStrategy === 'clear') {
+            layerInfo.children.slice().forEach((layerRouter) => {
+                layerRouter.closeLayer({
+                    data,
+                    type,
+                    descendantStrategy
+                });
+            });
+        }
+        if (!this.isLayer) return;
+        if (descendantStrategy === 'hoisting') {
+            const parent = layerInfo.parent!;
+            layerInfo.children.forEach((layerRouter) => {
+                layerRouter.layer.parent = layerInfo.parent;
+                parent.layer.children.push(layerRouter);
+                Object.values(layerRouter.registeredConfigMap).forEach(
+                    (config) => {
+                        if (!config.mounted) return;
+                        config.config?.updated();
+                    }
+                );
+            });
+            layerInfo.children = [];
+        }
+        this.destroy();
     }
 }
 

@@ -5,10 +5,11 @@
             <button @click="$router.go(-1)">go(-1)</button>
             <h1>弹窗路由测试</h1>
             <button @click="$router.go(1)">go(1)</button>
-            <button>close (暂未实现)</button>
+            <button @click="$router.closeLayer()">closeAll</button>
+            <button @click="$router.closeLayer({ descendantStrategy: 'hoisting' })">closeSelf</button>
         </header>
 
-        <table>
+        <table><tbody>
             <tr
                 v-for="method in ['push', 'replace', 'pushWindow', 'replaceWindow', 'pushLayer']"
                 :key="method"
@@ -22,7 +23,7 @@
                     <router-link to="/404" :type="method">404</router-link>
                 </td>
             </tr>
-        </table>
+        </tbody></table>
 
         <hr/>
 
@@ -44,12 +45,15 @@ header {
 }
 
 button {
-    display: none;
     height: 2rem;
 }
 
 button + button {
     margin-left: 1ex;
+}
+
+h1 {
+    margin: 0 1ex;
 }
 
 td:first-child {
@@ -65,13 +69,5 @@ td:first-child {
     border: 1px solid #ccc;
     border-radius: .5rem;
     padding: 1ex;
-}
-
-.isLayer h1 {
-    margin: 0 1ex;
-}
-
-.isLayer button {
-    display: inline-block;
 }
 </style>
