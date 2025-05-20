@@ -13,19 +13,15 @@ export class AbstractHistory extends BaseRouterHistory {
 
     constructor(router: RouterInstance) {
         super(router);
-        this.index = -1;
+        this.index = 0;
         this.stack = [];
     }
 
-    async init({ replace }: { replace?: boolean } = { replace: true }) {
+    async init() {
         const { initUrl } = this.router.options;
         if (initUrl !== undefined) {
             // 存在 initUrl 则用 initUrl 进行初始化
-            if (replace) {
-                await this.replace(initUrl);
-            } else {
-                await this.push(initUrl);
-            }
+            await this.replace(initUrl);
         }
     }
 
@@ -123,6 +119,7 @@ export class AbstractHistory extends BaseRouterHistory {
         await this.transitionTo(location, (route) => {
             const index = replace ? this.index : this.index + 1;
             this.stack = this.stack.slice(0, index).concat(route);
+            this.index = index;
         });
     }
 

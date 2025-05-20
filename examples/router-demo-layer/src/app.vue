@@ -9,6 +9,8 @@
             <button @click="$router.closeLayer({ descendantStrategy: 'hoisting' })">closeSelf</button>
         </header>
 
+        <p v-if="$router.isLayer">{{ $route.href }}</p>
+
         <table><tbody>
             <tr
                 v-for="method in ['push', 'replace', 'pushWindow', 'replaceWindow', 'pushLayer']"

@@ -687,6 +687,9 @@ export interface RouterInstance {
      */
     get isLayer(): boolean;
 
+    /**
+     * 关闭路由弹层
+     */
     closeLayer: (options?: CloseLayerArgs) => void;
 
     /**

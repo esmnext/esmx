@@ -10,13 +10,16 @@ import { routes } from './routes';
 
 const isBrowser = typeof window === 'object' && typeof document === 'object';
 
-export async function createApp(routerBase = 'http://localhost:3000') {
+export async function createApp(
+    routerBase = 'http://localhost:3000',
+    routerInitUrl = '/'
+) {
     Vue.use(RouterVuePlugin);
     let app: Vue | null = null;
 
     const router = createRouter({
         base: routerBase,
-        initUrl: '/',
+        initUrl: routerInitUrl,
         routes
     });
 
