@@ -20,7 +20,10 @@ export async function createApp(
     const router = createRouter({
         base: routerBase,
         initUrl: routerInitUrl,
-        routes
+        routes,
+        noBackNavigation: () => {
+            console.log('@noBackNavigation');
+        }
     });
 
     router.register('vue2', (router) => {

@@ -127,6 +127,12 @@ export class AbstractHistory extends BaseRouterHistory {
         const targetIndex = this.index + delta;
         // 浏览器在跳转到不存在的历史记录时不会进行跳转
         if (targetIndex < 0 || targetIndex >= this.stack.length) {
+            // 如果在弹层路由回退，则关闭弹层
+            if (this.router.isLayer && targetIndex < 0) {
+                this.router.closeLayer({
+                    type: 'back'
+                });
+            }
             return;
         }
         const route = this.stack[targetIndex];

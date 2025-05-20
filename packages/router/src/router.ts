@@ -290,8 +290,6 @@ export class Router implements RouterInstance {
      */
     async pushLayer(location: RouterRawLocation) {
         const route = this.resolve(location);
-        // console.log('pushLayer', route, this);
-        if (route.fullPath === this.route.fullPath) return;
         const layerRouter = createRouter({
             ...this.options,
             initUrl: route.fullPath,
@@ -301,7 +299,6 @@ export class Router implements RouterInstance {
         this.layer.children.push(layerRouter);
         Object.entries(this.registeredConfigMap).forEach(
             ([appType, config]) => {
-                console.log('register', appType, config);
                 layerRouter.register(appType, config.generator);
             }
         );
