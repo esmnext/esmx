@@ -1,4 +1,3 @@
-export const StateLayerConfigKey = '__layer_config_key';
 
 /**
  * @internal
@@ -401,12 +400,6 @@ export interface RouterHistory {
     readonly router: RouterInstance;
 
     /**
-     * 路由是否被冻结
-     * @description 路由实例被冻结后，路由实例的所有方法都将失效
-     */
-    isFrozen: boolean;
-
-    /**
      * 匹配的当前路由
      */
     readonly current: RouteRecord;
@@ -605,20 +598,16 @@ export interface RouterMatcher {
 /**
  * 路由注册配置
  */
-export type RegisteredConfigMap = Record<
-    string,
-    {
+export type RegisteredConfigMap = {
+    [appType: string]: {
+        /**
+         * 是否已经挂载
+         */
         mounted: boolean;
         generator: (router: RouterInstance) => RegisteredConfig;
         config?: RegisteredConfig;
     }
->;
-
-export interface RouterInitOptions {
-    parent?: RouterInstance;
-    route?: RouteRecord;
-    replace?: boolean;
-}
+};
 
 /**
  * 路由注册配置
@@ -640,29 +629,41 @@ export interface RegisteredConfig {
     destroy: () => any;
 }
 
+export interface RouterLayerInfo {
+    /**
+     * 路由id
+     */
+    id: number;
+
+    /**
+     * 路由弹层深度
+     */
+    depth: number;
+
+    /**
+     * 当前路由对象的父路由对象
+     */
+    parent: RouterInstance | null;
+
+    /**
+     * 当前路由对象的子路由对象数组
+     */
+    children: RouterInstance[];
+}
+
 /**
  * 路由类实例
  */
 export interface RouterInstance {
     /**
-     * 当前路由对象的上级路由对象
+     * 路由弹层相关信息
      */
-    parent: RouterInstance | null;
+    layer: RouterLayerInfo;
 
     /**
-     * 路由是否冻结
+     * 是否是弹层路由实例
      */
-    isFrozen: boolean;
-
-    /**
-     * 路由冻结方法
-     */
-    freeze: () => void;
-
-    /**
-     * 路由解冻方法
-     */
-    unfreeze: () => void;
+    get isLayer(): boolean;
 
     /**
      * 路由配置
@@ -713,7 +714,7 @@ export interface RouterInstance {
     /**
      * 初始化
      */
-    init: (options?: RouterInitOptions) => Promise<void>;
+    init: () => Promise<void>;
 
     /**
      * 卸载方法
@@ -768,47 +769,6 @@ export interface RouterInstance {
      * 路由跳转方法，会替换当前的历史记录
      */
     replace: (location: RouterRawLocation) => Promise<void>;
-
-    /**
-     * 当前路由弹层id，用于区分不同的路由弹层
-     */
-    layerId: number;
-
-    /**
-     * 路由弹层配置
-     */
-    layerConfigList: Array<{
-        /**
-         * 路由弹层id
-         */
-        id: number;
-        /**
-         * 路由弹层深度
-         */
-        depth: number;
-    }>;
-
-    /**
-     * 路由弹层id与路由实例的map
-     */
-    layerMap: Record<
-        number,
-        {
-            router: RouterInstance;
-            config: RegisteredConfig;
-            destroyed: boolean;
-        }
-    >;
-
-    /**
-     * 更新路由弹层方法
-     */
-    updateLayerState: (route: RouteRecord) => void;
-
-    /**
-     * 检查路由弹层方法
-     */
-    checkLayerState: (state: HistoryState) => boolean;
 
     /**
      * 打开路由弹层方法，会创建新的路由实例并调用注册的 register 方法

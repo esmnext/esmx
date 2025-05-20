@@ -42,13 +42,6 @@ export abstract class BaseRouterHistory implements RouterHistory {
     public router: RouterInstance;
 
     /**
-     * 路由是否冻结
-     */
-    public get isFrozen() {
-        return this.router.isFrozen;
-    }
-
-    /**
      * 匹配的当前路由
      */
     public current: RouteRecord = createRouteRecord();
@@ -122,7 +115,6 @@ export abstract class BaseRouterHistory implements RouterHistory {
         location: RouterRawLocation,
         onComplete?: (route: RouteRecord) => void
     ) {
-        if (this.isFrozen) return;
         // 寻找即将跳转路径匹配到的路由对象
         const route = this.resolve(location);
 

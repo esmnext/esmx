@@ -38,8 +38,7 @@ export class HtmlHistory extends BaseRouterHistory {
     }
 
     onPopState = (e: PopStateEvent) => {
-        if (this.isFrozen) return;
-        if (this.router.checkLayerState(e.state)) return;
+        // if (this.router.checkLayerState(e.state)) return;
 
         const current = Object.assign({}, this.current);
 
@@ -99,12 +98,10 @@ export class HtmlHistory extends BaseRouterHistory {
     }
 
     pushWindow(location: RouterRawLocation) {
-        if (this.isFrozen) return;
         this.handleOutside(location, false, true);
     }
 
     replaceWindow(location: RouterRawLocation) {
-        if (this.isFrozen) return;
         this.handleOutside(location, true, true);
     }
 
@@ -167,7 +164,6 @@ export class HtmlHistory extends BaseRouterHistory {
 
     // 跳转方法
     async jump(location: RouterRawLocation, replace = false) {
-        if (this.isFrozen) return;
         if (this.handleOutside(location, replace)) {
             return;
         }
@@ -192,24 +188,21 @@ export class HtmlHistory extends BaseRouterHistory {
                 route.fullPath
             );
 
-            this.router.updateLayerState(route);
+            // this.router.updateLayerState(route);
         });
     }
 
     go(delta: number): void {
-        if (this.isFrozen) return;
         window.history.go(delta);
     }
 
     forward(): void {
-        if (this.isFrozen) return;
         window.history.forward();
     }
 
     protected timer: NodeJS.Timeout | null = null;
 
     back(): void {
-        if (this.isFrozen) return;
         const oldState = history.state;
         const noBackNavigation = this.router.options.noBackNavigation;
         if (oldState._ancientRoute === true) {

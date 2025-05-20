@@ -3,7 +3,6 @@ import URLParse from 'url-parse';
 import { createHistory } from './history';
 import { createRouterMatcher } from './matcher';
 import {
-    type HistoryState,
     type NavigationGuard,
     type NavigationGuardAfter,
     type RegisteredConfig,
@@ -12,32 +11,32 @@ import {
     type RouteRecord,
     type RouterBase,
     type RouterHistory,
-    type RouterInitOptions,
     type RouterInstance,
+    type RouterLayerInfo,
     type RouterMatcher,
     RouterMode,
     type RouterOptions,
     type RouterRawLocation,
-    type RouterScrollBehavior,
-    StateLayerConfigKey
+    type RouterScrollBehavior
 } from './types';
 import { inBrowser, normalizePath, regexDomain } from './utils';
-
-const baseValue = Number(Date.now());
-let layerIdOffset = 0;
-
-function getLatestLayerId() {
-    return baseValue + ++layerIdOffset;
-}
 
 /**
  * 路由类
  */
 export class Router implements RouterInstance {
-    /**
-     * 当前路由对象的上级路由对象
-     */
-    parent: RouterInstance | null = null;
+    static idCount = 0;
+
+    layer: RouterLayerInfo = {
+        id: -1,
+        depth: 0,
+        parent: null,
+        children: []
+    };
+
+    get isLayer() {
+        return this.layer.parent !== null;
+    }
 
     /* 路由配置 */
     options: RouterOptions;
@@ -107,6 +106,8 @@ export class Router implements RouterInstance {
             router: this,
             mode: this.mode
         });
+
+        this.layer.id = Router.idCount++;
     }
 
     /* 更新路由 */
@@ -125,22 +126,6 @@ export class Router implements RouterInstance {
                 registerConfig.config = generator(this);
                 registerConfig.config?.mount();
                 registerConfig.mounted = true;
-
-                this.layerMap[this.layerId] = {
-                    router: this,
-                    config: registerConfig.config,
-                    destroyed: false
-                };
-                if (
-                    !this.layerConfigList.find(
-                        (item) => item.id === this.layerId
-                    )
-                ) {
-                    this.layerConfigList.push({
-                        id: this.layerId,
-                        depth: 0
-                    });
-                }
             }
             registerConfig.config?.updated();
         }
@@ -209,54 +194,35 @@ export class Router implements RouterInstance {
     // }
 
     /* 初始化 */
-    async init(options: RouterInitOptions = {}) {
-        const { parent = null, route, replace = true } = options;
-
-        await this.history.init({
-            replace
-        });
-
-        const layerId = getLatestLayerId();
-        this.layerId = layerId;
-        let layerMap: RouterInstance['layerMap'] = {};
-        let layerConfigList: RouterInstance['layerConfigList'] = [];
-        if (parent && route) {
-            const appType = route.matched[0]?.appType;
-            if (!appType) return;
-            const registerConfig = parent.registeredConfigMap[appType];
-            if (!registerConfig) return;
-
-            parent.freeze();
-            this.registeredConfigMap = parent.registeredConfigMap;
-            const { generator } = registerConfig;
-            const config = generator(this);
-            config.mount();
-            config.updated();
-            layerMap = parent.layerMap;
-
-            layerMap[layerId] = {
-                router: this,
-                config,
-                destroyed: false
-            };
-            layerConfigList = parent.layerConfigList;
-        }
-        if (!layerConfigList.find((item) => item.id === layerId)) {
-            layerConfigList.push({
-                id: layerId,
-                depth: 0
-            });
-        }
-        this.parent = parent;
-        this.layerMap = layerMap;
-        this.layerConfigList = layerConfigList;
+    async init() {
+        await this.history.init();
     }
 
     /**
      * 卸载方法
      */
     async destroy() {
-        // this.history.destroy();
+        this.history.destroy();
+        Object.values(this.registeredConfigMap).forEach((config) => {
+            if (config.mounted) {
+                config.config?.destroy();
+                config.mounted = false;
+            }
+        });
+        this.layer.children.forEach((layer) => {
+            layer.destroy();
+        });
+        this.layer.children = [];
+        if (this.layer.parent) {
+            const parent = this.layer.parent;
+            const i = parent.layer.children.findIndex(
+                (item) => item === this || item.layer.id === this.layer.id
+            );
+            if (i !== -1) {
+                parent.layer.children.splice(i, 1);
+            }
+            this.layer.parent = null;
+        }
     }
 
     /* 已注册的app配置 */
@@ -315,170 +281,27 @@ export class Router implements RouterInstance {
     }
 
     /**
-     * 当前路由弹层id，用于区分不同的路由弹层
-     */
-    layerId = 0;
-
-    /**
-     * 路由弹层配置
-     * key为路由弹层id
-     */
-    layerConfigList: Array<{
-        /**
-         * 路由弹层id
-         */
-        id: number;
-        /**
-         * 路由弹层深度
-         */
-        depth: number;
-    }> = [];
-
-    /**
-     * 路由弹层id与路由实例的map
-     */
-    layerMap: Record<
-        number,
-        {
-            router: RouterInstance;
-            config: RegisteredConfig;
-            destroyed: boolean;
-        }
-    > = {};
-
-    /**
-     * 路由是否冻结
-     */
-    isFrozen = false;
-
-    /**
-     * 路由冻结方法
-     */
-    freeze() {
-        this.isFrozen = true;
-    }
-
-    /**
-     * 路由解冻方法
-     */
-    unfreeze() {
-        this.isFrozen = false;
-    }
-
-    /**
      * 打开路由弹层方法，会创建新的路由实例并调用注册的 register 方法
-     * 服务端会使用 push 作为替代
      */
     async pushLayer(location: RouterRawLocation) {
-        if (this.isFrozen) return;
         const route = this.resolve(location);
+        // console.log('pushLayer', route, this);
         if (route.fullPath === this.route.fullPath) return;
-        if (!inBrowser) {
-            this.push(location);
-            return;
-        }
-        const router = createRouter({
+        const layerRouter = createRouter({
             ...this.options,
-            initUrl: route.fullPath
+            initUrl: route.fullPath,
+            mode: RouterMode.ABSTRACT
         });
-        await router.init({ parent: this, route, replace: false });
-    }
-
-    /**
-     * 更新路由弹层方法
-     * @param state 参数为history.state
-     * @description 没有传入 state 时使用当前配置更新 history.state，传入了 state 时使用传入的 state 更新当前配置
-     */
-    checkLayerState(state: HistoryState) {
-        // state 中存放的 layerConfig 配置
-        const stateLayerConfigList =
-            (state[StateLayerConfigKey] as typeof this.layerConfigList) || [];
-
-        // 所有的 layerId 列表
-        const layerConfigList = Object.keys(this.layerMap).map(Number);
-        // state中存放的可用的 layerId 列表
-        const stateLayerIdList = stateLayerConfigList
-            .map(({ id }) => id)
-            .filter((id) => {
-                return layerConfigList.includes(id);
-            });
-        if (stateLayerIdList.length === 0) {
-            // 没有可用的 layerId 列表时跳出
-            return false;
-        }
-        if (
-            stateLayerIdList.length === 1 &&
-            stateLayerIdList[0] === this.layerId
-        ) {
-            // 只有一个可用的 layerId 并且就是当前的layerId时跳出
-            return false;
-        }
-
-        const createList: number[] = [];
-        const destroyList: number[] = [];
-        Object.entries(this.layerMap).forEach(([key, value]) => {
-            if (stateLayerIdList.includes(Number(key))) {
-                if (value.destroyed) {
-                    createList.push(Number(key));
-                }
-            } else {
-                destroyList.push(Number(key));
+        layerRouter.layer.parent = this;
+        layerRouter.layer.depth = this.layer.depth + 1;
+        this.layer.children.push(layerRouter);
+        Object.entries(this.registeredConfigMap).forEach(
+            ([appType, config]) => {
+                console.log('register', appType, config);
+                layerRouter.register(appType, config.generator);
             }
-        });
-        if (createList.length === 0 && destroyList.length === 0) {
-            // 没有需要创建的 layerId 列表 并且 没有需要销毁的 layerId 列表时跳出
-            return false;
-        }
-
-        const activeId = Math.max(...stateLayerIdList);
-
-        layerConfigList.forEach((id) => {
-            const { router } = this.layerMap[id];
-            if (activeId === id) {
-                router.unfreeze();
-            } else {
-                router.freeze();
-            }
-        });
-
-        destroyList.forEach((id) => {
-            const layer = this.layerMap[id];
-            if (!layer.destroyed) {
-                const { router, config } = layer;
-                config.destroy();
-                router.destroy();
-                router.freeze();
-                layer.destroyed = true;
-            }
-        });
-
-        createList.forEach((id) => {
-            const layer = this.layerMap[id];
-            if (layer.destroyed) {
-                const { router, config } = layer;
-                config.mount();
-                router.unfreeze();
-                layer.destroyed = false;
-            }
-        });
-        this.layerConfigList = stateLayerConfigList;
-
-        return true;
-    }
-
-    updateLayerState(route: RouteRecord) {
-        const layerConfig = this.layerConfigList.find((item) => {
-            return item.id === this.layerId;
-        });
-        if (layerConfig) layerConfig.depth++;
-        const stateConfigList = this.layerConfigList.filter(({ id }) => {
-            return !this.layerMap[id]?.destroyed;
-        });
-        const state = {
-            ...history.state,
-            [StateLayerConfigKey]: stateConfigList
-        };
-        window.history.replaceState(state, '', route.fullPath);
+        );
+        await layerRouter.init();
     }
 
     /**
