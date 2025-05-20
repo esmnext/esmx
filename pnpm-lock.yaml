@@ -73,6 +73,37 @@ importers:
         specifier: ^2.1.6
         version: 2.2.10(typescript@5.8.2)
 
+  examples/router-demo-layer:
+    dependencies:
+      '@esmx/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+    devDependencies:
+      '@esmx/router':
+        specifier: workspace:*
+        version: link:../../packages/router
+      '@esmx/router-vue2':
+        specifier: workspace:*
+        version: link:../../packages/router-vue2
+      '@esmx/rspack-vue':
+        specifier: workspace:*
+        version: link:../../packages/rspack-vue
+      '@types/node':
+        specifier: 22.8.6
+        version: 22.8.6
+      typescript:
+        specifier: ^5.7.3
+        version: 5.8.2
+      vue:
+        specifier: ^2.7.16
+        version: 2.7.16
+      vue-server-renderer:
+        specifier: ^2.7.16
+        version: 2.7.16
+      vue-tsc:
+        specifier: ^2.1.6
+        version: 2.2.10(typescript@5.8.2)
+
   examples/ssr-demo-html:
     dependencies:
       '@esmx/core':
