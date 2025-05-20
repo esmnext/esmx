@@ -6,6 +6,7 @@ import {
     type CloseLayerArgs,
     type NavigationGuard,
     type NavigationGuardAfter,
+    type PushLayerHooks,
     type RegisteredConfig,
     type RegisteredConfigMap,
     type Route,
@@ -228,6 +229,11 @@ export class Router implements RouterInstance {
             }
             this.layer.parent = null;
         }
+        this.guards.beforeEach = [];
+        this.guards.afterEach = [];
+        this.guards._beforeEnter = void 0;
+        this.guards._beforeUpdate = void 0;
+        this.guards._beforeLeave = void 0;
     }
 
     /* 已注册的app配置 */
@@ -245,10 +251,7 @@ export class Router implements RouterInstance {
     }
 
     /* 全局路由守卫 */
-    readonly guards: {
-        beforeEach: NavigationGuard[];
-        afterEach: NavigationGuardAfter[];
-    } = {
+    readonly guards: RouterInstance['guards'] = {
         beforeEach: [],
         afterEach: []
     };
@@ -261,6 +264,7 @@ export class Router implements RouterInstance {
     /* 卸载全局路由前置守卫 */
     unBindBeforeEach(guard: NavigationGuard) {
         const i = this.guards.beforeEach.findIndex((item) => item === guard);
+        if (i === -1) return;
         this.guards.beforeEach.splice(i, 1);
     }
 
@@ -272,6 +276,7 @@ export class Router implements RouterInstance {
     /* 卸载全局路由后置守卫 */
     unBindAfterEach(guard: NavigationGuardAfter) {
         const i = this.guards.afterEach.findIndex((item) => item === guard);
+        if (i === -1) return;
         this.guards.afterEach.splice(i, 1);
     }
 
@@ -288,7 +293,11 @@ export class Router implements RouterInstance {
     /**
      * 打开路由弹层方法，会创建新的路由实例并调用注册的 register 方法
      */
-    async pushLayer(location: RouterRawLocation) {
+    async pushLayer(
+        location: RouterRawLocation & { hooks?: PushLayerHooks },
+        options: { hooks?: PushLayerHooks } = {}
+    ) {
+        const hooks = options.hooks || location.hooks || {};
         const route = this.resolve(location);
         const layerRouter = createRouter({
             ...this.options,
@@ -302,6 +311,15 @@ export class Router implements RouterInstance {
                 layerRouter.register(appType, config.generator);
             }
         );
+        layerRouter.guards.beforeEach.push((from, to) => {
+            if (!hooks.shouldCloseLayer?.(from, to, layerRouter)) return;
+            layerRouter.closeLayer({
+                data: to.params,
+                type: 'close',
+                descendantStrategy: 'clear'
+            });
+            return false;
+        });
         await layerRouter.init();
     }
 

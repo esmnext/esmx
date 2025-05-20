@@ -23,6 +23,13 @@
                     <router-link to="/test" :type="method">测试</router-link>
                     <router-link to="/test1" :type="method">动态组件</router-link>
                     <router-link to="/404" :type="method">404</router-link>
+                    <a
+                        v-if="!$router.isLayer && method === 'pushLayer'"
+                        href="/"
+                        @click.capture.prevent.stop="onAClick"
+                    >
+                        home (closeLayer at 404)
+                    </a>
                 </td>
             </tr>
         </tbody></table>
@@ -34,6 +41,16 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from '@esmx/router-vue2';
+const router = useRouter();
+const onAClick = (e: MouseEvent) => {
+    const href = (e.target as HTMLAnchorElement).href;
+    router.pushLayer(href, {
+        hooks: {
+            shouldCloseLayer: (from, to) => to.fullPath === '/404'
+        }
+    });
+};
 </script>
 
 <style lang="css" scoped>
@@ -50,8 +67,8 @@ button {
     height: 2rem;
 }
 
-button + button {
-    margin-left: 1ex;
+button + button, a + a {
+    margin-inline-start: 1ex;
 }
 
 h1 {

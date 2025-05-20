@@ -269,17 +269,23 @@ function getNavigationHooks(
     from: RouteRecord,
     to: RouteRecord
 ) {
-    const beforeEach = router.guards.beforeEach.map(
+    const beforeEach = router.guards.beforeEach.map<NavigationGuard>(
         (guard) => () => guard(from, to)
     );
-    const afterEach = router.guards.afterEach.map(
+    const afterEach = router.guards.afterEach.map<NavigationGuardAfter>(
         (guard) => () => guard(from, to)
     );
 
-    const beforeLeave = from.matched.reduce((acc, { beforeLeave }) => {
-        beforeLeave && acc.unshift(() => beforeLeave(from, to));
-        return acc;
-    }, [] as NavigationGuard[]);
+    const beforeLeave = from.matched.reduce(
+        (acc, { beforeLeave }) => {
+            beforeLeave && acc.unshift(() => beforeLeave(from, to));
+            return acc;
+        },
+        Array.from(
+            router.guards._beforeLeave ?? [],
+            (guard) => () => guard(from, to)
+        ) as NavigationGuard[]
+    );
 
     const { beforeEnter, beforeUpdate } = to.matched.reduce(
         (acc, { beforeEnter, beforeUpdate }) => {
@@ -288,8 +294,14 @@ function getNavigationHooks(
             return acc;
         },
         {
-            beforeEnter: [] as NavigationGuard[],
-            beforeUpdate: [] as NavigationGuard[]
+            beforeEnter: Array.from(
+                router.guards._beforeEnter ?? [],
+                (guard) => () => guard(from, to)
+            ) as NavigationGuard[],
+            beforeUpdate: Array.from(
+                router.guards._beforeUpdate ?? [],
+                (guard) => () => guard(from, to)
+            ) as NavigationGuard[]
         }
     );
 

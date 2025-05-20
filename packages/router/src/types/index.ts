@@ -673,6 +673,20 @@ export interface CloseLayerArgs {
     descendantStrategy?: 'clear' | 'hoisting';
 }
 
+export interface PushLayerHooks {
+    /**
+     * 是否应该关闭弹层路由
+     * @returns `true` 关闭弹层路由，`false` 不关闭弹层路由
+     */
+    shouldCloseLayer?: (from: RouteRecord, to: RouteRecord, layerRouter: RouterInstance) => boolean;
+    // 未来有需要再实现（虽然很想现在就放出去）
+    // beforeEach?: NavigationGuard;
+    // afterEach?: NavigationGuardAfter;
+    // beforeEnter?: NavigationGuard;
+    // beforeUpdate?: NavigationGuard;
+    // beforeLeave?: NavigationGuard;
+}
+
 /**
  * 路由类实例
  */
@@ -765,6 +779,10 @@ export interface RouterInstance {
     readonly guards: {
         beforeEach: NavigationGuard[];
         afterEach: NavigationGuardAfter[];
+        // 为了 pushLayer 时注入控制行为
+        _beforeEnter?: NavigationGuard[];
+        _beforeUpdate?: NavigationGuard[];
+        _beforeLeave?: NavigationGuard[];
     };
 
     /**
@@ -801,7 +819,10 @@ export interface RouterInstance {
      * 打开路由弹层方法，会创建新的路由实例并调用注册的 register 方法
      * 服务端会使用 push 作为替代
      */
-    pushLayer: (location: RouterRawLocation) => void;
+    pushLayer: {
+        (options: RouterRawLocation & { hooks?: PushLayerHooks }): void;
+        (location: RouterRawLocation, options?: { hooks?: PushLayerHooks }): void;
+    };
 
     /**
      * 新开浏览器窗口的方法, 会进入配置的 handleOutside 钩子，在服务端会调用 push 作为替代
