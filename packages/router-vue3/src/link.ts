@@ -23,8 +23,15 @@ export interface RouterLinkProps {
     /**
      * 调用 router.replace 以替换 router.push。
      * @default false
+     * @deprecated 请使用 `type="replace"` 替代
      */
     replace: boolean;
+
+    /**
+     * 路由跳转方式
+     * @default 'push'
+     */
+    type: 'replace' | 'push' | 'pushWindow' | 'replaceWindow' | 'pushLayer';
 
     /**
      * 路径激活匹配规则
@@ -68,9 +75,16 @@ export const RouterLink = defineComponent({
             type: String as PropType<RouterLinkProps['tag']>,
             default: 'a'
         },
+        /**
+         * @deprecated 请使用 `type="replace"` 替代
+         */
         replace: {
             type: Boolean as PropType<RouterLinkProps['replace']>,
             default: false
+        },
+        type: {
+            type: String as PropType<RouterLinkProps['type']>,
+            default: 'push'
         },
         exact: {
             type: String as PropType<RouterLinkProps['exact']>,
@@ -90,7 +104,8 @@ export const RouterLink = defineComponent({
         }
     },
     render(props: RouterLinkProps) {
-        const { to, tag, replace, exact, activeClass, event } = props;
+        const { to, tag, exact, activeClass, event } = props;
+        const replace = props.replace || props.type === 'replace';
         const router = useRouter();
         const current = useRoute();
         const resolveRoute = router.resolve(to);
@@ -123,7 +138,7 @@ export const RouterLink = defineComponent({
         /* 事件处理函数 */
         const handler = (e: MouseEvent) => {
             if (guardEvent(e)) {
-                router[replace ? 'replace' : 'push'](to);
+                router[replace ? 'replace' : props.type](to);
             }
         };
 
