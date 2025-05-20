@@ -36,14 +36,10 @@ function createRouteRecord(route: Partial<RouteRecord> = {}): RouteRecord {
 }
 
 export abstract class BaseRouterHistory implements RouterHistory {
-    /**
-     * 路由类实例
-     */
+    /** 路由类实例 */
     public router: RouterInstance;
 
-    /**
-     * 匹配的当前路由
-     */
+    /** 匹配的当前路由 */
     public current: RouteRecord = createRouteRecord();
 
     constructor(router: RouterInstance) {
@@ -53,17 +49,13 @@ export abstract class BaseRouterHistory implements RouterHistory {
         });
     }
 
-    /**
-     * 更新当前路由
-     */
+    /** 更新当前路由 */
     updateRoute(route: RouteRecord) {
         this.current = route;
         this.router.updateRoute(route);
     }
 
-    /**
-     * 解析路由
-     */
+    /** 解析路由 */
     resolve(location: RouterRawLocation): RouteRecord {
         const rawLocation =
             typeof location === 'string' ? { path: location } : location;
@@ -108,9 +100,7 @@ export abstract class BaseRouterHistory implements RouterHistory {
         return route;
     }
 
-    /**
-     * 核心跳转方法
-     */
+    /** 核心跳转方法 */
     async transitionTo(
         location: RouterRawLocation,
         onComplete?: (route: RouteRecord) => void
@@ -156,10 +146,10 @@ export abstract class BaseRouterHistory implements RouterHistory {
         );
     }
 
-    /* 当前执行的任务 */
+    /** 当前执行的任务 */
     tasks: Tasks | null = null;
 
-    /* 取消任务 */
+    /** 取消任务 */
     async abortTask() {
         this.tasks?.abort();
     }
@@ -188,22 +178,18 @@ export abstract class BaseRouterHistory implements RouterHistory {
             loadRoute
         } = getNavigationHooks(this.router, from, to);
 
-        /* 前置钩子任务 */
-        const guardBeforeTasks: Tasks<NavigationGuard> = createTasks();
+        /** 前置钩子任务 */
+        const guardBeforeTasks = createTasks<NavigationGuard>();
 
-        /* 后置钩子任务 */
-        const guardAfterTasks: Tasks<NavigationGuardAfter> =
-            createTasks<NavigationGuardAfter>();
+        /** 后置钩子任务 */
+        const guardAfterTasks = createTasks<NavigationGuardAfter>();
 
-        /* 加载路由任务 */
-        const loadRouteTasks: Tasks<() => Awaitable<any>> =
-            createTasks<() => Awaitable<any>>();
+        /** 加载路由任务 */
+        const loadRouteTasks = createTasks<() => Awaitable<any>>();
 
         if (isSameRoute(from, to)) {
             // from 和 to 是相同路由说明为更新路由
             guardBeforeTasks.add([...beforeEach, ...beforeUpdate]);
-
-            guardAfterTasks.add(afterEach);
         } else {
             // 反之为进入新路由
             guardBeforeTasks.add([
@@ -212,18 +198,15 @@ export abstract class BaseRouterHistory implements RouterHistory {
                 ...beforeEnter
             ]);
             loadRouteTasks.add(loadRoute);
-
-            guardAfterTasks.add(afterEach);
         }
+        guardAfterTasks.add(afterEach);
 
         this.tasks = guardBeforeTasks;
         await guardBeforeTasks.run({
             cb: async (res) => {
                 switch (typeof res) {
                     case 'boolean':
-                        if (!res) {
-                            this.tasks?.abort();
-                        }
+                        res || this.tasks?.abort();
                         break;
 
                     case 'undefined':
@@ -249,45 +232,31 @@ export abstract class BaseRouterHistory implements RouterHistory {
         }
     }
 
-    /**
-     * 新开浏览器窗口的方法，在服务端会调用 push 作为替代
-     */
+    // 新开浏览器窗口的方法，在服务端会调用 push 作为替代
     abstract pushWindow(location: RouterRawLocation): void;
 
-    /**
-     * 替换当前浏览器窗口的方法，在服务端会调用 replace 作为替代
-     */
+    // 替换当前浏览器窗口的方法，在服务端会调用 replace 作为替代
     abstract replaceWindow(location: RouterRawLocation): void;
 
-    /**
-     * 跳转方法，会创建新的历史纪录
-     */
+    // 跳转方法，会创建新的历史纪录
     abstract push(location: RouterRawLocation): Promise<void>;
 
-    /**
-     * 跳转方法，替换当前历史记录
-     */
+    // 跳转方法，替换当前历史记录
     abstract replace(location: RouterRawLocation): Promise<void>;
 
-    /**
-     * 路由移动到指定历史记录方法
-     */
+    // 路由移动到指定历史记录方法
     abstract go(delta: number): void;
 
-    /* 路由历史记录前进方法 */
+    // 路由历史记录前进方法
     abstract forward(): void;
 
-    /* 路由历史记录后退方法 */
+    // 路由历史记录后退方法
     abstract back(): void;
 
-    /**
-     * 初始化方法
-     */
+    // 初始化方法
     abstract init(params?: { replace?: boolean }): Promise<void>;
 
-    /**
-     * 卸载方法
-     */
+    // 卸载方法
     abstract destroy(): void;
 }
 
@@ -299,94 +268,50 @@ function getNavigationHooks(
     router: RouterInstance,
     from: RouteRecord,
     to: RouteRecord
-): {
-    beforeEach: NavigationGuard[];
-    afterEach: NavigationGuardAfter[];
-    beforeEnter: NavigationGuard[];
-    beforeUpdate: NavigationGuard[];
-    beforeLeave: NavigationGuard[];
-    loadRoute: Array<() => Promise<any>>;
-} {
-    const beforeEach = router.guards.beforeEach.map((guard) => {
-        return () => {
-            return guard(from, to);
-        };
-    });
-    const afterEach = router.guards.afterEach.map((guard) => {
-        return () => {
-            return guard(from, to);
-        };
-    });
-
-    const { beforeLeave } = from.matched.reduce<{
-        beforeLeave: NavigationGuard[];
-    }>(
-        (acc, { beforeLeave }) => {
-            if (beforeLeave) {
-                acc.beforeLeave.unshift(() => {
-                    return beforeLeave(from, to);
-                });
-            }
-            return acc;
-        },
-        {
-            beforeLeave: []
-        }
+) {
+    const beforeEach = router.guards.beforeEach.map(
+        (guard) => () => guard(from, to)
+    );
+    const afterEach = router.guards.afterEach.map(
+        (guard) => () => guard(from, to)
     );
 
-    const { beforeEnter, beforeUpdate } = to.matched.reduce<{
-        beforeEnter: NavigationGuard[];
-        beforeUpdate: NavigationGuard[];
-    }>(
-        (acc, { beforeEnter, beforeUpdate }) => {
-            if (beforeEnter) {
-                acc.beforeEnter.push(() => {
-                    return beforeEnter(from, to);
-                });
-            }
+    const beforeLeave = from.matched.reduce((acc, { beforeLeave }) => {
+        beforeLeave && acc.unshift(() => beforeLeave(from, to));
+        return acc;
+    }, [] as NavigationGuard[]);
 
-            if (beforeUpdate) {
-                acc.beforeUpdate.push(() => {
-                    return beforeUpdate(from, to);
-                });
-            }
+    const { beforeEnter, beforeUpdate } = to.matched.reduce(
+        (acc, { beforeEnter, beforeUpdate }) => {
+            beforeEnter && acc.beforeEnter.push(() => beforeEnter(from, to));
+            beforeUpdate && acc.beforeUpdate.push(() => beforeUpdate(from, to));
             return acc;
         },
         {
-            beforeEnter: [],
-            beforeUpdate: []
+            beforeEnter: [] as NavigationGuard[],
+            beforeUpdate: [] as NavigationGuard[]
         }
     );
 
     const loadRoute = [
-        async () => {
-            return Promise.all(
-                to.matched.reduce<Array<Promise<any>>>((acc, route) => {
-                    if (!route.component && route.asyncComponent) {
-                        acc.push(
-                            new Promise<void>((resolve, reject) => {
-                                if (!route.component && route.asyncComponent) {
-                                    route.asyncComponent().then((resolved) => {
-                                        if (!resolved) {
-                                            reject(
-                                                new Error(
-                                                    `Couldn't resolve component at "${route.path}". Ensure you passed a function that returns a promise.`
-                                                )
-                                            );
-                                        }
-                                        route.component = isESModule(resolved)
-                                            ? resolved.default
-                                            : resolved;
-                                        resolve();
-                                    });
-                                }
-                            })
-                        );
-                    }
-                    return acc;
-                }, [])
-            );
-        }
+        () =>
+            Promise.all(
+                to.matched
+                    .filter((route) => !route.component && route.asyncComponent)
+                    .map((route) =>
+                        route.asyncComponent!().then((resolved: any) => {
+                            if (!resolved)
+                                throw new Error(
+                                    `Couldn't resolve component at "${
+                                        route.path
+                                    }". Ensure you passed a function that returns a promise.`
+                                );
+                            route.component = isESModule(resolved)
+                                ? resolved.default
+                                : resolved;
+                        })
+                    )
+            ) as Promise<any>
     ];
 
     return {

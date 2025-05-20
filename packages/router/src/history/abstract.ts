@@ -8,14 +8,8 @@ import { isPathWithProtocolOrDomain, normalizeLocation } from '../utils';
 import { BaseRouterHistory } from './base';
 
 export class AbstractHistory extends BaseRouterHistory {
-    index: number;
-    stack: RouteRecord[];
-
-    constructor(router: RouterInstance) {
-        super(router);
-        this.index = 0;
-        this.stack = [];
-    }
+    stackTop = 0;
+    stack: RouteRecord[] = [];
 
     async init() {
         const { initUrl } = this.router.options;
@@ -117,14 +111,14 @@ export class AbstractHistory extends BaseRouterHistory {
         }
 
         await this.transitionTo(location, (route) => {
-            const index = replace ? this.index : this.index + 1;
-            this.stack = this.stack.slice(0, index).concat(route);
-            this.index = index;
+            const top = replace ? this.stackTop : this.stackTop + 1;
+            this.stack = this.stack.slice(0, top).concat(route);
+            this.stackTop = top;
         });
     }
 
     go(delta: number): void {
-        const targetIndex = this.index + delta;
+        const targetIndex = this.stackTop + delta;
         // 浏览器在跳转到不存在的历史记录时不会进行跳转
         if (targetIndex < 0 || targetIndex >= this.stack.length) {
             // 如果在弹层路由回退，则关闭弹层
@@ -136,7 +130,7 @@ export class AbstractHistory extends BaseRouterHistory {
             return;
         }
         const route = this.stack[targetIndex];
-        this.index = targetIndex;
+        this.stackTop = targetIndex;
         this.updateRoute(route);
     }
 
