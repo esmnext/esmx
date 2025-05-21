@@ -10,6 +10,7 @@ export default {
 <template>
     <div>
         <h3 class="color">Test</h3>
+        <pre>{{ $route }}</pre>
         <router-view />
     </div>
 </template>

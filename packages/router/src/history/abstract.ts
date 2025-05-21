@@ -1,13 +1,17 @@
 import type {
+    HistoryActionType,
     Route,
     RouteRecord,
-    RouterInstance,
+    RouterHistory,
     RouterRawLocation
 } from '../types';
 import { isPathWithProtocolOrDomain, normalizeLocation } from '../utils';
 import { BaseRouterHistory } from './base';
 
-export class AbstractHistory extends BaseRouterHistory {
+export class AbstractHistory
+    extends BaseRouterHistory
+    implements RouterHistory
+{
     stackTop = 0;
     stack: RouteRecord[] = [];
 
@@ -72,41 +76,18 @@ export class AbstractHistory extends BaseRouterHistory {
         return true;
     }
 
-    // 新增路由记录跳转
-    async push(location: RouterRawLocation) {
-        await this.jump(location, false);
-    }
+    // 所有的跳转方法都汇总到这里做统一处理
+    protected async _jump({
+        type,
+        // 如果没有传入 location 则使用当前路由的 fullPath
+        location = { path: this.current.fullPath }
+    }: {
+        type: HistoryActionType;
+        location?: RouterRawLocation;
+    }) {
+        const replace = ['replace', 'reload', 'forceReload'].includes(type);
 
-    /**
-     * 新开浏览器窗口的方法，在服务端会调用 push 作为替代
-     */
-    async pushWindow(location: RouterRawLocation) {
-        await this._jump(location, false, true);
-    }
-
-    // 替换当前路由记录跳转
-    async replace(location: RouterRawLocation) {
-        await this.jump(location, true);
-    }
-
-    /**
-     * 替换当前浏览器窗口的方法，在服务端会调用 replace 作为替代
-     */
-    async replaceWindow(location: RouterRawLocation) {
-        await this._jump(location, true, true);
-    }
-
-    // 跳转方法
-    async jump(location: RouterRawLocation, replace = false) {
-        await this._jump(location, replace);
-    }
-
-    async _jump(
-        location: RouterRawLocation,
-        replace = false,
-        isTriggerWithWindow = false
-    ) {
-        if (this.handleOutside(location, replace, isTriggerWithWindow)) {
+        if (this.handleOutside(location, replace, type === 'pushWindow')) {
             return;
         }
 

@@ -26,6 +26,8 @@ export interface HistoryState {
     [x: string]: HistoryStateValue;
 }
 
+export type HistoryActionType = 'push' | 'replace' | 'reload' | 'forceReload' | 'pushWindow' | 'pushLayer';
+
 /**
  * 路由历史
  */
@@ -63,12 +65,23 @@ export interface RouterHistory {
     /**
      * 新开浏览器窗口的方法，在服务端会调用 push 作为替代
      */
-    pushWindow: (location: RouterRawLocation) => void;
+    pushWindow: (location: RouterRawLocation) => Promise<void>;
 
     /**
      * 替换当前浏览器窗口的方法，在服务端会调用 replace 作为替代
+     * @deprecated 请使用 {@link reload | `reload`} 或 {@link forceReload | `forceReload`} 方法替代。该函数和 {@link forceReload | `forceReload`} 方法的功能相同
      */
-    replaceWindow: (location: RouterRawLocation) => void;
+    replaceWindow: (location: RouterRawLocation) => Promise<void>;
+
+    /**
+     * 刷新当前路由。会将实例卸载并重新挂载。
+     */
+    reload: (location?: RouterRawLocation) => Promise<void>;
+
+    /**
+     * 强制刷新当前路由。浏览器会刷新网页。
+     */
+    forceReload: (location?: RouterRawLocation) => Promise<void>;
 
     /**
      * 路由移动到指定历史记录方法

@@ -337,14 +337,15 @@ export class Router implements RouterInstance {
      * 新开浏览器窗口的方法，在服务端会调用 push 作为替代
      */
     pushWindow(location: RouterRawLocation) {
-        this.history.pushWindow(location);
+        return this.history.pushWindow(location);
     }
 
     /**
      * 替换当前浏览器窗口的方法，在服务端会调用 replace 作为替代
+     * @deprecated 请使用 {@link reload | `reload`} 或 {@link forceReload | `forceReload`} 方法替代。该函数和 {@link forceReload | `forceReload`} 方法的功能相同
      */
     replaceWindow(location: RouterRawLocation) {
-        this.history.replaceWindow(location);
+        return this.history.replaceWindow(location);
     }
 
     /* 前往特定路由历史记录的方法，可以在历史记录前后移动 */

@@ -12,7 +12,7 @@ const renderer = createRenderer();
 
 export default async (rc: RenderContext) => {
     // 创建 Vue 应用实例
-    const { app } = await createApp(rc.params.routerBase);
+    const { app } = await createApp(rc.params.routerBase, rc.params.url);
 
     // 使用 Vue 的 renderToString 生成页面内容
     const html = await renderer.renderToString(app, {

@@ -1,6 +1,7 @@
 import { type Tasks, createTasks } from '../task-pipe';
 import type {
     Awaitable,
+    HistoryActionType,
     NavigationGuard,
     NavigationGuardAfter,
     RouteRecord,
@@ -232,17 +233,31 @@ export abstract class BaseRouterHistory implements RouterHistory {
         }
     }
 
-    // 新开浏览器窗口的方法，在服务端会调用 push 作为替代
-    abstract pushWindow(location: RouterRawLocation): void;
+    // 路由跳转方法
+    push(location: RouterRawLocation) {
+        return this._jump({ type: 'push', location });
+    }
+    pushWindow(location: RouterRawLocation) {
+        return this._jump({ type: 'pushWindow', location });
+    }
+    replace(location: RouterRawLocation) {
+        return this._jump({ type: 'replace', location });
+    }
+    replaceWindow(location: RouterRawLocation) {
+        return this._jump({ type: 'forceReload', location });
+    }
+    reload(location?: RouterRawLocation) {
+        return this._jump({ type: 'reload', location });
+    }
+    forceReload(location?: RouterRawLocation) {
+        return this._jump({ type: 'forceReload', location });
+    }
 
-    // 替换当前浏览器窗口的方法，在服务端会调用 replace 作为替代
-    abstract replaceWindow(location: RouterRawLocation): void;
-
-    // 跳转方法，会创建新的历史纪录
-    abstract push(location: RouterRawLocation): Promise<void>;
-
-    // 跳转方法，替换当前历史记录
-    abstract replace(location: RouterRawLocation): Promise<void>;
+    // 所有的跳转方法都汇总到这里做统一处理
+    protected abstract _jump(args: {
+        type: HistoryActionType;
+        location?: RouterRawLocation;
+    }): Promise<void>;
 
     // 路由移动到指定历史记录方法
     abstract go(delta: number): void;
@@ -284,7 +299,7 @@ function getNavigationHooks(
         Array.from(
             router.guards._beforeLeave ?? [],
             (guard) => () => guard(from, to)
-        ) as NavigationGuard[]
+        ).reverse() as NavigationGuard[]
     );
 
     const { beforeEnter, beforeUpdate } = to.matched.reduce(

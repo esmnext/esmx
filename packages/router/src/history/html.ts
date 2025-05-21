@@ -1,4 +1,9 @@
-import type { RouterInstance, RouterRawLocation } from '../types';
+import type {
+    HistoryActionType,
+    RouterHistory,
+    RouterInstance,
+    RouterRawLocation
+} from '../types';
 import {
     computeScrollPosition,
     getKeepScrollPosition,
@@ -11,7 +16,7 @@ import {
 } from '../utils';
 import { BaseRouterHistory } from './base';
 
-export class HtmlHistory extends BaseRouterHistory {
+export class HtmlHistory extends BaseRouterHistory implements RouterHistory {
     constructor(router: RouterInstance) {
         super(router);
 
@@ -86,14 +91,6 @@ export class HtmlHistory extends BaseRouterHistory {
         window.removeEventListener('popstate', this.onPopState);
     }
 
-    pushWindow(location: RouterRawLocation) {
-        this.handleOutside(location, false, true);
-    }
-
-    replaceWindow(location: RouterRawLocation) {
-        this.handleOutside(location, true, true);
-    }
-
     // 处理外站跳转逻辑
     handleOutside(
         location: RouterRawLocation,
@@ -141,19 +138,21 @@ export class HtmlHistory extends BaseRouterHistory {
         return true;
     }
 
-    // 新增路由记录跳转
-    async push(location: RouterRawLocation) {
-        await this.jump(location, false);
-    }
+    // 所有的跳转方法都汇总到这里做统一处理
+    protected async _jump({
+        type,
+        // 如果没有传入 location 则使用当前路由的 fullPath
+        location = { path: this.current.fullPath }
+    }: {
+        type: HistoryActionType;
+        location?: RouterRawLocation;
+    }) {
+        const replace = ['replace', 'reload', 'forceReload'].includes(type);
 
-    // 替换当前路由记录跳转
-    async replace(location: RouterRawLocation) {
-        await this.jump(location, true);
-    }
-
-    // 跳转方法
-    async jump(location: RouterRawLocation, replace = false) {
-        if (this.handleOutside(location, replace)) {
+        if (
+            this.handleOutside(location, replace, type === 'pushWindow') ||
+            type === 'pushWindow'
+        ) {
             return;
         }
 
@@ -164,7 +163,6 @@ export class HtmlHistory extends BaseRouterHistory {
                 saveScrollPosition(current.fullPath, computeScrollPosition());
                 scrollToPosition({ left: 0, top: 0 });
             }
-
             const state = Object.assign(
                 replace
                     ? { ...history.state, ...route.state }
@@ -176,8 +174,6 @@ export class HtmlHistory extends BaseRouterHistory {
                 '',
                 route.fullPath
             );
-
-            // this.router.updateLayerState(route);
         });
     }
 

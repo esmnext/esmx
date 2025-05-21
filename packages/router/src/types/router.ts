@@ -327,12 +327,12 @@ export interface RouterInstance {
     /**
      * 路由跳转方法，会创建新的历史记录
      */
-    push: (location: RouterRawLocation) => Promise<void>;
+    push: RouterHistory['push'];
 
     /**
      * 路由跳转方法，会替换当前的历史记录
      */
-    replace: (location: RouterRawLocation) => Promise<void>;
+    replace: RouterHistory['replace'];
 
     /**
      * 打开路由弹层方法，会创建新的路由实例并调用注册的 register 方法
@@ -346,12 +346,13 @@ export interface RouterInstance {
     /**
      * 新开浏览器窗口的方法, 会进入配置的 handleOutside 钩子，在服务端会调用 push 作为替代
      */
-    pushWindow: (location: RouterRawLocation) => void;
+    pushWindow: RouterHistory['pushWindow'];
 
     /**
      * 替换当前浏览器窗口的方法，在服务端会调用 replace 作为替代
+     * @deprecated 请使用 {@link reload | `reload`} 或 {@link forceReload | `forceReload`} 方法替代。该函数和 {@link forceReload | `forceReload`} 方法的功能相同
      */
-    replaceWindow: (location: RouterRawLocation) => void;
+    replaceWindow: RouterHistory['pushWindow'];
 
     /**
      * 前往特定路由历史记录的方法，可以在历史记录前后移动

@@ -23,6 +23,7 @@
                     <router-link to="/test" :type="method">测试</router-link>
                     <router-link to="/test1" :type="method">动态组件</router-link>
                     <router-link to="/404" :type="method">404</router-link>
+                    <router-link to="https://baidu.com" :type="method">baidu</router-link>
                     <a
                         v-if="!$router.isLayer && method === 'pushLayer'"
                         href="/"
