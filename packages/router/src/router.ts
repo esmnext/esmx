@@ -6,7 +6,7 @@ import {
     type CloseLayerArgs,
     type NavigationGuard,
     type NavigationGuardAfter,
-    type PushLayerHooks,
+    type PushLayerExtArgs,
     type RegisteredConfig,
     type RegisteredConfigMap,
     type Route,
@@ -38,7 +38,8 @@ export class Router implements RouterInstance {
             return depth;
         },
         parent: null,
-        children: []
+        children: [],
+        root: this
     };
 
     get isLayer() {
@@ -294,18 +295,27 @@ export class Router implements RouterInstance {
      * 打开路由弹层方法，会创建新的路由实例并调用注册的 register 方法
      */
     async pushLayer(
-        location: RouterRawLocation & { hooks?: PushLayerHooks },
-        options: { hooks?: PushLayerHooks } = {}
+        location: RouterRawLocation & PushLayerExtArgs,
+        options: PushLayerExtArgs = {}
     ) {
         const hooks = options.hooks || location.hooks || {};
+        const dataCtx = options.dataCtx || location.dataCtx;
         const route = this.resolve(location);
         const layerRouter = createRouter({
             ...this.options,
+            dataCtx:
+                dataCtx || this.options.dataCtx
+                    ? {
+                          ...(this.options.dataCtx || {}),
+                          ...(dataCtx || {})
+                      }
+                    : undefined,
             initUrl: route.fullPath,
             mode: RouterMode.ABSTRACT
         });
         layerRouter.layer.parent = this;
         this.layer.children.push(layerRouter);
+        layerRouter.layer.root = this.layer.root;
         Object.entries(this.registeredConfigMap).forEach(
             ([appType, config]) => {
                 layerRouter.register(appType, config.generator);

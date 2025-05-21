@@ -298,6 +298,11 @@ export interface RouterOptions {
      * 路由配置使用的 route
      */
     routes: RouteConfig[];
+
+    /**
+     * 路由的全局数据上下文。用于在导航中传递数据
+     */
+    dataCtx?: Record<any, any>;
 }
 
 /**
@@ -649,6 +654,11 @@ export interface RouterLayerInfo {
      * 当前路由对象的子路由对象数组
      */
     children: RouterInstance[];
+
+    /**
+     * 当前路由对象的根路由对象
+     */
+    root: RouterInstance;
 }
 
 export interface CloseLayerArgs {
@@ -673,18 +683,21 @@ export interface CloseLayerArgs {
     descendantStrategy?: 'clear' | 'hoisting';
 }
 
-export interface PushLayerHooks {
-    /**
-     * 是否应该关闭弹层路由
-     * @returns `true` 关闭弹层路由，`false` 不关闭弹层路由
-     */
-    shouldCloseLayer?: (from: RouteRecord, to: RouteRecord, layerRouter: RouterInstance) => boolean;
-    // 未来有需要再实现（虽然很想现在就放出去）
-    // beforeEach?: NavigationGuard;
-    // afterEach?: NavigationGuardAfter;
-    // beforeEnter?: NavigationGuard;
-    // beforeUpdate?: NavigationGuard;
-    // beforeLeave?: NavigationGuard;
+export interface PushLayerExtArgs {
+    dataCtx?: RouterOptions['dataCtx'];
+    hooks?: {
+        /**
+         * 是否应该关闭弹层路由
+         * @returns `true` 关闭弹层路由，`false` 不关闭弹层路由
+         */
+        shouldCloseLayer?: (from: RouteRecord, to: RouteRecord, layerRouter: RouterInstance) => boolean;
+        // 未来有需要再实现（虽然很想现在就放出去）
+        // beforeEach?: NavigationGuard;
+        // afterEach?: NavigationGuardAfter;
+        // beforeEnter?: NavigationGuard;
+        // beforeUpdate?: NavigationGuard;
+        // beforeLeave?: NavigationGuard;
+    };
 }
 
 /**
@@ -820,8 +833,8 @@ export interface RouterInstance {
      * 服务端会使用 push 作为替代
      */
     pushLayer: {
-        (options: RouterRawLocation & { hooks?: PushLayerHooks }): void;
-        (location: RouterRawLocation, options?: { hooks?: PushLayerHooks }): void;
+        (options: RouterRawLocation & PushLayerExtArgs): void;
+        (location: RouterRawLocation, options?: PushLayerExtArgs): void;
     };
 
     /**

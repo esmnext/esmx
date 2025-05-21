@@ -193,6 +193,7 @@ export class HtmlHistory extends BaseRouterHistory {
     }
 
     go(delta: number): void {
+        if (delta === -1) return this.back();
         window.history.go(delta);
     }
 
