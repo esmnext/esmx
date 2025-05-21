@@ -38,53 +38,42 @@ export class HtmlHistory extends BaseRouterHistory {
     }
 
     onPopState = (e: PopStateEvent) => {
-        // if (this.router.checkLayerState(e.state)) return;
-
         const current = Object.assign({}, this.current);
 
         // 当路由变化时触发跳转事件
         this.transitionTo(this.getCurrentLocation(), async (route) => {
             const { state } = window.history;
             saveScrollPosition(current.fullPath, computeScrollPosition());
-            setTimeout(async () => {
-                const keepScrollPosition = state.keepScrollPosition;
-                if (keepScrollPosition) {
-                    return;
-                }
-                const savedPosition = getSavedScrollPosition(route.fullPath);
-                const position = await this.router.scrollBehavior(
-                    current,
-                    route,
-                    savedPosition
-                );
-
-                const { nextTick } = this.router.options;
-                if (position) {
-                    nextTick && (await nextTick());
-                    scrollToPosition(position);
-                }
-            });
+            await new Promise((s) => setTimeout(s));
+            if (state.keepScrollPosition) return;
+            const savedPosition = getSavedScrollPosition(route.fullPath);
+            const position = await this.router.scrollBehavior(
+                current,
+                route,
+                savedPosition
+            );
+            if (!position) return;
+            await this.router.options.nextTick?.();
+            scrollToPosition(position);
         });
     };
 
-    async init({ replace }: { replace?: boolean } = { replace: true }) {
+    async init() {
         const { initUrl } = this.router.options;
         let route = this.getCurrentLocation();
-        if (initUrl !== undefined) {
+        if (initUrl !== void 0) {
             // 存在 initUrl 则用 initUrl 进行初始化
             route = this.resolve(initUrl) as any;
-        } else {
-            const state = history.state || {};
-            route.state = {
-                ...state,
-                _ancientRoute: state._ancientRoute ?? true // 最古历史的标记, 在调用返回事件时如果有这个标记则直接调用没有历史记录的钩子
-            };
-        }
-        if (replace) {
-            await this.replace(route as RouterRawLocation);
-        } else {
-            await this.push(route as RouterRawLocation);
-        }
+        } else
+            try {
+                // state 是 any 类型，这里将其当做对象可能会抛出错误，因此用 try-catch 包裹
+                const state = history.state || {};
+                route.state = {
+                    ...state,
+                    _ancientRoute: state._ancientRoute ?? true // 最古历史的标记, 在调用返回事件时如果有这个标记则直接调用没有历史记录的钩子
+                };
+            } catch (e) {}
+        await this.replace(route as RouterRawLocation);
         this.setupListeners();
     }
 
@@ -193,7 +182,10 @@ export class HtmlHistory extends BaseRouterHistory {
     }
 
     go(delta: number): void {
-        if (delta === -1) return this.back();
+        if (delta === -1) {
+            this.back();
+            return;
+        }
         window.history.go(delta);
     }
 

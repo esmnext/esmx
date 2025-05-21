@@ -254,7 +254,7 @@ export abstract class BaseRouterHistory implements RouterHistory {
     abstract back(): void;
 
     // 初始化方法
-    abstract init(params?: { replace?: boolean }): Promise<void>;
+    abstract init(): Promise<void>;
 
     // 卸载方法
     abstract destroy(): void;
