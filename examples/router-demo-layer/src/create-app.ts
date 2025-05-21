@@ -76,8 +76,13 @@ export async function createApp(
             },
             destroy() {
                 if (!isBrowser) return;
+                console.log('destroy', router);
                 vm.$destroy();
-                if (!router.isLayer) return;
+                if (!router.isLayer) {
+                    // vue2 不会自动销毁 DOM 元素，因此这里要手动销毁
+                    document.getElementById('app')!.innerHTML = '';
+                    return;
+                }
                 ele?.remove();
             }
         };

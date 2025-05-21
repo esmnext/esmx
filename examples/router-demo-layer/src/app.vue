@@ -13,7 +13,7 @@
 
         <table><tbody>
             <tr
-                v-for="method in ['push', 'replace', 'pushWindow', 'replaceWindow', 'pushLayer']"
+                v-for="method in ['push', 'pushWindow', 'replace', 'reload', 'forceReload', 'pushLayer']"
                 :key="method"
                 :class="method"
             >

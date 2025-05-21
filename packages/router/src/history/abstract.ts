@@ -91,11 +91,20 @@ export class AbstractHistory
             return;
         }
 
-        await this.transitionTo(location, (route) => {
-            const top = replace ? this.stackTop : this.stackTop + 1;
-            this.stack = this.stack.slice(0, top).concat(route);
-            this.stackTop = top;
-        });
+        if (type === 'forceReload') {
+            window.location.reload();
+            return;
+        }
+
+        await this.transitionTo(
+            location,
+            (route) => {
+                const top = replace ? this.stackTop : this.stackTop + 1;
+                this.stack = this.stack.slice(0, top).concat(route);
+                this.stackTop = top;
+            },
+            type
+        );
     }
 
     go(delta: number): void {

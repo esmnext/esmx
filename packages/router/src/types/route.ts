@@ -2,6 +2,7 @@
 import type { HistoryState } from './history';
 import type { RouterRawLocation } from './location';
 import type { NavigationGuard } from './guard';
+import type { RouterLocation } from './location';
 
 /**
  * 路由的meta配置
@@ -138,7 +139,8 @@ export interface RouteConfig {
 }
 
 /**
- * 用户使用的 route
+ * 用户使用的 route。
+ * 和 {@link RouterLocation| `RouterLocation`} 的区别在于，{@link RouterLocation| `RouterLocation`} 是入参，{@link Route | `Route`} 是出参
  */
 export interface Route {
     hash: URL['hash'];

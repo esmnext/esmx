@@ -23,6 +23,12 @@ import {
 } from './types';
 import { inBrowser, normalizePath, regexDomain } from './utils';
 
+const arrRmEle = <T>(arr: T[], ele: T) => {
+    const i = arr.findIndex((item) => item === ele);
+    if (i === -1) return;
+    arr.splice(i, 1);
+};
+
 /**
  * 路由类
  */
@@ -251,44 +257,59 @@ export class Router implements RouterInstance {
         };
     }
 
-    /* 全局路由守卫 */
+    // 守卫相关逻辑
     readonly guards: RouterInstance['guards'] = {
         beforeEach: [],
         afterEach: []
     };
-
-    /* 注册全局路由前置守卫 */
     beforeEach(guard: NavigationGuard) {
         this.guards.beforeEach.push(guard);
     }
-
-    /* 卸载全局路由前置守卫 */
     unBindBeforeEach(guard: NavigationGuard) {
-        const i = this.guards.beforeEach.findIndex((item) => item === guard);
-        if (i === -1) return;
-        this.guards.beforeEach.splice(i, 1);
+        arrRmEle(this.guards.beforeEach, guard);
     }
-
-    /* 注册全局路由后置守卫 */
     afterEach(guard: NavigationGuardAfter) {
         this.guards.afterEach.push(guard);
     }
-
-    /* 卸载全局路由后置守卫 */
     unBindAfterEach(guard: NavigationGuardAfter) {
-        const i = this.guards.afterEach.findIndex((item) => item === guard);
-        if (i === -1) return;
-        this.guards.afterEach.splice(i, 1);
+        arrRmEle(this.guards.afterEach, guard);
     }
 
-    /* 路由跳转方法，会创建新的历史记录 */
-    async push(location: RouterRawLocation) {
-        await this.history.push(location);
+    // 路由跳转方法
+    push(location: RouterRawLocation) {
+        return this.history.push(location);
+    }
+    replace(location: RouterRawLocation) {
+        return this.history.replace(location);
+    }
+    pushWindow(location: RouterRawLocation) {
+        return this.history.pushWindow(location);
+    }
+    replaceWindow(location: RouterRawLocation) {
+        return this.history.replaceWindow(location);
     }
 
-    /* 路由跳转方法，会替换当前的历史记录 */
-    async replace(location: RouterRawLocation) {
-        await this.history.replace(location);
+    /**
+     * 刷新当前路由。会将实例卸载并重新挂载。子 layer 会被销毁（相当于调用了一次 closeLayer）
+     */
+    async reload(location?: RouterRawLocation) {
+        this._closeAllChildren();
+        Object.values(this.registeredConfigMap).forEach((config) => {
+            if (!config.mounted) return;
+            config.config?.destroy();
+            config.mounted = false;
+        });
+        await this.history.reload(location);
+    }
+
+    /**
+     * 强制刷新当前路由。浏览器会刷新网页，服务端调用效果等同于在根路由执行 {@link reload | `reload`}。
+     */
+    forceReload(location?: RouterRawLocation) {
+        if (!inBrowser) {
+            return this.layer.root.reload(location);
+        }
+        return this.history.forceReload(location);
     }
 
     /**
@@ -333,21 +354,6 @@ export class Router implements RouterInstance {
         await layerRouter.init();
     }
 
-    /**
-     * 新开浏览器窗口的方法，在服务端会调用 push 作为替代
-     */
-    pushWindow(location: RouterRawLocation) {
-        return this.history.pushWindow(location);
-    }
-
-    /**
-     * 替换当前浏览器窗口的方法，在服务端会调用 replace 作为替代
-     * @deprecated 请使用 {@link reload | `reload`} 或 {@link forceReload | `forceReload`} 方法替代。该函数和 {@link forceReload | `forceReload`} 方法的功能相同
-     */
-    replaceWindow(location: RouterRawLocation) {
-        return this.history.replaceWindow(location);
-    }
-
     /* 前往特定路由历史记录的方法，可以在历史记录前后移动 */
     go(delta = 0) {
         this.history.go(delta);
@@ -368,24 +374,32 @@ export class Router implements RouterInstance {
         return this.matcher.getRoutes();
     }
 
+    /**
+     * 关闭所有的子路由
+     */
+    protected _closeAllChildren() {
+        this.layer.children.slice().forEach((layerRouter) => {
+            layerRouter.closeLayer({
+                data: {},
+                type: 'close',
+                descendantStrategy: 'clear'
+            });
+        });
+        this.layer.children = [];
+    }
+
     closeLayer({
         data,
         type = 'close',
         descendantStrategy = 'clear'
     }: CloseLayerArgs = {}) {
-        const layerInfo = this.layer;
         // 如果 descendantStrategy 为 clear，则将所有的子路由都关闭，无论是否是顶层路由
         if (descendantStrategy === 'clear') {
-            layerInfo.children.slice().forEach((layerRouter) => {
-                layerRouter.closeLayer({
-                    data,
-                    type,
-                    descendantStrategy
-                });
-            });
+            this._closeAllChildren();
         }
         if (!this.isLayer) return;
         if (descendantStrategy === 'hoisting') {
+            const layerInfo = this.layer;
             const parent = layerInfo.parent!;
             layerInfo.children.forEach((layerRouter) => {
                 layerRouter.layer.parent = layerInfo.parent;

@@ -1,8 +1,10 @@
 
 import type { HistoryState } from './history';
+import type { Route } from './route';
 
 /**
- * 路由跳转等事件使用的参数
+ * 路由跳转等事件使用的参数。
+ * 和 {@link Route | `Route`} 的区别在于，{@link RouterLocation| `RouterLocation`} 是入参，{@link Route | `Route`} 是出参
  */
 export interface RouterLocation {
     path?: string;

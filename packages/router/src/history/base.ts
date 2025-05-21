@@ -104,7 +104,8 @@ export abstract class BaseRouterHistory implements RouterHistory {
     /** 核心跳转方法 */
     async transitionTo(
         location: RouterRawLocation,
-        onComplete?: (route: RouteRecord) => void
+        onComplete?: (route: RouteRecord) => void,
+        type: HistoryActionType = 'push'
     ) {
         // 寻找即将跳转路径匹配到的路由对象
         const route = this.resolve(location);
@@ -112,7 +113,7 @@ export abstract class BaseRouterHistory implements RouterHistory {
         this.abortTask();
 
         // 禁止重复跳转
-        if (isEqualRoute(this.current, route)) {
+        if (type !== 'reload' && isEqualRoute(this.current, route)) {
             return;
         }
 

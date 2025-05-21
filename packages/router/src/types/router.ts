@@ -298,9 +298,17 @@ export interface RouterInstance {
     readonly guards: {
         beforeEach: NavigationGuard[];
         afterEach: NavigationGuardAfter[];
-        // 为了 pushLayer 时注入控制行为
+        /**
+         * @protected 为了 pushLayer 时注入控制行为，路由库外部不要使用
+         */
         _beforeEnter?: NavigationGuard[];
+        /**
+         * @protected 为了 pushLayer 时注入控制行为，路由库外部不要使用
+         */
         _beforeUpdate?: NavigationGuard[];
+        /**
+         * @protected 为了 pushLayer 时注入控制行为，路由库外部不要使用
+         */
         _beforeLeave?: NavigationGuard[];
     };
 
@@ -353,6 +361,16 @@ export interface RouterInstance {
      * @deprecated 请使用 {@link reload | `reload`} 或 {@link forceReload | `forceReload`} 方法替代。该函数和 {@link forceReload | `forceReload`} 方法的功能相同
      */
     replaceWindow: RouterHistory['pushWindow'];
+
+    /**
+     * 刷新当前路由。会将实例卸载并重新挂载。子 layer 会被销毁（相当于调用了一次 closeLayer）
+     */
+    reload: RouterHistory['reload'];
+
+    /**
+     * 强制刷新当前路由。浏览器会刷新网页，服务端调用效果等同于在根路由执行 {@link reload | `reload`}。
+     */
+    forceReload: RouterHistory['forceReload'];
 
     /**
      * 前往特定路由历史记录的方法，可以在历史记录前后移动

@@ -156,25 +156,37 @@ export class HtmlHistory extends BaseRouterHistory implements RouterHistory {
             return;
         }
 
+        if (type === 'forceReload') {
+            window.location.reload();
+            return;
+        }
+
         const current = Object.assign({}, this.current);
-        await this.transitionTo(location, (route) => {
-            const keepScrollPosition = getKeepScrollPosition(location);
-            if (!keepScrollPosition) {
-                saveScrollPosition(current.fullPath, computeScrollPosition());
-                scrollToPosition({ left: 0, top: 0 });
-            }
-            const state = Object.assign(
-                replace
-                    ? { ...history.state, ...route.state }
-                    : { ...route.state, _ancientRoute: false },
-                { keepScrollPosition }
-            );
-            window.history[replace ? 'replaceState' : 'pushState'](
-                state,
-                '',
-                route.fullPath
-            );
-        });
+        await this.transitionTo(
+            location,
+            (route) => {
+                const keepScrollPosition = getKeepScrollPosition(location);
+                if (!keepScrollPosition) {
+                    saveScrollPosition(
+                        current.fullPath,
+                        computeScrollPosition()
+                    );
+                    scrollToPosition({ left: 0, top: 0 });
+                }
+                const state = Object.assign(
+                    replace
+                        ? { ...history.state, ...route.state }
+                        : { ...route.state, _ancientRoute: false },
+                    { keepScrollPosition }
+                );
+                window.history[replace ? 'replaceState' : 'pushState'](
+                    state,
+                    '',
+                    route.fullPath
+                );
+            },
+            type
+        );
     }
 
     go(delta: number): void {
