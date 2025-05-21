@@ -106,16 +106,21 @@ export type RouterBase =
           hash: string;
       }) => string);
 
+/** 路由注册函数 */
+export type RegisteredConfigGenerator = (router: RouterInstance) => RegisteredConfig;
+
 /**
  * 路由注册配置
  */
 export type RegisteredConfigMap = {
-    [appType: string]: {
-        /**
-         * 是否已经挂载
-         */
+    [AppType in string]?: {
+        /** 应用类型 */
+        appType: AppType;
+        /** 是否已经挂载 */
         mounted: boolean;
-        generator: (router: RouterInstance) => RegisteredConfig;
+        /** 用户注册app时的函数 */
+        generator: RegisteredConfigGenerator;
+        /** 用户注册app时的函数的执行结果的缓存，当app被卸载后会删除该缓存 */
         config?: RegisteredConfig;
     }
 };
@@ -143,6 +148,11 @@ export interface RegisteredConfig {
      * 一个可选的渲染到字符串函数。
      */
     renderToString?: () => string;
+
+    /**
+     * 应用内的数据上下文。优先级高于{@link RouterOptions.dataCtx | 路由的全局数据上下文}。用于在导航中传递数据
+     */
+    dataCtx?: RouterOptions['dataCtx'];
 }
 
 export interface RouterLayerInfo {
@@ -195,6 +205,9 @@ export interface CloseLayerArgs {
 }
 
 export interface PushLayerExtArgs {
+    /**
+     * 导航时的数据上下文。优先级高于{@link RegisteredConfig.dataCtx | 应用内的数据上下文}和{@link RouterOptions.dataCtx | 路由的全局数据上下文}。用于在导航中传递数据
+     */
     dataCtx?: RouterOptions['dataCtx'];
     hooks?: {
         /**
@@ -291,7 +304,7 @@ export interface RouterInstance {
      */
     register: (
         name: string,
-        config: (router: RouterInstance) => RegisteredConfig
+        config: RegisteredConfigGenerator,
     ) => void;
 
     /* 已注册的app配置 */
@@ -411,4 +424,9 @@ export interface RouterInstance {
      * 返回 注册app时传递的 {@link RegisteredConfig.renderToString | `renderToString`} 的执行结果
      */
     renderToString: () => string;
+
+    /**
+     * 返回当前路由{@link RouterOptions.dataCtx | 全局}和{@link RegisteredConfig.dataCtx | 应用内的数据上下文}按优先级合并后的结果
+     */
+    get dataCtx(): RouterOptions['dataCtx'];
 }

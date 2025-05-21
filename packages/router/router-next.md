@@ -499,16 +499,22 @@ router.pushLayer('/');
    5. [ ] 返回值
 2. [ ] 上下文
    1. [x] 全局
-   2. [x] pushLayer
-   3. [ ] push
-   4. [ ] replace
-   5. [ ] reload
-   6. [ ] forceReload
-   7. [ ] pushWindow
+   2. [x] 应用内
+   3. [x] pushLayer
+   4. [ ] push
+   5. [ ] replace
+   6. [ ] reload
+   7. [ ] forceReload
+   8. [ ] pushWindow
 3. [ ] 路由导航方法返回值
+   1. [ ] push
+   2. [ ] replace
+   3. [ ] reload
+   4. [ ] forceReload
+   5. [ ] pushWindow
 4. [x] 新增导航方式 reload 和 forceReload
 5. [x] 可选的 renderToString
 6. [ ] 归一化 URL 钩子
 7. [ ] 外站跳转钩子
 8. [ ] afterMatch 钩子
-9.  [ ] hyper 钩子（暂定）
+9. [ ] hyper 钩子（暂定）

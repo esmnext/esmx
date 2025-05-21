@@ -8,6 +8,7 @@ import {
     type NavigationGuardAfter,
     type PushLayerExtArgs,
     type RegisteredConfig,
+    type RegisteredConfigGenerator,
     type RegisteredConfigMap,
     type Route,
     type RouteRecord,
@@ -28,6 +29,12 @@ const arrRmEle = <T>(arr: T[], ele: T) => {
     if (i === -1) return;
     arr.splice(i, 1);
 };
+
+const mgDataCtx = (...ctxs: RouterOptions['dataCtx'][]) =>
+    ctxs.reduce<RouterOptions['dataCtx']>(
+        (acc, ctx) => (ctx ? { ...(acc || {}), ...ctx } : acc),
+        void 0
+    );
 
 /**
  * 路由类
@@ -124,29 +131,30 @@ export class Router implements RouterInstance {
         this.layer.id = Router.idCount++;
     }
 
+    /** 获取当前生效的路由的注册配置 */
+    protected getCurrentRegisteredCfg() {
+        const appType = this.route?.matched[0]?.appType;
+        return appType ? this.registeredConfigMap[appType] : null;
+    }
+
     /* 更新路由 */
     updateRoute(route: RouteRecord) {
-        const curAppType = this.route?.matched[0]?.appType;
-        const appType = route.matched[0]?.appType;
+        const oldRegCfg = this.getCurrentRegisteredCfg();
         this.applyRoute(route);
+        const curRegCfg = this.getCurrentRegisteredCfg();
 
-        const curRegisterConfig =
-            curAppType && this.registeredConfigMap[curAppType];
-        const registerConfig = appType && this.registeredConfigMap[appType];
-
-        if (registerConfig) {
-            const { mounted, generator } = registerConfig;
+        if (curRegCfg) {
+            const { mounted, generator } = curRegCfg;
             if (!mounted) {
-                registerConfig.config = generator(this);
-                registerConfig.config?.mount();
-                registerConfig.mounted = true;
+                curRegCfg.config = generator(this);
+                curRegCfg.config.mount();
+                curRegCfg.mounted = true;
             }
-            registerConfig.config?.updated();
+            curRegCfg.config?.updated();
         }
 
-        if (curAppType !== appType && curRegisterConfig) {
-            curRegisterConfig.config?.destroy();
-            curRegisterConfig.mounted = false;
+        if (oldRegCfg && oldRegCfg.appType !== curRegCfg?.appType) {
+            this._destroyApp(oldRegCfg);
         }
     }
 
@@ -193,20 +201,6 @@ export class Router implements RouterInstance {
         return this.history.resolve(location);
     }
 
-    /**
-     * 新增单个路由匹配规则
-     */
-    // addRoutes(routes: RouteConfig[]) {
-    //     this.matcher.addRoutes(routes);
-    // }
-
-    /**
-     * 新增多个路由匹配规则
-     */
-    // addRoute(route: RouteConfig): void {
-    //     this.matcher.addRoute(route);
-    // }
-
     /* 初始化 */
     async init() {
         await this.history.init();
@@ -217,11 +211,8 @@ export class Router implements RouterInstance {
      */
     destroy() {
         this.history.destroy();
-        Object.values(this.registeredConfigMap).forEach((config) => {
-            if (!config.mounted) return;
-            config.config?.destroy();
-            config.mounted = false;
-        });
+        this._destroyAllApp();
+        this.registeredConfigMap = {};
         this.layer.children.forEach((layer) => {
             layer.destroy();
         });
@@ -246,14 +237,28 @@ export class Router implements RouterInstance {
     registeredConfigMap: RegisteredConfigMap = {};
 
     /* app配置注册 */
-    register(
-        name: string,
-        config: (router: RouterInstance) => RegisteredConfig
-    ) {
+    register(name: string, config: RegisteredConfigGenerator) {
         this.registeredConfigMap[name] = {
+            appType: name,
             generator: config,
             mounted: false
         };
+    }
+
+    protected _destroyApp(nameOrCfg: string | RegisteredConfigMap[string]) {
+        const regCfg =
+            typeof nameOrCfg === 'string'
+                ? this.registeredConfigMap[nameOrCfg]
+                : nameOrCfg;
+        if (!regCfg?.mounted) return;
+        regCfg.config?.destroy();
+        regCfg.mounted = false;
+        regCfg.config = void 0;
+    }
+    protected _destroyAllApp() {
+        for (const appType in this.registeredConfigMap) {
+            this._destroyApp(appType);
+        }
     }
 
     // 守卫相关逻辑
@@ -293,11 +298,7 @@ export class Router implements RouterInstance {
      */
     async reload(location?: RouterRawLocation) {
         this._closeAllChildren();
-        Object.values(this.registeredConfigMap).forEach((config) => {
-            if (!config.mounted) return;
-            config.config?.destroy();
-            config.mounted = false;
-        });
+        this._destroyAllApp();
         await this.history.reload(location);
     }
 
@@ -323,24 +324,16 @@ export class Router implements RouterInstance {
         const route = this.resolve(location);
         const layerRouter = createRouter({
             ...this.options,
-            dataCtx:
-                dataCtx || this.options.dataCtx
-                    ? {
-                          ...(this.options.dataCtx || {}),
-                          ...(dataCtx || {})
-                      }
-                    : undefined,
+            dataCtx: mgDataCtx(this.dataCtx, dataCtx),
             initUrl: route.fullPath,
             mode: RouterMode.ABSTRACT
         });
         layerRouter.layer.parent = this;
         this.layer.children.push(layerRouter);
         layerRouter.layer.root = this.layer.root;
-        Object.entries(this.registeredConfigMap).forEach(
-            ([appType, config]) => {
-                layerRouter.register(appType, config.generator);
-            }
-        );
+        for (const regCfg of Object.values(this.registeredConfigMap)) {
+            layerRouter.register(regCfg!.appType, regCfg!.generator);
+        }
         layerRouter.guards.beforeEach.push((from, to) => {
             if (!hooks.shouldCloseLayer?.(from, to, layerRouter)) return;
             layerRouter.closeLayer({
@@ -403,12 +396,12 @@ export class Router implements RouterInstance {
             layerInfo.children.forEach((layerRouter) => {
                 layerRouter.layer.parent = layerInfo.parent;
                 parent.layer.children.push(layerRouter);
-                Object.values(layerRouter.registeredConfigMap).forEach(
-                    (config) => {
-                        if (!config.mounted) return;
-                        config.config?.updated();
-                    }
-                );
+                for (const regCfg of Object.values(
+                    layerRouter.registeredConfigMap
+                )) {
+                    if (!regCfg!.mounted) continue;
+                    regCfg!.config?.updated();
+                }
             });
             layerInfo.children = [];
         }
@@ -416,10 +409,16 @@ export class Router implements RouterInstance {
     }
 
     renderToString() {
-        const appType = this.route?.matched[0]?.appType;
-        const registerConfig = appType && this.registeredConfigMap[appType];
-        if (!registerConfig || !registerConfig.mounted) return '';
-        return registerConfig.config?.renderToString?.() || '';
+        const regCfg = this.getCurrentRegisteredCfg();
+        if (!regCfg?.mounted) return '';
+        return regCfg.config?.renderToString?.() || '';
+    }
+
+    get dataCtx(): RouterOptions['dataCtx'] {
+        return mgDataCtx(
+            this.options.dataCtx,
+            this.getCurrentRegisteredCfg()?.config?.dataCtx
+        );
     }
 }
 
