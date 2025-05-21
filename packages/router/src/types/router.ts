@@ -138,6 +138,11 @@ export interface RegisteredConfig {
      * 销毁
      */
     destroy: () => any;
+
+    /**
+     * 一个可选的渲染到字符串函数。
+     */
+    renderToString?: () => string;
 }
 
 export interface RouterLayerInfo {
@@ -401,4 +406,9 @@ export interface RouterInstance {
      * 根据获取当前所有活跃的路由Record对象
      */
     getRoutes: () => RouteMatch[];
+
+    /**
+     * 返回 注册app时传递的 {@link RegisteredConfig.renderToString | `renderToString`} 的执行结果
+     */
+    renderToString: () => string;
 }

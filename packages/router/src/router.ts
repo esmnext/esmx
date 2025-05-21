@@ -236,11 +236,10 @@ export class Router implements RouterInstance {
             }
             this.layer.parent = null;
         }
-        this.guards.beforeEach = [];
-        this.guards.afterEach = [];
-        this.guards._beforeEnter = void 0;
-        this.guards._beforeUpdate = void 0;
-        this.guards._beforeLeave = void 0;
+        this.guards = {
+            beforeEach: [],
+            afterEach: []
+        };
     }
 
     /* 已注册的app配置 */
@@ -258,7 +257,7 @@ export class Router implements RouterInstance {
     }
 
     // 守卫相关逻辑
-    readonly guards: RouterInstance['guards'] = {
+    guards: RouterInstance['guards'] = {
         beforeEach: [],
         afterEach: []
     };
@@ -414,6 +413,13 @@ export class Router implements RouterInstance {
             layerInfo.children = [];
         }
         this.destroy();
+    }
+
+    renderToString() {
+        const appType = this.route?.matched[0]?.appType;
+        const registerConfig = appType && this.registeredConfigMap[appType];
+        if (!registerConfig || !registerConfig.mounted) return '';
+        return registerConfig.config?.renderToString?.() || '';
     }
 }
 

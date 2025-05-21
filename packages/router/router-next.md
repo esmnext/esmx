@@ -483,3 +483,32 @@ router.layerParams
 router.layerReturn;
 
 router.pushLayer('/');
+
+
+
+
+---
+
+目前的进度：
+
+1. [ ] 路由 pushLayer
+   1. [x] 子路由
+   2. [x] 判断是否关闭弹窗的钩子
+   3. [x] closeLayer
+   4. [ ] 仅改变浏览器 URL 的便捷方法
+   5. [ ] 返回值
+2. [ ] 上下文
+   1. [x] 全局
+   2. [x] pushLayer
+   3. [ ] push
+   4. [ ] replace
+   5. [ ] reload
+   6. [ ] forceReload
+   7. [ ] pushWindow
+3. [ ] 路由导航方法返回值
+4. [x] 新增导航方式 reload 和 forceReload
+5. [x] 可选的 renderToString
+6. [ ] 归一化 URL 钩子
+7. [ ] 外站跳转钩子
+8. [ ] afterMatch 钩子
+9.  [ ] hyper 钩子（暂定）
