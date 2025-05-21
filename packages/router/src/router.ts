@@ -286,7 +286,7 @@ export class Router implements RouterInstance {
         return this.history.pushWindow(location);
     }
     replaceWindow(location: RouterRawLocation) {
-        return this.history.replaceWindow(location);
+        return this.history.forceReload(location);
     }
 
     /**

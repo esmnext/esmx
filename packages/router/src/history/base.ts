@@ -244,9 +244,6 @@ export abstract class BaseRouterHistory implements RouterHistory {
     replace(location: RouterRawLocation) {
         return this._jump({ type: 'replace', location });
     }
-    replaceWindow(location: RouterRawLocation) {
-        return this._jump({ type: 'forceReload', location });
-    }
     reload(location?: RouterRawLocation) {
         return this._jump({ type: 'reload', location });
     }
