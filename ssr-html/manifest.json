@@ -5,7 +5,7 @@
         "src/entry.client": {
             "name": "src/entry.client",
             "rewrite": true,
-            "file": "src/entry.client.d731ede7.final.mjs",
+            "file": "src/entry.client.759ee756.final.mjs",
             "identifier": "ssr-html/src/entry.client"
         },
         "src/title/index": {
@@ -24,12 +24,12 @@
         "src/title/index.2d79c0c2.final.mjs",
         "src/entry.client.2e0a89bc.final.css",
         "473.63b8fd4f.final.css",
-        "src/entry.client.d731ede7.final.mjs",
+        "830.8712b17d.final.mjs",
         "830.63b8fd4f.final.css",
-        "534.82a3bdb1.final.mjs",
+        "src/entry.client.759ee756.final.mjs",
         "images/cat.ed79ef6b.final.jpeg",
-        "830.b760cb75.final.mjs",
-        "473.c6f811ea.final.mjs"
+        "473.5b2bd94a.final.mjs",
+        "534.7b1c883c.final.mjs"
     ],
     "chunks": {
         "ssr-html@src/title/index.ts": {
@@ -45,20 +45,20 @@
         },
         "ssr-html@src/views/about.ts": {
             "name": "ssr-html@src/views/about.ts",
-            "js": "473.c6f811ea.final.mjs",
+            "js": "473.5b2bd94a.final.mjs",
             "css": [
                 "473.63b8fd4f.final.css"
             ],
             "resources": [],
             "sizes": {
-                "js": 6224,
+                "js": 6371,
                 "css": 5739,
                 "resource": 0
             }
         },
         "ssr-html@src/entry.client.ts": {
             "name": "ssr-html@src/entry.client.ts",
-            "js": "src/entry.client.d731ede7.final.mjs",
+            "js": "src/entry.client.759ee756.final.mjs",
             "css": [
                 "src/entry.client.2e0a89bc.final.css"
             ],
@@ -71,7 +71,7 @@
         },
         "ssr-html@src/views/home.ts": {
             "name": "ssr-html@src/views/home.ts",
-            "js": "534.82a3bdb1.final.mjs",
+            "js": "534.7b1c883c.final.mjs",
             "css": [
                 "534.63b8fd4f.final.css"
             ],
@@ -83,20 +83,20 @@
                 "images/sun.429a7bc5.final.png"
             ],
             "sizes": {
-                "js": 7980,
+                "js": 8204,
                 "css": 5739,
                 "resource": 796974
             }
         },
         "ssr-html@src/views/not-found.ts": {
             "name": "ssr-html@src/views/not-found.ts",
-            "js": "830.b760cb75.final.mjs",
+            "js": "830.8712b17d.final.mjs",
             "css": [
                 "830.63b8fd4f.final.css"
             ],
             "resources": [],
             "sizes": {
-                "js": 4274,
+                "js": 4362,
                 "css": 5739,
                 "resource": 0
             }

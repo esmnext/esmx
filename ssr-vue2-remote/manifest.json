@@ -40,7 +40,7 @@
         "550.0b3802ea.final.mjs",
         "src/entry.client.60b13bfc.final.mjs",
         "src/examples/index.84b37e4f.final.css",
-        "src/components/index.ecb7607c.final.css",
+        "src/components/index.76f4c45a.final.css",
         "src/components/index.fc7fb2bf.final.mjs",
         "src/examples/index.3137e5b1.final.mjs"
     ],
@@ -108,7 +108,7 @@
             "name": "ssr-vue2-remote@src/components/index.ts",
             "js": "src/components/index.fc7fb2bf.final.mjs",
             "css": [
-                "src/components/index.ecb7607c.final.css"
+                "src/components/index.76f4c45a.final.css"
             ],
             "resources": [],
             "sizes": {

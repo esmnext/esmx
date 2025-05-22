@@ -33,25 +33,7 @@ function layout(slot) {
         if (path.startsWith('http')) return path;
         return base + (path.startsWith('/') ? path.slice(1) : path);
     };
-    return `
-<div class="layout">
-    <header class="header">
-        <div class="container">
-            <h1><img src="https://www.esmnext.com/logo.svg" alt="Esmx Logo" width="48" height="48"></h1>
-            <nav class="nav">
-                <a href="${resolvePath('/')} " class="${isActive('/')}">首页</a>
-                <a href="${resolvePath('about')}" class="${isActive('/about')}">关于我们</a>
-                <a href="https://github.com/esmnext/esmx/tree/master/examples/ssr-html" target="_blank">示例代码</a>
-            </nav>
-        </div>
-    </header>
-    <main class="main">
-        <div class="container">
-            ${slot}
-        </div>
-    </main>
-</div>
-`;
+    return '\n<div class="layout">\n    <header class="header">\n        <div class="container">\n            <h1><img src="https://www.esmnext.com/logo.svg" alt="Esmx Logo" width="48" height="48"></h1>\n            <nav class="nav">\n                <a href="'.concat(resolvePath('/'), ' " class="').concat(isActive('/'), '">首页</a>\n                <a href="').concat(resolvePath('about'), '" class="').concat(isActive('/about'), '">关于我们</a>\n                <a href="https://github.com/esmnext/esmx/tree/master/examples/ssr-html" target="_blank">示例代码</a>\n            </nav>\n        </div>\n    </header>\n    <main class="main">\n        <div class="container">\n            ').concat(slot, "\n        </div>\n    </main>\n</div>\n");
 }
 
 
@@ -76,7 +58,7 @@ function _define_property(obj, key, value) {
 class Page {
     get props() {
         if (this._props === null) {
-            throw new Error(`props is null`);
+            throw new Error("props is null");
         }
         return this._props;
     }
@@ -86,7 +68,7 @@ class Page {
     /**
      * 服务端渲染生成的 HTML
      */ render() {
-        return ``;
+        return "";
     }
     /**
      * 组件已经创建完成，props 和 state 已经准备就绪
@@ -138,17 +120,7 @@ function _define_property(obj, key, value) {
 class NotFound extends _page__WEBPACK_IMPORTED_MODULE_2__/* .Page */.T {
     render() {
         const { url, base } = this.props;
-        return (0,_components_layout__WEBPACK_IMPORTED_MODULE_0__/* .layout */.b)(`<div class="not-found">
-                <div class="not-found-content">
-                    <div class="error-code">404</div>
-                    <h1>页面未找到</h1>
-                    <p>抱歉，您访问的页面不存在或已被移除</p>
-                    <div class="actions">
-                        <a href="${base}/" class="back-home">返回首页</a>
-                        <button onclick="window.history.back()" class="go-back">返回上一页</button>
-                    </div>
-                </div>
-            </div>`, {
+        return (0,_components_layout__WEBPACK_IMPORTED_MODULE_0__/* .layout */.b)('<div class="not-found">\n                <div class="not-found-content">\n                    <div class="error-code">404</div>\n                    <h1>页面未找到</h1>\n                    <p>抱歉，您访问的页面不存在或已被移除</p>\n                    <div class="actions">\n                        <a href="'.concat(base, '/" class="back-home">返回首页</a>\n                        <button onclick="window.history.back()" class="go-back">返回上一页</button>\n                    </div>\n                </div>\n            </div>'), {
             url,
             base
         });

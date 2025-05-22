@@ -33,25 +33,7 @@ function layout(slot) {
         if (path.startsWith('http')) return path;
         return base + (path.startsWith('/') ? path.slice(1) : path);
     };
-    return `
-<div class="layout">
-    <header class="header">
-        <div class="container">
-            <h1><img src="https://www.esmnext.com/logo.svg" alt="Esmx Logo" width="48" height="48"></h1>
-            <nav class="nav">
-                <a href="${resolvePath('/')} " class="${isActive('/')}">首页</a>
-                <a href="${resolvePath('about')}" class="${isActive('/about')}">关于我们</a>
-                <a href="https://github.com/esmnext/esmx/tree/master/examples/ssr-html" target="_blank">示例代码</a>
-            </nav>
-        </div>
-    </header>
-    <main class="main">
-        <div class="container">
-            ${slot}
-        </div>
-    </main>
-</div>
-`;
+    return '\n<div class="layout">\n    <header class="header">\n        <div class="container">\n            <h1><img src="https://www.esmnext.com/logo.svg" alt="Esmx Logo" width="48" height="48"></h1>\n            <nav class="nav">\n                <a href="'.concat(resolvePath('/'), ' " class="').concat(isActive('/'), '">首页</a>\n                <a href="').concat(resolvePath('about'), '" class="').concat(isActive('/about'), '">关于我们</a>\n                <a href="https://github.com/esmnext/esmx/tree/master/examples/ssr-html" target="_blank">示例代码</a>\n            </nav>\n        </div>\n    </header>\n    <main class="main">\n        <div class="container">\n            ').concat(slot, "\n        </div>\n    </main>\n</div>\n");
 }
 
 
@@ -76,7 +58,7 @@ function _define_property(obj, key, value) {
 class Page {
     get props() {
         if (this._props === null) {
-            throw new Error(`props is null`);
+            throw new Error("props is null");
         }
         return this._props;
     }
@@ -86,7 +68,7 @@ class Page {
     /**
      * 服务端渲染生成的 HTML
      */ render() {
-        return ``;
+        return "";
     }
     /**
      * 组件已经创建完成，props 和 state 已经准备就绪
@@ -166,89 +148,13 @@ class Home extends page/* Page */.T {
     render() {
         const { url, base } = this.props;
         const { count } = this.state;
-        return (0,layout/* layout */.b)(`
-        <section>
-            <h2>计数器</h2>
-            <div class="content-area counter">
-                <div id="count" class="counter-value">${count}</div>
-            </div>
-        </section>
-
-        <section>
-            <h2>请求地址</h2>
-            <div class="content-area url-section">
-                <pre>${url}</pre>
-            </div>
-        </section>
-
-        <section>
-            <h2>图片展示</h2>
-            <ul class="image-grid">
-                <li>
-                    <div class="image-wrapper">
-                        <img src="${logo_namespaceObject}" alt="SVG示例" width="200" height="200">
-                    </div>
-                    <div class="image-info">
-                        <h3>SVG 示例</h3>
-                        <p>类型：SVG</p>
-                        <p>尺寸：200 x 200</p>
-                    </div>
-                </li>
-                <li>
-                    <div class="image-wrapper">
-                        <img src="${starry_namespaceObject}" alt="JPG示例" width="1024" height="768">
-                    </div>
-                    <div class="image-info">
-                        <h3>JPG 示例</h3>
-                        <p>类型：JPG</p>
-                        <p>尺寸：1024 x 768</p>
-                    </div>
-                </li>
-                <li>
-                    <div class="image-wrapper">
-                        <img src="${cat_namespaceObject}" alt="猫咪图片" width="769" height="225">
-                    </div>
-                    <div class="image-info">
-                        <h3>猫咪图片</h3>
-                        <p>类型：PNG</p>
-                        <p>尺寸：769 x 225</p>
-                    </div>
-                </li>
-                <li>
-                    <div class="image-wrapper">
-                        <img src="${running_dog_namespaceObject}" alt="疯狂编码" width="480" height="297">
-                    </div>
-                    <div class="image-info">
-                        <h3>疯狂编码</h3>
-                        <p>类型：GIF</p>
-                        <p>尺寸：480 x 297</p>
-                    </div>
-                </li>
-                <li>
-                    <div class="image-wrapper">
-                        <img src="${sun_namespaceObject}" alt="太阳图标" width="351" height="300">
-                    </div>
-                    <div class="image-info">
-                        <h3>太阳图标</h3>
-                        <p>类型：SVG</p>
-                        <p>尺寸：351 x 300</p>
-                    </div>
-                </li>
-            </ul>
-        </section>
-
-        <section class="update-section">
-            <div class="update-info">
-                <span>最后更新：${new Date(this.state.time).toLocaleString('zh-CN', {
+        return (0,layout/* layout */.b)('\n        <section>\n            <h2>计数器</h2>\n            <div class="content-area counter">\n                <div id="count" class="counter-value">'.concat(count, '</div>\n            </div>\n        </section>\n\n        <section>\n            <h2>请求地址</h2>\n            <div class="content-area url-section">\n                <pre>').concat(url, '</pre>\n            </div>\n        </section>\n\n        <section>\n            <h2>图片展示</h2>\n            <ul class="image-grid">\n                <li>\n                    <div class="image-wrapper">\n                        <img src="').concat(logo_namespaceObject, '" alt="SVG示例" width="200" height="200">\n                    </div>\n                    <div class="image-info">\n                        <h3>SVG 示例</h3>\n                        <p>类型：SVG</p>\n                        <p>尺寸：200 x 200</p>\n                    </div>\n                </li>\n                <li>\n                    <div class="image-wrapper">\n                        <img src="').concat(starry_namespaceObject, '" alt="JPG示例" width="1024" height="768">\n                    </div>\n                    <div class="image-info">\n                        <h3>JPG 示例</h3>\n                        <p>类型：JPG</p>\n                        <p>尺寸：1024 x 768</p>\n                    </div>\n                </li>\n                <li>\n                    <div class="image-wrapper">\n                        <img src="').concat(cat_namespaceObject, '" alt="猫咪图片" width="769" height="225">\n                    </div>\n                    <div class="image-info">\n                        <h3>猫咪图片</h3>\n                        <p>类型：PNG</p>\n                        <p>尺寸：769 x 225</p>\n                    </div>\n                </li>\n                <li>\n                    <div class="image-wrapper">\n                        <img src="').concat(running_dog_namespaceObject, '" alt="疯狂编码" width="480" height="297">\n                    </div>\n                    <div class="image-info">\n                        <h3>疯狂编码</h3>\n                        <p>类型：GIF</p>\n                        <p>尺寸：480 x 297</p>\n                    </div>\n                </li>\n                <li>\n                    <div class="image-wrapper">\n                        <img src="').concat(sun_namespaceObject, '" alt="太阳图标" width="351" height="300">\n                    </div>\n                    <div class="image-info">\n                        <h3>太阳图标</h3>\n                        <p>类型：SVG</p>\n                        <p>尺寸：351 x 300</p>\n                    </div>\n                </li>\n            </ul>\n        </section>\n\n        <section class="update-section">\n            <div class="update-info">\n                <span>最后更新：').concat(new Date(this.state.time).toLocaleString('zh-CN', {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
             hour: '2-digit',
             minute: '2-digit'
-        })}</span>
-            </div>
-        </section>
-`, {
+        }), "</span>\n            </div>\n        </section>\n"), {
             url: url,
             base: base
         });
