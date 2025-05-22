@@ -12,7 +12,7 @@
             "name": "vue",
             "rewrite": false,
             "file": "vue.94c707fc.final.mjs",
-            "identifier": "vue"
+            "identifier": "ssr-vue2-remote/vue"
         },
         "src/components/index": {
             "name": "src/components/index",
