@@ -23,7 +23,7 @@ export function parseOptions(
                 name,
                 rewrite: !!item.rewrite,
                 file: item.file,
-                identifier: item.rewrite ? `${options.name}/${name}` : name
+                identifier: `${options.name}/${name}`
             };
         }
     }

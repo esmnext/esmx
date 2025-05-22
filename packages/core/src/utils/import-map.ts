@@ -1,59 +1,40 @@
-import path from 'node:path/posix';
 import { pathWithoutIndex } from './path-without-index';
 
 import type { ImportMap, ScopesMap, SpecifierMap } from '@esmx/import';
-import type { BuildSsrTarget } from '../core';
 import type { ManifestJson } from '../manifest-json';
-import type { ParsedModuleConfig } from '../module-config';
 
-/**
- * 获取导入映射对象
- */
-export async function getImportMap(
-    target: BuildSsrTarget,
-    manifests: readonly ManifestJson[],
-    moduleConfig: ParsedModuleConfig
-): Promise<ImportMap> {
+export function getImportMap({
+    manifests,
+    getFile,
+    getScope
+}: {
+    manifests: readonly ManifestJson[];
+    getScope: (name: string) => string;
+    getFile: (name: string, file: string) => string;
+}): ImportMap {
     const imports: SpecifierMap = {};
     const scopes: ScopesMap = {};
-
-    const rootMap: Record<string, string> = {};
-    Object.values(moduleConfig.links).forEach((link) => {
-        rootMap[link.name] = link[target];
-    });
-
-    // console.log('getImportMap target: %o, moduleConfig.links: %o', target, moduleConfig.links);
-
-    for (const manifest of manifests) {
-        for (const exportItem of Object.values(manifest.exports)) {
-            if (!(manifest.name in rootMap)) {
-                throw new Error(
-                    `'${manifest.name}'(${target}) did not find module config`
-                );
+    Object.values(manifests).forEach((manifest) => {
+        const scopeImports: SpecifierMap = {};
+        Object.values(manifest.exports).forEach((exportItem) => {
+            const file = getFile(manifest.name, exportItem.file);
+            imports[exportItem.identifier] = file;
+            if (!exportItem.rewrite) {
+                scopeImports[exportItem.name] = file;
             }
-            const pathPrefix =
-                target === 'server'
-                    ? path.join(path.resolve(rootMap[manifest.name]), '/')
-                    : path.join('/', manifest.name, '/');
-            if (exportItem.rewrite) {
-                imports[exportItem.identifier] = path.join(
-                    pathPrefix,
-                    exportItem.file
-                );
-            } else {
-                scopes[pathPrefix] ??= {};
-                scopes[pathPrefix][exportItem.identifier] = path.join(
-                    pathPrefix,
-                    exportItem.file
-                );
-            }
+        });
+        if (Object.keys(scopeImports).length || Object.keys(imports).length) {
+            scopes[getScope(manifest.name)] = scopeImports;
         }
-    }
-
-    // TODO: scopes 相同库变量提升
-
-    // console.log('manifests.exports: %o, rootMap: %o, scopes: %o, imports: %o\n', manifests.map(m => m.exports), rootMap, scopes, imports);
-
+    });
     pathWithoutIndex(imports);
-    return { scopes, imports };
+    Object.values(manifests).forEach((manifest) => {
+        Object.entries(manifest.imports).forEach(([name, identifier]) => {
+            scopes[getScope(manifest.name)][name] = imports[identifier];
+        });
+    });
+    return {
+        imports,
+        scopes
+    };
 }

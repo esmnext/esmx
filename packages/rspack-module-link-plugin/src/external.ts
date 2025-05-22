@@ -28,18 +28,21 @@ export function initExternal(
         if (importMap.size === 0) {
             await Promise.all(
                 Object.values(opts.exports).map(async (value) => {
-                    importMap.set(value.identifier, value.identifier);
+                    const identifier = value.rewrite
+                        ? value.identifier
+                        : value.name;
+                    importMap.set(identifier, identifier);
                     const entry = await resolvePath(
                         data,
                         defaultContext,
                         value.file
                     );
                     if (entry) {
-                        importMap.set(entry, value.identifier);
+                        importMap.set(entry, identifier);
                     }
                 })
             );
-            for (const [key] of Object.entries(opts.imports)) {
+            for (const key of Object.keys(opts.imports)) {
                 importMap.set(key, key);
             }
         }

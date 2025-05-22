@@ -824,11 +824,40 @@ export class Esmx {
         target: BuildSsrTarget
     ): Promise<Readonly<ImportMap>> {
         return this.readied.cache(`getImportMap-${target}`, async () => {
-            const json = await getImportMap(
-                target,
-                await this.getManifestList(target),
-                this.moduleConfig
-            );
+            const { moduleConfig } = this.readied;
+            const manifests = await this.getManifestList(target);
+            let json: ImportMap = {};
+            switch (target) {
+                case 'client':
+                    json = getImportMap({
+                        manifests,
+                        getScope(name) {
+                            return `/${name}/`;
+                        },
+                        getFile(name, file) {
+                            return `/${name}/${file}`;
+                        }
+                    });
+                    break;
+                case 'server':
+                    json = getImportMap({
+                        manifests,
+                        getScope: (name: string) => {
+                            return path.join(
+                                moduleConfig.links[name].server,
+                                '/'
+                            );
+                        },
+                        getFile: (name: string, file: string) => {
+                            return path.resolve(
+                                moduleConfig.links[name].server,
+                                file
+                            );
+                        }
+                    });
+                    break;
+            }
+
             return Object.freeze(json);
         });
     }
