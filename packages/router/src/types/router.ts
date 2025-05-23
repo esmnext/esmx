@@ -5,7 +5,7 @@ import type { Awaitable } from "./common";
 import type { RouterRawLocation } from "./location";
 import type { Route, RouteConfig, RouteRecord } from "./route";
 import type { RouterMatcher, RouteMatch } from "./match";
-import type { NavigationGuard, NavigationGuardAfter } from "./guard";
+import type { AfterMatchHook, NavigationGuard, NavigationGuardAfter } from "./guard";
 
 /**
  * 路由配置
@@ -303,6 +303,7 @@ export interface RouterInstance {
     readonly guards: {
         beforeEach: NavigationGuard[];
         afterEach: NavigationGuardAfter[];
+        afterMatch: AfterMatchHook[];
         /**
          * @protected 为了 pushLayer 时注入控制行为，路由库外部不要使用
          */
@@ -336,6 +337,16 @@ export interface RouterInstance {
      * 卸载全局路由后置守卫
      */
     unBindAfterEach: (guard: NavigationGuardAfter) => void;
+
+    /**
+     * 注册路由表匹配完成后的钩子
+     */
+    afterMatch: (guard: AfterMatchHook) => void;
+
+    /**
+     * 卸载路由表匹配完成后的钩子
+     */
+    unBindAfterMatch: (guard: AfterMatchHook) => void;
 
     /**
      * 路由跳转方法，会创建新的历史记录

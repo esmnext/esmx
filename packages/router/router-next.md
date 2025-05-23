@@ -497,6 +497,7 @@ router.pushLayer('/');
    3. [x] closeLayer
    4. [ ] 仅改变浏览器 URL 的便捷方法
    5. [ ] 返回值
+   6. [ ] 允许用户传递自定义事件
 2. [ ] 上下文
    1. [x] 全局
    2. [x] 应用内
@@ -516,5 +517,5 @@ router.pushLayer('/');
 5. [x] 可选的 renderToString
 6. [x] 归一化 URL 钩子
 7. [x] 外站跳转钩子
-8. [ ] afterMatch 钩子
+8. [x] afterMatch 钩子
 9. [ ] hyper 钩子（暂定）

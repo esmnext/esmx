@@ -3,6 +3,7 @@ import URLParse from 'url-parse';
 import { createHistory } from './history';
 import { createRouterMatcher } from './matcher';
 import {
+    type AfterMatchHook,
     type CloseLayerArgs,
     type NavigationGuard,
     type NavigationGuardAfter,
@@ -206,10 +207,7 @@ export class Router implements RouterInstance {
             }
             this.layer.parent = null;
         }
-        this.guards = {
-            beforeEach: [],
-            afterEach: []
-        };
+        this._initGuards();
     }
 
     /* 已注册的app配置 */
@@ -241,10 +239,14 @@ export class Router implements RouterInstance {
     }
 
     // 守卫相关逻辑
-    guards: RouterInstance['guards'] = {
-        beforeEach: [],
-        afterEach: []
-    };
+    guards: RouterInstance['guards'] = this._initGuards();
+    protected _initGuards() {
+        return (this.guards = {
+            beforeEach: [],
+            afterEach: [],
+            afterMatch: []
+        });
+    }
     beforeEach(guard: NavigationGuard) {
         this.guards.beforeEach.push(guard);
     }
@@ -256,6 +258,12 @@ export class Router implements RouterInstance {
     }
     unBindAfterEach(guard: NavigationGuardAfter) {
         arrRmEle(this.guards.afterEach, guard);
+    }
+    afterMatch(hook: AfterMatchHook) {
+        this.guards.afterMatch.push(hook);
+    }
+    unBindAfterMatch(hook: AfterMatchHook) {
+        arrRmEle(this.guards.afterMatch, hook);
     }
 
     // 路由跳转方法

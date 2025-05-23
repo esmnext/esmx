@@ -64,7 +64,16 @@ export abstract class BaseRouterHistory implements RouterHistory {
     ) {
         // 寻找即将跳转路径匹配到的路由对象
         const route = this.resolve(location);
-
+        this.router.guards.afterMatch.forEach((hook) => {
+            hook({
+                from: this.current,
+                to: route,
+                router: this.router,
+                navType: type,
+                isEqualRoute: isEqualRoute(this.current, route),
+                isSameRoute: isSameRoute(this.current, route)
+            });
+        });
         this.abortTask();
 
         // 禁止重复跳转
@@ -72,7 +81,7 @@ export abstract class BaseRouterHistory implements RouterHistory {
             return;
         }
 
-        await this.runTask(this.current, route, onComplete);
+        await this.runTask(this.current, route, onComplete, type);
     }
 
     /**
@@ -82,14 +91,25 @@ export abstract class BaseRouterHistory implements RouterHistory {
     async redirectTo(
         location: RouterRawLocation,
         from: RouteRecord,
-        onComplete?: (route: RouteRecord) => void
+        onComplete?: (route: RouteRecord) => void,
+        type: HistoryActionType = 'push'
     ) {
         // 寻找即将跳转路径匹配到的路由对象
         const route = this.resolve(location);
+        this.router.guards.afterMatch.forEach((hook) => {
+            hook({
+                from: this.current,
+                to: { ...route, redirectedFrom: from },
+                router: this.router,
+                navType: type,
+                isEqualRoute: isEqualRoute(this.current, route),
+                isSameRoute: isSameRoute(this.current, route)
+            });
+        });
         this.abortTask();
 
         // 禁止重复跳转
-        if (isEqualRoute(this.current, route)) {
+        if (type !== 'reload' && isEqualRoute(this.current, route)) {
             return;
         }
 
@@ -99,7 +119,8 @@ export abstract class BaseRouterHistory implements RouterHistory {
                 ...route,
                 redirectedFrom: from
             },
-            onComplete
+            onComplete,
+            type
         );
     }
 
@@ -124,7 +145,8 @@ export abstract class BaseRouterHistory implements RouterHistory {
     async runTask(
         from: RouteRecord,
         to: RouteRecord,
-        onComplete?: (route: RouteRecord) => void
+        onComplete?: (route: RouteRecord) => void,
+        type: HistoryActionType = 'push'
     ) {
         const {
             beforeEach,
@@ -170,7 +192,7 @@ export abstract class BaseRouterHistory implements RouterHistory {
                         break;
 
                     default:
-                        await this.redirectTo(res, from, onComplete);
+                        await this.redirectTo(res, from, onComplete, type);
                         break;
                 }
             },
