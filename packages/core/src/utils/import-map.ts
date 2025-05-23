@@ -1,14 +1,27 @@
 import { pathWithoutIndex } from './path-without-index';
 
 import type { ImportMap, ScopesMap, SpecifierMap } from '@esmx/import';
-import type { ManifestJson } from '../manifest-json';
+
+export interface ImportMapManifest {
+    name: string;
+    imports: Record<string, string>;
+    exports: Record<
+        string,
+        {
+            name: string;
+            file: string;
+            identifier: string;
+            rewrite: boolean;
+        }
+    >;
+}
 
 export function getImportMap({
     manifests,
     getFile,
     getScope
 }: {
-    manifests: readonly ManifestJson[];
+    manifests: readonly ImportMapManifest[];
     getScope: (name: string) => string;
     getFile: (name: string, file: string) => string;
 }): ImportMap {
@@ -16,6 +29,7 @@ export function getImportMap({
     const scopes: ScopesMap = {};
     Object.values(manifests).forEach((manifest) => {
         const scopeImports: SpecifierMap = {};
+
         Object.values(manifest.exports).forEach((exportItem) => {
             const file = getFile(manifest.name, exportItem.file);
             imports[exportItem.identifier] = file;
