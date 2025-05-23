@@ -132,11 +132,28 @@ export enum COMMAND {
 
 export type { ImportMap, SpecifierMap, ScopesMap };
 
+/**
+ * Esmx 框架实例的初始化状态接口
+ * @internal 仅供框架内部使用
+ * 
+ * @description
+ * 该接口定义了框架实例初始化后的状态数据，包含：
+ * - 应用实例：处理请求和渲染
+ * - 当前命令：控制运行模式
+ * - 模块配置：解析后的模块设置
+ * - 打包配置：解析后的构建设置
+ * - 缓存处理：框架内部缓存机制
+ */
 interface Readied {
+    /** 应用程序实例，提供中间件和渲染功能 */
     app: App;
+    /** 当前执行的框架命令 */
     command: COMMAND;
+    /** 解析后的模块配置信息 */
     moduleConfig: ParsedModuleConfig;
+    /** 解析后的打包配置信息 */
     packConfig: ParsedPackConfig;
+    /** 缓存处理器 */
     cache: CacheHandle;
 }
 
@@ -1052,16 +1069,86 @@ document.head.appendChild(script);
     }
 }
 
+/**
+ * 默认的开发环境应用创建函数
+ * 
+ * @description
+ * 这是一个默认的占位函数，用于在未配置开发环境应用创建函数时抛出错误。
+ * 实际使用时应当通过 EsmxOptions.devApp 配置实际的应用创建函数。
+ * 
+ * @throws {Error} 当未配置 devApp 时抛出错误，提示用户需要设置开发环境应用创建函数
+ * @returns {Promise<App>} 不会真正返回，总是抛出错误
+ * 
+ * @example
+ * ```ts
+ * // 正确的使用方式是在配置中提供 devApp
+ * const options: EsmxOptions = {
+ *   devApp: async (esmx) => {
+ *     return import('@esmx/rspack').then(m => 
+ *       m.createRspackHtmlApp(esmx)
+ *     );
+ *   }
+ * };
+ * ```
+ */
 async function defaultDevApp(): Promise<App> {
     throw new Error("'devApp' function not set");
 }
 
+/**
+ * Esmx 框架未初始化错误
+ * 
+ * @description
+ * 该错误在以下情况下抛出：
+ * - 在调用 init() 之前访问需要初始化的方法或属性
+ * - 在框架未完全初始化时尝试使用核心功能
+ * - 在销毁实例后继续使用框架功能
+ * 
+ * @extends Error
+ * 
+ * @example
+ * ```ts
+ * const esmx = new Esmx();
+ * try {
+ *   // 这会抛出 NotReadyError，因为还未初始化
+ *   await esmx.render();
+ * } catch (e) {
+ *   if (e instanceof NotReadyError) {
+ *     console.error('Framework not initialized');
+ *   }
+ * }
+ * ```
+ */
 class NotReadyError extends Error {
     constructor() {
         super(`The Esmx has not been initialized yet`);
     }
 }
 
+/**
+ * 计算内容的 SHA-256 哈希值
+ * 
+ * @description
+ * 该函数用于：
+ * - 生成文件内容的唯一标识符
+ * - 用于缓存失效判断
+ * - 生成具有内容哈希的文件名
+ * 
+ * 特点：
+ * - 使用 SHA-256 算法确保哈希值的唯一性
+ * - 截取前 12 位以平衡唯一性和长度
+ * - 适用于缓存控制和文件版本管理
+ * 
+ * @param {string} text - 要计算哈希的文本内容
+ * @returns {string} 返回 12 位的十六进制哈希字符串
+ * 
+ * @example
+ * ```ts
+ * const content = 'some content';
+ * const hash = contentHash(content);
+ * // 输出类似：'a1b2c3d4e5f6'
+ * ```
+ */
 function contentHash(text: string) {
     const hash = crypto.createHash('sha256');
     hash.update(text);
