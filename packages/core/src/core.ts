@@ -945,15 +945,19 @@ export class Esmx {
                     const code = `(() => {
 const base = document.currentScript.getAttribute("data-base");
 const importmap = ${serialize(importmap, { isJSON: true })};
-if (importmap.imports && base) {
-    const imports = importmap.imports;
-    Object.entries(imports).forEach(([k, v]) => {
-        imports[k] = base + v;
+const set = (data) => {
+    if (!data) return;
+    Object.entries(data).forEach(([k, v]) => {
+        data[k] = base + v;
     });
+};
+set(importmap.imports);
+if (importmap.scopes) {
+    Object.values(importmap.scopes).forEach(set);
 }
 const script = document.createElement("script");
 script.type = "importmap";
-script.innerHTML = JSON.stringify(importmap);
+script.innerText = JSON.stringify(importmap);
 document.head.appendChild(script);
 })();`;
                     const hash = contentHash(code);
@@ -984,11 +988,17 @@ document.head.appendChild(script);
                         code: `<script data-base="${basePathPlaceholder}" src="${src}"></script>`
                     };
                 }
-                if (importmap.imports && basePathPlaceholder) {
-                    const imports = importmap.imports;
-                    Object.entries(imports).forEach(([k, v]) => {
-                        imports[k] = basePathPlaceholder + v;
-                    });
+                if (basePathPlaceholder) {
+                    const set = (data?: Record<string, string>) => {
+                        if (!data) return;
+                        Object.entries(data).forEach(([k, v]) => {
+                            data[k] = basePathPlaceholder + v;
+                        });
+                    };
+                    set(importmap.imports);
+                    if (importmap.scopes) {
+                        Object.values(importmap.scopes).forEach(set);
+                    }
                 }
                 return {
                     src: null,
