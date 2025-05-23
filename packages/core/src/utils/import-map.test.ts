@@ -1,24 +1,25 @@
 import { assert, test } from 'vitest';
 import { getImportMap } from './import-map';
 
-
 test('should return empty import map when no manifests provided', async () => {
-    assert.deepEqual(getImportMap({
-        manifests: [],
-        getScope(name) {
-            return `/${name}/`;
-        },
-        getFile(name, file) {
-            return `${name}/${file}`;
-        },
-    }), {
-        imports: {},
-        scopes: {}
-    })
+    assert.deepEqual(
+        getImportMap({
+            manifests: [],
+            getScope(name) {
+                return `/${name}/`;
+            },
+            getFile(name, file) {
+                return `${name}/${file}`;
+            }
+        }),
+        {
+            imports: {},
+            scopes: {}
+        }
+    );
 });
 
-
-test('should generate import map with remote exports', async () => {
+test('should generate import map with remote exports and module scopes', async () => {
     const result = getImportMap({
         manifests: [
             {
@@ -31,7 +32,7 @@ test('should generate import map with remote exports', async () => {
                         file: 'src/entry.server.mjs',
                         identifier: 'ssr-vue2-remote/src/entry.server'
                     },
-                    'vue': {
+                    vue: {
                         name: 'vue',
                         rewrite: false,
                         file: 'vue.mjs',
@@ -48,7 +49,7 @@ test('should generate import map with remote exports', async () => {
             {
                 name: 'ssr-vue2-host',
                 imports: {
-                    "vue": "ssr-vue2-remote/vue"
+                    vue: 'ssr-vue2-remote/vue'
                 },
                 exports: {}
             }
@@ -58,20 +59,61 @@ test('should generate import map with remote exports', async () => {
         },
         getFile(name, file) {
             return `${name}/${file}`;
-        },
+        }
     });
     assert.deepEqual(result, {
         imports: {
-            'ssr-vue2-remote/src/entry.server': 'ssr-vue2-remote/src/entry.server.mjs',
+            'ssr-vue2-remote/src/entry.server':
+                'ssr-vue2-remote/src/entry.server.mjs',
             'ssr-vue2-remote/vue': 'ssr-vue2-remote/vue.mjs',
-            'ssr-vue2-remote/src/components/index': 'ssr-vue2-remote/src/components/index.mjs',
-            'ssr-vue2-remote/src/components': 'ssr-vue2-remote/src/components/index.mjs'
+            'ssr-vue2-remote/src/components/index':
+                'ssr-vue2-remote/src/components/index.mjs',
+            'ssr-vue2-remote/src/components':
+                'ssr-vue2-remote/src/components/index.mjs'
         },
-        scopes: { 
-            '/ssr-vue2-host/':  {
-                 "vue": "ssr-vue2-remote/vue.mjs",
+        scopes: {
+            '/ssr-vue2-host/': {
+                vue: 'ssr-vue2-remote/vue.mjs'
             },
-            '/ssr-vue2-remote/': { vue: 'ssr-vue2-remote/vue.mjs' } 
+            '/ssr-vue2-remote/': { vue: 'ssr-vue2-remote/vue.mjs' }
+        }
+    });
+});
+test('should generate import map with remote exports and module scopes', async () => {
+    const result = getImportMap({
+        manifests: [
+            {
+                name: 'ssr-vue2-remote',
+                imports: {},
+                exports: {
+                    vue: {
+                        name: 'vue',
+                        rewrite: false,
+                        file: 'vue.mjs',
+                        identifier: 'ssr-vue2-remote/vue'
+                    }
+                }
+            },
+            {
+                name: 'ssr-vue2-host',
+                imports: {
+                    vue: 'ssr-vue2-remote/vue3'
+                },
+                exports: {}
+            }
+        ],
+        getScope(name) {
+            return `/${name}/`;
+        },
+        getFile(name, file) {
+            return `${name}/${file}`;
+        }
+    });
+    assert.deepEqual(result, {
+        imports: { 'ssr-vue2-remote/vue': 'ssr-vue2-remote/vue.mjs' },
+        scopes: {
+            '/ssr-vue2-remote/': { vue: 'ssr-vue2-remote/vue.mjs' },
+            '/ssr-vue2-host/': { vue: 'ssr-vue2-remote/vue3' }
         }
     });
 });
