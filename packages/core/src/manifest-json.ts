@@ -97,13 +97,6 @@ export interface ManifestJsonChunkSizes {
 }
 
 /**
- * 异步的读取一个 JSON 文件。
- */
-async function readJson(filename: string): Promise<any> {
-    return JSON.parse(await fsp.readFile(filename, 'utf-8'));
-}
-
-/**
  * 获取服务清单文件
  */
 export async function getManifestList(
@@ -114,7 +107,7 @@ export async function getManifestList(
         Object.values(moduleConfig.links).map(async (item) => {
             const filename = path.resolve(item[target], 'manifest.json');
             try {
-                const data: ManifestJson = await readJson(filename);
+                const data: ManifestJson = await JSON.parse(await fsp.readFile(filename, 'utf-8'));
                 data.name = item.name;
                 return data;
             } catch (e) {
