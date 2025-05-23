@@ -4,7 +4,6 @@ import fsp from 'node:fs/promises';
 import path from 'node:path';
 import { cwd } from 'node:process';
 import type { ImportMap, ScopesMap, SpecifierMap } from '@esmx/import';
-import write from 'write';
 
 import serialize from 'serialize-javascript';
 import { type App, createApp } from './app';
@@ -651,7 +650,10 @@ export class Esmx {
      */
     public writeSync(filepath: string, data: any): boolean {
         try {
-            write.sync(filepath, data);
+            // 确保目标目录存在
+            fs.mkdirSync(path.dirname(filepath), { recursive: true });
+            // 写入文件
+            fs.writeFileSync(filepath, data);
             return true;
         } catch {
             return false;
@@ -676,7 +678,10 @@ export class Esmx {
      */
     public async write(filepath: string, data: any): Promise<boolean> {
         try {
-            await write(filepath, data);
+            // 确保目标目录存在
+            await fsp.mkdir(path.dirname(filepath), { recursive: true });
+            // 写入文件
+            await fsp.writeFile(filepath, data);
             return true;
         } catch {
             return false;

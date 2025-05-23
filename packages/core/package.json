@@ -61,11 +61,10 @@
     "dependencies": {
         "@esmx/import": "workspace:*",
         "@types/serialize-javascript": "^5.0.4",
-        "es-module-lexer": "^1.6.0",
+        "es-module-lexer": "^1.7.0",
         "find": "^0.3.0",
         "send": "^1.2.0",
-        "serialize-javascript": "^6.0.2",
-        "write": "^2.0.0"
+        "serialize-javascript": "^6.0.2"
     },
     "devDependencies": {
         "@biomejs/biome": "1.9.4",
