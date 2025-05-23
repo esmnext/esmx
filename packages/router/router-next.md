@@ -514,7 +514,7 @@ router.pushLayer('/');
    5. [ ] pushWindow
 4. [x] 新增导航方式 reload 和 forceReload
 5. [x] 可选的 renderToString
-6. [ ] 归一化 URL 钩子
-7. [ ] 外站跳转钩子
+6. [x] 归一化 URL 钩子
+7. [x] 外站跳转钩子
 8. [ ] afterMatch 钩子
 9. [ ] hyper 钩子（暂定）

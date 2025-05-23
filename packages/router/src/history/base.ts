@@ -1,4 +1,3 @@
-import normalizeUrl from 'normalize-url';
 import { type Tasks, createTasks } from '../task-pipe';
 import type {
     Awaitable,
@@ -14,12 +13,10 @@ import {
     isESModule,
     isEqualRoute,
     isSameRoute,
-    normalizeLocation,
-    stringifyPath
+    normalizeLocation
 } from '../utils';
 import { createRouteRecord } from '../utils/creator';
-import { mergeUrl, regexScheme, url2str } from '../utils/path';
-import { assert } from '../utils/warn';
+import { routeLoc2URL, url2str } from '../utils/path';
 
 export abstract class BaseRouterHistory implements RouterHistory {
     /** 路由类实例 */
@@ -41,57 +38,13 @@ export abstract class BaseRouterHistory implements RouterHistory {
         this.router.updateRoute(route);
     }
 
-    /**
-     * 规范化路由路径
-     * @example
-     * this._normLocation(location).fullPath 的输出：
-     * * `` -> `/`
-     * * `/xxx` -> `/xxx`
-     * * `xxx` -> `/xxx`
-     * * `./xxx` -> `/./xxx`
-     * * `../xxx` -> `/../xxx`
-     * * `//xxx` -> `/xxx`
-     * * `.` -> `/.`
-     * * `..` -> `/..`
-     * * `https://xxx` -> `/`
-     * * `/xxx?a=&b=1&b=2&c#h` -> `/xxx?a=&b=1&b=2&c=#h`
-     * * `xxx?a=&b=1&b=2&c#h` -> `/xxx?a=&b=1&b=2&c=#h`
-     * * `./xxx?a=&b=1&b=2&c#h` -> `/./xxx?a=&b=1&b=2&c=#h`
-     * * `../xxx?a=&b=1&b=2&c#h` -> `/../xxx?a=&b=1&b=2&c=#h`
-     * * `//xxx?a=&b=1&b=2&c#h` -> `/xxx?a=&b=1&b=2&c=#h`
-     * * `?a=&b=1&b=2&c#h` -> `/?a=&b=1&b=2&c=#h`
-     * * `.?a=&b=1&b=2&c#h` -> `/.?a=&b=1&b=2&c=#h`
-     * * `..?a=&b=1&b=2&c#h` -> `/..?a=&b=1&b=2&c=#h`
-     * * `./?a=&b=1&b=2&c#h` -> `/.?a=&b=1&b=2&c=#h`
-     * * `../?a=&b=1&b=2&c#h` -> `/..?a=&b=1&b=2&c=#h`
-     * * `./.?a=&b=1&b=2&c#h` -> `/./.?a=&b=1&b=2&c=#h`
-     * * `../.?a=&b=1&b=2&c#h` -> `/../.?a=&b=1&b=2&c=#h`
-     * * `././?a=&b=1&b=2&c#h` -> `/./.?a=&b=1&b=2&c=#h`
-     * * `.././?a=&b=1&b=2&c#h` -> `/../.?a=&b=1&b=2&c=#h`
-     * * `https://xxx?a=&b=1&b=2&c#h` -> `/?a=&b=1&b=2&c=#h`
-     */
-    protected _normLocation(location: RouterRawLocation) {
-        const rawLocation =
-            typeof location === 'string' ? { path: location } : location;
-        if (rawLocation.path === void 0) {
-            rawLocation.path = this.current.fullPath;
-        }
-        const t = normalizeLocation(rawLocation, this.router.base);
-        return {
-            ...t,
-            fullPath:
-                stringifyPath({
-                    pathname: t.path,
-                    query: t.query || {},
-                    queryArray: t.queryArray,
-                    hash: t.hash || ''
-                }) || ''
-        };
-    }
-
     /** 解析路由 */
     resolve(location: RouterRawLocation): RouteRecord {
-        const normLoc = this._normLocation(location);
+        const normLoc = normalizeLocation(
+            location,
+            this.router.base,
+            this.current.fullPath
+        );
 
         // 匹配成功则返回匹配值
         const matcher = this.router.matcher.match(normLoc, {
@@ -250,47 +203,8 @@ export abstract class BaseRouterHistory implements RouterHistory {
         isExternalUrl: boolean;
         externalUrlHandlerRes: boolean | undefined;
     }> {
-        const path =
-            typeof location === 'string'
-                ? location
-                : stringifyPath({ ...location, pathname: location.path });
-        // 这里应该分为三种情况：带协议的、相对路径、绝对路径(相对于根的相对路径)
-        const isWithProtocol = regexScheme.test(path) || path.startsWith('//');
-        const isAbsolute = path.startsWith('/');
-        const isRelative = !isWithProtocol && !isAbsolute;
         const base = this.router.base ? new URL(this.router.base) : void 0;
-        let url = '';
-        if (isWithProtocol) {
-            // 通过 URL 来解析和规范化 URL，第二个参数是为了 '//' 开头的时候拼接协议
-            url = new URL(path, 'http://localhost').href;
-        } else if (base) {
-            if (isAbsolute) {
-                url = mergeUrl(new URL(path, base), base)!.href;
-            } else {
-                const currentUrl = mergeUrl(
-                    new URL(this.current.fullPath, base),
-                    base
-                )!;
-                url = new URL(path, currentUrl).href;
-            }
-        } else {
-            // 在没有 base 的时候的一些处理
-            url = this._normLocation(location).fullPath;
-            try {
-                url = normalizeUrl(url, {
-                    stripWWW: false,
-                    removeQueryParameters: false,
-                    sortQueryParameters: false
-                });
-            } catch (error) {
-                try {
-                    url = new URL(url, base).href;
-                } catch (error) {
-                    assert(false, `Invalid URL: ${url}`);
-                }
-            }
-        }
-
+        let url = routeLoc2URL(location, this.current.fullPath, base).href;
         url =
             (
                 await this.router.options.normalizeURL?.({

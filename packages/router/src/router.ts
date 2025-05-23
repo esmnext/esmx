@@ -23,7 +23,7 @@ import {
     type RouterScrollBehavior
 } from './types';
 import { inBrowser, normalizePath, regexDomain } from './utils';
-import { arrRmEle } from './utils/utils';
+import { arrRmEle, getSubObj } from './utils/utils';
 
 const mgDataCtx = (...ctxs: RouterOptions['dataCtx'][]) =>
     ctxs.reduce<RouterOptions['dataCtx']>(
@@ -165,30 +165,12 @@ export class Router implements RouterInstance {
             url = normalizePath(fullPath);
         }
 
-        const {
-            hash,
-            host,
-            hostname,
-            href,
-            origin,
-            pathname,
-            port,
-            protocol,
-            query
-        } = new URLParse(url);
+        const parsedUrl = new URLParse(url);
         Object.assign(
             this.route,
-            {
-                href,
-                origin,
-                host,
-                protocol,
-                hostname,
-                port,
-                pathname,
-                search: query,
-                hash
-            },
+            getSubObj(parsedUrl, ['href', 'origin', 'host', 'protocol']),
+            getSubObj(parsedUrl, ['hostname', 'port', 'pathname', 'hash']),
+            { search: parsedUrl.query },
             route
         );
     }

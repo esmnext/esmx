@@ -1,14 +1,11 @@
 import normalizeUrl from 'normalize-url';
 import URLParse from 'url-parse';
-
 import type {
     HistoryState,
-    Route,
     RouterBase,
     RouterLocation,
     RouterRawLocation
 } from '../types';
-import { createRoute } from './creator';
 import {
     decode,
     decodeQuery,
@@ -121,14 +118,8 @@ export function parsePath(path = ''): {
                 let [key = '', value = ''] = item.split('=');
                 key = decode(key);
                 value = decodeQuery(value);
-                if (key) {
-                    queryObj[key] = value;
-                    queryArray[key] = (queryArray[key] || []).concat(value);
-                }
-                // queryArray[key] = [
-                //     ...(queryArray[key] || []),
-                //     ...(value !== undefined ? [value] : [])
-                // ];
+                queryObj[key] = value;
+                (queryArray[key] ||= []).push(value);
             });
     }
     return {
@@ -193,15 +184,44 @@ export function stringifyPath({
 }
 
 /**
- * 标准化 RouterLocation 字段
+ * 标准化 RouterLocation 字段。
+ * * 如果 path 字段中有 query，同时有 query/queryArray 字段，则 path 中的 query 会被忽略。
+ * @example
+ * this._normLocation(location).fullPath 的输出：
+ * * `` -> `/`
+ * * `/xxx` -> `/xxx`
+ * * `xxx` -> `/xxx`
+ * * `./xxx` -> `/./xxx`
+ * * `../xxx` -> `/../xxx`
+ * * `//xxx` -> `/xxx`
+ * * `.` -> `/.`
+ * * `..` -> `/..`
+ * * `https://xxx` -> `/`
+ * * `/xxx?a=&b=1&b=2&c#h` -> `/xxx?a=&b=1&b=2&c=#h`
+ * * `xxx?a=&b=1&b=2&c#h` -> `/xxx?a=&b=1&b=2&c=#h`
+ * * `./xxx?a=&b=1&b=2&c#h` -> `/./xxx?a=&b=1&b=2&c=#h`
+ * * `../xxx?a=&b=1&b=2&c#h` -> `/../xxx?a=&b=1&b=2&c=#h`
+ * * `//xxx?a=&b=1&b=2&c#h` -> `/xxx?a=&b=1&b=2&c=#h`
+ * * `?a=&b=1&b=2&c#h` -> `/?a=&b=1&b=2&c=#h`
+ * * `.?a=&b=1&b=2&c#h` -> `/.?a=&b=1&b=2&c=#h`
+ * * `..?a=&b=1&b=2&c#h` -> `/..?a=&b=1&b=2&c=#h`
+ * * `./?a=&b=1&b=2&c#h` -> `/.?a=&b=1&b=2&c=#h`
+ * * `../?a=&b=1&b=2&c#h` -> `/..?a=&b=1&b=2&c=#h`
+ * * `./.?a=&b=1&b=2&c#h` -> `/./.?a=&b=1&b=2&c=#h`
+ * * `../.?a=&b=1&b=2&c#h` -> `/../.?a=&b=1&b=2&c=#h`
+ * * `././?a=&b=1&b=2&c#h` -> `/./.?a=&b=1&b=2&c=#h`
+ * * `.././?a=&b=1&b=2&c#h` -> `/../.?a=&b=1&b=2&c=#h`
+ * * `https://xxx?a=&b=1&b=2&c#h` -> `/?a=&b=1&b=2&c=#h`
  */
 export function normalizeLocation(
     rawLocation: RouterRawLocation,
-    base: RouterBase = ''
+    base: RouterBase = '',
+    defaultPath = ''
 ): RouterLocation & {
     path: string;
     base: string;
     queryArray: Record<string, string[]>;
+    fullPath: string;
 } {
     let pathname = '';
     /* 按 Hanson 要求加入 undefined 类型 */
@@ -212,7 +232,7 @@ export function normalizeLocation(
     let state: HistoryState = {};
 
     if (typeof rawLocation === 'object') {
-        const parsedOption = parsePath(rawLocation.path);
+        const parsedOption = parsePath(rawLocation.path ?? defaultPath);
         pathname = parsedOption.pathname;
 
         // 只有在rawLocation初始传入了 query 或 queryArray 时才使用 rawLocation
@@ -229,15 +249,12 @@ export function normalizeLocation(
         params = rawLocation.params; // params 不使用默认值
         state = rawLocation.state || {};
     } else {
-        ({ pathname, query, queryArray, hash } = parsePath(rawLocation));
+        ({ pathname, query, queryArray, hash } = parsePath(
+            rawLocation ?? defaultPath
+        ));
     }
 
-    const fullPath = stringifyPath({
-        pathname,
-        query,
-        queryArray,
-        hash
-    });
+    const fullPath = stringifyPath({ pathname, query, queryArray, hash });
     const baseString = normalizePath(new URL(base).href);
 
     let path = pathname;
@@ -258,116 +275,13 @@ export function normalizeLocation(
         queryArray: realQueryArray,
         hash,
         state,
-        ...(params ? { params } : {})
-    };
-}
-
-/**
- * 判断路径是否以协议或域名开头
- * @deprecated
- */
-export function isPathWithProtocolOrDomain(
-    location: RouterRawLocation,
-    base: RouterBase = ''
-): {
-    /**
-     * 是否以协议或域名开头
-     */
-    flag: boolean;
-    /**
-     * 虚假的 route 信息，内部跳转时无法信任，只有外站跳转时使用
-     */
-    route: Route;
-} {
-    let url = '';
-    let state = {};
-    const baseString = new URL(base).href;
-
-    if (typeof location === 'string') {
-        url = location;
-    } else {
-        state = location.state || {};
-        const {
-            path,
-            query = {},
-            queryArray,
-            hash = '',
-            ...nLocation
-        } = normalizeLocation(location);
-        url = stringifyPath({
-            ...nLocation,
-            query,
-            queryArray,
+        fullPath: stringifyPath({
             pathname: path,
+            query: realQuery,
+            queryArray: realQueryArray,
             hash
-        });
-    }
-
-    // TODO: 好像经过历史修改，本来 flag 是在 normalizeUrl 之前判断的
-    // 经过 normalizeUrl 处理后，url 都会带有协议，因此 flag 都是 true
-
-    try {
-        url = normalizeUrl(url, {
-            stripWWW: false,
-            removeQueryParameters: false,
-            sortQueryParameters: false
-        });
-    } catch (error) {
-        try {
-            url = new URL(url, baseString).href;
-        } catch (error) {
-            assert(false, `Invalid URL: ${url}`);
-        }
-    }
-
-    // 如果以 scheme 协议开头 并且不是 http(s) 协议开头 则认为是外站跳转
-    if (regexScheme.test(url) && !regexHttpScheme.test(url)) {
-        const tURL = new URL(url);
-        return {
-            flag: true,
-            route: createRoute({
-                ...getSubObj(tURL, ['hash', 'host', 'origin', 'href', 'port']),
-                ...getSubObj(tURL, ['hostname', 'pathname', 'protocol']),
-                search: tURL.search,
-                query: Object.fromEntries(tURL.searchParams.entries()),
-                queryArray: tURL.searchParams
-                    .entries()
-                    .reduce((o, [k, v]) => (o[k] ||= []).push(v) && o, {}),
-                state,
-                path: tURL.pathname,
-                fullPath: url,
-                base: baseString
-            })
-        };
-    }
-
-    const parsedUrl = new URLParse(url);
-    const { query = {}, queryArray } = normalizeLocation(url);
-
-    return {
-        flag: regexDomain.test(url),
-        route: createRoute({
-            ...getSubObj(parsedUrl, ['href', 'origin', 'host', 'protocol']),
-            ...getSubObj(parsedUrl, ['hostname', 'port', 'pathname', 'hash']),
-            search: parsedUrl.query,
-            query,
-            queryArray,
-            state,
-            path: parsedUrl.pathname,
-            fullPath: `${parsedUrl.pathname}${parsedUrl.query}${parsedUrl.hash}`,
-            base: baseString
-        })
-    };
-}
-
-export function route2routerLocation(route: Route): RouterLocation {
-    return {
-        ...getSubObj(route, ['path', 'params', 'hash', 'state', 'query']),
-        queryArray: Object.fromEntries(
-            Object.entries(route.queryArray || {}).filter(
-                ([_, value]) => value !== void 0
-            ) as [string, string[]][]
-        )
+        }),
+        ...(params ? { params } : {})
     };
 }
 
@@ -420,4 +334,54 @@ export function url2str(url: URL, keys: (keyof URL)[] = ['href']): string {
     )}${f('password', '@', ':')}${f('hostname')}${f('port', '', ':')}${f(
         'pathname'
     )}${f('search')}${f('hash')}`;
+}
+
+/**
+ * 解析 URL
+ * @param location 用户输入的路径
+ * @param curFullPath 当前路径，用于解析相对路径
+ */
+export function routeLoc2URL(
+    location: RouterRawLocation,
+    curFullPath: string,
+    base?: RouterBase
+) {
+    base = base ? new URL(base) : void 0;
+    const path =
+        typeof location === 'string'
+            ? location
+            : stringifyPath({ ...location, pathname: location.path });
+    // 这里应该分为三种情况：带协议的、相对路径、绝对路径(相对于根的相对路径)
+    const isWithProtocol = regexScheme.test(path) || path.startsWith('//');
+    const isAbsolute = path.startsWith('/');
+    // const isRelative = !isWithProtocol && !isAbsolute;
+    let url = '';
+    if (isWithProtocol) {
+        // 通过 URL 来解析和规范化 URL，第二个参数是为了 '//' 开头的时候拼接协议
+        url = new URL(path, 'http://localhost').href;
+    } else if (base) {
+        if (isAbsolute) {
+            url = mergeUrl(new URL(path, base), base)!.href;
+        } else {
+            const currentUrl = mergeUrl(new URL(curFullPath, base), base)!;
+            url = new URL(path, currentUrl).href;
+        }
+    } else {
+        // 在没有 base 的时候的一些处理
+        url = normalizeLocation(location, base, curFullPath).fullPath;
+        try {
+            url = normalizeUrl(url, {
+                stripWWW: false,
+                removeQueryParameters: false,
+                sortQueryParameters: false
+            });
+        } catch (error) {
+            try {
+                url = new URL(url).href;
+            } catch (error) {
+                assert(false, `Invalid URL: ${url}`);
+            }
+        }
+    }
+    return new URL(url);
 }

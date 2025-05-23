@@ -3,8 +3,7 @@ export {
     normalizePath,
     parsePath,
     stringifyPath,
-    normalizeLocation,
-    isPathWithProtocolOrDomain
+    normalizeLocation
 } from './path';
 export { isESModule, inBrowser } from './utils';
 export { warn } from './warn';
