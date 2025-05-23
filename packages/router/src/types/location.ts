@@ -9,7 +9,8 @@ import type { Route } from './route';
 export interface RouterLocation {
     path?: string;
     /**
-     * 按 Hanson 要求加入 undefined 类型
+     * 按 Hanson 要求加入 undefined 类型。
+     * 若为 undefined 则在解析时会删掉这个 query
      */
     query?: Record<string, string | undefined>;
     queryArray?: Record<string, string[]>;

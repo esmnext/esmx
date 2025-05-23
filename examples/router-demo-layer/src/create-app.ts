@@ -23,6 +23,17 @@ export async function createApp(
         routes,
         noBackNavigation: () => {
             console.log('@noBackNavigation');
+        },
+        normalizeURL({ url, router }) {
+            // 这里可以对 url 进行处理
+            // 比如添加协议、子域名等
+            const res = new URL(url.href);
+            // 这里测试 localhost:3000 和 localhost:3001 的跳转
+            if (res.hostname === new URL(router.base!).hostname) {
+                res.host = new URL(router.base!).host;
+            }
+            // console.log('normalizeURL', url, res, router.base);
+            return res;
         }
     });
 
@@ -80,7 +91,7 @@ export async function createApp(
                 vm.$destroy();
                 if (!router.isLayer) {
                     // vue2 不会自动销毁 DOM 元素，因此这里要手动销毁
-                    document.getElementById('app')!.innerHTML = '';
+                    vm.$el.innerHTML = '';
                     return;
                 }
                 ele?.remove();

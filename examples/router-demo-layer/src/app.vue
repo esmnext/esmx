@@ -9,6 +9,52 @@
             <button @click="$router.closeLayer({ descendantStrategy: 'hoisting' })">closeSelf</button>
         </header>
 
+        <div v-if="!$router.isLayer">
+            <router-link to="/xxx">/xxx</router-link>
+            <router-link to="xxx">xxx</router-link>
+            <router-link to="./xxx">./xxx</router-link>
+            <router-link to="../xxx">../xxx</router-link>
+            <router-link to="//xxx">//xxx</router-link>
+            <router-link to=".">.</router-link>
+            <router-link to="..">..</router-link>
+            <router-link to="https://xxx">https://xxx</router-link>
+
+            <br/>
+
+            <router-link to="/xxx/">/xxx/</router-link>
+            <router-link to="xxx/">xxx/</router-link>
+            <router-link to="./xxx/">./xxx/</router-link>
+            <router-link to="../xxx/">../xxx/</router-link>
+            <router-link to="//xxx/">//xxx/</router-link>
+            <router-link to="./">./</router-link>
+            <router-link to="../">../</router-link>
+            <router-link to="https://xxx/">https://xxx/</router-link>
+
+            <br/>
+
+            ?a=&b=1&b=2&c#h:
+            <router-link to="/xxx?a=&b=1&b=2&c#h">/xxx?</router-link>
+            <router-link to="xxx?a=&b=1&b=2&c#h">xxx?</router-link>
+            <router-link to="./xxx?a=&b=1&b=2&c#h">./xxx?</router-link>
+            <router-link to="../xxx?a=&b=1&b=2&c#h">../xxx?</router-link>
+            <router-link to="//xxx?a=&b=1&b=2&c#h">//xxx?</router-link>
+            <router-link to="?a=&b=1&b=2&c#h">?</router-link>
+            <router-link to=".?a=&b=1&b=2&c#h">.?</router-link>
+            <router-link to="..?a=&b=1&b=2&c#h">..?</router-link>
+            <router-link to="./?a=&b=1&b=2&c#h">./?</router-link>
+            <router-link to="../?a=&b=1&b=2&c#h">../?</router-link>
+            <router-link to="./.?a=&b=1&b=2&c#h">./.?</router-link>
+            <router-link to="../.?a=&b=1&b=2&c#h">../.?</router-link>
+            <router-link to="././?a=&b=1&b=2&c#h">././?</router-link>
+            <router-link to=".././?a=&b=1&b=2&c#h">.././?</router-link>
+            <router-link to="https://xxx?a=&b=1&b=2&c#h">https://xxx?</router-link>
+            <router-link to="">''</router-link>
+
+            <br/>
+            <router-link to="//localhost:3000/test1">//localhost:3000/test1</router-link>
+            <router-link to="//localhost:3001/test1">//localhost:3001/test1</router-link>
+        </div>
+
         <p v-if="$router.isLayer">{{ $route.href }}</p>
 
         <table><tbody>
@@ -21,16 +67,17 @@
                 <td>
                     <router-link to="/" :type="method">首页</router-link>
                     <router-link to="/test" :type="method">测试</router-link>
-                    <router-link to="/test1" :type="method">动态组件</router-link>
+                    <router-link to="test1" :type="method">动态组件</router-link>
                     <router-link to="/404" :type="method">404</router-link>
-                    <router-link to="https://baidu.com" :type="method">baidu</router-link>
+                    <router-link to="baidu.com" :type="method">baidu</router-link>
                     <a
                         v-if="!$router.isLayer && method === 'pushLayer'"
                         href="/"
-                        @click.capture.prevent.stop="onAClick"
+                        @click.capture.prevent.stop="openLayer"
                     >
                         home (closeLayer at 404)
                     </a>
+                    <a href="/404" @click.capture.prevent.stop="testQuery">test query</a>
                 </td>
             </tr>
         </tbody></table>
@@ -44,11 +91,20 @@
 <script setup lang="ts">
 import { useRouter } from '@esmx/router-vue2';
 const router = useRouter();
-const onAClick = (e: MouseEvent) => {
+const openLayer = (e: MouseEvent) => {
     const href = (e.target as HTMLAnchorElement).href;
     router.pushLayer(href, {
         hooks: {
             shouldCloseLayer: (from, to) => to.fullPath === '/404'
+        }
+    });
+};
+const testQuery = () => {
+    router.push({
+        path: '/404',
+        query: {
+            a: '1',
+            b: undefined
         }
     });
 };

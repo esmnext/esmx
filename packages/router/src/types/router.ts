@@ -1,5 +1,5 @@
 
-import type { RouterMode, RouterHistory } from "./history";
+import type { RouterMode, RouterHistory, HistoryActionType } from "./history";
 import type { RouterScrollBehavior } from "./scroll";
 import type { Awaitable } from "./common";
 import type { RouterRawLocation } from "./location";
@@ -17,10 +17,12 @@ export interface RouterOptions {
     mode?: RouterMode;
 
     /**
-     * 路由前置部分
-     * 例： https://www.google.com:443/en/news/123
-     * 客户端传入 en /en /en/ 均可
-     * 服务端传入 https://www.google.com:443/en https://www.google.com:443/en/
+     * 路由前置部分。需要传入完整的带协议的 URL
+     * * 注意：如果传入的是一个字符串，则需要保证该字符串是一个合法的 URL，否则会抛出异常
+     * * 注意：尾随斜杠在解析相对路由时是有意义的。例如：在 `push('./a')` 时，`http://example.com/en` 会解析成 `http://example.com/a`，`http://example.com/en/` 会解析成 `http://example.com/en/a`。
+     * * 注意：在解析相对于根的相对路径（以 `/` 开头的路径）时，会直接拼接到该 URL 之后。例如：在 `push('/a')` 时，无论 `http://example.com/en` 还是 `http://example.com/en/`，都会解析成 `http://example.com/en/a`。
+     * * 推荐：传入带尾随斜杠的 URL
+     * @example `https://www.google.com:443/en/`
      */
     base?: RouterBase;
 
@@ -46,36 +48,25 @@ export interface RouterOptions {
     noBackNavigation?: (router: RouterInstance) => void;
 
     /**
-     * 判断是否是外部链接。在同域时调用，用于处理同域也被视为外站的情况
-     * @param router 路由实例
-     * @param url 要判断的链接
-     * @param route 虚假的 route 信息
-     * @returns 是否是外部链接，返回 `false | undefined` 会继续路由跳转（`true` 会调用 `handleOutside`）。
+     * URL规范化函数，用于实现跨区域无刷新导航。此函数可以将不同格式的区域URL（包括子域名和路径格式）
+     * 统一转换为标准的内部路由格式，从而实现统一的路由管理和无缝的用户体验。
+     * 该函数在路由库解析 URL 后调用。
      */
-    validateOutside?: (context: {
+    normalizeURL?: (context: {
+        url: URL;
         router: RouterInstance;
-        location: RouterRawLocation;
-        route: Route;
-    }) => boolean | undefined;
+        type: HistoryActionType;
+    }) => URL | Promise<URL>;
 
     /**
-     * 路由跳转到外部链接时触发
-     * @param router 路由实例
-     * @param route 虚假的 route 信息
-     * @param replace 是否替换当前历史记录
-     * @param isTriggerWithWindow 是否是 pushWindow/replaceWindow 触发的
-     * @param isSameHost 是否是同域。
-     * * 客户端如果 `isTriggerWithWindow === true && isSameHost === true`，意味着 `validateOutside` 返回了 `true`
-     * * 服务端如果 `isSameHost === true`，意味着 `validateOutside` 返回了 `true`
-     * @returns 返回 `false` 认为使用者已自行处理跳转行为，不会继续默认的路由跳转逻辑
+     * 自定义外部链接处理函数。返回 `true` 表示已处理，返回 `false` 则继续使用默认策略。
+     * 目前的默认策略是根据 `replace` 来决定是当前标签页还是新标签页打开。
      */
-    handleOutside?: (context: {
+    externalUrlHandler?: (context: {
+        url: URL;
         router: RouterInstance;
-        route: Route;
-        replace: boolean;
-        isTriggerWithWindow: boolean;
-        isSameHost: boolean;
-    }) => boolean | undefined;
+        type: HistoryActionType;
+    }) => boolean | Promise<boolean>;
 
     /**
      * 路由配置使用的 route
@@ -89,22 +80,14 @@ export interface RouterOptions {
 }
 
 /**
- * 路由前置部分
- * 例： https://www.google.com:443/en/news/123
- * 客户端传入 https://www.google.com:443/en https://www.google.com:443/en/
- * 服务端传入 https://www.google.com:443/en https://www.google.com:443/en/
+ * 路由前置部分。需要传入完整的带协议的 URL
+ * * 注意：如果传入的是一个字符串，则需要保证该字符串是一个合法的 URL，否则会抛出异常
+ * * 注意：尾随斜杠在解析相对路由时是有意义的。例如：在 `push('./a')` 时，`http://example.com/en` 会解析成 `http://example.com/a`，`http://example.com/en/` 会解析成 `http://example.com/en/a`。
+ * * 注意：在解析相对于根的相对路径（以 `/` 开头的路径）时，会直接拼接到该 URL 之后。例如：在 `push('/a')` 时，无论 `http://example.com/en` 还是 `http://example.com/en/`，都会解析成 `http://example.com/en/a`。
+ * @example `https://www.google.com:443/en/
+ * * 推荐：传入带尾随斜杠的 URL`
  */
-export type RouterBase =
-    | string
-    | ((params: {
-          fullPath: string;
-          /**
-           * 按 Hanson 要求加入 undefined 类型
-           */
-          query: Record<string, string | undefined>;
-          queryArray: Record<string, string[]>;
-          hash: string;
-      }) => string);
+export type RouterBase = string | URL;
 
 /** 路由注册函数 */
 export type RegisteredConfigGenerator = (router: RouterInstance) => RegisteredConfig;
@@ -249,8 +232,12 @@ export interface RouterInstance {
     options: RouterOptions;
 
     /**
-     * 路由固定前置路径
-     * 需要注意的是如果使用函数返回 base，需要尽量保证相同的路径返回相同base
+     * 路由固定前置路径。需要传入完整的带协议的 URL
+     * * 注意：如果传入的是一个字符串，则需要保证该字符串是一个合法的 URL，否则会抛出异常
+     * * 注意：尾随斜杠在解析相对路由时是有意义的。例如：在 `push('./a')` 时，`http://example.com/en` 会解析成 `http://example.com/a`，`http://example.com/en/` 会解析成 `http://example.com/en/a`。
+     * * 注意：在解析相对于根的相对路径（以 `/` 开头的路径）时，会直接拼接到该 URL 之后。例如：在 `push('/a')` 时，无论 `http://example.com/en` 还是 `http://example.com/en/`，都会解析成 `http://example.com/en/a`。
+     * * 推荐：传入带尾随斜杠的 URL
+     * @example `https://www.google.com:443/en/`
      */
     base?: RouterBase;
 

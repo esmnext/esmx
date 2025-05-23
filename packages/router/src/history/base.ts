@@ -1,3 +1,4 @@
+import normalizeUrl from 'normalize-url';
 import { type Tasks, createTasks } from '../task-pipe';
 import type {
     Awaitable,
@@ -16,25 +17,9 @@ import {
     normalizeLocation,
     stringifyPath
 } from '../utils';
-
-/**
- * 创建一个路由记录
- */
-function createRouteRecord(route: Partial<RouteRecord> = {}): RouteRecord {
-    return {
-        base: '',
-        path: '/',
-        fullPath: '/',
-        meta: {},
-        matched: [],
-        query: {},
-        queryArray: {},
-        params: {},
-        hash: '',
-        state: {},
-        ...route
-    };
-}
+import { createRouteRecord } from '../utils/creator';
+import { mergeUrl, regexScheme, url2str } from '../utils/path';
+import { assert } from '../utils/warn';
 
 export abstract class BaseRouterHistory implements RouterHistory {
     /** 路由类实例 */
@@ -56,49 +41,66 @@ export abstract class BaseRouterHistory implements RouterHistory {
         this.router.updateRoute(route);
     }
 
-    /** 解析路由 */
-    resolve(location: RouterRawLocation): RouteRecord {
+    /**
+     * 规范化路由路径
+     * @example
+     * this._normLocation(location).fullPath 的输出：
+     * * `` -> `/`
+     * * `/xxx` -> `/xxx`
+     * * `xxx` -> `/xxx`
+     * * `./xxx` -> `/./xxx`
+     * * `../xxx` -> `/../xxx`
+     * * `//xxx` -> `/xxx`
+     * * `.` -> `/.`
+     * * `..` -> `/..`
+     * * `https://xxx` -> `/`
+     * * `/xxx?a=&b=1&b=2&c#h` -> `/xxx?a=&b=1&b=2&c=#h`
+     * * `xxx?a=&b=1&b=2&c#h` -> `/xxx?a=&b=1&b=2&c=#h`
+     * * `./xxx?a=&b=1&b=2&c#h` -> `/./xxx?a=&b=1&b=2&c=#h`
+     * * `../xxx?a=&b=1&b=2&c#h` -> `/../xxx?a=&b=1&b=2&c=#h`
+     * * `//xxx?a=&b=1&b=2&c#h` -> `/xxx?a=&b=1&b=2&c=#h`
+     * * `?a=&b=1&b=2&c#h` -> `/?a=&b=1&b=2&c=#h`
+     * * `.?a=&b=1&b=2&c#h` -> `/.?a=&b=1&b=2&c=#h`
+     * * `..?a=&b=1&b=2&c#h` -> `/..?a=&b=1&b=2&c=#h`
+     * * `./?a=&b=1&b=2&c#h` -> `/.?a=&b=1&b=2&c=#h`
+     * * `../?a=&b=1&b=2&c#h` -> `/..?a=&b=1&b=2&c=#h`
+     * * `./.?a=&b=1&b=2&c#h` -> `/./.?a=&b=1&b=2&c=#h`
+     * * `../.?a=&b=1&b=2&c#h` -> `/../.?a=&b=1&b=2&c=#h`
+     * * `././?a=&b=1&b=2&c#h` -> `/./.?a=&b=1&b=2&c=#h`
+     * * `.././?a=&b=1&b=2&c#h` -> `/../.?a=&b=1&b=2&c=#h`
+     * * `https://xxx?a=&b=1&b=2&c#h` -> `/?a=&b=1&b=2&c=#h`
+     */
+    protected _normLocation(location: RouterRawLocation) {
         const rawLocation =
             typeof location === 'string' ? { path: location } : location;
-        if (rawLocation.path === undefined) {
+        if (rawLocation.path === void 0) {
             rawLocation.path = this.current.fullPath;
         }
-        const { base, ...normalizedLocation } = normalizeLocation(
-            rawLocation,
-            this.router.base
-        );
+        const t = normalizeLocation(rawLocation, this.router.base);
+        return {
+            ...t,
+            fullPath:
+                stringifyPath({
+                    pathname: t.path,
+                    query: t.query || {},
+                    queryArray: t.queryArray,
+                    hash: t.hash || ''
+                }) || ''
+        };
+    }
+
+    /** 解析路由 */
+    resolve(location: RouterRawLocation): RouteRecord {
+        const normLoc = this._normLocation(location);
 
         // 匹配成功则返回匹配值
-        const matcher = this.router.matcher.match(normalizedLocation, { base });
-        if (matcher) {
-            return matcher;
-        }
+        const matcher = this.router.matcher.match(normLoc, {
+            base: normLoc.base
+        });
+        if (matcher) return matcher;
 
         // 匹配失败则返回目标路径
-        const {
-            path = '',
-            params = {},
-            query = {},
-            queryArray = {},
-            hash = '',
-            state = {}
-        } = normalizedLocation;
-        const route = createRouteRecord({
-            base,
-            fullPath: stringifyPath({
-                pathname: path,
-                query,
-                queryArray,
-                hash
-            }),
-            path,
-            params,
-            query,
-            queryArray,
-            hash,
-            state
-        });
-        return route;
+        return createRouteRecord(normLoc);
     }
 
     /** 核心跳转方法 */
@@ -232,6 +234,99 @@ export abstract class BaseRouterHistory implements RouterHistory {
             onComplete?.(to);
             this.updateRoute(to);
         }
+    }
+
+    /**
+     * 解析 URL，如果是外链则在此触发外链跳转回调
+     */
+    async decodeURL({
+        type,
+        location
+    }: {
+        type: HistoryActionType;
+        location: RouterRawLocation;
+    }): Promise<{
+        url: string;
+        isExternalUrl: boolean;
+        externalUrlHandlerRes: boolean | undefined;
+    }> {
+        const path =
+            typeof location === 'string'
+                ? location
+                : stringifyPath({ ...location, pathname: location.path });
+        // 这里应该分为三种情况：带协议的、相对路径、绝对路径(相对于根的相对路径)
+        const isWithProtocol = regexScheme.test(path) || path.startsWith('//');
+        const isAbsolute = path.startsWith('/');
+        const isRelative = !isWithProtocol && !isAbsolute;
+        const base = this.router.base ? new URL(this.router.base) : void 0;
+        let url = '';
+        if (isWithProtocol) {
+            // 通过 URL 来解析和规范化 URL，第二个参数是为了 '//' 开头的时候拼接协议
+            url = new URL(path, 'http://localhost').href;
+        } else if (base) {
+            if (isAbsolute) {
+                url = mergeUrl(new URL(path, base), base)!.href;
+            } else {
+                const currentUrl = mergeUrl(
+                    new URL(this.current.fullPath, base),
+                    base
+                )!;
+                url = new URL(path, currentUrl).href;
+            }
+        } else {
+            // 在没有 base 的时候的一些处理
+            url = this._normLocation(location).fullPath;
+            try {
+                url = normalizeUrl(url, {
+                    stripWWW: false,
+                    removeQueryParameters: false,
+                    sortQueryParameters: false
+                });
+            } catch (error) {
+                try {
+                    url = new URL(url, base).href;
+                } catch (error) {
+                    assert(false, `Invalid URL: ${url}`);
+                }
+            }
+        }
+
+        url =
+            (
+                await this.router.options.normalizeURL?.({
+                    url: new URL(url),
+                    router: this.router,
+                    type
+                })
+            )?.href ?? url;
+
+        // base 的 `protocol://[[username][:password]@]hostname[:port]/[pathname]` 部分
+        const baseFullPath =
+            base &&
+            url2str(base, ['origin', 'username', 'password', 'pathname']);
+        const isExternalUrl = !!base && !url.startsWith(baseFullPath!);
+        let externalUrlHandlerRes: boolean | undefined;
+        if (isExternalUrl) {
+            // 如果是外链则在此触发外链跳转回调
+            externalUrlHandlerRes =
+                await this.router.options.externalUrlHandler?.({
+                    url: new URL(url),
+                    router: this.router,
+                    type
+                });
+        } else {
+            // 如果非外链，则去掉base部分，还原成绝对路径
+            url = url.replace(baseFullPath!, '');
+            if (url.at(0) !== '/') {
+                url = '/' + url;
+            }
+        }
+
+        return {
+            url,
+            isExternalUrl,
+            externalUrlHandlerRes
+        };
     }
 
     // 路由跳转方法

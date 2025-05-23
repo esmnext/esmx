@@ -23,12 +23,7 @@ import {
     type RouterScrollBehavior
 } from './types';
 import { inBrowser, normalizePath, regexDomain } from './utils';
-
-const arrRmEle = <T>(arr: T[], ele: T) => {
-    const i = arr.findIndex((item) => item === ele);
-    if (i === -1) return;
-    arr.splice(i, 1);
-};
+import { arrRmEle } from './utils/utils';
 
 const mgDataCtx = (...ctxs: RouterOptions['dataCtx'][]) =>
     ctxs.reduce<RouterOptions['dataCtx']>(
@@ -63,10 +58,12 @@ export class Router implements RouterInstance {
     options: RouterOptions;
 
     /**
-     * 路由固定前置路径
-     * 需要注意的是如果使用函数返回 base，需要尽量保证相同的路径返回相同base
+     * 可选的 路由固定前置路径。需要传入完整的带协议的 URL
+     * * 注意：如果传入的是一个字符串，则需要保证该字符串是一个合法的 URL，否则会抛出异常
+     * * 注意：尾随斜杠在解析相对路由时是有意义的。例如：在 push(`./a`)，`http://example.com/en` 会解析成 `http://example.com/a`，`http://example.com/en/` 会解析成 `http://example.com/en/a`。
+     * @example `https://www.google.com:443/en/`
      */
-    base: RouterBase;
+    base?: RouterBase;
 
     /* 路由模式 */
     mode: RouterMode;
@@ -111,7 +108,7 @@ export class Router implements RouterInstance {
             options.mode ||
             (inBrowser ? RouterMode.HISTORY : RouterMode.ABSTRACT);
 
-        this.base = options.base || '';
+        if (options.base) this.base = new URL(options.base).href;
 
         this.scrollBehavior =
             options.scrollBehavior ||

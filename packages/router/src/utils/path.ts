@@ -8,6 +8,7 @@ import type {
     RouterLocation,
     RouterRawLocation
 } from '../types';
+import { createRoute } from './creator';
 import {
     decode,
     decodeQuery,
@@ -15,24 +16,24 @@ import {
     encodeQueryKey,
     encodeQueryValue
 } from './encoding';
-import { isValidValue } from './utils';
-import { assert, warn } from './warn';
+import { getSubObj, isValidValue } from './utils';
+import { assert } from './warn';
 
 /**
  * 判断路径是否以 http 或 https 开头 或者直接是域名开头
  */
 export const regexDomain =
-    /^(?:https?:\/\/|[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9](\/.*)?/i;
+    /^(?:https?:\/\/|[a-z\d](?:[a-z\d-]{0,61}[a-z\d])?\.)+[a-z\d][a-z\d-]{0,61}[a-z\d](\/.*)?/i;
 
 /**
  * 判断路径是否以 scheme 协议开头
  */
-export const regexScheme = /^(?:[a-z][a-z\d+.-]*:.+)/i;
+export const regexScheme = /^[a-z][a-z\d+.-]*:./i;
 
 /**
  * 判断路径是否以 http(s) 协议开头
  */
-export const regexHttpScheme = /^(http(s)?:\/\/)/;
+export const regexHttpScheme = /^https?:\/\//;
 
 /**
  * 去除URL路径中重复的斜杠，但不改变协议部分的双斜杠。
@@ -82,8 +83,25 @@ export function normalizePath(path: string, parentPath?: string) {
 
 /**
  * 路径解析方法
- * @example 输入 https://www.google.com/test1/test2?a=1&b=2#123 输出 { pathname: '/test1/test2', query: { a: '1', b: '2' }, queryArray: { a: ['1'], b: ['2'] }, hash: '123' }
- * 输入 /test1/test2?a=1&b=2#123 同样输出 { pathname: '/test1/test2', query: { a: '1', b: '2' }, queryArray: { a: ['1'], b: ['2'] }, hash: '123' }
+ * @example
+ * parsePath('https://www.google.com/test1/test2?a=1&b=2#123') === {
+ *   pathname: '/test1/test2',
+ *   query: { a: '1', b: '2' },
+ *   queryArray: { a: ['1'], b: ['2'] },
+ *   hash: '#123'
+ * }
+ * parsePath('/test1/test2?a=1&b=2#123') === {
+ *   pathname: '/test1/test2',
+ *   query: { a: '1', b: '2' },
+ *   queryArray: { a: ['1'], b: ['2'] },
+ *   hash: '#123'
+ * }
+ * parsePath('test1/test2/?a=&b=1&b=2&c#h') === {
+ *  pathname: '/test1/test2/',
+ *  query: { a: '', b: '1', c: '' },
+ *  queryArray: { a: [''], b: ['1', '2'], c: [''] },
+ *  hash: '#h'
+ * }
  */
 export function parsePath(path = ''): {
     pathname: string;
@@ -123,27 +141,23 @@ export function parsePath(path = ''): {
 
 /**
  * 将path query hash合并为完整路径
- * @example stringifyPath({ pathname: '/news', query: { a: '1' }, hash: '123' }) 输出 '/news?a=1#123'
+ * @example
+ * stringifyPath({ pathname: '/news', query: { a: '1', b: void 0, c: NaN, d: null, e: '' }, hash: '123' }) === '/news?a=1&e=#123'
+ * stringifyPath({ pathname: '/news', hash: '#123' }) === '/news#123'
+ * stringifyPath({ pathname: '/news', query: { a: '1' }, queryArray: { a: ['2', '3'] } }) === '/news?a=2&a=3'
  */
-export function stringifyPath(
-    {
-        pathname = '',
-        query = {},
-        queryArray = {},
-        hash = ''
-    }: {
-        pathname: string;
-        /* 按 Hanson 要求加入 undefined 类型 */
-        query: Record<string, string | undefined>;
-        queryArray: Record<string, string[]>;
-        hash: string;
-    } = {
-        pathname: '',
-        query: {},
-        queryArray: {},
-        hash: ''
-    }
-): string {
+export function stringifyPath({
+    pathname = '',
+    query = {},
+    queryArray = {},
+    hash = ''
+}: {
+    pathname?: string;
+    /* 按 Hanson 要求加入 undefined 类型 */
+    query?: Record<string, string | undefined>;
+    queryArray?: Record<string, string[]>;
+    hash?: string;
+} = {}): string {
     const queryString = Object.entries(
         Object.assign({}, query, queryArray)
     ).reduce((acc, [key, value]) => {
@@ -154,11 +168,9 @@ export function stringifyPath(
             query = value.reduce((all, item) => {
                 if (!isValidValue(item)) return all;
                 const encodedValue = encodeQueryValue(item);
-                if (encodedValue) {
-                    all = all
-                        ? `${all}&${encodedKey}=${encodedValue}`
-                        : `${encodedKey}=${encodedValue}`;
-                }
+                all = all
+                    ? `${all}&${encodedKey}=${encodedValue}`
+                    : `${encodedKey}=${encodedValue}`;
                 return all;
             }, '');
         } else {
@@ -217,11 +229,7 @@ export function normalizeLocation(
         params = rawLocation.params; // params 不使用默认值
         state = rawLocation.state || {};
     } else {
-        const parsedOption = parsePath(rawLocation);
-        pathname = parsedOption.pathname;
-        query = parsedOption.query;
-        queryArray = parsedOption.queryArray;
-        hash = parsedOption.hash;
+        ({ pathname, query, queryArray, hash } = parsePath(rawLocation));
     }
 
     const fullPath = stringifyPath({
@@ -230,16 +238,7 @@ export function normalizeLocation(
         queryArray,
         hash
     });
-    const baseString = normalizePath(
-        typeof base === 'function'
-            ? base({
-                  fullPath,
-                  query,
-                  queryArray,
-                  hash
-              })
-            : base
-    );
+    const baseString = normalizePath(new URL(base).href);
 
     let path = pathname;
     // 如果 base 部分包含域名
@@ -252,24 +251,20 @@ export function normalizeLocation(
     const { query: realQuery, queryArray: realQueryArray } =
         parsePath(fullPath);
 
-    const res: RouterLocation & {
-        path: string;
-        base: string;
-        queryArray: Record<string, string[]>;
-    } = {
+    return {
         base: baseString,
         path,
         query: realQuery,
         queryArray: realQueryArray,
         hash,
-        state
+        state,
+        ...(params ? { params } : {})
     };
-    if (params) res.params = params;
-    return res;
 }
 
 /**
  * 判断路径是否以协议或域名开头
+ * @deprecated
  */
 export function isPathWithProtocolOrDomain(
     location: RouterRawLocation,
@@ -286,17 +281,7 @@ export function isPathWithProtocolOrDomain(
 } {
     let url = '';
     let state = {};
-    let baseString = '';
-    if (typeof base === 'string') {
-        baseString = base;
-    } else {
-        baseString = base({
-            fullPath: '',
-            query: {},
-            queryArray: {},
-            hash: ''
-        });
-    }
+    const baseString = new URL(base).href;
 
     if (typeof location === 'string') {
         url = location;
@@ -318,6 +303,9 @@ export function isPathWithProtocolOrDomain(
         });
     }
 
+    // TODO: 好像经过历史修改，本来 flag 是在 normalizeUrl 之前判断的
+    // 经过 normalizeUrl 处理后，url 都会带有协议，因此 flag 都是 true
+
     try {
         url = normalizeUrl(url, {
             stripWWW: false,
@@ -334,85 +322,102 @@ export function isPathWithProtocolOrDomain(
 
     // 如果以 scheme 协议开头 并且不是 http(s) 协议开头 则认为是外站跳转
     if (regexScheme.test(url) && !regexHttpScheme.test(url)) {
-        const {
-            hash,
-            host,
-            hostname,
-            href,
-            origin,
-            pathname,
-            port,
-            protocol,
-            search
-        } = new URL(url);
-        const route: Route = {
-            hash,
-            host,
-            hostname,
-            href,
-            origin,
-            pathname,
-            port,
-            protocol,
-            search,
-            params: {},
-            query: {},
-            queryArray: {},
-            state,
-            meta: {},
-            path: pathname,
-            fullPath: url,
-            base: '',
-            matched: []
-        };
+        const tURL = new URL(url);
         return {
             flag: true,
-            route
+            route: createRoute({
+                ...getSubObj(tURL, ['hash', 'host', 'origin', 'href', 'port']),
+                ...getSubObj(tURL, ['hostname', 'pathname', 'protocol']),
+                search: tURL.search,
+                query: Object.fromEntries(tURL.searchParams.entries()),
+                queryArray: tURL.searchParams
+                    .entries()
+                    .reduce((o, [k, v]) => (o[k] ||= []).push(v) && o, {}),
+                state,
+                path: tURL.pathname,
+                fullPath: url,
+                base: baseString
+            })
         };
     }
 
-    const {
-        hash,
-        host,
-        hostname,
-        href,
-        origin,
-        pathname,
-        port,
-        protocol,
-        query: search
-    } = new URLParse(url);
+    const parsedUrl = new URLParse(url);
     const { query = {}, queryArray } = normalizeLocation(url);
-    const route: Route = {
-        href,
-        origin,
-        host,
-        protocol,
-        hostname,
-        port,
-        pathname,
-        search,
-        hash,
-        query,
-        queryArray,
-        params: {},
-        state,
-        meta: {},
-        path: pathname,
-        fullPath: `${pathname}${search}${hash}`,
-        base: '',
-        matched: []
-    };
-
-    if (regexDomain.test(url)) {
-        return {
-            flag: true,
-            route
-        };
-    }
 
     return {
-        flag: false,
-        route
+        flag: regexDomain.test(url),
+        route: createRoute({
+            ...getSubObj(parsedUrl, ['href', 'origin', 'host', 'protocol']),
+            ...getSubObj(parsedUrl, ['hostname', 'port', 'pathname', 'hash']),
+            search: parsedUrl.query,
+            query,
+            queryArray,
+            state,
+            path: parsedUrl.pathname,
+            fullPath: `${parsedUrl.pathname}${parsedUrl.query}${parsedUrl.hash}`,
+            base: baseString
+        })
     };
+}
+
+export function route2routerLocation(route: Route): RouterLocation {
+    return {
+        ...getSubObj(route, ['path', 'params', 'hash', 'state', 'query']),
+        queryArray: Object.fromEntries(
+            Object.entries(route.queryArray || {}).filter(
+                ([_, value]) => value !== void 0
+            ) as [string, string[]][]
+        )
+    };
+}
+
+/**
+ * 合并多个 URL 的路径、查询参数和哈希值。
+ * * 后传递的路径会作为前传递的路径的base进行拼接。
+ * * 查询参数会追加而不会覆盖。
+ * * 哈希值的覆盖顺序是先传递的哈希值会覆盖后传递的哈希值。
+ * @param url 需要合并的 URL数组
+ * @returns 合并后的 URL，如果数组长度 <= 1，则返回 undefined
+ * @example
+ * mergeUrl(
+ *   new URL('https://example.com/p1?q1=1&a=1&a=2#hash1'),
+ *   new URL('https://example.com/p2?q2=2&a=10&a=20#hash2')
+ * )  // === 'https://example.com/p2/p1?q1=1&a=1&a=2&q2=2&a=10&a=20#hash1'
+ */
+export function mergeUrl(...url: URL[]) {
+    if (url.length <= 1) return;
+    return url.slice(0, -1).reduceRight(
+        (base, cur) => {
+            cur = new URL(cur.href);
+            cur.pathname =
+                (base.pathname.endsWith('/')
+                    ? base.pathname.slice(0, -1)
+                    : base.pathname) + cur.pathname;
+            base.searchParams.forEach((value, key) => {
+                cur.searchParams.append(key, value);
+            });
+            if (!cur.hash) cur.hash = base.hash;
+            return new URL(cur.href);
+        },
+        new URL(url.at(-1)!.href)
+    );
+}
+
+/**
+ * 从 url 中提取指定的属性值，并将其组合并转换为字符串。
+ */
+export function url2str(url: URL, keys: (keyof URL)[] = ['href']): string {
+    if (keys.length === 0) return url.href;
+    // [protocol://][[username][:password]@]hostname[:port][pathname][?query][#hash]
+    if (keys.includes('origin')) keys.push('protocol', 'hostname', 'port');
+    if (keys.includes('host')) keys.push('hostname', 'port');
+    const obj = getSubObj(url, keys);
+    const f = (k: keyof URL, suffix = '', prefix = '') =>
+        obj[k] ? prefix + obj[k] + suffix : '';
+    return `${f('protocol', '//')}${f(
+        'username',
+        'password' in obj ? '' : '@'
+    )}${f('password', '@', ':')}${f('hostname')}${f('port', '', ':')}${f(
+        'pathname'
+    )}${f('search')}${f('hash')}`;
 }

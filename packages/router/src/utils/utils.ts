@@ -28,3 +28,23 @@ export function isValidValue(value: any): boolean {
     if (typeof value === 'number' && Number.isNaN(value)) return false;
     return true;
 }
+
+/**
+ * 获取对象的子对象
+ */
+export const getSubObj = <T extends object, K extends keyof T>(
+    obj: T,
+    keys: K[]
+) =>
+    Object.fromEntries(keys.map((k) => [k, obj[k]])) as {
+        [key in K]: T[key];
+    };
+
+/**
+ * 就地删除数组中的元素
+ */
+export const arrRmEle = <T>(arr: T[], ele: T) => {
+    const i = arr.findIndex((item) => item === ele);
+    if (i === -1) return;
+    arr.splice(i, 1);
+};

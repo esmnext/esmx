@@ -1,11 +1,9 @@
 import type {
     HistoryActionType,
-    Route,
     RouteRecord,
     RouterHistory,
     RouterRawLocation
 } from '../types';
-import { isPathWithProtocolOrDomain, normalizeLocation } from '../utils';
 import { BaseRouterHistory } from './base';
 
 export class AbstractHistory
@@ -28,54 +26,6 @@ export class AbstractHistory
     // 设置监听函数
     setupListeners() {}
 
-    // 服务端判断是否是相同域名
-    isSameHost(location: RouterRawLocation, route: Route) {
-        const rawLocation =
-            typeof location === 'string' ? { path: location } : location;
-        if (rawLocation.path === undefined) {
-            rawLocation.path = this.current.fullPath;
-        }
-
-        // 服务端 base 需要包含域名，判断 base 是否包含传入路径的域名即可
-        const { base } = normalizeLocation(rawLocation, this.router.base);
-
-        return base.includes(route.hostname);
-    }
-
-    // 处理外站跳转逻辑
-    handleOutside(
-        location: RouterRawLocation,
-        replace = false,
-        isTriggerWithWindow = false
-    ) {
-        const base = this.router.base;
-        const { flag, route } = isPathWithProtocolOrDomain(location, base);
-        if (!flag) {
-            // 如果不以域名开头则跳出
-            return false;
-        }
-
-        const router = this.router;
-        const { validateOutside, handleOutside } = router.options;
-
-        // 如果域名相同 和 非外站（存在就算同域也会被视为外站的情况） 则跳出
-        const isSameHost = this.isSameHost(location, route);
-        if (isSameHost && !validateOutside?.({ router, location, route })) {
-            return false;
-        }
-
-        // 如果有配置跳转外站函数，则执行配置函数
-        handleOutside?.({
-            router,
-            route,
-            replace,
-            isTriggerWithWindow,
-            isSameHost
-        });
-
-        return true;
-    }
-
     // 所有的跳转方法都汇总到这里做统一处理
     protected async _jump({
         type,
@@ -87,9 +37,12 @@ export class AbstractHistory
     }) {
         const replace = ['replace', 'reload', 'forceReload'].includes(type);
 
-        if (this.handleOutside(location, replace, type === 'pushWindow')) {
+        const res = await this.decodeURL({ type, location });
+        if (res.isExternalUrl) {
             return;
         }
+        // console.log('location: %o -> %o', location, res.url);
+        location = { path: res.url };
 
         if (type === 'forceReload') {
             window.location.reload();

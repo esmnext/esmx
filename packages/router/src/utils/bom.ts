@@ -7,6 +7,8 @@ export function openWindow(url: string, target?: string) {
         const newWindow = window.open(url, target);
         if (!newWindow) {
             location.href = url;
+        } else {
+            newWindow.opener = null; // 解除新窗口与当前窗口的关系
         }
     } catch (e) {
         location.href = url;
