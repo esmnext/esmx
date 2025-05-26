@@ -9,155 +9,154 @@ head:
 
 # ModuleConfig
 
-ModuleConfig provides module configuration capabilities for the Esmx framework, used to define module import/export rules, alias configurations, and external dependencies.
+ModuleConfig is used to configure module import and export rules:
 
-## Type Definitions
-
-### PathType
-
-- **Type Definition**:
-```ts
-enum PathType {
-  npm = 'npm:', 
-  root = 'root:'
-}
-```
-
-Module path type enumeration:
-- `npm`: Represents dependencies in node_modules
-- `root`: Represents files under the project root directory
-
-### ModuleConfig
-
-- **Type Definition**:
-```ts
+```typescript
 interface ModuleConfig {
-  exports?: string[]
-  links?: Record<string, string>
-  imports?: Record<string, string>
+    /**
+     * Links configuration between services
+     * Key: Name of the remote service
+     * Value: Path to the build output directory of the remote service
+     */
+    links?: Record<string, string>;
+
+    /**
+     * Import configuration: Maps module identifiers in the current service to modules provided by remote services
+     * Key: Module identifier used in the current service
+     * Value: Module path exported by the remote service
+     */
+    imports?: Record<string, string>;
+
+    /**
+     * Export configuration: Exposes modules from the current service for use by other services
+     */
+    exports?: ModuleConfigExportExports;
 }
 ```
 
-Module configuration interface used to define service exports, imports, and external dependency configurations.
+## links Configuration
 
-#### exports
+Specify build directory locations of remote services:
 
-Export configuration list that exposes specific code units (such as components, utility functions, etc.) from the service in ESM format.
+```typescript
+{
+  links: {
+    'vue-remote-service': '../vue-remote-service/dist',  // Relative path
+    'other-service': '/var/www/other-service/dist'  // Absolute path
+  }
+}
+```
 
-Supports two types:
-- `root:*`: Exports source files, e.g., `root:src/components/button.vue`
-- `npm:*`: Exports third-party dependencies, e.g., `npm:vue`
+## imports Configuration
 
-Each export item contains the following properties:
-- `name`: Original export path, e.g., `npm:vue` or `root:src/components`
-- `type`: Path type (`npm` or `root`)
-- `importName`: Import name in the format: `${serviceName}/${type}/${path}`
-- `exportName`: Export path relative to the service root directory
-- `exportPath`: Actual file path
-- `externalName`: External dependency name used as an identifier when other services import this module
+Configure modules to use and their sources:
 
-#### links
+```typescript
+{
+  imports: {
+    'remote-button': 'vue-remote-service/components/button'
+  }
+}
+```
 
-Service dependency configuration mapping used to configure other services (local or remote) that the current service depends on and their local paths. Each configuration item's key is the service name, and the value is the local path of that service.
+## exports Configuration
 
-Configuration varies by installation method:
-- Source installation (Workspace, Git): Needs to point to the dist directory as it requires built files
-- Package installation (Link, static server, private registry, File): Directly points to the package directory as it already contains built files
-
-#### imports
-
-External dependency mapping that configures external dependencies to be used, typically dependencies from remote modules.
-
-Each dependency item contains the following properties:
-- `match`: Regular expression used to match import statements
-- `import`: Actual module path
-
-**Example**:
-```ts title="entry.node.ts"
-import type { EsmxOptions } from '@esmx/core';
-
-export default {
-  modules: {
-    // Export configuration
-    exports: [
-      'root:src/components/button.vue',  // Export source file
-      'root:src/utils/format.ts',
-      'npm:vue',  // Export third-party dependency
-      'npm:vue-router'
-    ],
-
-    // Import configuration
-    links: {
-      // Source installation: Needs to point to dist directory
-      'ssr-remote': './node_modules/ssr-remote/dist',
-      // Package installation: Directly points to package directory
-      'other-remote': './node_modules/other-remote'
-    },
-
-    // External dependency configuration
-    imports: {
-      'vue': 'ssr-remote/npm/vue',
-      'vue-router': 'ssr-remote/npm/vue-router'
+The system exports these entry files by default:
+```typescript
+{
+  'src/entry.client': {
+    inputTarget: {
+      client: './src/entry.client',
+      server: false
+    }
+  },
+  'src/entry.server': {
+    inputTarget: {
+      client: false,
+      server: './src/entry.server'
     }
   }
-} satisfies EsmxOptions;
-```
-
-### ParsedModuleConfig
-
-- **Type Definition**:
-```ts
-interface ParsedModuleConfig {
-  name: string
-  root: string
-  exports: {
-    name: string
-    type: PathType
-    importName: string
-    exportName: string
-    exportPath: string
-    externalName: string
-  }[]
-  links: Array<{
-    /**
-     * Package name
-     */
-    name: string
-    /**
-     * Package root directory
-     */
-    root: string
-  }>
-  imports: Record<string, { match: RegExp; import?: string }>
 }
 ```
 
-Parsed module configuration that converts the original module configuration into a standardized internal format:
+### Array Format
 
-#### name
-Current service name
-- Used to identify modules and generate import paths
+```typescript
+exports: [
+    // Export npm package
+    'npm:vue',                           // Will set rewrite: false automatically
+    
+    // Export source file (must include file extension)
+    'root:src/components/button.ts',     // Will be resolved to './src/components/button'
+    
+    // Object configuration
+    {
+      'store': {
+        input: './src/store.ts',         // Isomorphic module
+        inputTarget: {                   // Or specify different client/server implementations
+          client: './src/store.client.ts',
+          server: './src/store.server.ts'
+        },
+        rewrite: true                    // Defaults to true
+      }
+    }
+]
+```
 
-#### root
-Current service root directory path
-- Used to resolve relative paths and store build artifacts
+### Object Format
 
-#### exports
-Export configuration list
-- `name`: Original export path, e.g., 'npm:vue' or 'root:src/components'
-- `type`: Path type (npm or root)
-- `importName`: Import name in the format: '${serviceName}/${type}/${path}'
-- `exportName`: Export path relative to the service root directory
-- `exportPath`: Actual file path
-- `externalName`: External dependency name used as an identifier when other services import this module
+```typescript
+exports: {
+    // Directly specify source file path
+    'utils': './src/utils.ts',
 
-#### links
-Import configuration list
-- `name`: Package name
-- `root`: Package root directory
+    // Complete configuration
+    'api': {
+        input: './src/api/index.ts'      // Entry file for isomorphic module
+    },
+    
+    // Client/Server separation
+    'entry': {
+        inputTarget: {
+            client: './src/entry.client.ts',  // false means no implementation for this environment
+            server: './src/entry.server.ts'
+        }
+    }
+}
+```
 
-#### imports
-External dependency mapping
-- Maps module import paths to actual module locations
-- `match`: Regular expression used to match import statements
-- `import`: Actual module path
+## Configuration Properties
+
+### ModuleConfigExportObject
+
+```typescript
+interface ModuleConfigExportObject {
+    /**
+     * Source file path of the module
+     */
+    input?: string;
+
+    /**
+     * Different entry file configurations for client and server
+     * false means no implementation for that environment
+     */
+    inputTarget?: Record<'client' | 'server', string | false>;
+
+    /**
+     * Whether to rewrite module paths
+     * @default true
+     * @remarks Only needs to be false when exporting npm packages
+     */
+    rewrite?: boolean;
+}
+```
+
+## Usage Restrictions
+
+1. **Path Requirements**
+   - All paths except `npm:` prefix exports must point to specific files
+   - File paths with `root:` prefix must include file extensions (.ts, .js, etc.)
+
+2. **Path Resolution Rules**
+   - `npm:` prefix: For exporting npm packages, automatically sets `rewrite: false`
+   - `root:` prefix: For exporting source files, resolved to relative paths
