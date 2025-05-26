@@ -78,12 +78,6 @@ importers:
       '@esmx/core':
         specifier: workspace:*
         version: link:../../packages/core
-      express:
-        specifier: ^4.21.2
-        version: 4.21.2
-      http-proxy-middleware:
-        specifier: ^3.0.5
-        version: 3.0.5
     devDependencies:
       '@esmx/router':
         specifier: workspace:*
@@ -97,6 +91,12 @@ importers:
       '@types/node':
         specifier: 22.8.6
         version: 22.8.6
+      express:
+        specifier: ^4.21.2
+        version: 4.21.2
+      http-proxy-middleware:
+        specifier: ^3.0.5
+        version: 3.0.5
       typescript:
         specifier: ^5.7.3
         version: 5.8.2
