@@ -9,204 +9,131 @@ head:
 
 # 模块链接
 
-Esmx 框架提供了一套完整的模块链接机制，用于管理服务间的代码共享和依赖关系。该机制基于 ESM（ECMAScript Module）规范实现，支持源码级别的模块导出和导入，以及完整的依赖管理功能。
+模块链接（Module Link）是 Esmx 提供的一种微服务架构下的代码共享机制。它支持在不同的独立服务之间：
 
-### 核心概念
+- 共享组件和工具函数
+- 统一管理第三方依赖的版本
+- 支持不同环境的特定实现
 
-#### 模块导出
-模块导出是将服务中的特定代码单元（如组件、工具函数等）以 ESM 格式对外暴露的过程。支持两种导出类型：
-- **源码导出**：直接导出项目中的源代码文件
-- **依赖导出**：导出项目使用的第三方依赖包
+## 快速开始
 
-#### 模块链接
-模块导入是在服务中引用其他服务导出的代码单元的过程。支持多种安装方式：
-- **源码安装**：适用于开发环境，支持实时修改和热更新
-- **软件包安装**：适用于生产环境，直接使用构建产物
+以在微服务架构中共享 Vue 框架为例：
 
-## 模块导出
-
-### 配置说明
-
-在 `entry.node.ts` 中配置需要导出的模块：
-
-```ts title="src/entry.node.ts"
-import type { EsmxOptions } from '@esmx/core';
-
+1. 在提供服务中导出 Vue
+```ts
+// service-shared/entry.node.ts
 export default {
     modules: {
-        exports: [
-            // 导出源码文件
-            'root:src/components/button.vue',  // Vue 组件
-            'root:src/utils/format.ts',        // 工具函数
-            // 导出第三方依赖
-            'npm:vue',                         // Vue 框架
-            'npm:vue-router'                   // Vue Router
-        ]
+        exports: ['npm:vue']
     }
-} satisfies EsmxOptions;
+}
 ```
 
-导出配置支持两种类型：
-- `root:*`：导出源码文件，路径相对于项目根目录
-- `npm:*`：导出第三方依赖，直接指定包名
-
-## 模块导入
-
-### 配置说明
-
-在 `entry.node.ts` 中配置需要导入的模块：
-
-```ts title="src/entry.node.ts"
-import type { EsmxOptions } from '@esmx/core';
-
+2. 在使用服务中导入
+```ts
+// service-app/entry.node.ts
 export default {
     modules: {
-        // 链接配置
         links: {
-            // 源码安装：指向构建产物目录
-            'ssr-remote': './node_modules/ssr-remote/dist',
-            // 软件包安装：指向包目录
-            'other-remote': './node_modules/other-remote'
+            'shared': '../service-shared/dist'    // 指向共享服务的构建目录
         },
-        // 导入映射设置
         imports: {
-            // 使用远程模块中的依赖
-            'vue': 'ssr-remote/npm/vue',
-            'vue-router': 'ssr-remote/npm/vue-router'
+            'vue': 'shared/vue'                   // 从共享服务导入 Vue
         }
     }
-} satisfies EsmxOptions;
-```
-
-配置项说明：
-1. **imports**：配置远程模块的本地路径
-   - 源码安装：指向构建产物目录（dist）
-   - 软件包安装：直接指向包目录
-
-2. **externals**：配置外部依赖
-   - 用于共享远程模块中的依赖
-   - 避免重复打包相同依赖
-   - 支持多个模块共享依赖
-
-### 安装方式
-
-#### 源码安装
-适用于开发环境，支持实时修改和热更新。
-
-1. **Workspace 方式**
-推荐在 Monorepo 项目中使用：
-```ts title="package.json"
-{
-    "devDependencies": {
-        "ssr-remote": "workspace:*"
-    }
 }
 ```
 
-2. **Link 方式**
-用于本地开发调试：
-```ts title="package.json"
-{
-    "devDependencies": {
-        "ssr-remote": "link:../ssr-remote"
-    }
-}
+3. 在代码中使用
+```ts
+import { createApp } from 'vue';        // 自动使用共享服务提供的 Vue 版本
 ```
 
-#### 软件包安装
-适用于生产环境，直接使用构建产物。
+## 基本概念
 
-1. **NPM Registry**
-通过 npm registry 安装：
-```ts title="package.json"
-{
-    "dependencies": {
-        "ssr-remote": "^1.0.0"
-    }
-}
-```
+模块链接涉及两个主要角色：
 
-2. **静态服务器**
-通过 HTTP/HTTPS 协议安装：
-```ts title="package.json"
-{
-    "dependencies": {
-        "ssr-remote": "https://cdn.example.com/ssr-remote/1.0.0.tgz"
-    }
-}
-```
+### 提供服务
+作为共享能力的提供方，负责导出公共依赖、组件和工具函数：
 
-## 软件包构建
-
-### 配置说明
-
-在 `entry.node.ts` 中配置构建选项：
-
-```ts title="src/entry.node.ts"
-import type { EsmxOptions } from '@esmx/core';
-
+```ts
+// service-shared/entry.node.ts
 export default {
-    // 模块导出配置
     modules: {
         exports: [
-            'root:src/components/button.vue',
-            'root:src/utils/format.ts',
-            'npm:vue'
+            'npm:vue',                         // 共享 npm 包
+            'root:src/components/button.vue',  // 共享组件
+            {
+                'api': {                       // 环境特定实现
+                    inputTarget: {
+                        client: './src/api.browser.ts',
+                        server: './src/api.node.ts'
+                    }
+                }
+            }
         ]
-    },
-    // 构建配置
-    pack: {
-        // 启用构建
-        enable: true,
+    }
+}
+```
 
-        // 输出配置
-        outputs: [
-            'dist/client/versions/latest.tgz',
-            'dist/client/versions/1.0.0.tgz'
-        ],
+### 使用服务
+作为能力的使用方，通过模块链接机制使用其他服务提供的代码：
 
-        // 自定义 package.json
-        packageJson: async (esmx, pkg) => {
-            pkg.version = '1.0.0';
-            return pkg;
+```ts
+// service-app/entry.node.ts
+export default {
+    modules: {
+        // 1. 声明依赖的服务
+        links: {
+            'shared': '../service-shared/dist'
         },
 
-        // 构建前处理
-        onBefore: async (esmx, pkg) => {
-            // 生成类型声明
-            // 执行测试用例
-            // 更新文档等
-        },
-
-        // 构建后处理
-        onAfter: async (esmx, pkg, file) => {
-            // 上传到 CDN
-            // 发布到 npm 仓库
-            // 部署到测试环境等
+        // 2. 配置要使用的功能
+        imports: {
+            'vue': 'shared/vue',                    // 使用共享的 Vue
+            'button': 'shared/components/button',    // 使用共享组件
+            'api': 'shared/api'                     // 使用共享 API
         }
     }
-} satisfies EsmxOptions;
+}
 ```
 
-### 构建产物
+## 导出规则
 
+服务间共享支持三种方式：
+
+### 1. npm 包
+用于在服务间统一第三方依赖的版本：
+```ts
+// 导出 npm 包
+'npm:vue'           // Vue 框架
+'npm:axios'         // HTTP 客户端
 ```
-your-app-name.tgz
-├── package.json        # 包信息
-├── index.js            # 生产环境入口
-├── server/             # 服务端资源
-│   └── manifest.json   # 服务端资源映射
-├── node/               # Node.js 运行时
-└── client/             # 客户端资源
-    └── manifest.json   # 客户端资源映射
+
+### 2. 服务内组件
+用于共享服务内部开发的组件和工具：
+```ts
+// 导出源码文件（需要带扩展名）
+'root:src/components/button.vue'    // Vue 组件
+'root:src/utils/format.ts'         // 工具函数
 ```
 
-### 发布流程
-
-```bash
-# 1. 构建生产版本
-esmx build
-
-# 2. 发布到 npm
-npm publish dist/versions/your-app-name.tgz
+### 3. 环境适配
+用于提供不同环境下的特定实现：
+```ts
+{
+    'api': {
+        inputTarget: {
+            client: './src/api.browser.ts',    // 使用浏览器 API
+            server: './src/api.node.ts'        // 使用 Node.js API
+        }
+    }
+}
 ```
+
+## 参考示例
+
+你可以参考以下完整示例：
+
+- [共享服务示例](https://github.com/esmnext/esmx/tree/master/examples/ssr-vue2-remote) - 基于 Vue 的共享服务示例，提供可复用的组件
+- [使用服务示例](https://github.com/esmnext/esmx/tree/master/examples/ssr-vue2-host) - 基于 Vue 的业务服务示例，演示如何使用共享服务的能力
