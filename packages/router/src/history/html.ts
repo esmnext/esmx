@@ -1,5 +1,6 @@
 import type {
     HistoryActionType,
+    NavReturnType,
     RouterHistory,
     RouterInstance,
     RouterRawLocation
@@ -98,33 +99,31 @@ export class HtmlHistory extends BaseRouterHistory implements RouterHistory {
     }: {
         type: HistoryActionType;
         location?: RouterRawLocation;
-    }) {
+    }): NavReturnType {
         const replace = ['replace', 'reload', 'forceReload'].includes(type);
 
         const res = await this.decodeURL({ type, location });
         if (res.isExternalUrl) {
             if (res.externalUrlHandlerRes) {
-                return;
+                return { navType: type, type: 'success' };
             }
             if (replace) {
                 window.location.replace(res.url);
-                return;
             } else {
                 const { hostname, href } = new URL(res.url);
                 openWindow(href, hostname);
-                return;
             }
+            return { navType: type, type: 'success' };
         }
-        // console.log('location: %o -> %o', location, res.url);
         location = { path: res.url };
 
         if (type === 'forceReload') {
             window.location.reload();
-            return;
+            return { navType: type, type: 'success' };
         }
 
         const current = Object.assign({}, this.current);
-        await this.transitionTo(
+        return this.transitionTo(
             location,
             (route) => {
                 const keepScrollPosition = getKeepScrollPosition(location);

@@ -1,5 +1,5 @@
 
-import type { RouterMode, RouterHistory, HistoryActionType } from "./history";
+import type { RouterMode, RouterHistory, HistoryActionType, NavReturnType } from "./history";
 import type { RouterScrollBehavior } from "./scroll";
 import type { Awaitable } from "./common";
 import type { RouterRawLocation } from "./location";
@@ -206,7 +206,9 @@ export interface PushLayerExtArgs {
         // beforeLeave?: NavigationGuard;
     };
     /**
-     * 事件监听器
+     * 事件监听器。
+     * 内置了事件：
+     * * `layerClosed`：关闭弹层路由时触发，事件入参：{@link CloseLayerArgs | `CloseLayerArgs`}。
      */
     events?: Record<string, Function>;
 }
@@ -367,8 +369,14 @@ export interface RouterInstance {
      * 服务端会使用 push 作为替代
      */
     pushLayer: {
-        (options: RouterRawLocation & PushLayerExtArgs): void;
-        (location: RouterRawLocation, options?: PushLayerExtArgs): void;
+        (options: RouterRawLocation & PushLayerExtArgs): NavReturnType<{
+            layerRouter: RouterInstance;
+            closeLayerPromise: Promise<CloseLayerArgs>;
+        }>;
+        (location: RouterRawLocation, options?: PushLayerExtArgs): NavReturnType<{
+            layerRouter: RouterInstance;
+            closeLayerPromise: Promise<CloseLayerArgs>;
+        }>;
     };
 
     /**

@@ -5,6 +5,7 @@ import { createRouterMatcher } from './matcher';
 import {
     type AfterMatchHook,
     type CloseLayerArgs,
+    type NavReturnType,
     type NavigationGuard,
     type NavigationGuardAfter,
     type PushLayerExtArgs,
@@ -24,6 +25,8 @@ import {
     type RouterScrollBehavior
 } from './types';
 import { inBrowser, normalizePath, regexDomain } from './utils';
+import { withResolvers } from './utils/bom';
+import { createRoute } from './utils/creator';
 import { arrRmEle, getSubObj, isSymbolAble } from './utils/utils';
 
 const mgDataCtx = (...ctxs: RouterOptions['dataCtx'][]) =>
@@ -83,27 +86,7 @@ export class Router implements RouterInstance {
     scrollBehavior: RouterScrollBehavior;
 
     /* 当前路由信息 */
-    route: Route = {
-        href: '',
-        origin: '',
-        host: '',
-        protocol: '',
-        hostname: '',
-        port: '',
-        pathname: '',
-        search: '',
-        hash: '',
-
-        params: {},
-        query: {},
-        queryArray: {},
-        state: {},
-        meta: {},
-        base: '',
-        path: '',
-        fullPath: '',
-        matched: []
-    };
+    route: Route = createRoute();
 
     constructor(options: RouterOptions) {
         this.options = options;
@@ -293,7 +276,7 @@ export class Router implements RouterInstance {
     async reload(location?: RouterRawLocation) {
         this._closeAllChildren();
         this._destroyAllApp();
-        await this.history.reload(location);
+        return this.history.reload(location);
     }
 
     /**
@@ -312,7 +295,10 @@ export class Router implements RouterInstance {
     async pushLayer(
         location: RouterRawLocation & PushLayerExtArgs,
         options: PushLayerExtArgs = {}
-    ) {
+    ): NavReturnType<{
+        layerRouter: RouterInstance;
+        closeLayerPromise: Promise<CloseLayerArgs>;
+    }> {
         const hooks = options.hooks || location.hooks || {};
         const dataCtx = options.dataCtx || location.dataCtx;
         const route = this.resolve(location);
@@ -340,7 +326,18 @@ export class Router implements RouterInstance {
         Object.entries(options.events || {}).forEach(([event, handler]) => {
             layerRouter.on(event, handler);
         });
+        const { promise: closeLayerPromise, resolve } =
+            withResolvers<CloseLayerArgs>();
+        layerRouter.on('layerClosed', resolve);
         await layerRouter.init();
+        return {
+            navType: 'pushLayer',
+            type: 'success',
+            data: {
+                layerRouter,
+                closeLayerPromise
+            }
+        };
     }
 
     /* 前往特定路由历史记录的方法，可以在历史记录前后移动 */
@@ -382,6 +379,7 @@ export class Router implements RouterInstance {
         type = 'close',
         descendantStrategy = 'clear'
     }: CloseLayerArgs = {}) {
+        this.emit('layerClosed', { data, type, descendantStrategy });
         // 如果 descendantStrategy 为 clear，则将所有的子路由都关闭，无论是否是顶层路由
         if (descendantStrategy === 'clear') {
             this._closeAllChildren();

@@ -95,28 +95,33 @@ import { useRouter } from '@esmx/router-vue2';
 const router = useRouter();
 const openLayer = (e: MouseEvent) => {
     const href = (e.target as HTMLAnchorElement).href;
-    router.pushLayer(href, {
+    const t = router.pushLayer(href, {
         hooks: {
             shouldCloseLayer: (from, to) => to.fullPath === '/404'
         },
         events: {
             echo: (...data: any[]) => {
                 alert(`echo ${data.join(' ')}`);
+            },
+            layerClosed: (args: any) => {
+                console.log('layer closed', args);
             }
         },
         dataCtx: {
             message: 'this layer will close when you click the link to /404'
         }
     });
+    console.log(t);
 };
 const testQuery = () => {
-    router.push({
+    const t = router.push({
         path: '/404',
         query: {
             a: '1',
             b: undefined
         }
     });
+    console.log(t);
 };
 const targetEcho = () => {
     router.emit('echo', 'hello', 'world');

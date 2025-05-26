@@ -1,5 +1,6 @@
 import type {
     HistoryActionType,
+    NavReturnType,
     RouteRecord,
     RouterHistory,
     RouterRawLocation
@@ -34,22 +35,22 @@ export class AbstractHistory
     }: {
         type: HistoryActionType;
         location?: RouterRawLocation;
-    }) {
+    }): NavReturnType {
         const replace = ['replace', 'reload', 'forceReload'].includes(type);
 
         const res = await this.decodeURL({ type, location });
         if (res.isExternalUrl) {
-            return;
+            return { navType: type, type: 'success' };
         }
         // console.log('location: %o -> %o', location, res.url);
         location = { path: res.url };
 
         if (type === 'forceReload') {
             window.location.reload();
-            return;
+            return { navType: type, type: 'success' };
         }
 
-        await this.transitionTo(
+        return this.transitionTo(
             location,
             (route) => {
                 const top = replace ? this.stackTop : this.stackTop + 1;

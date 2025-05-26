@@ -496,7 +496,7 @@ router.pushLayer('/');
    2. [x] 判断是否关闭弹窗的钩子
    3. [x] closeLayer
    4. [ ] 仅改变浏览器 URL 的便捷方法
-   5. [ ] 返回值
+   5. [x] 返回值
    6. [x] 允许用户传递自定义事件
 2. [ ] 上下文
    1. [x] 全局
@@ -507,12 +507,12 @@ router.pushLayer('/');
    6. [ ] reload
    7. [ ] forceReload
    8. [ ] pushWindow
-3. [ ] 路由导航方法返回值
-   1. [ ] push
-   2. [ ] replace
-   3. [ ] reload
-   4. [ ] forceReload
-   5. [ ] pushWindow
+3. [x] 路由导航方法返回值
+   1. [x] push
+   2. [x] replace
+   3. [x] reload
+   4. [x] forceReload
+   5. [x] pushWindow
 4. [x] 新增导航方式 reload 和 forceReload
 5. [x] 可选的 renderToString
 6. [x] 归一化 URL 钩子

@@ -2,6 +2,7 @@ import { type Tasks, createTasks } from '../task-pipe';
 import type {
     Awaitable,
     HistoryActionType,
+    NavReturnType,
     NavigationGuard,
     NavigationGuardAfter,
     RouteRecord,
@@ -60,10 +61,10 @@ export abstract class BaseRouterHistory implements RouterHistory {
     async transitionTo(
         location: RouterRawLocation,
         onComplete?: (route: RouteRecord) => void,
-        type: HistoryActionType = 'push'
-    ) {
+        type: HistoryActionType = 'push',
+        route = this.resolve(location)
+    ): NavReturnType {
         // 寻找即将跳转路径匹配到的路由对象
-        const route = this.resolve(location);
         this.router.guards.afterMatch.forEach((hook) => {
             hook({
                 from: this.current,
@@ -78,14 +79,13 @@ export abstract class BaseRouterHistory implements RouterHistory {
 
         // 禁止重复跳转
         if (type !== 'reload' && isEqualRoute(this.current, route)) {
-            return;
+            return { navType: type, type: 'duplicated' };
         }
 
-        await this.runTask(this.current, route, onComplete, type);
+        return this.runTask(this.current, route, onComplete, type);
     }
 
     /**
-     * TODO 逻辑解耦，抽离到task
      * 重定向方法
      */
     async redirectTo(
@@ -94,34 +94,10 @@ export abstract class BaseRouterHistory implements RouterHistory {
         onComplete?: (route: RouteRecord) => void,
         type: HistoryActionType = 'push'
     ) {
-        // 寻找即将跳转路径匹配到的路由对象
-        const route = this.resolve(location);
-        this.router.guards.afterMatch.forEach((hook) => {
-            hook({
-                from: this.current,
-                to: { ...route, redirectedFrom: from },
-                router: this.router,
-                navType: type,
-                isEqualRoute: isEqualRoute(this.current, route),
-                isSameRoute: isSameRoute(this.current, route)
-            });
+        return this.transitionTo(location, onComplete, type, {
+            ...this.resolve(location),
+            redirectedFrom: from
         });
-        this.abortTask();
-
-        // 禁止重复跳转
-        if (type !== 'reload' && isEqualRoute(this.current, route)) {
-            return;
-        }
-
-        await this.runTask(
-            this.current,
-            {
-                ...route,
-                redirectedFrom: from
-            },
-            onComplete,
-            type
-        );
     }
 
     /** 当前执行的任务 */
@@ -147,7 +123,7 @@ export abstract class BaseRouterHistory implements RouterHistory {
         to: RouteRecord,
         onComplete?: (route: RouteRecord) => void,
         type: HistoryActionType = 'push'
-    ) {
+    ): NavReturnType {
         const {
             beforeEach,
             beforeEnter,
@@ -181,11 +157,15 @@ export abstract class BaseRouterHistory implements RouterHistory {
         guardAfterTasks.add(afterEach);
 
         this.tasks = guardBeforeTasks;
+        let taskRes: Awaited<NavReturnType>['type'] | '' = '';
         await guardBeforeTasks.run({
             cb: async (res) => {
                 switch (typeof res) {
                     case 'boolean':
-                        res || this.tasks?.abort();
+                        if (!res) {
+                            this.tasks?.abort();
+                            taskRes = 'cancelled';
+                        }
                         break;
 
                     case 'undefined':
@@ -208,7 +188,12 @@ export abstract class BaseRouterHistory implements RouterHistory {
 
             onComplete?.(to);
             this.updateRoute(to);
+            taskRes = 'success';
+        } else if (!taskRes && this.tasks?.status === 'aborted') {
+            taskRes = 'aborted';
         }
+
+        return { navType: type, type: taskRes || 'error' };
     }
 
     /**
@@ -286,7 +271,7 @@ export abstract class BaseRouterHistory implements RouterHistory {
     protected abstract _jump(args: {
         type: HistoryActionType;
         location?: RouterRawLocation;
-    }): Promise<void>;
+    }): NavReturnType;
 
     // 路由移动到指定历史记录方法
     abstract go(delta: number): void;

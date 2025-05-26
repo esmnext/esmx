@@ -14,3 +14,15 @@ export function openWindow(url: string, target?: string) {
         location.href = url;
     }
 }
+
+export const withResolvers =
+    Promise.withResolvers?.bind(Promise) ||
+    (<T>(): PromiseWithResolvers<T> => {
+        let resolve: any;
+        let reject: any;
+        const promise = new Promise<T>((res, rej) => {
+            resolve = res;
+            reject = rej;
+        });
+        return { promise, resolve, reject };
+    });

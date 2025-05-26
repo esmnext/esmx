@@ -28,6 +28,12 @@ export interface HistoryState {
 
 export type HistoryActionType = 'push' | 'replace' | 'reload' | 'forceReload' | 'pushWindow' | 'pushLayer';
 
+export type NavReturnType<T extends any = undefined> = Promise<{
+    navType: HistoryActionType;
+    type: 'error' | 'success' | 'aborted' | 'cancelled' | 'duplicated';
+    data?: T;
+}>;
+
 /**
  * 路由历史
  */
@@ -55,27 +61,27 @@ export interface RouterHistory {
     /**
      * 跳转方法，会创建新的历史纪录
      */
-    push: (location: RouterRawLocation) => Promise<void>;
+    push: (location: RouterRawLocation) => NavReturnType;
 
     /**
      * 跳转方法，替换当前历史记录
      */
-    replace: (location: RouterRawLocation) => Promise<void>;
+    replace: (location: RouterRawLocation) => NavReturnType;
 
     /**
      * 新开浏览器窗口的方法，在服务端会调用 push 作为替代
      */
-    pushWindow: (location: RouterRawLocation) => Promise<void>;
+    pushWindow: (location: RouterRawLocation) => NavReturnType;
 
     /**
      * 刷新当前路由。会将实例卸载并重新挂载。
      */
-    reload: (location?: RouterRawLocation) => Promise<void>;
+    reload: (location?: RouterRawLocation) => NavReturnType;
 
     /**
      * 强制刷新当前路由。浏览器会刷新网页。
      */
-    forceReload: (location?: RouterRawLocation) => Promise<void>;
+    forceReload: (location?: RouterRawLocation) => NavReturnType;
 
     /**
      * 路由移动到指定历史记录方法
