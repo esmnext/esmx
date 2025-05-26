@@ -76,7 +76,7 @@ export interface RouterOptions {
     /**
      * 路由的全局数据上下文。用于在导航中传递数据
      */
-    dataCtx?: Record<any, any>;
+    dataCtx?: Record<string | symbol, any>;
 }
 
 /**
@@ -205,6 +205,10 @@ export interface PushLayerExtArgs {
         // beforeUpdate?: NavigationGuard;
         // beforeLeave?: NavigationGuard;
     };
+    /**
+     * 事件监听器
+     */
+    events?: Record<string, Function>;
 }
 
 /**
@@ -426,5 +430,24 @@ export interface RouterInstance {
     /**
      * 返回当前路由{@link RouterOptions.dataCtx | 全局}和{@link RegisteredConfig.dataCtx | 应用内的数据上下文}按优先级合并后的结果
      */
-    get dataCtx(): RouterOptions['dataCtx'];
+    get dataCtx(): NonNullable<RouterOptions['dataCtx']>;
+
+    /**
+     * 注册事件监听器
+     * @param event 事件名称
+     * @param listener 监听器
+     */
+    on(event: string, listener: Function): void;
+    /**
+     * 卸载事件监听器
+     * @param event 事件名称
+     * @param listener 监听器
+     */
+    off(event: string, listener: Function): void;
+    /**
+     * 触发事件
+     * @param event 事件名称
+     * @param args 事件参数
+     */
+    emit(event: string, ...args: any[]): void;
 }

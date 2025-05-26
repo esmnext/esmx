@@ -24,13 +24,17 @@ import {
     type RouterScrollBehavior
 } from './types';
 import { inBrowser, normalizePath, regexDomain } from './utils';
-import { arrRmEle, getSubObj } from './utils/utils';
+import { arrRmEle, getSubObj, isSymbolAble } from './utils/utils';
 
 const mgDataCtx = (...ctxs: RouterOptions['dataCtx'][]) =>
-    ctxs.reduce<RouterOptions['dataCtx']>(
-        (acc, ctx) => (ctx ? { ...(acc || {}), ...ctx } : acc),
-        void 0
+    ctxs.reduce<NonNullable<RouterOptions['dataCtx']>>(
+        (acc, ctx) => Object.assign(acc, ctx || {}),
+        {}
     );
+
+const eventsSymbol = isSymbolAble
+    ? Symbol('__routerEvents__')
+    : '__routerEvents__';
 
 /**
  * 路由类
@@ -103,6 +107,8 @@ export class Router implements RouterInstance {
 
     constructor(options: RouterOptions) {
         this.options = options;
+        this._globalDataCtx = { ...(this.options.dataCtx || {}) };
+        this._globalDataCtx[eventsSymbol] = {};
         this.matcher = createRouterMatcher(options.routes || []);
 
         this.mode =
@@ -130,16 +136,16 @@ export class Router implements RouterInstance {
     }
 
     /** 获取当前生效的路由的注册配置 */
-    protected getCurrentRegisteredCfg() {
+    protected _getCurrentRegisteredCfg() {
         const appType = this.route?.matched[0]?.appType;
         return appType ? this.registeredConfigMap[appType] : null;
     }
 
     /* 更新路由 */
     updateRoute(route: RouteRecord) {
-        const oldRegCfg = this.getCurrentRegisteredCfg();
+        const oldRegCfg = this._getCurrentRegisteredCfg();
         this.applyRoute(route);
-        const curRegCfg = this.getCurrentRegisteredCfg();
+        const curRegCfg = this._getCurrentRegisteredCfg();
 
         if (curRegCfg) {
             const { mounted, generator } = curRegCfg;
@@ -208,6 +214,7 @@ export class Router implements RouterInstance {
             this.layer.parent = null;
         }
         this._initGuards();
+        this._globalDataCtx = {};
     }
 
     /* 已注册的app配置 */
@@ -330,6 +337,9 @@ export class Router implements RouterInstance {
             });
             return false;
         });
+        Object.entries(options.events || {}).forEach(([event, handler]) => {
+            layerRouter.on(event, handler);
+        });
         await layerRouter.init();
     }
 
@@ -396,16 +406,40 @@ export class Router implements RouterInstance {
     }
 
     renderToString() {
-        const regCfg = this.getCurrentRegisteredCfg();
+        const regCfg = this._getCurrentRegisteredCfg();
         if (!regCfg?.mounted) return '';
         return regCfg.config?.renderToString?.() || '';
     }
 
-    get dataCtx(): RouterOptions['dataCtx'] {
+    protected _globalDataCtx: NonNullable<RouterOptions['dataCtx']> = {};
+    get dataCtx() {
         return mgDataCtx(
-            this.options.dataCtx,
-            this.getCurrentRegisteredCfg()?.config?.dataCtx
+            this._globalDataCtx,
+            this._getCurrentRegisteredCfg()?.config?.dataCtx
         );
+    }
+
+    on(event: string, handler: (...args: any[]) => any) {
+        (this._globalDataCtx[eventsSymbol][event] ||= []).push(handler);
+    }
+    off(event: string, handler: (...args: any[]) => any) {
+        const handlers = this._globalDataCtx[eventsSymbol][event];
+        if (!handlers) return;
+        arrRmEle(handlers, handler);
+        if (handlers.length === 0) {
+            delete this._globalDataCtx[eventsSymbol][event];
+        }
+    }
+    emit(event: string, ...args: any[]) {
+        const handlers = this._globalDataCtx[eventsSymbol][event];
+        if (!handlers) return;
+        handlers.forEach((handler) => {
+            try {
+                handler(...args);
+            } catch (e) {
+                console.error(`Router event "${event}" handler error:`, e);
+            }
+        });
     }
 }
 

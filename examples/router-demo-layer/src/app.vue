@@ -82,6 +82,8 @@
             </tr>
         </tbody></table>
 
+        <button @click="targetEcho" v-if="$router.dataCtx.message">router event</button>
+
         <hr/>
 
         <router-view />
@@ -96,6 +98,14 @@ const openLayer = (e: MouseEvent) => {
     router.pushLayer(href, {
         hooks: {
             shouldCloseLayer: (from, to) => to.fullPath === '/404'
+        },
+        events: {
+            echo: (...data: any[]) => {
+                alert(`echo ${data.join(' ')}`);
+            }
+        },
+        dataCtx: {
+            message: 'this layer will close when you click the link to /404'
         }
     });
 };
@@ -107,6 +117,9 @@ const testQuery = () => {
             b: undefined
         }
     });
+};
+const targetEcho = () => {
+    router.emit('echo', 'hello', 'world');
 };
 </script>
 
