@@ -8,17 +8,17 @@
         "images/sun.429a7bc5.final.png",
         "images/starry.d914a632.final.jpg",
         "chunks/473.c6f811ea.final.js",
-        "chunks/830.63b8fd4f.final.css",
-        "images/logo.3923d727.final.svg",
         "images/running-dog.76197e20.final.gif",
+        "images/logo.3923d727.final.svg",
         "chunks/534.63b8fd4f.final.css",
+        "chunks/830.63b8fd4f.final.css",
         "chunks/473.63b8fd4f.final.css",
         "chunks/830.b760cb75.final.js",
         "chunks/534.82a3bdb1.final.js",
         "src/entry.client.74ae461e.final.js",
         "src/title/index.2d79c0c2.final.js",
-        "src/entry.client.2e0a89bc.final.css",
-        "images/cat.ed79ef6b.final.jpeg"
+        "images/cat.ed79ef6b.final.jpeg",
+        "src/entry.client.2e0a89bc.final.css"
     ],
     "chunks": {
         "ssr-html@src/views/about.ts": {
