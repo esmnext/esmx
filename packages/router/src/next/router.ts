@@ -1,3 +1,4 @@
+import { type MatcherFunc, createMatcher } from './matcher';
 import type {
     Route,
     RouteInput,
@@ -7,8 +8,10 @@ import type {
 
 export class Router {
     public options: RouterOptions;
+    private matcher: MatcherFunc;
     public constructor(options: RouterOptions) {
         this.options = options;
+        this.matcher = createMatcher(options.routes);
     }
     private _update(input: RouteInput): Promise<RouteResult> {
         // switch (input.type) {

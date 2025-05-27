@@ -1,5 +1,5 @@
 import { assert, describe, test } from 'vitest';
-import { Matcher, joinPathname } from './matcher';
+import { createMatcher, joinPathname } from './matcher';
 
 const BASE_URL = new URL('https://www.esmx.dev');
 
@@ -49,7 +49,7 @@ describe('joinPathname', () => {
 
 describe('base', () => {
     test('基本路由匹配', () => {
-        const matcher = new Matcher([
+        const matcher = createMatcher([
             {
                 path: '/news'
             },
@@ -57,13 +57,13 @@ describe('base', () => {
                 path: '/news/:id'
             }
         ]);
-        const result = matcher.match(new URL('/news/123', BASE_URL), BASE_URL);
+        const result = matcher(new URL('/news/123', BASE_URL), BASE_URL);
         assert.deepEqual(result.length, 1);
         assert.equal(result[0].path, '/news/:id');
     });
 
     test('嵌套路由匹配', () => {
-        const matcher = new Matcher([
+        const matcher = createMatcher([
             {
                 path: '/news',
                 children: [
@@ -73,7 +73,7 @@ describe('base', () => {
                 ]
             }
         ]);
-        const result = matcher.match(new URL('/news/123', BASE_URL), BASE_URL);
+        const result = matcher(new URL('/news/123', BASE_URL), BASE_URL);
         assert.deepEqual(result.length, 2);
         assert.equal(result[0].path, '/news');
         assert.equal(result[1].path, ':id');

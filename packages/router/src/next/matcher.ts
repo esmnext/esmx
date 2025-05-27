@@ -1,22 +1,20 @@
 import { type MatchFunction, match } from 'path-to-regexp';
 import type { RouteConfig } from './types';
 
-interface RouteMatchConfig {
+export interface RouteMatch {
     route: RouteConfig;
     pathname: string;
-    children: RouteMatchConfig[];
+    children: RouteMatch[];
     match: MatchFunction;
 }
+export type MatcherFunc = (url: URL, baseUrl: URL) => RouteConfig[];
 
-export class Matcher {
-    private compiledRoutes: RouteMatchConfig[];
-    public constructor(routes: RouteConfig[]) {
-        this.compiledRoutes = createRouteMatches(routes);
-    }
-    public match(url: URL, baseUrl: URL) {
+export function createMatcher(routes: RouteConfig[]): MatcherFunc {
+    const compiledRoutes = createRouteMatches(routes);
+    return (url: URL, baseUrl: URL) => {
         const matchPath = url.pathname.substring(baseUrl.pathname.length - 1);
         const matchedRoutes: RouteConfig[] = [];
-        const collectMatchedRoutes = (routes: RouteMatchConfig[]): boolean => {
+        const collectMatchedRoutes = (routes: RouteMatch[]): boolean => {
             for (const route of routes) {
                 if (
                     route.match(matchPath) ||
@@ -28,16 +26,13 @@ export class Matcher {
             }
             return false;
         };
-        collectMatchedRoutes(this.compiledRoutes);
+        collectMatchedRoutes(compiledRoutes);
         return matchedRoutes;
-    }
+    };
 }
 
-function createRouteMatches(
-    routes: RouteConfig[],
-    base = ''
-): RouteMatchConfig[] {
-    return routes.map((route: RouteConfig): RouteMatchConfig => {
+function createRouteMatches(routes: RouteConfig[], base = ''): RouteMatch[] {
+    return routes.map((route: RouteConfig): RouteMatch => {
         const pathname = '/' + joinPathname(route.path, base);
         return {
             pathname,
