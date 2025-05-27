@@ -243,83 +243,6 @@ export type NavigationGuard = (
 
 export type NavigationGuardReturn = boolean | RouterRawLocation;
 
-export interface RouteMatch {
-    /**
-     * 路径匹配的正则表达式
-     */
-    regex: RegExp;
-
-    /**
-     * 路由匹配方法，返回值意味着传入的路径是否匹配此路由
-     */
-    match: (path: string) => boolean;
-
-    /**
-     * 路径解析方法
-     */
-    parse: (path: string) => {
-        params: Record<string, string>;
-        query: Record<string, string | undefined>;
-        queryArray: Record<string, string[]>;
-        hash: string;
-    };
-
-    /**
-     * 按照传入参数解析出完整路径
-     */
-    compile: (params?: {
-        params?: Record<string, string>;
-        query?: Record<string, string | undefined>;
-        queryArray?: Record<string, string[]>;
-        hash?: string;
-    }) => string;
-
-    /**
-     *  路径
-     */
-    path: string;
-
-    /**
-     * 应用类型
-     */
-    appType: string;
-
-    /**
-     * 路由配置的组件
-     */
-    component?: any;
-
-    /**
-     * 路由配置的异步组件
-     */
-    asyncComponent?: () => any | Promise<any>;
-
-    /**
-     * 父路由
-     */
-    parent?: RouteMatch;
-
-    /**
-     * 路由元信息
-     */
-    meta: RouteMeta;
-
-    /**
-     * 重定向配置
-     */
-    redirect?: RouteRedirect;
-
-    /**
-     * 内部重定向，当 path 配置为数组时生成的内部重定向配置
-     */
-    internalRedirect?: RouteMatch;
-
-    /**
-     * 匹配的路由
-     */
-    matched: RouteConfig[];
-}
-
 export interface Route {
     hash: URL['hash'];
     host: URL['host'];
@@ -332,15 +255,7 @@ export interface Route {
     search: URL['search'];
 
     params: Record<string, string>;
-    /**
-     * 按 Hanson 要求加入 undefined 类型。
-     * 若为 undefined 则在解析时会删掉这个 query
-     */
     query: Record<string, string | undefined>;
-    /**
-     * 按 Hanson 要求加入 undefined 类型。
-     * 若为 undefined 则在解析时会删掉这个 query
-     */
     queryArray: Record<string, string[] | undefined>;
     state: RouteState;
     meta: RouteMeta;
