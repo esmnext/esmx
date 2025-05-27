@@ -8,7 +8,10 @@ export interface RouteMatch {
     match: MatchFunction;
     compile: (params?: Record<string, any>) => string;
 }
-export type RouteMatchFunc = (currentURL: URL, baseURL: URL) => RouteMatch[];
+export type RouteMatchFunc = (
+    currentURL: URL,
+    baseURL: URL
+) => { matches: RouteMatch[]; params: Record<string, string> };
 
 export function createMatcher(routes: RouteConfig[]): RouteMatchFunc {
     const compiledRoutes = createRouteMatches(routes);
@@ -16,19 +19,23 @@ export function createMatcher(routes: RouteConfig[]): RouteMatchFunc {
         const requestPath = currentURL.pathname.substring(
             baseUrl.pathname.length - 1
         );
-        const matchedRoutes: RouteMatch[] = [];
+        const matches: RouteMatch[] = [];
+        const params: Record<string, string> = {};
         const findMatchingRoutes = (routes: RouteMatch[]): boolean => {
             for (const item of routes) {
                 const result = item.match(requestPath);
                 if (result || findMatchingRoutes(item.children)) {
-                    matchedRoutes.unshift(item);
+                    matches.unshift(item);
+                    if (typeof result === 'object') {
+                        Object.assign(params, result.params);
+                    }
                     return true;
                 }
             }
             return false;
         };
         findMatchingRoutes(compiledRoutes);
-        return matchedRoutes;
+        return { matches, params };
     };
 }
 

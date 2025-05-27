@@ -44,7 +44,7 @@ export class Router {
             };
         }
         // 匹配路由
-        const matches = this.matcher(location, base);
+        const { matches, params } = this.matcher(location, base);
         // 没有匹配任何路由
         if (matches.length === 0) {
             return {
@@ -63,6 +63,7 @@ export class Router {
                 current[index] = item || current[index];
             });
             location.pathname = current.join('/');
+            Object.assign(params, raw.params);
         }
     }
     public push(location: RouterRawLocation) {
