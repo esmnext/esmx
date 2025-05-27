@@ -8,10 +8,15 @@ export interface RouteMatch {
     match: MatchFunction;
     compile: (params?: Record<string, any>) => string;
 }
+export interface RouteMatchResult {
+    matches: RouteMatch[];
+    params: Record<string, string>;
+}
+
 export type RouteMatchFunc = (
     currentURL: URL,
     baseURL: URL
-) => { matches: RouteMatch[]; params: Record<string, string> };
+) => RouteMatchResult;
 
 export function createMatcher(routes: RouteConfig[]): RouteMatchFunc {
     const compiledRoutes = createRouteMatches(routes);

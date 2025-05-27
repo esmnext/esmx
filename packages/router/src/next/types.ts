@@ -252,15 +252,15 @@ export type NavigationGuard = (
 export type NavigationGuardReturn = boolean | RouterRawLocation;
 
 export interface Route {
-    hash: URL['hash'];
-    host: URL['host'];
-    hostname: URL['hostname'];
-    href: URL['href'];
-    origin: URL['origin'];
-    pathname: URL['pathname'];
-    port: URL['port'];
-    protocol: URL['protocol'];
-    search: URL['search'];
+    hash: string;
+    host: string;
+    hostname: string;
+    href: string;
+    origin: string;
+    pathname: string;
+    port: string;
+    protocol: string;
+    search: string;
 
     params: Record<string, string>;
     query: Record<string, string | undefined>;
@@ -269,6 +269,5 @@ export interface Route {
     meta: RouteMeta;
     path: string;
     fullPath: string;
-    base: string;
     matched: RouteConfig[];
 }
