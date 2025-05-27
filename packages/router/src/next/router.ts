@@ -1,5 +1,6 @@
 import { rawLocationToURL } from './location';
 import { type RouteMatchFunc, createMatcher } from './matcher';
+import { createRoute } from './route';
 import type {
     Route,
     RouteInput,
@@ -44,15 +45,15 @@ export class Router {
             };
         }
         // 匹配路由
-        const { matches, params } = this.matcher(location, base);
+        const matched = this.matcher(location, base);
         // 没有匹配任何路由
-        if (matches.length === 0) {
+        if (matched.matches.length === 0) {
             return {
                 type: 'notFound'
             };
         }
         // 重新构造 URL 参数
-        const lastMatch = matches[matches.length - 1];
+        const lastMatch = matched.matches[matched.matches.length - 1];
         if (typeof raw === 'object' && raw.params) {
             const current = location.pathname.split('/');
             const next = new URL(
@@ -63,8 +64,10 @@ export class Router {
                 current[index] = item || current[index];
             });
             location.pathname = current.join('/');
-            Object.assign(params, raw.params);
+            Object.assign(matched.params, raw.params);
         }
+        const route = createRoute(raw, location, base, matched);
+        console.log('route', route);
     }
     public push(location: RouterRawLocation) {
         return this._update({
