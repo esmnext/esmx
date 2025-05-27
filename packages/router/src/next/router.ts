@@ -1,14 +1,16 @@
-import { type MatcherFunc, createMatcher } from './matcher';
+import { rawLocationToURL } from './location';
+import { type RouteMatchFunc, createMatcher } from './matcher';
 import type {
     Route,
     RouteInput,
+    RouteResult,
     RouterOptions,
     RouterRawLocation
 } from './types';
 
 export class Router {
     public options: RouterOptions;
-    private matcher: MatcherFunc;
+    private matcher: RouteMatchFunc;
     public constructor(options: RouterOptions) {
         this.options = options;
         this.matcher = createMatcher(options.routes);
@@ -27,6 +29,41 @@ export class Router {
         //         //  2. replace('sss') ->
         //         break;
         // }
+    }
+    public async parseRoute(raw: RouterRawLocation): Promise<RouteResult> {
+        const { base, normalizeURL, externalUrlHandler } = this.options;
+        let location = rawLocationToURL(raw, base);
+        if (normalizeURL) {
+            location = normalizeURL?.(location);
+        }
+        // 处理外站逻辑
+        if (location.origin !== base.origin) {
+            externalUrlHandler?.(location);
+            return {
+                type: 'external'
+            };
+        }
+        // 匹配路由
+        const matches = this.matcher(location, base);
+        // 没有匹配任何路由
+        if (matches.length === 0) {
+            return {
+                type: 'notFound'
+            };
+        }
+        // 重新构造 URL 参数
+        const lastMatch = matches[matches.length - 1];
+        if (typeof raw === 'object' && raw.params) {
+            const current = location.pathname.split('/');
+            const next = new URL(
+                lastMatch.compile(location).substring(1),
+                base
+            ).pathname.split('/');
+            next.forEach((item, index) => {
+                current[index] = item || current[index];
+            });
+            location.pathname = current.join('/');
+        }
     }
     public push(location: RouterRawLocation) {
         return this._update({
@@ -77,9 +114,3 @@ export class Router {
         });
     }
 }
-
-// Router
-// Route
-// Matcher
-// HtmlHistory extend base -> 依赖注入
-// AbstractHistory  extend base -> 依赖注入

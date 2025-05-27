@@ -59,7 +59,7 @@ describe('base', () => {
         ]);
         const result = matcher(new URL('/news/123', BASE_URL), BASE_URL);
         assert.deepEqual(result.length, 1);
-        assert.equal(result[0].path, '/news/:id');
+        assert.equal(result[0].route.path, '/news/:id');
     });
 
     test('嵌套路由匹配', () => {
@@ -75,7 +75,7 @@ describe('base', () => {
         ]);
         const result = matcher(new URL('/news/123', BASE_URL), BASE_URL);
         assert.deepEqual(result.length, 2);
-        assert.equal(result[0].path, '/news');
-        assert.equal(result[1].path, ':id');
+        assert.equal(result[0].route.path, '/news');
+        assert.equal(result[1].route.path, ':id');
     });
 });

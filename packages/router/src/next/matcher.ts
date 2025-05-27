@@ -1,4 +1,4 @@
-import { type MatchFunction, match } from 'path-to-regexp';
+import { type MatchFunction, compile, match } from 'path-to-regexp';
 import type { RouteConfig } from './types';
 
 export interface RouteMatch {
@@ -6,25 +6,29 @@ export interface RouteMatch {
     pathname: string;
     children: RouteMatch[];
     match: MatchFunction;
+    compile: (params?: Record<string, any>) => string;
 }
-export type MatcherFunc = (url: URL, baseUrl: URL) => RouteConfig[];
+export type RouteMatchFunc = (currentURL: URL, baseURL: URL) => RouteMatch[];
 
-export function createMatcher(routes: RouteConfig[]): MatcherFunc {
+export function createMatcher(routes: RouteConfig[]): RouteMatchFunc {
     const compiledRoutes = createRouteMatches(routes);
-    return (url: URL, baseUrl: URL) => {
-        const matchPath = url.pathname.substring(baseUrl.pathname.length - 1);
-        const routes: RouteConfig[] = [];
-        const matcher = (matches: RouteMatch[]): boolean => {
-            for (const match of matches) {
-                if (match.match(matchPath) || matcher(match.children)) {
-                    routes.unshift(match.route);
+    return (currentURL: URL, baseUrl: URL) => {
+        const requestPath = currentURL.pathname.substring(
+            baseUrl.pathname.length - 1
+        );
+        const matchedRoutes: RouteMatch[] = [];
+        const findMatchingRoutes = (routes: RouteMatch[]): boolean => {
+            for (const item of routes) {
+                const result = item.match(requestPath);
+                if (result || findMatchingRoutes(item.children)) {
+                    matchedRoutes.unshift(item);
                     return true;
                 }
             }
             return false;
         };
-        matcher(compiledRoutes);
-        return routes;
+        findMatchingRoutes(compiledRoutes);
+        return matchedRoutes;
     };
 }
 
@@ -35,6 +39,7 @@ function createRouteMatches(routes: RouteConfig[], base = ''): RouteMatch[] {
             pathname,
             route,
             match: match(pathname),
+            compile: compile(pathname),
             children: Array.isArray(route.children)
                 ? createRouteMatches(route.children, pathname)
                 : []

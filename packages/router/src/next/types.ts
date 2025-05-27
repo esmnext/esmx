@@ -67,19 +67,27 @@ export interface RouteResultRedirect {
 export interface RouteResultUpdateIndex {
     type: 'redirect';
 }
+export interface RouteResultExternal {
+    type: 'external';
+}
+export interface RouteResultNotFound {
+    type: 'notFound';
+}
 
 export type RouteResult =
     | RouteResultPush
     | RouteResultReplace
     | RouteResultAborted
-    | RouteResultRedirect;
+    | RouteResultRedirect
+    | RouteResultExternal
+    | RouteResultNotFound;
 
 // 构造实例选项
 export interface RouterOptions {
     base: URL;
     mode?: 'history' | 'abstract';
     routes: RouteConfig[];
-    normalizeURL?: (url: URL) => string;
+    normalizeURL?: (url: URL) => URL;
     externalUrlHandler?: (url: URL) => Awaitable<boolean>;
     scrollBehavior?: RouterScrollBehavior;
 }
