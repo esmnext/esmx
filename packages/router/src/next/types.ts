@@ -2,6 +2,7 @@ export enum NavigationType {
     // Action 类型
     push = 'push',
     replace = 'replace',
+    update = 'update',
     go = 'go',
     forward = 'forward',
     back = 'back',
@@ -22,6 +23,10 @@ export interface NavigationPushAction {
 }
 export interface NavigationReplaceAction {
     type: NavigationType.replace;
+    location: RouterRawLocation;
+}
+export interface NavigationUpdateAction {
+    type: NavigationType.update;
     location: RouterRawLocation;
 }
 export interface NavigationGoAction {
@@ -54,6 +59,7 @@ export interface NavigationForceReloadAction {
 export type NavigationAction =
     | NavigationPushAction
     | NavigationReplaceAction
+    | NavigationUpdateAction
     | NavigationGoAction
     | NavigationForwardAction
     | NavigationBackAction
