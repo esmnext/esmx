@@ -13,21 +13,18 @@ export function createMatcher(routes: RouteConfig[]): MatcherFunc {
     const compiledRoutes = createRouteMatches(routes);
     return (url: URL, baseUrl: URL) => {
         const matchPath = url.pathname.substring(baseUrl.pathname.length - 1);
-        const matchedRoutes: RouteConfig[] = [];
-        const collectMatchedRoutes = (routes: RouteMatch[]): boolean => {
-            for (const route of routes) {
-                if (
-                    route.match(matchPath) ||
-                    collectMatchedRoutes(route.children)
-                ) {
-                    matchedRoutes.unshift(route.route);
+        const routes: RouteConfig[] = [];
+        const matcher = (matches: RouteMatch[]): boolean => {
+            for (const match of matches) {
+                if (match.match(matchPath) || matcher(match.children)) {
+                    routes.unshift(match.route);
                     return true;
                 }
             }
             return false;
         };
-        collectMatchedRoutes(compiledRoutes);
-        return matchedRoutes;
+        matcher(compiledRoutes);
+        return routes;
     };
 }
 
