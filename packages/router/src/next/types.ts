@@ -1,86 +1,99 @@
-// 路由输入
+export enum NavigationType {
+    push = 'push',
+    replace = 'replace',
+    go = 'go',
+    forward = 'forward',
+    back = 'back',
+    pushLayer = 'pushLayer',
+    openWindow = 'openWindow',
+    reload = 'reload',
+    forceReload = 'forceReload',
+    // 导航结果类型
+    aborted = 'aborted',
+    redirect = 'redirect',
+    external = 'external',
+    notFound = 'notFound'
+}
 
-export interface RouteInputPush {
-    type: 'push';
+export interface NavigationPush {
+    type: NavigationType.push;
     location: RouterRawLocation;
 }
-export interface RouteInputReplace {
-    type: 'replace';
+export interface NavigationReplace {
+    type: NavigationType.replace;
     location: RouterRawLocation;
 }
-export interface RouteInputGo {
-    type: 'go';
+export interface NavigationGo {
+    type: NavigationType.go;
     index: number;
 }
 
-export interface RouteInputForward {
-    type: 'forward';
+export interface NavigationForward {
+    type: NavigationType.forward;
 }
-export interface RouteInputBack {
-    type: 'back';
+export interface NavigationBack {
+    type: NavigationType.back;
 }
 
-export interface RouteInputPushLayer {
-    type: 'pushLayer';
+export interface NavigationPushLayer {
+    type: NavigationType.pushLayer;
 }
-export interface RouteInputOpenWindow {
-    type: 'openWindow';
+export interface NavigationOpenWindow {
+    type: NavigationType.openWindow;
     name?: string;
     windowFeatures?: string;
 }
 
-export interface RouteInputReload {
-    type: 'reload';
+export interface NavigationReload {
+    type: NavigationType.reload;
     location?: RouterRawLocation;
 }
 
-export interface RouteInputForceReload {
-    type: 'forceReload';
+export interface NavigationForceReload {
+    type: NavigationType.forceReload;
     url?: string;
 }
 
-export type RouteInput =
-    | RouteInputPush
-    | RouteInputReplace
-    | RouteInputGo
-    | RouteInputForward
-    | RouteInputBack
-    | RouteInputPushLayer
-    | RouteInputOpenWindow
-    | RouteInputReload
-    | RouteInputForceReload;
+export type Navigation =
+    | NavigationPush
+    | NavigationReplace
+    | NavigationGo
+    | NavigationForward
+    | NavigationBack
+    | NavigationPushLayer
+    | NavigationOpenWindow
+    | NavigationReload
+    | NavigationForceReload;
 
-// 路由输出
-
-export interface RouteResultPush {
-    type: 'push';
+export interface NavigationResultPush {
+    type: NavigationType.push;
 }
-export interface RouteResultReplace {
-    type: 'replace';
+export interface NavigationResultReplace {
+    type: NavigationType.replace;
 }
-export interface RouteResultAborted {
-    type: 'aborted';
+export interface NavigationResultAborted {
+    type: NavigationType.aborted;
 }
-export interface RouteResultRedirect {
-    type: 'redirect';
+export interface NavigationResultRedirect {
+    type: NavigationType.redirect;
 }
-export interface RouteResultUpdateIndex {
-    type: 'redirect';
+export interface NavigationResultUpdateIndex {
+    type: NavigationType.redirect;
 }
-export interface RouteResultExternal {
-    type: 'external';
+export interface NavigationResultExternal {
+    type: NavigationType.external;
 }
-export interface RouteResultNotFound {
-    type: 'notFound';
+export interface NavigationResultNotFound {
+    type: NavigationType.notFound;
 }
 
-export type RouteResult =
-    | RouteResultPush
-    | RouteResultReplace
-    | RouteResultAborted
-    | RouteResultRedirect
-    | RouteResultExternal
-    | RouteResultNotFound;
+export type NavigationResult =
+    | NavigationResultPush
+    | NavigationResultReplace
+    | NavigationResultAborted
+    | NavigationResultRedirect
+    | NavigationResultExternal
+    | NavigationResultNotFound;
 
 // 构造实例选项
 export interface RouterOptions {

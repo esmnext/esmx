@@ -1,12 +1,12 @@
 import { rawLocationToURL } from './location';
 import { type RouteMatchFunc, createMatcher } from './matcher';
 import { createRoute } from './route';
-import type {
-    Route,
-    RouteInput,
-    RouteResult,
-    RouterOptions,
-    RouterRawLocation
+import {
+    type Navigation,
+    type NavigationResult,
+    NavigationType,
+    type RouterOptions,
+    type RouterRawLocation
 } from './types';
 
 export class Router {
@@ -16,22 +16,8 @@ export class Router {
         this.options = options;
         this.matcher = createMatcher(options.routes);
     }
-    private _update(input: RouteInput): Promise<RouteResult> {
-        // switch (input.type) {
-        //     case 'push':
-        //         break;
-        //     // case 'pushLayer':
-        //     //     const result = await XXX('')
-        //     //     if (XXXX) {
-        //     //         return this._update({})
-        //     //     }
-        //     case 'reload':
-        //         //  1、销毁实例，再创建实例
-        //         //  2. replace('sss') ->
-        //         break;
-        // }
-    }
-    public async parseRoute(raw: RouterRawLocation): Promise<RouteResult> {
+    private _update(input: Navigation): Promise<NavigationResult> {}
+    public async parseRoute(raw: RouterRawLocation): Promise<NavigationResult> {
         const { base, normalizeURL, externalUrlHandler } = this.options;
         let location = rawLocationToURL(raw, base);
         if (normalizeURL) {
@@ -41,7 +27,7 @@ export class Router {
         if (location.origin !== base.origin) {
             externalUrlHandler?.(location);
             return {
-                type: 'external'
+                type: NavigationType.external
             };
         }
         // 匹配路由
@@ -49,7 +35,7 @@ export class Router {
         // 没有匹配任何路由
         if (matched.matches.length === 0) {
             return {
-                type: 'notFound'
+                type: NavigationType.notFound
             };
         }
         // 重新构造 URL 参数
@@ -67,54 +53,53 @@ export class Router {
             Object.assign(matched.params, raw.params);
         }
         const route = createRoute(raw, location, base, matched);
-        console.log('route', route);
     }
     public push(location: RouterRawLocation) {
         return this._update({
-            type: 'push',
+            type: NavigationType.push,
             location
         });
     }
     public replace(options: RouterRawLocation) {
         return this._update({
-            type: 'replace',
+            type: NavigationType.replace,
             location
         });
     }
     public go(index: number) {
         return this._update({
-            type: 'go',
+            type: NavigationType.go,
             index
         });
     }
     public forward() {
         return this._update({
-            type: 'forward'
+            type: NavigationType.forward
         });
     }
     public back() {
         return this._update({
-            type: 'back'
+            type: NavigationType.back
         });
     }
     public pushLayer() {
         return this._update({
-            type: 'pushLayer'
+            type: NavigationType.pushLayer
         });
     }
     public openWindow() {
         return this._update({
-            type: 'openWindow'
+            type: NavigationType.openWindow
         });
     }
     public reload() {
         return this._update({
-            type: 'reload'
+            type: NavigationType.reload
         });
     }
     public forceReload() {
         return this._update({
-            type: 'forceReload'
+            type: NavigationType.forceReload
         });
     }
 }
