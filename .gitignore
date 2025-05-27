@@ -13,6 +13,7 @@ docker-run.sh
 /*_back
 .task-pdf
 packages/**/dist
+packages/**/coverage
 .babelfish
 /.i18n_preview
 .root
