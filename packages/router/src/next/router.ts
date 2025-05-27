@@ -2,7 +2,7 @@ import { rawLocationToURL } from './location';
 import { type RouteMatchFunc, createMatcher } from './matcher';
 import { createRoute } from './route';
 import {
-    type Navigation,
+    type NavigationAction,
     type NavigationResult,
     NavigationType,
     type RouterOptions,
@@ -16,7 +16,7 @@ export class Router {
         this.options = options;
         this.matcher = createMatcher(options.routes);
     }
-    private _update(input: Navigation): Promise<NavigationResult> {}
+    private _update(input: NavigationAction): Promise<NavigationResult> {}
     public async parseRoute(raw: RouterRawLocation): Promise<NavigationResult> {
         const { base, normalizeURL, externalUrlHandler } = this.options;
         let location = rawLocationToURL(raw, base);

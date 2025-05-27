@@ -1,4 +1,5 @@
 export enum NavigationType {
+    // Action 类型
     push = 'push',
     replace = 'replace',
     go = 'go',
@@ -8,92 +9,88 @@ export enum NavigationType {
     openWindow = 'openWindow',
     reload = 'reload',
     forceReload = 'forceReload',
-    // 导航结果类型
+    // Result 类型
     aborted = 'aborted',
     redirect = 'redirect',
     external = 'external',
     notFound = 'notFound'
 }
 
-export interface NavigationPush {
+export interface NavigationPushAction {
     type: NavigationType.push;
     location: RouterRawLocation;
 }
-export interface NavigationReplace {
+export interface NavigationReplaceAction {
     type: NavigationType.replace;
     location: RouterRawLocation;
 }
-export interface NavigationGo {
+export interface NavigationGoAction {
     type: NavigationType.go;
     index: number;
 }
-
-export interface NavigationForward {
+export interface NavigationForwardAction {
     type: NavigationType.forward;
 }
-export interface NavigationBack {
+export interface NavigationBackAction {
     type: NavigationType.back;
 }
-
-export interface NavigationPushLayer {
+export interface NavigationPushLayerAction {
     type: NavigationType.pushLayer;
 }
-export interface NavigationOpenWindow {
+export interface NavigationOpenWindowAction {
     type: NavigationType.openWindow;
     name?: string;
     windowFeatures?: string;
 }
-
-export interface NavigationReload {
+export interface NavigationReloadAction {
     type: NavigationType.reload;
     location?: RouterRawLocation;
 }
-
-export interface NavigationForceReload {
+export interface NavigationForceReloadAction {
     type: NavigationType.forceReload;
     url?: string;
 }
 
-export type Navigation =
-    | NavigationPush
-    | NavigationReplace
-    | NavigationGo
-    | NavigationForward
-    | NavigationBack
-    | NavigationPushLayer
-    | NavigationOpenWindow
-    | NavigationReload
-    | NavigationForceReload;
+export type NavigationAction =
+    | NavigationPushAction
+    | NavigationReplaceAction
+    | NavigationGoAction
+    | NavigationForwardAction
+    | NavigationBackAction
+    | NavigationPushLayerAction
+    | NavigationOpenWindowAction
+    | NavigationReloadAction
+    | NavigationForceReloadAction;
 
-export interface NavigationResultPush {
+export interface NavigationPushResult {
     type: NavigationType.push;
 }
-export interface NavigationResultReplace {
+export interface NavigationReplaceResult {
     type: NavigationType.replace;
 }
-export interface NavigationResultAborted {
+export interface NavigationAbortedResult {
     type: NavigationType.aborted;
 }
-export interface NavigationResultRedirect {
+export interface NavigationRedirectResult {
     type: NavigationType.redirect;
 }
-export interface NavigationResultUpdateIndex {
+export interface NavigationUpdateIndexResult {
     type: NavigationType.redirect;
 }
-export interface NavigationResultExternal {
+export interface NavigationExternalResult {
     type: NavigationType.external;
 }
-export interface NavigationResultNotFound {
+export interface NavigationNotFoundResult {
     type: NavigationType.notFound;
 }
 
 export type NavigationResult =
-    | NavigationResultPush
-    | NavigationResultReplace
-    | NavigationResultAborted
-    | NavigationResultRedirect
-    | NavigationResultExternal
-    | NavigationResultNotFound;
+    | NavigationPushResult
+    | NavigationReplaceResult
+    | NavigationAbortedResult
+    | NavigationRedirectResult
+    | NavigationExternalResult
+    | NavigationNotFoundResult;
 
 // 构造实例选项
 export interface RouterOptions {
