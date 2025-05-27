@@ -1,6 +1,6 @@
 import { pathToFileURL } from 'node:url';
 import { createLoaderImport } from '@esmx/import';
-import type { COMMAND, Esmx } from './esmx';
+import type { COMMAND, Esmx } from './core';
 import {
     RenderContext,
     type RenderContextOptions,
@@ -120,7 +120,7 @@ export async function createApp(esmx: Esmx, command: COMMAND): Promise<App> {
  * ```
  */
 async function createStartRender(esmx: Esmx) {
-    const baseURL = pathToFileURL(esmx.root) as URL;
+    const baseURL = pathToFileURL(esmx.resolvePath('dist/server')) as URL;
     const importMap = await esmx.getImportMap('server');
     const loaderImport = createLoaderImport(baseURL, importMap);
 

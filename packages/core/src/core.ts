@@ -4,7 +4,6 @@ import fsp from 'node:fs/promises';
 import path from 'node:path';
 import { cwd } from 'node:process';
 import type { ImportMap, ScopesMap, SpecifierMap } from '@esmx/import';
-import write from 'write';
 
 import serialize from 'serialize-javascript';
 import { type App, createApp } from './app';
@@ -99,7 +98,7 @@ export interface EsmxOptions {
  * - client: 客户端构建目标，用于生成浏览器端运行的代码
  * - server: 服务端构建目标，用于生成 Node.js 环境运行的代码
  */
-export type RuntimeTarget = 'client' | 'server';
+export type BuildSsrTarget = 'client' | 'server';
 
 /**
  * Esmx 框架的命令枚举。
@@ -107,45 +106,54 @@ export type RuntimeTarget = 'client' | 'server';
  */
 export enum COMMAND {
     /**
-     * 开发模式。
-     * - 启动开发服务器
-     * - 支持热更新
-     * - 提供开发调试工具
+     * 开发模式
+     * 启动开发服务器并支持热更新
      */
     dev = 'dev',
 
     /**
-     * 构建模式。
-     * - 生成生产环境的构建产物
-     * - 优化和压缩代码
-     * - 生成资源清单
+     * 构建模式
+     * 生成生产环境构建产物
      */
     build = 'build',
 
     /**
-     * 预览模式。
-     * - 预览构建产物
-     * - 验证构建结果
-     * - 模拟生产环境
+     * 预览模式
+     * 预览构建产物
      */
     preview = 'preview',
 
     /**
-     * 启动模式。
-     * - 启动生产环境服务器
-     * - 加载构建产物
-     * - 提供生产级性能
+     * 启动模式
+     * 启动生产环境服务器
      */
     start = 'start'
 }
 
 export type { ImportMap, SpecifierMap, ScopesMap };
 
+/**
+ * Esmx 框架实例的初始化状态接口
+ * @internal 仅供框架内部使用
+ *
+ * @description
+ * 该接口定义了框架实例初始化后的状态数据，包含：
+ * - 应用实例：处理请求和渲染
+ * - 当前命令：控制运行模式
+ * - 模块配置：解析后的模块设置
+ * - 打包配置：解析后的构建设置
+ * - 缓存处理：框架内部缓存机制
+ */
 interface Readied {
+    /** 应用程序实例，提供中间件和渲染功能 */
     app: App;
+    /** 当前执行的框架命令 */
     command: COMMAND;
+    /** 解析后的模块配置信息 */
     moduleConfig: ParsedModuleConfig;
+    /** 解析后的打包配置信息 */
     packConfig: ParsedPackConfig;
+    /** 缓存处理器 */
     cache: CacheHandle;
 }
 
@@ -659,7 +667,10 @@ export class Esmx {
      */
     public writeSync(filepath: string, data: any): boolean {
         try {
-            write.sync(filepath, data);
+            // 确保目标目录存在
+            fs.mkdirSync(path.dirname(filepath), { recursive: true });
+            // 写入文件
+            fs.writeFileSync(filepath, data);
             return true;
         } catch {
             return false;
@@ -684,7 +695,10 @@ export class Esmx {
      */
     public async write(filepath: string, data: any): Promise<boolean> {
         try {
-            await write(filepath, data);
+            // 确保目标目录存在
+            await fsp.mkdir(path.dirname(filepath), { recursive: true });
+            // 写入文件
+            await fsp.writeFile(filepath, data);
             return true;
         } catch {
             return false;
@@ -694,40 +708,42 @@ export class Esmx {
     /**
      * 同步读取并解析 JSON 文件
      *
+     * @template T - 期望返回的JSON对象类型
      * @param filename - JSON 文件的绝对路径
-     * @returns 解析后的 JSON 对象
+     * @returns {T} 解析后的 JSON 对象
      * @throws 当文件不存在或 JSON 格式错误时抛出异常
      *
      * @example
      * ```ts
      * // 在 entry.node.ts 中使用
      * async server(esmx) {
-     *   const manifest = esmx.readJsonSync(esmx.resolvePath('dist/client', 'manifest.json'));
+     *   const manifest = esmx.readJsonSync<Manifest>(esmx.resolvePath('dist/client', 'manifest.json'));
      *   // 使用 manifest 对象
      * }
      * ```
      */
-    public readJsonSync(filename: string): any {
+    public readJsonSync<T = any>(filename: string): T {
         return JSON.parse(fs.readFileSync(filename, 'utf-8'));
     }
 
     /**
      * 异步读取并解析 JSON 文件
      *
+     * @template T - 期望返回的JSON对象类型
      * @param filename - JSON 文件的绝对路径
-     * @returns Promise<any> 解析后的 JSON 对象
+     * @returns {Promise<T>} 解析后的 JSON 对象
      * @throws 当文件不存在或 JSON 格式错误时抛出异常
      *
      * @example
      * ```ts
      * // 在 entry.node.ts 中使用
      * async server(esmx) {
-     *   const manifest = await esmx.readJson(esmx.resolvePath('dist/client', 'manifest.json'));
+     *   const manifest = await esmx.readJson<Manifest>(esmx.resolvePath('dist/client', 'manifest.json'));
      *   // 使用 manifest 对象
      * }
      * ```
      */
-    public async readJson(filename: string): Promise<any> {
+    public async readJson<T = any>(filename: string): Promise<T> {
         return JSON.parse(await fsp.readFile(filename, 'utf-8'));
     }
 
@@ -771,7 +787,7 @@ export class Esmx {
      * ```
      */
     public async getManifestList(
-        target: RuntimeTarget
+        target: BuildSsrTarget
     ): Promise<readonly ManifestJson[]> {
         return this.readied.cache(`getManifestList-${target}`, async () =>
             Object.freeze(await getManifestList(target, this.moduleConfig))
@@ -827,14 +843,43 @@ export class Esmx {
      * ```
      */
     public async getImportMap(
-        target: RuntimeTarget
+        target: BuildSsrTarget
     ): Promise<Readonly<ImportMap>> {
         return this.readied.cache(`getImportMap-${target}`, async () => {
-            const json = await getImportMap(
-                target,
-                await this.getManifestList(target),
-                this.moduleConfig
-            );
+            const { moduleConfig } = this.readied;
+            const manifests = await this.getManifestList(target);
+            let json: ImportMap = {};
+            switch (target) {
+                case 'client':
+                    json = getImportMap({
+                        manifests,
+                        getScope(name) {
+                            return `/${name}/`;
+                        },
+                        getFile(name, file) {
+                            return `/${name}/${file}`;
+                        }
+                    });
+                    break;
+                case 'server':
+                    json = getImportMap({
+                        manifests,
+                        getScope: (name: string) => {
+                            return path.join(
+                                moduleConfig.links[name].server,
+                                '/'
+                            );
+                        },
+                        getFile: (name: string, file: string) => {
+                            return path.resolve(
+                                moduleConfig.links[name].server,
+                                file
+                            );
+                        }
+                    });
+                    break;
+            }
+
             return Object.freeze(json);
         });
     }
@@ -922,21 +967,25 @@ export class Esmx {
                     const code = `(() => {
 const base = document.currentScript.getAttribute("data-base");
 const importmap = ${serialize(importmap, { isJSON: true })};
-if (importmap.imports && base) {
-    const imports = importmap.imports;
-    Object.entries(imports).forEach(([k, v]) => {
-        imports[k] = base + v;
+const set = (data) => {
+    if (!data) return;
+    Object.entries(data).forEach(([k, v]) => {
+        data[k] = base + v;
     });
+};
+set(importmap.imports);
+if (importmap.scopes) {
+    Object.values(importmap.scopes).forEach(set);
 }
 const script = document.createElement("script");
 script.type = "importmap";
-script.innerHTML = JSON.stringify(importmap);
+script.innerText = JSON.stringify(importmap);
 document.head.appendChild(script);
 })();`;
                     const hash = contentHash(code);
                     filepath = this.resolvePath(
                         'dist/client/importmap',
-                        `${hash}.final.js`
+                        `${hash}.final.mjs`
                     );
                     try {
                         const existingContent = await fsp.readFile(
@@ -954,18 +1003,24 @@ document.head.appendChild(script);
                     this._importmapHash = wrote ? hash : '';
                 }
                 if (mode === 'js' && this._importmapHash) {
-                    const src = `${basePathPlaceholder}${this.basePath}importmap/${this._importmapHash}.final.js`;
+                    const src = `${basePathPlaceholder}${this.basePath}importmap/${this._importmapHash}.final.mjs`;
                     return {
                         src,
                         filepath,
                         code: `<script data-base="${basePathPlaceholder}" src="${src}"></script>`
                     };
                 }
-                if (importmap.imports && basePathPlaceholder) {
-                    const imports = importmap.imports;
-                    Object.entries(imports).forEach(([k, v]) => {
-                        imports[k] = basePathPlaceholder + v;
-                    });
+                if (basePathPlaceholder) {
+                    const set = (data?: Record<string, string>) => {
+                        if (!data) return;
+                        Object.entries(data).forEach(([k, v]) => {
+                            data[k] = basePathPlaceholder + v;
+                        });
+                    };
+                    set(importmap.imports);
+                    if (importmap.scopes) {
+                        Object.values(importmap.scopes).forEach(set);
+                    }
                 }
                 return {
                     src: null,
@@ -994,7 +1049,7 @@ document.head.appendChild(script);
      * ```
      */
     public async getStaticImportPaths(
-        target: RuntimeTarget,
+        target: BuildSsrTarget,
         specifier: string
     ) {
         return this.readied.cache(
@@ -1014,16 +1069,86 @@ document.head.appendChild(script);
     }
 }
 
+/**
+ * 默认的开发环境应用创建函数
+ *
+ * @description
+ * 这是一个默认的占位函数，用于在未配置开发环境应用创建函数时抛出错误。
+ * 实际使用时应当通过 EsmxOptions.devApp 配置实际的应用创建函数。
+ *
+ * @throws {Error} 当未配置 devApp 时抛出错误，提示用户需要设置开发环境应用创建函数
+ * @returns {Promise<App>} 不会真正返回，总是抛出错误
+ *
+ * @example
+ * ```ts
+ * // 正确的使用方式是在配置中提供 devApp
+ * const options: EsmxOptions = {
+ *   devApp: async (esmx) => {
+ *     return import('@esmx/rspack').then(m =>
+ *       m.createRspackHtmlApp(esmx)
+ *     );
+ *   }
+ * };
+ * ```
+ */
 async function defaultDevApp(): Promise<App> {
     throw new Error("'devApp' function not set");
 }
 
+/**
+ * Esmx 框架未初始化错误
+ *
+ * @description
+ * 该错误在以下情况下抛出：
+ * - 在调用 init() 之前访问需要初始化的方法或属性
+ * - 在框架未完全初始化时尝试使用核心功能
+ * - 在销毁实例后继续使用框架功能
+ *
+ * @extends Error
+ *
+ * @example
+ * ```ts
+ * const esmx = new Esmx();
+ * try {
+ *   // 这会抛出 NotReadyError，因为还未初始化
+ *   await esmx.render();
+ * } catch (e) {
+ *   if (e instanceof NotReadyError) {
+ *     console.error('Framework not initialized');
+ *   }
+ * }
+ * ```
+ */
 class NotReadyError extends Error {
     constructor() {
         super(`The Esmx has not been initialized yet`);
     }
 }
 
+/**
+ * 计算内容的 SHA-256 哈希值
+ *
+ * @description
+ * 该函数用于：
+ * - 生成文件内容的唯一标识符
+ * - 用于缓存失效判断
+ * - 生成具有内容哈希的文件名
+ *
+ * 特点：
+ * - 使用 SHA-256 算法确保哈希值的唯一性
+ * - 截取前 12 位以平衡唯一性和长度
+ * - 适用于缓存控制和文件版本管理
+ *
+ * @param {string} text - 要计算哈希的文本内容
+ * @returns {string} 返回 12 位的十六进制哈希字符串
+ *
+ * @example
+ * ```ts
+ * const content = 'some content';
+ * const hash = contentHash(content);
+ * // 输出类似：'a1b2c3d4e5f6'
+ * ```
+ */
 function contentHash(text: string) {
     const hash = crypto.createHash('sha256');
     hash.update(text);

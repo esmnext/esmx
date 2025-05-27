@@ -36,13 +36,14 @@
     "pnpm": {
         "onlyBuiltDependencies": [
             "@biomejs/biome",
-            "@esmx/router-vue",
+            "@gez/router-vue",
             "esbuild"
         ],
         "ignoredBuiltDependencies": [
             "core-js",
             "swiper",
-            "puppeteer"
+            "puppeteer",
+            "protobufjs"
         ]
     }
 }

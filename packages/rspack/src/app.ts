@@ -1,11 +1,8 @@
-import fs from 'node:fs';
 import { pathToFileURL } from 'node:url';
-import { styleText } from 'node:util';
 import {
     type App,
     type Esmx,
     type Middleware,
-    PathType,
     RenderContext,
     type RenderContextOptions,
     type ServerRenderHandle,
@@ -270,29 +267,6 @@ function rewriteRender(esmx: Esmx) {
 
 function rewriteBuild(esmx: Esmx, options: RspackAppOptions = {}) {
     return async (): Promise<boolean> => {
-        for (const item of esmx.moduleConfig.exports) {
-            if (item.type === PathType.root) {
-                const text = fs.readFileSync(
-                    esmx.resolvePath('./', item.exportPath),
-                    'utf-8'
-                );
-                if (/\bexport\s+\*\s+from\b/.test(text)) {
-                    console.log(
-                        styleText(
-                            'red',
-                            `The export * syntax is used in the file '${item.exportPath}', which will cause the packaging to fail.`
-                        )
-                    );
-                    console.log(
-                        styleText(
-                            'red',
-                            `Please use specific export syntax, such as export { a, b } from './a';`
-                        )
-                    );
-                    return false;
-                }
-            }
-        }
         const ok = await createRsBuild([
             generateBuildConfig(esmx, options, 'client'),
             generateBuildConfig(esmx, options, 'server'),
@@ -302,10 +276,10 @@ function rewriteBuild(esmx: Esmx, options: RspackAppOptions = {}) {
             return false;
         }
         esmx.writeSync(
-            esmx.resolvePath('dist/index.js'),
+            esmx.resolvePath('dist/index.mjs'),
             `
 async function start() {
-    const options = await import('./node/src/entry.node.js').then(
+    const options = await import('./node/src/entry.node.mjs').then(
         (mod) => mod.default
     );
     const { Esmx } = await import('@esmx/core');

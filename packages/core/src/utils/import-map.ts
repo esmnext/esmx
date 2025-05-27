@@ -1,47 +1,55 @@
-import path from 'node:path';
-
 import { pathWithoutIndex } from './path-without-index';
 
-import type { ImportMap, SpecifierMap } from '@esmx/import';
-import type { RuntimeTarget } from '../esmx';
-import type { ManifestJson } from '../manifest-json';
-import type { ParsedModuleConfig } from '../module-config';
+import type { ImportMap, ScopesMap, SpecifierMap } from '@esmx/import';
 
-/**
- * 获取导入映射对象
- */
-export async function getImportMap(
-    target: RuntimeTarget,
-    manifests: readonly ManifestJson[],
-    moduleConfig: ParsedModuleConfig
-): Promise<ImportMap> {
+export interface ImportMapManifest {
+    name: string;
+    imports: Record<string, string>;
+    exports: Record<
+        string,
+        {
+            name: string;
+            file: string;
+            identifier: string;
+            rewrite: boolean;
+        }
+    >;
+}
+
+export function getImportMap({
+    manifests,
+    getFile,
+    getScope
+}: {
+    manifests: readonly ImportMapManifest[];
+    getScope: (name: string) => string;
+    getFile: (name: string, file: string) => string;
+}): ImportMap {
     const imports: SpecifierMap = {};
-    if (target === 'client') {
-        for (const manifest of manifests) {
-            for (const [name, value] of Object.entries(manifest.exports)) {
-                imports[`${manifest.name}/${name}`] =
-                    `/${manifest.name}/${value}`;
+    const scopes: ScopesMap = {};
+    Object.values(manifests).forEach((manifest) => {
+        const scopeImports: SpecifierMap = {};
+
+        Object.values(manifest.exports).forEach((exportItem) => {
+            const file = getFile(manifest.name, exportItem.file);
+            imports[exportItem.identifier] = file;
+            if (!exportItem.rewrite) {
+                scopeImports[exportItem.name] = file;
             }
+        });
+        if (Object.keys(scopeImports).length || Object.keys(imports).length) {
+            scopes[getScope(manifest.name)] = scopeImports;
         }
-    } else {
-        for (const manifest of manifests) {
-            const link = moduleConfig.links.find(
-                (item) => item.name === manifest.name
-            );
-            if (!link) {
-                throw new Error(
-                    `'${manifest.name}' service did not find module config`
-                );
-            }
-            for (const [name, value] of Object.entries(manifest.exports)) {
-                imports[`${manifest.name}/${name}`] = path.resolve(
-                    link.root,
-                    'server',
-                    value
-                );
-            }
-        }
-    }
+    });
     pathWithoutIndex(imports);
-    return { imports };
+    Object.values(manifests).forEach((manifest) => {
+        Object.entries(manifest.imports).forEach(([name, identifier]) => {
+            scopes[getScope(manifest.name)][name] =
+                imports[identifier] ?? identifier;
+        });
+    });
+    return {
+        imports,
+        scopes
+    };
 }

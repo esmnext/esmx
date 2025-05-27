@@ -28,7 +28,11 @@ export function createLoaderImport(baseURL: URL, importMap: ImportMap = {}) {
         );
     }
     return (specifier: string): Promise<Record<string, any>> => {
-        return import(specifier);
+        try {
+            return import(specifier);
+        } catch (e) {
+            throw new Error(`Failed to import '${specifier}'`);
+        }
     };
 }
 

@@ -44,7 +44,7 @@ Create the `package.json` file to configure project dependencies and scripts:
     "build": "npm run build:dts && npm run build:ssr",
     "build:ssr": "esmx build",
     "preview": "esmx preview",
-    "start": "NODE_ENV=production node dist/index.js",
+    "start": "NODE_ENV=production node dist/index.mjs",
     "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src"
   },
   "dependencies": {

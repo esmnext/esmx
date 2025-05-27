@@ -20,16 +20,14 @@ The framework requires Node.js version >= 22.6, primarily to support TypeScript 
 The framework defaults to compatibility mode builds to support a wider range of browsers. However, note that to achieve full browser compatibility support, you need to manually add the [es-module-shims](https://github.com/guybedford/es-module-shims) dependency.
 
 ### Compatibility Mode (Default)
-- 🌐 Chrome: >= 87
-- 🔷 Edge: >= 88
-- 🦊 Firefox: >= 78
-- 🧭 Safari: >= 14
+- 🌐 Chrome：>= 63 
+- 🦊 Firefox：>= 67
+- 🧭 Safari：>= 11.1
 
 According to [Can I Use](https://caniuse.com/?search=dynamic%20import) statistics, browser coverage in compatibility mode reaches 96.81%.
 
 ### Native Support Mode
 - 🌐 Chrome: >= 89
-- 🔷 Edge: >= 89
 - 🦊 Firefox: >= 108
 - � Safari: >= 16.4
 

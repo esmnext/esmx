@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import type { Esmx } from '@esmx/core';
+import type { Esmx, ManifestJson } from '@esmx/core';
 import Arborist from '@npmcli/arborist';
 import pacote from 'pacote';
 
@@ -38,8 +38,12 @@ export async function pack(esmx: Esmx): Promise<boolean> {
 
 async function buildPackageJson(esmx: Esmx): Promise<Record<string, any>> {
     const [clientJson, serverJson, curJson] = await Promise.all([
-        esmx.readJson(esmx.resolvePath('dist/client/manifest.json')),
-        esmx.readJson(esmx.resolvePath('dist/server/manifest.json')),
+        esmx.readJson<ManifestJson>(
+            esmx.resolvePath('dist/client/manifest.json')
+        ),
+        esmx.readJson<ManifestJson>(
+            esmx.resolvePath('dist/server/manifest.json')
+        ),
         esmx.readJson(esmx.resolvePath('package.json'))
     ]);
     const exports: Record<string, any> = {
@@ -55,13 +59,13 @@ async function buildPackageJson(esmx: Esmx): Promise<Record<string, any>> {
         const exportName = `./${name}`;
         if (client && server) {
             exports[exportName] = {
-                default: `./server/${server}`,
-                browser: `./client/${client}`
+                default: `./server/${server.file}`,
+                browser: `./client/${client.file}`
             };
         } else if (client) {
-            exports[exportName] = `./client/${client}`;
+            exports[exportName] = `./client/${client.file}`;
         } else if (server) {
-            exports[exportName] = `./server/${server}`;
+            exports[exportName] = `./server/${server.file}`;
         }
     });
 

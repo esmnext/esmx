@@ -1,6 +1,6 @@
 import path from 'node:path';
 import serialize from 'serialize-javascript';
-import type { Esmx } from './esmx';
+import type { Esmx } from './core';
 
 /**
  * RenderContext 的配置选项接口

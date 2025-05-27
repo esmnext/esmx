@@ -1,15 +1,19 @@
-import type { ParsedModuleConfig } from '@esmx/core';
 import type { Compiler, RspackPluginFunction } from '@rspack/core';
-import { entryPlugin } from './entry-plugin';
-import { externalPlugin } from './external-plugin';
-import { packagePlugin } from './package-plugin';
+import { initConfig } from './config';
+import { initEntry } from './entry';
+import { initExternal } from './external';
+import { intiManifestJson } from './manifest';
+import { parseOptions } from './parse';
+import type { ModuleLinkPluginOptions } from './types';
 
 export function moduleLinkPlugin(
-    moduleConfig: ParsedModuleConfig
+    options: ModuleLinkPluginOptions
 ): RspackPluginFunction {
+    const opts = parseOptions(options);
     return (compiler: Compiler) => {
-        entryPlugin(moduleConfig, compiler);
-        externalPlugin(moduleConfig, compiler);
-        packagePlugin(moduleConfig, compiler);
+        initConfig(compiler, opts);
+        initEntry(compiler, opts);
+        initExternal(compiler, opts);
+        intiManifestJson(compiler, opts);
     };
 }

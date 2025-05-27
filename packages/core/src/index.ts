@@ -1,14 +1,13 @@
 export {
     type EsmxOptions,
     type COMMAND,
-    type RuntimeTarget,
+    type BuildSsrTarget,
     type ImportMap,
     type SpecifierMap,
     type ScopesMap,
     Esmx
-} from './esmx';
+} from './core';
 export {
-    PathType,
     type ModuleConfig,
     type ParsedModuleConfig,
     parseModuleConfig
@@ -33,6 +32,9 @@ export {
 } from './utils/middleware';
 export type {
     ManifestJson,
+    ManifestJsonChunk,
     ManifestJsonChunkSizes,
-    ManifestJsonChunks
+    ManifestJsonChunks,
+    ManifestJsonExport,
+    ManifestJsonExports
 } from './manifest-json';

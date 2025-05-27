@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { styleText } from 'node:util';
 import pkg from '../../package.json' with { type: 'json' };
 
-import { COMMAND, Esmx, type EsmxOptions } from '../esmx';
+import { COMMAND, Esmx, type EsmxOptions } from '../core';
 
 async function getSrcOptions(): Promise<EsmxOptions> {
     return import(path.resolve(process.cwd(), './src/entry.node.ts')).then(
@@ -32,7 +32,7 @@ export async function cli(command: string) {
             break;
         case COMMAND.start:
             throw new Error(
-                `Please use 'NODE_ENV=production node dist/index.js' to run the built program`
+                `Please use 'NODE_ENV=production node dist/index.mjs' to run the built program`
             );
         case COMMAND.build:
             // 编译代码。

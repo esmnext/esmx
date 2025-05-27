@@ -1,6 +1,10 @@
 import { styleText } from 'node:util';
 import { type Compiler, type RspackOptions, rspack } from '@rspack/core';
 
+function showError(message: string) {
+    console.error(styleText('red', message));
+}
+
 export function createRsBuild(options: RspackOptions[]) {
     const multiCompiler = rspack(options);
     return {
@@ -11,19 +15,20 @@ export function createRsBuild(options: RspackOptions[]) {
             return new Promise<boolean>((resolve) => {
                 multiCompiler.run((err, stats) => {
                     if (err) {
+                        showError(err.message);
                         return resolve(false);
                     }
                     if (stats?.hasErrors()) {
                         stats
                             .toJson({ errors: true })
                             ?.errors?.forEach((err) => {
-                                console.log(styleText('red', err.message));
+                                showError(err.message);
                             });
                         return resolve(false);
                     }
                     multiCompiler.close((err) => {
                         if (err) {
-                            console.log(styleText('red', err.message));
+                            showError(err.message);
                             return resolve(false);
                         }
                         process.nextTick(() => {
@@ -36,7 +41,7 @@ export function createRsBuild(options: RspackOptions[]) {
         watch() {
             const watching = multiCompiler.watch({}, (err, stats) => {
                 if (err) {
-                    console.error(err);
+                    console.log(styleText('red', err.message));
                     return;
                 }
                 if (stats?.hasErrors()) {

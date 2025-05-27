@@ -2,6 +2,7 @@ import type { Esmx } from '@esmx/core';
 import { moduleLinkPlugin } from '@esmx/rspack-module-link-plugin';
 import {
     type ExternalItem,
+    type Plugin,
     type Plugins,
     type RspackOptions,
     rspack
@@ -18,7 +19,6 @@ export function createRspackConfig(
     buildTarget: BuildTarget,
     options: RspackAppOptions
 ): RspackOptions {
-    const isWebApp = buildTarget === 'client' || buildTarget === 'server';
     const isHot = buildTarget === 'client' && !esmx.isProd;
     return {
         /**
@@ -26,27 +26,13 @@ export function createRspackConfig(
          */
         context: esmx.root,
         entry: (() => {
-            const importPaths: string[] = [];
-            switch (buildTarget) {
-                case 'client':
-                    importPaths.push(esmx.resolvePath('src/entry.client.ts'));
-                    isHot &&
-                        importPaths.push(
-                            `${resolve('webpack-hot-middleware/client')}?path=${esmx.basePath}hot-middleware&timeout=5000&overlay=false`
-                        );
-                    break;
-                case 'server':
-                    importPaths.push(esmx.resolvePath('src/entry.server.ts'));
-                    break;
-                case 'node':
-                    importPaths.push(esmx.resolvePath('src/entry.node.ts'));
-                    break;
+            if (buildTarget === 'node') {
+                return {
+                    [`./src/entry.${buildTarget}`]: {
+                        import: esmx.resolvePath('src/entry.node.ts')
+                    }
+                };
             }
-            return {
-                [`./src/entry.${buildTarget}`]: {
-                    import: importPaths
-                }
-            };
         })(),
         output: {
             clean: esmx.isProd,
@@ -54,27 +40,27 @@ export function createRspackConfig(
             chunkFormat: esmx.isProd ? 'module' : undefined,
             chunkLoading: esmx.isProd ? 'import' : undefined,
             chunkFilename: esmx.isProd
-                ? 'chunks/[name].[contenthash:8].final.js'
-                : 'chunks/[name].js',
+                ? '[name].[contenthash:8].final.mjs'
+                : '[name].mjs',
             library: {
                 type: esmx.isProd ? 'modern-module' : 'module'
             },
             filename:
                 buildTarget !== 'node' && esmx.isProd
-                    ? '[name].[contenthash:8].final.js'
-                    : '[name].js',
+                    ? '[name].[contenthash:8].final.mjs'
+                    : '[name].mjs',
             cssFilename: esmx.isProd
                 ? '[name].[contenthash:8].final.css'
                 : '[name].css',
             cssChunkFilename: esmx.isProd
-                ? 'chunks/[name].[contenthash:8].final.css'
-                : 'chunks/[name].css',
+                ? '[name].[contenthash:8].final.css'
+                : '[name].css',
             publicPath:
                 buildTarget === 'client'
                     ? 'auto'
                     : `${esmx.basePathPlaceholder}${esmx.basePath}`,
             uniqueName: esmx.varName,
-            hotUpdateChunkFilename: '__hot__/[id].[fullhash].hot-update.js',
+            hotUpdateChunkFilename: '__hot__/[id].[fullhash].hot-update.mjs',
             hotUpdateMainFilename:
                 '__hot__/[runtime].[fullhash].hot-update.json',
             path: ((): string => {
@@ -101,8 +87,7 @@ export function createRspackConfig(
                 new rspack.ProgressPlugin({
                     prefix: buildTarget
                 }),
-                // 模块链接插件
-                isWebApp ? moduleLinkPlugin(esmx.moduleConfig) : false,
+                createModuleLinkPlugin(esmx, buildTarget),
                 // 热更新插件
                 isHot ? new rspack.HotModuleReplacementPlugin() : false
             ];
@@ -169,6 +154,30 @@ export function createRspackConfig(
     };
 }
 
-function resolve(name: string) {
-    return new URL(import.meta.resolve(name)).pathname;
+function createModuleLinkPlugin(esmx: Esmx, buildTarget: BuildTarget): Plugin {
+    if (buildTarget === 'node') {
+        return;
+    }
+    const exports: Record<
+        string,
+        {
+            rewrite: boolean;
+            file: string;
+        }
+    > = {};
+    for (const [name, item] of Object.entries(esmx.moduleConfig.exports)) {
+        if (item.inputTarget[buildTarget]) {
+            exports[name] = {
+                rewrite: item.rewrite,
+                file: item.inputTarget[buildTarget]
+            };
+        }
+    }
+    return moduleLinkPlugin({
+        name: esmx.name,
+        ext: 'mjs',
+        injectChunkName: buildTarget === 'server',
+        imports: esmx.moduleConfig.imports,
+        exports
+    });
 }

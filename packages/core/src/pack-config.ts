@@ -1,4 +1,4 @@
-import type { Esmx } from './esmx';
+import type { Esmx } from './core';
 
 /**
  * 软件包打包配置接口。
