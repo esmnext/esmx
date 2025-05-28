@@ -28,9 +28,7 @@ export function rawLocationToURL(
 
     // 添加查询参数
     Object.entries(query).forEach(([key, value]) => {
-        if (typeof value === 'string') {
-            url.searchParams.set(key, value);
-        }
+        value && url.searchParams.set(key, value);
     });
 
     // 添加数组查询参数
