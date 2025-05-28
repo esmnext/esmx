@@ -1,6 +1,7 @@
 import { rawLocationToURL } from './location';
 import type { RouteMatchResult } from './matcher';
 import {
+    type NavigationResult,
     NavigationType,
     type Route,
     type RouteMeta,
@@ -12,14 +13,21 @@ import {
 export async function parseRoute(
     options: RouterParsedOptions,
     rawLocation: RouterRawLocation
-) {
+): Promise<
+    | {
+          type: NavigationType.crossOrigin;
+          url: URL;
+      }
+    | { type: NavigationType.notFound }
+    | { type: NavigationType.update; route: Route }
+> {
     const { base, normalizeURL, onOpenCrossOrigin } = options;
     const location = await normalizeURL(rawLocationToURL(rawLocation, base));
     // 处理外站逻辑
     if (location.origin !== base.origin) {
         return {
-            type: NavigationType.external,
-            data: await onOpenCrossOrigin(location)
+            type: NavigationType.crossOrigin,
+            url: location
         };
     }
     // 匹配路由

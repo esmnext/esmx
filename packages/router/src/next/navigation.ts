@@ -1,38 +1,43 @@
-import type { RouteState } from './types';
+import { type RouteState, RouterMode, type RouterParsedOptions } from './types';
 
 export class Navigation {
-    public history: History;
-    public constructor(history: History) {
-        this.history = history;
+    public options: RouterParsedOptions;
+    private history: History;
+    public constructor(options: RouterParsedOptions) {
+        this.options = options;
+        this.history =
+            options.mode === RouterMode.history
+                ? window.history
+                : new MemoryHistory();
     }
-    public push(location: URL, state: RouteState) {
-        history.pushState(
+    public push(target: string, state: RouteState) {
+        this.history.pushState(
             {
                 ...history.state,
                 ...state
             },
             '',
-            location.toString()
+            target
         );
     }
-    public replace(location: URL, state: RouteState) {
-        history.replaceState(
+    public replace(target: string, state: RouteState) {
+        this.history.replaceState(
             {
                 ...history.state,
                 ...state
             },
             '',
-            location.toString()
+            target
         );
     }
     public go(index: number) {
-        history.go(index);
+        this.history.go(index);
     }
     public forward() {
-        history.forward();
+        this.history.forward();
     }
     public back() {
-        history.back();
+        this.history.back();
     }
 }
 

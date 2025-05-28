@@ -14,8 +14,9 @@ export enum NavigationType {
     // Result 类型
     aborted = 'aborted',
     redirect = 'redirect',
-    external = 'external',
-    notFound = 'notFound'
+    crossOrigin = 'crossOrigin',
+    notFound = 'notFound',
+    error = 'error'
 }
 
 export interface NavigationPushAction {
@@ -24,6 +25,10 @@ export interface NavigationPushAction {
 }
 export interface NavigationReplaceAction {
     type: NavigationType.replace;
+    rawLocation: RouterRawLocation;
+}
+export interface NavigationOpenWindowAction {
+    type: NavigationType.openWindow;
     rawLocation: RouterRawLocation;
 }
 export interface NavigationUpdateAction {
@@ -42,11 +47,6 @@ export interface NavigationBackAction {
 }
 export interface NavigationPushLayerAction {
     type: NavigationType.pushLayer;
-}
-export interface NavigationOpenWindowAction {
-    type: NavigationType.openWindow;
-    name?: string;
-    windowFeatures?: string;
 }
 export interface NavigationReloadAction {
     type: NavigationType.reload;
@@ -71,9 +71,11 @@ export type NavigationAction =
 
 export interface NavigationPushResult {
     type: NavigationType.push;
+    route: Route;
 }
 export interface NavigationReplaceResult {
     type: NavigationType.replace;
+    route: Route;
 }
 export interface NavigationAbortedResult {
     type: NavigationType.aborted;
@@ -86,11 +88,14 @@ export interface NavigationUpdateResult {
     route: Route;
 }
 export interface NavigationExternalResult {
-    type: NavigationType.external;
+    type: NavigationType.crossOrigin;
     data: any;
 }
 export interface NavigationNotFoundResult {
     type: NavigationType.notFound;
+}
+export interface NavigationErrorResult {
+    type: NavigationType.error;
 }
 
 export type NavigationResult =
@@ -100,7 +105,8 @@ export type NavigationResult =
     | NavigationRedirectResult
     | NavigationExternalResult
     | NavigationUpdateResult
-    | NavigationNotFoundResult;
+    | NavigationNotFoundResult
+    | NavigationErrorResult;
 
 export enum RouterMode {
     history = 'history',
@@ -112,8 +118,8 @@ export interface RouterOptions {
     mode?: RouterMode;
     routes?: RouteConfig[];
     normalizeURL?: (url: URL) => Awaitable<URL>;
-    onOpenCrossOrigin?: (url: URL) => Awaitable<any>;
-    onOpenCrossApp?: (url: URL) => Awaitable<any>;
+    onOpenCrossOrigin?: (url: URL, replace?: boolean) => Awaitable<any>;
+    onOpenCrossApp?: (url: URL, replace?: boolean) => Awaitable<any>;
     scrollBehavior?: RouterScrollBehavior;
 }
 
