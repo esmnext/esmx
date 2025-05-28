@@ -51,10 +51,9 @@ export class Router {
                 return this._handlePushLayer(action);
             case NavigationType.reload:
                 return this._handleReload(action);
+            case NavigationType.popstate:
+                return this._handlePopstate(action);
         }
-        return {
-            type: NavigationType.error
-        };
     }
     private async _handlePush(
         action: NavigationAction,
@@ -95,7 +94,7 @@ export class Router {
                         action.type
                     )
                 };
-            case NavigationType.popstate:
+            case NavigationType.update:
                 this._applyRoute(result.route);
                 return {
                     type: action.type,
@@ -130,7 +129,7 @@ export class Router {
                     )
                 };
             case NavigationType.crossApp:
-            case NavigationType.popstate:
+            case NavigationType.update:
                 return {
                     type: NavigationType.pushWindow,
                     location: result.location,
@@ -186,6 +185,27 @@ export class Router {
         return {
             type: NavigationType.reload,
             location: result.location
+        };
+    }
+    private async _handlePopstate(
+        action: NavigationAction
+    ): Promise<NavigationResult> {
+        if (action.type !== NavigationType.popstate) {
+            return {
+                type: NavigationType.error
+            };
+        }
+        const result = await parseRoute(this.options, action.location);
+        if (result.type === NavigationType.update) {
+            this._applyRoute(result.route);
+            return {
+                type: action.type,
+                location: result.location,
+                route: result.route
+            };
+        }
+        return {
+            type: NavigationType.error
         };
     }
     private _applyRoute(route: Route, replace = false) {
