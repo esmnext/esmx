@@ -1,7 +1,6 @@
 import { rawLocationToURL } from './location';
 import type { RouteMatchResult } from './matcher';
 import {
-    type NavigationResult,
     NavigationType,
     type Route,
     type RouteMeta,
