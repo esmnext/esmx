@@ -14,7 +14,7 @@ export const DEFAULT_SCROLL_BEHAVIOR: RouterScrollBehavior = (
     };
 };
 
-export function DEFAULT_OPEN(url: URL, replace?: boolean) {
+export function DEFAULT_ON_OPEN_CROSS(url: URL, replace: boolean) {
     try {
         const newWindow = window.open(url);
         if (!newWindow) {

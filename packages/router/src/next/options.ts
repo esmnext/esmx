@@ -1,4 +1,4 @@
-import { DEFAULT_OPEN, DEFAULT_SCROLL_BEHAVIOR } from './default';
+import { DEFAULT_ON_OPEN_CROSS, DEFAULT_SCROLL_BEHAVIOR } from './default';
 import { createMatcher } from './matcher';
 import {
     RouterMode,
@@ -24,8 +24,8 @@ export function parsedOptions(options: RouterOptions): RouterParsedOptions {
         routes,
         matcher: createMatcher(routes),
         normalizeURL: options.normalizeURL ?? ((url) => url),
-        onOpenCrossOrigin: options.onOpenCrossOrigin ?? DEFAULT_OPEN,
-        onOpenCrossApp: options.onOpenCrossApp ?? DEFAULT_OPEN,
+        onOpenCrossOrigin: options.onOpenCrossOrigin ?? DEFAULT_ON_OPEN_CROSS,
+        onOpenCrossApp: options.onOpenCrossApp ?? DEFAULT_ON_OPEN_CROSS,
         scrollBehavior: options.scrollBehavior ?? DEFAULT_SCROLL_BEHAVIOR
     };
     return result;
