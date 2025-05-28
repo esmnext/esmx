@@ -1,69 +1,33 @@
-import { rawLocationToURL } from './location';
-import { type RouteMatchFunc, createMatcher } from './matcher';
-import { createRoute } from './route';
+import { parsedOptions } from './options';
+import { parseRoute } from './route';
 import {
     type NavigationAction,
     type NavigationResult,
     NavigationType,
     type RouterOptions,
+    type RouterParsedOptions,
     type RouterRawLocation
 } from './types';
 
 export class Router {
-    public options: RouterOptions;
-    private matcher: RouteMatchFunc;
+    public options: RouterParsedOptions;
     public constructor(options: RouterOptions) {
-        this.options = options;
-        this.matcher = createMatcher(options.routes);
+        this.options = parsedOptions(options);
     }
-    private _update(input: NavigationAction): Promise<NavigationResult> {}
-    public async parseRoute(raw: RouterRawLocation): Promise<NavigationResult> {
-        const { base, normalizeURL, externalUrlHandler } = this.options;
-        let location = rawLocationToURL(raw, base);
-        if (normalizeURL) {
-            location = normalizeURL?.(location);
-        }
-        // 处理外站逻辑
-        if (location.origin !== base.origin) {
-            externalUrlHandler?.(location);
-            return {
-                type: NavigationType.external
-            };
-        }
-        // 匹配路由
-        const matched = this.matcher(location, base);
-        // 没有匹配任何路由
-        if (matched.matches.length === 0) {
-            return {
-                type: NavigationType.notFound
-            };
-        }
-        // 重新构造 URL 参数
-        const lastMatch = matched.matches[matched.matches.length - 1];
-        if (typeof raw === 'object' && raw.params) {
-            const current = location.pathname.split('/');
-            const next = new URL(
-                lastMatch.compile(location).substring(1),
-                base
-            ).pathname.split('/');
-            next.forEach((item, index) => {
-                current[index] = item || current[index];
-            });
-            location.pathname = current.join('/');
-            Object.assign(matched.params, raw.params);
-        }
-        const route = createRoute(raw, location, base, matched);
+    private _update(action: NavigationAction): Promise<NavigationResult> {}
+    private _parseRoute(rawLocation: RouterRawLocation) {
+        return parseRoute(this.options, rawLocation);
     }
-    public push(location: RouterRawLocation) {
+    public push(rawLocation: RouterRawLocation) {
         return this._update({
             type: NavigationType.push,
-            location
+            rawLocation
         });
     }
-    public replace(options: RouterRawLocation) {
+    public replace(rawLocation: RouterRawLocation) {
         return this._update({
             type: NavigationType.replace,
-            location
+            rawLocation
         });
     }
     public go(index: number) {

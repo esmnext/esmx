@@ -1,3 +1,4 @@
+import type { MatchFunction } from 'path-to-regexp';
 export enum NavigationType {
     // Action 类型
     push = 'push',
@@ -19,11 +20,11 @@ export enum NavigationType {
 
 export interface NavigationPushAction {
     type: NavigationType.push;
-    location: RouterRawLocation;
+    rawLocation: RouterRawLocation;
 }
 export interface NavigationReplaceAction {
     type: NavigationType.replace;
-    location: RouterRawLocation;
+    rawLocation: RouterRawLocation;
 }
 export interface NavigationUpdateAction {
     type: NavigationType.update;
@@ -80,11 +81,13 @@ export interface NavigationAbortedResult {
 export interface NavigationRedirectResult {
     type: NavigationType.redirect;
 }
-export interface NavigationUpdateIndexResult {
-    type: NavigationType.redirect;
+export interface NavigationUpdateResult {
+    type: NavigationType.update;
+    route: Route;
 }
 export interface NavigationExternalResult {
     type: NavigationType.external;
+    data: any;
 }
 export interface NavigationNotFoundResult {
     type: NavigationType.notFound;
@@ -96,23 +99,33 @@ export type NavigationResult =
     | NavigationAbortedResult
     | NavigationRedirectResult
     | NavigationExternalResult
+    | NavigationUpdateResult
     | NavigationNotFoundResult;
 
-// 构造实例选项
+export enum RouterMode {
+    history = 'history',
+    abstract = 'abstract'
+}
+
 export interface RouterOptions {
-    base: URL;
-    mode?: 'history' | 'abstract';
-    routes: RouteConfig[];
-    normalizeURL?: (url: URL) => URL;
-    externalUrlHandler?: (url: URL) => Awaitable<boolean>;
+    base?: URL;
+    mode?: RouterMode;
+    routes?: RouteConfig[];
+    normalizeURL?: (url: URL) => Awaitable<URL>;
+    onOpenCrossOrigin?: (url: URL) => Awaitable<any>;
+    onOpenCrossApp?: (url: URL) => Awaitable<any>;
     scrollBehavior?: RouterScrollBehavior;
+}
+
+export interface RouterParsedOptions extends Required<RouterOptions> {
+    matcher: RouteMatcher;
 }
 
 export type RouteState = Record<string, string | number | boolean>;
 export type RouteMeta = Record<string | number | symbol, unknown>;
 export type RouteRedirect =
     | RouterRawLocation
-    | ((to: RouteRecord) => RouterRawLocation);
+    | ((to: Route) => RouterRawLocation);
 
 export interface RouterLocation {
     path?: string;
@@ -134,8 +147,8 @@ export type Awaitable<T> = T | PromiseLike<T>;
  * @param savedPosition - 存储的位置，如果不存在则为 null
  */
 export type RouterScrollBehavior = (
-    to: RouteRecord,
-    from: RouteRecord,
+    to: Route,
+    from: Route,
     savedPosition: RouterScrollPosition | null
 ) => Awaitable<RouterScrollPosition | false | undefined>;
 
@@ -145,61 +158,6 @@ export interface RouterScrollPosition {
     top?: number;
 }
 
-export interface RouteRecord {
-    base: string;
-    /**
-     *  路径
-     */
-    path: string;
-
-    fullPath: string;
-    params: Record<string, string>;
-    /**
-     * 按 Hanson 要求加入 undefined 类型
-     */
-    query: Record<string, string | undefined>;
-    /**
-     * 按 Hanson 要求加入 undefined 类型
-     */
-    queryArray: Record<string, string[] | undefined>;
-    hash: string;
-    state: RouteState;
-
-    /**
-     * 路由配置的组件
-     */
-    component?: any;
-
-    /**
-     * 路由配置的异步组件
-     */
-    asyncComponent?: () => any;
-
-    /**
-     * 路由元信息
-     */
-    meta: RouteMeta;
-
-    /**
-     * 重定向配置
-     */
-    redirect?: RouteRedirect;
-
-    /**
-     * 匹配的路由
-     */
-    matched: RouteConfig[];
-
-    /**
-     * 重定向来源
-     */
-    redirectedFrom?: RouteRecord;
-
-    /**
-     * 来源
-     */
-    from?: RouteRecord;
-}
 export interface RouteConfig {
     /**
      * 应用类型, 只在根路由配置有效
@@ -261,8 +219,8 @@ export interface RouteConfig {
 }
 
 export type NavigationGuard = (
-    from: RouteRecord,
-    to: RouteRecord
+    from: Route,
+    to: Route
 ) => Awaitable<NavigationGuardReturn>;
 
 export type NavigationGuardReturn = boolean | RouterRawLocation;
@@ -287,3 +245,17 @@ export interface Route {
     fullPath: string;
     matched: RouteConfig[];
 }
+
+export interface RouteMatch {
+    route: RouteConfig;
+    pathname: string;
+    children: RouteMatch[];
+    match: MatchFunction;
+    compile: (params?: Record<string, any>) => string;
+}
+export interface RouteMatchResult {
+    matches: RouteMatch[];
+    params: Record<string, string>;
+}
+
+export type RouteMatcher = (targetURL: URL, baseURL: URL) => RouteMatchResult;

@@ -13,12 +13,9 @@ export interface RouteMatchResult {
     params: Record<string, string>;
 }
 
-export type RouteMatchFunc = (
-    currentURL: URL,
-    baseURL: URL
-) => RouteMatchResult;
+export type RouteMatcher = (targetURL: URL, baseURL: URL) => RouteMatchResult;
 
-export function createMatcher(routes: RouteConfig[]): RouteMatchFunc {
+export function createMatcher(routes: RouteConfig[]): RouteMatcher {
     const compiledRoutes = createRouteMatches(routes);
     return (currentURL: URL, baseUrl: URL) => {
         const requestPath = currentURL.pathname.substring(
