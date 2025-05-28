@@ -15,6 +15,7 @@ export enum NavigationType {
     popstate = 'popstate',
     // Result 类型
     aborted = 'aborted',
+    duplicate = 'duplicate',
     redirect = 'redirect',
     crossOrigin = 'crossOrigin',
     crossApp = 'crossApp',
@@ -40,6 +41,7 @@ export type NavigationResult =
     | { type: NavigationType.notFound; location: URL }
     | { type: NavigationType.crossOrigin; location: URL; result: any }
     | { type: NavigationType.crossApp; location: URL; result: any }
+    | { type: NavigationType.duplicate }
     | { type: NavigationType.error };
 
 export enum RouterMode {

@@ -60,7 +60,7 @@ export class Navigation {
     public go(index: number): Promise<NavigationResult> {
         if (this._promiseResolve) {
             return Promise.resolve({
-                type: NavigationType.error
+                type: NavigationType.duplicate
             });
         }
         return new Promise<NavigationResult>((resolve, reject) => {
