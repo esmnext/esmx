@@ -82,10 +82,7 @@ export class Router {
                     )
                 };
             case NavigationType.update:
-                this._navigation.push(
-                    result.route.fullPath,
-                    result.route.state
-                );
+                this._applyRoute(result.route);
                 return {
                     type: action.type,
                     location: result.location,
@@ -169,6 +166,10 @@ export class Router {
         return {
             type: NavigationType.forceReload
         };
+    }
+    private _applyRoute(route: Route, replace = false) {
+        this._route = route;
+        this._navigation.push(route, replace);
     }
     public push(location: RouterRawLocation) {
         return this._update({

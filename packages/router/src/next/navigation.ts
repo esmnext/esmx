@@ -1,4 +1,4 @@
-import { type RouteState, RouterMode, type RouterParsedOptions } from './types';
+import { type Route, RouterMode, type RouterParsedOptions } from './types';
 
 export class Navigation {
     public options: RouterParsedOptions;
@@ -10,25 +10,16 @@ export class Navigation {
                 ? window.history
                 : new MemoryHistory();
     }
-    public push(target: string, state: RouteState) {
-        this.history.pushState(
-            {
-                ...history.state,
-                ...state
-            },
-            '',
-            target
-        );
-    }
-    public replace(target: string, state: RouteState) {
-        this.history.replaceState(
-            {
-                ...history.state,
-                ...state
-            },
-            '',
-            target
-        );
+    public push(route: Route, replace = false) {
+        const nextState = {
+            ...history.state,
+            ...route.state
+        };
+        if (replace) {
+            this.history.replaceState(nextState, '', route.fullPath);
+        } else {
+            this.history.pushState(nextState, '', route.fullPath);
+        }
     }
     public go(index: number) {
         this.history.go(index);
