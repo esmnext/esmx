@@ -30,7 +30,7 @@ export class Router {
             case NavigationType.push:
                 return this._handlePush(action);
             case NavigationType.replace:
-                return this._handleReplace(action);
+                return this._handlePush(action, true);
             case NavigationType.openWindow:
                 return this._handleOpenWindow(action);
             case NavigationType.pushLayer:
@@ -45,9 +45,13 @@ export class Router {
         };
     }
     private async _handlePush(
-        action: NavigationAction
+        action: NavigationAction,
+        replace = false
     ): Promise<NavigationResult> {
-        if (action.type !== NavigationType.push) {
+        if (
+            action.type !== NavigationType.push &&
+            action.type !== NavigationType.replace
+        ) {
             return {
                 type: NavigationType.error
             };
@@ -65,14 +69,17 @@ export class Router {
                     location: result.location,
                     result: this.options.onOpenCrossOrigin(
                         result.location,
-                        false
+                        replace
                     )
                 };
             case NavigationType.crossApp:
                 return {
                     type: NavigationType.crossApp,
                     location: result.location,
-                    result: this.options.onOpenCrossApp(result.location, false)
+                    result: this.options.onOpenCrossApp(
+                        result.location,
+                        replace
+                    )
                 };
             case NavigationType.update:
                 this._navigation.push(
@@ -80,49 +87,7 @@ export class Router {
                     result.route.state
                 );
                 return {
-                    type: NavigationType.push,
-                    location: result.location,
-                    route: result.route
-                };
-        }
-    }
-    private async _handleReplace(
-        action: NavigationAction
-    ): Promise<NavigationResult> {
-        if (action.type !== NavigationType.replace) {
-            return {
-                type: NavigationType.error
-            };
-        }
-        const result = await parseRoute(this.options, action.location);
-        switch (result.type) {
-            case NavigationType.notFound:
-                return {
-                    type: NavigationType.notFound,
-                    location: result.location
-                };
-            case NavigationType.crossOrigin:
-                return {
-                    type: NavigationType.crossOrigin,
-                    location: result.location,
-                    result: this.options.onOpenCrossOrigin(
-                        result.location,
-                        true
-                    )
-                };
-            case NavigationType.crossApp:
-                return {
-                    type: NavigationType.crossApp,
-                    location: result.location,
-                    result: this.options.onOpenCrossApp(result.location, true)
-                };
-            case NavigationType.update:
-                this._navigation.replace(
-                    result.route.fullPath,
-                    result.route.state
-                );
-                return {
-                    type: NavigationType.push,
+                    type: action.type,
                     location: result.location,
                     route: result.route
                 };
