@@ -3,10 +3,10 @@ export enum NavigationType {
     // Action 类型
     push = 'push',
     replace = 'replace',
-    openWindow = 'openWindow',
+    pushWindow = 'pushWindow',
+    replaceWindow = 'replaceWindow',
     pushLayer = 'pushLayer',
     reload = 'reload',
-    forceReload = 'forceReload',
 
     go = 'go',
     forward = 'forward',
@@ -25,10 +25,10 @@ export enum NavigationType {
 export type NavigationAction =
     | { type: NavigationType.push; location: RouterRawLocation }
     | { type: NavigationType.replace; location: RouterRawLocation }
-    | { type: NavigationType.openWindow; location: RouterRawLocation }
+    | { type: NavigationType.pushWindow; location: RouterRawLocation }
+    | { type: NavigationType.replaceWindow; location: RouterRawLocation }
     | { type: NavigationType.pushLayer; location: RouterRawLocation }
     | { type: NavigationType.reload; location: RouterRawLocation }
-    | { type: NavigationType.forceReload; location: RouterRawLocation }
     | { type: NavigationType.go; index: number }
     | { type: NavigationType.forward }
     | { type: NavigationType.back };
@@ -36,11 +36,12 @@ export type NavigationAction =
 export type NavigationResult =
     | { type: NavigationType.push; location: URL; route: Route }
     | { type: NavigationType.replace; route: Route }
-    | { type: NavigationType.openWindow; location: URL; result: any }
+    | { type: NavigationType.pushWindow; location: URL; result: any }
+    | { type: NavigationType.replaceWindow; location: URL }
+    | { type: NavigationType.reload; location: URL }
     | { type: NavigationType.notFound; location: URL }
     | { type: NavigationType.crossOrigin; location: URL; result: any }
     | { type: NavigationType.crossApp; location: URL; result: any }
-    | { type: NavigationType.forceReload }
     | { type: NavigationType.error };
 
 export enum RouterMode {
@@ -53,8 +54,16 @@ export interface RouterOptions {
     mode?: RouterMode;
     routes?: RouteConfig[];
     normalizeURL?: (url: URL) => Awaitable<URL>;
-    onOpenCrossOrigin?: (url: URL, replace?: boolean) => Awaitable<any>;
-    onOpenCrossApp?: (url: URL, replace?: boolean) => Awaitable<any>;
+    onOpenCrossOrigin?: (
+        url: URL,
+        replace: boolean,
+        type: NavigationType
+    ) => Awaitable<any>;
+    onOpenCrossApp?: (
+        url: URL,
+        replace: boolean,
+        type: NavigationType
+    ) => Awaitable<any>;
     scrollBehavior?: RouterScrollBehavior;
 }
 

@@ -31,14 +31,14 @@ export class Router {
                 return this._handlePush(action);
             case NavigationType.replace:
                 return this._handlePush(action, true);
-            case NavigationType.openWindow:
-                return this._handleOpenWindow(action);
+            case NavigationType.pushWindow:
+                return this._handlePushWindow(action);
+            case NavigationType.replaceWindow:
+                return this._handleReplaceWindow(action);
             case NavigationType.pushLayer:
                 return this._handlePushLayer(action);
             case NavigationType.reload:
                 return this._handleReload(action);
-            case NavigationType.forceReload:
-                return this._handleForceReload(action);
         }
         return {
             type: NavigationType.error
@@ -69,7 +69,8 @@ export class Router {
                     location: result.location,
                     result: this.options.onOpenCrossOrigin(
                         result.location,
-                        replace
+                        replace,
+                        action.type
                     )
                 };
             case NavigationType.crossApp:
@@ -78,7 +79,8 @@ export class Router {
                     location: result.location,
                     result: this.options.onOpenCrossApp(
                         result.location,
-                        replace
+                        replace,
+                        action.type
                     )
                 };
             case NavigationType.update:
@@ -90,10 +92,10 @@ export class Router {
                 };
         }
     }
-    private async _handleOpenWindow(
+    private async _handlePushWindow(
         action: NavigationAction
     ): Promise<NavigationResult> {
-        if (action.type !== NavigationType.openWindow) {
+        if (action.type !== NavigationType.pushWindow) {
             return {
                 type: NavigationType.error
             };
@@ -107,19 +109,24 @@ export class Router {
                 };
             case NavigationType.crossOrigin:
                 return {
-                    type: NavigationType.openWindow,
+                    type: NavigationType.pushWindow,
                     location: result.location,
                     result: this.options.onOpenCrossOrigin(
                         result.location,
-                        false
+                        false,
+                        action.type
                     )
                 };
             case NavigationType.crossApp:
             case NavigationType.update:
                 return {
-                    type: NavigationType.openWindow,
+                    type: NavigationType.pushWindow,
                     location: result.location,
-                    result: this.options.onOpenCrossApp(result.location, false)
+                    result: this.options.onOpenCrossApp(
+                        result.location,
+                        false,
+                        action.type
+                    )
                 };
         }
     }
@@ -148,13 +155,14 @@ export class Router {
             location.href = result.location.href;
         });
         return {
-            type: NavigationType.forceReload
+            type: NavigationType.reload,
+            location: result.location
         };
     }
-    private async _handleForceReload(
+    private async _handleReplaceWindow(
         action: NavigationAction
     ): Promise<NavigationResult> {
-        if (action.type !== NavigationType.forceReload) {
+        if (action.type !== NavigationType.replaceWindow) {
             return {
                 type: NavigationType.error
             };
@@ -164,7 +172,8 @@ export class Router {
             location.href = result.location.href;
         });
         return {
-            type: NavigationType.forceReload
+            type: NavigationType.replaceWindow,
+            location: result.location
         };
     }
     private _applyRoute(route: Route, replace = false) {
@@ -207,19 +216,19 @@ export class Router {
     }
     public openWindow(location: RouterRawLocation) {
         return this._update({
-            type: NavigationType.openWindow,
+            type: NavigationType.pushWindow,
+            location
+        });
+    }
+    public replaceWindow(location: RouterRawLocation) {
+        return this._update({
+            type: NavigationType.replaceWindow,
             location
         });
     }
     public reload(location?: RouterRawLocation) {
         return this._update({
             type: NavigationType.reload,
-            location: location ?? this.route.href
-        });
-    }
-    public forceReload(location?: RouterRawLocation) {
-        return this._update({
-            type: NavigationType.forceReload,
             location: location ?? this.route.href
         });
     }
