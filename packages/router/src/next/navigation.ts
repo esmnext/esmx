@@ -1,4 +1,6 @@
 import {
+    type NavigationResult,
+    NavigationType,
     type Route,
     type RouteState,
     RouterMode,
@@ -11,10 +13,10 @@ export class Navigation {
     public options: RouterParsedOptions;
     private history: History;
     private _destroy: () => void;
-    private _promiseResolve: ((ok: boolean) => void) | null = null;
+    private _promiseResolve: ((result: NavigationResult) => void) | null = null;
     public constructor(
         options: RouterParsedOptions,
-        subscribe?: NavigationSubscribe
+        update?: (url: string, state: RouteState) => Promise<NavigationResult>
     ) {
         this.options = options;
         this.history =
@@ -25,9 +27,19 @@ export class Navigation {
             url: string,
             state: RouteState
         ) => {
-            this._promiseResolve?.(true);
+            const { _promiseResolve } = this;
+            if (_promiseResolve) {
+                if (update) {
+                    update(url, state).then(_promiseResolve);
+                } else {
+                    _promiseResolve({
+                        type: NavigationType.error
+                    });
+                }
+            } else if (update) {
+                update(url, state);
+            }
             this._promiseResolve = null;
-            subscribe?.(url, state);
         };
         this._destroy =
             this.history instanceof MemoryHistory
@@ -45,11 +57,13 @@ export class Navigation {
             this.history.pushState(nextState, '', route.fullPath);
         }
     }
-    public go(index: number): Promise<boolean> {
+    public go(index: number): Promise<NavigationResult> {
         if (this._promiseResolve) {
-            return Promise.resolve(false);
+            return Promise.resolve({
+                type: NavigationType.error
+            });
         }
-        return new Promise((resolve, reject) => {
+        return new Promise<NavigationResult>((resolve, reject) => {
             this._promiseResolve = resolve;
             this.history.go(index);
             setTimeout(() => {
@@ -57,11 +71,11 @@ export class Navigation {
             }, 80);
         });
     }
-    public forward() {
-        return this.history.go(-1);
+    public forward(): Promise<NavigationResult> {
+        return this.go(1);
     }
-    public back() {
-        this.history.go(1);
+    public back(): Promise<NavigationResult> {
+        return this.go(-1);
     }
     public destroy() {
         this._promiseResolve = null;

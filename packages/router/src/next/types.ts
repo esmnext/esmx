@@ -12,7 +12,7 @@ export enum NavigationType {
     forward = 'forward',
     back = 'back',
 
-    update = 'update',
+    popstate = 'popstate',
     // Result 类型
     aborted = 'aborted',
     redirect = 'redirect',
@@ -29,9 +29,7 @@ export type NavigationAction =
     | { type: NavigationType.replaceWindow; location: RouterRawLocation }
     | { type: NavigationType.pushLayer; location: RouterRawLocation }
     | { type: NavigationType.reload; location: RouterRawLocation }
-    | { type: NavigationType.go; index: number }
-    | { type: NavigationType.forward }
-    | { type: NavigationType.back };
+    | { type: NavigationType.popstate; location: RouterRawLocation };
 
 export type NavigationResult =
     | { type: NavigationType.push; location: URL; route: Route }

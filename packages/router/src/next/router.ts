@@ -6,6 +6,7 @@ import {
     type NavigationResult,
     NavigationType,
     type Route,
+    type RouteState,
     type RouterOptions,
     type RouterParsedOptions,
     type RouterRawLocation
@@ -23,7 +24,18 @@ export class Router {
     }
     public constructor(options: RouterOptions) {
         this.options = parsedOptions(options);
-        this._navigation = new Navigation(this.options);
+        this._navigation = new Navigation(
+            this.options,
+            (url: string, state: RouteState) => {
+                return this._update({
+                    type: NavigationType.popstate,
+                    location: {
+                        path: url,
+                        state
+                    }
+                });
+            }
+        );
     }
     private async _update(action: NavigationAction): Promise<NavigationResult> {
         switch (action.type) {
@@ -83,7 +95,7 @@ export class Router {
                         action.type
                     )
                 };
-            case NavigationType.update:
+            case NavigationType.popstate:
                 this._applyRoute(result.route);
                 return {
                     type: action.type,
@@ -118,7 +130,7 @@ export class Router {
                     )
                 };
             case NavigationType.crossApp:
-            case NavigationType.update:
+            case NavigationType.popstate:
                 return {
                     type: NavigationType.pushWindow,
                     location: result.location,
@@ -193,20 +205,13 @@ export class Router {
         });
     }
     public go(index: number) {
-        return this._update({
-            type: NavigationType.go,
-            index
-        });
+        return this._navigation.go(-1);
     }
     public forward() {
-        return this._update({
-            type: NavigationType.forward
-        });
+        return this.go(1);
     }
     public back() {
-        return this._update({
-            type: NavigationType.back
-        });
+        return this.go(-1);
     }
     public pushLayer(location: RouterRawLocation) {
         return this._update({
@@ -231,5 +236,8 @@ export class Router {
             type: NavigationType.reload,
             location: location ?? this.route.href
         });
+    }
+    public destroy() {
+        this._navigation.destroy();
     }
 }
