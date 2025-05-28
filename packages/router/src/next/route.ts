@@ -32,7 +32,7 @@ export async function parseRoute(
       }
 > {
     const { base, normalizeURL } = options;
-    const location = await normalizeURL(rawLocationToURL(raw, base));
+    const location = await normalizeURL(rawLocationToURL(raw, base), raw);
     // 处理外站逻辑
     if (location.origin !== base.origin) {
         return {

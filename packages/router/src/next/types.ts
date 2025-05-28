@@ -53,7 +53,7 @@ export interface RouterOptions {
     base?: URL;
     mode?: RouterMode;
     routes?: RouteConfig[];
-    normalizeURL?: (url: URL) => Awaitable<URL>;
+    normalizeURL?: (url: URL, raw: RouterRawLocation) => Awaitable<URL>;
     onOpenCrossOrigin?: (
         url: URL,
         replace: boolean,
