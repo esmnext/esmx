@@ -3,9 +3,6 @@ import { parsedOptions } from './options';
 import { parseRoute } from './route';
 import {
     type NavigationAction,
-    type NavigationOpenWindowAction,
-    type NavigationPushAction,
-    type NavigationReplaceAction,
     type NavigationResult,
     NavigationType,
     type Route,
@@ -31,69 +28,193 @@ export class Router {
     private async _update(action: NavigationAction): Promise<NavigationResult> {
         switch (action.type) {
             case NavigationType.push:
+                return this._handlePush(action);
             case NavigationType.replace:
+                return this._handleReplace(action);
             case NavigationType.openWindow:
-                return this._updateNavigation(action);
-        }
-    }
-    private async _updateNavigation(
-        action:
-            | NavigationPushAction
-            | NavigationReplaceAction
-            | NavigationOpenWindowAction
-    ): Promise<NavigationResult> {
-        const result = await parseRoute(this.options, action.rawLocation);
-
-        // 跨域处理
-        if (result.type === NavigationType.crossOrigin) {
-            const replace = action.type === NavigationType.openWindow;
-            return {
-                type: NavigationType.crossOrigin,
-                data: this.options.onOpenCrossOrigin(result.url, replace)
-            };
-        }
-        // 404 处理
-        if (result.type === NavigationType.notFound) {
-            return result;
-        }
-        // 更新导航
-        if (result.type === NavigationType.update) {
-            this._route = result.route;
-            switch (action.type) {
-                case NavigationType.push:
-                    this._navigation.push(
-                        result.route.fullPath,
-                        result.route.state
-                    );
-                    return {
-                        type: NavigationType.push,
-                        route: result.route
-                    };
-                case NavigationType.replace:
-                    this._navigation.replace(
-                        result.route.fullPath,
-                        result.route.state
-                    );
-                    return {
-                        type: NavigationType.replace,
-                        route: result.route
-                    };
-            }
+                return this._handleOpenWindow(action);
+            case NavigationType.pushLayer:
+                return this._handlePushLayer(action);
+            case NavigationType.reload:
+                return this._handleReload(action);
+            case NavigationType.forceReload:
+                return this._handleForceReload(action);
         }
         return {
             type: NavigationType.error
         };
     }
-    public push(rawLocation: RouterRawLocation) {
+    private async _handlePush(
+        action: NavigationAction
+    ): Promise<NavigationResult> {
+        if (action.type !== NavigationType.push) {
+            return {
+                type: NavigationType.error
+            };
+        }
+        const result = await parseRoute(this.options, action.location);
+        switch (result.type) {
+            case NavigationType.notFound:
+                return {
+                    type: NavigationType.notFound,
+                    location: result.location
+                };
+            case NavigationType.crossOrigin:
+                return {
+                    type: NavigationType.crossOrigin,
+                    location: result.location,
+                    result: this.options.onOpenCrossOrigin(
+                        result.location,
+                        false
+                    )
+                };
+            case NavigationType.crossApp:
+                return {
+                    type: NavigationType.crossApp,
+                    location: result.location,
+                    result: this.options.onOpenCrossApp(result.location, false)
+                };
+            case NavigationType.update:
+                this._navigation.push(
+                    result.route.fullPath,
+                    result.route.state
+                );
+                return {
+                    type: NavigationType.push,
+                    location: result.location,
+                    route: result.route
+                };
+        }
+    }
+    private async _handleReplace(
+        action: NavigationAction
+    ): Promise<NavigationResult> {
+        if (action.type !== NavigationType.replace) {
+            return {
+                type: NavigationType.error
+            };
+        }
+        const result = await parseRoute(this.options, action.location);
+        switch (result.type) {
+            case NavigationType.notFound:
+                return {
+                    type: NavigationType.notFound,
+                    location: result.location
+                };
+            case NavigationType.crossOrigin:
+                return {
+                    type: NavigationType.crossOrigin,
+                    location: result.location,
+                    result: this.options.onOpenCrossOrigin(
+                        result.location,
+                        true
+                    )
+                };
+            case NavigationType.crossApp:
+                return {
+                    type: NavigationType.crossApp,
+                    location: result.location,
+                    result: this.options.onOpenCrossApp(result.location, true)
+                };
+            case NavigationType.update:
+                this._navigation.replace(
+                    result.route.fullPath,
+                    result.route.state
+                );
+                return {
+                    type: NavigationType.push,
+                    location: result.location,
+                    route: result.route
+                };
+        }
+    }
+    private async _handleOpenWindow(
+        action: NavigationAction
+    ): Promise<NavigationResult> {
+        if (action.type !== NavigationType.openWindow) {
+            return {
+                type: NavigationType.error
+            };
+        }
+        const result = await parseRoute(this.options, action.location);
+        switch (result.type) {
+            case NavigationType.notFound:
+                return {
+                    type: NavigationType.notFound,
+                    location: result.location
+                };
+            case NavigationType.crossOrigin:
+                return {
+                    type: NavigationType.openWindow,
+                    location: result.location,
+                    result: this.options.onOpenCrossOrigin(
+                        result.location,
+                        false
+                    )
+                };
+            case NavigationType.crossApp:
+            case NavigationType.update:
+                return {
+                    type: NavigationType.openWindow,
+                    location: result.location,
+                    result: this.options.onOpenCrossApp(result.location, false)
+                };
+        }
+    }
+    private async _handlePushLayer(
+        action: NavigationAction
+    ): Promise<NavigationResult> {
+        if (action.type !== NavigationType.pushLayer) {
+            return {
+                type: NavigationType.error
+            };
+        }
+        return {
+            type: NavigationType.error
+        };
+    }
+    private async _handleReload(
+        action: NavigationAction
+    ): Promise<NavigationResult> {
+        if (action.type !== NavigationType.reload) {
+            return {
+                type: NavigationType.error
+            };
+        }
+        const result = await parseRoute(this.options, action.location);
+        setTimeout(() => {
+            location.href = result.location.href;
+        });
+        return {
+            type: NavigationType.forceReload
+        };
+    }
+    private async _handleForceReload(
+        action: NavigationAction
+    ): Promise<NavigationResult> {
+        if (action.type !== NavigationType.forceReload) {
+            return {
+                type: NavigationType.error
+            };
+        }
+        const result = await parseRoute(this.options, action.location);
+        setTimeout(() => {
+            location.href = result.location.href;
+        });
+        return {
+            type: NavigationType.forceReload
+        };
+    }
+    public push(location: RouterRawLocation) {
         return this._update({
             type: NavigationType.push,
-            rawLocation
+            location
         });
     }
-    public replace(rawLocation: RouterRawLocation) {
+    public replace(location: RouterRawLocation) {
         return this._update({
             type: NavigationType.replace,
-            rawLocation
+            location
         });
     }
     public go(index: number) {
@@ -112,25 +233,28 @@ export class Router {
             type: NavigationType.back
         });
     }
-    public pushLayer() {
+    public pushLayer(location: RouterRawLocation) {
         return this._update({
-            type: NavigationType.pushLayer
+            type: NavigationType.pushLayer,
+            location
         });
     }
-    public openWindow(rawLocation: RouterRawLocation) {
+    public openWindow(location: RouterRawLocation) {
         return this._update({
             type: NavigationType.openWindow,
-            rawLocation
+            location
         });
     }
-    public reload() {
+    public reload(location?: RouterRawLocation) {
         return this._update({
-            type: NavigationType.reload
+            type: NavigationType.reload,
+            location: location ?? this.route.href
         });
     }
-    public forceReload() {
+    public forceReload(location?: RouterRawLocation) {
         return this._update({
-            type: NavigationType.forceReload
+            type: NavigationType.forceReload,
+            location: location ?? this.route.href
         });
     }
 }

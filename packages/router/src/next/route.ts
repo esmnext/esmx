@@ -12,22 +12,39 @@ import {
 
 export async function parseRoute(
     options: RouterParsedOptions,
-    rawLocation: RouterRawLocation
+    raw: RouterRawLocation
 ): Promise<
     | {
           type: NavigationType.crossOrigin;
-          url: URL;
+          location: URL;
       }
-    | { type: NavigationType.notFound }
-    | { type: NavigationType.update; route: Route }
+    | {
+          type: NavigationType.crossApp;
+          location: URL;
+      }
+    | {
+          type: NavigationType.notFound;
+          location: URL;
+      }
+    | {
+          type: NavigationType.update;
+          location: URL;
+          route: Route;
+      }
 > {
-    const { base, normalizeURL, onOpenCrossOrigin } = options;
-    const location = await normalizeURL(rawLocationToURL(rawLocation, base));
+    const { base, normalizeURL } = options;
+    const location = await normalizeURL(rawLocationToURL(raw, base));
     // 处理外站逻辑
     if (location.origin !== base.origin) {
         return {
             type: NavigationType.crossOrigin,
-            url: location
+            location
+        };
+    }
+    if (location.pathname.length < base.pathname.length) {
+        return {
+            type: NavigationType.crossApp,
+            location
         };
     }
     // 匹配路由
@@ -35,12 +52,13 @@ export async function parseRoute(
     // 没有匹配任何路由
     if (matched.matches.length === 0) {
         return {
-            type: NavigationType.notFound
+            type: NavigationType.notFound,
+            location
         };
     }
     // 重新构造 URL 参数
     const lastMatch = matched.matches[matched.matches.length - 1];
-    if (typeof rawLocation === 'object' && rawLocation.params) {
+    if (typeof raw === 'object' && raw.params) {
         const current = location.pathname.split('/');
         const next = new URL(
             lastMatch.compile(location).substring(1),
@@ -50,11 +68,12 @@ export async function parseRoute(
             current[index] = item || current[index];
         });
         location.pathname = current.join('/');
-        Object.assign(matched.params, rawLocation.params);
+        Object.assign(matched.params, raw.params);
     }
-    const route = createRoute(rawLocation, location, base, matched);
+    const route = createRoute(raw, location, base, matched);
     return {
         type: NavigationType.update,
+        location,
         route
     };
 }

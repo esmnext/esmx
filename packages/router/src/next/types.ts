@@ -3,110 +3,45 @@ export enum NavigationType {
     // Action 类型
     push = 'push',
     replace = 'replace',
-    update = 'update',
+    openWindow = 'openWindow',
+    pushLayer = 'pushLayer',
+    reload = 'reload',
+    forceReload = 'forceReload',
+
     go = 'go',
     forward = 'forward',
     back = 'back',
-    pushLayer = 'pushLayer',
-    openWindow = 'openWindow',
-    reload = 'reload',
-    forceReload = 'forceReload',
+
+    update = 'update',
     // Result 类型
     aborted = 'aborted',
     redirect = 'redirect',
     crossOrigin = 'crossOrigin',
+    crossApp = 'crossApp',
     notFound = 'notFound',
     error = 'error'
 }
 
-export interface NavigationPushAction {
-    type: NavigationType.push;
-    rawLocation: RouterRawLocation;
-}
-export interface NavigationReplaceAction {
-    type: NavigationType.replace;
-    rawLocation: RouterRawLocation;
-}
-export interface NavigationOpenWindowAction {
-    type: NavigationType.openWindow;
-    rawLocation: RouterRawLocation;
-}
-export interface NavigationUpdateAction {
-    type: NavigationType.update;
-    location: RouterRawLocation;
-}
-export interface NavigationGoAction {
-    type: NavigationType.go;
-    index: number;
-}
-export interface NavigationForwardAction {
-    type: NavigationType.forward;
-}
-export interface NavigationBackAction {
-    type: NavigationType.back;
-}
-export interface NavigationPushLayerAction {
-    type: NavigationType.pushLayer;
-}
-export interface NavigationReloadAction {
-    type: NavigationType.reload;
-    location?: RouterRawLocation;
-}
-export interface NavigationForceReloadAction {
-    type: NavigationType.forceReload;
-    url?: string;
-}
-
 export type NavigationAction =
-    | NavigationPushAction
-    | NavigationReplaceAction
-    | NavigationUpdateAction
-    | NavigationGoAction
-    | NavigationForwardAction
-    | NavigationBackAction
-    | NavigationPushLayerAction
-    | NavigationOpenWindowAction
-    | NavigationReloadAction
-    | NavigationForceReloadAction;
-
-export interface NavigationPushResult {
-    type: NavigationType.push;
-    route: Route;
-}
-export interface NavigationReplaceResult {
-    type: NavigationType.replace;
-    route: Route;
-}
-export interface NavigationAbortedResult {
-    type: NavigationType.aborted;
-}
-export interface NavigationRedirectResult {
-    type: NavigationType.redirect;
-}
-export interface NavigationUpdateResult {
-    type: NavigationType.update;
-    route: Route;
-}
-export interface NavigationExternalResult {
-    type: NavigationType.crossOrigin;
-    data: any;
-}
-export interface NavigationNotFoundResult {
-    type: NavigationType.notFound;
-}
-export interface NavigationErrorResult {
-    type: NavigationType.error;
-}
+    | { type: NavigationType.push; location: RouterRawLocation }
+    | { type: NavigationType.replace; location: RouterRawLocation }
+    | { type: NavigationType.openWindow; location: RouterRawLocation }
+    | { type: NavigationType.pushLayer; location: RouterRawLocation }
+    | { type: NavigationType.reload; location: RouterRawLocation }
+    | { type: NavigationType.forceReload; location: RouterRawLocation }
+    | { type: NavigationType.go; index: number }
+    | { type: NavigationType.forward }
+    | { type: NavigationType.back };
 
 export type NavigationResult =
-    | NavigationPushResult
-    | NavigationReplaceResult
-    | NavigationAbortedResult
-    | NavigationRedirectResult
-    | NavigationExternalResult
-    | NavigationUpdateResult
-    | NavigationNotFoundResult
-    | NavigationErrorResult;
+    | { type: NavigationType.push; location: URL; route: Route }
+    | { type: NavigationType.replace; route: Route }
+    | { type: NavigationType.openWindow; location: URL; result: any }
+    | { type: NavigationType.notFound; location: URL }
+    | { type: NavigationType.crossOrigin; location: URL; result: any }
+    | { type: NavigationType.crossApp; location: URL; result: any }
+    | { type: NavigationType.forceReload }
+    | { type: NavigationType.error };
 
 export enum RouterMode {
     history = 'history',
@@ -265,3 +200,5 @@ export interface RouteMatchResult {
 }
 
 export type RouteMatcher = (targetURL: URL, baseURL: URL) => RouteMatchResult;
+
+// 旧字段 + 新字段
