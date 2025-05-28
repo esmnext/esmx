@@ -1,21 +1,28 @@
 import type { RouterRawLocation } from './types';
 
 export function rawLocationToURL(
-    locationURL: RouterRawLocation,
+    location: RouterRawLocation,
     baseURL: URL
 ): URL {
-    if (typeof locationURL === 'string') {
+    if (typeof location === 'string') {
         try {
-            return new URL(locationURL);
+            return new URL(location);
         } catch {
-            if (locationURL && !locationURL.startsWith('/')) {
-                return new URL(`http://${locationURL}`);
+            if (!location) {
+                return new URL(baseURL);
             }
-            return new URL(locationURL, baseURL);
+
+            if (location.startsWith('/')) {
+                return new URL(`.${location}`, baseURL);
+            }
+            if (location.startsWith('./')) {
+                return new URL(location, baseURL);
+            }
+            return new URL(`http://${location}`);
         }
     }
 
-    const { path = '/', query = {}, queryArray = {}, hash = '' } = locationURL;
+    const { path = '/', query = {}, queryArray = {}, hash = '' } = location;
     const url = new URL(path, baseURL);
 
     // 添加查询参数

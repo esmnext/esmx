@@ -2,6 +2,7 @@ import { assert, describe, test } from 'vitest';
 import { rawLocationToURL } from './location';
 
 const BASE_URL = new URL('https://www.esmx.dev');
+const BASE_EN_URL = new URL('https://www.esmx.dev/en/');
 
 describe('rawLocationToURL', () => {
     describe('字符串输入', () => {
@@ -28,6 +29,14 @@ describe('rawLocationToURL', () => {
             assert.equal(
                 rawLocationToURL('github.com', BASE_URL).href,
                 'http://github.com/'
+            );
+            assert.equal(
+                rawLocationToURL('/', BASE_EN_URL).href,
+                'https://www.esmx.dev/en/'
+            );
+            assert.equal(
+                rawLocationToURL('./', BASE_EN_URL).href,
+                'https://www.esmx.dev/en/'
             );
         });
     });
