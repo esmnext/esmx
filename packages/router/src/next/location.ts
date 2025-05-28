@@ -1,5 +1,16 @@
 import type { RouterRawLocation } from './types';
 
+export function normalizeURL(location: string, base: URL) {
+    if (!location) {
+        return new URL(base);
+    } else if (location.startsWith('/')) {
+        return new URL(`.${location}`, base);
+    } else if (location.startsWith('./')) {
+        return new URL(location, base);
+    }
+    return new URL(`http://${location}`);
+}
+
 export function rawLocationToURL(
     location: RouterRawLocation,
     baseURL: URL
@@ -8,22 +19,12 @@ export function rawLocationToURL(
         try {
             return new URL(location);
         } catch {
-            if (!location) {
-                return new URL(baseURL);
-            }
-
-            if (location.startsWith('/')) {
-                return new URL(`.${location}`, baseURL);
-            }
-            if (location.startsWith('./')) {
-                return new URL(location, baseURL);
-            }
-            return new URL(`http://${location}`);
+            return normalizeURL(location, baseURL);
         }
     }
 
     const { path = '/', query = {}, queryArray = {}, hash = '' } = location;
-    const url = new URL(path, baseURL);
+    const url = normalizeURL(path, baseURL);
 
     // 添加查询参数
     Object.entries(query).forEach(([key, value]) => {
