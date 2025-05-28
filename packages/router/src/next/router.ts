@@ -130,6 +130,23 @@ export class Router {
                 };
         }
     }
+    private async _handleReplaceWindow(
+        action: NavigationAction
+    ): Promise<NavigationResult> {
+        if (action.type !== NavigationType.replaceWindow) {
+            return {
+                type: NavigationType.error
+            };
+        }
+        const result = await parseRoute(this.options, action.location);
+        setTimeout(() => {
+            location.href = result.location.href;
+        });
+        return {
+            type: NavigationType.replaceWindow,
+            location: result.location
+        };
+    }
     private async _handlePushLayer(
         action: NavigationAction
     ): Promise<NavigationResult> {
@@ -156,23 +173,6 @@ export class Router {
         });
         return {
             type: NavigationType.reload,
-            location: result.location
-        };
-    }
-    private async _handleReplaceWindow(
-        action: NavigationAction
-    ): Promise<NavigationResult> {
-        if (action.type !== NavigationType.replaceWindow) {
-            return {
-                type: NavigationType.error
-            };
-        }
-        const result = await parseRoute(this.options, action.location);
-        setTimeout(() => {
-            location.href = result.location.href;
-        });
-        return {
-            type: NavigationType.replaceWindow,
             location: result.location
         };
     }
