@@ -54,7 +54,7 @@ export enum RouterMode {
 }
 
 export interface RouterOptions {
-    base?: URL;
+    base: URL | string;
     mode?: RouterMode;
     routes?: RouteConfig[];
     normalizeURL?: (url: URL, raw: RouterRawLocation) => Awaitable<URL>;
@@ -71,7 +71,9 @@ export interface RouterOptions {
     scrollBehavior?: RouterScrollBehavior;
 }
 
-export interface RouterParsedOptions extends Required<RouterOptions> {
+export interface RouterParsedOptions
+    extends Required<Omit<RouterOptions, 'base'>> {
+    base: URL;
     matcher: RouteMatcher;
 }
 

@@ -1,24 +1,22 @@
 import { DEFAULT_ON_OPEN_CROSS, DEFAULT_SCROLL_BEHAVIOR } from './default';
 import { createMatcher } from './matcher';
-import {
-    RouterMode,
-    type RouterOptions,
-    type RouterParsedOptions
-} from './types';
+import { RouterMode } from './types';
+import type { RouterOptions, RouterParsedOptions } from './types';
 
 const isBrowser = typeof window === 'object';
 
 export function parsedOptions(options: RouterOptions): RouterParsedOptions {
-    const mode =
-        options.mode ?? (isBrowser ? RouterMode.history : RouterMode.abstract);
-    const base = options.base ?? (isBrowser ? new URL(location.href) : null);
-    const routes = options.routes ?? [];
-    if (base === null) {
+    // 仅保留路径的目录，并去除 query 和 hash 部分
+    const base = URL.parse('.', options.base);
+    if (!base) {
         throw new Error(
-            `Router 'base' option is required. Please provide a 'base' URL in options.`
+            `Router 'base' option must be a valid URL. Received: ${options.base}`
         );
     }
-    const result: RouterParsedOptions = {
+    const mode =
+        options.mode ?? (isBrowser ? RouterMode.history : RouterMode.abstract);
+    const routes = options.routes ?? [];
+    return {
         base,
         mode,
         routes,
@@ -28,5 +26,4 @@ export function parsedOptions(options: RouterOptions): RouterParsedOptions {
         onOpenCrossApp: options.onOpenCrossApp ?? DEFAULT_ON_OPEN_CROSS,
         scrollBehavior: options.scrollBehavior ?? DEFAULT_SCROLL_BEHAVIOR
     };
-    return result;
 }
