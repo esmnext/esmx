@@ -1,4 +1,7 @@
-import type { RouterScrollBehavior } from './types';
+import type { RouterParsedOptions, RouterScrollBehavior } from './types';
+import { NavigationActionType } from './types';
+import { openWindow } from './util';
+
 export const DEFAULT_SCROLL_BEHAVIOR: RouterScrollBehavior = (
     to,
     from,
@@ -14,15 +17,16 @@ export const DEFAULT_SCROLL_BEHAVIOR: RouterScrollBehavior = (
     };
 };
 
-export function DEFAULT_ON_OPEN_CROSS(url: URL, replace: boolean) {
-    try {
-        const newWindow = window.open(url);
-        if (!newWindow) {
-            location.href = url.href;
-        } else {
-            newWindow.opener = null; // 解除新窗口与当前窗口的关系
+export const DEFAULT_ON_OPEN_CROSS: RouterParsedOptions['externalUrlHandler'] =
+    ({ url, type }) => {
+        const replace = [
+            NavigationActionType.replace,
+            NavigationActionType.reload,
+            NavigationActionType.forceReload
+        ].includes(type);
+        if (replace) {
+            location.replace(url);
+            return;
         }
-    } catch (e) {
-        location.href = url.href;
-    }
-}
+        openWindow(url);
+    };

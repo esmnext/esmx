@@ -1,7 +1,7 @@
 import { Navigation } from './navigation';
 import { parsedOptions } from './options';
 import { parseRoute } from './route';
-import { NavigationType } from './types';
+import { NavigationActionType, NavigationResultType } from './types';
 import type {
     NavigationAction,
     NavigationResult,
@@ -13,11 +13,12 @@ import type {
     RouterParsedOptions,
     RouterRawLocation
 } from './types';
+import { openWindow } from './util';
 
 export class Router {
     public options: RouterParsedOptions;
-    private _route: null | Route = null;
-    private _navigation: Navigation;
+    protected _route: null | Route = null;
+    protected _navigation: Navigation;
     public get route() {
         if (this._route === null) {
             throw new Error(`Route is not ready.`);
@@ -30,7 +31,7 @@ export class Router {
             this.options,
             (url: string, state: RouteState) => {
                 return this._update({
-                    type: NavigationType.popstate,
+                    type: NavigationActionType.popstate,
                     location: {
                         path: url,
                         state
@@ -39,193 +40,227 @@ export class Router {
             }
         );
     }
-    private async _update(action: NavigationAction): Promise<NavigationResult> {
+    protected async _update(
+        action: NavigationAction
+    ): Promise<NavigationResult> {
         switch (action.type) {
-            case NavigationType.push:
-                return this._handlePush(action);
-            case NavigationType.replace:
-                return this._handlePush(action, true);
-            case NavigationType.pushWindow:
-                return this._handlePushWindow(action);
-            case NavigationType.replaceWindow:
-                return this._handleReplaceWindow(action);
-            case NavigationType.pushLayer:
-                return this._handlePushLayer(action);
-            case NavigationType.reload:
-                return this._handleReload(action);
-            case NavigationType.popstate:
-                return this._handlePopstate(action);
+            case NavigationActionType.push:
+                return this._handlePush(
+                    action as NavigationAction<NavigationActionType.push>
+                );
+            case NavigationActionType.replace:
+                return this._handlePush(
+                    action as NavigationAction<NavigationActionType.replace>
+                );
+            case NavigationActionType.pushWindow:
+                return this._handlePushWindow(
+                    action as NavigationAction<NavigationActionType.pushWindow>
+                );
+            case NavigationActionType.forceReload:
+                return this._handleForceReload(
+                    action as NavigationAction<NavigationActionType.forceReload>
+                );
+            case NavigationActionType.pushLayer:
+                return this._handlePushLayer(
+                    action as NavigationAction<NavigationActionType.pushLayer>
+                );
+            case NavigationActionType.reload:
+                return this._handleReload(
+                    action as NavigationAction<NavigationActionType.reload>
+                );
+            case NavigationActionType.go:
+            case NavigationActionType.back:
+            case NavigationActionType.forward:
+            case NavigationActionType.popstate:
+                return this._handlePopstate(
+                    action as NavigationAction<NavigationActionType.popstate>
+                );
         }
     }
-    private async _handlePush(
-        action: NavigationAction,
-        replace = false
+    protected async _handlePush(
+        action: NavigationAction<
+            NavigationActionType.push | NavigationActionType.replace
+        >
     ): Promise<NavigationResult> {
-        if (
-            action.type !== NavigationType.push &&
-            action.type !== NavigationType.replace
-        ) {
-            return {
-                type: NavigationType.error
-            };
-        }
-        const result = await parseRoute(this.options, action.location);
-        switch (result.type) {
-            case NavigationType.notFound:
+        const result = await parseRoute({
+            options: this.options,
+            raw: action.location,
+            type: action.type,
+            router: this
+        });
+        switch (result.navResultType) {
+            case NavigationResultType.notFound:
                 return {
-                    type: NavigationType.notFound,
+                    navResultType: NavigationResultType.notFound,
+                    navActionType: action.type,
                     location: result.location
                 };
-            case NavigationType.crossOrigin:
+            case NavigationResultType.external:
                 return {
-                    type: NavigationType.crossOrigin,
+                    navResultType: NavigationResultType.external,
+                    navActionType: action.type,
                     location: result.location,
-                    result: this.options.onOpenCrossOrigin(
-                        result.location,
-                        replace,
-                        action.type
-                    )
+                    result: this.options.externalUrlHandler({
+                        url: result.location,
+                        router: this,
+                        type: action.type
+                    })
                 };
-            case NavigationType.crossApp:
-                return {
-                    type: NavigationType.crossApp,
-                    location: result.location,
-                    result: this.options.onOpenCrossApp(
-                        result.location,
-                        replace,
-                        action.type
-                    )
-                };
-            case NavigationType.update:
+            case NavigationResultType.success:
                 this._applyRoute(result.route);
                 return {
-                    type: action.type,
+                    navResultType: NavigationResultType.success,
+                    navActionType: action.type,
                     location: result.location,
                     route: result.route
                 };
         }
     }
-    private async _handlePushWindow(
-        action: NavigationAction
+    protected async _handlePushWindow(
+        action: NavigationAction<NavigationActionType.pushWindow>
     ): Promise<NavigationResult> {
-        if (action.type !== NavigationType.pushWindow) {
-            return {
-                type: NavigationType.error
-            };
-        }
-        const result = await parseRoute(this.options, action.location);
-        switch (result.type) {
-            case NavigationType.notFound:
+        const result = await parseRoute({
+            options: this.options,
+            raw: action.location,
+            type: action.type,
+            router: this
+        });
+        switch (result.navResultType) {
+            case NavigationResultType.notFound:
                 return {
-                    type: NavigationType.notFound,
+                    navResultType: NavigationResultType.notFound,
+                    navActionType: action.type,
                     location: result.location
                 };
-            case NavigationType.crossOrigin:
+            case NavigationResultType.external:
                 return {
-                    type: NavigationType.pushWindow,
+                    navResultType: NavigationResultType.external,
+                    navActionType: action.type,
                     location: result.location,
-                    result: this.options.onOpenCrossOrigin(
-                        result.location,
-                        false,
-                        action.type
-                    )
+                    result: this.options.externalUrlHandler({
+                        url: result.location,
+                        router: this,
+                        type: action.type
+                    })
                 };
-            case NavigationType.crossApp:
-            case NavigationType.update:
+            case NavigationResultType.success:
+                setTimeout(() => openWindow(result.location));
                 return {
-                    type: NavigationType.pushWindow,
-                    location: result.location,
-                    result: this.options.onOpenCrossApp(
-                        result.location,
-                        false,
-                        action.type
-                    )
+                    navActionType: NavigationActionType.pushWindow,
+                    navResultType: NavigationResultType.success,
+                    location: result.location
                 };
         }
     }
-    private async _handleReplaceWindow(
-        action: NavigationAction
+    protected async _handleForceReload(
+        action: NavigationAction<NavigationActionType.forceReload>
     ): Promise<NavigationResult> {
-        if (action.type !== NavigationType.replaceWindow) {
-            return {
-                type: NavigationType.error
-            };
-        }
-        const result = await parseRoute(this.options, action.location);
+        const result = await parseRoute({
+            options: this.options,
+            raw: action.location,
+            type: action.type,
+            router: this
+        });
         setTimeout(() => {
             location.href = result.location.href;
         });
         return {
-            type: NavigationType.replaceWindow,
+            navActionType: NavigationActionType.forceReload,
+            navResultType: NavigationResultType.success,
             location: result.location
         };
     }
-    private async _handlePushLayer(
-        action: NavigationAction
+    protected async _handlePushLayer(
+        action: NavigationAction<NavigationActionType.pushLayer>
     ): Promise<NavigationResult> {
-        if (action.type !== NavigationType.pushLayer) {
-            return {
-                type: NavigationType.error
-            };
-        }
         return {
-            type: NavigationType.error
+            navResultType: NavigationResultType.error,
+            navActionType: action.type,
+            location: action.location,
+            error: new Error('Push layer is not supported yet.')
         };
     }
-    private async _handleReload(
-        action: NavigationAction
+    protected async _handleReload(
+        action: NavigationAction<NavigationActionType.reload>
     ): Promise<NavigationResult> {
-        if (action.type !== NavigationType.reload) {
-            return {
-                type: NavigationType.error
-            };
-        }
-        const result = await parseRoute(this.options, action.location);
+        const result = await parseRoute({
+            options: this.options,
+            raw: action.location,
+            type: action.type,
+            router: this
+        });
         setTimeout(() => {
             location.href = result.location.href;
         });
         return {
-            type: NavigationType.reload,
+            navActionType: NavigationActionType.reload,
+            navResultType: NavigationResultType.success,
             location: result.location
         };
     }
-    private async _handlePopstate(
-        action: NavigationAction
+    protected async _handlePopstate(
+        action: NavigationAction<NavigationActionType.popstate>
     ): Promise<NavigationResult> {
-        if (action.type !== NavigationType.popstate) {
-            return {
-                type: NavigationType.error
-            };
-        }
-        const result = await parseRoute(this.options, action.location);
-        if (result.type === NavigationType.update) {
+        const result = await parseRoute({
+            options: this.options,
+            raw: action.location,
+            type: action.type,
+            router: this
+        });
+        if (result.navResultType === NavigationResultType.success) {
             this._applyRoute(result.route);
             return {
-                type: action.type,
+                navResultType: NavigationResultType.success,
+                navActionType: action.type,
                 location: result.location,
                 route: result.route
             };
         }
         return {
-            type: NavigationType.error
+            navResultType: NavigationResultType.error,
+            navActionType: action.type,
+            location: action.location,
+            error: new Error(`Failed to handle popstate: ${action.location}`)
         };
     }
-    private _applyRoute(route: Route, replace = false) {
+    protected _applyRoute(route: Route, replace = false) {
         this._route = route;
         this._navigation.push(route, replace);
     }
+    public destroy() {
+        this._navigation.destroy();
+        this._destroyAllApp();
+        this._registeredCfgMap = {};
+    }
+
     public push(location: RouterRawLocation) {
-        return this._update({
-            type: NavigationType.push,
-            location
-        });
+        return this._update({ type: NavigationActionType.push, location });
     }
     public replace(location: RouterRawLocation) {
+        return this._update({ type: NavigationActionType.replace, location });
+    }
+    public pushLayer(location: RouterRawLocation) {
+        return this._update({ type: NavigationActionType.pushLayer, location });
+    }
+    public openWindow(location: RouterRawLocation) {
         return this._update({
-            type: NavigationType.replace,
+            type: NavigationActionType.pushWindow,
             location
         });
     }
+    public forceReload(location: RouterRawLocation) {
+        return this._update({
+            type: NavigationActionType.forceReload,
+            location
+        });
+    }
+    public reload(location?: RouterRawLocation) {
+        return this._update({
+            type: NavigationActionType.reload,
+            location: location ?? this.route.href
+        });
+    }
+
     public go(index: number) {
         return this._navigation.go(index);
     }
@@ -234,35 +269,6 @@ export class Router {
     }
     public back() {
         return this.go(-1);
-    }
-    public pushLayer(location: RouterRawLocation) {
-        return this._update({
-            type: NavigationType.pushLayer,
-            location
-        });
-    }
-    public openWindow(location: RouterRawLocation) {
-        return this._update({
-            type: NavigationType.pushWindow,
-            location
-        });
-    }
-    public replaceWindow(location: RouterRawLocation) {
-        return this._update({
-            type: NavigationType.replaceWindow,
-            location
-        });
-    }
-    public reload(location?: RouterRawLocation) {
-        return this._update({
-            type: NavigationType.reload,
-            location: location ?? this.route.href
-        });
-    }
-    public destroy() {
-        this._navigation.destroy();
-        this._destroyAllApp();
-        this._registeredCfgMap = {};
     }
 
     protected _registeredCfgMap: RegisteredConfigMap = {};

@@ -21,9 +21,13 @@ export function parsedOptions(options: RouterOptions): RouterParsedOptions {
         mode,
         routes,
         matcher: createMatcher(routes),
-        normalizeURL: options.normalizeURL ?? ((url) => url),
-        onOpenCrossOrigin: options.onOpenCrossOrigin ?? DEFAULT_ON_OPEN_CROSS,
-        onOpenCrossApp: options.onOpenCrossApp ?? DEFAULT_ON_OPEN_CROSS,
+        normalizeURL: options.normalizeURL ?? (({ url }) => url),
+        externalUrlHandler: async (args) => {
+            if (options.externalUrlHandler?.(args) === false) {
+                return;
+            }
+            return DEFAULT_ON_OPEN_CROSS(args);
+        },
         scrollBehavior: options.scrollBehavior ?? DEFAULT_SCROLL_BEHAVIOR
     };
 }

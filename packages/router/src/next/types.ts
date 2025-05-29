@@ -1,52 +1,93 @@
 import type { MatchFunction } from 'path-to-regexp';
 import type { Router } from './router';
 
-export enum NavigationType {
-    // Action 类型
+export enum NavigationActionType {
     push = 'push',
     replace = 'replace',
     pushWindow = 'pushWindow',
-    replaceWindow = 'replaceWindow',
     pushLayer = 'pushLayer',
     reload = 'reload',
+    forceReload = 'forceReload',
 
     go = 'go',
     forward = 'forward',
     back = 'back',
+    popstate = 'popstate'
+}
 
-    update = 'update',
-    popstate = 'popstate',
-    // Result 类型
+export enum NavigationResultType {
+    success = 'success',
+    /**
+     * 在导航守卫中返回 `false` 中断了本次导航。
+     */
     aborted = 'aborted',
+    /**
+     * 导航被阻止，因为我们已经在目标位置了。
+     */
     duplicate = 'duplicate',
+    /**
+     * 在导航过程中发生了重定向，目前只有两种情况会触发：
+     * 1. 在导航守卫中返回了一个新的路由位置。
+     * 2. 在路由配置中定义了重定向。
+     */
     redirect = 'redirect',
-    crossOrigin = 'crossOrigin',
-    crossApp = 'crossApp',
+    /**
+     * 导航到应用外的链接。
+     */
+    external = 'external',
+    /**
+     * 导航到应用内的链接，但没有匹配到任何路由。
+     */
     notFound = 'notFound',
     error = 'error'
 }
 
-export type NavigationAction =
-    | { type: NavigationType.push; location: RouterRawLocation }
-    | { type: NavigationType.replace; location: RouterRawLocation }
-    | { type: NavigationType.pushWindow; location: RouterRawLocation }
-    | { type: NavigationType.replaceWindow; location: RouterRawLocation }
-    | { type: NavigationType.pushLayer; location: RouterRawLocation }
-    | { type: NavigationType.reload; location: RouterRawLocation }
-    | { type: NavigationType.popstate; location: RouterRawLocation };
+export type NavigationAction<
+    T extends NavigationActionType = NavigationActionType
+> = {
+    type: T;
+    location: RouterRawLocation;
+};
 
-export type NavigationResult =
-    | { type: NavigationType.push; location: URL; route: Route }
-    | { type: NavigationType.replace; location: URL; route: Route }
-    | { type: NavigationType.popstate; location: URL; route: Route }
-    | { type: NavigationType.pushWindow; location: URL; result: any }
-    | { type: NavigationType.replaceWindow; location: URL }
-    | { type: NavigationType.reload; location: URL }
-    | { type: NavigationType.notFound; location: URL }
-    | { type: NavigationType.crossOrigin; location: URL; result: any }
-    | { type: NavigationType.crossApp; location: URL; result: any }
-    | { type: NavigationType.duplicate }
-    | { type: NavigationType.error };
+export type NavigationSuccessResult<
+    T extends NavigationActionType = NavigationActionType
+> = {
+    navResultType: NavigationResultType.success;
+    navActionType: T;
+    location: URL;
+} & (T extends
+    | NavigationActionType.push
+    | NavigationActionType.replace
+    | NavigationActionType.popstate
+    ? { route: Route }
+    : T extends NavigationActionType.pushWindow
+      ? { result?: any }
+      : {});
+
+export type NavigationFailureResult<
+    T extends Exclude<
+        NavigationResultType,
+        NavigationResultType.success
+    > = Exclude<NavigationResultType, NavigationResultType.success>
+> = {
+    navResultType: T;
+    navActionType: NavigationActionType;
+    location: T extends NavigationResultType.error
+        ? URL | RouterRawLocation
+        : URL;
+} & (T extends NavigationResultType.external
+    ? { result?: any }
+    : T extends NavigationResultType.error
+      ? { error: Error }
+      : {});
+
+export type NavigationResult<
+    SucT extends NavigationActionType = NavigationActionType,
+    FailT extends Exclude<
+        NavigationResultType,
+        NavigationResultType.success
+    > = Exclude<NavigationResultType, NavigationResultType.success>
+> = NavigationSuccessResult<SucT> | NavigationFailureResult<FailT>;
 
 export enum RouterMode {
     history = 'history',
@@ -57,17 +98,17 @@ export interface RouterOptions {
     base: URL | string;
     mode?: RouterMode;
     routes?: RouteConfig[];
-    normalizeURL?: (url: URL, raw: RouterRawLocation) => Awaitable<URL>;
-    onOpenCrossOrigin?: (
-        url: URL,
-        replace: boolean,
-        type: NavigationType
-    ) => Awaitable<any>;
-    onOpenCrossApp?: (
-        url: URL,
-        replace: boolean,
-        type: NavigationType
-    ) => Awaitable<any>;
+    normalizeURL?: (args: {
+        url: URL;
+        raw: RouterRawLocation;
+        type: NavigationActionType;
+        router: Router;
+    }) => Awaitable<URL>;
+    externalUrlHandler?: (args: {
+        url: URL;
+        router: Router;
+        type: NavigationActionType;
+    }) => any | Promise<any>;
     scrollBehavior?: RouterScrollBehavior;
 }
 

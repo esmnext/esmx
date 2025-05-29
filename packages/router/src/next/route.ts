@@ -1,48 +1,45 @@
 import { parseLocation } from './location';
 import type { RouteMatchResult } from './matcher';
-import {
-    NavigationType,
-    type Route,
-    type RouteMeta,
-    type RouteState,
-    type RouterParsedOptions,
-    type RouterRawLocation
+import type { Router } from './router';
+import { type NavigationActionType, NavigationResultType } from './types';
+import type {
+    NavigationFailureResult,
+    NavigationSuccessResult,
+    Route,
+    RouteMeta,
+    RouteState,
+    RouterParsedOptions,
+    RouterRawLocation
 } from './types';
 
-export async function parseRoute(
-    options: RouterParsedOptions,
-    raw: RouterRawLocation
-): Promise<
-    | {
-          type: NavigationType.crossOrigin;
-          location: URL;
-      }
-    | {
-          type: NavigationType.crossApp;
-          location: URL;
-      }
-    | {
-          type: NavigationType.notFound;
-          location: URL;
-      }
-    | {
-          type: NavigationType.update;
-          location: URL;
-          route: Route;
-      }
+export async function parseRoute({
+    options,
+    raw,
+    type,
+    router
+}: {
+    options: RouterParsedOptions;
+    raw: RouterRawLocation;
+    type: NavigationActionType;
+    router: Router;
+}): Promise<
+    | NavigationFailureResult<
+          NavigationResultType.notFound | NavigationResultType.external
+      >
+    | (NavigationSuccessResult & { route: Route })
 > {
     const { base, normalizeURL } = options;
-    const location = await normalizeURL(parseLocation(raw, base), raw);
+    const location = await normalizeURL({
+        url: parseLocation(raw, base),
+        raw,
+        type,
+        router
+    });
     // 处理外站逻辑
-    if (location.origin !== base.origin) {
+    if (!location.href.startsWith(base.href)) {
         return {
-            type: NavigationType.crossOrigin,
-            location
-        };
-    }
-    if (location.pathname.length < base.pathname.length) {
-        return {
-            type: NavigationType.crossApp,
+            navResultType: NavigationResultType.external,
+            navActionType: type,
             location
         };
     }
@@ -51,7 +48,8 @@ export async function parseRoute(
     // 没有匹配任何路由
     if (matched.matches.length === 0) {
         return {
-            type: NavigationType.notFound,
+            navResultType: NavigationResultType.notFound,
+            navActionType: type,
             location
         };
     }
@@ -71,7 +69,8 @@ export async function parseRoute(
     }
     const route = createRoute(raw, location, base, matched);
     return {
-        type: NavigationType.update,
+        navResultType: NavigationResultType.success,
+        navActionType: type,
         location,
         route
     };
@@ -86,12 +85,12 @@ export function createRoute(
     const query: Record<string, string | undefined> = {};
     const queryArray: Record<string, string[]> = {};
 
-    locationURL.searchParams.keys().forEach((key) => {
+    new Set(locationURL.searchParams.keys()).forEach((key) => {
         const value = locationURL.searchParams.get(key);
         if (typeof value === 'string') {
             query[key] = value;
         }
-        queryArray[key] = locationURL.searchParams.getAll(key) || [];
+        queryArray[key] = locationURL.searchParams.getAll(key);
     });
     const state: RouteState =
         typeof raw === 'object' && raw.state ? raw.state : {};
