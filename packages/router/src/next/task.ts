@@ -1,6 +1,5 @@
-const isDev = process.env.NODE_ENV !== 'production';
 const warn = (...message: any[]) => {
-    if (!isDev) return;
+    if (process.env.NODE_ENV === 'production') return;
     console.warn('[Task Warning]', ...message);
 };
 
@@ -18,6 +17,11 @@ export class Tasks<T extends Function> {
          */
         protected handlers: T[] = []
     ) {}
+
+    public add(...handlers: T[]) {
+        this.handlers.push(...handlers);
+        return this;
+    }
 
     public status: TaskStatus = 'initial';
 
