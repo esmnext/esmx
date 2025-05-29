@@ -1,4 +1,6 @@
 import type { MatchFunction } from 'path-to-regexp';
+import type { Router } from './router';
+
 export enum NavigationType {
     // Action 类型
     push = 'push',
@@ -211,5 +213,21 @@ export interface RouteMatchResult {
 }
 
 export type RouteMatcher = (targetURL: URL, baseURL: URL) => RouteMatchResult;
+
+export interface RegisteredConfig {
+    mount?: () => void;
+    update?: () => void;
+    destroy?: () => void;
+    renderToString?: () => string | Promise<string>;
+}
+
+export type RegisteredConfigMap = {
+    [AppName in string]?: {
+        appName: AppName;
+        mounted: boolean;
+        generator: (router: Router) => RegisteredConfig;
+        config?: RegisteredConfig;
+    };
+};
 
 // 旧字段 + 新字段
