@@ -32,23 +32,26 @@ import { isNotNullish } from './util';
  * ```
  */
 export function normalizeURL(location: string, base: URL): URL {
-    // 处理协议相对路径（以//开头）
-    if (location.startsWith('//')) {
-        return new URL(`http:${location}`);
-    }
-
     // 空字符串返回基础URL的副本
     if (!location) {
         return new URL(base);
     }
 
-    try {
-        // 尝试作为绝对URL解析
-        return new URL(location);
-    } catch {
-        // 解析失败则作为相对路径处理
-        return new URL(location, base);
+    // 处理协议相对路径（以//开头）
+    if (location.startsWith('//')) {
+        return new URL(`http:${location}`);
     }
+
+    // 相对于根的路径（根为 base）
+    if (location.startsWith('/')) {
+        base = new URL('.', base);
+        const parsed = new URL(location, base);
+        parsed.pathname = base.pathname.slice(0, -1) + parsed.pathname; // 确保路径正确
+        return parsed;
+    }
+
+    // 尝试作为绝对URL解析 || 解析失败则作为相对路径处理
+    return URL.parse(location) || new URL(location, base);
 }
 
 /**
@@ -81,8 +84,22 @@ export function parseLocation(location: RouterRawLocation, baseURL: URL): URL {
         return normalizeURL(location, baseURL);
     }
 
+    if (typeof location !== 'object' || location === null) {
+        throw new Error('Invalid URL: ' + String(location));
+    }
+
     // 解构对象并设置默认值
-    const { path = '/', query = {}, queryArray = {}, hash = '' } = location;
+    let {
+        path = '/',
+        query = {},
+        queryArray = {},
+        hash = ''
+    } = {} as typeof location;
+    try {
+        ({ path = '/', query = {}, queryArray = {}, hash = '' } = location);
+    } catch {
+        throw new Error('Invalid URL: ' + String(location));
+    }
     const url = normalizeURL(path, baseURL);
 
     // 处理普通查询参数（键值对形式）

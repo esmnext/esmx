@@ -1,7 +1,10 @@
 import { describe, expect, test } from 'vitest';
 import { parseLocation as t } from './location';
 
-const parseLocation = (input: any, base: URL | string): URL => {
+const parseLocation = (
+    input: Parameters<typeof t>[0],
+    base: URL | string
+): URL => {
     return t(input, new URL(base));
 };
 
@@ -89,7 +92,7 @@ describe('parseLocation', () => {
 
         test('裸域名应该当做相对路径处理', () => {
             expect(parseLocation('github.com', BASE_URL)).toEqURL(
-                BASE_URL + '/github.com/'
+                BASE_URL + '/github.com'
             );
         });
     });
@@ -367,8 +370,8 @@ describe('parseLocation', () => {
                 },
                 { input: '.a', expected: 'https://www.esmx.dev/a/b/c/.a' },
                 { input: '..a', expected: 'https://www.esmx.dev/a/b/c/..a' },
-                { input: '.a/', expected: 'https://www.esmx.dev/.a/' },
-                { input: '..a/', expected: 'https://www.esmx.dev/..a/' },
+                { input: '.a/', expected: 'https://www.esmx.dev/a/b/c/.a/' },
+                { input: '..a/', expected: 'https://www.esmx.dev/a/b/c/..a/' },
                 { input: 'new/.././', expected: 'https://www.esmx.dev/a/b/c/' },
                 {
                     input: 'new/.././a/../../x/',
@@ -403,17 +406,28 @@ describe('parseLocation', () => {
         test('对于无效的 URL 应该抛出错误', () => {
             expect(() =>
                 parseLocation(null as unknown as string, BASE_URL)
-            ).toThrowError('Invalid URL: invalid-url');
+            ).toThrowError('Invalid URL');
+            expect(() =>
+                parseLocation(void 0 as unknown as string, BASE_URL)
+            ).toThrowError('Invalid URL');
             expect(() =>
                 parseLocation(Number.NaN as unknown as string, BASE_URL)
-            ).toThrowError('Invalid URL: invalid-url');
+            ).toThrowError('Invalid URL');
             expect(() =>
-                parseLocation('-a://example.com', BASE_URL)
-            ).toThrowError('Invalid URL: invalid-url');
+                parseLocation(Symbol() as unknown as string, BASE_URL)
+            ).toThrowError('Invalid URL');
+            expect(() =>
+                parseLocation((() => {}) as unknown as string, BASE_URL)
+            ).toThrowError('Invalid URL');
         });
     });
 
     describe('特殊情况', () => {
+        test('协议开头但解析失败后当做相对路径', () => {
+            expect(parseLocation('-a://example.com', BASE_URL)).toEqURL(
+                BASE_URL + '/-a://example.com'
+            );
+        });
         test('特殊 hash 字符', () => {
             expect(parseLocation(BASE_URL + '#a?a', BASE_URL)).toEqURL(
                 BASE_URL + '#a?a'
