@@ -159,7 +159,24 @@ export class Router {
     }
 
     protected _applyRoute(route: Route, replace = false) {
+        const oldRegCfg = this._getCurrentRegisteredCfg();
         this._route = route;
+        const curRegCfg = this._getCurrentRegisteredCfg();
+
+        if (curRegCfg) {
+            const { mounted, generator } = curRegCfg;
+            if (!mounted) {
+                curRegCfg.config = generator(this);
+                curRegCfg.config.mount?.();
+                curRegCfg.mounted = true;
+            }
+            curRegCfg.config?.update?.();
+        }
+
+        if (oldRegCfg && oldRegCfg.appName !== curRegCfg?.appName) {
+            this._destroyApp(oldRegCfg);
+        }
+
         this._navigation.push(route, replace);
     }
 
@@ -222,6 +239,12 @@ export class Router {
         for (const appType in this._registeredCfgMap) {
             this._destroyApp(appType);
         }
+    }
+
+    /** 获取当前生效的路由的注册配置 */
+    protected _getCurrentRegisteredCfg() {
+        const appType = this._route?.matched[0]?.appType;
+        return appType ? this._registeredCfgMap[appType] : null;
     }
 
     public destroy() {
