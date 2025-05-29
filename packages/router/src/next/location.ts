@@ -11,7 +11,7 @@ export function normalizeURL(location: string, base: URL) {
     try {
         return new URL(location);
     } catch {
-        return new URL(`https://${location}`);
+        return new URL(`${base.protocol}//${location}`);
     }
 }
 
@@ -25,7 +25,9 @@ export function parseLocation(location: RouterRawLocation, baseURL: URL): URL {
 
     // 添加查询参数
     Object.entries(query).forEach(([key, value]) => {
-        value && url.searchParams.set(key, value);
+        if (value !== undefined && value !== null) {
+            url.searchParams.set(key, String(value));
+        }
     });
 
     // 添加数组查询参数
