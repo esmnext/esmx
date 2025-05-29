@@ -129,18 +129,21 @@ export class Router {
                 location: normLoc
             };
         }
+
         // 匹配路由成功后有可能会重新构造 URL
         normLoc = result.location;
-        // 如果是 push 或 replace 或 go 等类型，则应用路由并返回
+
+        // 如果是 push/replace/reload 或 go 等类型，则应用路由并返回
+        const isReload = type === NavigationActionType.reload;
+        const isReplace = type === NavigationActionType.replace;
         if (
-            isHistoryAction ||
             type === NavigationActionType.push ||
-            type === NavigationActionType.replace
+            isHistoryAction ||
+            isReload ||
+            isReplace
         ) {
-            this._applyRoute(
-                result.route,
-                type === NavigationActionType.replace
-            );
+            if (isReload) this._destroyAllApp();
+            this._applyRoute(result.route, isReplace || isReload);
             return {
                 navResultType: NavigationResultType.success,
                 navActionType: type,
@@ -149,7 +152,7 @@ export class Router {
             };
         }
 
-        // 剩下的还有 pushLayer 和 reload
+        // 剩下的还有 pushLayer
         return {
             navResultType: NavigationResultType.error,
             navActionType: type,
