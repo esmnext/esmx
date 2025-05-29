@@ -1,10 +1,14 @@
 import {
-    type NavigationResult,
-    NavigationType,
-    type Route,
-    type RouteState,
-    RouterMode,
-    type RouterParsedOptions
+    NavigationActionType,
+    NavigationResultType,
+    RouterMode
+} from './types';
+import type {
+    NavigationFailureResult,
+    NavigationResult,
+    Route,
+    RouteState,
+    RouterParsedOptions
 } from './types';
 
 type NavigationSubscribe = (url: string, state: RouteState) => void;
@@ -33,8 +37,15 @@ export class Navigation {
                     update(url, state).then(_promiseResolve);
                 } else {
                     _promiseResolve({
-                        type: NavigationType.error
-                    });
+                        navResultType: NavigationResultType.error,
+                        navActionType: NavigationActionType.popstate,
+                        error: new Error(
+                            'No update function provided for navigation'
+                        )
+                    } satisfies NavigationFailureResult<
+                        NavigationResultType.error,
+                        NavigationActionType.popstate
+                    >);
                 }
             } else if (update) {
                 update(url, state);
@@ -60,7 +71,8 @@ export class Navigation {
     public go(index: number): Promise<NavigationResult> {
         if (this._promiseResolve) {
             return Promise.resolve({
-                type: NavigationType.duplicate
+                navResultType: NavigationResultType.duplicate,
+                navActionType: NavigationActionType.go
             });
         }
         return new Promise<NavigationResult>((resolve, reject) => {

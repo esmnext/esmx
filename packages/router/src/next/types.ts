@@ -61,18 +61,27 @@ export type NavigationFailureResult<
     T extends Exclude<
         NavigationResultType,
         NavigationResultType.success
-    > = Exclude<NavigationResultType, NavigationResultType.success>
+    > = Exclude<NavigationResultType, NavigationResultType.success>,
+    ActT extends NavigationActionType = NavigationActionType
 > = {
     navResultType: T;
-    navActionType: NavigationActionType;
-    location: T extends NavigationResultType.error
-        ? URL | RouterRawLocation
-        : URL;
-} & (T extends NavigationResultType.external
-    ? { result?: any }
-    : T extends NavigationResultType.error
-      ? { error: Error }
-      : {});
+    navActionType: ActT;
+} & (ActT extends
+    | NavigationActionType.go
+    | NavigationActionType.forward
+    | NavigationActionType.back
+    | NavigationActionType.popstate
+    ? {}
+    : {
+          location: T extends NavigationResultType.error
+              ? URL | RouterRawLocation
+              : URL;
+      }) &
+    (T extends NavigationResultType.external
+        ? { result?: any }
+        : T extends NavigationResultType.error
+          ? { error: Error }
+          : {});
 
 export type NavigationResult<
     SucT extends NavigationActionType = NavigationActionType,
