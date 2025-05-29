@@ -8,16 +8,16 @@ export function normalizeURL(location: string, base: URL) {
     } else if (/^\.\.?\//.test(location)) {
         return new URL(location, base);
     }
-    return new URL(`http://${location}`);
+    try {
+        return new URL(location);
+    } catch {
+        return new URL(`http://${location}`);
+    }
 }
 
 export function parseLocation(location: RouterRawLocation, baseURL: URL): URL {
     if (typeof location === 'string') {
-        try {
-            return new URL(location);
-        } catch {
-            return normalizeURL(location, baseURL);
-        }
+        return normalizeURL(location, baseURL);
     }
 
     const { path = '/', query = {}, queryArray = {}, hash = '' } = location;
