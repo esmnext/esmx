@@ -1,4 +1,4 @@
-import { assert, describe, expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { parseLocation } from './location';
 
 const BASE_URL = 'https://www.esmx.dev';
@@ -200,7 +200,12 @@ describe('parseLocation', () => {
                 {
                     input: './new/100/',
                     expected: 'https://www.esmx.dev/new/100/'
-                }
+                },
+                { input: '.a', expected: 'https://www.esmx.dev/.a' },
+                { input: '..a', expected: 'https://www.esmx.dev/..a' },
+                { input: '.a/', expected: 'https://www.esmx.dev/.a/' },
+                { input: '..a/', expected: 'https://www.esmx.dev/..a/' },
+                { input: 'new/../.', expected: 'https://www.esmx.dev/' }
             ],
             'https://www.esmx.dev/': [
                 { input: '/', expected: 'https://www.esmx.dev/' },
@@ -242,7 +247,12 @@ describe('parseLocation', () => {
                 {
                     input: './new/100/',
                     expected: 'https://www.esmx.dev/new/100/'
-                }
+                },
+                { input: '.a', expected: 'https://www.esmx.dev/.a' },
+                { input: '..a', expected: 'https://www.esmx.dev/..a' },
+                { input: '.a/', expected: 'https://www.esmx.dev/.a/' },
+                { input: '..a/', expected: 'https://www.esmx.dev/..a/' },
+                { input: 'new/../.', expected: 'https://www.esmx.dev/' }
             ],
             'https://www.esmx.dev/a/b/c': [
                 { input: '/', expected: 'https://www.esmx.dev/a/b/' },
@@ -290,6 +300,15 @@ describe('parseLocation', () => {
                 {
                     input: './new/100/',
                     expected: 'https://www.esmx.dev/a/b/new/100/'
+                },
+                { input: '.a', expected: 'https://www.esmx.dev/a/b/.a' },
+                { input: '..a', expected: 'https://www.esmx.dev/a/b/..a' },
+                { input: '.a/', expected: 'https://www.esmx.dev/a/b/.a/' },
+                { input: '..a/', expected: 'https://www.esmx.dev/a/b/..a/' },
+                { input: 'new/../.', expected: 'https://www.esmx.dev/a/b/' },
+                {
+                    input: 'new/.././a/../../x/',
+                    expected: 'https://www.esmx.dev/a/x/'
                 }
             ],
             'https://www.esmx.dev/a/b/c/': [
@@ -341,6 +360,15 @@ describe('parseLocation', () => {
                 {
                     input: './new/100/',
                     expected: 'https://www.esmx.dev/a/b/c/new/100/'
+                },
+                { input: '.a', expected: 'https://www.esmx.dev/a/b/c/.a' },
+                { input: '..a', expected: 'https://www.esmx.dev/a/b/c/..a' },
+                { input: '.a/', expected: 'https://www.esmx.dev/.a/' },
+                { input: '..a/', expected: 'https://www.esmx.dev/..a/' },
+                { input: 'new/.././', expected: 'https://www.esmx.dev/a/b/c/' },
+                {
+                    input: 'new/.././a/../../x/',
+                    expected: 'https://www.esmx.dev/a/b/x/'
                 }
             ]
         }).map(([base, cases]) => {
@@ -363,6 +391,31 @@ describe('parseLocation', () => {
                     );
                     expect(urlWithBaseSuffix).toEqURL(expected + pathSuffix);
                 }
+            );
+        });
+    });
+
+    describe('错误处理', () => {
+        test('对于无效的 URL 应该抛出错误', () => {
+            expect(() =>
+                parseLocation(null as unknown as string, BASE_URL)
+            ).toThrowError('Invalid URL: invalid-url');
+            expect(() =>
+                parseLocation(Number.NaN as unknown as string, BASE_URL)
+            ).toThrowError('Invalid URL: invalid-url');
+            expect(() =>
+                parseLocation('-a://example.com', BASE_URL)
+            ).toThrowError('Invalid URL: invalid-url');
+        });
+    });
+
+    describe('特殊情况', () => {
+        test('特殊 hash 字符', () => {
+            expect(parseLocation(BASE_URL + '#a?a', BASE_URL)).toEqURL(
+                BASE_URL + '#a?a'
+            );
+            expect(parseLocation(BASE_URL + '#a?a#b', BASE_URL)).toEqURL(
+                BASE_URL + '#a?a#b'
             );
         });
     });
