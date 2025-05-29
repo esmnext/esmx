@@ -1,0 +1,19 @@
+- location 解析 （hanson）
+- matcher 实现 （hanson）
+- navigation 实现 (hanson)
+- route 解析 (hanson)
+- task and hooks 实现 (jerry)
+- options 解析 (hanson)
+- router 实例
+    - push (hanson)
+    - replace (hanson)
+    - pushWindow (hanson)
+    - replaceWindow (hanson)
+    - pushLayer (jerry)
+    - reload  (jerry)
+    - popstate (hanson)
+    - destroy (hanson)
+    - register (jerry)
+    - applyRoute(jerry)
+    - resolve (hanson)
+    - renderToString (jerry)

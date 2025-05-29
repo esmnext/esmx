@@ -28,7 +28,7 @@ describe('rawLocationToURL', () => {
             // 4. 裸域名 - 自动添加协议
             assert.equal(
                 parseLocation('github.com', BASE_URL).href,
-                'http://github.com/'
+                'https://github.com/'
             );
             assert.equal(
                 parseLocation('/', BASE_EN_URL).href,
