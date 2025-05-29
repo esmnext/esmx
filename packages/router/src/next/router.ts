@@ -225,7 +225,7 @@ export class Router {
         });
     }
     public go(index: number) {
-        return this._navigation.go(-1);
+        return this._navigation.go(index);
     }
     public forward() {
         return this.go(1);

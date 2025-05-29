@@ -86,13 +86,15 @@ export class Navigation {
 export class MemoryHistory implements History {
     private entries: Array<{ state: any; url: string }> = [];
     private index = -1;
-    public length = 0;
     public scrollRestoration: ScrollRestoration = 'auto';
     public state: any = null;
     public url = '/';
 
     constructor() {
         this.pushState(null, '', '/');
+    }
+    public get length() {
+        return this.entries.length;
     }
 
     public pushState(
@@ -103,9 +105,12 @@ export class MemoryHistory implements History {
         // 移除当前位置之后的所有记录
         this.entries.splice(this.index + 1);
 
-        if (typeof url === 'string' || url instanceof URL) {
-            this.replaceState(data, unused, url);
-        }
+        // 添加新的历史记录
+        const newUrl = url ? url.toString() : this.url;
+        this.entries.push({ state: data, url: newUrl });
+
+        // 通过 _applyByIndex 统一更新状态
+        this._applyByIndex(this.entries.length - 1);
     }
 
     public replaceState(
@@ -147,7 +152,6 @@ export class MemoryHistory implements History {
             this.index = index;
             this.state = entry.state;
             this.url = entry.url;
-            this.length = this.entries.length;
         }
     }
 }
