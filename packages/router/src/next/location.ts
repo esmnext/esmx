@@ -45,7 +45,7 @@ import { isNotNullish } from './util';
  * @param {URL} base - 基础URL对象，用于相对路径解析
  * @returns {URL} 标准化后的URL对象
  */
-export function normalizeURL(location: string, base: URL) {
+export function normalizeURL(location: string, base: URL): URL {
     // 流程节点1: 检查空输入
     if (!location) {
         return new URL(base);
@@ -55,7 +55,7 @@ export function normalizeURL(location: string, base: URL) {
         return new URL(`.${location}`, base);
     }
     // 流程节点3: 检查相对路径
-    else if (/^\.\.?\//.test(location)) {
+    else if (location.startsWith('.')) {
         return new URL(location, base);
     }
     // 流程节点4: 尝试构建完整URL，失败则使用协议回退
