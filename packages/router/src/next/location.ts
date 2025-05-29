@@ -3,7 +3,7 @@ import type { RouterRawLocation } from './types';
 export function normalizeURL(location: string, base: URL) {
     if (!location) {
         return new URL(base);
-    } else if (location.startsWith('/')) {
+    } else if (location.startsWith('/') && !location.startsWith('//')) {
         return new URL(`.${location}`, base);
     } else if (/^\.\.?\//.test(location)) {
         return new URL(location, base);
@@ -11,7 +11,7 @@ export function normalizeURL(location: string, base: URL) {
     try {
         return new URL(location);
     } catch {
-        return new URL(`http://${location}`);
+        return new URL(`https://${location}`);
     }
 }
 
@@ -35,10 +35,7 @@ export function parseLocation(location: RouterRawLocation, baseURL: URL): URL {
         });
     });
 
-    // 设置 hash
-    if (hash) {
-        url.hash = hash.startsWith('#') ? hash : `#${hash}`;
-    }
+    url.hash = hash;
 
     return url;
 }
