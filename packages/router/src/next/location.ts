@@ -5,16 +5,13 @@ export function normalizeURL(location: string, base: URL) {
         return new URL(base);
     } else if (location.startsWith('/')) {
         return new URL(`.${location}`, base);
-    } else if (location.startsWith('./')) {
+    } else if (/^\.\.?\//.test(location)) {
         return new URL(location, base);
     }
     return new URL(`http://${location}`);
 }
 
-export function rawLocationToURL(
-    location: RouterRawLocation,
-    baseURL: URL
-): URL {
+export function parseLocation(location: RouterRawLocation, baseURL: URL): URL {
     if (typeof location === 'string') {
         try {
             return new URL(location);

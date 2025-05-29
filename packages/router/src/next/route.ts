@@ -1,4 +1,4 @@
-import { rawLocationToURL } from './location';
+import { parseLocation } from './location';
 import type { RouteMatchResult } from './matcher';
 import {
     NavigationType,
@@ -32,7 +32,7 @@ export async function parseRoute(
       }
 > {
     const { base, normalizeURL } = options;
-    const location = await normalizeURL(rawLocationToURL(raw, base), raw);
+    const location = await normalizeURL(parseLocation(raw, base), raw);
     // 处理外站逻辑
     if (location.origin !== base.origin) {
         return {
