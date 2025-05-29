@@ -1,9 +1,9 @@
+import { parseLocation } from './location';
 import { Navigation } from './navigation';
 import { parsedOptions } from './options';
 import { parseRoute } from './route';
 import { NavigationActionType, NavigationResultType } from './types';
 import type {
-    NavigationAction,
     NavigationResult,
     RegisteredConfig,
     RegisteredConfigMap,
@@ -19,248 +19,173 @@ export class Router {
     public options: RouterParsedOptions;
     protected _route: null | Route = null;
     protected _navigation: Navigation;
+
     public get route() {
         if (this._route === null) {
             throw new Error(`Route is not ready.`);
         }
         return this._route;
     }
+
     public constructor(options: RouterOptions) {
         this.options = parsedOptions(options);
         this._navigation = new Navigation(
             this.options,
             (url: string, state: RouteState) => {
-                return this._update({
-                    type: NavigationActionType.popstate,
-                    location: {
-                        path: url,
-                        state
-                    }
+                return this._update(NavigationActionType.popstate, {
+                    path: url,
+                    state
                 });
             }
         );
     }
-    protected async _update(
-        action: NavigationAction
-    ): Promise<NavigationResult> {
-        switch (action.type) {
-            case NavigationActionType.push:
-                return this._handlePush(
-                    action as NavigationAction<NavigationActionType.push>
-                );
-            case NavigationActionType.replace:
-                return this._handlePush(
-                    action as NavigationAction<NavigationActionType.replace>
-                );
-            case NavigationActionType.pushWindow:
-                return this._handlePushWindow(
-                    action as NavigationAction<NavigationActionType.pushWindow>
-                );
-            case NavigationActionType.forceReload:
-                return this._handleForceReload(
-                    action as NavigationAction<NavigationActionType.forceReload>
-                );
-            case NavigationActionType.pushLayer:
-                return this._handlePushLayer(
-                    action as NavigationAction<NavigationActionType.pushLayer>
-                );
-            case NavigationActionType.reload:
-                return this._handleReload(
-                    action as NavigationAction<NavigationActionType.reload>
-                );
-            case NavigationActionType.go:
-            case NavigationActionType.back:
-            case NavigationActionType.forward:
-            case NavigationActionType.popstate:
-                return this._handlePopstate(
-                    action as NavigationAction<NavigationActionType.popstate>
-                );
-        }
-    }
-    protected async _handlePush(
-        action: NavigationAction<
-            NavigationActionType.push | NavigationActionType.replace
-        >
-    ): Promise<NavigationResult> {
-        const result = await parseRoute({
-            options: this.options,
-            raw: action.location,
-            type: action.type,
+
+    protected async _normURL(
+        rawLoc: RouterRawLocation,
+        type: NavigationActionType
+    ) {
+        const { base, normalizeURL } = this.options;
+        const location = await normalizeURL({
+            url: parseLocation(rawLoc, base),
+            raw: rawLoc,
+            type,
             router: this
         });
-        switch (result.navResultType) {
-            case NavigationResultType.notFound:
-                return {
-                    navResultType: NavigationResultType.notFound,
-                    navActionType: action.type,
-                    location: result.location
-                };
-            case NavigationResultType.external:
-                return {
-                    navResultType: NavigationResultType.external,
-                    navActionType: action.type,
-                    location: result.location,
-                    result: this.options.externalUrlHandler({
-                        url: result.location,
-                        router: this,
-                        type: action.type
-                    })
-                };
-            case NavigationResultType.success:
-                this._applyRoute(result.route);
-                return {
-                    navResultType: NavigationResultType.success,
-                    navActionType: action.type,
-                    location: result.location,
-                    route: result.route
-                };
-        }
-    }
-    protected async _handlePushWindow(
-        action: NavigationAction<NavigationActionType.pushWindow>
-    ): Promise<NavigationResult> {
-        const result = await parseRoute({
-            options: this.options,
-            raw: action.location,
-            type: action.type,
-            router: this
-        });
-        switch (result.navResultType) {
-            case NavigationResultType.notFound:
-                return {
-                    navResultType: NavigationResultType.notFound,
-                    navActionType: action.type,
-                    location: result.location
-                };
-            case NavigationResultType.external:
-                return {
-                    navResultType: NavigationResultType.external,
-                    navActionType: action.type,
-                    location: result.location,
-                    result: this.options.externalUrlHandler({
-                        url: result.location,
-                        router: this,
-                        type: action.type
-                    })
-                };
-            case NavigationResultType.success:
-                setTimeout(() => openWindow(result.location));
-                return {
-                    navActionType: NavigationActionType.pushWindow,
-                    navResultType: NavigationResultType.success,
-                    location: result.location
-                };
-        }
-    }
-    protected async _handleForceReload(
-        action: NavigationAction<NavigationActionType.forceReload>
-    ): Promise<NavigationResult> {
-        const result = await parseRoute({
-            options: this.options,
-            raw: action.location,
-            type: action.type,
-            router: this
-        });
-        setTimeout(() => {
-            location.href = result.location.href;
-        });
-        return {
-            navActionType: NavigationActionType.forceReload,
-            navResultType: NavigationResultType.success,
-            location: result.location
-        };
-    }
-    protected async _handlePushLayer(
-        action: NavigationAction<NavigationActionType.pushLayer>
-    ): Promise<NavigationResult> {
-        return {
-            navResultType: NavigationResultType.error,
-            navActionType: action.type,
-            location: action.location,
-            error: new Error('Push layer is not supported yet.')
-        };
-    }
-    protected async _handleReload(
-        action: NavigationAction<NavigationActionType.reload>
-    ): Promise<NavigationResult> {
-        const result = await parseRoute({
-            options: this.options,
-            raw: action.location,
-            type: action.type,
-            router: this
-        });
-        setTimeout(() => {
-            location.href = result.location.href;
-        });
-        return {
-            navActionType: NavigationActionType.reload,
-            navResultType: NavigationResultType.success,
-            location: result.location
-        };
-    }
-    protected async _handlePopstate(
-        action: NavigationAction<NavigationActionType.popstate>
-    ): Promise<NavigationResult> {
-        const result = await parseRoute({
-            options: this.options,
-            raw: action.location,
-            type: action.type,
-            router: this
-        });
-        if (result.navResultType === NavigationResultType.success) {
-            this._applyRoute(result.route);
+        // 处理外站逻辑
+        if (!location.href.startsWith(base.href)) {
             return {
-                navResultType: NavigationResultType.success,
-                navActionType: action.type,
-                location: result.location,
-                route: result.route
+                navResultType: NavigationResultType.external,
+                location
             };
         }
         return {
-            navResultType: NavigationResultType.error,
-            navActionType: action.type,
-            location: action.location,
-            error: new Error(`Failed to handle popstate: ${action.location}`)
+            navResultType: NavigationResultType.success,
+            location
         };
     }
+
+    protected async _update(
+        type: NavigationActionType,
+        raw: RouterRawLocation
+    ): Promise<NavigationResult> {
+        // 是否是类似浏览器的历史操作
+        const isHistoryAction =
+            type === NavigationActionType.go ||
+            type === NavigationActionType.back ||
+            type === NavigationActionType.forward ||
+            type === NavigationActionType.popstate;
+
+        let normLoc = this.options.base;
+        // 如果不是 go 等类型，则需要先标准化URL，如果是外部链接，则直接返回
+        if (!isHistoryAction) {
+            const normResult = await this._normURL(raw, type);
+            // 如果是外部链接，则直接返回
+            if (normResult.navResultType === NavigationResultType.external) {
+                return {
+                    navResultType: NavigationResultType.external,
+                    navActionType: type,
+                    location: normResult.location,
+                    result: this.options.externalUrlHandler({
+                        url: normResult.location,
+                        router: this,
+                        type
+                    })
+                };
+            }
+            normLoc = normResult.location;
+        }
+
+        // 如果是打开新窗口的操作，则直接用解析后的 URL 新开窗口
+        if (type === NavigationActionType.openWindow) {
+            setTimeout(() => openWindow(normLoc));
+            return {
+                navActionType: NavigationActionType.openWindow,
+                navResultType: NavigationResultType.success,
+                location: normLoc
+            };
+        }
+
+        // 如果是 forceReload，则直接用解析后的 URL 刷新页面
+        if (type === NavigationActionType.forceReload) {
+            setTimeout(() => (location.href = normLoc.href));
+            return {
+                navActionType: NavigationActionType.forceReload,
+                navResultType: NavigationResultType.success,
+                location: normLoc
+            };
+        }
+
+        // 其他类型的导航都需要处理路由匹配和应用
+        const result = parseRoute({
+            matcher: this.options.matcher,
+            base: this.options.base,
+            raw,
+            location: normLoc
+        });
+        if (result.navResultType === NavigationResultType.notFound) {
+            return {
+                navResultType: NavigationResultType.notFound,
+                navActionType: type,
+                location: normLoc
+            };
+        }
+        // 匹配路由成功后有可能会重新构造 URL
+        normLoc = result.location;
+        // 如果是 push 或 replace 或 go 等类型，则应用路由并返回
+        if (
+            isHistoryAction ||
+            type === NavigationActionType.push ||
+            type === NavigationActionType.replace
+        ) {
+            this._applyRoute(
+                result.route,
+                type === NavigationActionType.replace
+            );
+            return {
+                navResultType: NavigationResultType.success,
+                navActionType: type,
+                location: normLoc,
+                route: result.route
+            };
+        }
+
+        // 剩下的还有 pushLayer 和 reload
+        return {
+            navResultType: NavigationResultType.error,
+            navActionType: type,
+            location: normLoc,
+            error: new Error(`type ${type} is not supported yet.`)
+        };
+    }
+
     protected _applyRoute(route: Route, replace = false) {
         this._route = route;
         this._navigation.push(route, replace);
     }
-    public destroy() {
-        this._navigation.destroy();
-        this._destroyAllApp();
-        this._registeredCfgMap = {};
-    }
 
     public push(location: RouterRawLocation) {
-        return this._update({ type: NavigationActionType.push, location });
+        return this._update(NavigationActionType.push, location);
     }
     public replace(location: RouterRawLocation) {
-        return this._update({ type: NavigationActionType.replace, location });
+        return this._update(NavigationActionType.replace, location);
     }
     public pushLayer(location: RouterRawLocation) {
-        return this._update({ type: NavigationActionType.pushLayer, location });
+        return this._update(NavigationActionType.pushLayer, location);
     }
     public openWindow(location: RouterRawLocation) {
-        return this._update({
-            type: NavigationActionType.pushWindow,
-            location
-        });
+        return this._update(NavigationActionType.openWindow, location);
     }
     public forceReload(location: RouterRawLocation) {
-        return this._update({
-            type: NavigationActionType.forceReload,
-            location
-        });
+        return this._update(NavigationActionType.forceReload, location);
     }
     public reload(location?: RouterRawLocation) {
-        return this._update({
-            type: NavigationActionType.reload,
-            location: location ?? this.route.href
-        });
+        return this._update(
+            NavigationActionType.reload,
+            location ?? this.route.href
+        );
     }
 
+    // TODO: 实现一个 await popstate 之类的方法，将所有逻辑都收拢到 this._update 方法中
     public go(index: number) {
         return this._navigation.go(index);
     }
@@ -293,10 +218,15 @@ export class Router {
         cfg.mounted = false;
         cfg.config = void 0;
     }
-
     protected _destroyAllApp() {
         for (const appType in this._registeredCfgMap) {
             this._destroyApp(appType);
         }
+    }
+
+    public destroy() {
+        this._navigation.destroy();
+        this._destroyAllApp();
+        this._registeredCfgMap = {};
     }
 }

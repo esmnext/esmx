@@ -4,7 +4,7 @@ import type { Router } from './router';
 export enum NavigationActionType {
     push = 'push',
     replace = 'replace',
-    pushWindow = 'pushWindow',
+    openWindow = 'openWindow',
     pushLayer = 'pushLayer',
     reload = 'reload',
     forceReload = 'forceReload',
@@ -42,13 +42,6 @@ export enum NavigationResultType {
     error = 'error'
 }
 
-export type NavigationAction<
-    T extends NavigationActionType = NavigationActionType
-> = {
-    type: T;
-    location: RouterRawLocation;
-};
-
 export type NavigationSuccessResult<
     T extends NavigationActionType = NavigationActionType
 > = {
@@ -60,7 +53,7 @@ export type NavigationSuccessResult<
     | NavigationActionType.replace
     | NavigationActionType.popstate
     ? { route: Route }
-    : T extends NavigationActionType.pushWindow
+    : T extends NavigationActionType.openWindow
       ? { result?: any }
       : {});
 
