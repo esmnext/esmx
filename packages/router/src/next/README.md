@@ -1,9 +1,9 @@
-- location 解析 （hanson）
+- location 解析 （jerry）
 - matcher 实现 （hanson）
 - navigation 实现 (hanson)
 - route 解析 (hanson)
 - task and hooks 实现 (jerry)
-- options 解析 (hanson)
+- options 解析 (jerry)
 - router 实例
     - push (hanson)
     - replace (hanson)
