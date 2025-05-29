@@ -46,23 +46,16 @@ import { isNotNullish } from './util';
  * @returns {URL} 标准化后的URL对象
  */
 export function normalizeURL(location: string, base: URL): URL {
-    // 流程节点1: 检查空输入
+    if (location.startsWith('//')) {
+        return new URL(`http:${location}`);
+    }
     if (!location) {
         return new URL(base);
     }
-    // 流程节点2: 检查绝对路径（非协议路径）
-    else if (location.startsWith('/') && !location.startsWith('//')) {
-        return new URL(`.${location}`, base);
-    }
-    // 流程节点3: 检查相对路径
-    else if (location.startsWith('.')) {
-        return new URL(location, base);
-    }
-    // 流程节点4: 尝试构建完整URL，失败则使用协议回退
     try {
         return new URL(location);
     } catch {
-        return new URL(`${base.protocol}//${location}`);
+        return new URL(location, base);
     }
 }
 
