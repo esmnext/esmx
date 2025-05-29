@@ -1,6 +1,7 @@
 import type { RouterRawLocation } from './types';
 
-export function normalizeURL(location: string, base: URL) {
+export function normalizeURL(location: string, base: URL | string) {
+    base = new URL(base);
     if (!location) {
         return new URL(base);
     } else if (location.startsWith('/') && !location.startsWith('//')) {
@@ -15,7 +16,10 @@ export function normalizeURL(location: string, base: URL) {
     }
 }
 
-export function parseLocation(location: RouterRawLocation, baseURL: URL): URL {
+export function parseLocation(
+    location: RouterRawLocation,
+    baseURL: URL | string
+): URL {
     if (typeof location === 'string') {
         return normalizeURL(location, baseURL);
     }
