@@ -28,9 +28,11 @@ export function parsedOptions(options: RouterOptions): RouterParsedOptions {
         matcher: createMatcher(routes),
         normalizeURL: options.normalizeURL ?? ((url) => url),
         onOpen: (url: URL, navType: NavigationType, route?: Route) => {
-            const result = options.onOpen?.(url, navType, route);
-            if (result !== false) {
-                DEFAULT_ON_OPEN(url, navType, route);
+            if (isBrowser) {
+                const result = options.onOpen?.(url, navType, route);
+                if (result !== false) {
+                    DEFAULT_ON_OPEN(url, navType, route);
+                }
             }
             return true;
         },
