@@ -5,8 +5,6 @@ import {
     type NavigationResult,
     NavigationType,
     type Route,
-    type RouteMeta,
-    type RouteState,
     type RouterParsedOptions,
     type RouterRawLocation
 } from './types';
