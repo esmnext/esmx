@@ -6,15 +6,49 @@ import type {
     NavigationResult,
     Route,
     RouteState,
+    RouterMicroApp,
+    RouterMicroAppCallback,
     RouterOptions,
     RouterParsedOptions,
     RouterRawLocation
 } from './types';
 
+class MicroApp {
+    public app: RouterMicroApp | null = null;
+    private _factory: RouterMicroAppCallback | null = null;
+    public _update(router: Router) {
+        const factory = this._getNextFactory(router) ?? null;
+        if (factory === this._factory) {
+            return;
+        }
+        const oldApp = this.app;
+        // 创建新的应用
+        const app = factory ? factory(router) : null;
+        app?.mount();
+        this.app = app;
+        this._factory = factory;
+        // 销毁旧的应用
+        oldApp?.unmount();
+    }
+    private _getNextFactory({ route, options }: Router) {
+        return typeof route.matched[0].app === 'string'
+            ? options.apps[route.matched[0].app]
+            : route.matched[0].app;
+    }
+}
+
 export class Router {
     public options: RouterParsedOptions;
     private _route: null | Route = null;
     private _navigation: Navigation;
+    private _microApp: MicroApp = new MicroApp();
+
+    public get app() {
+        if (this._microApp.app === null) {
+            throw new Error(`App is not ready.`);
+        }
+        return this._microApp.app;
+    }
     public get route() {
         if (this._route === null) {
             throw new Error(`Route is not ready.`);
@@ -34,7 +68,7 @@ export class Router {
                         state
                     },
                     handle: async (result) => {
-                        this._applyRoute(result.route);
+                        await this._applyRoute(result.route);
                         return {
                             ...result,
                             navType: NavigationType.popstate
@@ -44,8 +78,9 @@ export class Router {
             }
         );
     }
-    private _applyRoute(route: Route) {
+    private async _applyRoute(route: Route) {
         this._route = route;
+        this._microApp._update(this);
     }
     public push(location: RouterRawLocation): Promise<NavigationResult> {
         return handleRoute({
@@ -53,7 +88,7 @@ export class Router {
             options: this.options,
             location,
             handle: async (result) => {
-                this._applyRoute(result.route);
+                await this._applyRoute(result.route);
                 this._navigation.push(result.route);
                 return result;
             }
@@ -65,7 +100,7 @@ export class Router {
             options: this.options,
             location,
             handle: async (result) => {
-                this._applyRoute(result.route);
+                await this._applyRoute(result.route);
                 this._navigation.push(result.route, true);
                 return result;
             }
@@ -147,7 +182,7 @@ export class Router {
             options: this.options,
             location: location ?? this.route.href,
             handle: async (result) => {
-                this._applyRoute(result.route);
+                await this._applyRoute(result.route);
                 return result;
             }
         });

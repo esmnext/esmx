@@ -1,4 +1,5 @@
 import type { MatchFunction } from 'path-to-regexp';
+import type { Router } from './router';
 
 export enum NavigationType {
     // 基本导航操作
@@ -52,10 +53,13 @@ export enum RouterMode {
 }
 
 export interface RouterMicroApp {
+    context?: any;
     mount: () => void;
     unmount: () => void;
     renderToString?: () => Awaitable<string>;
 }
+
+export type RouterMicroAppCallback = (router: Router) => RouterMicroApp;
 
 export interface RouterOptions {
     base?: URL;
@@ -64,7 +68,7 @@ export interface RouterOptions {
     normalizeURL?: (url: URL, raw: RouterRawLocation) => URL;
     onOpen?: (url: URL, navType: NavigationType, route?: Route) => boolean;
     scrollBehavior?: RouterScrollBehavior;
-    apps?: Record<string, RouterMicroApp>;
+    apps?: Record<string, RouterMicroAppCallback | undefined>;
 }
 
 export interface RouterParsedOptions extends Required<RouterOptions> {
@@ -113,7 +117,7 @@ export interface RouteConfig {
     /**
      * 应用类型, 只在根路由配置有效
      */
-    appType?: string;
+    app?: string | RouterMicroAppCallback;
 
     /**
      * 按 Hanson 要求，不提供 name 功能
