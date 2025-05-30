@@ -134,6 +134,7 @@ export function createRoute(
     const fullPath = `${path}${location.search}${location.hash}`;
     const matched = match.matches.map((item) => item.route);
     return {
+        location,
         hash: location.hash,
         host: location.host,
         hostname: location.hostname,

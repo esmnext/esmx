@@ -19,11 +19,10 @@ export enum NavigationType {
     resolve = 'resolve',
 
     // 导航结果状态
+    open = 'open',
     aborted = 'aborted',
     duplicate = 'duplicate',
-    notFound = 'notFound',
-    error = 'error',
-    open = 'open'
+    notFound = 'notFound'
 }
 
 export type NavigationResult =
@@ -43,10 +42,9 @@ export type NavigationResult =
     | { navType: NavigationType.pushLayer; location: URL; result: any }
 
     // 导航结果状态
-    | { navType: NavigationType.notFound; location: URL }
     | { navType: NavigationType.open; location: URL }
-    | { navType: NavigationType.duplicate }
-    | { navType: NavigationType.error };
+    | { navType: NavigationType.duplicate; location: URL }
+    | { navType: NavigationType.notFound; location: URL };
 
 export enum RouterMode {
     history = 'history',
@@ -179,6 +177,7 @@ export type NavigationGuard = (
 export type NavigationGuardReturn = boolean | RouterRawLocation;
 
 export interface Route {
+    location: URL;
     hash: string;
     host: string;
     hostname: string;

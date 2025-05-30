@@ -8,10 +8,11 @@ import {
 } from './types';
 
 type NavigationSubscribe = (url: string, state: RouteState) => void;
-type NavigationGoResult =
-    | { type: 'duplicate' }
-    | { type: 'timeout' }
-    | { type: 'success'; url: string; state: RouteState };
+type NavigationGoResult = null | {
+    type: 'success';
+    url: string;
+    state: RouteState;
+};
 
 export class Navigation {
     public options: RouterParsedOptions;
@@ -61,17 +62,13 @@ export class Navigation {
     }
     public go(index: number): Promise<NavigationGoResult> {
         if (this._promiseResolve) {
-            return Promise.resolve({
-                type: NavigationType.duplicate
-            });
+            return Promise.resolve(null);
         }
         return new Promise<NavigationGoResult>((resolve, reject) => {
             this._promiseResolve = resolve;
             this.history.go(index);
             setTimeout(() => {
-                resolve({
-                    type: 'timeout'
-                });
+                resolve(null);
             }, 80);
         });
     }

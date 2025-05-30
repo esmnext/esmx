@@ -79,16 +79,13 @@ export class Router {
             | NavigationType.forward
     ): Promise<NavigationResult> {
         const result = await this._navigation.go(index);
-        switch (result.type) {
-            case 'duplicate':
-                return {
-                    navType: NavigationType.duplicate
-                };
-            case 'timeout':
-                return {
-                    navType: NavigationType.error
-                };
+        if (result === null) {
+            return {
+                navType: NavigationType.duplicate,
+                location: this.route.location
+            };
         }
+
         return handleRoute({
             navType,
             options: this.options,
