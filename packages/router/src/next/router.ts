@@ -77,7 +77,7 @@ export class Router {
                 handleRoute({
                     navType: NavigationType.popstate,
                     options: this.options,
-                    location: {
+                    loc: {
                         path: url,
                         state
                     },
@@ -96,18 +96,18 @@ export class Router {
         this._route = route;
         this._microApp._update(this);
     }
-    public resolve(location: RouterRawLocation): Route {
-        const result = parseRoute(this.options, location);
+    public resolve(loc: RouterRawLocation): Route {
+        const result = parseRoute(this.options, loc);
         if (result.navType === NavigationType.resolve) {
             return result.route;
         }
         return createRouteByURL(this.options.base);
     }
-    public push(location: RouterRawLocation): Promise<NavigationResult> {
+    public push(loc: RouterRawLocation): Promise<NavigationResult> {
         return handleRoute({
             navType: NavigationType.push,
             options: this.options,
-            location,
+            loc,
             handle: async (result) => {
                 await this._applyRoute(result.route);
                 this._navigation.push(result.route);
@@ -115,11 +115,11 @@ export class Router {
             }
         });
     }
-    public replace(location: RouterRawLocation) {
+    public replace(loc: RouterRawLocation) {
         return handleRoute({
             navType: NavigationType.replace,
             options: this.options,
-            location,
+            loc: loc,
             handle: async (result) => {
                 await this._applyRoute(result.route);
                 this._navigation.push(result.route, true);
@@ -138,14 +138,14 @@ export class Router {
         if (result === null) {
             return {
                 navType: NavigationType.duplicate,
-                location: this.route.location
+                loc: this.route.loc
             };
         }
 
         return handleRoute({
             navType,
             options: this.options,
-            location: {
+            loc: {
                 path: result.url,
                 state: result.state
             },
@@ -163,45 +163,35 @@ export class Router {
     public async back() {
         return this._handleGo(-1, NavigationType.back);
     }
-    public pushLayer(location: RouterRawLocation) {}
-    public openWindow(location: RouterRawLocation): Promise<NavigationResult> {
+    public pushLayer(loc: RouterRawLocation) {}
+    public openWindow(loc: RouterRawLocation): Promise<NavigationResult> {
         return handleRoute({
             navType: NavigationType.openWindow,
             options: this.options,
-            location,
+            loc: loc,
             handle: async (result) => {
-                this.options.onOpen(
-                    result.location,
-                    result.navType,
-                    result.route
-                );
+                this.options.onOpen(result.loc, result.navType, result.route);
                 return result;
             }
         });
     }
-    public replaceWindow(
-        location: RouterRawLocation
-    ): Promise<NavigationResult> {
+    public replaceWindow(loc: RouterRawLocation): Promise<NavigationResult> {
         return handleRoute({
             navType: NavigationType.replaceWindow,
             options: this.options,
-            location,
+            loc: loc,
             handle: async (result) => {
-                this.options.onOpen(
-                    result.location,
-                    result.navType,
-                    result.route
-                );
+                this.options.onOpen(result.loc, result.navType, result.route);
                 return result;
             }
         });
     }
-    public reload(location?: RouterRawLocation) {
+    public reload(loc?: RouterRawLocation) {
         const navType = NavigationType.reload;
         return handleRoute({
             navType,
             options: this.options,
-            location: location ?? this.route.href,
+            loc: loc ?? this.route.href,
             handle: async (result) => {
                 await this._applyRoute(result.route);
                 return result;

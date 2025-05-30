@@ -68,29 +68,32 @@ export function parseLocation(loc: RouterRawLocation, baseURL: URL): URL {
     if (typeof loc === 'string') {
         return normalizeURL(loc, baseURL);
     }
-
-    // 解构对象并设置默认值
-    const { location, path = '', query = {}, queryArray = {}, hash = '' } = loc;
-    const url = normalizeURL(location ?? path, baseURL);
+    const url = normalizeURL(loc.loc ?? loc.path ?? '', baseURL);
 
     // 处理普通查询参数（键值对形式）
-    Object.entries(query).forEach(([key, value]) => {
-        if (isNotNullish(value)) {
-            url.searchParams.set(key, String(value));
-        }
-    });
-
-    // 处理数组查询参数（同一个键对应多个值）
-    Object.entries(queryArray).forEach(([key, values]) => {
-        values.forEach((value) => {
+    if (loc.query) {
+        Object.entries(loc.query).forEach(([key, value]) => {
             if (isNotNullish(value)) {
-                url.searchParams.append(key, value);
+                url.searchParams.set(key, String(value));
             }
         });
-    });
+    }
+
+    // 处理数组查询参数（同一个键对应多个值）
+    if (loc.queryArray) {
+        Object.entries(loc.queryArray).forEach(([key, values]) => {
+            values.forEach((value) => {
+                if (isNotNullish(value)) {
+                    url.searchParams.append(key, value);
+                }
+            });
+        });
+    }
 
     // 设置hash值（URL片段标识符）
-    url.hash = hash;
+    if (loc.hash) {
+        url.hash = loc.hash;
+    }
 
     return url;
 }

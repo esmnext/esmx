@@ -28,24 +28,24 @@ export enum NavigationType {
 
 export type NavigationResult =
     // 基本导航操作结果
-    | { navType: NavigationType.push; location: URL; route: Route }
-    | { navType: NavigationType.replace; location: URL; route: Route }
-    | { navType: NavigationType.reload; location: URL; route: Route }
-    | { navType: NavigationType.go; location: URL; route: Route }
-    | { navType: NavigationType.forward; location: URL; route: Route }
-    | { navType: NavigationType.back; location: URL; route: Route }
-    | { navType: NavigationType.popstate; location: URL; route: Route }
-    | { navType: NavigationType.resolve; location: URL; route: Route }
+    | { navType: NavigationType.push; loc: URL; route: Route }
+    | { navType: NavigationType.replace; loc: URL; route: Route }
+    | { navType: NavigationType.reload; loc: URL; route: Route }
+    | { navType: NavigationType.go; loc: URL; route: Route }
+    | { navType: NavigationType.forward; loc: URL; route: Route }
+    | { navType: NavigationType.back; loc: URL; route: Route }
+    | { navType: NavigationType.popstate; loc: URL; route: Route }
+    | { navType: NavigationType.resolve; loc: URL; route: Route }
 
     // 窗口/层导航结果
-    | { navType: NavigationType.openWindow; location: URL }
-    | { navType: NavigationType.replaceWindow; location: URL }
-    | { navType: NavigationType.pushLayer; location: URL; result: any }
+    | { navType: NavigationType.openWindow; loc: URL }
+    | { navType: NavigationType.replaceWindow; loc: URL }
+    | { navType: NavigationType.pushLayer; loc: URL; result: any }
 
     // 导航结果状态
-    | { navType: NavigationType.open; location: URL }
-    | { navType: NavigationType.duplicate; location: URL }
-    | { navType: NavigationType.notFound; location: URL };
+    | { navType: NavigationType.open; loc: URL }
+    | { navType: NavigationType.duplicate; loc: URL }
+    | { navType: NavigationType.notFound; loc: URL };
 
 export enum RouterMode {
     history = 'history',
@@ -84,7 +84,7 @@ export type RouteRedirect =
     | ((to: Route) => RouterRawLocation);
 
 export interface RouterLocation {
-    location?: string | URL;
+    loc?: string | URL;
     path?: string;
     query?: Record<string, string | undefined>;
     queryArray?: Record<string, string[]>;
@@ -183,7 +183,7 @@ export type NavigationGuard = (
 export type NavigationGuardReturn = boolean | RouterRawLocation;
 
 export interface Route {
-    location: URL;
+    loc: URL;
     hash: string;
     host: string;
     hostname: string;
