@@ -4,7 +4,6 @@ import {
     type Awaitable,
     type NavigationResult,
     NavigationType,
-    OpenType,
     type Route,
     type RouteMeta,
     type RouteState,
@@ -17,11 +16,11 @@ export function parseRoute(
     raw: RouterRawLocation
 ):
     | {
-          navType: NavigationType.crossOrigin;
+          navType: NavigationType.open;
           location: URL;
       }
     | {
-          navType: NavigationType.crossApp;
+          navType: NavigationType.open;
           location: URL;
       }
     | {
@@ -38,13 +37,13 @@ export function parseRoute(
     // 处理外站逻辑
     if (location.origin !== base.origin) {
         return {
-            navType: NavigationType.crossOrigin,
+            navType: NavigationType.open,
             location
         };
     }
     if (location.pathname.length < base.pathname.length) {
         return {
-            navType: NavigationType.crossApp,
+            navType: NavigationType.open,
             location
         };
     }
@@ -96,20 +95,10 @@ export async function handleRoute<T extends NavigationType>({
 }): Promise<NavigationResult> {
     const result = parseRoute(options, location);
     switch (result.navType) {
-        case NavigationType.crossOrigin:
-            options.onOpen(
-                result.location,
-                result.navType,
-                OpenType.crossOrigin
-            );
+        case NavigationType.open:
+            options.onOpen(result.location, result.navType);
             return {
-                navType: NavigationType.crossOrigin,
-                location: result.location
-            };
-        case NavigationType.crossApp:
-            options.onOpen(result.location, result.navType, OpenType.crossApp);
-            return {
-                navType: NavigationType.crossApp,
+                navType: NavigationType.open,
                 location: result.location
             };
         case NavigationType.notFound:

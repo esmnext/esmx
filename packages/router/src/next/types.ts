@@ -21,11 +21,9 @@ export enum NavigationType {
     // 导航结果状态
     aborted = 'aborted',
     duplicate = 'duplicate',
-    redirect = 'redirect',
-    crossOrigin = 'crossOrigin',
-    crossApp = 'crossApp',
     notFound = 'notFound',
-    error = 'error'
+    error = 'error',
+    open = 'open'
 }
 
 export type NavigationResult =
@@ -46,8 +44,7 @@ export type NavigationResult =
 
     // 导航结果状态
     | { navType: NavigationType.notFound; location: URL }
-    | { navType: NavigationType.crossOrigin; location: URL }
-    | { navType: NavigationType.crossApp; location: URL }
+    | { navType: NavigationType.open; location: URL }
     | { navType: NavigationType.duplicate }
     | { navType: NavigationType.error };
 
@@ -62,18 +59,12 @@ export interface RouterMicroApp {
     renderToString?: () => Awaitable<string>;
 }
 
-export enum OpenType {
-    crossOrigin = 'crossOrigin',
-    crossApp = 'crossApp',
-    inApp = 'inApp'
-}
-
 export interface RouterOptions {
     base?: URL;
     mode?: RouterMode;
     routes?: RouteConfig[];
     normalizeURL?: (url: URL, raw: RouterRawLocation) => URL;
-    onOpen?: (url: URL, navType: NavigationType, openType: OpenType) => boolean;
+    onOpen?: (url: URL, navType: NavigationType, route?: Route) => boolean;
     scrollBehavior?: RouterScrollBehavior;
     apps?: Record<string, RouterMicroApp>;
 }

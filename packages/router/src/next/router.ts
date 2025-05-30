@@ -2,14 +2,13 @@ import { Navigation } from './navigation';
 import { parsedOptions } from './options';
 import { handleRoute } from './route';
 import { NavigationType } from './types';
-import {
-    type NavigationResult,
-    OpenType,
-    type Route,
-    type RouteState,
-    type RouterOptions,
-    type RouterParsedOptions,
-    type RouterRawLocation
+import type {
+    NavigationResult,
+    Route,
+    RouteState,
+    RouterOptions,
+    RouterParsedOptions,
+    RouterRawLocation
 } from './types';
 
 export class Router {
@@ -112,7 +111,7 @@ export class Router {
         return this._handleGo(-1, NavigationType.back);
     }
     public pushLayer(location: RouterRawLocation) {}
-    public pushWindow(location: RouterRawLocation): Promise<NavigationResult> {
+    public openWindow(location: RouterRawLocation): Promise<NavigationResult> {
         return handleRoute({
             navType: NavigationType.pushWindow,
             options: this.options,
@@ -121,7 +120,7 @@ export class Router {
                 this.options.onOpen(
                     result.location,
                     result.navType,
-                    OpenType.inApp
+                    result.route
                 );
                 return result;
             }
@@ -138,7 +137,7 @@ export class Router {
                 this.options.onOpen(
                     result.location,
                     result.navType,
-                    OpenType.inApp
+                    result.route
                 );
                 return result;
             }
