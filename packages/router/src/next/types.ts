@@ -6,19 +6,17 @@ export enum NavigationType {
     push = 'push',
     replace = 'replace',
     reload = 'reload',
+    go = 'go',
+    forward = 'forward',
+    back = 'back',
+    popstate = 'popstate',
 
     // 窗口/层导航
     pushWindow = 'pushWindow',
     replaceWindow = 'replaceWindow',
     pushLayer = 'pushLayer',
 
-    // 历史记录操作
-    go = 'go',
-    forward = 'forward',
-    back = 'back',
-
-    // 路由事件
-    popstate = 'popstate',
+    // 路由解析
     resolve = 'resolve',
 
     // 导航结果状态
@@ -36,27 +34,31 @@ export type NavigationAction =
     | { type: NavigationType.push; location: RouterRawLocation }
     | { type: NavigationType.replace; location: RouterRawLocation }
     | { type: NavigationType.reload; location: RouterRawLocation }
+    | { type: NavigationType.go; location: RouterRawLocation }
+    | { type: NavigationType.forward; location: RouterRawLocation }
+    | { type: NavigationType.back; location: RouterRawLocation }
+    | { type: NavigationType.popstate; location: RouterRawLocation }
 
     // 窗口/层导航
     | { type: NavigationType.pushWindow; location: RouterRawLocation }
     | { type: NavigationType.replaceWindow; location: RouterRawLocation }
-    | { type: NavigationType.pushLayer; location: RouterRawLocation }
-
-    // 路由事件
-    | { type: NavigationType.popstate; location: RouterRawLocation };
+    | { type: NavigationType.pushLayer; location: RouterRawLocation };
 
 export type NavigationResult =
     // 基本导航操作结果
     | { type: NavigationType.push; location: URL; route: Route }
     | { type: NavigationType.replace; location: URL; route: Route }
-    | { type: NavigationType.reload; location: URL }
+    | { type: NavigationType.reload; location: URL; route: Route }
+    | { type: NavigationType.go; location: URL; route: Route }
+    | { type: NavigationType.forward; location: URL; route: Route }
+    | { type: NavigationType.back; location: URL; route: Route }
+    | { type: NavigationType.popstate; location: URL; route: Route }
+    | { type: NavigationType.resolve; location: URL; route: Route }
 
     // 窗口/层导航结果
     | { type: NavigationType.pushWindow; location: URL; result: any }
     | { type: NavigationType.replaceWindow; location: URL }
-
-    // 路由事件结果
-    | { type: NavigationType.popstate; location: URL; route: Route }
+    | { type: NavigationType.pushLayer; location: URL; result: any }
 
     // 导航结果状态
     | { type: NavigationType.notFound; location: URL }
@@ -81,6 +83,11 @@ export interface RouterOptions {
         type: NavigationType
     ) => Awaitable<any>;
     onOpenCrossApp?: (
+        url: URL,
+        replace: boolean,
+        type: NavigationType
+    ) => Awaitable<any>;
+    onOpenInApp?: (
         url: URL,
         replace: boolean,
         type: NavigationType

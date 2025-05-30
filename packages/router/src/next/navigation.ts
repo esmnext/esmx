@@ -8,15 +8,19 @@ import {
 } from './types';
 
 type NavigationSubscribe = (url: string, state: RouteState) => void;
+type NavigationGoResult =
+    | { type: 'duplicate' }
+    | { type: 'timeout' }
+    | { type: 'success'; url: string; state: RouteState };
 
 export class Navigation {
     public options: RouterParsedOptions;
     private history: History;
     private _destroy: () => void;
-    private _promiseResolve: ((result: NavigationResult) => void) | null = null;
+    private _promiseResolve: ((data: NavigationGoResult) => void) | null = null;
     public constructor(
         options: RouterParsedOptions,
-        update?: (url: string, state: RouteState) => Promise<NavigationResult>
+        update?: (url: string, state: RouteState) => void
     ) {
         this.options = options;
         this.history =
@@ -29,13 +33,11 @@ export class Navigation {
         ) => {
             const { _promiseResolve } = this;
             if (_promiseResolve) {
-                if (update) {
-                    update(url, state).then(_promiseResolve);
-                } else {
-                    _promiseResolve({
-                        type: NavigationType.error
-                    });
-                }
+                _promiseResolve({
+                    type: 'success',
+                    url,
+                    state
+                });
             } else if (update) {
                 update(url, state);
             }
@@ -57,24 +59,26 @@ export class Navigation {
             this.history.pushState(nextState, '', route.fullPath);
         }
     }
-    public go(index: number): Promise<NavigationResult> {
+    public go(index: number): Promise<NavigationGoResult> {
         if (this._promiseResolve) {
             return Promise.resolve({
                 type: NavigationType.duplicate
             });
         }
-        return new Promise<NavigationResult>((resolve, reject) => {
+        return new Promise<NavigationGoResult>((resolve, reject) => {
             this._promiseResolve = resolve;
             this.history.go(index);
             setTimeout(() => {
-                reject(false);
+                resolve({
+                    type: 'timeout'
+                });
             }, 80);
         });
     }
-    public forward(): Promise<NavigationResult> {
+    public forward(): Promise<NavigationGoResult> {
         return this.go(1);
     }
-    public back(): Promise<NavigationResult> {
+    public back(): Promise<NavigationGoResult> {
         return this.go(-1);
     }
     public destroy() {

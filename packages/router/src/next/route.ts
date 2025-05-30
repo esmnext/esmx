@@ -1,6 +1,7 @@
 import { parseLocation } from './location';
 import type { RouteMatchResult } from './matcher';
 import {
+    type NavigationResult,
     NavigationType,
     type Route,
     type RouteMeta,
@@ -75,6 +76,47 @@ export async function parseRoute(
         location,
         route
     };
+}
+
+export async function handleRoute({
+    options,
+    location,
+    replace,
+    handle,
+    navType
+}: {
+    options: RouterParsedOptions;
+    location: RouterRawLocation;
+    replace: boolean;
+    navType: NavigationType;
+    handle: (location: URL, route: Route) => Promise<NavigationResult>;
+}): Promise<NavigationResult> {
+    const result = await parseRoute(options, location);
+    switch (result.type) {
+        case NavigationType.crossOrigin:
+            return {
+                type: NavigationType.crossOrigin,
+                location: result.location,
+                result: options.onOpenCrossOrigin(
+                    result.location,
+                    replace,
+                    navType
+                )
+            };
+        case NavigationType.crossApp:
+            return {
+                type: NavigationType.crossApp,
+                location: result.location,
+                result: options.onOpenCrossApp(
+                    result.location,
+                    replace,
+                    navType
+                )
+            };
+        case NavigationType.notFound:
+            return result;
+    }
+    return handle(result.location, result.route);
 }
 
 export function createRoute(
