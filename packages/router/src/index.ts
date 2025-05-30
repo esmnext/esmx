@@ -1,2 +1,2 @@
 export { Router } from './next/router';
-export type { RouteConfig } from './next/types';
+export type { RouteConfig, Route, RouterRawLocation } from './next/types';

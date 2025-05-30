@@ -1,4 +1,4 @@
-import type { Route, RouterInstance } from '@esmx/router';
+import type { Route, Router } from '@esmx/router';
 import type { VueConstructor } from 'vue';
 
 import { RouterLink } from './link';
@@ -6,17 +6,17 @@ import { RouterView } from './view';
 
 interface VueWithRouter extends Vue {
     _routerRoot: VueWithRouter;
-    _router: RouterInstance;
+    _router: Router;
     _route: { value: Route; count: number };
     $parent: VueWithRouter | null;
 }
 
 declare module 'vue/types/vue' {
     interface Vue {
-        readonly $router: RouterInstance;
+        readonly $router: Router;
         readonly $route: Route;
         _routerRoot: VueWithRouter;
-        readonly _router: RouterInstance;
+        readonly _router: Router;
         readonly _route: { value: Route; count: number };
     }
 }
@@ -24,7 +24,7 @@ declare module 'vue/types/vue' {
 declare module 'vue/types/options' {
     // @ts-expect-error
     interface ComponentOptions {
-        router?: RouterInstance;
+        router?: Router;
     }
 }
 
@@ -56,14 +56,17 @@ export const RouterVuePlugin: {
 
                     // 将 route 设置为响应式属性 为了解决 vue2 无法监听函数式返回 route 的问题
                     (Vue.util as any).defineReactive(this, '_route', {
-                        value: this._router.route,
+                        get value() {
+                            return this._router.route;
+                        },
                         count: 0
                     });
                     const _event = () => {
                         this._route.count++;
                     };
                     eventMap.set(this, _event);
-                    this.$options.router.afterEach(_event);
+                    // TODO: 暂时不支持 afterEach 回调
+                    // this.$options.router.afterEach(_event);
                 } else {
                     // 非根组件实例
                     this.$parent &&
@@ -73,7 +76,8 @@ export const RouterVuePlugin: {
             beforeDestroy() {
                 const _event = eventMap.get(this);
                 if (_event) {
-                    (this as VueWithRouter).$router.unBindAfterEach(_event);
+                    // TODO: 暂时不支持 afterEach 回调
+                    // (this as VueWithRouter).$router.unBindAfterEach(_event);
                 }
             }
         });

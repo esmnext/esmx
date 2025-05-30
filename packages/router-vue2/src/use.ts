@@ -1,4 +1,4 @@
-import type { Route, RouterInstance } from '@esmx/router';
+import type { Route, Router } from '@esmx/router';
 import { getCurrentInstance } from 'vue';
 
 export function throwNoCurrentInstance(method) {
@@ -9,7 +9,7 @@ export function throwNoCurrentInstance(method) {
     }
 }
 
-export function useRouter(): RouterInstance {
+export function useRouter(): Router {
     if (process.env.NODE_ENV !== 'production') {
         throwNoCurrentInstance('useRouter');
     }
