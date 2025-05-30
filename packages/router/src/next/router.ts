@@ -29,7 +29,7 @@ export class Router {
             this.options,
             (url: string, state: RouteState) => {
                 handleRoute({
-                    type: NavigationType.popstate,
+                    navType: NavigationType.popstate,
                     options: this.options,
                     location: {
                         path: url,
@@ -39,7 +39,7 @@ export class Router {
                         this._applyRoute(result.route);
                         return {
                             ...result,
-                            type: NavigationType.popstate
+                            navType: NavigationType.popstate
                         };
                     }
                 });
@@ -51,7 +51,7 @@ export class Router {
     }
     public push(location: RouterRawLocation): Promise<NavigationResult> {
         return handleRoute({
-            type: NavigationType.push,
+            navType: NavigationType.push,
             options: this.options,
             location,
             handle: async (result) => {
@@ -63,7 +63,7 @@ export class Router {
     }
     public replace(location: RouterRawLocation) {
         return handleRoute({
-            type: NavigationType.replace,
+            navType: NavigationType.replace,
             options: this.options,
             location,
             handle: async (result) => {
@@ -84,15 +84,15 @@ export class Router {
         switch (result.type) {
             case 'duplicate':
                 return {
-                    type: NavigationType.duplicate
+                    navType: NavigationType.duplicate
                 };
             case 'timeout':
                 return {
-                    type: NavigationType.error
+                    navType: NavigationType.error
                 };
         }
         return handleRoute({
-            type: navType,
+            navType,
             options: this.options,
             location: {
                 path: result.url,
@@ -114,13 +114,16 @@ export class Router {
     }
     public pushLayer(location: RouterRawLocation) {}
     public openWindow(location: RouterRawLocation): Promise<NavigationResult> {
-        const navType = NavigationType.pushWindow;
         return handleRoute({
-            type: navType,
+            navType: NavigationType.pushWindow,
             options: this.options,
             location,
             handle: async (result) => {
-                this.options.onOpenInApp(result.location, false, navType);
+                this.options.onOpenInApp(
+                    result.location,
+                    false,
+                    result.navType
+                );
                 return result;
             }
         });
@@ -128,13 +131,12 @@ export class Router {
     public replaceWindow(
         location: RouterRawLocation
     ): Promise<NavigationResult> {
-        const navType = NavigationType.replaceWindow;
         return handleRoute({
-            type: navType,
+            navType: NavigationType.replaceWindow,
             options: this.options,
             location,
             handle: async (result) => {
-                this.options.onOpenInApp(result.location, true, navType);
+                this.options.onOpenInApp(result.location, true, result.navType);
                 return result;
             }
         });
@@ -142,7 +144,7 @@ export class Router {
     public reload(location?: RouterRawLocation) {
         const navType = NavigationType.reload;
         return handleRoute({
-            type: navType,
+            navType,
             options: this.options,
             location: location ?? this.route.href,
             handle: async (result) => {

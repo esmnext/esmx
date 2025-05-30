@@ -1,6 +1,7 @@
 import { parseLocation } from './location';
 import type { RouteMatchResult } from './matcher';
 import {
+    type Awaitable,
     type NavigationResult,
     NavigationType,
     type Route,
@@ -15,19 +16,19 @@ export function parseRoute(
     raw: RouterRawLocation
 ):
     | {
-          type: NavigationType.crossOrigin;
+          navType: NavigationType.crossOrigin;
           location: URL;
       }
     | {
-          type: NavigationType.crossApp;
+          navType: NavigationType.crossApp;
           location: URL;
       }
     | {
-          type: NavigationType.notFound;
+          navType: NavigationType.notFound;
           location: URL;
       }
     | {
-          type: NavigationType.resolve;
+          navType: NavigationType.resolve;
           location: URL;
           route: Route;
       } {
@@ -36,13 +37,13 @@ export function parseRoute(
     // 处理外站逻辑
     if (location.origin !== base.origin) {
         return {
-            type: NavigationType.crossOrigin,
+            navType: NavigationType.crossOrigin,
             location
         };
     }
     if (location.pathname.length < base.pathname.length) {
         return {
-            type: NavigationType.crossApp,
+            navType: NavigationType.crossApp,
             location
         };
     }
@@ -51,7 +52,7 @@ export function parseRoute(
     // 没有匹配任何路由
     if (matched.matches.length === 0) {
         return {
-            type: NavigationType.notFound,
+            navType: NavigationType.notFound,
             location
         };
     }
@@ -71,7 +72,7 @@ export function parseRoute(
     }
     const route = createRoute(raw, location, base, matched);
     return {
-        type: NavigationType.resolve,
+        navType: NavigationType.resolve,
         location,
         route
     };
@@ -81,37 +82,37 @@ export async function handleRoute<T extends NavigationType>({
     options,
     location,
     handle,
-    type
+    navType
 }: {
     options: RouterParsedOptions;
     location: RouterRawLocation;
-    type: T;
+    navType: T;
     handle: (result: {
-        type: T;
+        navType: T;
         location: URL;
         route: Route;
-    }) => Promise<NavigationResult>;
+    }) => Awaitable<NavigationResult>;
 }): Promise<NavigationResult> {
     const result = parseRoute(options, location);
-    const replace = type.startsWith('replace');
-    switch (result.type) {
+    const replace = navType.startsWith('replace');
+    switch (result.navType) {
         case NavigationType.crossOrigin:
-            options.onOpenCrossOrigin(result.location, replace, type);
+            options.onOpenCrossOrigin(result.location, replace, navType);
             return {
-                type: NavigationType.crossOrigin,
+                navType: NavigationType.crossOrigin,
                 location: result.location
             };
         case NavigationType.crossApp:
-            options.onOpenCrossApp(result.location, replace, type);
+            options.onOpenCrossApp(result.location, replace, navType);
             return {
-                type: NavigationType.crossApp,
+                navType: NavigationType.crossApp,
                 location: result.location
             };
         case NavigationType.notFound:
             return result;
     }
     return handle({
-        type,
+        navType,
         location: result.location,
         route: result.route
     });

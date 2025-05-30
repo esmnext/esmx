@@ -31,26 +31,26 @@ export enum NavigationType {
 
 export type NavigationResult =
     // 基本导航操作结果
-    | { type: NavigationType.push; location: URL; route: Route }
-    | { type: NavigationType.replace; location: URL; route: Route }
-    | { type: NavigationType.reload; location: URL; route: Route }
-    | { type: NavigationType.go; location: URL; route: Route }
-    | { type: NavigationType.forward; location: URL; route: Route }
-    | { type: NavigationType.back; location: URL; route: Route }
-    | { type: NavigationType.popstate; location: URL; route: Route }
-    | { type: NavigationType.resolve; location: URL; route: Route }
+    | { navType: NavigationType.push; location: URL; route: Route }
+    | { navType: NavigationType.replace; location: URL; route: Route }
+    | { navType: NavigationType.reload; location: URL; route: Route }
+    | { navType: NavigationType.go; location: URL; route: Route }
+    | { navType: NavigationType.forward; location: URL; route: Route }
+    | { navType: NavigationType.back; location: URL; route: Route }
+    | { navType: NavigationType.popstate; location: URL; route: Route }
+    | { navType: NavigationType.resolve; location: URL; route: Route }
 
     // 窗口/层导航结果
-    | { type: NavigationType.pushWindow; location: URL }
-    | { type: NavigationType.replaceWindow; location: URL }
-    | { type: NavigationType.pushLayer; location: URL; result: any }
+    | { navType: NavigationType.pushWindow; location: URL }
+    | { navType: NavigationType.replaceWindow; location: URL }
+    | { navType: NavigationType.pushLayer; location: URL; result: any }
 
     // 导航结果状态
-    | { type: NavigationType.notFound; location: URL }
-    | { type: NavigationType.crossOrigin; location: URL }
-    | { type: NavigationType.crossApp; location: URL }
-    | { type: NavigationType.duplicate }
-    | { type: NavigationType.error };
+    | { navType: NavigationType.notFound; location: URL }
+    | { navType: NavigationType.crossOrigin; location: URL }
+    | { navType: NavigationType.crossApp; location: URL }
+    | { navType: NavigationType.duplicate }
+    | { navType: NavigationType.error };
 
 export enum RouterMode {
     history = 'history',
@@ -231,5 +231,3 @@ export type RegisteredConfigMap = {
         config?: RegisteredConfig;
     };
 };
-
-// 旧字段 + 新字段
