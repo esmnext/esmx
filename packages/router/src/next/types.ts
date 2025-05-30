@@ -11,7 +11,7 @@ export enum NavigationType {
     popstate = 'popstate',
 
     // 窗口/层导航
-    pushWindow = 'pushWindow',
+    openWindow = 'openWindow',
     replaceWindow = 'replaceWindow',
     pushLayer = 'pushLayer',
 
@@ -37,7 +37,7 @@ export type NavigationResult =
     | { navType: NavigationType.resolve; location: URL; route: Route }
 
     // 窗口/层导航结果
-    | { navType: NavigationType.pushWindow; location: URL }
+    | { navType: NavigationType.openWindow; location: URL }
     | { navType: NavigationType.replaceWindow; location: URL }
     | { navType: NavigationType.pushLayer; location: URL; result: any }
 

@@ -110,7 +110,7 @@ export class Router {
     public pushLayer(location: RouterRawLocation) {}
     public openWindow(location: RouterRawLocation): Promise<NavigationResult> {
         return handleRoute({
-            navType: NavigationType.pushWindow,
+            navType: NavigationType.openWindow,
             options: this.options,
             location,
             handle: async (result) => {
