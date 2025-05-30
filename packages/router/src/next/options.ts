@@ -21,6 +21,8 @@ export function parsedOptions(options: RouterOptions): RouterParsedOptions {
         );
     }
     const result: RouterParsedOptions = {
+        req: options.req || null,
+        res: options.res || null,
         base,
         mode,
         routes,
@@ -34,6 +36,9 @@ export function parsedOptions(options: RouterOptions): RouterParsedOptions {
                     DEFAULT_ON_OPEN(url, navType, route);
                 }
             }
+            return true;
+        },
+        onServerLocation(url, navType, route) {
             return true;
         },
         scrollBehavior: options.scrollBehavior ?? DEFAULT_SCROLL_BEHAVIOR

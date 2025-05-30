@@ -1,3 +1,4 @@
+import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { MatchFunction } from 'path-to-regexp';
 import type { Router } from './router';
 
@@ -71,6 +72,13 @@ export interface RouterOptions {
     apps?:
         | Record<string, RouterMicroAppCallback | undefined>
         | RouterMicroAppCallback;
+    req?: IncomingMessage | null;
+    res?: ServerResponse | null;
+    onServerLocation?: (
+        url: URL,
+        navType: NavigationType,
+        route?: Route
+    ) => boolean;
 }
 
 export interface RouterParsedOptions extends Required<RouterOptions> {
