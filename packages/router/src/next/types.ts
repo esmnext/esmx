@@ -84,7 +84,7 @@ export type RouteRedirect =
     | ((to: Route) => RouterRawLocation);
 
 export interface RouterLocation {
-    loc?: string | URL;
+    url?: string | URL;
     path?: string;
     query?: Record<string, string | undefined>;
     queryArray?: Record<string, string[]>;

@@ -68,7 +68,7 @@ export function parseLocation(loc: RouterRawLocation, baseURL: URL): URL {
     if (typeof loc === 'string') {
         return normalizeURL(loc, baseURL);
     }
-    const url = normalizeURL(loc.loc ?? loc.path ?? '', baseURL);
+    const url = normalizeURL(loc.url ?? loc.path ?? '', baseURL);
 
     // 处理普通查询参数（键值对形式）
     if (loc.query) {
