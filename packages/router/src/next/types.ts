@@ -29,21 +29,6 @@ export enum NavigationType {
     error = 'error'
 }
 
-export type NavigationAction =
-    // 基本导航操作
-    | { type: NavigationType.push; location: RouterRawLocation }
-    | { type: NavigationType.replace; location: RouterRawLocation }
-    | { type: NavigationType.reload; location: RouterRawLocation }
-    | { type: NavigationType.go; location: RouterRawLocation }
-    | { type: NavigationType.forward; location: RouterRawLocation }
-    | { type: NavigationType.back; location: RouterRawLocation }
-    | { type: NavigationType.popstate; location: RouterRawLocation }
-
-    // 窗口/层导航
-    | { type: NavigationType.pushWindow; location: RouterRawLocation }
-    | { type: NavigationType.replaceWindow; location: RouterRawLocation }
-    | { type: NavigationType.pushLayer; location: RouterRawLocation };
-
 export type NavigationResult =
     // 基本导航操作结果
     | { type: NavigationType.push; location: URL; route: Route }

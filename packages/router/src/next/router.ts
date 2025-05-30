@@ -147,21 +147,20 @@ export class Router {
             }
         });
     }
-    public replaceWindow(location: RouterRawLocation) {
+    public replaceWindow(
+        location: RouterRawLocation
+    ): Promise<NavigationResult> {
         const navType = NavigationType.replaceWindow;
         return handleRoute({
             navType,
             options: this.options,
             location,
             handle: async (location, route) => {
+                this.options.onOpenInApp(location, true, navType);
                 return {
                     type: navType,
                     location,
-                    result: await this.options.onOpenInApp(
-                        location,
-                        false,
-                        navType
-                    )
+                    route
                 };
             }
         });
