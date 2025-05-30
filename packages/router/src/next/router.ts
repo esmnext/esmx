@@ -96,7 +96,7 @@ export class Router {
                         action.type
                     )
                 };
-            case NavigationType.update:
+            case NavigationType.resolve:
                 this._applyRoute(result.route);
                 return {
                     type: action.type,
@@ -131,7 +131,7 @@ export class Router {
                     )
                 };
             case NavigationType.crossApp:
-            case NavigationType.update:
+            case NavigationType.resolve:
                 return {
                     type: NavigationType.pushWindow,
                     location: result.location,
@@ -198,7 +198,7 @@ export class Router {
             };
         }
         const result = await parseRoute(this.options, action.location);
-        if (result.type === NavigationType.update) {
+        if (result.type === NavigationType.resolve) {
             this._applyRoute(result.route);
             return {
                 type: action.type,

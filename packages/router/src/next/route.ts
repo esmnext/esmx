@@ -26,7 +26,7 @@ export async function parseRoute(
           location: URL;
       }
     | {
-          type: NavigationType.update;
+          type: NavigationType.resolve;
           location: URL;
           route: Route;
       }
@@ -71,7 +71,7 @@ export async function parseRoute(
     }
     const route = createRoute(raw, location, base, matched);
     return {
-        type: NavigationType.update,
+        type: NavigationType.resolve,
         location,
         route
     };

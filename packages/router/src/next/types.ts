@@ -14,7 +14,7 @@ export enum NavigationType {
     forward = 'forward',
     back = 'back',
 
-    update = 'update',
+    resolve = 'resolve',
     popstate = 'popstate',
     // Result 类型
     aborted = 'aborted',
