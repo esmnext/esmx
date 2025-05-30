@@ -63,12 +63,6 @@ export class Router {
     private _navigation: Navigation;
     private _microApp: MicroApp = new MicroApp();
 
-    public get app() {
-        if (this._microApp.app === null) {
-            throw new Error(`App is not ready.`);
-        }
-        return this._microApp.app;
-    }
     public get route() {
         if (this._route === null) {
             throw new Error(`Route is not ready.`);
@@ -213,6 +207,19 @@ export class Router {
                 return result;
             }
         });
+    }
+    public async renderToString(throwError = false): Promise<string | null> {
+        try {
+            const result = await this._microApp.app?.renderToString?.();
+            return result ?? null;
+        } catch (e) {
+            if (throwError) {
+                throw e;
+            } else {
+                console.error(e);
+            }
+            return null;
+        }
     }
     public destroy() {
         this._navigation.destroy();
