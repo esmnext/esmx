@@ -35,6 +35,11 @@ class MicroApp {
             ? options.apps[route.matched[0].app]
             : route.matched[0].app;
     }
+    public destroy() {
+        this.app?.unmount();
+        this.app = null;
+        this._factory = null;
+    }
 }
 
 export class Router {
@@ -189,5 +194,6 @@ export class Router {
     }
     public destroy() {
         this._navigation.destroy();
+        this._microApp.destroy();
     }
 }
