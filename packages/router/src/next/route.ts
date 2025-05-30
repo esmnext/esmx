@@ -77,28 +77,32 @@ export function parseRoute(
     };
 }
 
-export async function handleRoute({
+export async function handleRoute<T extends NavigationType>({
     options,
     location,
     handle,
-    navType
+    type
 }: {
     options: RouterParsedOptions;
     location: RouterRawLocation;
-    navType: NavigationType;
-    handle: (location: URL, route: Route) => Promise<NavigationResult>;
+    type: T;
+    handle: (result: {
+        type: T;
+        location: URL;
+        route: Route;
+    }) => Promise<NavigationResult>;
 }): Promise<NavigationResult> {
     const result = parseRoute(options, location);
-    const replace = navType.startsWith('replace');
+    const replace = type.startsWith('replace');
     switch (result.type) {
         case NavigationType.crossOrigin:
-            options.onOpenCrossOrigin(result.location, replace, navType);
+            options.onOpenCrossOrigin(result.location, replace, type);
             return {
                 type: NavigationType.crossOrigin,
                 location: result.location
             };
         case NavigationType.crossApp:
-            options.onOpenCrossApp(result.location, replace, navType);
+            options.onOpenCrossApp(result.location, replace, type);
             return {
                 type: NavigationType.crossApp,
                 location: result.location
@@ -106,41 +110,45 @@ export async function handleRoute({
         case NavigationType.notFound:
             return result;
     }
-    return handle(result.location, result.route);
+    return handle({
+        type,
+        location: result.location,
+        route: result.route
+    });
 }
 
 export function createRoute(
     raw: RouterRawLocation,
-    locationURL: URL,
+    location: URL,
     baseURL: URL,
     match: RouteMatchResult
 ): Route {
     const query: Record<string, string | undefined> = {};
     const queryArray: Record<string, string[]> = {};
 
-    locationURL.searchParams.keys().forEach((key) => {
-        const value = locationURL.searchParams.get(key);
+    location.searchParams.keys().forEach((key) => {
+        const value = location.searchParams.get(key);
         if (typeof value === 'string') {
             query[key] = value;
         }
-        queryArray[key] = locationURL.searchParams.getAll(key) || [];
+        queryArray[key] = location.searchParams.getAll(key) || [];
     });
     const state: RouteState =
         typeof raw === 'object' && raw.state ? raw.state : {};
     const meta: RouteMeta = match.matches?.[0].route.meta ?? {};
-    const path = locationURL.pathname.substring(baseURL.pathname.length);
-    const fullPath = `${path}${locationURL.search}${locationURL.hash}`;
+    const path = location.pathname.substring(baseURL.pathname.length);
+    const fullPath = `${path}${location.search}${location.hash}`;
     const matched = match.matches.map((item) => item.route);
     return {
-        hash: locationURL.hash,
-        host: locationURL.host,
-        hostname: locationURL.hostname,
-        href: locationURL.href,
-        origin: locationURL.origin,
-        pathname: locationURL.pathname,
-        port: locationURL.port,
-        protocol: locationURL.protocol,
-        search: locationURL.search,
+        hash: location.hash,
+        host: location.host,
+        hostname: location.hostname,
+        href: location.href,
+        origin: location.origin,
+        pathname: location.pathname,
+        port: location.port,
+        protocol: location.protocol,
+        search: location.search,
         params: match.params,
         query,
         queryArray,

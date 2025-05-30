@@ -5,10 +5,10 @@
 - task and hooks 实现 (jerry)
 - options 解析 (jerry)
 - router 实例
-    - push (hanson)
-    - replace (hanson)
-    - pushWindow (hanson)
-    - replaceWindow (hanson)
+    - push (hanson) ✅
+    - replace (hanson) ✅
+    - pushWindow (hanson) ✅
+    - replaceWindow (hanson) ✅
     - pushLayer (jerry)
     - reload  (jerry)
     - popstate (hanson)
