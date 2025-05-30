@@ -22,6 +22,7 @@ export function parsedOptions(options: RouterOptions): RouterParsedOptions {
         base,
         mode,
         routes,
+        apps: options.apps ?? {},
         matcher: createMatcher(routes),
         normalizeURL: options.normalizeURL ?? ((url) => url),
         onOpenCrossOrigin: options.onOpenCrossOrigin ?? DEFAULT_ON_OPEN,

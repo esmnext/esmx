@@ -57,6 +57,12 @@ export enum RouterMode {
     abstract = 'abstract'
 }
 
+export interface RouterMicroApp {
+    mount: () => void;
+    unmount: () => void;
+    renderToString?: () => Awaitable<string>;
+}
+
 export interface RouterOptions {
     base?: URL;
     mode?: RouterMode;
@@ -66,6 +72,7 @@ export interface RouterOptions {
     onOpenCrossApp?: (url: URL, type: NavigationType) => void;
     onOpenInApp?: (url: URL, type: NavigationType) => void;
     scrollBehavior?: RouterScrollBehavior;
+    apps?: Record<string, RouterMicroApp>;
 }
 
 export interface RouterParsedOptions extends Required<RouterOptions> {
@@ -211,19 +218,3 @@ export interface RouteMatchResult {
 }
 
 export type RouteMatcher = (targetURL: URL, baseURL: URL) => RouteMatchResult;
-
-export interface RegisteredConfig {
-    mount?: () => void;
-    update?: () => void;
-    destroy?: () => void;
-    renderToString?: () => string | Promise<string>;
-}
-
-export type RegisteredConfigMap = {
-    [AppName in string]?: {
-        appName: AppName;
-        mounted: boolean;
-        generator: (router: Router) => RegisteredConfig;
-        config?: RegisteredConfig;
-    };
-};

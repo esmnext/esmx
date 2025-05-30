@@ -1,4 +1,4 @@
-import type { RouterScrollBehavior } from './types';
+import type { NavigationType, RouterScrollBehavior } from './types';
 export const DEFAULT_SCROLL_BEHAVIOR: RouterScrollBehavior = (
     to,
     from,
@@ -14,7 +14,7 @@ export const DEFAULT_SCROLL_BEHAVIOR: RouterScrollBehavior = (
     };
 };
 
-export function DEFAULT_ON_OPEN(url: URL, replace: boolean) {
+export function DEFAULT_ON_OPEN(url: URL, navType: NavigationType) {
     try {
         const newWindow = window.open(url);
         if (!newWindow) {

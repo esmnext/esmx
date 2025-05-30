@@ -4,8 +4,6 @@ import { handleRoute } from './route';
 import { NavigationType } from './types';
 import type {
     NavigationResult,
-    RegisteredConfig,
-    RegisteredConfigMap,
     Route,
     RouteState,
     RouterOptions,
@@ -151,36 +149,5 @@ export class Router {
     }
     public destroy() {
         this._navigation.destroy();
-        this._destroyAllApp();
-        this._registeredCfgMap = {};
-    }
-
-    protected _registeredCfgMap: RegisteredConfigMap = {};
-
-    public register(
-        appName: string,
-        generator: (router: Router) => RegisteredConfig
-    ) {
-        this._registeredCfgMap[appName] = {
-            appName,
-            mounted: false,
-            generator
-        };
-    }
-
-    protected _destroyApp(cfg: string | RegisteredConfigMap[string]) {
-        if (typeof cfg === 'string') {
-            cfg = this._registeredCfgMap[cfg];
-        }
-        if (!cfg?.mounted) return;
-        cfg.config?.destroy?.();
-        cfg.mounted = false;
-        cfg.config = void 0;
-    }
-
-    protected _destroyAllApp() {
-        for (const appType in this._registeredCfgMap) {
-            this._destroyApp(appType);
-        }
     }
 }

@@ -94,16 +94,15 @@ export async function handleRoute<T extends NavigationType>({
     }) => Awaitable<NavigationResult>;
 }): Promise<NavigationResult> {
     const result = parseRoute(options, location);
-    const replace = navType.startsWith('replace');
     switch (result.navType) {
         case NavigationType.crossOrigin:
-            options.onOpenCrossOrigin(result.location, replace, navType);
+            options.onOpenCrossOrigin(result.location, navType);
             return {
                 navType: NavigationType.crossOrigin,
                 location: result.location
             };
         case NavigationType.crossApp:
-            options.onOpenCrossApp(result.location, replace, navType);
+            options.onOpenCrossApp(result.location, navType);
             return {
                 navType: NavigationType.crossApp,
                 location: result.location
