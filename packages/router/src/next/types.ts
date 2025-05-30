@@ -1,5 +1,4 @@
 import type { MatchFunction } from 'path-to-regexp';
-import type { Router } from './router';
 
 export enum NavigationType {
     // 基本导航操作
@@ -63,14 +62,18 @@ export interface RouterMicroApp {
     renderToString?: () => Awaitable<string>;
 }
 
+export enum OpenType {
+    crossOrigin = 'crossOrigin',
+    crossApp = 'crossApp',
+    inApp = 'inApp'
+}
+
 export interface RouterOptions {
     base?: URL;
     mode?: RouterMode;
     routes?: RouteConfig[];
     normalizeURL?: (url: URL, raw: RouterRawLocation) => URL;
-    onOpenCrossOrigin?: (url: URL, type: NavigationType) => void;
-    onOpenCrossApp?: (url: URL, type: NavigationType) => void;
-    onOpenInApp?: (url: URL, type: NavigationType) => void;
+    onOpen?: (url: URL, navType: NavigationType, openType: OpenType) => boolean;
     scrollBehavior?: RouterScrollBehavior;
     apps?: Record<string, RouterMicroApp>;
 }

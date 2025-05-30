@@ -4,6 +4,7 @@ import {
     type Awaitable,
     type NavigationResult,
     NavigationType,
+    OpenType,
     type Route,
     type RouteMeta,
     type RouteState,
@@ -96,13 +97,17 @@ export async function handleRoute<T extends NavigationType>({
     const result = parseRoute(options, location);
     switch (result.navType) {
         case NavigationType.crossOrigin:
-            options.onOpenCrossOrigin(result.location, navType);
+            options.onOpen(
+                result.location,
+                result.navType,
+                OpenType.crossOrigin
+            );
             return {
                 navType: NavigationType.crossOrigin,
                 location: result.location
             };
         case NavigationType.crossApp:
-            options.onOpenCrossApp(result.location, navType);
+            options.onOpen(result.location, result.navType, OpenType.crossApp);
             return {
                 navType: NavigationType.crossApp,
                 location: result.location
