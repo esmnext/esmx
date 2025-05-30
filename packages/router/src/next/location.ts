@@ -36,19 +36,7 @@ export function normalizeURL(location: string, base: URL): URL {
     if (location.startsWith('//')) {
         return new URL(`http:${location}`);
     }
-
-    // 空字符串返回基础URL的副本
-    if (!location) {
-        return new URL(base);
-    }
-
-    try {
-        // 尝试作为绝对URL解析
-        return new URL(location);
-    } catch {
-        // 解析失败则作为相对路径处理
-        return new URL(location, base);
-    }
+    return URL.parse(location) || new URL(location, base);
 }
 
 /**
