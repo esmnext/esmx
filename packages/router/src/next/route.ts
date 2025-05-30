@@ -117,13 +117,11 @@ export function createRoute(
 ): Route {
     const route = createRouteByURL(loc);
 
-    loc.searchParams.keys().forEach((key) => {
-        const value = loc.searchParams.get(key);
-        if (typeof value === 'string') {
-            route.query[key] = value;
-        }
-        route.queryArray[key] = loc.searchParams.getAll(key) || [];
-    });
+    for (const key of loc.searchParams.keys()) {
+        const values = loc.searchParams.getAll(key);
+        route.query[key] = values[0] || '';
+        route.queryArray[key] = values;
+    }
     route.state = typeof raw === 'object' && raw.state ? raw.state : {};
     route.meta = match.matches?.[0].route.meta ?? {};
     route.path = loc.pathname.substring(baseURL.pathname.length - 1);
