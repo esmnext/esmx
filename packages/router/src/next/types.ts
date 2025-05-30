@@ -2,21 +2,26 @@ import type { MatchFunction } from 'path-to-regexp';
 import type { Router } from './router';
 
 export enum NavigationType {
-    // Action 类型
+    // 基本导航操作
     push = 'push',
     replace = 'replace',
+    reload = 'reload',
+
+    // 窗口/层导航
     pushWindow = 'pushWindow',
     replaceWindow = 'replaceWindow',
     pushLayer = 'pushLayer',
-    reload = 'reload',
 
+    // 历史记录操作
     go = 'go',
     forward = 'forward',
     back = 'back',
 
-    resolve = 'resolve',
+    // 路由事件
     popstate = 'popstate',
-    // Result 类型
+    resolve = 'resolve',
+
+    // 导航结果状态
     aborted = 'aborted',
     duplicate = 'duplicate',
     redirect = 'redirect',
@@ -27,21 +32,33 @@ export enum NavigationType {
 }
 
 export type NavigationAction =
+    // 基本导航操作
     | { type: NavigationType.push; location: RouterRawLocation }
     | { type: NavigationType.replace; location: RouterRawLocation }
+    | { type: NavigationType.reload; location: RouterRawLocation }
+
+    // 窗口/层导航
     | { type: NavigationType.pushWindow; location: RouterRawLocation }
     | { type: NavigationType.replaceWindow; location: RouterRawLocation }
     | { type: NavigationType.pushLayer; location: RouterRawLocation }
-    | { type: NavigationType.reload; location: RouterRawLocation }
+
+    // 路由事件
     | { type: NavigationType.popstate; location: RouterRawLocation };
 
 export type NavigationResult =
+    // 基本导航操作结果
     | { type: NavigationType.push; location: URL; route: Route }
     | { type: NavigationType.replace; location: URL; route: Route }
-    | { type: NavigationType.popstate; location: URL; route: Route }
+    | { type: NavigationType.reload; location: URL }
+
+    // 窗口/层导航结果
     | { type: NavigationType.pushWindow; location: URL; result: any }
     | { type: NavigationType.replaceWindow; location: URL }
-    | { type: NavigationType.reload; location: URL }
+
+    // 路由事件结果
+    | { type: NavigationType.popstate; location: URL; route: Route }
+
+    // 导航结果状态
     | { type: NavigationType.notFound; location: URL }
     | { type: NavigationType.crossOrigin; location: URL; result: any }
     | { type: NavigationType.crossApp; location: URL; result: any }
