@@ -32,20 +32,10 @@ export default {
         const server = http.createServer((req, res) => {
             // 使用 Esmx 中间件处理请求
             esmx.middleware(req, res, async () => {
-                // 执行服务端渲染
-                let routerBase = new URL(
-                    req.headers.referer ||
-                        req.headers.origin ||
-                        `http://${req.headers.host}${req.url}`
-                ).href;
-                if (req.url) {
-                    const i = routerBase.lastIndexOf(req.url);
-                    if (~i) routerBase = routerBase.substring(0, i);
-                }
                 const rc = await esmx.render({
                     params: {
-                        url: req.url,
-                        routerBase
+                        req,
+                        res
                     }
                 });
                 res.end(rc.html);

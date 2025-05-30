@@ -117,42 +117,21 @@ export function createRoute(
     baseURL: URL,
     match: RouteMatchResult
 ): Route {
-    const query: Record<string, string | undefined> = {};
-    const queryArray: Record<string, string[]> = {};
+    const route = createRouteByURL(location);
 
     location.searchParams.keys().forEach((key) => {
         const value = location.searchParams.get(key);
         if (typeof value === 'string') {
-            query[key] = value;
+            route.query[key] = value;
         }
-        queryArray[key] = location.searchParams.getAll(key) || [];
+        route.queryArray[key] = location.searchParams.getAll(key) || [];
     });
-    const state: RouteState =
-        typeof raw === 'object' && raw.state ? raw.state : {};
-    const meta: RouteMeta = match.matches?.[0].route.meta ?? {};
-    const path = location.pathname.substring(baseURL.pathname.length);
-    const fullPath = `${path}${location.search}${location.hash}`;
-    const matched = match.matches.map((item) => item.route);
-    return {
-        location,
-        hash: location.hash,
-        host: location.host,
-        hostname: location.hostname,
-        href: location.href,
-        origin: location.origin,
-        pathname: location.pathname,
-        port: location.port,
-        protocol: location.protocol,
-        search: location.search,
-        params: match.params,
-        query,
-        queryArray,
-        state,
-        meta,
-        path,
-        fullPath,
-        matched
-    };
+    route.state = typeof raw === 'object' && raw.state ? raw.state : {};
+    route.meta = match.matches?.[0].route.meta ?? {};
+    route.path = location.pathname.substring(baseURL.pathname.length - 1);
+    route.fullPath = `${route.path}${location.search}${location.hash}`;
+    route.matched = match.matches.map((item) => item.route);
+    return route;
 }
 
 export function createRouteByURL(location: URL): Route {

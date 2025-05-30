@@ -1,8 +1,4 @@
-/**
- * @file 服务端渲染入口文件
- * @description 负责服务端渲染流程、HTML 生成和资源注入
- */
-
+import type { IncomingMessage } from 'node:http';
 import type { RenderContext } from '@esmx/core';
 import { createRenderer } from 'vue-server-renderer';
 import { createApp } from './create-app';
@@ -11,10 +7,12 @@ import { createApp } from './create-app';
 const renderer = createRenderer();
 
 export default async (rc: RenderContext) => {
-    // 创建 Vue 应用实例
+    const req = rc.params.req as IncomingMessage;
+    const protocol = req.headers['x-forwarded-proto'] || 'http';
+    const host = req.headers.host || 'localhost';
     const router = await createApp({
-        base: rc.params.routerBase,
-        url: rc.params.url,
+        base: `${protocol}://${host}`,
+        url: req.url ?? '/',
         renderToString: renderer.renderToString
     });
 
