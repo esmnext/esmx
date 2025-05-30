@@ -41,6 +41,7 @@ jobs:
       run: ./build.sh
 
     - name: Deploy
+      if: github.ref == 'refs/heads/master'
       uses: JamesIves/github-pages-deploy-action@4.1.1
       with:
         branch: docs
