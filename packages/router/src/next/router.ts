@@ -3,7 +3,6 @@ import { parsedOptions } from './options';
 import { handleRoute } from './route';
 import { NavigationType } from './types';
 import type {
-    NavigationAction,
     NavigationResult,
     RegisteredConfig,
     RegisteredConfigMap,
@@ -36,7 +35,6 @@ export class Router {
                         path: url,
                         state
                     },
-                    replace: false,
                     handle: async (location, route) => {
                         this._applyRoute(route);
                         return {
@@ -58,7 +56,6 @@ export class Router {
             navType: NavigationType.push,
             options: this.options,
             location,
-            replace,
             handle: async (location, route) => {
                 this._navigation.push(route, replace);
                 this._applyRoute(route);
@@ -76,7 +73,6 @@ export class Router {
             navType: NavigationType.replace,
             options: this.options,
             location,
-            replace,
             handle: async (location, route) => {
                 this._navigation.push(route, replace);
                 this._applyRoute(route);
@@ -113,7 +109,6 @@ export class Router {
                 path: result.url,
                 state: result.state
             },
-            replace: false,
             async handle(location, route) {
                 return {
                     type: navType,
@@ -139,7 +134,6 @@ export class Router {
             navType,
             options: this.options,
             location,
-            replace: true,
             handle: async (location, route) => {
                 return {
                     type: navType,
@@ -159,7 +153,6 @@ export class Router {
             navType,
             options: this.options,
             location,
-            replace: true,
             handle: async (location, route) => {
                 return {
                     type: navType,
@@ -179,7 +172,6 @@ export class Router {
             navType,
             options: this.options,
             location: location ?? this.route.href,
-            replace: true,
             handle: async (location, route) => {
                 this._applyRoute(route);
                 return {

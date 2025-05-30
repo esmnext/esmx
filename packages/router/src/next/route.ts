@@ -10,10 +10,10 @@ import {
     type RouterRawLocation
 } from './types';
 
-export async function parseRoute(
+export function parseRoute(
     options: RouterParsedOptions,
     raw: RouterRawLocation
-): Promise<
+):
     | {
           type: NavigationType.crossOrigin;
           location: URL;
@@ -30,10 +30,9 @@ export async function parseRoute(
           type: NavigationType.resolve;
           location: URL;
           route: Route;
-      }
-> {
+      } {
     const { base, normalizeURL } = options;
-    const location = await normalizeURL(parseLocation(raw, base), raw);
+    const location = normalizeURL(parseLocation(raw, base), raw);
     // 处理外站逻辑
     if (location.origin !== base.origin) {
         return {
@@ -81,37 +80,28 @@ export async function parseRoute(
 export async function handleRoute({
     options,
     location,
-    replace,
     handle,
     navType
 }: {
     options: RouterParsedOptions;
     location: RouterRawLocation;
-    replace: boolean;
     navType: NavigationType;
     handle: (location: URL, route: Route) => Promise<NavigationResult>;
 }): Promise<NavigationResult> {
-    const result = await parseRoute(options, location);
+    const result = parseRoute(options, location);
+    const replace = navType.startsWith('replace');
     switch (result.type) {
         case NavigationType.crossOrigin:
+            options.onOpenCrossOrigin(result.location, replace, navType);
             return {
                 type: NavigationType.crossOrigin,
-                location: result.location,
-                result: options.onOpenCrossOrigin(
-                    result.location,
-                    replace,
-                    navType
-                )
+                location: result.location
             };
         case NavigationType.crossApp:
+            options.onOpenCrossApp(result.location, replace, navType);
             return {
                 type: NavigationType.crossApp,
-                location: result.location,
-                result: options.onOpenCrossApp(
-                    result.location,
-                    replace,
-                    navType
-                )
+                location: result.location
             };
         case NavigationType.notFound:
             return result;

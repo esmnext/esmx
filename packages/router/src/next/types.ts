@@ -56,14 +56,14 @@ export type NavigationResult =
     | { type: NavigationType.resolve; location: URL; route: Route }
 
     // 窗口/层导航结果
-    | { type: NavigationType.pushWindow; location: URL; result: any }
+    | { type: NavigationType.pushWindow; location: URL }
     | { type: NavigationType.replaceWindow; location: URL }
     | { type: NavigationType.pushLayer; location: URL; result: any }
 
     // 导航结果状态
     | { type: NavigationType.notFound; location: URL }
-    | { type: NavigationType.crossOrigin; location: URL; result: any }
-    | { type: NavigationType.crossApp; location: URL; result: any }
+    | { type: NavigationType.crossOrigin; location: URL }
+    | { type: NavigationType.crossApp; location: URL }
     | { type: NavigationType.duplicate }
     | { type: NavigationType.error };
 
@@ -76,22 +76,14 @@ export interface RouterOptions {
     base?: URL;
     mode?: RouterMode;
     routes?: RouteConfig[];
-    normalizeURL?: (url: URL, raw: RouterRawLocation) => Awaitable<URL>;
+    normalizeURL?: (url: URL, raw: RouterRawLocation) => URL;
     onOpenCrossOrigin?: (
         url: URL,
         replace: boolean,
         type: NavigationType
-    ) => Awaitable<any>;
-    onOpenCrossApp?: (
-        url: URL,
-        replace: boolean,
-        type: NavigationType
-    ) => Awaitable<any>;
-    onOpenInApp?: (
-        url: URL,
-        replace: boolean,
-        type: NavigationType
-    ) => Awaitable<any>;
+    ) => void;
+    onOpenCrossApp?: (url: URL, replace: boolean, type: NavigationType) => void;
+    onOpenInApp?: (url: URL, replace: boolean, type: NavigationType) => void;
     scrollBehavior?: RouterScrollBehavior;
 }
 
