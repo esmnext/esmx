@@ -62,13 +62,9 @@ export interface RouterOptions {
     mode?: RouterMode;
     routes?: RouteConfig[];
     normalizeURL?: (url: URL, raw: RouterRawLocation) => URL;
-    onOpenCrossOrigin?: (
-        url: URL,
-        replace: boolean,
-        type: NavigationType
-    ) => void;
-    onOpenCrossApp?: (url: URL, replace: boolean, type: NavigationType) => void;
-    onOpenInApp?: (url: URL, replace: boolean, type: NavigationType) => void;
+    onOpenCrossOrigin?: (url: URL, type: NavigationType) => void;
+    onOpenCrossApp?: (url: URL, type: NavigationType) => void;
+    onOpenInApp?: (url: URL, type: NavigationType) => void;
     scrollBehavior?: RouterScrollBehavior;
 }
 

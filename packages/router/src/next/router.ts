@@ -119,11 +119,7 @@ export class Router {
             options: this.options,
             location,
             handle: async (result) => {
-                this.options.onOpenInApp(
-                    result.location,
-                    false,
-                    result.navType
-                );
+                this.options.onOpenInApp(result.location, result.navType);
                 return result;
             }
         });
@@ -136,7 +132,7 @@ export class Router {
             options: this.options,
             location,
             handle: async (result) => {
-                this.options.onOpenInApp(result.location, true, result.navType);
+                this.options.onOpenInApp(result.location, result.navType);
                 return result;
             }
         });
