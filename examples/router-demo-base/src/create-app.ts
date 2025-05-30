@@ -10,18 +10,43 @@ import { routes } from './routes';
 
 const isBrowser = typeof window === 'object' && typeof document === 'object';
 
-export async function createApp() {
+export async function createApp({
+    base,
+    url,
+    renderToString
+}: {
+    base: string;
+    url: string;
+    renderToString?: (app: any, context: any) => Promise<string>;
+}) {
     Vue.use(RouterVuePlugin);
-    const app: Vue | null = null;
 
     const router = new Router({
-        base: new URL('http://localhost:3000'),
-        routes
+        base: new URL(base),
+        routes,
+        apps(router) {
+            const app = new Vue({
+                router,
+                render: (h) => h(RouterView)
+            });
+            return {
+                mount() {
+                    app.$mount('#app');
+                },
+                unmount() {
+                    app.$destroy();
+                },
+                async renderToString() {
+                    if (typeof renderToString === 'function') {
+                        return renderToString(app, {});
+                    }
+                    return '';
+                }
+            };
+        }
     });
-
+    await router.replace(url);
     if (isBrowser) (window as any).router = router;
 
-    return {
-        app: app as unknown as Vue
-    };
+    return router;
 }

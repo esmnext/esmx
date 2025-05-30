@@ -1,6 +1,6 @@
 import { Navigation } from './navigation';
 import { parsedOptions } from './options';
-import { handleRoute } from './route';
+import { createRouteByURL, handleRoute, parseRoute } from './route';
 import { NavigationType } from './types';
 import type {
     NavigationResult,
@@ -12,28 +12,43 @@ import type {
     RouterParsedOptions,
     RouterRawLocation
 } from './types';
+import { isBrowser } from './util';
 
 class MicroApp {
     public app: RouterMicroApp | null = null;
     private _factory: RouterMicroAppCallback | null = null;
     public _update(router: Router) {
-        const factory = this._getNextFactory(router) ?? null;
+        const factory = this._getNextFactory(router);
         if (factory === this._factory) {
             return;
         }
         const oldApp = this.app;
         // 创建新的应用
         const app = factory ? factory(router) : null;
-        app?.mount();
+        isBrowser && app?.mount();
         this.app = app;
         this._factory = factory;
         // 销毁旧的应用
-        oldApp?.unmount();
+        isBrowser && oldApp?.unmount();
     }
-    private _getNextFactory({ route, options }: Router) {
-        return typeof route.matched[0].app === 'string'
-            ? options.apps[route.matched[0].app]
-            : route.matched[0].app;
+    private _getNextFactory({
+        route,
+        options
+    }: Router): RouterMicroAppCallback | null {
+        if (
+            typeof route.matched[0].app === 'string' &&
+            options.apps &&
+            typeof options.apps === 'object'
+        ) {
+            return options.apps[route.matched[0].app] || null;
+        }
+        if (typeof route.matched[0].app === 'function') {
+            return route.matched[0].app;
+        }
+        if (typeof options.apps === 'function') {
+            return options.apps;
+        }
+        return null;
     }
     public destroy() {
         this.app?.unmount();
@@ -86,6 +101,13 @@ export class Router {
     private async _applyRoute(route: Route) {
         this._route = route;
         this._microApp._update(this);
+    }
+    public resolve(location: RouterRawLocation): Route {
+        const result = parseRoute(this.options, location);
+        if (result.navType === NavigationType.resolve) {
+            return result.route;
+        }
+        return createRouteByURL(this.options.base);
     }
     public push(location: RouterRawLocation): Promise<NavigationResult> {
         return handleRoute({

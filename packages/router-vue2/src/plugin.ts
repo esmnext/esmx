@@ -53,11 +53,11 @@ export const RouterVuePlugin: {
                     // 只有根组件实例才会在 options 中存在 router 对象
                     this._routerRoot = this;
                     this._routerRoot._router = this.$options.router;
-
+                    const _router = this._routerRoot._router;
                     // 将 route 设置为响应式属性 为了解决 vue2 无法监听函数式返回 route 的问题
                     (Vue.util as any).defineReactive(this, '_route', {
                         get value() {
-                            return this._router.route;
+                            return _router.route;
                         },
                         count: 0
                     });

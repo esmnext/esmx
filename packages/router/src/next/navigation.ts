@@ -16,7 +16,7 @@ type NavigationGoResult = null | {
 
 export class Navigation {
     public options: RouterParsedOptions;
-    private history: History;
+    private _navigation: History;
     private _destroy: () => void;
     private _promiseResolve: ((data: NavigationGoResult) => void) | null = null;
     public constructor(
@@ -24,7 +24,7 @@ export class Navigation {
         update?: (url: string, state: RouteState) => void
     ) {
         this.options = options;
-        this.history =
+        this._navigation =
             options.mode === RouterMode.history
                 ? window.history
                 : new MemoryHistory();
@@ -45,19 +45,19 @@ export class Navigation {
             this._promiseResolve = null;
         };
         this._destroy =
-            this.history instanceof MemoryHistory
-                ? subscribeMemory(this.history, _subscribe)
+            this._navigation instanceof MemoryHistory
+                ? subscribeMemory(this._navigation, _subscribe)
                 : subscribeHtmlHistory(_subscribe);
     }
     public push(route: Route, replace = false) {
         const nextState = {
-            ...history.state,
+            ...this._navigation.state,
             ...route.state
         };
         if (replace) {
-            this.history.replaceState(nextState, '', route.fullPath);
+            this._navigation.replaceState(nextState, '', route.fullPath);
         } else {
-            this.history.pushState(nextState, '', route.fullPath);
+            this._navigation.pushState(nextState, '', route.fullPath);
         }
     }
     public go(index: number): Promise<NavigationGoResult> {
@@ -66,7 +66,7 @@ export class Navigation {
         }
         return new Promise<NavigationGoResult>((resolve, reject) => {
             this._promiseResolve = resolve;
-            this.history.go(index);
+            this._navigation.go(index);
             setTimeout(() => {
                 resolve(null);
             }, 80);

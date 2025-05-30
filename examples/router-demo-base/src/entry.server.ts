@@ -12,13 +12,14 @@ const renderer = createRenderer();
 
 export default async (rc: RenderContext) => {
     // 创建 Vue 应用实例
-    const { app } = await createApp(rc.params.routerBase, rc.params.url);
-
-    // 使用 Vue 的 renderToString 生成页面内容
-    const html = await renderer.renderToString(app, {
-        importMetaSet: rc.importMetaSet
+    const router = await createApp({
+        base: rc.params.routerBase,
+        url: rc.params.url,
+        renderToString: renderer.renderToString
     });
 
+    // 使用 Vue 的 renderToString 生成页面内容
+    const html = await router.app.renderToString?.();
     // 提交依赖收集，确保所有必要资源都被加载
     await rc.commit();
 
@@ -32,7 +33,7 @@ export default async (rc: RenderContext) => {
     ${rc.css()}
 </head>
 <body>
-    ${html}
+    ${html ?? ''}
     ${rc.importmap()}
     ${rc.moduleEntry()}
     ${rc.modulePreload()}

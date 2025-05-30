@@ -1,5 +1,5 @@
 import {
-    type RouteRecord,
+    type Route,
     type RouterRawLocation,
     isEqualRoute,
     isSameRoute
@@ -112,7 +112,7 @@ export const RouterLink = defineComponent({
         const resolveRoute = router.resolve(to);
 
         /* 匹配函数 */
-        let compare: (current: RouteRecord, route: RouteRecord) => Boolean;
+        let compare: (current: Route, route: Route) => Boolean;
         switch (exact) {
             /* 路由级匹配 */
             case 'route':
@@ -127,7 +127,7 @@ export const RouterLink = defineComponent({
             /* 是否包含 */
             // case 'include':
             default:
-                compare = (current: RouteRecord, route: RouteRecord) => {
+                compare = (current: Route, route: Route) => {
                     return current.fullPath.startsWith(route.fullPath);
                 };
                 break;

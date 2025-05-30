@@ -7,12 +7,12 @@ import {
     type RouterOptions,
     type RouterParsedOptions
 } from './types';
-
-const isBrowser = typeof window === 'object';
+import { isBrowser } from './util';
 
 export function parsedOptions(options: RouterOptions): RouterParsedOptions {
-    const mode =
-        options.mode ?? (isBrowser ? RouterMode.history : RouterMode.abstract);
+    const mode = isBrowser
+        ? (options.mode ?? RouterMode.history)
+        : RouterMode.abstract;
     const base = options.base ?? (isBrowser ? new URL(location.href) : null);
     const routes = options.routes ?? [];
     if (base === null) {

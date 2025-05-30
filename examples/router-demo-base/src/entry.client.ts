@@ -5,4 +5,7 @@
 
 import { createApp } from './create-app';
 
-createApp(location.origin, location.pathname);
+createApp({
+    base: location.origin,
+    url: location.href
+});

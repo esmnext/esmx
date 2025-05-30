@@ -5,7 +5,6 @@ import Test from './components/test.vue';
 
 export const routes: RouteConfig[] = [
     {
-        appType: 'vue2',
         path: '/',
         component: App,
         children: [

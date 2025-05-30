@@ -68,7 +68,9 @@ export interface RouterOptions {
     normalizeURL?: (url: URL, raw: RouterRawLocation) => URL;
     onOpen?: (url: URL, navType: NavigationType, route?: Route) => boolean;
     scrollBehavior?: RouterScrollBehavior;
-    apps?: Record<string, RouterMicroAppCallback | undefined>;
+    apps?:
+        | Record<string, RouterMicroAppCallback | undefined>
+        | RouterMicroAppCallback;
 }
 
 export interface RouterParsedOptions extends Required<RouterOptions> {
@@ -94,7 +96,7 @@ export interface RouterLocation {
 
 export type RouterRawLocation = RouterLocation | string;
 
-export type Awaitable<T> = T | PromiseLike<T>;
+export type Awaitable<T> = T | Promise<T>;
 
 /**
  * @param to - 前往的路由

@@ -154,3 +154,26 @@ export function createRoute(
         matched
     };
 }
+
+export function createRouteByURL(location: URL): Route {
+    return {
+        location,
+        hash: location.hash,
+        host: location.host,
+        hostname: location.hostname,
+        href: location.href,
+        origin: location.origin,
+        pathname: location.pathname,
+        port: location.port,
+        protocol: location.protocol,
+        search: location.search,
+        params: {},
+        query: {},
+        queryArray: {},
+        state: {},
+        meta: {},
+        path: location.pathname,
+        fullPath: location.pathname + location.search + location.hash,
+        matched: []
+    };
+}
