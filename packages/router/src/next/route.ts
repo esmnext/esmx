@@ -133,15 +133,6 @@ export function createRoute(
 export function createRouteByURL(loc: URL): Route {
     return {
         loc: loc,
-        hash: loc.hash,
-        host: loc.host,
-        hostname: loc.hostname,
-        href: loc.href,
-        origin: loc.origin,
-        pathname: loc.pathname,
-        port: loc.port,
-        protocol: loc.protocol,
-        search: loc.search,
         params: {},
         query: {},
         queryArray: {},

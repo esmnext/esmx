@@ -3,7 +3,7 @@ import type { Route } from './types';
 /**
  * 判断是否是同一个路由
  */
-export function isSameRoute(from: Route, to: Route) {
+export function isSameRoute(to: Route, from: Route) {
     return (
         from.matched.length === to.matched.length &&
         from.matched.every((record, i) => record === to.matched[i])
@@ -13,7 +13,7 @@ export function isSameRoute(from: Route, to: Route) {
 /**
  * 判断是否是全等的路由: 路径完全相同
  */
-export function isEqualRoute(from: Route, to: Route) {
+export function isEqualRoute(to: Route, from: Route) {
     return (
         // 这里不仅仅判断了前后的path是否一致
         // 同时判断了匹配路由对象的个数

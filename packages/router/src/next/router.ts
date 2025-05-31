@@ -6,8 +6,8 @@ import type {
     NavigationResult,
     Route,
     RouteState,
-    RouterMicroApp,
     RouterMicroAppCallback,
+    RouterMicroAppOptions,
     RouterOptions,
     RouterParsedOptions,
     RouterRawLocation
@@ -15,7 +15,7 @@ import type {
 import { isBrowser } from './util';
 
 class MicroApp {
-    public app: RouterMicroApp | null = null;
+    public app: RouterMicroAppOptions | null = null;
     private _factory: RouterMicroAppCallback | null = null;
     public _update(router: Router) {
         const factory = this._getNextFactory(router);
@@ -191,7 +191,7 @@ export class Router {
         return handleRoute({
             navType,
             options: this.options,
-            loc: loc ?? this.route.href,
+            loc: loc ?? this.route.loc.href,
             handle: async (result) => {
                 await this._applyRoute(result.route);
                 return result;
