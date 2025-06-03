@@ -1,6 +1,4 @@
 import {
-    type NavigationResult,
-    NavigationType,
     type Route,
     type RouteState,
     RouterMode,
