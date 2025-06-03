@@ -84,19 +84,19 @@ export class Router {
                         state
                     },
                     handle: async (result) => {
-                        await this._applyRoute(result.route);
-                        return {
-                            ...result,
-                            navType: NavigationType.popstate
-                        };
+                        return this._applyRoute(result);
                     }
                 });
             }
         );
     }
-    private async _applyRoute(route: Route) {
-        this._route = route;
+    private async _applyRoute<T extends NavigationType>(result: {
+        navType: T;
+        route: Route;
+    }) {
+        this._route = result.route;
         this._microApp._update(this);
+        return result;
     }
     public createLayer(options?: RouterOptions): Router {
         return new Router({
@@ -113,8 +113,10 @@ export class Router {
             options: this.options,
             loc,
             handle: async (result) => {
-                await this._applyRoute(result.route);
-                this._navigation.push(result.route);
+                result = await this._applyRoute(result);
+                if (result.navType === NavigationType.push) {
+                    this._navigation.push(result.route);
+                }
                 return result;
             }
         });
@@ -125,8 +127,10 @@ export class Router {
             options: this.options,
             loc: loc,
             handle: async (result) => {
-                await this._applyRoute(result.route);
-                this._navigation.push(result.route, true);
+                result = await this._applyRoute(result);
+                if (result.navType === NavigationType.replace) {
+                    this._navigation.push(result.route, true);
+                }
                 return result;
             }
         });
@@ -197,8 +201,7 @@ export class Router {
             options: this.options,
             loc: loc ?? this.route.url.href,
             handle: async (result) => {
-                await this._applyRoute(result.route);
-                return result;
+                return this._applyRoute(result);
             }
         });
     }
