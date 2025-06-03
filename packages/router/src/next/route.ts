@@ -59,7 +59,7 @@ export function parseRoute(
     if (typeof raw === 'object' && raw.params) {
         const current = loc.pathname.split('/');
         const next = new URL(
-            lastMatch.compile(loc).substring(1),
+            lastMatch.compile(raw.params).substring(1),
             base
         ).pathname.split('/');
         next.forEach((item, index) => {
