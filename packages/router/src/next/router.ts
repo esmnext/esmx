@@ -58,6 +58,7 @@ class MicroApp {
 }
 
 export class Router {
+    private _options: RouterOptions;
     public options: RouterParsedOptions;
     private _route: null | Route = null;
     private _navigation: Navigation;
@@ -70,6 +71,7 @@ export class Router {
         return this._route;
     }
     public constructor(options: RouterOptions) {
+        this._options = options;
         this.options = parsedOptions(options);
         this._navigation = new Navigation(
             this.options,
@@ -95,6 +97,12 @@ export class Router {
     private async _applyRoute(route: Route) {
         this._route = route;
         this._microApp._update(this);
+    }
+    public createLayer(options?: RouterOptions): Router {
+        return new Router({
+            ...this._options,
+            ...options
+        });
     }
     public resolve(loc: RouterRawLocation): Route {
         const result = parseRoute(this.options, loc);
