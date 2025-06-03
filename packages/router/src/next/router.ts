@@ -1,6 +1,6 @@
 import { Navigation } from './navigation';
 import { parsedOptions } from './options';
-import { createRouteByURL, handleRoute, parseRoute } from './route';
+import { handleRoute, parseRoute } from './route';
 import { NavigationType } from './types';
 import type {
     NavigationResult,
