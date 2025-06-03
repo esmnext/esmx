@@ -30,16 +30,16 @@ export function parsedOptions(options: RouterOptions): RouterParsedOptions {
         apps: options.apps ?? {},
         matcher: createMatcher(routes),
         normalizeURL: options.normalizeURL ?? ((url) => url),
-        onOpen: (url: URL, navType: NavigationType, route?: Route) => {
+        onOpen: (route: Route, navType: NavigationType) => {
             if (isBrowser) {
-                const result = options.onOpen?.(url, navType, route);
+                const result = options.onOpen?.(route, navType);
                 if (result !== false) {
-                    DEFAULT_ON_OPEN(url, navType, route);
+                    DEFAULT_ON_OPEN(route, navType);
                 }
             }
             return true;
         },
-        onServerLocation(url, navType, route) {
+        onServerLocation(route, navType) {
             return true;
         },
         scrollBehavior: options.scrollBehavior ?? DEFAULT_SCROLL_BEHAVIOR

@@ -105,11 +105,7 @@ export class Router {
         });
     }
     public resolve(loc: RouterRawLocation): Route {
-        const result = parseRoute(this.options, loc);
-        if (result.navType === NavigationType.resolve) {
-            return result.route;
-        }
-        return createRouteByURL(this.options.base);
+        return parseRoute(this.options, loc);
     }
     public push(loc: RouterRawLocation): Promise<NavigationResult> {
         return handleRoute({
@@ -146,7 +142,7 @@ export class Router {
         if (result === null) {
             return {
                 navType: NavigationType.duplicate,
-                loc: this.route.loc
+                route: this.route
             };
         }
 
@@ -178,7 +174,7 @@ export class Router {
             options: this.options,
             loc: loc,
             handle: async (result) => {
-                this.options.onOpen(result.loc, result.navType, result.route);
+                this.options.onOpen(result.route, result.navType);
                 return result;
             }
         });
@@ -189,7 +185,7 @@ export class Router {
             options: this.options,
             loc: loc,
             handle: async (result) => {
-                this.options.onOpen(result.loc, result.navType, result.route);
+                this.options.onOpen(result.route, result.navType);
                 return result;
             }
         });

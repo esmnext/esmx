@@ -12,47 +12,21 @@ import {
 export function parseRoute(
     options: RouterParsedOptions,
     raw: RouterRawLocation
-):
-    | {
-          navType: NavigationType.open;
-          loc: URL;
-      }
-    | {
-          navType: NavigationType.open;
-          loc: URL;
-      }
-    | {
-          navType: NavigationType.notFound;
-          loc: URL;
-      }
-    | {
-          navType: NavigationType.resolve;
-          loc: URL;
-          route: Route;
-      } {
+): Route {
     const { base, normalizeURL } = options;
     const loc = normalizeURL(parseLocation(raw, base), raw);
     // 处理外站逻辑
     if (loc.origin !== base.origin) {
-        return {
-            navType: NavigationType.open,
-            loc
-        };
+        return createRouteByURL(loc);
     }
     if (loc.pathname.length < base.pathname.length) {
-        return {
-            navType: NavigationType.open,
-            loc
-        };
+        return createRouteByURL(loc);
     }
     // 匹配路由
     const matched = options.matcher(loc, base);
     // 没有匹配任何路由
     if (matched.matches.length === 0) {
-        return {
-            navType: NavigationType.notFound,
-            loc
-        };
+        return createRouteByURL(loc);
     }
     // 重新构造 URL 参数
     const lastMatch = matched.matches[matched.matches.length - 1];
@@ -68,12 +42,7 @@ export function parseRoute(
         loc.pathname = current.join('/');
         Object.assign(matched.params, raw.params);
     }
-    const route = createRoute(raw, loc, base, matched);
-    return {
-        navType: NavigationType.resolve,
-        loc,
-        route
-    };
+    return createRoute(raw, loc, base, matched);
 }
 
 export async function handleRoute<T extends NavigationType>({
@@ -87,25 +56,19 @@ export async function handleRoute<T extends NavigationType>({
     navType: T;
     handle: (result: {
         navType: T;
-        loc: URL;
         route: Route;
     }) => Awaitable<NavigationResult>;
 }): Promise<NavigationResult> {
-    const result = parseRoute(options, loc);
-    switch (result.navType) {
-        case NavigationType.open:
-            options.onOpen(result.loc, result.navType);
-            return {
-                navType: NavigationType.open,
-                loc: result.loc
-            };
-        case NavigationType.notFound:
-            return result;
+    const route = parseRoute(options, loc);
+    if (!route.matched.length) {
+        return {
+            navType: NavigationType.open,
+            route
+        };
     }
     return handle({
         navType,
-        loc: result.loc,
-        route: result.route
+        route
     });
 }
 

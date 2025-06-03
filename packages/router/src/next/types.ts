@@ -82,17 +82,13 @@ export interface RouterOptions {
     /** URL标准化函数，用于处理URL格式 */
     normalizeURL?: (url: URL, raw: RouterRawLocation) => URL;
     /** 路由打开时的钩子函数 */
-    onOpen?: (url: URL, navType: NavigationType, route?: Route) => boolean;
+    onOpen?: (route: Route, navType: NavigationType) => boolean;
     /** 服务端请求对象（仅服务端使用） */
     req?: IncomingMessage | null;
     /** 服务端响应对象（仅服务端使用） */
     res?: ServerResponse | null;
     /** 服务端位置变化钩子函数 */
-    onServerLocation?: (
-        url: URL,
-        navType: NavigationType,
-        route?: Route
-    ) => boolean;
+    onServerLocation?: (route: Route, navType: NavigationType) => boolean;
 }
 
 /**
@@ -411,24 +407,24 @@ export interface Route {
  */
 export type NavigationResult =
     // 基本导航操作结果
-    | { navType: NavigationType.push; loc: URL; route: Route }
-    | { navType: NavigationType.replace; loc: URL; route: Route }
-    | { navType: NavigationType.reload; loc: URL; route: Route }
-    | { navType: NavigationType.go; loc: URL; route: Route }
-    | { navType: NavigationType.forward; loc: URL; route: Route }
-    | { navType: NavigationType.back; loc: URL; route: Route }
-    | { navType: NavigationType.popstate; loc: URL; route: Route }
-    | { navType: NavigationType.resolve; loc: URL; route: Route }
+    | { navType: NavigationType.push; route: Route }
+    | { navType: NavigationType.replace; route: Route }
+    | { navType: NavigationType.reload; route: Route }
+    | { navType: NavigationType.go; route: Route }
+    | { navType: NavigationType.forward; route: Route }
+    | { navType: NavigationType.back; route: Route }
+    | { navType: NavigationType.popstate; route: Route }
+    | { navType: NavigationType.resolve; route: Route }
 
     // 窗口/层导航结果
-    | { navType: NavigationType.openWindow; loc: URL }
-    | { navType: NavigationType.replaceWindow; loc: URL }
-    | { navType: NavigationType.pushLayer; loc: URL; result: unknown }
+    | { navType: NavigationType.openWindow; route: Route }
+    | { navType: NavigationType.replaceWindow; route: Route }
+    | { navType: NavigationType.pushLayer; route: Route; result: unknown }
 
     // 导航结果状态
-    | { navType: NavigationType.open; loc: URL }
-    | { navType: NavigationType.duplicate; loc: URL }
-    | { navType: NavigationType.notFound; loc: URL };
+    | { navType: NavigationType.open; route: Route }
+    | { navType: NavigationType.duplicate; route: Route }
+    | { navType: NavigationType.notFound; route: Route };
 
 /////////////////////////////////////////////////////////
 // ======================================================

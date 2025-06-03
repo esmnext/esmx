@@ -14,19 +14,15 @@ export const DEFAULT_SCROLL_BEHAVIOR: RouterScrollBehavior = (
     };
 };
 
-export function DEFAULT_ON_OPEN(
-    url: URL,
-    navType: NavigationType,
-    route?: Route
-) {
+export function DEFAULT_ON_OPEN(route: Route, navType: NavigationType) {
     try {
-        const newWindow = window.open(url);
+        const newWindow = window.open(route.loc.href);
         if (!newWindow) {
-            location.href = url.href;
+            location.href = route.loc.href;
         } else {
             newWindow.opener = null; // 解除新窗口与当前窗口的关系
         }
     } catch (e) {
-        location.href = url.href;
+        location.href = route.loc.href;
     }
 }
