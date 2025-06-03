@@ -559,37 +559,3 @@ export interface RouterLocation {
  * ```
  */
 export type Awaitable<T> = T | Promise<T>;
-
-/**
- * 可选类型
- * @description 表示一个值可能存在也可能不存在
- * @template T 值的类型
- */
-export type Maybe<T> = T | null | undefined;
-
-/**
- * 非空类型
- * @description 从类型中排除null和undefined
- * @template T 原始类型
- */
-export type NonNullable<T> = T extends null | undefined ? never : T;
-
-/**
- * 深度只读类型
- * @description 递归地将对象的所有属性设为只读
- * @template T 对象类型
- */
-export type DeepReadonly<T> = {
-    readonly [P in keyof T]: T[P] extends object ? DeepReadonly<T[P]> : T[P];
-};
-
-/**
- * 函数类型提取器
- * @description 提取函数的参数和返回值类型
- */
-export type FunctionArgs<T> = T extends (...args: infer A) => unknown
-    ? A
-    : never;
-export type FunctionReturn<T> = T extends (...args: unknown[]) => infer R
-    ? R
-    : never;
