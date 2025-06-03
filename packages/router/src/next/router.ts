@@ -1,69 +1,109 @@
+import { MicroApp } from './micro-app';
 import { Navigation } from './navigation';
 import { parsedOptions } from './options';
-import { handleRoute, parseRoute } from './route';
+import {
+    type RouteTask,
+    type RouteTaskCallback,
+    type RouteTaskContext,
+    createRouteTask,
+    parseRoute
+} from './route';
 import { NavigationType } from './types';
 import type {
     EnvBridge,
-    NavigationResult,
     Route,
     RouteState,
-    RouterMicroAppCallback,
-    RouterMicroAppOptions,
     RouterOptions,
     RouterParsedOptions,
     RouterRawLocation
 } from './types';
-import { isBrowser } from './util';
-
-class MicroApp {
-    public app: RouterMicroAppOptions | null = null;
-    private _factory: RouterMicroAppCallback | null = null;
-    public _update(router: Router) {
-        const factory = this._getNextFactory(router);
-        if (factory === this._factory) {
-            return;
-        }
-        const oldApp = this.app;
-        // 创建新的应用
-        const app = factory ? factory(router) : null;
-        isBrowser && app?.mount();
-        this.app = app;
-        this._factory = factory;
-        // 销毁旧的应用
-        isBrowser && oldApp?.unmount();
-    }
-    private _getNextFactory({
-        route,
-        options
-    }: Router): RouterMicroAppCallback | null {
-        if (
-            typeof route.matched[0].app === 'string' &&
-            options.apps &&
-            typeof options.apps === 'object'
-        ) {
-            return options.apps[route.matched[0].app] || null;
-        }
-        if (typeof route.matched[0].app === 'function') {
-            return route.matched[0].app;
-        }
-        if (typeof options.apps === 'function') {
-            return options.apps;
-        }
-        return null;
-    }
-    public destroy() {
-        this.app?.unmount();
-        this.app = null;
-        this._factory = null;
-    }
-}
-
 export class Router {
     private _options: RouterOptions;
     public options: RouterParsedOptions;
     private _route: null | Route = null;
     private _navigation: Navigation;
     private _microApp: MicroApp = new MicroApp();
+
+    private _tasks = {
+        // 检查是否是外部链接
+        outside: (ctx: RouteTaskContext) => {
+            if (ctx.to.matched.length === 0) {
+                ctx.options.onOpen(ctx.to);
+                return ctx.finish();
+            }
+        },
+        envBridge: async (ctx: RouteTaskContext) => {
+            const { to } = ctx;
+            if (!to.config || !to.config.env) {
+                return;
+            }
+            let envBridge: EnvBridge | null = null;
+            if (typeof to.config.env === 'function') {
+                envBridge = to.config.env;
+            } else if (typeof to.config.env === 'object') {
+                const { require, handle } = to.config.env;
+                if (typeof require === 'function' && require(to)) {
+                    envBridge = handle || null;
+                } else {
+                    envBridge = handle || null;
+                }
+            }
+            if (envBridge) {
+                envBridge(to);
+                ctx.finish();
+            }
+        },
+        // 应用当前的 URL
+        applyRoute: (ctx: RouteTaskContext) => {
+            this._route = ctx.to;
+            this._microApp._update(this);
+        },
+        push: (ctx: RouteTaskContext) => {
+            this._navigation.push(ctx.to);
+            ctx.finish();
+        },
+        replace: (ctx: RouteTaskContext) => {
+            this._navigation.push(ctx.to);
+            ctx.finish();
+        },
+        open: (ctx: RouteTaskContext) => {
+            ctx.options.onOpen(ctx.to);
+            ctx.finish();
+        },
+        reload: (ctx: RouteTaskContext) => {
+            this._microApp._update(this);
+            ctx.finish();
+        }
+    } satisfies Record<string, RouteTaskCallback>;
+    private _taskMaps = {
+        [NavigationType.push]: [
+            this._tasks.outside,
+            this._tasks.envBridge,
+            this._tasks.applyRoute,
+            this._tasks.push
+        ],
+        [NavigationType.replace]: [
+            this._tasks.outside,
+            this._tasks.envBridge,
+            this._tasks.applyRoute,
+            this._tasks.replace
+        ],
+        [NavigationType.openWindow]: [
+            this._tasks.outside,
+            this._tasks.envBridge,
+            this._tasks.open
+        ],
+        [NavigationType.replaceWindow]: [
+            this._tasks.outside,
+            this._tasks.envBridge,
+            this._tasks.open
+        ],
+        [NavigationType.reload]: [this._tasks.outside, this._tasks.reload],
+        [NavigationType.back]: [this._tasks.outside],
+        [NavigationType.go]: [this._tasks.outside],
+        [NavigationType.forward]: [this._tasks.outside],
+        [NavigationType.popstate]: [this._tasks.outside]
+    } satisfies Record<string, RouteTaskCallback[]>;
 
     public get route() {
         if (this._route === null) {
@@ -77,50 +117,56 @@ export class Router {
         this._navigation = new Navigation(
             this.options,
             (url: string, state: RouteState) => {
-                handleRoute({
-                    navType: NavigationType.popstate,
-                    options: this.options,
-                    loc: {
-                        path: url,
-                        state
-                    },
-                    handle: async (result) => {
-                        return this._applyRoute(result);
-                    }
+                return this._transitionTo(NavigationType.push, {
+                    url,
+                    state
                 });
             }
         );
     }
-    private _getEnvBridge(route: Route): EnvBridge | null {
-        if (!route.config || !route.config.env) {
+    public push(location: RouterRawLocation): Promise<Route> {
+        return this._transitionTo(NavigationType.push, location);
+    }
+    public replace(location: RouterRawLocation) {
+        return this._transitionTo(NavigationType.replace, location);
+    }
+    public openWindow(location?: RouterRawLocation): Promise<Route> {
+        return this._transitionTo(
+            NavigationType.openWindow,
+            location ?? this.route.url.href
+        );
+    }
+    public replaceWindow(location?: RouterRawLocation): Promise<Route> {
+        return this._transitionTo(
+            NavigationType.replaceWindow,
+            location ?? this.route.url.href
+        );
+    }
+    public reload(location?: RouterRawLocation): Promise<Route> {
+        return this._transitionTo(
+            NavigationType.reload,
+            location ?? this.route.url.href
+        );
+    }
+    public async back(): Promise<Route | null> {
+        const result = await this._navigation.go(-1);
+        if (result === null) {
             return null;
         }
-        if (typeof route.config.env === 'function') {
-            return route.config.env;
-        }
-        if (typeof route.config.env === 'object') {
-            const { require, handle } = route.config.env;
-            if (typeof require === 'function' && require(route)) {
-                return handle || null;
-            }
-            return handle || null;
-        }
-        return null;
+        return this._transitionTo(NavigationType.back, {
+            url: result.url,
+            state: result.state
+        });
     }
-    private async _applyRoute<T extends NavigationType>(result: {
-        navType: T;
-        route: Route;
-    }) {
-        const envBridge = this._getEnvBridge(result.route);
-        if (envBridge) {
-            return {
-                navType: result.navType,
-                route: await envBridge(result.route)
-            };
+    public async go(index: number): Promise<Route | null> {
+        const result = await this._navigation.go(index);
+        if (result === null) {
+            return null;
         }
-        this._route = result.route;
-        this._microApp._update(this);
-        return result;
+        return this._transitionTo(NavigationType.go, {
+            url: result.url,
+            state: result.state
+        });
     }
     public createLayer(options?: RouterOptions): Router {
         return new Router({
@@ -128,106 +174,34 @@ export class Router {
             ...options
         });
     }
-    public resolve(loc: RouterRawLocation): Route {
-        return parseRoute(this.options, loc);
-    }
-    public push(loc: RouterRawLocation): Promise<NavigationResult> {
-        return handleRoute({
-            navType: NavigationType.push,
-            options: this.options,
-            loc,
-            handle: async (result) => {
-                result = await this._applyRoute(result);
-                if (result.navType === NavigationType.push) {
-                    this._navigation.push(result.route);
-                }
-                return result;
-            }
-        });
-    }
-    public replace(loc: RouterRawLocation) {
-        return handleRoute({
-            navType: NavigationType.replace,
-            options: this.options,
-            loc: loc,
-            handle: async (result) => {
-                result = await this._applyRoute(result);
-                if (result.navType === NavigationType.replace) {
-                    this._navigation.push(result.route, true);
-                }
-                return result;
-            }
-        });
-    }
-    private async _handleGo(
-        index: number,
-        navType:
-            | NavigationType.go
-            | NavigationType.back
-            | NavigationType.forward
-    ): Promise<NavigationResult> {
-        const result = await this._navigation.go(index);
+    public async forward(): Promise<Route | null> {
+        const result = await this._navigation.go(1);
         if (result === null) {
-            return {
-                navType: NavigationType.duplicate,
-                route: this.route
-            };
+            return null;
         }
+        return this._transitionTo(NavigationType.back, {
+            url: result.url,
+            state: result.state
+        });
+    }
+    public resolve(loc: RouterRawLocation): Route {
+        return parseRoute(NavigationType.resolve, this.options, loc);
+    }
 
-        return handleRoute({
-            navType,
-            options: this.options,
-            loc: {
-                path: result.url,
-                state: result.state
-            },
-            async handle(result) {
-                return result;
-            }
-        });
-    }
-    public async go(index: number): Promise<NavigationResult> {
-        return this._handleGo(index, NavigationType.go);
-    }
-    public async forward(): Promise<NavigationResult> {
-        return this._handleGo(1, NavigationType.forward);
-    }
-    public async back() {
-        return this._handleGo(-1, NavigationType.back);
-    }
     public pushLayer(loc: RouterRawLocation) {}
-    public openWindow(loc: RouterRawLocation): Promise<NavigationResult> {
-        return handleRoute({
-            navType: NavigationType.openWindow,
-            options: this.options,
-            loc: loc,
-            handle: async (result) => {
-                this.options.onOpen(result.route, result.navType);
-                return result;
-            }
-        });
-    }
-    public replaceWindow(loc: RouterRawLocation): Promise<NavigationResult> {
-        return handleRoute({
-            navType: NavigationType.replaceWindow,
-            options: this.options,
-            loc: loc,
-            handle: async (result) => {
-                this.options.onOpen(result.route, result.navType);
-                return result;
-            }
-        });
-    }
-    public reload(loc?: RouterRawLocation) {
-        const navType = NavigationType.reload;
-        return handleRoute({
-            navType,
-            options: this.options,
-            loc: loc ?? this.route.url.href,
-            handle: async (result) => {
-                return this._applyRoute(result);
-            }
-        });
+    private _transitionTo(
+        navigationType: NavigationType,
+        to: RouterRawLocation
+    ) {
+        const tasks = this._taskMaps[navigationType] ?? [];
+        return createRouteTask({
+            navigationType,
+            to,
+            from: this._route,
+            options: this.options
+        })
+            .add(...tasks)
+            .run();
     }
     public async renderToString(throwError = false): Promise<string | null> {
         try {

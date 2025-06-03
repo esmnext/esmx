@@ -1,15 +1,15 @@
 import { parseLocation } from './location';
 import type { RouteMatchResult } from './matcher';
-import {
-    type Awaitable,
-    type NavigationResult,
+import type {
+    Awaitable,
     NavigationType,
-    type Route,
-    type RouterParsedOptions,
-    type RouterRawLocation
+    Route,
+    RouterParsedOptions,
+    RouterRawLocation
 } from './types';
 
 export function parseRoute(
+    navigationType: NavigationType,
     options: RouterParsedOptions,
     raw: RouterRawLocation
 ): Route {
@@ -17,16 +17,16 @@ export function parseRoute(
     const loc = normalizeURL(parseLocation(raw, base), raw);
     // 处理外站逻辑
     if (loc.origin !== base.origin) {
-        return createRoute(raw, loc, base);
+        return createRoute(navigationType, raw, loc, base);
     }
     if (loc.pathname.length < base.pathname.length) {
-        return createRoute(raw, loc, base);
+        return createRoute(navigationType, raw, loc, base);
     }
     // 匹配路由
     const matched = options.matcher(loc, base);
     // 没有匹配任何路由
     if (matched.matches.length === 0) {
-        return createRoute(raw, loc, base);
+        return createRoute(navigationType, raw, loc, base);
     }
     // 重新构造 URL 参数
     const lastMatch = matched.matches[matched.matches.length - 1];
@@ -42,43 +42,18 @@ export function parseRoute(
         loc.pathname = current.join('/');
         Object.assign(matched.params, raw.params);
     }
-    return createRoute(raw, loc, base, matched);
-}
-
-export async function handleRoute<T extends NavigationType>({
-    options,
-    loc,
-    handle,
-    navType
-}: {
-    options: RouterParsedOptions;
-    loc: RouterRawLocation;
-    navType: T;
-    handle: (result: {
-        navType: T;
-        route: Route;
-    }) => Awaitable<NavigationResult>;
-}): Promise<NavigationResult> {
-    const route = parseRoute(options, loc);
-    if (!route.matched.length) {
-        return {
-            navType: NavigationType.open,
-            route
-        };
-    }
-    return handle({
-        navType,
-        route
-    });
+    return createRoute(navigationType, raw, loc, base, matched);
 }
 
 export function createRoute(
+    navigationType: NavigationType,
     raw: RouterRawLocation,
     loc: URL,
     base: URL,
     match?: RouteMatchResult
 ): Route {
     const route: Route = {
+        navigationType,
         url: loc,
         params: {},
         query: {},
@@ -105,3 +80,61 @@ export function createRoute(
     }
     return route;
 }
+
+export function createRouteTask(opts: RouteTaskOptions) {
+    let finish = false;
+    const ctx = {
+        navigationType: opts.navigationType,
+        to: parseRoute(opts.navigationType, opts.options, opts.to),
+        from: opts.from,
+        options: opts.options,
+        finish() {
+            finish = true;
+        },
+        async redirect(to: RouterRawLocation) {
+            finish = true;
+            this.to = await createRouteTask({
+                ...opts,
+                to
+            }).run();
+        }
+    };
+    const list: Array<RouteTask> = [];
+    return {
+        add(...items: RouteTask[]) {
+            list.push(...items);
+            return this;
+        },
+        async run() {
+            for (const item of list) {
+                if (finish) {
+                    return ctx.to;
+                }
+                await item.task(ctx);
+            }
+            return ctx.to;
+        }
+    };
+}
+
+export interface RouteTaskOptions {
+    navigationType: NavigationType;
+    to: RouterRawLocation;
+    from: Route | null;
+    options: RouterParsedOptions;
+}
+export interface RouteTaskContext {
+    navigationType: NavigationType;
+    to: Route;
+    from: Route | null;
+    options: RouterParsedOptions;
+    finish: () => void;
+    redirect: (to: RouterRawLocation) => Promise<void>;
+}
+
+export interface RouteTask {
+    name: string;
+    task: RouteTaskCallback;
+}
+
+export type RouteTaskCallback = (ctx: RouteTaskContext) => Awaitable<void>;

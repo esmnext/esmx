@@ -82,13 +82,13 @@ export interface RouterOptions {
     /** URL标准化函数，用于处理URL格式 */
     normalizeURL?: (url: URL, raw: RouterRawLocation) => URL;
     /** 路由打开时的钩子函数 */
-    onOpen?: (route: Route, navType: NavigationType) => boolean;
+    onOpen?: (route: Route) => boolean;
     /** 服务端请求对象（仅服务端使用） */
     req?: IncomingMessage | null;
     /** 服务端响应对象（仅服务端使用） */
     res?: ServerResponse | null;
     /** 服务端位置变化钩子函数 */
-    onServerLocation?: (route: Route, navType: NavigationType) => boolean;
+    onServerLocation?: (route: Route) => boolean;
 }
 
 /**
@@ -262,15 +262,7 @@ export enum NavigationType {
 
     // 路由解析
     /** 解析路由但不执行导航 */
-    resolve = 'resolve',
-
-    // 导航结果状态
-    /** 成功打开 */
-    open = 'open',
-    /** 导航被中止 */
-    aborted = 'aborted',
-    /** 重复导航 */
-    duplicate = 'duplicate'
+    resolve = 'resolve'
 }
 
 /**
@@ -379,6 +371,8 @@ export interface RouteConfig {
  * @description 表示当前激活的路由信息，包含完整的路由状态
  */
 export interface Route {
+    /** 导航的类型 */
+    navigationType: NavigationType;
     /** 当前路由的完整URL对象 */
     url: URL;
     /** 从动态路由中提取的路径参数 */
@@ -400,30 +394,6 @@ export interface Route {
     /** matched 的最后一个值 */
     config: RouteConfig | null;
 }
-
-/**
- * 导航结果
- * @description 描述导航操作的结果，包含导航类型、目标位置和相关数据
- */
-export type NavigationResult =
-    // 基本导航操作结果
-    | { route: Route; navType: NavigationType.push }
-    | { route: Route; navType: NavigationType.replace }
-    | { route: Route; navType: NavigationType.reload }
-    | { route: Route; navType: NavigationType.go }
-    | { route: Route; navType: NavigationType.forward }
-    | { route: Route; navType: NavigationType.back }
-    | { route: Route; navType: NavigationType.popstate }
-    | { route: Route; navType: NavigationType.resolve }
-
-    // 窗口/层导航结果
-    | { route: Route; navType: NavigationType.openWindow }
-    | { route: Route; navType: NavigationType.replaceWindow }
-    | { route: Route; result: unknown; navType: NavigationType.pushLayer }
-
-    // 导航结果状态
-    | { route: Route; navType: NavigationType.open }
-    | { route: Route; navType: NavigationType.duplicate };
 
 /////////////////////////////////////////////////////////
 // ======================================================
