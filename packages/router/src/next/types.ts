@@ -270,9 +270,7 @@ export enum NavigationType {
     /** 导航被中止 */
     aborted = 'aborted',
     /** 重复导航 */
-    duplicate = 'duplicate',
-    /** 路由未找到 */
-    notFound = 'notFound'
+    duplicate = 'duplicate'
 }
 
 /**
@@ -409,24 +407,23 @@ export interface Route {
  */
 export type NavigationResult =
     // 基本导航操作结果
-    | { navType: NavigationType.push; route: Route }
-    | { navType: NavigationType.replace; route: Route }
-    | { navType: NavigationType.reload; route: Route }
-    | { navType: NavigationType.go; route: Route }
-    | { navType: NavigationType.forward; route: Route }
-    | { navType: NavigationType.back; route: Route }
-    | { navType: NavigationType.popstate; route: Route }
-    | { navType: NavigationType.resolve; route: Route }
+    | { route: Route; navType: NavigationType.push }
+    | { route: Route; navType: NavigationType.replace }
+    | { route: Route; navType: NavigationType.reload }
+    | { route: Route; navType: NavigationType.go }
+    | { route: Route; navType: NavigationType.forward }
+    | { route: Route; navType: NavigationType.back }
+    | { route: Route; navType: NavigationType.popstate }
+    | { route: Route; navType: NavigationType.resolve }
 
     // 窗口/层导航结果
-    | { navType: NavigationType.openWindow; route: Route }
-    | { navType: NavigationType.replaceWindow; route: Route }
-    | { navType: NavigationType.pushLayer; route: Route; result: unknown }
+    | { route: Route; navType: NavigationType.openWindow }
+    | { route: Route; navType: NavigationType.replaceWindow }
+    | { route: Route; result: unknown; navType: NavigationType.pushLayer }
 
     // 导航结果状态
-    | { navType: NavigationType.open; route: Route }
-    | { navType: NavigationType.duplicate; route: Route }
-    | { navType: NavigationType.notFound; route: Route };
+    | { route: Route; navType: NavigationType.open }
+    | { route: Route; navType: NavigationType.duplicate };
 
 /////////////////////////////////////////////////////////
 // ======================================================
