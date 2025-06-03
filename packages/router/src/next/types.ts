@@ -399,6 +399,8 @@ export interface Route {
     fullPath: string;
     /** 匹配的路由配置数组，按层级排序 */
     matched: RouteConfig[];
+    /** matched 的最后一个值 */
+    config: RouteConfig | null;
 }
 
 /**
@@ -541,7 +543,7 @@ export interface RouteConfig {
 }
 export type EnvBridge = (route: Route) => Awaitable<any>;
 export interface NavigationEnvOptions {
-    require?: (route: Route) => Awaitable<boolean>;
+    require?: (route: Route) => boolean;
     handle?: EnvBridge;
 }
 

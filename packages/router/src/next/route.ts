@@ -87,7 +87,8 @@ export function createRoute(
         meta: {},
         path: loc.pathname,
         fullPath: loc.pathname + loc.search + loc.hash,
-        matched: []
+        matched: [],
+        config: null
     };
 
     for (const key of loc.searchParams.keys()) {
@@ -96,7 +97,8 @@ export function createRoute(
         route.queryArray[key] = values;
     }
     if (match) {
-        route.meta = match.matches?.[0].route.meta ?? {};
+        route.config = match.matches[match.matches.length - 1].route;
+        route.meta = route.config.meta || {};
         route.path = loc.pathname.substring(base.pathname.length - 1);
         route.fullPath = `${route.path}${loc.search}${loc.hash}`;
         route.matched = match.matches.map((item) => item.route);

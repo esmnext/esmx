@@ -3,6 +3,7 @@ import { parsedOptions } from './options';
 import { handleRoute, parseRoute } from './route';
 import { NavigationType } from './types';
 import type {
+    EnvBridge,
     NavigationResult,
     Route,
     RouteState,
@@ -90,10 +91,33 @@ export class Router {
             }
         );
     }
+    private _getEnvBridge(route: Route): EnvBridge | null {
+        if (!route.config || !route.config.env) {
+            return null;
+        }
+        if (typeof route.config.env === 'function') {
+            return route.config.env;
+        }
+        if (typeof route.config.env === 'object') {
+            const { require, handle } = route.config.env;
+            if (typeof require === 'function' && require(route)) {
+                return handle || null;
+            }
+            return handle || null;
+        }
+        return null;
+    }
     private async _applyRoute<T extends NavigationType>(result: {
         navType: T;
         route: Route;
     }) {
+        const envBridge = this._getEnvBridge(result.route);
+        if (envBridge) {
+            return {
+                navType: result.navType,
+                route: await envBridge(result.route)
+            };
+        }
         this._route = result.route;
         this._microApp._update(this);
         return result;
