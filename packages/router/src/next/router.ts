@@ -20,12 +20,10 @@ import type {
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 class TaskType {
     public static outside = 'outside';
-    public static envBridge = 'envBridge';
-    public static applyRoute = 'applyRoute';
-    public static push = 'push';
-    public static replace = 'replace';
-    public static open = 'open';
-    public static reload = 'reload';
+    public static callBridge = 'callBridge';
+    public static applyApp = 'applyApp';
+    public static applyNavigation = 'applyNavigation';
+    public static applyWindow = 'applyWindow';
 }
 
 export class Router {
@@ -36,14 +34,13 @@ export class Router {
     private _microApp: MicroApp = new MicroApp();
 
     private _tasks = {
-        // 检查是否是外部链接
         [TaskType.outside]: (ctx: RouteTaskContext) => {
             if (ctx.to.matched.length === 0) {
                 ctx.options.onOpen(ctx.to);
                 return ctx.finish();
             }
         },
-        [TaskType.envBridge]: async (ctx: RouteTaskContext) => {
+        [TaskType.callBridge]: async (ctx: RouteTaskContext) => {
             const { to } = ctx;
             if (!to.config || !to.config.env) {
                 return;
@@ -64,56 +61,48 @@ export class Router {
                 ctx.finish();
             }
         },
-        // 应用当前的 URL
-        [TaskType.applyRoute]: (ctx: RouteTaskContext) => {
+        [TaskType.applyApp]: (ctx: RouteTaskContext) => {
             this._route = ctx.to;
-            this._microApp._update(this);
+            this._microApp._update(
+                this,
+                ctx.navigationType === NavigationType.reload
+            );
         },
-        [TaskType.push]: (ctx: RouteTaskContext) => {
+        [TaskType.applyNavigation]: (ctx: RouteTaskContext) => {
             this._navigation.push(ctx.to);
             ctx.finish();
         },
-        [TaskType.replace]: (ctx: RouteTaskContext) => {
-            this._navigation.push(ctx.to);
-            ctx.finish();
-        },
-        [TaskType.open]: (ctx: RouteTaskContext) => {
+        [TaskType.applyWindow]: (ctx: RouteTaskContext) => {
             ctx.options.onOpen(ctx.to);
-            ctx.finish();
-        },
-        [TaskType.reload]: (ctx: RouteTaskContext) => {
-            this._microApp._update(this);
             ctx.finish();
         }
     } satisfies Record<string, RouteTaskCallback>;
     private _taskMaps = {
         [NavigationType.push]: [
             TaskType.outside,
-            TaskType.envBridge,
-            TaskType.applyRoute,
-            TaskType.push
+            TaskType.callBridge,
+            TaskType.applyApp,
+            TaskType.applyNavigation
         ],
         [NavigationType.replace]: [
             TaskType.outside,
-            TaskType.envBridge,
-            TaskType.applyRoute,
-            TaskType.replace
+            TaskType.applyApp,
+            TaskType.applyNavigation
         ],
         [NavigationType.openWindow]: [
             TaskType.outside,
-            TaskType.envBridge,
-            TaskType.open
+            TaskType.callBridge,
+            TaskType.applyWindow
         ],
         [NavigationType.replaceWindow]: [
             TaskType.outside,
-            TaskType.envBridge,
-            TaskType.open
+            TaskType.applyWindow
         ],
-        [NavigationType.reload]: [TaskType.outside, TaskType.reload],
-        [NavigationType.back]: [TaskType.outside],
-        [NavigationType.go]: [TaskType.outside],
-        [NavigationType.forward]: [TaskType.outside],
-        [NavigationType.popstate]: [TaskType.outside]
+        [NavigationType.reload]: [TaskType.outside, TaskType.applyApp],
+        [NavigationType.back]: [TaskType.applyApp],
+        [NavigationType.go]: [TaskType.applyApp],
+        [NavigationType.forward]: [TaskType.applyApp],
+        [NavigationType.popstate]: [TaskType.applyApp]
     } satisfies Record<string, TaskType[]>;
 
     public get route() {
