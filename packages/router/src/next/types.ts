@@ -382,7 +382,7 @@ export interface RouteConfig {
  */
 export interface Route {
     /** 当前路由的完整URL对象 */
-    loc: URL;
+    url: URL;
     /** 从动态路由中提取的路径参数 */
     params: Record<string, string>;
     /** 查询参数对象，值可能为undefined */

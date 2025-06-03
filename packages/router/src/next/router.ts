@@ -195,7 +195,7 @@ export class Router {
         return handleRoute({
             navType,
             options: this.options,
-            loc: loc ?? this.route.loc.href,
+            loc: loc ?? this.route.url.href,
             handle: async (result) => {
                 await this._applyRoute(result.route);
                 return result;

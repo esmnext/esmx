@@ -95,7 +95,7 @@ export function createRoute(
 
 export function createRouteByURL(loc: URL): Route {
     return {
-        loc: loc,
+        url: loc,
         params: {},
         query: {},
         queryArray: {},

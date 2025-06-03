@@ -16,13 +16,13 @@ export const DEFAULT_SCROLL_BEHAVIOR: RouterScrollBehavior = (
 
 export function DEFAULT_ON_OPEN(route: Route, navType: NavigationType) {
     try {
-        const newWindow = window.open(route.loc.href);
+        const newWindow = window.open(route.url.href);
         if (!newWindow) {
-            location.href = route.loc.href;
+            location.href = route.url.href;
         } else {
             newWindow.opener = null; // 解除新窗口与当前窗口的关系
         }
     } catch (e) {
-        location.href = route.loc.href;
+        location.href = route.url.href;
     }
 }
