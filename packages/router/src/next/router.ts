@@ -17,6 +17,7 @@ import type {
     RouterParsedOptions,
     RouterRawLocation
 } from './types';
+import { isESModule } from './util';
 // biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 class TaskType {
     public static outside = 'outside';
@@ -62,7 +63,25 @@ export class Router {
                 ctx.finish();
             }
         },
-        [TaskType.asyncComponent]: async (ctx: RouteTaskContext) => {},
+        [TaskType.asyncComponent]: async (ctx: RouteTaskContext) => {
+            return Promise.all(
+                ctx.to.matched.map(async (matched) => {
+                    const { asyncComponent, component } = matched;
+                    if (!component && typeof asyncComponent === 'function') {
+                        try {
+                            const result = await asyncComponent();
+                            matched.component = isESModule(result)
+                                ? result.default
+                                : result;
+                        } catch {
+                            throw new Error(
+                                `Async component '${matched.absolutePath}' is not a valid component.`
+                            );
+                        }
+                    }
+                })
+            );
+        },
         [TaskType.applyApp]: (ctx: RouteTaskContext) => {
             this._route = ctx.to;
             this._microApp._update(
@@ -83,16 +102,19 @@ export class Router {
         [NavigationType.push]: [
             TaskType.outside,
             TaskType.callBridge,
+            TaskType.asyncComponent,
             TaskType.applyApp,
             TaskType.applyNavigation
         ],
         [NavigationType.replace]: [
             TaskType.outside,
+            TaskType.asyncComponent,
             TaskType.applyApp,
             TaskType.applyNavigation
         ],
         [NavigationType.openWindow]: [
             TaskType.outside,
+            TaskType.asyncComponent,
             TaskType.callBridge,
             TaskType.applyWindow
         ],
@@ -100,11 +122,15 @@ export class Router {
             TaskType.outside,
             TaskType.applyWindow
         ],
-        [NavigationType.reload]: [TaskType.outside, TaskType.applyApp],
-        [NavigationType.back]: [TaskType.applyApp],
-        [NavigationType.go]: [TaskType.applyApp],
-        [NavigationType.forward]: [TaskType.applyApp],
-        [NavigationType.popstate]: [TaskType.applyApp]
+        [NavigationType.reload]: [
+            TaskType.outside,
+            TaskType.asyncComponent,
+            TaskType.applyApp
+        ],
+        [NavigationType.back]: [TaskType.asyncComponent, TaskType.applyApp],
+        [NavigationType.go]: [TaskType.asyncComponent, TaskType.applyApp],
+        [NavigationType.forward]: [TaskType.asyncComponent, TaskType.applyApp],
+        [NavigationType.popstate]: [TaskType.asyncComponent, TaskType.applyApp]
     } satisfies Record<string, TaskType[]>;
 
     public get route() {

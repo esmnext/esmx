@@ -69,8 +69,8 @@ export type RouteRedirect =
 
 export interface RouteConfig {
     path: string;
-    component?: unknown;
-    asyncComponent?: () => Promise<unknown>;
+    component?: Record<string, any>;
+    asyncComponent?: () => Promise<Record<string, any>>;
     redirect?: RouteRedirect;
     meta?: RouteMeta;
     children?: RouteConfig[];
@@ -81,15 +81,10 @@ export interface RouteConfig {
     env?: NavigationEnv;
 }
 
-export interface RouteParsedConfig {
+export interface RouteParsedConfig extends RouteConfig {
     absolutePath: string;
     match: MatchFunction;
     compile: (params?: Record<string, string>) => string;
-    path: string;
-    component?: unknown;
-    asyncComponent?: () => Promise<unknown>;
-    redirect?: RouteRedirect;
-    meta: RouteMeta;
     children: RouteParsedConfig[];
 }
 
@@ -110,8 +105,8 @@ export interface Route {
     meta: RouteMeta;
     path: string;
     fullPath: string;
-    matched: RouteConfig[];
-    matchConfig: RouteConfig | null;
+    matched: RouteParsedConfig[];
+    matchConfig: RouteParsedConfig | null;
 }
 
 // ============================================================================
