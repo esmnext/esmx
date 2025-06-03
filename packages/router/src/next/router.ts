@@ -21,6 +21,7 @@ import type {
 class TaskType {
     public static outside = 'outside';
     public static callBridge = 'callBridge';
+    public static asyncComponent = 'asyncComponent';
     public static applyApp = 'applyApp';
     public static applyNavigation = 'applyNavigation';
     public static applyWindow = 'applyWindow';
@@ -42,14 +43,14 @@ export class Router {
         },
         [TaskType.callBridge]: async (ctx: RouteTaskContext) => {
             const { to } = ctx;
-            if (!to.config || !to.config.env) {
+            if (!to.matchConfig || !to.matchConfig.env) {
                 return;
             }
             let envBridge: EnvBridge | null = null;
-            if (typeof to.config.env === 'function') {
-                envBridge = to.config.env;
-            } else if (typeof to.config.env === 'object') {
-                const { require, handle } = to.config.env;
+            if (typeof to.matchConfig.env === 'function') {
+                envBridge = to.matchConfig.env;
+            } else if (typeof to.matchConfig.env === 'object') {
+                const { require, handle } = to.matchConfig.env;
                 if (typeof require === 'function' && require(to)) {
                     envBridge = handle || null;
                 } else {
@@ -61,6 +62,7 @@ export class Router {
                 ctx.finish();
             }
         },
+        [TaskType.asyncComponent]: async (ctx: RouteTaskContext) => {},
         [TaskType.applyApp]: (ctx: RouteTaskContext) => {
             this._route = ctx.to;
             this._microApp._update(

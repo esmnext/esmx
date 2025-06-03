@@ -1,7 +1,6 @@
 import { DEFAULT_ON_OPEN, DEFAULT_SCROLL_BEHAVIOR } from './default';
 import { createMatcher } from './matcher';
 import {
-    type NavigationType,
     type Route,
     RouterMode,
     type RouterOptions,
@@ -30,16 +29,16 @@ export function parsedOptions(options: RouterOptions): RouterParsedOptions {
         apps: options.apps ?? {},
         matcher: createMatcher(routes),
         normalizeURL: options.normalizeURL ?? ((url) => url),
-        onOpen: (route: Route, navType: NavigationType) => {
+        onOpen: (route: Route) => {
             if (isBrowser) {
-                const result = options.onOpen?.(route, navType);
+                const result = options.onOpen?.(route);
                 if (result !== false) {
-                    DEFAULT_ON_OPEN(route, navType);
+                    DEFAULT_ON_OPEN(route);
                 }
             }
             return true;
         },
-        onServerLocation(route, navType) {
+        onServerLocation(route) {
             return true;
         },
         scrollBehavior: options.scrollBehavior ?? DEFAULT_SCROLL_BEHAVIOR

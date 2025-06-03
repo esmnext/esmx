@@ -14,7 +14,7 @@ export const DEFAULT_SCROLL_BEHAVIOR: RouterScrollBehavior = (
     };
 };
 
-export function DEFAULT_ON_OPEN(route: Route, navType: NavigationType) {
+export function DEFAULT_ON_OPEN(route: Route) {
     try {
         const newWindow = window.open(route.url.href);
         if (!newWindow) {
