@@ -68,24 +68,24 @@ export type RouteRedirect =
     | ((to: Route, from: Route | null) => RouterRawLocation);
 
 export interface RouteConfig {
+    env?: NavigationEnv;
     path: string;
     component?: Record<string, any>;
-    asyncComponent?: () => Promise<Record<string, any>>;
     redirect?: RouteRedirect;
     meta?: RouteMeta;
     children?: RouteConfig[];
+    app?: string | RouterMicroAppCallback;
+    asyncComponent?: () => Promise<Record<string, any>>;
     beforeEnter?: NavigationGuard;
     beforeUpdate?: NavigationGuard;
     beforeLeave?: NavigationGuard;
-    app?: string | RouterMicroAppCallback;
-    env?: NavigationEnv;
 }
 
 export interface RouteParsedConfig extends RouteConfig {
     absolutePath: string;
+    children: RouteParsedConfig[];
     match: MatchFunction;
     compile: (params?: Record<string, string>) => string;
-    children: RouteParsedConfig[];
 }
 
 export interface RouteMatchResult {
@@ -114,17 +114,17 @@ export interface Route {
 // ============================================================================
 
 export interface RouterOptions {
+    env?: string;
     base?: URL;
     mode?: RouterMode;
     routes?: RouteConfig[];
-    normalizeURL?: (url: URL, raw: RouterRawLocation) => URL;
-    onOpen?: (route: Route) => boolean;
     req?: IncomingMessage | null;
     res?: ServerResponse | null;
+    normalizeURL?: (url: URL, raw: RouterRawLocation) => URL;
+    onOpen?: (route: Route) => boolean;
     onServerLocation?: (route: Route) => boolean;
     apps?: RouterMicroApp;
     scrollBehavior?: RouterScrollBehavior;
-    env?: string;
 }
 
 export interface RouterParsedOptions extends Required<RouterOptions> {
