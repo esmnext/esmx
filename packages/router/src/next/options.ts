@@ -21,6 +21,7 @@ export function parsedOptions(options: RouterOptions): RouterParsedOptions {
         );
     }
     const result: RouterParsedOptions = {
+        env: options.env || '',
         req: options.req || null,
         res: options.res || null,
         base,
