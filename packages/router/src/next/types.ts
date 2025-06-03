@@ -533,6 +533,26 @@ export interface RouterLocation {
 
 /////////////////////////////////////////////////////////
 // ======================================================
+//  拓展：混合开发
+// ======================================================
+/////////////////////////////////////////////////////////
+
+export interface RouterOptions {
+    env?: string;
+}
+export interface RouteConfig {
+    env?: NavigationEnv;
+}
+export type EnvBridge = (route: Route) => Awaitable<any>;
+export interface NavigationEnvOptions {
+    require?: (route: Route) => Awaitable<boolean>;
+    handle?: EnvBridge;
+}
+
+export type NavigationEnv = EnvBridge | NavigationEnvOptions;
+
+/////////////////////////////////////////////////////////
+// ======================================================
 //  工具类型
 // ======================================================
 /////////////////////////////////////////////////////////
