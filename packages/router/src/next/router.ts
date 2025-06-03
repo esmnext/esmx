@@ -17,6 +17,17 @@ import type {
     RouterParsedOptions,
     RouterRawLocation
 } from './types';
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
+class TaskType {
+    public static outside = 'outside';
+    public static envBridge = 'envBridge';
+    public static applyRoute = 'applyRoute';
+    public static push = 'push';
+    public static replace = 'replace';
+    public static open = 'open';
+    public static reload = 'reload';
+}
+
 export class Router {
     private _options: RouterOptions;
     public options: RouterParsedOptions;
@@ -26,13 +37,13 @@ export class Router {
 
     private _tasks = {
         // 检查是否是外部链接
-        outside: (ctx: RouteTaskContext) => {
+        [TaskType.outside]: (ctx: RouteTaskContext) => {
             if (ctx.to.matched.length === 0) {
                 ctx.options.onOpen(ctx.to);
                 return ctx.finish();
             }
         },
-        envBridge: async (ctx: RouteTaskContext) => {
+        [TaskType.envBridge]: async (ctx: RouteTaskContext) => {
             const { to } = ctx;
             if (!to.config || !to.config.env) {
                 return;
@@ -54,56 +65,56 @@ export class Router {
             }
         },
         // 应用当前的 URL
-        applyRoute: (ctx: RouteTaskContext) => {
+        [TaskType.applyRoute]: (ctx: RouteTaskContext) => {
             this._route = ctx.to;
             this._microApp._update(this);
         },
-        push: (ctx: RouteTaskContext) => {
+        [TaskType.push]: (ctx: RouteTaskContext) => {
             this._navigation.push(ctx.to);
             ctx.finish();
         },
-        replace: (ctx: RouteTaskContext) => {
+        [TaskType.replace]: (ctx: RouteTaskContext) => {
             this._navigation.push(ctx.to);
             ctx.finish();
         },
-        open: (ctx: RouteTaskContext) => {
+        [TaskType.open]: (ctx: RouteTaskContext) => {
             ctx.options.onOpen(ctx.to);
             ctx.finish();
         },
-        reload: (ctx: RouteTaskContext) => {
+        [TaskType.reload]: (ctx: RouteTaskContext) => {
             this._microApp._update(this);
             ctx.finish();
         }
     } satisfies Record<string, RouteTaskCallback>;
     private _taskMaps = {
         [NavigationType.push]: [
-            this._tasks.outside,
-            this._tasks.envBridge,
-            this._tasks.applyRoute,
-            this._tasks.push
+            TaskType.outside,
+            TaskType.envBridge,
+            TaskType.applyRoute,
+            TaskType.push
         ],
         [NavigationType.replace]: [
-            this._tasks.outside,
-            this._tasks.envBridge,
-            this._tasks.applyRoute,
-            this._tasks.replace
+            TaskType.outside,
+            TaskType.envBridge,
+            TaskType.applyRoute,
+            TaskType.replace
         ],
         [NavigationType.openWindow]: [
-            this._tasks.outside,
-            this._tasks.envBridge,
-            this._tasks.open
+            TaskType.outside,
+            TaskType.envBridge,
+            TaskType.open
         ],
         [NavigationType.replaceWindow]: [
-            this._tasks.outside,
-            this._tasks.envBridge,
-            this._tasks.open
+            TaskType.outside,
+            TaskType.envBridge,
+            TaskType.open
         ],
-        [NavigationType.reload]: [this._tasks.outside, this._tasks.reload],
-        [NavigationType.back]: [this._tasks.outside],
-        [NavigationType.go]: [this._tasks.outside],
-        [NavigationType.forward]: [this._tasks.outside],
-        [NavigationType.popstate]: [this._tasks.outside]
-    } satisfies Record<string, RouteTaskCallback[]>;
+        [NavigationType.reload]: [TaskType.outside, TaskType.reload],
+        [NavigationType.back]: [TaskType.outside],
+        [NavigationType.go]: [TaskType.outside],
+        [NavigationType.forward]: [TaskType.outside],
+        [NavigationType.popstate]: [TaskType.outside]
+    } satisfies Record<string, TaskType[]>;
 
     public get route() {
         if (this._route === null) {
@@ -193,7 +204,14 @@ export class Router {
         navigationType: NavigationType,
         to: RouterRawLocation
     ) {
-        const tasks = this._taskMaps[navigationType] ?? [];
+        const names: string[] = this._taskMaps[navigationType] ?? [];
+        const { _tasks } = this;
+        const tasks = names.map((name) => {
+            return {
+                name,
+                task: _tasks[name]
+            } satisfies RouteTask;
+        });
         return createRouteTask({
             navigationType,
             to,

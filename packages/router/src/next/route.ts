@@ -107,10 +107,10 @@ export function createRouteTask(opts: RouteTaskOptions) {
         },
         async run() {
             for (const item of list) {
-                if (finish) {
-                    return ctx.to;
-                }
                 await item.task(ctx);
+                if (finish) {
+                    break;
+                }
             }
             return ctx.to;
         }
