@@ -13,13 +13,13 @@ export function parseLocation(toRaw: RouteLocationRaw, baseURL: URL): URL {
     if (typeof toRaw === 'string') {
         return normalizeURL(toRaw, baseURL);
     }
-    const url = normalizeURL(toRaw.url ?? toRaw.path ?? '', baseURL);
-
+    const url = normalizeURL(toRaw.path ?? toRaw.url ?? '', baseURL);
+    const searchParams = url.searchParams;
     // 处理普通查询参数（键值对形式）
     if (toRaw.query) {
         Object.entries(toRaw.query).forEach(([key, value]) => {
             if (isNotNullish(value)) {
-                url.searchParams.set(key, String(value));
+                searchParams.set(key, String(value));
             }
         });
     }
@@ -28,8 +28,11 @@ export function parseLocation(toRaw: RouteLocationRaw, baseURL: URL): URL {
     if (toRaw.queryArray) {
         Object.entries(toRaw.queryArray).forEach(([key, values]) => {
             values.forEach((value) => {
-                if (isNotNullish(value)) {
-                    url.searchParams.append(key, value);
+                if (
+                    isNotNullish(value) &&
+                    !searchParams.getAll(key).includes(value)
+                ) {
+                    searchParams.append(key, value);
                 }
             });
         });
