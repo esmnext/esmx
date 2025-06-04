@@ -65,8 +65,7 @@ export const RouterVuePlugin: {
                         this._route.count++;
                     };
                     eventMap.set(this, _event);
-                    // TODO: 暂时不支持 afterEach 回调
-                    // this.$options.router.afterEach(_event);
+                    this.$options.router.afterEach(_event);
                 } else {
                     // 非根组件实例
                     this.$parent &&
@@ -76,8 +75,7 @@ export const RouterVuePlugin: {
             beforeDestroy() {
                 const _event = eventMap.get(this);
                 if (_event) {
-                    // TODO: 暂时不支持 afterEach 回调
-                    // (this as VueWithRouter).$router.unBindAfterEach(_event);
+                    (this as VueWithRouter).$router.unBeforeEach(_event);
                 }
             }
         });

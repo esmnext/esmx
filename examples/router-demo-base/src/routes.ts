@@ -1,7 +1,7 @@
 import type { RouteConfig } from '@esmx/router';
 import App from './app.vue';
-import Home from './components/home.vue';
-import Test from './components/test.vue';
+import Home from './views/home.vue';
+import Test from './views/test.vue';
 
 export const routes: RouteConfig[] = [
     {
@@ -18,11 +18,11 @@ export const routes: RouteConfig[] = [
             },
             {
                 path: '/test1',
-                asyncComponent: () => import('./components/test1.vue')
+                asyncComponent: () => import('./views/test1.vue')
             },
             {
                 path: '(.*)*',
-                asyncComponent: () => import('./components/page-404.vue')
+                asyncComponent: () => import('./views/not-found.vue')
             }
         ]
     }

@@ -80,8 +80,7 @@ export async function createRouteTask(opts: RouteTaskOptions) {
         opts.from?.url ?? null
     );
     const from: Route | null = opts.from;
-    const list: Array<RouteTask> = [];
-    for (const item of list) {
+    for (const item of opts.tasks) {
         let result: unknown | boolean | RouteLocationRaw | null = null;
         let isError = false;
         try {
