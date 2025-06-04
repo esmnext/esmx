@@ -73,13 +73,13 @@ export type RouteLocationRaw = RouteLocation | string;
 
 export interface RouteConfig {
     path: string;
-    component?: Record<string, any>;
+    component?: any;
     children?: RouteConfig[];
     redirect?: RouteLocationRaw | RouteConfirmHook;
     meta?: RouteMeta;
     env?: RouteEnv;
     app?: string | RouterMicroAppCallback;
-    asyncComponent?: () => Promise<Record<string, any>>;
+    asyncComponent?: () => Promise<any>;
     beforeEnter?: RouteConfirmHook;
     beforeUpdate?: RouteConfirmHook;
     beforeLeave?: RouteConfirmHook;

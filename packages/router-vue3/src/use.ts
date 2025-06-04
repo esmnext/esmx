@@ -1,4 +1,4 @@
-import type { Route, RouterInstance } from '@esmx/router';
+import type { Route, Router } from '@esmx/router';
 import { getCurrentInstance, inject } from 'vue';
 
 import { routerKey, routerViewLocationKey } from './symbols';
@@ -11,7 +11,7 @@ export function throwNoCurrentInstance(method: string) {
     }
 }
 
-export function useRouter(): RouterInstance {
+export function useRouter(): Router {
     return inject(routerKey)!;
 }
 

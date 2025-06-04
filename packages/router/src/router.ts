@@ -1,446 +1,309 @@
-import URLParse from 'url-parse';
-
-import { createHistory } from './history';
-import { createRouterMatcher } from './matcher';
+import { MicroApp } from './micro-app';
+import { Navigation } from './navigation';
+import { parsedOptions } from './options';
+import { type RouteTask, createRoute, createRouteTask } from './route';
 import {
-    type AfterMatchHook,
-    type CloseLayerArgs,
-    type NavReturnType,
-    type NavigationGuard,
-    type NavigationGuardAfter,
-    type PushLayerExtArgs,
-    type RegisteredConfig,
-    type RegisteredConfigGenerator,
-    type RegisteredConfigMap,
     type Route,
-    type RouteRecord,
-    type RouterBase,
-    type RouterHistory,
-    type RouterInstance,
-    type RouterLayerInfo,
-    type RouterMatcher,
-    RouterMode,
+    type RouteConfirmHook,
+    type RouteHandleHook,
+    type RouteLocationRaw,
+    type RouteNotifyHook,
+    type RouteState,
+    RouteType,
     type RouterOptions,
-    type RouterRawLocation,
-    type RouterScrollBehavior
+    type RouterParsedOptions
 } from './types';
-import { inBrowser, normalizePath, regexDomain } from './utils';
-import { withResolvers } from './utils/bom';
-import { createRoute } from './utils/creator';
-import { arrRmEle, getSubObj, isSymbolAble } from './utils/utils';
-
-const mgDataCtx = (...ctxs: RouterOptions['dataCtx'][]) =>
-    ctxs.reduce<NonNullable<RouterOptions['dataCtx']>>(
-        (acc, ctx) => Object.assign(acc, ctx || {}),
-        {}
-    );
-
-const eventsSymbol = isSymbolAble
-    ? Symbol('__routerEvents__')
-    : '__routerEvents__';
-
-/**
- * 路由类
- */
-export class Router implements RouterInstance {
-    static idCount = 0;
-
-    layer: RouterLayerInfo = {
-        id: -1,
-        get depth() {
-            let depth = 0;
-            let p = this.parent;
-            while (p && ++depth) p = p.layer.parent;
-            return depth;
-        },
-        parent: null,
-        children: [],
-        root: this
-    };
-
-    get isLayer() {
-        return this.layer.parent !== null;
-    }
-
-    /* 路由配置 */
-    options: RouterOptions;
-
-    /**
-     * 可选的 路由固定前置路径。需要传入完整的带协议的 URL
-     * * 注意：如果传入的是一个字符串，则需要保证该字符串是一个合法的 URL，否则会抛出异常
-     * * 注意：尾随斜杠在解析相对路由时是有意义的。例如：在 push(`./a`)，`http://example.com/en` 会解析成 `http://example.com/a`，`http://example.com/en/` 会解析成 `http://example.com/en/a`。
-     * @example `https://www.google.com:443/en/`
-     */
-    base?: RouterBase;
-
-    /* 路由模式 */
-    mode: RouterMode;
-
-    /* 路由匹配器 */
-    matcher: RouterMatcher;
-
-    /* 路由history类 */
-    history: RouterHistory;
-
-    /* 滚动行为 */
-    scrollBehavior: RouterScrollBehavior;
-
-    /* 当前路由信息 */
-    route: Route = createRoute();
-
-    constructor(options: RouterOptions) {
-        this.options = options;
-        this._globalDataCtx = { ...(this.options.dataCtx || {}) };
-        this._globalDataCtx[eventsSymbol] = {};
-        this.matcher = createRouterMatcher(options.routes || []);
-
-        this.mode =
-            options.mode ||
-            (inBrowser ? RouterMode.HISTORY : RouterMode.ABSTRACT);
-
-        if (options.base) this.base = new URL(options.base).href;
-
-        this.scrollBehavior =
-            options.scrollBehavior ||
-            ((to, from, savedPosition) => {
-                if (savedPosition) return savedPosition;
-                return {
-                    left: 0,
-                    top: 0
-                };
-            });
-
-        this.history = createHistory({
-            router: this,
-            mode: this.mode
-        });
-
-        this.layer.id = Router.idCount++;
-    }
-
-    /** 获取当前生效的路由的注册配置 */
-    protected _getCurrentRegisteredCfg() {
-        const appType = this.route?.matched[0]?.appType;
-        return appType ? this.registeredConfigMap[appType] : null;
-    }
-
-    /* 更新路由 */
-    updateRoute(route: RouteRecord) {
-        const oldRegCfg = this._getCurrentRegisteredCfg();
-        this.applyRoute(route);
-        const curRegCfg = this._getCurrentRegisteredCfg();
-
-        if (curRegCfg) {
-            const { mounted, generator } = curRegCfg;
-            if (!mounted) {
-                curRegCfg.config = generator(this);
-                curRegCfg.config.mount();
-                curRegCfg.mounted = true;
-            }
-            curRegCfg.config?.updated();
-        }
-
-        if (oldRegCfg && oldRegCfg.appType !== curRegCfg?.appType) {
-            this._destroyApp(oldRegCfg);
-        }
-    }
-
-    /* 应用路由 */
-    protected applyRoute(route: RouteRecord) {
-        let url = '';
-        const { fullPath } = route;
-        if (inBrowser && !regexDomain.test(fullPath)) {
-            url = normalizePath(fullPath, location.origin);
-        } else {
-            url = normalizePath(fullPath);
-        }
-
-        const parsedUrl = new URLParse(url);
-        Object.assign(
-            this.route,
-            getSubObj(parsedUrl, ['href', 'origin', 'host', 'protocol']),
-            getSubObj(parsedUrl, ['hostname', 'port', 'pathname', 'hash']),
-            { search: parsedUrl.query },
-            route
-        );
-    }
-
-    /* 解析路由 */
-    resolve(location: RouterRawLocation): RouteRecord {
-        return this.history.resolve(location);
-    }
-
-    /* 初始化 */
-    async init() {
-        await this.history.init();
-    }
-
-    /**
-     * 卸载方法
-     */
-    destroy() {
-        this.history.destroy();
-        this._destroyAllApp();
-        this.registeredConfigMap = {};
-        this.layer.children.forEach((layer) => {
-            layer.destroy();
-        });
-        this.layer.children = [];
-        if (this.layer.parent) {
-            const parent = this.layer.parent;
-            const i = parent.layer.children.findIndex(
-                (item) => item === this || item.layer.id === this.layer.id
-            );
-            if (i !== -1) {
-                parent.layer.children.splice(i, 1);
-            }
-            this.layer.parent = null;
-        }
-        this._initGuards();
-        this._globalDataCtx = {};
-    }
-
-    /* 已注册的app配置 */
-    registeredConfigMap: RegisteredConfigMap = {};
-
-    /* app配置注册 */
-    register(name: string, config: RegisteredConfigGenerator) {
-        this.registeredConfigMap[name] = {
-            appType: name,
-            generator: config,
-            mounted: false
-        };
-    }
-
-    protected _destroyApp(nameOrCfg: string | RegisteredConfigMap[string]) {
-        const regCfg =
-            typeof nameOrCfg === 'string'
-                ? this.registeredConfigMap[nameOrCfg]
-                : nameOrCfg;
-        if (!regCfg?.mounted) return;
-        regCfg.config?.destroy();
-        regCfg.mounted = false;
-        regCfg.config = void 0;
-    }
-    protected _destroyAllApp() {
-        for (const appType in this.registeredConfigMap) {
-            this._destroyApp(appType);
-        }
-    }
-
-    // 守卫相关逻辑
-    guards: RouterInstance['guards'] = this._initGuards();
-    protected _initGuards() {
-        return (this.guards = {
-            beforeEach: [],
-            afterEach: [],
-            afterMatch: []
-        });
-    }
-    beforeEach(guard: NavigationGuard) {
-        this.guards.beforeEach.push(guard);
-    }
-    unBindBeforeEach(guard: NavigationGuard) {
-        arrRmEle(this.guards.beforeEach, guard);
-    }
-    afterEach(guard: NavigationGuardAfter) {
-        this.guards.afterEach.push(guard);
-    }
-    unBindAfterEach(guard: NavigationGuardAfter) {
-        arrRmEle(this.guards.afterEach, guard);
-    }
-    afterMatch(hook: AfterMatchHook) {
-        this.guards.afterMatch.push(hook);
-    }
-    unBindAfterMatch(hook: AfterMatchHook) {
-        arrRmEle(this.guards.afterMatch, hook);
-    }
-
-    // 路由跳转方法
-    push(location: RouterRawLocation) {
-        return this.history.push(location);
-    }
-    replace(location: RouterRawLocation) {
-        return this.history.replace(location);
-    }
-    pushWindow(location: RouterRawLocation) {
-        return this.history.pushWindow(location);
-    }
-    replaceWindow(location: RouterRawLocation) {
-        return this.history.forceReload(location);
-    }
-
-    /**
-     * 刷新当前路由。会将实例卸载并重新挂载。子 layer 会被销毁（相当于调用了一次 closeLayer）
-     */
-    async reload(location?: RouterRawLocation) {
-        this._closeAllChildren();
-        this._destroyAllApp();
-        return this.history.reload(location);
-    }
-
-    /**
-     * 强制刷新当前路由。浏览器会刷新网页，服务端调用效果等同于在根路由执行 {@link reload | `reload`}。
-     */
-    forceReload(location?: RouterRawLocation) {
-        if (!inBrowser) {
-            return this.layer.root.reload(location);
-        }
-        return this.history.forceReload(location);
-    }
-
-    /**
-     * 打开路由弹层方法，会创建新的路由实例并调用注册的 register 方法
-     */
-    async pushLayer(
-        location: RouterRawLocation & PushLayerExtArgs,
-        options: PushLayerExtArgs = {}
-    ): NavReturnType<{
-        layerRouter: RouterInstance;
-        closeLayerPromise: Promise<CloseLayerArgs>;
-    }> {
-        const hooks = options.hooks || location.hooks || {};
-        const dataCtx = options.dataCtx || location.dataCtx;
-        const route = this.resolve(location);
-        const layerRouter = createRouter({
-            ...this.options,
-            dataCtx: mgDataCtx(this.dataCtx, dataCtx),
-            initUrl: route.fullPath,
-            mode: RouterMode.ABSTRACT
-        });
-        layerRouter.layer.parent = this;
-        this.layer.children.push(layerRouter);
-        layerRouter.layer.root = this.layer.root;
-        for (const regCfg of Object.values(this.registeredConfigMap)) {
-            layerRouter.register(regCfg!.appType, regCfg!.generator);
-        }
-        layerRouter.guards.beforeEach.push((from, to) => {
-            if (!hooks.shouldCloseLayer?.(from, to, layerRouter)) return;
-            layerRouter.closeLayer({
-                data: to.params,
-                type: 'close',
-                descendantStrategy: 'clear'
-            });
-            return false;
-        });
-        Object.entries(options.events || {}).forEach(([event, handler]) => {
-            layerRouter.on(event, handler);
-        });
-        const { promise: closeLayerPromise, resolve } =
-            withResolvers<CloseLayerArgs>();
-        layerRouter.on('layerClosed', resolve);
-        await layerRouter.init();
-        return {
-            navType: 'pushLayer',
-            type: 'success',
-            data: {
-                layerRouter,
-                closeLayerPromise
-            }
-        };
-    }
-
-    /* 前往特定路由历史记录的方法，可以在历史记录前后移动 */
-    go(delta = 0) {
-        this.history.go(delta);
-    }
-
-    /* 路由历史记录前进方法 */
-    forward() {
-        this.history.forward();
-    }
-
-    /* 路由历史记录后退方法 */
-    back() {
-        this.history.back();
-    }
-
-    /* 根据获取当前所有活跃的路由Record对象 */
-    getRoutes() {
-        return this.matcher.getRoutes();
-    }
-
-    /**
-     * 关闭所有的子路由
-     */
-    protected _closeAllChildren() {
-        this.layer.children.slice().forEach((layerRouter) => {
-            layerRouter.closeLayer({
-                data: {},
-                type: 'close',
-                descendantStrategy: 'clear'
-            });
-        });
-        this.layer.children = [];
-    }
-
-    closeLayer({
-        data,
-        type = 'close',
-        descendantStrategy = 'clear'
-    }: CloseLayerArgs = {}) {
-        this.emit('layerClosed', { data, type, descendantStrategy });
-        // 如果 descendantStrategy 为 clear，则将所有的子路由都关闭，无论是否是顶层路由
-        if (descendantStrategy === 'clear') {
-            this._closeAllChildren();
-        }
-        if (!this.isLayer) return;
-        if (descendantStrategy === 'hoisting') {
-            const layerInfo = this.layer;
-            const parent = layerInfo.parent!;
-            layerInfo.children.forEach((layerRouter) => {
-                layerRouter.layer.parent = layerInfo.parent;
-                parent.layer.children.push(layerRouter);
-                for (const regCfg of Object.values(
-                    layerRouter.registeredConfigMap
-                )) {
-                    if (!regCfg!.mounted) continue;
-                    regCfg!.config?.updated();
-                }
-            });
-            layerInfo.children = [];
-        }
-        this.destroy();
-    }
-
-    renderToString() {
-        const regCfg = this._getCurrentRegisteredCfg();
-        if (!regCfg?.mounted) return '';
-        return regCfg.config?.renderToString?.() || '';
-    }
-
-    protected _globalDataCtx: NonNullable<RouterOptions['dataCtx']> = {};
-    get dataCtx() {
-        return mgDataCtx(
-            this._globalDataCtx,
-            this._getCurrentRegisteredCfg()?.config?.dataCtx
-        );
-    }
-
-    on(event: string, handler: (...args: any[]) => any) {
-        (this._globalDataCtx[eventsSymbol][event] ||= []).push(handler);
-    }
-    off(event: string, handler: (...args: any[]) => any) {
-        const handlers = this._globalDataCtx[eventsSymbol][event];
-        if (!handlers) return;
-        arrRmEle(handlers, handler);
-        if (handlers.length === 0) {
-            delete this._globalDataCtx[eventsSymbol][event];
-        }
-    }
-    emit(event: string, ...args: any[]) {
-        const handlers = this._globalDataCtx[eventsSymbol][event];
-        if (!handlers) return;
-        handlers.forEach((handler) => {
-            try {
-                handler(...args);
-            } catch (e) {
-                console.error(`Router event "${event}" handler error:`, e);
-            }
-        });
-    }
+import { isESModule, isValidConfirmHookResult, removeFromArray } from './util';
+class TaskType {
+    public static location = 'location';
+    public static env = 'env';
+    public static asyncComponent = 'asyncComponent';
+    public static beforeEach = 'beforeEach';
+    public static applyApp = 'applyApp';
+    public static applyNavigation = 'applyNavigation';
+    public static applyWindow = 'applyWindow';
+    public static afterEach = 'afterEach';
 }
 
-export function createRouter(options: RouterOptions): RouterInstance {
-    return new Router(options);
+export class Router {
+    private _options: RouterOptions;
+    public options: RouterParsedOptions;
+    private _route: null | Route = null;
+    private _navigation: Navigation;
+    private _microApp: MicroApp = new MicroApp();
+
+    private _tasks = {
+        [TaskType.location]: (to, from) => {
+            if (to.matched.length === 0) {
+                this.options.location(to, from);
+                return true;
+            }
+            return null;
+        },
+        [TaskType.env]: async (to, from) => {
+            if (!to.config || !to.config.env) {
+                return;
+            }
+            let routeHandle: RouteHandleHook | null = null;
+            if (typeof to.config.env === 'function') {
+                routeHandle = to.config.env;
+            } else if (typeof to.config.env === 'object') {
+                const { require, handle } = to.config.env;
+                if (typeof require === 'function' && require(to, from)) {
+                    routeHandle = handle || null;
+                } else {
+                    routeHandle = handle || null;
+                }
+            }
+            if (routeHandle) {
+                to.handleResult = await routeHandle(to, from);
+                return true;
+            }
+        },
+        [TaskType.asyncComponent]: async (to, from) => {
+            await Promise.all(
+                to.matched.map(async (matched) => {
+                    const { asyncComponent, component } = matched;
+                    if (!component && typeof asyncComponent === 'function') {
+                        try {
+                            const result = await asyncComponent();
+                            matched.component = isESModule(result)
+                                ? result.default
+                                : result;
+                        } catch {
+                            throw new Error(
+                                `Async component '${matched.absolutePath}' is not a valid component.`
+                            );
+                        }
+                    }
+                })
+            );
+        },
+        [TaskType.beforeEach]: async (to, from) => {
+            for (const guard of this._guards.beforeEach) {
+                const result = await guard(to, from);
+                if (isValidConfirmHookResult(result)) {
+                    return result;
+                }
+            }
+        },
+        [TaskType.applyApp]: (to, from) => {
+            this._route = to;
+            this._microApp._update(this, to.type === RouteType.reload);
+        },
+        [TaskType.applyNavigation]: (to, from) => {
+            this._navigation.push(to);
+        },
+        [TaskType.afterEach]: (to, from) => {
+            for (const guard of this._guards.afterEach) {
+                guard(to, from);
+            }
+        },
+        [TaskType.applyWindow]: (to, from) => {
+            this.options.location(to, from);
+            return true;
+        }
+    } satisfies Record<string, RouteConfirmHook>;
+    private _taskMaps = {
+        [RouteType.push]: [
+            TaskType.location,
+            TaskType.env,
+            TaskType.asyncComponent,
+            TaskType.beforeEach,
+            TaskType.applyApp,
+            TaskType.applyNavigation,
+            TaskType.afterEach
+        ],
+        [RouteType.replace]: [
+            TaskType.location,
+            TaskType.asyncComponent,
+            TaskType.beforeEach,
+            TaskType.applyApp,
+            TaskType.applyNavigation,
+            TaskType.afterEach
+        ],
+        [RouteType.openWindow]: [
+            TaskType.location,
+            TaskType.asyncComponent,
+            TaskType.env,
+            TaskType.beforeEach,
+            TaskType.applyWindow,
+            TaskType.afterEach
+        ],
+        [RouteType.replaceWindow]: [
+            TaskType.location,
+            TaskType.beforeEach,
+            TaskType.applyWindow,
+            TaskType.afterEach
+        ],
+        [RouteType.reload]: [
+            TaskType.location,
+            TaskType.asyncComponent,
+            TaskType.beforeEach,
+            TaskType.applyApp,
+            TaskType.afterEach
+        ],
+        [RouteType.back]: [
+            TaskType.asyncComponent,
+            TaskType.beforeEach,
+            TaskType.applyApp,
+            TaskType.afterEach
+        ],
+        [RouteType.go]: [
+            TaskType.asyncComponent,
+            TaskType.beforeEach,
+            TaskType.applyApp,
+            TaskType.afterEach
+        ],
+        [RouteType.forward]: [
+            TaskType.asyncComponent,
+            TaskType.beforeEach,
+            TaskType.applyApp,
+            TaskType.afterEach
+        ],
+        [RouteType.popstate]: [
+            TaskType.asyncComponent,
+            TaskType.beforeEach,
+            TaskType.applyApp,
+            TaskType.afterEach
+        ]
+    } satisfies Record<string, TaskType[]>;
+    private _guards = {
+        beforeEach: [] as RouteConfirmHook[],
+        afterEach: [] as RouteNotifyHook[]
+    };
+    public get route() {
+        if (this._route === null) {
+            throw new Error(`Route is not ready.`);
+        }
+        return this._route;
+    }
+    public constructor(options: RouterOptions) {
+        this._options = options;
+        this.options = parsedOptions(options);
+        this._navigation = new Navigation(
+            this.options,
+            (url: string, state: RouteState) => {
+                this.popstate({ url, state });
+            }
+        );
+    }
+    public push(toRaw: RouteLocationRaw): Promise<Route> {
+        return this._transitionTo(RouteType.push, toRaw);
+    }
+    public replace(toRaw: RouteLocationRaw) {
+        return this._transitionTo(RouteType.replace, toRaw);
+    }
+    public openWindow(toRaw?: RouteLocationRaw): Promise<Route> {
+        return this._transitionTo(
+            RouteType.openWindow,
+            toRaw ?? this.route.url.href
+        );
+    }
+    public replaceWindow(toRaw?: RouteLocationRaw): Promise<Route> {
+        return this._transitionTo(
+            RouteType.replaceWindow,
+            toRaw ?? this.route.url.href
+        );
+    }
+    public reload(toRaw?: RouteLocationRaw): Promise<Route> {
+        return this._transitionTo(
+            RouteType.reload,
+            toRaw ?? this.route.url.href
+        );
+    }
+    public async back(): Promise<Route | null> {
+        const result = await this._navigation.go(-1);
+        if (result === null) {
+            return null;
+        }
+        return this._transitionTo(RouteType.back, {
+            url: result.url,
+            state: result.state
+        });
+    }
+    public async go(index: number): Promise<Route | null> {
+        const result = await this._navigation.go(index);
+        if (result === null) {
+            return null;
+        }
+        return this._transitionTo(RouteType.go, {
+            url: result.url,
+            state: result.state
+        });
+    }
+    public async forward(): Promise<Route | null> {
+        const result = await this._navigation.go(1);
+        if (result === null) {
+            return null;
+        }
+        return this._transitionTo(RouteType.back, {
+            url: result.url,
+            state: result.state
+        });
+    }
+    public popstate(toRaw: RouteLocationRaw) {
+        return this._transitionTo(RouteType.popstate, toRaw);
+    }
+    public resolve(toRaw: RouteLocationRaw): Route {
+        return createRoute(
+            RouteType.resolve,
+            toRaw,
+            this.options,
+            this._route?.url ?? null
+        );
+    }
+    public createLayer(options?: RouterOptions): Router {
+        return new Router({
+            ...this._options,
+            ...options
+        });
+    }
+    public pushLayer(toRaw: RouteLocationRaw) {}
+    public async renderToString(throwError = false): Promise<string | null> {
+        try {
+            const result = await this._microApp.app?.renderToString?.();
+            return result ?? null;
+        } catch (e) {
+            if (throwError) {
+                throw e;
+            } else {
+                console.error(e);
+            }
+            return null;
+        }
+    }
+    public beforeEach(guard: RouteConfirmHook) {
+        this._guards.beforeEach.push(guard);
+    }
+    public unBeforeEach(guard: RouteConfirmHook) {
+        removeFromArray(this._guards.beforeEach, guard);
+    }
+    public afterEach(guard: RouteNotifyHook) {
+        this._guards.afterEach.push(guard);
+    }
+    public unAfterEach(guard: RouteNotifyHook) {
+        removeFromArray(this._guards.afterEach, guard);
+    }
+    public destroy() {
+        this._navigation.destroy();
+        this._microApp.destroy();
+    }
+    private _transitionTo(navigationType: RouteType, toRaw: RouteLocationRaw) {
+        const names: string[] = this._taskMaps[navigationType] ?? [];
+        const { _tasks } = this;
+        const tasks: RouteTask[] = names.map((name) => {
+            return {
+                name,
+                task: _tasks[name]
+            } satisfies RouteTask;
+        });
+        return createRouteTask({
+            navigationType,
+            toRaw,
+            from: this._route,
+            options: this.options,
+            tasks
+        });
+    }
 }

@@ -1,4 +1,4 @@
-import type { Route, RouterInstance } from '@esmx/router';
+import type { Route, Router } from '@esmx/router';
 import { type App, type ShallowReactive, shallowReactive, unref } from 'vue';
 
 import { RouterLink } from './link';
@@ -9,7 +9,7 @@ declare module '@vue/runtime-core' {
     interface ComponentCustomProperties {
         // $route: Route;
         $route: ShallowReactive<Route>;
-        $router: RouterInstance;
+        $router: Router;
     }
 
     interface GlobalComponents {
@@ -18,11 +18,8 @@ declare module '@vue/runtime-core' {
     }
 }
 
-export function RouterVuePlugin(router: RouterInstance) {
+export function RouterVuePlugin(router: Router) {
     return function install(app: App) {
-        const route = shallowReactive(router.route);
-        router.route = route;
-
         app.config.globalProperties.$router = router;
         app.config.globalProperties.$route = router.route;
 

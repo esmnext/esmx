@@ -1,6 +1,6 @@
 import {
     type Route,
-    type RouterRawLocation,
+    type RouteLocationRaw,
     isEqualRoute,
     isSameRoute
 } from '@esmx/router';
@@ -12,7 +12,7 @@ export interface RouterLinkProps {
     /**
      * 前往的路由路径
      */
-    to: RouterRawLocation;
+    to: RouteLocationRaw;
 
     /**
      * 节点使用的标签名
@@ -23,15 +23,8 @@ export interface RouterLinkProps {
     /**
      * 调用 router.replace 以替换 router.push。
      * @default false
-     * @deprecated 请使用 `type="replace"` 替代
      */
     replace: boolean;
-
-    /**
-     * 路由跳转方式
-     * @default 'push'
-     */
-    type: 'replace' | 'push' | 'pushWindow' | 'replaceWindow' | 'pushLayer';
 
     /**
      * 路径激活匹配规则
@@ -76,16 +69,9 @@ export const RouterLink = defineComponent({
             type: String as PropType<RouterLinkProps['tag']>,
             default: 'a'
         },
-        /**
-         * @deprecated 请使用 `type="replace"` 替代
-         */
         replace: {
             type: Boolean as PropType<RouterLinkProps['replace']>,
             default: false
-        },
-        type: {
-            type: String as PropType<RouterLinkProps['type']>,
-            default: 'push'
         },
         exact: {
             type: String as PropType<RouterLinkProps['exact']>,
@@ -105,8 +91,7 @@ export const RouterLink = defineComponent({
         }
     },
     render(h, ctx) {
-        const { to, tag, exact, activeClass, event } = ctx.props;
-        const replace = ctx.props.replace || ctx.props.type === 'replace';
+        const { to, tag, replace, exact, activeClass, event } = ctx.props;
         const router = useRouter();
         const current = useRoute();
         const resolveRoute = router.resolve(to);
@@ -125,7 +110,6 @@ export const RouterLink = defineComponent({
                 break;
 
             /* 是否包含 */
-            // case 'include':
             default:
                 compare = (current: Route, route: Route) => {
                     return current.fullPath.startsWith(route.fullPath);
@@ -139,7 +123,7 @@ export const RouterLink = defineComponent({
         /* 事件处理函数 */
         const handler = (e: MouseEvent) => {
             if (guardEvent(e)) {
-                router[replace ? 'replace' : ctx.props.type](to);
+                router[replace ? 'replace' : 'push'](to);
             }
         };
 
@@ -150,11 +134,10 @@ export const RouterLink = defineComponent({
             on[eventName.toLocaleLowerCase()] = handler;
         });
 
-        const className = !ctx.data.class
-            ? []
-            : Array.isArray(ctx.data.class)
-              ? ctx.data.class
-              : [ctx.data.class];
+        const className =
+            (Array.isArray(ctx.data.class)
+                ? ctx.data.class
+                : [ctx.data.class]) || [];
 
         return h(
             tag,

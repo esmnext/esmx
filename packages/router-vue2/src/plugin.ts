@@ -28,15 +28,11 @@ declare module 'vue/types/options' {
     }
 }
 
-export const RouterVuePlugin: {
-    installed: boolean;
-    _Vue: VueConstructor | undefined;
-    install(Vue: VueConstructor): void;
-} = {
-    installed: false,
-    _Vue: void 0,
+export class RouterVuePlugin {
+    static installed: boolean;
+    static _Vue: VueConstructor;
 
-    install(Vue: VueConstructor) {
+    static install(Vue: VueConstructor) {
         // 已安装则跳出
         if (this.installed && this._Vue === Vue) return;
 
@@ -53,12 +49,10 @@ export const RouterVuePlugin: {
                     // 只有根组件实例才会在 options 中存在 router 对象
                     this._routerRoot = this;
                     this._routerRoot._router = this.$options.router;
-                    const _router = this._routerRoot._router;
+
                     // 将 route 设置为响应式属性 为了解决 vue2 无法监听函数式返回 route 的问题
                     (Vue.util as any).defineReactive(this, '_route', {
-                        get value() {
-                            return _router.route;
-                        },
+                        value: this._router.route,
                         count: 0
                     });
                     const _event = () => {
@@ -75,7 +69,7 @@ export const RouterVuePlugin: {
             beforeDestroy() {
                 const _event = eventMap.get(this);
                 if (_event) {
-                    (this as VueWithRouter).$router.unBeforeEach(_event);
+                    (this as VueWithRouter).$router.unAfterEach(_event);
                 }
             }
         });
@@ -100,4 +94,4 @@ export const RouterVuePlugin: {
             }
         });
     }
-};
+}

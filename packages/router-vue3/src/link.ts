@@ -1,6 +1,6 @@
 import {
-    type RouteRecord,
-    type RouterRawLocation,
+    type Route,
+    type RouteLocationRaw,
     isEqualRoute,
     isSameRoute
 } from '@esmx/router';
@@ -12,7 +12,7 @@ export interface RouterLinkProps {
     /**
      * 前往的路由路径
      */
-    to: RouterRawLocation;
+    to: RouteLocationRaw;
 
     /**
      * 节点使用的标签名
@@ -111,7 +111,7 @@ export const RouterLink = defineComponent({
         const resolveRoute = router.resolve(to);
 
         /* 匹配函数 */
-        let compare: (current: RouteRecord, route: RouteRecord) => Boolean;
+        let compare: (current: Route, route: Route) => Boolean;
         switch (exact) {
             /* 路由级匹配 */
             case 'route':
@@ -126,7 +126,7 @@ export const RouterLink = defineComponent({
             /* 是否包含 */
             // case 'include':
             default:
-                compare = (current: RouteRecord, route: RouteRecord) => {
+                compare = (current: Route, route: Route) => {
                     return current.fullPath.startsWith(route.fullPath);
                 };
                 break;
