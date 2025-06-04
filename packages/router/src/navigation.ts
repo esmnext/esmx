@@ -47,16 +47,15 @@ export class Navigation {
                 ? subscribeMemory(this._navigation, _subscribe)
                 : subscribeHtmlHistory(_subscribe);
     }
-    public push(route: Route, replace = false) {
+    public push(route: Route) {
+        this._navigation.pushState(route.state, '', route.fullPath);
+    }
+    public replace(route: Route) {
         const nextState = {
             ...this._navigation.state,
             ...route.state
         };
-        if (replace) {
-            this._navigation.replaceState(nextState, '', route.fullPath);
-        } else {
-            this._navigation.pushState(nextState, '', route.fullPath);
-        }
+        this._navigation.replaceState(nextState, '', route.fullPath);
     }
     public go(index: number): Promise<NavigationGoResult> {
         if (this._promiseResolve) {

@@ -50,7 +50,7 @@ export enum RouteType {
     forward = 'forward',
     back = 'back',
     popstate = 'popstate',
-    openWindow = 'openWindow',
+    pushWindow = 'pushWindow',
     replaceWindow = 'replaceWindow',
     resolve = 'resolve'
 }

@@ -21,7 +21,7 @@ export const RouterView = defineComponent({
         let depth = 0;
 
         // 当寻找到根节点时停止
-        while (parent && parent._routerRoot !== parent) {
+        while (parent && parent.$root !== parent) {
             // 获取父节点标签上的 data
             const vnodeData = parent?.$vnode?.data || {};
             if (vnodeData.dataView) {
@@ -38,6 +38,6 @@ export const RouterView = defineComponent({
             return h();
         }
 
-        return h(matchRoute.component || matchRoute.asyncComponent, data);
+        return h(matchRoute.component, data);
     }
 });
