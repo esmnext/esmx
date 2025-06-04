@@ -43,7 +43,7 @@ export function normalizeURL(loc: string | URL, base: URL): URL {
  * 解析路由位置对象
  * 将RouteRawLocation（字符串或对象）转换为完整的URL对象
  *
- * @param loc - 路由位置，可以是字符串或包含路径、查询参数、hash等的对象
+ * @param toRaw - 路由位置，可以是字符串或包含路径、查询参数、hash等的对象
  * @param baseURL - 基础URL，用于解析相对路径
  * @returns 解析后的完整URL对象
  *
@@ -63,16 +63,16 @@ export function normalizeURL(loc: string | URL, base: URL): URL {
  * }, base); // https://example.com/users?page=1&size=10&tags=vue&tags=react#section1
  * ```
  */
-export function parseLocation(loc: RouteLocationRaw, baseURL: URL): URL {
+export function parseLocation(toRaw: RouteLocationRaw, baseURL: URL): URL {
     // 流程分支: 字符串类型直接标准化
-    if (typeof loc === 'string') {
-        return normalizeURL(loc, baseURL);
+    if (typeof toRaw === 'string') {
+        return normalizeURL(toRaw, baseURL);
     }
-    const url = normalizeURL(loc.url ?? loc.path ?? '', baseURL);
+    const url = normalizeURL(toRaw.url ?? toRaw.path ?? '', baseURL);
 
     // 处理普通查询参数（键值对形式）
-    if (loc.query) {
-        Object.entries(loc.query).forEach(([key, value]) => {
+    if (toRaw.query) {
+        Object.entries(toRaw.query).forEach(([key, value]) => {
             if (isNotNullish(value)) {
                 url.searchParams.set(key, String(value));
             }
@@ -80,8 +80,8 @@ export function parseLocation(loc: RouteLocationRaw, baseURL: URL): URL {
     }
 
     // 处理数组查询参数（同一个键对应多个值）
-    if (loc.queryArray) {
-        Object.entries(loc.queryArray).forEach(([key, values]) => {
+    if (toRaw.queryArray) {
+        Object.entries(toRaw.queryArray).forEach(([key, values]) => {
             values.forEach((value) => {
                 if (isNotNullish(value)) {
                     url.searchParams.append(key, value);
@@ -91,8 +91,8 @@ export function parseLocation(loc: RouteLocationRaw, baseURL: URL): URL {
     }
 
     // 设置hash值（URL片段标识符）
-    if (loc.hash) {
-        url.hash = loc.hash;
+    if (toRaw.hash) {
+        url.hash = toRaw.hash;
     }
 
     return url;
