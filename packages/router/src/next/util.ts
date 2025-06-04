@@ -12,3 +12,11 @@ export const removeFromArray = <T>(arr: T[], ele: T) => {
     if (i === -1) return;
     arr.splice(i, 1);
 };
+
+export function isValidConfirmHookResult(result: unknown): boolean {
+    return (
+        typeof result === 'boolean' ||
+        typeof result === 'string' ||
+        (!!result && typeof result === 'object')
+    );
+}

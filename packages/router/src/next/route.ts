@@ -1,11 +1,11 @@
 import { parseLocation } from './location';
-import type {
-    Awaitable,
-    Route,
-    RouteHandleResult,
-    RouteLocationRaw,
-    RouteType,
-    RouterParsedOptions
+import {
+    type Route,
+    type RouteConfirmHook,
+    type RouteLocationRaw,
+    RouteStatus,
+    type RouteType,
+    type RouterParsedOptions
 } from './types';
 
 export function createRoute(
@@ -20,6 +20,7 @@ export function createRoute(
     const isSameBase = to.pathname.length >= base.pathname.length;
     const match = isSameOrigin && isSameBase ? options.matcher(to, base) : null;
     const route: Route = {
+        status: RouteStatus.resolve,
         handleResult: null,
         req: null,
         res: null,
@@ -63,41 +64,6 @@ export function createRoute(
     }
     return route;
 }
-
-export async function createRouteTask(opts: RouteTaskOptions) {
-    let finish = false;
-    const ctx: RouteTaskContext = {
-        to: createRoute(
-            opts.navigationType,
-            opts.toRaw,
-            opts.options,
-            opts.from?.url ?? null
-        ),
-        from: opts.from,
-        options: opts.options,
-        finish(result: RouteHandleResult = null) {
-            this.to.handleResult =
-                result && typeof result === 'object' ? result : null;
-            finish = true;
-        },
-        async redirect(to: RouteLocationRaw) {
-            finish = true;
-            this.to = await createRouteTask({
-                ...opts,
-                toRaw: to
-            });
-        }
-    };
-    const list: Array<RouteTask> = [];
-    for (const item of list) {
-        await item.task(ctx);
-        if (finish) {
-            break;
-        }
-    }
-    return ctx.to;
-}
-
 export interface RouteTaskOptions {
     navigationType: RouteType;
     toRaw: RouteLocationRaw;
@@ -105,17 +71,52 @@ export interface RouteTaskOptions {
     options: RouterParsedOptions;
     tasks: RouteTask[];
 }
-export interface RouteTaskContext {
-    to: Route;
-    from: Route | null;
-    options: RouterParsedOptions;
-    finish: (result?: RouteHandleResult) => void;
-    redirect: (to: RouteLocationRaw) => Promise<void>;
+
+export async function createRouteTask(opts: RouteTaskOptions) {
+    const to: Route = createRoute(
+        opts.navigationType,
+        opts.toRaw,
+        opts.options,
+        opts.from?.url ?? null
+    );
+    const from: Route | null = opts.from;
+    const list: Array<RouteTask> = [];
+    for (const item of list) {
+        let result: unknown | boolean | RouteLocationRaw | null = null;
+        let isError = false;
+        try {
+            result = await item.task(to, from);
+        } catch (e) {
+            console.error(`[${item.name}] route confirm hook error: ${e}`);
+            isError = true;
+        }
+        if (isError) {
+            // 任务处理失败
+            to.status = RouteStatus.error;
+            break;
+        } else if (result === false) {
+            // 导航被取消
+            to.status = RouteStatus.aborted;
+            break;
+        } else if (result === true) {
+            // 导航被确认
+            to.status = RouteStatus.success;
+            break;
+        } else if (result) {
+            // 重定向
+            return createRouteTask({
+                navigationType: opts.navigationType,
+                toRaw: result,
+                from,
+                options: opts.options,
+                tasks: opts.tasks
+            });
+        }
+    }
+    return to;
 }
 
 export interface RouteTask {
     name: string;
-    task: RouteTaskCallback;
+    task: RouteConfirmHook;
 }
-
-export type RouteTaskCallback = (ctx: RouteTaskContext) => Awaitable<void>;

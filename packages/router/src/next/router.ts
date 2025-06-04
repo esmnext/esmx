@@ -1,15 +1,10 @@
 import { MicroApp } from './micro-app';
 import { Navigation } from './navigation';
 import { parsedOptions } from './options';
-import {
-    type RouteTask,
-    type RouteTaskCallback,
-    type RouteTaskContext,
-    createRoute,
-    createRouteTask
-} from './route';
+import { type RouteTask, createRoute, createRouteTask } from './route';
 import {
     type Route,
+    type RouteConfirmHook,
     type RouteHandleHook,
     type RouteLocationRaw,
     type RouteNotifyHook,
@@ -18,14 +13,16 @@ import {
     type RouterOptions,
     type RouterParsedOptions
 } from './types';
-import { isESModule, removeFromArray } from './util';
+import { isESModule, isValidConfirmHookResult, removeFromArray } from './util';
 class TaskType {
-    public static outside = 'outside';
-    public static callBridge = 'callBridge';
+    public static location = 'location';
+    public static env = 'env';
     public static asyncComponent = 'asyncComponent';
+    public static beforeEach = 'beforeEach';
     public static applyApp = 'applyApp';
     public static applyNavigation = 'applyNavigation';
     public static applyWindow = 'applyWindow';
+    public static afterEach = 'afterEach';
 }
 
 export class Router {
@@ -36,14 +33,14 @@ export class Router {
     private _microApp: MicroApp = new MicroApp();
 
     private _tasks = {
-        [TaskType.outside]: (ctx: RouteTaskContext) => {
-            if (ctx.to.matched.length === 0) {
-                ctx.options.location(ctx.to, ctx.from);
-                return ctx.finish();
+        [TaskType.location]: (to, from) => {
+            if (to.matched.length === 0) {
+                this.options.location(to, from);
+                return true;
             }
+            return null;
         },
-        [TaskType.callBridge]: async (ctx: RouteTaskContext) => {
-            const { to } = ctx;
+        [TaskType.env]: async (to, from) => {
             if (!to.config || !to.config.env) {
                 return;
             }
@@ -52,22 +49,20 @@ export class Router {
                 routeHandle = to.config.env;
             } else if (typeof to.config.env === 'object') {
                 const { require, handle } = to.config.env;
-                if (
-                    typeof require === 'function' &&
-                    require(ctx.to, ctx.from)
-                ) {
+                if (typeof require === 'function' && require(to, from)) {
                     routeHandle = handle || null;
                 } else {
                     routeHandle = handle || null;
                 }
             }
             if (routeHandle) {
-                ctx.finish(await routeHandle(ctx.to, ctx.from));
+                to.handleResult = await routeHandle(to, from);
+                return true;
             }
         },
-        [TaskType.asyncComponent]: async (ctx: RouteTaskContext) => {
-            return Promise.all(
-                ctx.to.matched.map(async (matched) => {
+        [TaskType.asyncComponent]: async (to, from) => {
+            await Promise.all(
+                to.matched.map(async (matched) => {
                     const { asyncComponent, component } = matched;
                     if (!component && typeof asyncComponent === 'function') {
                         try {
@@ -84,52 +79,97 @@ export class Router {
                 })
             );
         },
-        [TaskType.applyApp]: (ctx: RouteTaskContext) => {
-            this._route = ctx.to;
-            this._microApp._update(this, ctx.to.type === RouteType.reload);
+        [TaskType.beforeEach]: async (to, from) => {
+            for (const guard of this._guards.beforeEach) {
+                const result = await guard(to, from);
+                if (isValidConfirmHookResult(result)) {
+                    return result;
+                }
+            }
         },
-        [TaskType.applyNavigation]: (ctx: RouteTaskContext) => {
-            this._navigation.push(ctx.to);
-            ctx.finish();
+        [TaskType.applyApp]: (to, from) => {
+            this._route = to;
+            this._microApp._update(this, to.type === RouteType.reload);
         },
-        [TaskType.applyWindow]: (ctx: RouteTaskContext) => {
-            ctx.options.location(ctx.to, ctx.from);
-            ctx.finish();
+        [TaskType.applyNavigation]: (to, from) => {
+            this._navigation.push(to);
+        },
+        [TaskType.afterEach]: (to, from) => {
+            for (const guard of this._guards.afterEach) {
+                guard(to, from);
+            }
+        },
+        [TaskType.applyWindow]: (to, from) => {
+            this.options.location(to, from);
+            return true;
         }
-    } satisfies Record<string, RouteTaskCallback>;
+    } satisfies Record<string, RouteConfirmHook>;
     private _taskMaps = {
         [RouteType.push]: [
-            TaskType.outside,
-            TaskType.callBridge,
+            TaskType.location,
+            TaskType.env,
             TaskType.asyncComponent,
+            TaskType.beforeEach,
             TaskType.applyApp,
-            TaskType.applyNavigation
+            TaskType.applyNavigation,
+            TaskType.afterEach
         ],
         [RouteType.replace]: [
-            TaskType.outside,
+            TaskType.location,
             TaskType.asyncComponent,
+            TaskType.beforeEach,
             TaskType.applyApp,
-            TaskType.applyNavigation
+            TaskType.applyNavigation,
+            TaskType.afterEach
         ],
         [RouteType.openWindow]: [
-            TaskType.outside,
+            TaskType.location,
             TaskType.asyncComponent,
-            TaskType.callBridge,
-            TaskType.applyWindow
+            TaskType.env,
+            TaskType.beforeEach,
+            TaskType.applyWindow,
+            TaskType.afterEach
         ],
-        [RouteType.replaceWindow]: [TaskType.outside, TaskType.applyWindow],
+        [RouteType.replaceWindow]: [
+            TaskType.location,
+            TaskType.beforeEach,
+            TaskType.applyWindow,
+            TaskType.afterEach
+        ],
         [RouteType.reload]: [
-            TaskType.outside,
+            TaskType.location,
             TaskType.asyncComponent,
-            TaskType.applyApp
+            TaskType.beforeEach,
+            TaskType.applyApp,
+            TaskType.afterEach
         ],
-        [RouteType.back]: [TaskType.asyncComponent, TaskType.applyApp],
-        [RouteType.go]: [TaskType.asyncComponent, TaskType.applyApp],
-        [RouteType.forward]: [TaskType.asyncComponent, TaskType.applyApp],
-        [RouteType.popstate]: [TaskType.asyncComponent, TaskType.applyApp]
+        [RouteType.back]: [
+            TaskType.asyncComponent,
+            TaskType.beforeEach,
+            TaskType.applyApp,
+            TaskType.afterEach
+        ],
+        [RouteType.go]: [
+            TaskType.asyncComponent,
+            TaskType.beforeEach,
+            TaskType.applyApp,
+            TaskType.afterEach
+        ],
+        [RouteType.forward]: [
+            TaskType.asyncComponent,
+            TaskType.beforeEach,
+            TaskType.applyApp,
+            TaskType.afterEach
+        ],
+        [RouteType.popstate]: [
+            TaskType.asyncComponent,
+            TaskType.beforeEach,
+            TaskType.applyApp,
+            TaskType.afterEach
+        ]
     } satisfies Record<string, TaskType[]>;
     private _guards = {
-        beforeEach: [] as RouteNotifyHook[],
+        beforeEach: [] as RouteConfirmHook[],
         afterEach: [] as RouteNotifyHook[]
     };
     public get route() {
@@ -233,10 +273,10 @@ export class Router {
             return null;
         }
     }
-    public beforeEach(guard: RouteNotifyHook) {
+    public beforeEach(guard: RouteConfirmHook) {
         this._guards.beforeEach.push(guard);
     }
-    public unBeforeEach(guard: RouteNotifyHook) {
+    public unBeforeEach(guard: RouteConfirmHook) {
         removeFromArray(this._guards.beforeEach, guard);
     }
     public afterEach(guard: RouteNotifyHook) {

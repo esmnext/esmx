@@ -90,7 +90,15 @@ export interface RouteParsedConfig extends RouteConfig {
     match: MatchFunction;
     compile: (params?: Record<string, string>) => string;
 }
+
+export enum RouteStatus {
+    resolve = 'resolve',
+    aborted = 'aborted',
+    error = 'error',
+    success = 'success'
+}
 export interface Route {
+    status: RouteStatus;
     type: RouteType;
     req: IncomingMessage | null;
     res: ServerResponse | null;
@@ -126,7 +134,7 @@ export type RouteMatcher = (targetURL: URL, baseURL: URL) => RouteMatchResult;
 export type RouteConfirmHook = (
     to: Route,
     from: Route | null
-) => Awaitable<boolean | RouteLocationRaw>;
+) => Awaitable<unknown | true | false | RouteLocationRaw>;
 
 export type RouteVerifyHook = (
     to: Route,
