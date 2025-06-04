@@ -1,7 +1,11 @@
 export const isBrowser = typeof window === 'object';
 
 export function isNotNullish(value: unknown): boolean {
-    return value !== undefined && value !== null;
+    return value !== undefined && value !== null && !Number.isNaN(value);
+}
+
+export function isObject(o: unknown) {
+    return Object.prototype.toString.call(o) === '[object Object]';
 }
 
 export function isESModule(obj: any): boolean {
@@ -17,6 +21,6 @@ export function isValidConfirmHookResult(result: unknown): boolean {
     return (
         typeof result === 'boolean' ||
         typeof result === 'string' ||
-        (!!result && typeof result === 'object')
+        isObject(result)
     );
 }
