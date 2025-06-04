@@ -29,17 +29,11 @@ export function parsedOptions(options: RouterOptions): RouterParsedOptions {
         apps: options.apps ?? {},
         matcher: createMatcher(routes),
         normalizeURL: options.normalizeURL ?? ((url) => url),
-        onOpen: (route: Route) => {
-            if (isBrowser) {
-                const result = options.onOpen?.(route);
-                if (result !== false) {
-                    DEFAULT_ON_OPEN(route);
-                }
-            }
-            return true;
+        location: (to, from) => {
+            return null;
         },
-        onServerLocation(route) {
-            return true;
+        serverLocation(route) {
+            return null;
         }
     };
     return result;

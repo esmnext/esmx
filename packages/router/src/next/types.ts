@@ -17,9 +17,9 @@ export interface RouterOptions {
     req?: IncomingMessage | null;
     res?: ServerResponse | null;
     apps?: RouterMicroApp;
-    normalizeURL?: (url: URL, raw: RouteLocationRaw) => URL;
-    onOpen?: (route: Route) => boolean;
-    onServerLocation?: (route: Route) => boolean;
+    normalizeURL?: (to: URL, from: URL | null) => URL;
+    location?: RouteHandleHook;
+    serverLocation?: RouteHandleHook;
 }
 
 export interface RouterParsedOptions extends Required<RouterOptions> {
@@ -54,9 +54,10 @@ export enum RouteType {
     replaceWindow = 'replaceWindow',
     resolve = 'resolve'
 }
-export type RouteMeta = Record<string | symbol, unknown>;
+export type RouteMeta = Record<string | symbol, any>;
 
 export type RouteState = Record<string, unknown>;
+export type RouteHandleResult = Record<string | symbol, any> | null;
 
 export interface RouteLocation {
     path?: string;
@@ -69,22 +70,19 @@ export interface RouteLocation {
     keepScrollPosition?: boolean;
 }
 export type RouteLocationRaw = RouteLocation | string;
-export type RouteRedirect =
-    | RouteLocationRaw
-    | ((to: Route, from: Route | null) => RouteLocationRaw);
 
 export interface RouteConfig {
     path: string;
     component?: Record<string, any>;
     children?: RouteConfig[];
-    redirect?: RouteRedirect;
+    redirect?: RouteLocationRaw | RouteConfirmHook;
     meta?: RouteMeta;
     env?: RouteEnv;
     app?: string | RouterMicroAppCallback;
     asyncComponent?: () => Promise<Record<string, any>>;
-    beforeEnter?: RouteHook;
-    beforeUpdate?: RouteHook;
-    beforeLeave?: RouteHook;
+    beforeEnter?: RouteConfirmHook;
+    beforeUpdate?: RouteConfirmHook;
+    beforeLeave?: RouteConfirmHook;
 }
 export interface RouteParsedConfig extends RouteConfig {
     absolutePath: string;
@@ -94,6 +92,8 @@ export interface RouteParsedConfig extends RouteConfig {
 }
 export interface Route {
     type: RouteType;
+    req: IncomingMessage | null;
+    res: ServerResponse | null;
     url: URL;
     path: string;
     fullPath: string;
@@ -104,6 +104,7 @@ export interface Route {
     meta: RouteMeta;
     matched: RouteParsedConfig[];
     config: RouteParsedConfig | null;
+    handleResult: RouteHandleResult;
 }
 
 export interface RouteMatchResult {
@@ -112,9 +113,6 @@ export interface RouteMatchResult {
 }
 
 export type RouteMatcher = (targetURL: URL, baseURL: URL) => RouteMatchResult;
-
-export type RouteEnvHandle = (route: Route) => Awaitable<any>;
-export type RouteEnvRequire = (route: Route) => Awaitable<any>;
 
 /**
  * 路由钩子函数类型
@@ -125,17 +123,27 @@ export type RouteEnvRequire = (route: Route) => Awaitable<any>;
  *   - false: 终止执行
  *   - RouteLocationRaw: 重定向到另外一个路由
  */
-export type RouteHook = (
+export type RouteConfirmHook = (
     to: Route,
     from: Route | null
 ) => Awaitable<boolean | RouteLocationRaw>;
 
+export type RouteVerifyHook = (
+    to: Route,
+    from: Route | null
+) => Awaitable<boolean>;
+export type RouteHandleHook = (
+    to: Route,
+    from: Route | null
+) => Awaitable<RouteHandleResult>;
+export type RouteNotifyHook = (to: Route, from: Route | null) => void;
+
 export interface RouteEnvOptions {
-    handle?: RouteEnvHandle;
-    require?: RouteEnvRequire;
+    handle?: RouteHandleHook;
+    require?: RouteVerifyHook;
 }
 
-export type RouteEnv = RouteEnvHandle | RouteEnvOptions;
+export type RouteEnv = RouteHandleHook | RouteEnvOptions;
 
 // ============================================================================
 // 工具函数

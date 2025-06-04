@@ -5,13 +5,13 @@ import {
     type RouteTask,
     type RouteTaskCallback,
     type RouteTaskContext,
-    createRouteTask,
-    parseRoute
+    createRoute,
+    createRouteTask
 } from './route';
 import { RouteType } from './types';
 import type {
     Route,
-    RouteEnvHandle,
+    RouteHandleHook,
     RouteLocationRaw,
     RouteState,
     RouterOptions,
@@ -37,7 +37,7 @@ export class Router {
     private _tasks = {
         [TaskType.outside]: (ctx: RouteTaskContext) => {
             if (ctx.to.matched.length === 0) {
-                ctx.options.onOpen(ctx.to);
+                ctx.options.location(ctx.to, ctx.from);
                 return ctx.finish();
             }
         },
@@ -46,20 +46,22 @@ export class Router {
             if (!to.config || !to.config.env) {
                 return;
             }
-            let envBridge: RouteEnvHandle | null = null;
+            let routeHandle: RouteHandleHook | null = null;
             if (typeof to.config.env === 'function') {
-                envBridge = to.config.env;
+                routeHandle = to.config.env;
             } else if (typeof to.config.env === 'object') {
                 const { require, handle } = to.config.env;
-                if (typeof require === 'function' && require(to)) {
-                    envBridge = handle || null;
+                if (
+                    typeof require === 'function' &&
+                    require(ctx.to, ctx.from)
+                ) {
+                    routeHandle = handle || null;
                 } else {
-                    envBridge = handle || null;
+                    routeHandle = handle || null;
                 }
             }
-            if (envBridge) {
-                envBridge(to);
-                ctx.finish();
+            if (routeHandle) {
+                ctx.finish(await routeHandle(ctx.to, ctx.from));
             }
         },
         [TaskType.asyncComponent]: async (ctx: RouteTaskContext) => {
@@ -83,17 +85,14 @@ export class Router {
         },
         [TaskType.applyApp]: (ctx: RouteTaskContext) => {
             this._route = ctx.to;
-            this._microApp._update(
-                this,
-                ctx.navigationType === RouteType.reload
-            );
+            this._microApp._update(this, ctx.to.type === RouteType.reload);
         },
         [TaskType.applyNavigation]: (ctx: RouteTaskContext) => {
             this._navigation.push(ctx.to);
             ctx.finish();
         },
         [TaskType.applyWindow]: (ctx: RouteTaskContext) => {
-            ctx.options.onOpen(ctx.to);
+            ctx.options.location(ctx.to, ctx.from);
             ctx.finish();
         }
     } satisfies Record<string, RouteTaskCallback>;
@@ -148,28 +147,28 @@ export class Router {
             }
         );
     }
-    public push(location: RouteLocationRaw): Promise<Route> {
-        return this._transitionTo(RouteType.push, location);
+    public push(toRaw: RouteLocationRaw): Promise<Route> {
+        return this._transitionTo(RouteType.push, toRaw);
     }
-    public replace(location: RouteLocationRaw) {
-        return this._transitionTo(RouteType.replace, location);
+    public replace(toRaw: RouteLocationRaw) {
+        return this._transitionTo(RouteType.replace, toRaw);
     }
-    public openWindow(location?: RouteLocationRaw): Promise<Route> {
+    public openWindow(toRaw?: RouteLocationRaw): Promise<Route> {
         return this._transitionTo(
             RouteType.openWindow,
-            location ?? this.route.url.href
+            toRaw ?? this.route.url.href
         );
     }
-    public replaceWindow(location?: RouteLocationRaw): Promise<Route> {
+    public replaceWindow(toRaw?: RouteLocationRaw): Promise<Route> {
         return this._transitionTo(
             RouteType.replaceWindow,
-            location ?? this.route.url.href
+            toRaw ?? this.route.url.href
         );
     }
-    public reload(location?: RouteLocationRaw): Promise<Route> {
+    public reload(toRaw?: RouteLocationRaw): Promise<Route> {
         return this._transitionTo(
             RouteType.reload,
-            location ?? this.route.url.href
+            toRaw ?? this.route.url.href
         );
     }
     public async back(): Promise<Route | null> {
@@ -208,15 +207,20 @@ export class Router {
             state: result.state
         });
     }
-    public resolve(loc: RouteLocationRaw): Route {
-        return parseRoute(RouteType.resolve, this.options, loc);
+    public resolve(toRaw: RouteLocationRaw): Route {
+        return createRoute(
+            RouteType.resolve,
+            toRaw,
+            this.options,
+            this._route?.url ?? null
+        );
     }
 
-    public pushLayer(loc: RouteLocationRaw) {}
-    private _transitionTo(navigationType: RouteType, to: RouteLocationRaw) {
+    public pushLayer(toRaw: RouteLocationRaw) {}
+    private _transitionTo(navigationType: RouteType, toRaw: RouteLocationRaw) {
         const names: string[] = this._taskMaps[navigationType] ?? [];
         const { _tasks } = this;
-        const tasks = names.map((name) => {
+        const tasks: RouteTask[] = names.map((name) => {
             return {
                 name,
                 task: _tasks[name]
@@ -224,12 +228,11 @@ export class Router {
         });
         return createRouteTask({
             navigationType,
-            to,
+            toRaw,
             from: this._route,
-            options: this.options
-        })
-            .add(...tasks)
-            .run();
+            options: this.options,
+            tasks
+        });
     }
     public async renderToString(throwError = false): Promise<string | null> {
         try {

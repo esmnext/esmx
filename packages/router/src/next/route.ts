@@ -2,133 +2,114 @@ import { parseLocation } from './location';
 import type {
     Awaitable,
     Route,
+    RouteHandleResult,
     RouteLocationRaw,
-    RouteMatchResult,
     RouteType,
     RouterParsedOptions
 } from './types';
 
-export function parseRoute(
-    navigationType: RouteType,
-    options: RouterParsedOptions,
-    raw: RouteLocationRaw
-): Route {
-    const { base, normalizeURL } = options;
-    const loc = normalizeURL(parseLocation(raw, base), raw);
-    // 处理外站逻辑
-    if (loc.origin !== base.origin) {
-        return createRoute(navigationType, raw, loc, base);
-    }
-    if (loc.pathname.length < base.pathname.length) {
-        return createRoute(navigationType, raw, loc, base);
-    }
-    // 匹配路由
-    const matched = options.matcher(loc, base);
-    // 没有匹配任何路由
-    if (matched.matches.length === 0) {
-        return createRoute(navigationType, raw, loc, base);
-    }
-    // 重新构造 URL 参数
-    const lastMatch = matched.matches[matched.matches.length - 1];
-    if (typeof raw === 'object' && raw.params) {
-        const current = loc.pathname.split('/');
-        const next = new URL(
-            lastMatch.compile(raw.params).substring(1),
-            base
-        ).pathname.split('/');
-        next.forEach((item, index) => {
-            current[index] = item || current[index];
-        });
-        loc.pathname = current.join('/');
-        Object.assign(matched.params, raw.params);
-    }
-    return createRoute(navigationType, raw, loc, base, matched);
-}
-
 export function createRoute(
     navigationType: RouteType,
-    raw: RouteLocationRaw,
-    loc: URL,
-    base: URL,
-    match?: RouteMatchResult
+    toRaw: RouteLocationRaw,
+    options: RouterParsedOptions,
+    from: URL | null
 ): Route {
+    const { base, normalizeURL } = options;
+    const to = normalizeURL(parseLocation(toRaw, base), from);
+    const isSameOrigin = to.origin === base.origin;
+    const isSameBase = to.pathname.length >= base.pathname.length;
+    const match = isSameOrigin && isSameBase ? options.matcher(to, base) : null;
     const route: Route = {
+        handleResult: null,
+        req: null,
+        res: null,
         type: navigationType,
-        url: loc,
+        url: to,
         params: {},
         query: {},
         queryArray: {},
-        state: typeof raw === 'object' && raw.state ? raw.state : {},
+        state: typeof toRaw === 'object' && toRaw.state ? toRaw.state : {},
         meta: {},
-        path: loc.pathname,
-        fullPath: loc.pathname + loc.search + loc.hash,
+        path: to.pathname,
+        fullPath: to.pathname + to.search + to.hash,
         matched: [],
         config: null
     };
 
-    for (const key of loc.searchParams.keys()) {
-        const values = loc.searchParams.getAll(key);
+    for (const key of to.searchParams.keys()) {
+        const values = to.searchParams.getAll(key);
         route.query[key] = values[0] || '';
         route.queryArray[key] = values;
     }
     if (match) {
         route.config = match.matches[match.matches.length - 1];
         route.meta = route.config.meta || {};
-        route.path = loc.pathname.substring(base.pathname.length - 1);
-        route.fullPath = `${route.path}${loc.search}${loc.hash}`;
+        route.path = to.pathname.substring(options.base.pathname.length - 1);
+        route.fullPath = `${route.path}${to.search}${to.hash}`;
         route.matched = match.matches;
+        if (typeof toRaw === 'object' && toRaw.params) {
+            const lastMatch = match.matches[match.matches.length - 1];
+            const current = to.pathname.split('/');
+            const next = new URL(
+                lastMatch.compile(toRaw.params).substring(1),
+                options.base
+            ).pathname.split('/');
+            next.forEach((item, index) => {
+                current[index] = item || current[index];
+            });
+            to.pathname = current.join('/');
+            Object.assign(match.params, toRaw.params);
+        }
     }
     return route;
 }
 
-export function createRouteTask(opts: RouteTaskOptions) {
+export async function createRouteTask(opts: RouteTaskOptions) {
     let finish = false;
-    const ctx = {
-        navigationType: opts.navigationType,
-        to: parseRoute(opts.navigationType, opts.options, opts.to),
+    const ctx: RouteTaskContext = {
+        to: createRoute(
+            opts.navigationType,
+            opts.toRaw,
+            opts.options,
+            opts.from?.url ?? null
+        ),
         from: opts.from,
         options: opts.options,
-        finish() {
+        finish(result: RouteHandleResult = null) {
+            this.to.handleResult =
+                result && typeof result === 'object' ? result : null;
             finish = true;
         },
         async redirect(to: RouteLocationRaw) {
             finish = true;
             this.to = await createRouteTask({
                 ...opts,
-                to
-            }).run();
+                toRaw: to
+            });
         }
     };
     const list: Array<RouteTask> = [];
-    return {
-        add(...items: RouteTask[]) {
-            list.push(...items);
-            return this;
-        },
-        async run() {
-            for (const item of list) {
-                await item.task(ctx);
-                if (finish) {
-                    break;
-                }
-            }
-            return ctx.to;
+    for (const item of list) {
+        await item.task(ctx);
+        if (finish) {
+            break;
         }
-    };
+    }
+    return ctx.to;
 }
 
 export interface RouteTaskOptions {
     navigationType: RouteType;
-    to: RouteLocationRaw;
+    toRaw: RouteLocationRaw;
     from: Route | null;
     options: RouterParsedOptions;
+    tasks: RouteTask[];
 }
 export interface RouteTaskContext {
-    navigationType: RouteType;
     to: Route;
     from: Route | null;
     options: RouterParsedOptions;
-    finish: () => void;
+    finish: (result?: RouteHandleResult) => void;
     redirect: (to: RouteLocationRaw) => Promise<void>;
 }
 
