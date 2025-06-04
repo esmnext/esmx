@@ -1,17 +1,17 @@
 import { parseLocation } from './location';
 import type {
     Awaitable,
-    NavigationType,
     Route,
     RouteMatchResult,
-    RouterParsedOptions,
-    RouterRawLocation
+    RouteRawLocation,
+    RouteType,
+    RouterParsedOptions
 } from './types';
 
 export function parseRoute(
-    navigationType: NavigationType,
+    navigationType: RouteType,
     options: RouterParsedOptions,
-    raw: RouterRawLocation
+    raw: RouteRawLocation
 ): Route {
     const { base, normalizeURL } = options;
     const loc = normalizeURL(parseLocation(raw, base), raw);
@@ -46,14 +46,14 @@ export function parseRoute(
 }
 
 export function createRoute(
-    navigationType: NavigationType,
-    raw: RouterRawLocation,
+    navigationType: RouteType,
+    raw: RouteRawLocation,
     loc: URL,
     base: URL,
     match?: RouteMatchResult
 ): Route {
     const route: Route = {
-        navigationType,
+        type: navigationType,
         url: loc,
         params: {},
         query: {},
@@ -91,7 +91,7 @@ export function createRouteTask(opts: RouteTaskOptions) {
         finish() {
             finish = true;
         },
-        async redirect(to: RouterRawLocation) {
+        async redirect(to: RouteRawLocation) {
             finish = true;
             this.to = await createRouteTask({
                 ...opts,
@@ -118,18 +118,18 @@ export function createRouteTask(opts: RouteTaskOptions) {
 }
 
 export interface RouteTaskOptions {
-    navigationType: NavigationType;
-    to: RouterRawLocation;
+    navigationType: RouteType;
+    to: RouteRawLocation;
     from: Route | null;
     options: RouterParsedOptions;
 }
 export interface RouteTaskContext {
-    navigationType: NavigationType;
+    navigationType: RouteType;
     to: Route;
     from: Route | null;
     options: RouterParsedOptions;
     finish: () => void;
-    redirect: (to: RouterRawLocation) => Promise<void>;
+    redirect: (to: RouteRawLocation) => Promise<void>;
 }
 
 export interface RouteTask {

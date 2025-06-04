@@ -1,18 +1,4 @@
-import type { NavigationType, Route, RouterScrollBehavior } from './types';
-export const DEFAULT_SCROLL_BEHAVIOR: RouterScrollBehavior = (
-    to,
-    from,
-    savedPosition
-) => {
-    if (savedPosition) {
-        return savedPosition;
-    }
-    return {
-        top: 0,
-        left: 0,
-        behavior: 'auto'
-    };
-};
+import type { Route } from './types';
 
 export function DEFAULT_ON_OPEN(route: Route) {
     try {

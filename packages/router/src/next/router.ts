@@ -8,14 +8,14 @@ import {
     createRouteTask,
     parseRoute
 } from './route';
-import { NavigationType } from './types';
+import { RouteType } from './types';
 import type {
-    EnvBridge,
     Route,
+    RouteEnvHandle,
+    RouteRawLocation,
     RouteState,
     RouterOptions,
-    RouterParsedOptions,
-    RouterRawLocation
+    RouterParsedOptions
 } from './types';
 import { isESModule } from './util';
 class TaskType {
@@ -46,7 +46,7 @@ export class Router {
             if (!to.matchConfig || !to.matchConfig.env) {
                 return;
             }
-            let envBridge: EnvBridge | null = null;
+            let envBridge: RouteEnvHandle | null = null;
             if (typeof to.matchConfig.env === 'function') {
                 envBridge = to.matchConfig.env;
             } else if (typeof to.matchConfig.env === 'object') {
@@ -85,7 +85,7 @@ export class Router {
             this._route = ctx.to;
             this._microApp._update(
                 this,
-                ctx.navigationType === NavigationType.reload
+                ctx.navigationType === RouteType.reload
             );
         },
         [TaskType.applyNavigation]: (ctx: RouteTaskContext) => {
@@ -98,38 +98,35 @@ export class Router {
         }
     } satisfies Record<string, RouteTaskCallback>;
     private _taskMaps = {
-        [NavigationType.push]: [
+        [RouteType.push]: [
             TaskType.outside,
             TaskType.callBridge,
             TaskType.asyncComponent,
             TaskType.applyApp,
             TaskType.applyNavigation
         ],
-        [NavigationType.replace]: [
+        [RouteType.replace]: [
             TaskType.outside,
             TaskType.asyncComponent,
             TaskType.applyApp,
             TaskType.applyNavigation
         ],
-        [NavigationType.openWindow]: [
+        [RouteType.openWindow]: [
             TaskType.outside,
             TaskType.asyncComponent,
             TaskType.callBridge,
             TaskType.applyWindow
         ],
-        [NavigationType.replaceWindow]: [
-            TaskType.outside,
-            TaskType.applyWindow
-        ],
-        [NavigationType.reload]: [
+        [RouteType.replaceWindow]: [TaskType.outside, TaskType.applyWindow],
+        [RouteType.reload]: [
             TaskType.outside,
             TaskType.asyncComponent,
             TaskType.applyApp
         ],
-        [NavigationType.back]: [TaskType.asyncComponent, TaskType.applyApp],
-        [NavigationType.go]: [TaskType.asyncComponent, TaskType.applyApp],
-        [NavigationType.forward]: [TaskType.asyncComponent, TaskType.applyApp],
-        [NavigationType.popstate]: [TaskType.asyncComponent, TaskType.applyApp]
+        [RouteType.back]: [TaskType.asyncComponent, TaskType.applyApp],
+        [RouteType.go]: [TaskType.asyncComponent, TaskType.applyApp],
+        [RouteType.forward]: [TaskType.asyncComponent, TaskType.applyApp],
+        [RouteType.popstate]: [TaskType.asyncComponent, TaskType.applyApp]
     } satisfies Record<string, TaskType[]>;
 
     public get route() {
@@ -144,34 +141,34 @@ export class Router {
         this._navigation = new Navigation(
             this.options,
             (url: string, state: RouteState) => {
-                return this._transitionTo(NavigationType.push, {
+                return this._transitionTo(RouteType.push, {
                     url,
                     state
                 });
             }
         );
     }
-    public push(location: RouterRawLocation): Promise<Route> {
-        return this._transitionTo(NavigationType.push, location);
+    public push(location: RouteRawLocation): Promise<Route> {
+        return this._transitionTo(RouteType.push, location);
     }
-    public replace(location: RouterRawLocation) {
-        return this._transitionTo(NavigationType.replace, location);
+    public replace(location: RouteRawLocation) {
+        return this._transitionTo(RouteType.replace, location);
     }
-    public openWindow(location?: RouterRawLocation): Promise<Route> {
+    public openWindow(location?: RouteRawLocation): Promise<Route> {
         return this._transitionTo(
-            NavigationType.openWindow,
+            RouteType.openWindow,
             location ?? this.route.url.href
         );
     }
-    public replaceWindow(location?: RouterRawLocation): Promise<Route> {
+    public replaceWindow(location?: RouteRawLocation): Promise<Route> {
         return this._transitionTo(
-            NavigationType.replaceWindow,
+            RouteType.replaceWindow,
             location ?? this.route.url.href
         );
     }
-    public reload(location?: RouterRawLocation): Promise<Route> {
+    public reload(location?: RouteRawLocation): Promise<Route> {
         return this._transitionTo(
-            NavigationType.reload,
+            RouteType.reload,
             location ?? this.route.url.href
         );
     }
@@ -180,7 +177,7 @@ export class Router {
         if (result === null) {
             return null;
         }
-        return this._transitionTo(NavigationType.back, {
+        return this._transitionTo(RouteType.back, {
             url: result.url,
             state: result.state
         });
@@ -190,7 +187,7 @@ export class Router {
         if (result === null) {
             return null;
         }
-        return this._transitionTo(NavigationType.go, {
+        return this._transitionTo(RouteType.go, {
             url: result.url,
             state: result.state
         });
@@ -206,20 +203,17 @@ export class Router {
         if (result === null) {
             return null;
         }
-        return this._transitionTo(NavigationType.back, {
+        return this._transitionTo(RouteType.back, {
             url: result.url,
             state: result.state
         });
     }
-    public resolve(loc: RouterRawLocation): Route {
-        return parseRoute(NavigationType.resolve, this.options, loc);
+    public resolve(loc: RouteRawLocation): Route {
+        return parseRoute(RouteType.resolve, this.options, loc);
     }
 
-    public pushLayer(loc: RouterRawLocation) {}
-    private _transitionTo(
-        navigationType: NavigationType,
-        to: RouterRawLocation
-    ) {
+    public pushLayer(loc: RouteRawLocation) {}
+    private _transitionTo(navigationType: RouteType, to: RouteRawLocation) {
         const names: string[] = this._taskMaps[navigationType] ?? [];
         const { _tasks } = this;
         const tasks = names.map((name) => {

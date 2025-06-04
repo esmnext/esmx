@@ -1,4 +1,4 @@
-import { DEFAULT_ON_OPEN, DEFAULT_SCROLL_BEHAVIOR } from './default';
+import { DEFAULT_ON_OPEN } from './default';
 import { createMatcher } from './matcher';
 import {
     type Route,
@@ -40,8 +40,7 @@ export function parsedOptions(options: RouterOptions): RouterParsedOptions {
         },
         onServerLocation(route) {
             return true;
-        },
-        scrollBehavior: options.scrollBehavior ?? DEFAULT_SCROLL_BEHAVIOR
+        }
     };
     return result;
 }

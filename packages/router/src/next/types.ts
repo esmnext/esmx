@@ -3,138 +3,29 @@ import type { MatchFunction } from 'path-to-regexp';
 import type { Router } from './router';
 
 // ============================================================================
-// Basic Types and Utilities
+// 路由器相关
 // ============================================================================
-
-export type Awaitable<T> = T | Promise<T>;
-
-export type RouteMeta = Record<string | symbol, unknown>;
-
-export type RouteState = Record<string, unknown>;
-
-// ============================================================================
-// Enums
-// ============================================================================
-
 export enum RouterMode {
     history = 'history',
     abstract = 'abstract'
 }
-
-export enum NavigationType {
-    push = 'push',
-    replace = 'replace',
-    reload = 'reload',
-    go = 'go',
-    forward = 'forward',
-    back = 'back',
-    popstate = 'popstate',
-    openWindow = 'openWindow',
-    replaceWindow = 'replaceWindow',
-    pushLayer = 'pushLayer',
-    resolve = 'resolve'
-}
-
-// ============================================================================
-// Location and Navigation Types
-// ============================================================================
-
-export interface RouterLocation {
-    url?: string | URL;
-    path?: string;
-    query?: Record<string, string | undefined>;
-    queryArray?: Record<string, string[]>;
-    params?: Record<string, string>;
-    hash?: string;
-    state?: RouteState;
-    keepScrollPosition?: boolean;
-}
-
-export type RouterRawLocation = RouterLocation | string;
-
-export type NavigationGuardReturn = boolean | RouterRawLocation;
-
-export type NavigationGuard = (
-    to: Route,
-    from: Route | null
-) => Awaitable<NavigationGuardReturn>;
-
-// ============================================================================
-// Route Configuration Types
-// ============================================================================
-
-export type RouteRedirect =
-    | RouterRawLocation
-    | ((to: Route, from: Route | null) => RouterRawLocation);
-
-export interface RouteConfig {
-    env?: NavigationEnv;
-    path: string;
-    component?: Record<string, any>;
-    redirect?: RouteRedirect;
-    meta?: RouteMeta;
-    children?: RouteConfig[];
-    app?: string | RouterMicroAppCallback;
-    asyncComponent?: () => Promise<Record<string, any>>;
-    beforeEnter?: NavigationGuard;
-    beforeUpdate?: NavigationGuard;
-    beforeLeave?: NavigationGuard;
-}
-
-export interface RouteParsedConfig extends RouteConfig {
-    absolutePath: string;
-    children: RouteParsedConfig[];
-    match: MatchFunction;
-    compile: (params?: Record<string, string>) => string;
-}
-
-export interface RouteMatchResult {
-    matches: RouteParsedConfig[];
-    params: Record<string, string>;
-}
-
-export type RouteMatcher = (targetURL: URL, baseURL: URL) => RouteMatchResult;
-
-export interface Route {
-    navigationType: NavigationType;
-    url: URL;
-    params: Record<string, string>;
-    query: Record<string, string | undefined>;
-    queryArray: Record<string, string[] | undefined>;
-    state: RouteState;
-    meta: RouteMeta;
-    path: string;
-    fullPath: string;
-    matched: RouteParsedConfig[];
-    matchConfig: RouteParsedConfig | null;
-}
-
-// ============================================================================
-// Router Configuration Types
-// ============================================================================
-
 export interface RouterOptions {
-    env?: string;
-    base?: URL;
-    mode?: RouterMode;
     routes?: RouteConfig[];
+    mode?: RouterMode;
+    base?: URL;
+    env?: string;
     req?: IncomingMessage | null;
     res?: ServerResponse | null;
-    normalizeURL?: (url: URL, raw: RouterRawLocation) => URL;
+    apps?: RouterMicroApp;
+    normalizeURL?: (url: URL, raw: RouteRawLocation) => URL;
     onOpen?: (route: Route) => boolean;
     onServerLocation?: (route: Route) => boolean;
-    apps?: RouterMicroApp;
-    scrollBehavior?: RouterScrollBehavior;
 }
 
 export interface RouterParsedOptions extends Required<RouterOptions> {
     /** 路由匹配器实例 */
     matcher: RouteMatcher;
 }
-
-// ============================================================================
-// Micro App Types
-// ============================================================================
 
 export interface RouterMicroAppOptions {
     mount: () => void;
@@ -149,30 +40,90 @@ export type RouterMicroApp =
     | RouterMicroAppCallback;
 
 // ============================================================================
-// Scroll Behavior Types
+// 路由相关
 // ============================================================================
+export enum RouteType {
+    push = 'push',
+    replace = 'replace',
+    reload = 'reload',
+    go = 'go',
+    forward = 'forward',
+    back = 'back',
+    popstate = 'popstate',
+    openWindow = 'openWindow',
+    replaceWindow = 'replaceWindow',
+    resolve = 'resolve'
+}
+export type RouteMeta = Record<string | symbol, unknown>;
 
-export interface RouterScrollPosition {
-    behavior?: ScrollOptions['behavior'];
-    left?: number;
-    top?: number;
+export type RouteState = Record<string, unknown>;
+
+export interface RouteLocation {
+    path?: string;
+    url?: string | URL;
+    params?: Record<string, string>;
+    query?: Record<string, string | undefined>;
+    queryArray?: Record<string, string[]>;
+    hash?: string;
+    state?: RouteState;
+    keepScrollPosition?: boolean;
+}
+export type RouteRawLocation = RouteLocation | string;
+export type RouteRedirect =
+    | RouteRawLocation
+    | ((to: Route, from: Route | null) => RouteRawLocation);
+
+export interface RouteConfig {
+    path: string;
+    component?: Record<string, any>;
+    children?: RouteConfig[];
+    redirect?: RouteRedirect;
+    meta?: RouteMeta;
+    env?: RouteEnv;
+    app?: string | RouterMicroAppCallback;
+    asyncComponent?: () => Promise<Record<string, any>>;
+    beforeEnter?: Function;
+    beforeUpdate?: Function;
+    beforeLeave?: Function;
+}
+export interface RouteParsedConfig extends RouteConfig {
+    absolutePath: string;
+    children: RouteParsedConfig[];
+    match: MatchFunction;
+    compile: (params?: Record<string, string>) => string;
+}
+export interface Route {
+    type: RouteType;
+    url: URL;
+    path: string;
+    fullPath: string;
+    params: Record<string, string>;
+    query: Record<string, string | undefined>;
+    queryArray: Record<string, string[] | undefined>;
+    state: RouteState;
+    meta: RouteMeta;
+    matched: RouteParsedConfig[];
+    matchConfig: RouteParsedConfig | null;
 }
 
-export type RouterScrollBehavior = (
-    to: Route,
-    from: Route | null,
-    savedPosition: RouterScrollPosition | null
-) => Awaitable<RouterScrollPosition | false | undefined>;
-
-// ============================================================================
-// Environment Types
-// ============================================================================
-
-export type EnvBridge = (route: Route) => Awaitable<any>;
-
-export interface NavigationEnvOptions {
-    require?: (route: Route) => boolean;
-    handle?: EnvBridge;
+export interface RouteMatchResult {
+    matches: RouteParsedConfig[];
+    params: Record<string, string>;
 }
 
-export type NavigationEnv = EnvBridge | NavigationEnvOptions;
+export type RouteMatcher = (targetURL: URL, baseURL: URL) => RouteMatchResult;
+
+export type RouteEnvHandle = (route: Route) => Awaitable<any>;
+export type RouteEnvRequire = (route: Route) => Awaitable<any>;
+
+export interface RouteEnvOptions {
+    handle?: RouteEnvHandle;
+    require?: RouteEnvRequire;
+}
+
+export type RouteEnv = RouteEnvHandle | RouteEnvOptions;
+
+// ============================================================================
+// 工具函数
+// ============================================================================
+export type Awaitable<T> = T | Promise<T>;
