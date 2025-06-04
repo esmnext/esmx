@@ -82,9 +82,9 @@ export interface RouteConfig {
     env?: RouteEnv;
     app?: string | RouterMicroAppCallback;
     asyncComponent?: () => Promise<Record<string, any>>;
-    beforeEnter?: Function;
-    beforeUpdate?: Function;
-    beforeLeave?: Function;
+    beforeEnter?: RouteHook;
+    beforeUpdate?: RouteHook;
+    beforeLeave?: RouteHook;
 }
 export interface RouteParsedConfig extends RouteConfig {
     absolutePath: string;
@@ -103,7 +103,7 @@ export interface Route {
     state: RouteState;
     meta: RouteMeta;
     matched: RouteParsedConfig[];
-    matchConfig: RouteParsedConfig | null;
+    config: RouteParsedConfig | null;
 }
 
 export interface RouteMatchResult {
@@ -115,6 +115,20 @@ export type RouteMatcher = (targetURL: URL, baseURL: URL) => RouteMatchResult;
 
 export type RouteEnvHandle = (route: Route) => Awaitable<any>;
 export type RouteEnvRequire = (route: Route) => Awaitable<any>;
+
+/**
+ * 路由钩子函数类型
+ * @param to 目标路由
+ * @param from 来源路由，首次导航时可能为 null
+ * @returns
+ *   - true: 继续往后执行
+ *   - false: 终止执行
+ *   - RouteLocationRaw: 重定向到另外一个路由
+ */
+export type RouteHook = (
+    to: Route,
+    from: Route | null
+) => Awaitable<boolean | RouteLocationRaw>;
 
 export interface RouteEnvOptions {
     handle?: RouteEnvHandle;

@@ -63,7 +63,7 @@ export function createRoute(
         path: loc.pathname,
         fullPath: loc.pathname + loc.search + loc.hash,
         matched: [],
-        matchConfig: null
+        config: null
     };
 
     for (const key of loc.searchParams.keys()) {
@@ -72,8 +72,8 @@ export function createRoute(
         route.queryArray[key] = values;
     }
     if (match) {
-        route.matchConfig = match.matches[match.matches.length - 1];
-        route.meta = route.matchConfig.meta || {};
+        route.config = match.matches[match.matches.length - 1];
+        route.meta = route.config.meta || {};
         route.path = loc.pathname.substring(base.pathname.length - 1);
         route.fullPath = `${route.path}${loc.search}${loc.hash}`;
         route.matched = match.matches;

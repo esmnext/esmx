@@ -43,14 +43,14 @@ export class Router {
         },
         [TaskType.callBridge]: async (ctx: RouteTaskContext) => {
             const { to } = ctx;
-            if (!to.matchConfig || !to.matchConfig.env) {
+            if (!to.config || !to.config.env) {
                 return;
             }
             let envBridge: RouteEnvHandle | null = null;
-            if (typeof to.matchConfig.env === 'function') {
-                envBridge = to.matchConfig.env;
-            } else if (typeof to.matchConfig.env === 'object') {
-                const { require, handle } = to.matchConfig.env;
+            if (typeof to.config.env === 'function') {
+                envBridge = to.config.env;
+            } else if (typeof to.config.env === 'object') {
+                const { require, handle } = to.config.env;
                 if (typeof require === 'function' && require(to)) {
                     envBridge = handle || null;
                 } else {
