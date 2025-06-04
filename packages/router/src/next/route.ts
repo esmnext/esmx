@@ -2,8 +2,8 @@ import { parseLocation } from './location';
 import type {
     Awaitable,
     Route,
+    RouteLocationRaw,
     RouteMatchResult,
-    RouteRawLocation,
     RouteType,
     RouterParsedOptions
 } from './types';
@@ -11,7 +11,7 @@ import type {
 export function parseRoute(
     navigationType: RouteType,
     options: RouterParsedOptions,
-    raw: RouteRawLocation
+    raw: RouteLocationRaw
 ): Route {
     const { base, normalizeURL } = options;
     const loc = normalizeURL(parseLocation(raw, base), raw);
@@ -47,7 +47,7 @@ export function parseRoute(
 
 export function createRoute(
     navigationType: RouteType,
-    raw: RouteRawLocation,
+    raw: RouteLocationRaw,
     loc: URL,
     base: URL,
     match?: RouteMatchResult
@@ -91,7 +91,7 @@ export function createRouteTask(opts: RouteTaskOptions) {
         finish() {
             finish = true;
         },
-        async redirect(to: RouteRawLocation) {
+        async redirect(to: RouteLocationRaw) {
             finish = true;
             this.to = await createRouteTask({
                 ...opts,
@@ -119,7 +119,7 @@ export function createRouteTask(opts: RouteTaskOptions) {
 
 export interface RouteTaskOptions {
     navigationType: RouteType;
-    to: RouteRawLocation;
+    to: RouteLocationRaw;
     from: Route | null;
     options: RouterParsedOptions;
 }
@@ -129,7 +129,7 @@ export interface RouteTaskContext {
     from: Route | null;
     options: RouterParsedOptions;
     finish: () => void;
-    redirect: (to: RouteRawLocation) => Promise<void>;
+    redirect: (to: RouteLocationRaw) => Promise<void>;
 }
 
 export interface RouteTask {

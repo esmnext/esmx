@@ -12,7 +12,7 @@ import { RouteType } from './types';
 import type {
     Route,
     RouteEnvHandle,
-    RouteRawLocation,
+    RouteLocationRaw,
     RouteState,
     RouterOptions,
     RouterParsedOptions
@@ -148,25 +148,25 @@ export class Router {
             }
         );
     }
-    public push(location: RouteRawLocation): Promise<Route> {
+    public push(location: RouteLocationRaw): Promise<Route> {
         return this._transitionTo(RouteType.push, location);
     }
-    public replace(location: RouteRawLocation) {
+    public replace(location: RouteLocationRaw) {
         return this._transitionTo(RouteType.replace, location);
     }
-    public openWindow(location?: RouteRawLocation): Promise<Route> {
+    public openWindow(location?: RouteLocationRaw): Promise<Route> {
         return this._transitionTo(
             RouteType.openWindow,
             location ?? this.route.url.href
         );
     }
-    public replaceWindow(location?: RouteRawLocation): Promise<Route> {
+    public replaceWindow(location?: RouteLocationRaw): Promise<Route> {
         return this._transitionTo(
             RouteType.replaceWindow,
             location ?? this.route.url.href
         );
     }
-    public reload(location?: RouteRawLocation): Promise<Route> {
+    public reload(location?: RouteLocationRaw): Promise<Route> {
         return this._transitionTo(
             RouteType.reload,
             location ?? this.route.url.href
@@ -208,12 +208,12 @@ export class Router {
             state: result.state
         });
     }
-    public resolve(loc: RouteRawLocation): Route {
+    public resolve(loc: RouteLocationRaw): Route {
         return parseRoute(RouteType.resolve, this.options, loc);
     }
 
-    public pushLayer(loc: RouteRawLocation) {}
-    private _transitionTo(navigationType: RouteType, to: RouteRawLocation) {
+    public pushLayer(loc: RouteLocationRaw) {}
+    private _transitionTo(navigationType: RouteType, to: RouteLocationRaw) {
         const names: string[] = this._taskMaps[navigationType] ?? [];
         const { _tasks } = this;
         const tasks = names.map((name) => {

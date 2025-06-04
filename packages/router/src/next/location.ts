@@ -3,7 +3,7 @@
  * 提供URL标准化和路由位置解析功能
  */
 
-import type { RouteRawLocation } from './types';
+import type { RouteLocationRaw } from './types';
 import { isNotNullish } from './util';
 
 /**
@@ -63,7 +63,7 @@ export function normalizeURL(loc: string | URL, base: URL): URL {
  * }, base); // https://example.com/users?page=1&size=10&tags=vue&tags=react#section1
  * ```
  */
-export function parseLocation(loc: RouteRawLocation, baseURL: URL): URL {
+export function parseLocation(loc: RouteLocationRaw, baseURL: URL): URL {
     // 流程分支: 字符串类型直接标准化
     if (typeof loc === 'string') {
         return normalizeURL(loc, baseURL);

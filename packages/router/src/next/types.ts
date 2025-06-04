@@ -17,7 +17,7 @@ export interface RouterOptions {
     req?: IncomingMessage | null;
     res?: ServerResponse | null;
     apps?: RouterMicroApp;
-    normalizeURL?: (url: URL, raw: RouteRawLocation) => URL;
+    normalizeURL?: (url: URL, raw: RouteLocationRaw) => URL;
     onOpen?: (route: Route) => boolean;
     onServerLocation?: (route: Route) => boolean;
 }
@@ -68,10 +68,10 @@ export interface RouteLocation {
     state?: RouteState;
     keepScrollPosition?: boolean;
 }
-export type RouteRawLocation = RouteLocation | string;
+export type RouteLocationRaw = RouteLocation | string;
 export type RouteRedirect =
-    | RouteRawLocation
-    | ((to: Route, from: Route | null) => RouteRawLocation);
+    | RouteLocationRaw
+    | ((to: Route, from: Route | null) => RouteLocationRaw);
 
 export interface RouteConfig {
     path: string;
