@@ -70,7 +70,7 @@
                 "useOptionalChain": "warn",
                 "noUselessConstructor": "warn",
                 "noUselessSwitchCase": "warn",
-                "noStaticOnlyClass": "warn"
+                "noStaticOnlyClass": "off"
             },
             "style": {
                 "useFilenamingConvention": {

@@ -18,7 +18,6 @@ import type {
     RouterRawLocation
 } from './types';
 import { isESModule } from './util';
-// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 class TaskType {
     public static outside = 'outside';
     public static callBridge = 'callBridge';
