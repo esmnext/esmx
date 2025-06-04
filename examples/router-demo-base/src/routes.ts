@@ -1,7 +1,7 @@
 import type { RouteConfig } from '@esmx/router';
 import App from './app.vue';
 import Home from './views/home.vue';
-import Test from './views/test.vue';
+import NewsDetail from './views/news-detail.vue';
 
 export const routes: RouteConfig[] = [
     {
@@ -13,12 +13,8 @@ export const routes: RouteConfig[] = [
                 component: Home
             },
             {
-                path: '/test',
-                component: Test
-            },
-            {
-                path: '/test1',
-                asyncComponent: () => import('./views/test1.vue')
+                path: '/news/:id',
+                component: NewsDetail
             },
             {
                 path: '(.*)*',

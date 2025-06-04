@@ -1,9 +1,6 @@
-<script setup lang="ts"></script>
-
 <template>
     <div>
-        <h3 class="color">404</h3>
-        <router-view></router-view>
+        <h1>404</h1>
     </div>
 </template>
 

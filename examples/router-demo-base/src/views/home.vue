@@ -1,12 +1,16 @@
-<script setup lang="ts"></script>
-
 <template>
     <div>
-        <h3 class="color">Home</h3>
-        <router-view></router-view>
+        <h1>Home</h1>
+        <ul>
+            <li v-for="id in 100">
+                <RouterLink :to="`/news/${id}`" />
+            </li>
+        </ul>
     </div>
 </template>
-
+<script lang="ts" setup>
+import { RouterLink } from '@esmx/router-vue2';
+</script>
 <style scoped>
 h3 {
     font-weight: 500;
