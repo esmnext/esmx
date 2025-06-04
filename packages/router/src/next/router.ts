@@ -8,14 +8,15 @@ import {
     createRoute,
     createRouteTask
 } from './route';
-import { RouteType } from './types';
-import type {
-    Route,
-    RouteHandleHook,
-    RouteLocationRaw,
-    RouteState,
-    RouterOptions,
-    RouterParsedOptions
+import {
+    type Route,
+    type RouteHandleHook,
+    type RouteLocationRaw,
+    type RouteNotifyHook,
+    type RouteState,
+    RouteType,
+    type RouterOptions,
+    type RouterParsedOptions
 } from './types';
 import { isESModule } from './util';
 class TaskType {
@@ -127,7 +128,10 @@ export class Router {
         [RouteType.forward]: [TaskType.asyncComponent, TaskType.applyApp],
         [RouteType.popstate]: [TaskType.asyncComponent, TaskType.applyApp]
     } satisfies Record<string, TaskType[]>;
-
+    private _guards = {
+        beforeEach: [],
+        afterEach: []
+    } satisfies Record<string, RouteNotifyHook[]>;
     public get route() {
         if (this._route === null) {
             throw new Error(`Route is not ready.`);
@@ -140,10 +144,7 @@ export class Router {
         this._navigation = new Navigation(
             this.options,
             (url: string, state: RouteState) => {
-                return this._transitionTo(RouteType.push, {
-                    url,
-                    state
-                });
+                this.popstate({ url, state });
             }
         );
     }
@@ -191,12 +192,6 @@ export class Router {
             state: result.state
         });
     }
-    public createLayer(options?: RouterOptions): Router {
-        return new Router({
-            ...this._options,
-            ...options
-        });
-    }
     public async forward(): Promise<Route | null> {
         const result = await this._navigation.go(1);
         if (result === null) {
@@ -207,6 +202,9 @@ export class Router {
             state: result.state
         });
     }
+    public popstate(toRaw: RouteLocationRaw) {
+        return this._transitionTo(RouteType.popstate, toRaw);
+    }
     public resolve(toRaw: RouteLocationRaw): Route {
         return createRoute(
             RouteType.resolve,
@@ -215,7 +213,12 @@ export class Router {
             this._route?.url ?? null
         );
     }
-
+    public createLayer(options?: RouterOptions): Router {
+        return new Router({
+            ...this._options,
+            ...options
+        });
+    }
     public pushLayer(toRaw: RouteLocationRaw) {}
     private _transitionTo(navigationType: RouteType, toRaw: RouteLocationRaw) {
         const names: string[] = this._taskMaps[navigationType] ?? [];
