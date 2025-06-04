@@ -32,7 +32,7 @@ export function parsedOptions(options: RouterOptions): RouterParsedOptions {
         location: (to, from) => {
             return null;
         },
-        serverLocation(route) {
+        serverLocation(to, from) {
             return null;
         }
     };
