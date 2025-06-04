@@ -151,6 +151,12 @@ describe('parseLocation', () => {
             base: 'http://example.com',
             expected: 'http://example.com/products?id=456',
             description: 'url should be used when path is not present'
+        },
+        {
+            input: {},
+            base: 'http://example.com',
+            expected: 'http://example.com/',
+            description: 'empty input object should default to base URL'
         }
     ];
 
