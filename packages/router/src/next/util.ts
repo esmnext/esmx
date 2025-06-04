@@ -7,3 +7,8 @@ export function isNotNullish(value: unknown): boolean {
 export function isESModule(obj: any): boolean {
     return Boolean(obj.__esModule) || obj[Symbol.toStringTag] === 'Module';
 }
+export const removeFromArray = <T>(arr: T[], ele: T) => {
+    const i = arr.findIndex((item) => item === ele);
+    if (i === -1) return;
+    arr.splice(i, 1);
+};

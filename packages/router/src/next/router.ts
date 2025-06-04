@@ -18,7 +18,7 @@ import {
     type RouterOptions,
     type RouterParsedOptions
 } from './types';
-import { isESModule } from './util';
+import { isESModule, removeFromArray } from './util';
 class TaskType {
     public static outside = 'outside';
     public static callBridge = 'callBridge';
@@ -129,9 +129,9 @@ export class Router {
         [RouteType.popstate]: [TaskType.asyncComponent, TaskType.applyApp]
     } satisfies Record<string, TaskType[]>;
     private _guards = {
-        beforeEach: [],
-        afterEach: []
-    } satisfies Record<string, RouteNotifyHook[]>;
+        beforeEach: [] as RouteNotifyHook[],
+        afterEach: [] as RouteNotifyHook[]
+    };
     public get route() {
         if (this._route === null) {
             throw new Error(`Route is not ready.`);
@@ -220,6 +220,35 @@ export class Router {
         });
     }
     public pushLayer(toRaw: RouteLocationRaw) {}
+    public async renderToString(throwError = false): Promise<string | null> {
+        try {
+            const result = await this._microApp.app?.renderToString?.();
+            return result ?? null;
+        } catch (e) {
+            if (throwError) {
+                throw e;
+            } else {
+                console.error(e);
+            }
+            return null;
+        }
+    }
+    public beforeEach(guard: RouteNotifyHook) {
+        this._guards.beforeEach.push(guard);
+    }
+    public unBeforeEach(guard: RouteNotifyHook) {
+        removeFromArray(this._guards.beforeEach, guard);
+    }
+    public afterEach(guard: RouteNotifyHook) {
+        this._guards.afterEach.push(guard);
+    }
+    public unAfterEach(guard: RouteNotifyHook) {
+        removeFromArray(this._guards.afterEach, guard);
+    }
+    public destroy() {
+        this._navigation.destroy();
+        this._microApp.destroy();
+    }
     private _transitionTo(navigationType: RouteType, toRaw: RouteLocationRaw) {
         const names: string[] = this._taskMaps[navigationType] ?? [];
         const { _tasks } = this;
@@ -236,22 +265,5 @@ export class Router {
             options: this.options,
             tasks
         });
-    }
-    public async renderToString(throwError = false): Promise<string | null> {
-        try {
-            const result = await this._microApp.app?.renderToString?.();
-            return result ?? null;
-        } catch (e) {
-            if (throwError) {
-                throw e;
-            } else {
-                console.error(e);
-            }
-            return null;
-        }
-    }
-    public destroy() {
-        this._navigation.destroy();
-        this._microApp.destroy();
     }
 }
