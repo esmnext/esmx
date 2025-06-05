@@ -1,8 +1,6 @@
 import { parseLocation } from './location';
 import {
     type Route,
-    type RouteConfirmHook,
-    type RouteConfirmHookResult,
     type RouteHandleHook,
     type RouteHandleResult,
     type RouteLocationRaw,
