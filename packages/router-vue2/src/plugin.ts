@@ -8,9 +8,7 @@ const ROUTER_CONTEXT = Symbol('RouterContext');
 
 interface RouterContext {
     router: Router;
-    ref: {
-        value: number;
-    };
+    route: Route;
     afterEach: () => void;
 }
 
@@ -47,11 +45,9 @@ export class RouterVuePlugin {
                     }
                     const ctx: RouterContext = {
                         router,
-                        ref: reactive({
-                            value: 0
-                        }),
+                        route: reactive(router.route),
                         afterEach() {
-                            this.ref.value++;
+                            Object.assign(this.route, router.route);
                         }
                     };
                     ctx.afterEach = ctx.afterEach.bind(ctx);
@@ -92,9 +88,7 @@ export class RouterVuePlugin {
         Object.defineProperty(Vue.prototype, '$route', {
             get(this: Vue) {
                 const ctx = getRouterContext(this);
-                // Vue响应式依赖
-                ctx.ref.value;
-                return ctx.router.route;
+                return ctx.route;
             }
         });
     }

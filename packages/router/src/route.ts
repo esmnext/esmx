@@ -24,10 +24,6 @@ export function createRoute(
     let handle: RouteHandleHook | null = null;
     let handleResult: RouteHandleResult | null = null;
     let handled = false;
-    const config: RouteParsedConfig | null = match
-        ? match.matches[match.matches.length - 1]
-        : null;
-    const meta = config?.meta || {};
     const path = match
         ? to.pathname.substring(options.base.pathname.length - 1)
         : to.pathname;
@@ -79,11 +75,15 @@ export function createRoute(
         query: {},
         queryArray: {},
         state,
-        meta,
+        get meta() {
+            return this.config?.meta || {};
+        },
         path,
         fullPath,
         matched,
-        config
+        get config() {
+            return this.matched[this.matched.length - 1] || null;
+        }
     };
 
     for (const key of to.searchParams.keys()) {

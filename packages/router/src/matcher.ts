@@ -31,7 +31,7 @@ export function createMatcher(routes: RouteConfig[]): RouteMatcher {
             return false;
         };
         collectMatchingRoutes(compiledRoutes);
-        return { matches, params };
+        return { matches: Object.freeze(matches), params };
     };
 }
 

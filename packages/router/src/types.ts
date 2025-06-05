@@ -143,7 +143,7 @@ export interface Route {
     readonly queryArray: Record<string, string[] | undefined>;
     readonly state: RouteState;
     readonly meta: RouteMeta;
-    readonly matched: RouteParsedConfig[];
+    readonly matched: readonly RouteParsedConfig[];
     readonly config: RouteParsedConfig | null;
     status: RouteStatus;
     handle: RouteHandleHook | null;
@@ -151,8 +151,8 @@ export interface Route {
 }
 
 export interface RouteMatchResult {
-    matches: RouteParsedConfig[];
-    params: Record<string, string>;
+    readonly matches: readonly RouteParsedConfig[];
+    readonly params: Record<string, string>;
 }
 
 export type RouteMatcher = (targetURL: URL, baseURL: URL) => RouteMatchResult;
