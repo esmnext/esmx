@@ -3,7 +3,7 @@ import { normalizeURL, parseLocation } from './location';
 import type { RouteLocationRaw } from './types';
 
 describe('normalizeURL', () => {
-    const list: Array<{
+    const testCases: Array<{
         input: string;
         base: string;
         expected: string;
@@ -35,7 +35,7 @@ describe('normalizeURL', () => {
         }
     ];
 
-    list.forEach(({ input, base, expected, description }) => {
+    testCases.forEach(({ input, base, expected, description }) => {
         test(description, () => {
             const result = normalizeURL(input, new URL(base));
             expect(result.href).toBe(expected);
@@ -44,7 +44,7 @@ describe('normalizeURL', () => {
 });
 
 describe('parseLocation', () => {
-    const list: Array<{
+    const testCases: Array<{
         input: RouteLocationRaw;
         base: string;
         expected: string;
@@ -160,7 +160,7 @@ describe('parseLocation', () => {
         }
     ];
 
-    list.forEach(({ input, base, expected, description }) => {
+    testCases.forEach(({ input, base, expected, description }) => {
         test(description, () => {
             const result = parseLocation(input, new URL(base));
             expect(result.href).toBe(expected);
