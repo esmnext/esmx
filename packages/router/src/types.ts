@@ -67,7 +67,10 @@ export interface RouterMicroAppOptions {
     renderToString?: () => Awaitable<string>;
 }
 
-export type RouterMicroAppCallback = (router: Router) => RouterMicroAppOptions;
+export type RouterMicroAppCallback = (
+    router: Router,
+    first: boolean
+) => RouterMicroAppOptions;
 
 export type RouterMicroApp =
     | Record<string, RouterMicroAppCallback | undefined>

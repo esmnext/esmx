@@ -24,14 +24,23 @@ export async function createApp({
     const router = new Router({
         base: new URL(base),
         routes,
-        apps(router) {
+        apps(router, first) {
             const app = new Vue({
                 router,
                 render: (h) => h(RouterView)
             });
             return {
                 mount() {
-                    app.$mount('#app', true);
+                    const appEl = document.getElementById('app')!;
+                    const ssrEl = appEl.firstElementChild;
+
+                    if (appEl.parentNode && ssrEl) {
+                        appEl.parentNode.replaceChild(ssrEl, appEl);
+                        appEl.getAttributeNames().forEach((name) => {
+                            ssrEl.setAttribute(name, appEl.getAttribute(name)!);
+                        });
+                    }
+                    app.$mount('#app', first);
                 },
                 unmount() {
                     app.$destroy();

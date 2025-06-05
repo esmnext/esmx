@@ -31,7 +31,7 @@ export default async (rc: RenderContext) => {
     ${rc.css()}
 </head>
 <body>
-    ${html ?? ''}
+    <div id="app">${html}</div>
     ${rc.importmap()}
     ${rc.moduleEntry()}
     ${rc.modulePreload()}

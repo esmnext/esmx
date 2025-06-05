@@ -1,8 +1,8 @@
 <template>
-    <div id="app">
+    <div class="app">
         <div class="app-container">
             <nav class="neo-nav">
-                <div class="nav-brand">Esmx</div>            
+                <div class="nav-brand">Esmx</div>
                 <div class="nav-links">
                     <router-link to="/" class="nav-item">
                         <span class="nav-icon">🏠</span>
@@ -12,17 +12,18 @@
                         <span class="nav-icon">⚠️</span>
                         <span class="nav-text">404</span>
                     </router-link>
-                    <router-link to="https://github.com/esmnext/esmx/tree/master/examples/router-demo-base" class="nav-item">
+                    <router-link to="https://github.com/esmnext/esmx/tree/master/examples/router-demo-base"
+                        class="nav-item">
                         <span class="nav-icon">🔗</span>
                         <span class="nav-text">Github</span>
                     </router-link>
                 </div>
             </nav>
-            
+
             <main class="neo-content">
                 <router-view />
             </main>
-            
+
             <div class="neo-route-panel">
                 <div class="panel-header">
                     <h2 class="panel-title">Route</h2>
@@ -73,7 +74,9 @@ body {
     min-height: 100vh;
 }
 
-#app {
+</style>
+<style scoped>
+.app {
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -110,7 +113,7 @@ body {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
     pointer-events: none;
 }
 
@@ -119,9 +122,9 @@ body {
     font-weight: 700;
     color: white;
     letter-spacing: 1px;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     padding: 0.5rem 1rem;
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(255, 255, 255, 0.1);
     border-radius: var(--border-radius-sm);
     backdrop-filter: blur(4px);
 }
@@ -140,12 +143,12 @@ body {
     padding: 0.75rem 1.25rem;
     border-radius: var(--border-radius-md);
     transition: transform var(--transition-fast), background-color var(--transition-fast);
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(4px);
 }
 
 .nav-item:hover {
-    background-color: rgba(255,255,255,0.2);
+    background-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-3px);
 }
 
@@ -167,7 +170,7 @@ body {
     box-shadow: var(--shadow-md);
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(0,0,0,0.05);
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .neo-content::after {
@@ -188,7 +191,7 @@ body {
     border-radius: var(--border-radius-lg);
     overflow: hidden;
     box-shadow: var(--shadow-md);
-    border: 1px solid rgba(0,0,0,0.05);
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .panel-header {
@@ -204,7 +207,7 @@ body {
     margin: 0;
     font-size: 1.25rem;
     font-weight: 600;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .panel-controls {
@@ -216,7 +219,7 @@ body {
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background-color: rgba(255,255,255,0.7);
+    background-color: rgba(255, 255, 255, 0.7);
 }
 
 .route-data {
@@ -236,17 +239,17 @@ body {
         padding: 1rem;
         grid-gap: 1rem;
     }
-    
+
     .neo-nav {
         flex-direction: column;
         gap: 1rem;
     }
-    
+
     .nav-links {
         width: 100%;
         justify-content: space-around;
     }
-    
+
     .nav-item {
         padding: 0.5rem 0.75rem;
     }

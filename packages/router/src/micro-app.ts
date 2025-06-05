@@ -5,6 +5,7 @@ import { isBrowser } from './util';
 export class MicroApp {
     public app: RouterMicroAppOptions | null = null;
     private _factory: RouterMicroAppCallback | null = null;
+    private first = true;
     public _update(router: Router, force = false) {
         const factory = this._getNextFactory(router);
         if (!force && factory === this._factory) {
@@ -12,12 +13,13 @@ export class MicroApp {
         }
         const oldApp = this.app;
         // 创建新的应用
-        const app = factory ? factory(router) : null;
+        const app = factory ? factory(router, this.first) : null;
         isBrowser && app?.mount();
         this.app = app;
         this._factory = factory;
         // 销毁旧的应用
         isBrowser && oldApp?.unmount();
+        this.first = true;
     }
     private _getNextFactory({
         route,
