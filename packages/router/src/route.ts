@@ -4,6 +4,7 @@ import {
     type RouteHandleHook,
     type RouteHandleResult,
     type RouteLocationRaw,
+    type RouteParsedConfig,
     RouteStatus,
     type RouteType,
     type RouterParsedOptions
@@ -23,6 +24,18 @@ export function createRoute(
     let handle: RouteHandleHook | null = null;
     let handleResult: RouteHandleResult | null = null;
     let handled = false;
+    const config: RouteParsedConfig | null = match
+        ? match.matches[match.matches.length - 1]
+        : null;
+    const meta = config?.meta || {};
+    const path = match
+        ? to.pathname.substring(options.base.pathname.length - 1)
+        : to.pathname;
+    const fullPath = match
+        ? `${path}${to.search}${to.hash}`
+        : to.pathname + to.search + to.hash;
+    const state = typeof toRaw === 'object' && toRaw.state ? toRaw.state : {};
+    const matched = match ? match.matches : [];
     const route: Route = {
         status: RouteStatus.resolve,
         get handle() {
@@ -54,19 +67,23 @@ export function createRoute(
         set handleResult(val) {
             handleResult = val;
         },
-        req: null,
-        res: null,
+        get req() {
+            return options.req;
+        },
+        get res() {
+            return options.res;
+        },
         type: toType,
         url: to,
         params: {},
         query: {},
         queryArray: {},
-        state: typeof toRaw === 'object' && toRaw.state ? toRaw.state : {},
-        meta: {},
-        path: to.pathname,
-        fullPath: to.pathname + to.search + to.hash,
-        matched: [],
-        config: null
+        state,
+        meta,
+        path,
+        fullPath,
+        matched,
+        config
     };
 
     for (const key of to.searchParams.keys()) {
@@ -75,11 +92,6 @@ export function createRoute(
         route.queryArray[key] = values;
     }
     if (match) {
-        route.config = match.matches[match.matches.length - 1];
-        route.meta = route.config.meta || {};
-        route.path = to.pathname.substring(options.base.pathname.length - 1);
-        route.fullPath = `${route.path}${to.search}${to.hash}`;
-        route.matched = match.matches;
         if (typeof toRaw === 'object' && toRaw.params) {
             const lastMatch = match.matches[match.matches.length - 1];
             const current = to.pathname.split('/');

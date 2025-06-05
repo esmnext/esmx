@@ -23,6 +23,7 @@ export function parsedOptions(options: RouterOptions): RouterParsedOptions {
         env: options.env || '',
         req: options.req || null,
         res: options.res || null,
+        layer: options.layer ?? null,
         base,
         mode,
         routes,

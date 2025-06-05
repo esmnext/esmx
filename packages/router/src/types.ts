@@ -20,7 +20,42 @@ export interface RouterOptions {
     normalizeURL?: (to: URL, from: URL | null) => URL;
     location?: RouteHandleHook;
     serverLocation?: RouteHandleHook;
+    layer?: RouterLayerOptions | null;
 }
+
+export interface RouterLayerOptions {
+    /**
+     * 路由层初始化参数，以键值对形式传递
+     */
+    params?: Record<string, any>;
+    /**
+     * 路由关闭前的验证钩子函数
+     * @returns 返回true允许关闭，false阻止关闭
+     */
+    shouldClose?: RouteVerifyHook;
+    /**
+     * 是否自动记录路由历史
+     * @default true
+     */
+    autoPush?: boolean;
+    /**
+     * 路由跳转方式控制
+     * - 当autoPush为true时：
+     *   - true: 使用push方式(添加新历史记录)
+     *   - false: 使用replace方式(替换当前历史记录)
+     * @default true
+     */
+    push?: boolean;
+    /**
+     * 路由层销毁完成后的回调
+     * @param result - 包含路由层返回结果的对象
+     */
+    destroyed?: (result: RouterLayerResult) => void;
+}
+export type RouterLayerResult =
+    | { type: 'push'; result: Route }
+    | { type: 'close'; result: null }
+    | { type: 'success'; result: any };
 
 export interface RouterParsedOptions extends Required<RouterOptions> {
     /** 路由匹配器实例 */
@@ -97,20 +132,20 @@ export enum RouteStatus {
     success = 'success'
 }
 export interface Route {
+    readonly type: RouteType | null;
+    readonly req: IncomingMessage | null;
+    readonly res: ServerResponse | null;
+    readonly url: URL;
+    readonly path: string;
+    readonly fullPath: string;
+    readonly params: Record<string, string>;
+    readonly query: Record<string, string | undefined>;
+    readonly queryArray: Record<string, string[] | undefined>;
+    readonly state: RouteState;
+    readonly meta: RouteMeta;
+    readonly matched: RouteParsedConfig[];
+    readonly config: RouteParsedConfig | null;
     status: RouteStatus;
-    type: RouteType | null;
-    req: IncomingMessage | null;
-    res: ServerResponse | null;
-    url: URL;
-    path: string;
-    fullPath: string;
-    params: Record<string, string>;
-    query: Record<string, string | undefined>;
-    queryArray: Record<string, string[] | undefined>;
-    state: RouteState;
-    meta: RouteMeta;
-    matched: RouteParsedConfig[];
-    config: RouteParsedConfig | null;
     handle: RouteHandleHook | null;
     handleResult: RouteHandleResult;
 }

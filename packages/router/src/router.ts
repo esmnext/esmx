@@ -12,22 +12,27 @@ import {
     type RouteNotifyHook,
     type RouteState,
     RouteType,
+    type RouteVerifyHook,
+    type RouterLayerOptions,
+    type RouterLayerResult,
     type RouterOptions,
     type RouterParsedOptions
 } from './types';
 import { isESModule, isValidConfirmHookResult, removeFromArray } from './util';
 
 export class Router {
-    private _options: RouterOptions;
-    public options: RouterParsedOptions;
+    public readonly options: RouterOptions;
+    private readonly _options: RouterParsedOptions;
+    public readonly isLayer: boolean;
+    public readonly layerResult: Record<string, string> = {};
     private _route: null | Route = null;
-    private _navigation: Navigation;
-    private _microApp: MicroApp = new MicroApp();
+    private readonly _navigation: Navigation;
+    private readonly _microApp: MicroApp = new MicroApp();
 
-    private _tasks: Record<RouteTaskType, RouteConfirmHook> = {
+    private readonly _tasks: Record<RouteTaskType, RouteConfirmHook> = {
         [RouteTaskType.location]: (to, from) => {
             if (to.matched.length === 0) {
-                return this.options.location;
+                return this._options.location;
             }
         },
         [RouteTaskType.env]: async (to, from) => {
@@ -106,10 +111,10 @@ export class Router {
             };
         },
         [RouteTaskType.pushWindow]: async () => {
-            return this.options.location;
+            return this._options.location;
         },
         [RouteTaskType.replaceWindow]: async (to) => {
-            return this.options.location;
+            return this._options.location;
         },
         [RouteTaskType.afterEach]: (to, from) => {
             for (const guard of this._guards.afterEach) {
@@ -117,7 +122,7 @@ export class Router {
             }
         }
     };
-    private _guards = {
+    private readonly _guards = {
         beforeEach: [] as RouteConfirmHook[],
         afterEach: [] as RouteNotifyHook[]
     };
@@ -128,10 +133,12 @@ export class Router {
         return this._route;
     }
     public constructor(options: RouterOptions) {
-        this._options = options;
-        this.options = parsedOptions(options);
+        this.options = options;
+        this._options = parsedOptions(options);
+        this.isLayer = !!this._options.layer;
+
         this._navigation = new Navigation(
-            this.options,
+            this._options,
             (url: string, state: RouteState) => {
                 this.popstate({ url, state });
             }
@@ -195,15 +202,63 @@ export class Router {
         return this._transitionTo(RouteType.popstate, toRaw);
     }
     public resolve(toRaw: RouteLocationRaw): Route {
-        return createRoute(this.options, null, toRaw, this._route?.url ?? null);
+        return createRoute(
+            this._options,
+            null,
+            toRaw,
+            this._route?.url ?? null
+        );
     }
-    public createLayer(options?: RouterOptions): Router {
-        return new Router({
-            ...this._options,
-            ...options
+    public async createLayer(
+        toRaw: RouteLocationRaw,
+        options?: RouterOptions
+    ): Promise<{ promise: Promise<RouterLayerResult>; router: Router }> {
+        const layer: Required<RouterLayerOptions> = {
+            params: {},
+            shouldClose: () => false,
+            autoPush: true,
+            push: true,
+            destroyed: () => {},
+            ...options?.layer
+        };
+        const promise = new Promise<RouterLayerResult>((resolve) => {
+            const destroyed = layer.destroyed;
+            layer.destroyed = (result) => {
+                if (result.type === 'push' && layer.autoPush) {
+                    if (layer.push) {
+                        this.push(result.result.url.href);
+                    } else {
+                        this.replace(result.result.url.href);
+                    }
+                }
+                destroyed?.(result);
+            };
         });
+        const router = new Router({
+            ...this.options,
+            ...options,
+            layer: layer
+        });
+        await router.replace(toRaw);
+        return {
+            promise,
+            router
+        };
     }
-    public pushLayer(toRaw: RouteLocationRaw) {}
+    public async pushLayer(
+        toRaw: RouteLocationRaw,
+        layer?: Partial<RouterLayerOptions>,
+        options?: RouterOptions
+    ): Promise<RouterLayerResult> {
+        const { promise } = await this.createLayer(toRaw, {
+            ...options,
+            layer: {
+                ...layer,
+                ...options?.layer
+            }
+        });
+        return promise;
+    }
     public async renderToString(throwError = false): Promise<string | null> {
         try {
             const result = await this._microApp.app?.renderToString?.();
@@ -237,7 +292,7 @@ export class Router {
         toType: RouteType,
         toRaw: RouteLocationRaw
     ): Promise<Route> {
-        const { _tasks, options, _route: from } = this;
+        const { _tasks, _options: options, _route: from } = this;
         const to = await this._runTask(
             BEFORE_TASKS,
             createRoute(options, toType, toRaw, from?.url ?? null),
@@ -247,7 +302,7 @@ export class Router {
             to.handleResult = await to.handle(to, from);
             await this._runTask(AFTER_TASKS, to, from);
         }
-        await createRouteTask({
+        return createRouteTask({
             options,
             to,
             from,
@@ -258,7 +313,6 @@ export class Router {
                 }
             ]
         });
-        return to;
     }
     private _runTask(
         config: Record<RouteType, RouteTaskType[]>,
@@ -266,7 +320,7 @@ export class Router {
         from: Route | null
     ) {
         const names: RouteTaskType[] = to.type ? config[to.type] : [];
-        const { _tasks, options } = this;
+        const { _tasks, _options: options } = this;
         const tasks: RouteTask[] = names.map((name) => {
             return {
                 name,
