@@ -24,7 +24,7 @@ export async function createApp({
     const router = new Router({
         base: new URL(base),
         routes,
-        apps(router, first) {
+        apps(router) {
             const app = new Vue({
                 router,
                 render: (h) => h(RouterView)
@@ -33,14 +33,15 @@ export async function createApp({
                 mount() {
                     const appEl = document.getElementById('app')!;
                     const ssrEl = appEl.firstElementChild;
-
-                    if (appEl.parentNode && ssrEl) {
+                    const hydrating =
+                        !!ssrEl && ssrEl.hasAttribute('data-server-rendered');
+                    if (appEl.parentNode && hydrating) {
                         appEl.parentNode.replaceChild(ssrEl, appEl);
                         appEl.getAttributeNames().forEach((name) => {
                             ssrEl.setAttribute(name, appEl.getAttribute(name)!);
                         });
                     }
-                    app.$mount('#app', first);
+                    app.$mount(appEl, hydrating);
                 },
                 unmount() {
                     app.$destroy();
