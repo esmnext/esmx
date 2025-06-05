@@ -2,6 +2,9 @@ import { parseLocation } from './location';
 import {
     type Route,
     type RouteConfirmHook,
+    type RouteConfirmHookResult,
+    type RouteHandleHook,
+    type RouteHandleResult,
     type RouteLocationRaw,
     RouteStatus,
     type RouteType,
@@ -9,9 +12,9 @@ import {
 } from './types';
 
 export function createRoute(
-    navigationType: RouteType,
-    toRaw: RouteLocationRaw,
     options: RouterParsedOptions,
+    toType: RouteType | null,
+    toRaw: RouteLocationRaw,
     from: URL | null
 ): Route {
     const { base, normalizeURL } = options;
@@ -19,12 +22,43 @@ export function createRoute(
     const isSameOrigin = to.origin === base.origin;
     const isSameBase = to.pathname.length >= base.pathname.length;
     const match = isSameOrigin && isSameBase ? options.matcher(to, base) : null;
+    let handle: RouteHandleHook | null = null;
+    let handleResult: RouteHandleResult | null = null;
+    let handled = false;
     const route: Route = {
         status: RouteStatus.resolve,
-        handleResult: null,
+        get handle() {
+            return handle;
+        },
+        set handle(val) {
+            if (typeof val !== 'function') {
+                handle = null;
+                return;
+            }
+            handle = function handle(this: Route, ...args) {
+                if (this.status !== RouteStatus.success) {
+                    throw new Error(
+                        `Cannot call route handle hook - current status is ${this.status} (expected: ${RouteStatus.success})`
+                    );
+                }
+                if (handled) {
+                    throw new Error(
+                        'Route handle hook can only be called once per navigation'
+                    );
+                }
+                handled = true;
+                return val.call(this, ...args);
+            };
+        },
+        get handleResult() {
+            return handleResult;
+        },
+        set handleResult(val) {
+            handleResult = val;
+        },
         req: null,
         res: null,
-        type: navigationType,
+        type: toType,
         url: to,
         params: {},
         query: {},
@@ -63,59 +97,4 @@ export function createRoute(
         }
     }
     return route;
-}
-export interface RouteTaskOptions {
-    navigationType: RouteType;
-    toRaw: RouteLocationRaw;
-    from: Route | null;
-    options: RouterParsedOptions;
-    tasks: RouteTask[];
-}
-
-export async function createRouteTask(opts: RouteTaskOptions) {
-    const to: Route = createRoute(
-        opts.navigationType,
-        opts.toRaw,
-        opts.options,
-        opts.from?.url ?? null
-    );
-    const from: Route | null = opts.from;
-    for (const item of opts.tasks) {
-        let result: unknown | boolean | RouteLocationRaw | null = null;
-        let isError = false;
-        try {
-            result = await item.task(to, from);
-        } catch (e) {
-            console.error(`[${item.name}] route confirm hook error: ${e}`);
-            isError = true;
-        }
-        if (isError) {
-            // 任务处理失败
-            to.status = RouteStatus.error;
-            break;
-        } else if (result === false) {
-            // 导航被取消
-            to.status = RouteStatus.aborted;
-            break;
-        } else if (result === true) {
-            // 导航被确认
-            to.status = RouteStatus.success;
-            break;
-        } else if (result) {
-            // 重定向
-            return createRouteTask({
-                navigationType: opts.navigationType,
-                toRaw: result,
-                from,
-                options: opts.options,
-                tasks: opts.tasks
-            });
-        }
-    }
-    return to;
-}
-
-export interface RouteTask {
-    name: string;
-    task: RouteConfirmHook;
 }

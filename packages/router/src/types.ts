@@ -51,8 +51,7 @@ export enum RouteType {
     back = 'back',
     popstate = 'popstate',
     pushWindow = 'pushWindow',
-    replaceWindow = 'replaceWindow',
-    resolve = 'resolve'
+    replaceWindow = 'replaceWindow'
 }
 export type RouteMeta = Record<string | symbol, any>;
 
@@ -99,7 +98,7 @@ export enum RouteStatus {
 }
 export interface Route {
     status: RouteStatus;
-    type: RouteType;
+    type: RouteType | null;
     req: IncomingMessage | null;
     res: ServerResponse | null;
     url: URL;
@@ -112,6 +111,7 @@ export interface Route {
     meta: RouteMeta;
     matched: RouteParsedConfig[];
     config: RouteParsedConfig | null;
+    handle: RouteHandleHook | null;
     handleResult: RouteHandleResult;
 }
 
@@ -134,8 +134,12 @@ export type RouteMatcher = (targetURL: URL, baseURL: URL) => RouteMatchResult;
 export type RouteConfirmHook = (
     to: Route,
     from: Route | null
-) => Awaitable<unknown | true | false | RouteLocationRaw>;
-
+) => Awaitable<RouteConfirmHookResult>;
+export type RouteConfirmHookResult =
+    | void
+    | false
+    | RouteLocationRaw
+    | RouteHandleHook;
 export type RouteVerifyHook = (
     to: Route,
     from: Route | null

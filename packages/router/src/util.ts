@@ -1,3 +1,4 @@
+import type { RouteConfirmHookResult } from './types';
 export const isBrowser = typeof window === 'object';
 
 export function isNotNullish(value: unknown): boolean {
@@ -17,9 +18,12 @@ export const removeFromArray = <T>(arr: T[], ele: T) => {
     arr.splice(i, 1);
 };
 
-export function isValidConfirmHookResult(result: unknown): boolean {
+export function isValidConfirmHookResult(
+    result: unknown
+): result is Exclude<RouteConfirmHookResult, void> {
     return (
-        typeof result === 'boolean' ||
+        result === false ||
+        typeof result === 'function' ||
         typeof result === 'string' ||
         isObject(result)
     );

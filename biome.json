@@ -51,6 +51,7 @@
             "recommended": true,
             "suspicious": {
                 "noEmptyInterface": "off",
+                "noConfusingVoidType": "off",
                 "noExplicitAny": "off",
                 "noAssignInExpressions": "off",
                 "useGetterReturn": "warn",

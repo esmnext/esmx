@@ -1,7 +1,9 @@
 import { MicroApp } from './micro-app';
 import { Navigation } from './navigation';
 import { parsedOptions } from './options';
-import { type RouteTask, createRoute, createRouteTask } from './route';
+import { createRoute } from './route';
+import { type RouteTask, RouteTaskType, createRouteTask } from './route-task';
+import { AFTER_TASKS, BEFORE_TASKS } from './route-task-config';
 import {
     type Route,
     type RouteConfirmHook,
@@ -9,19 +11,11 @@ import {
     type RouteLocationRaw,
     type RouteNotifyHook,
     type RouteState,
-    RouteStatus,
     RouteType,
     type RouterOptions,
     type RouterParsedOptions
 } from './types';
 import { isESModule, isValidConfirmHookResult, removeFromArray } from './util';
-class TaskType {
-    public static location = 'location';
-    public static env = 'env';
-    public static asyncComponent = 'asyncComponent';
-    public static beforeEach = 'beforeEach';
-    public static afterEach = 'afterEach';
-}
 
 export class Router {
     private _options: RouterOptions;
@@ -30,14 +24,13 @@ export class Router {
     private _navigation: Navigation;
     private _microApp: MicroApp = new MicroApp();
 
-    private _tasks = {
-        [TaskType.location]: (to, from) => {
+    private _tasks: Record<RouteTaskType, RouteConfirmHook> = {
+        [RouteTaskType.location]: (to, from) => {
             if (to.matched.length === 0) {
-                return true;
+                return this.options.location;
             }
-            return null;
         },
-        [TaskType.env]: async (to, from) => {
+        [RouteTaskType.env]: async (to, from) => {
             if (!to.config || !to.config.env) {
                 return;
             }
@@ -53,11 +46,10 @@ export class Router {
                 }
             }
             if (routeHandle) {
-                to.config.env = routeHandle;
-                return true;
+                return routeHandle;
             }
         },
-        [TaskType.asyncComponent]: async (to, from) => {
+        [RouteTaskType.asyncComponent]: async (to, from) => {
             await Promise.all(
                 to.matched.map(async (matched) => {
                     const { asyncComponent, component } = matched;
@@ -76,7 +68,7 @@ export class Router {
                 })
             );
         },
-        [TaskType.beforeEach]: async (to, from) => {
+        [RouteTaskType.beforeEach]: async (to, from) => {
             for (const guard of this._guards.beforeEach) {
                 const result = await guard(to, from);
                 if (isValidConfirmHookResult(result)) {
@@ -84,67 +76,47 @@ export class Router {
                 }
             }
         },
-        [TaskType.afterEach]: (to, from) => {
+        [RouteTaskType.push]: async () => {
+            return async (to) => {
+                this._route = to;
+                this._microApp._update(this);
+                this._navigation.push(to);
+            };
+        },
+        [RouteTaskType.replace]: async () => {
+            return async (to) => {
+                this._route = to;
+                this._microApp._update(this);
+                this._navigation.push(to);
+            };
+        },
+        [RouteTaskType.popstate]: async () => {
+            return async (to) => {
+                this._route = to;
+                this._microApp._update(this);
+                // TODO: 只有 URL 变化了才更新导航
+                this._navigation.replace(to);
+            };
+        },
+        [RouteTaskType.reload]: async () => {
+            return async (to) => {
+                this._route = to;
+                this._microApp._update(this, true);
+                this._navigation.replace(to);
+            };
+        },
+        [RouteTaskType.pushWindow]: async () => {
+            return this.options.location;
+        },
+        [RouteTaskType.replaceWindow]: async (to) => {
+            return this.options.location;
+        },
+        [RouteTaskType.afterEach]: (to, from) => {
             for (const guard of this._guards.afterEach) {
                 guard(to, from);
             }
-            return true;
         }
-    } satisfies Record<string, RouteConfirmHook>;
-    private _taskMaps = {
-        [RouteType.push]: [
-            TaskType.location,
-            TaskType.env,
-            TaskType.asyncComponent,
-            TaskType.beforeEach,
-            TaskType.afterEach
-        ],
-        [RouteType.replace]: [
-            TaskType.location,
-            TaskType.env,
-            TaskType.asyncComponent,
-            TaskType.beforeEach,
-            TaskType.afterEach
-        ],
-        [RouteType.pushWindow]: [
-            TaskType.location,
-            TaskType.asyncComponent,
-            TaskType.env,
-            TaskType.beforeEach,
-            TaskType.afterEach
-        ],
-        [RouteType.replaceWindow]: [
-            TaskType.location,
-            TaskType.beforeEach,
-            TaskType.afterEach
-        ],
-        [RouteType.reload]: [
-            TaskType.location,
-            TaskType.asyncComponent,
-            TaskType.beforeEach,
-            TaskType.afterEach
-        ],
-        [RouteType.back]: [
-            TaskType.asyncComponent,
-            TaskType.beforeEach,
-            TaskType.afterEach
-        ],
-        [RouteType.go]: [
-            TaskType.asyncComponent,
-            TaskType.beforeEach,
-            TaskType.afterEach
-        ],
-        [RouteType.forward]: [
-            TaskType.asyncComponent,
-            TaskType.beforeEach,
-            TaskType.afterEach
-        ],
-        [RouteType.popstate]: [
-            TaskType.asyncComponent,
-            TaskType.beforeEach,
-            TaskType.afterEach
-        ]
-    } satisfies Record<string, TaskType[]>;
+    };
     private _guards = {
         beforeEach: [] as RouteConfirmHook[],
         afterEach: [] as RouteNotifyHook[]
@@ -223,12 +195,7 @@ export class Router {
         return this._transitionTo(RouteType.popstate, toRaw);
     }
     public resolve(toRaw: RouteLocationRaw): Route {
-        return createRoute(
-            RouteType.resolve,
-            toRaw,
-            this.options,
-            this._route?.url ?? null
-        );
+        return createRoute(this.options, null, toRaw, this._route?.url ?? null);
     }
     public createLayer(options?: RouterOptions): Router {
         return new Router({
@@ -267,62 +234,50 @@ export class Router {
         this._microApp.destroy();
     }
     private async _transitionTo(
-        navigationType: RouteType,
+        toType: RouteType,
         toRaw: RouteLocationRaw
-    ) {
-        const names: string[] = this._taskMaps[navigationType] ?? [];
+    ): Promise<Route> {
         const { _tasks, options, _route: from } = this;
+        const to = await this._runTask(
+            BEFORE_TASKS,
+            createRoute(options, toType, toRaw, from?.url ?? null),
+            from
+        );
+        if (typeof to.handle === 'function') {
+            to.handleResult = await to.handle(to, from);
+            await this._runTask(AFTER_TASKS, to, from);
+        }
+        await createRouteTask({
+            options,
+            to,
+            from,
+            tasks: [
+                {
+                    name: RouteTaskType.afterEach,
+                    task: _tasks[RouteTaskType.afterEach]
+                }
+            ]
+        });
+        return to;
+    }
+    private _runTask(
+        config: Record<RouteType, RouteTaskType[]>,
+        to: Route,
+        from: Route | null
+    ) {
+        const names: RouteTaskType[] = to.type ? config[to.type] : [];
+        const { _tasks, options } = this;
         const tasks: RouteTask[] = names.map((name) => {
             return {
                 name,
                 task: _tasks[name]
             } satisfies RouteTask;
         });
-        const to = await createRouteTask({
-            navigationType,
-            toRaw,
-            from,
+        return createRouteTask({
             options,
+            to,
+            from,
             tasks
         });
-        if (to.status === RouteStatus.success) {
-            // 没有匹配到任何路由，或者是打开新窗口，都是要调用 location 钩子函数
-            if (to.matched.length === 0) {
-                to.handleResult = await this.options.location(to, from);
-                return to;
-            }
-            // 更新导航
-            switch (to.type) {
-                case RouteType.push:
-                    this._route = to;
-                    this._microApp._update(this);
-                    this._navigation.push(to);
-                    break;
-                case RouteType.replace:
-                    this._route = to;
-                    this._microApp._update(this);
-                    this._navigation.replace(to);
-                    break;
-                case RouteType.back:
-                case RouteType.go:
-                case RouteType.forward:
-                case RouteType.popstate:
-                    this._route = to;
-                    this._microApp._update(this);
-                    // TODO: 只有 URL 变化了才更新导航
-                    this._navigation.replace(to);
-                    break;
-                case RouteType.reload:
-                    this._route = to;
-                    this._microApp._update(this, true);
-                    this._navigation.replace(to);
-                    break;
-                case RouteType.pushWindow:
-                case RouteType.replaceWindow:
-                    to.handleResult = await this.options.location(to, from);
-                    break;
-            }
-        }
-        return to;
     }
 }
