@@ -47,6 +47,5 @@ export async function createApp({
     });
     await router.replace(url);
     if (isBrowser) (window as any).router = router;
-    console.log(router.route);
     return router;
 }
