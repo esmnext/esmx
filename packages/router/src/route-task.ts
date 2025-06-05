@@ -41,12 +41,7 @@ export async function createRouteTask(opts: RouteTaskOptions) {
             // 导航重定向
             return createRouteTask({
                 ...opts,
-                to: createRoute(
-                    opts.options,
-                    to.type,
-                    result,
-                    from?.url || null
-                ),
+                to: createRoute(opts.options, to.type, result, to.url),
                 from: to
             });
         }
