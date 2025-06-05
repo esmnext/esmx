@@ -84,29 +84,28 @@ export class Router {
             return async (to) => {
                 this._route = to;
                 this._microApp._update(this);
-                this._navigation.push(to);
+                to.state = this._navigation.push(to);
             };
         },
         [RouteTaskType.replace]: async () => {
-            return async (to) => {
+            return async (to, from) => {
                 this._route = to;
                 this._microApp._update(this);
-                this._navigation.push(to);
+                this._applyReplace(to, from);
             };
         },
         [RouteTaskType.popstate]: async () => {
-            return async (to) => {
+            return async (to, from) => {
                 this._route = to;
                 this._microApp._update(this);
-                // TODO: 只有 URL 变化了才更新导航
-                this._navigation.replace(to);
+                this._applyReplace(to, from);
             };
         },
         [RouteTaskType.reload]: async () => {
-            return async (to) => {
+            return async (to, from) => {
                 this._route = to;
                 this._microApp._update(this, true);
-                this._navigation.replace(to);
+                this._applyReplace(to, from);
             };
         },
         [RouteTaskType.pushWindow]: async () => {
@@ -121,6 +120,10 @@ export class Router {
             }
         }
     };
+    private _applyReplace(to: Route, from: Route | null) {
+        // TODO: 只有 URL 变化了才更新导航
+        to.state = this._navigation.replace(to);
+    }
     private readonly _guards = {
         beforeEach: [] as RouteConfirmHook[],
         afterEach: [] as RouteNotifyHook[]

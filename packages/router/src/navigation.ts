@@ -12,6 +12,9 @@ type NavigationGoResult = null | {
     state: RouteState;
 };
 
+let __globalPageId__ = 0;
+const PAGE_ID_KEY = '__pageId__';
+
 export class Navigation {
     public options: RouterParsedOptions;
     private _navigation: History;
@@ -47,15 +50,29 @@ export class Navigation {
                 ? subscribeMemory(this._navigation, _subscribe)
                 : subscribeHtmlHistory(_subscribe);
     }
-    public push(route: Route) {
-        this._navigation.pushState(route.state, '', route.fullPath);
-    }
-    public replace(route: Route) {
-        const nextState = {
-            ...this._navigation.state,
-            ...route.state
+    public push(route: Route): RouteState {
+        const state: RouteState = {
+            ...route.state,
+            [PAGE_ID_KEY]: ++__globalPageId__
         };
-        this._navigation.replaceState(nextState, '', route.fullPath);
+        this._navigation.pushState(state, '', route.fullPath);
+        return Object.freeze(state);
+    }
+    public replace(route: Route): RouteState {
+        const { _navigation } = this;
+        const oldState = _navigation.state;
+        const oldId =
+            oldState && typeof oldState[PAGE_ID_KEY] === 'number'
+                ? oldState[PAGE_ID_KEY]
+                : ++__globalPageId__;
+        const id = __globalPageId__ === 0 ? ++__globalPageId__ : oldId;
+        const state: RouteState = Object.freeze({
+            ...oldState,
+            ...route.state,
+            [PAGE_ID_KEY]: id
+        });
+        _navigation.replaceState(state, '', route.fullPath);
+        return Object.freeze(state);
     }
     public go(index: number): Promise<NavigationGoResult> {
         if (this._promiseResolve) {
@@ -120,7 +137,7 @@ export class MemoryHistory implements History {
             const prevUrl = this.entries[this.index].url;
             this.entries[this.index] = {
                 ...this.entries[this.index],
-                state: data,
+                state: { ...data },
                 url: url ? url.toString() : prevUrl
             };
             this._applyByIndex(this.index);

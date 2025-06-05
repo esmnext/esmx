@@ -89,7 +89,7 @@ export enum RouteType {
 }
 export type RouteMeta = Record<string | symbol, any>;
 
-export type RouteState = Record<string, unknown>;
+export type RouteState = Readonly<Record<string, unknown>>;
 export type RouteHandleResult = Record<string | symbol, any> | null | void;
 
 export interface RouteLocation {
@@ -113,10 +113,10 @@ export interface Route {
     readonly params: Record<string, string>;
     readonly query: Record<string, string | undefined>;
     readonly queryArray: Record<string, string[] | undefined>;
-    readonly state: RouteState;
     readonly meta: RouteMeta;
     readonly matched: readonly RouteParsedConfig[];
     readonly config: RouteParsedConfig | null;
+    state: RouteState;
     status: RouteStatus;
     keepScrollPosition: boolean;
     handle: RouteHandleHook | null;
