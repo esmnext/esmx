@@ -4,18 +4,14 @@ import { createMatcher, joinPathname } from './matcher';
 const BASE_URL = new URL('https://www.esmx.dev');
 
 describe('joinPathname', () => {
-    type TestCase = {
-        path: string;
-        base?: string;
-        expected: string;
-    };
-
-    type TestGroup = {
+    const testCases: Array<{
         description: string;
-        cases: TestCase[];
-    };
-
-    const testCases: TestGroup[] = [
+        cases: Array<{
+            path: string;
+            base?: string;
+            expected: string;
+        }>;
+    }> = [
         {
             description: '基本路径拼接',
             cases: [
