@@ -103,7 +103,25 @@ export interface RouteLocation {
     keepScrollPosition?: boolean;
 }
 export type RouteLocationRaw = RouteLocation | string;
-
+export interface Route {
+    readonly type: RouteType | null;
+    readonly req: IncomingMessage | null;
+    readonly res: ServerResponse | null;
+    readonly url: URL;
+    readonly path: string;
+    readonly fullPath: string;
+    readonly params: Record<string, string>;
+    readonly query: Record<string, string | undefined>;
+    readonly queryArray: Record<string, string[] | undefined>;
+    readonly state: RouteState;
+    readonly meta: RouteMeta;
+    readonly matched: readonly RouteParsedConfig[];
+    readonly config: RouteParsedConfig | null;
+    status: RouteStatus;
+    keepScrollPosition: boolean;
+    handle: RouteHandleHook | null;
+    handleResult: RouteHandleResult;
+}
 export interface RouteConfig {
     path: string;
     component?: any;
@@ -129,24 +147,6 @@ export enum RouteStatus {
     aborted = 'aborted',
     error = 'error',
     success = 'success'
-}
-export interface Route {
-    readonly type: RouteType | null;
-    readonly req: IncomingMessage | null;
-    readonly res: ServerResponse | null;
-    readonly url: URL;
-    readonly path: string;
-    readonly fullPath: string;
-    readonly params: Record<string, string>;
-    readonly query: Record<string, string | undefined>;
-    readonly queryArray: Record<string, string[] | undefined>;
-    readonly state: RouteState;
-    readonly meta: RouteMeta;
-    readonly matched: readonly RouteParsedConfig[];
-    readonly config: RouteParsedConfig | null;
-    status: RouteStatus;
-    handle: RouteHandleHook | null;
-    handleResult: RouteHandleResult;
 }
 
 export interface RouteMatchResult {

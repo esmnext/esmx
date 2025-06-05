@@ -32,6 +32,9 @@ export function createRoute(
         : to.pathname + to.search + to.hash;
     const state = typeof toRaw === 'object' && toRaw.state ? toRaw.state : {};
     const matched = match ? match.matches : [];
+    const keepScrollPosition = Boolean(
+        typeof toRaw === 'object' && toRaw.keepScrollPosition
+    );
     const route: Route = {
         status: RouteStatus.resolve,
         get handle() {
@@ -81,6 +84,7 @@ export function createRoute(
         path,
         fullPath,
         matched,
+        keepScrollPosition,
         get config() {
             return this.matched[this.matched.length - 1] || null;
         }
