@@ -1,7 +1,7 @@
 <template>
     <div class="home-container">
         <div class="hero-section">
-            <h1 class="glitch-title" data-text="ESMX Router">ESMX Router</h1>
+            <h1 class="glitch-title" data-text="Esmx Router">Esmx Router</h1>
             <p class="hero-subtitle">探索下一代路由体验</p>
             <div class="hero-decoration">
                 <div class="circle"></div>
@@ -16,7 +16,7 @@
                 <div v-for="id in 10" :key="id" class="news-card">
                     <div class="card-content">
                         <div class="card-tag">新闻 #{{ id }}</div>
-                        <div class="card-title">探索 ESMX 路由的强大功能</div>
+                        <div class="card-title">探索 Esmx 路由的强大功能</div>
                         <div class="card-meta">{{ new Date().toLocaleDateString() }}</div>
                     </div>
                     <RouterLink :to="{

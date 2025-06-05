@@ -10,28 +10,28 @@
         
         <div class="news-detail-card">
             <div class="card-header">
-                <h1 class="news-title">探索 ESMX 路由的强大功能</h1>
+                <h1 class="news-title">探索 Esmx 路由的强大功能</h1>
                 <div class="news-meta">
                     <span class="news-date">{{ new Date().toLocaleDateString() }}</span>
-                    <span class="news-author">作者: ESMX 团队</span>
+                    <span class="news-author">作者: Esmx 团队</span>
                 </div>
             </div>
             
             <div class="news-content">
                 <div class="content-section">
-                    <p class="lead-paragraph">这是新闻 #{{ $route.state.id }} 的详细内容，展示了 ESMX 路由的强大功能和灵活性。</p>
+                    <p class="lead-paragraph">这是新闻 #{{ $route.state.id }} 的详细内容，展示了 Esmx 路由的强大功能和灵活性。</p>
                     
-                    <p>ESMX 路由是一个现代化的路由解决方案，为 Vue 应用提供了强大的导航能力。它支持动态路由匹配、嵌套路由、路由守卫等多种功能，让开发者能够构建复杂而高效的单页应用。</p>
+                    <p>Esmx 路由是一个现代化的路由解决方案，为 Vue 应用提供了强大的导航能力。它支持动态路由匹配、嵌套路由、路由守卫等多种功能，让开发者能够构建复杂而高效的单页应用。</p>
                     
                     <div class="feature-highlight">
                         <div class="highlight-icon">✨</div>
                         <div class="highlight-content">
                             <h3>路由状态传递</h3>
-                            <p>如您所见，当前页面的 ID ({{ $route.state.id }}) 是通过路由状态传递的，这展示了 ESMX 路由在页面间传递数据的能力。</p>
+                            <p>如您所见，当前页面的 ID ({{ $route.state.id }}) 是通过路由状态传递的，这展示了 Esmx 路由在页面间传递数据的能力。</p>
                         </div>
                     </div>
                     
-                    <p>除了基本的路由功能外，ESMX 路由还提供了许多高级特性，如路由元信息、动态导入组件、滚动行为控制等，这些特性使得构建现代化的 Web 应用变得更加简单和高效。</p>
+                    <p>除了基本的路由功能外，Esmx 路由还提供了许多高级特性，如路由元信息、动态导入组件、滚动行为控制等，这些特性使得构建现代化的 Web 应用变得更加简单和高效。</p>
                 </div>
                 
                 <div class="content-section">
@@ -54,7 +54,7 @@ const router = createRouter({
                 <div class="tags">
                     <span class="tag">路由</span>
                     <span class="tag">Vue</span>
-                    <span class="tag">ESMX</span>
+                    <span class="tag">Esmx</span>
                 </div>
                 <div class="share-buttons">
                     <button class="share-btn">分享</button>

@@ -2,7 +2,7 @@
     <div id="app">
         <div class="app-container">
             <nav class="neo-nav">
-                <div class="nav-brand">ESMX</div>            
+                <div class="nav-brand">Esmx</div>            
                 <div class="nav-links">
                     <router-link to="/" class="nav-item">
                         <span class="nav-icon">🏠</span>
