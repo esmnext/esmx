@@ -12,7 +12,6 @@ import {
     type RouteNotifyHook,
     type RouteState,
     RouteType,
-    type RouteVerifyHook,
     type RouterLayerOptions,
     type RouterLayerResult,
     type RouterOptions,
