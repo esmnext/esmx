@@ -1,4 +1,4 @@
-import { DEFAULT_ON_OPEN } from './default';
+import { DEFAULT_LOCATION } from './default';
 import { createMatcher } from './matcher';
 import {
     type Route,
@@ -30,12 +30,7 @@ export function parsedOptions(options: RouterOptions): RouterParsedOptions {
         apps: options.apps ?? {},
         matcher: createMatcher(routes),
         normalizeURL: options.normalizeURL ?? ((url) => url),
-        location: (to, from) => {
-            return null;
-        },
-        serverLocation(to, from) {
-            return null;
-        }
+        location: options.location ?? DEFAULT_LOCATION
     };
     return result;
 }

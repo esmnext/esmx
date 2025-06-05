@@ -1,6 +1,6 @@
 import type { Route } from './types';
 
-export function DEFAULT_ON_OPEN(to: Route, from: Route | null) {
+export function DEFAULT_LOCATION(to: Route, from: Route | null) {
     try {
         const newWindow = window.open(to.url.href);
         if (!newWindow) {

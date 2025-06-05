@@ -19,7 +19,6 @@ export interface RouterOptions {
     apps?: RouterMicroApp;
     normalizeURL?: (to: URL, from: URL | null) => URL;
     location?: RouteHandleHook;
-    serverLocation?: RouteHandleHook;
     layer?: RouterLayerOptions | null;
 }
 
@@ -91,7 +90,7 @@ export enum RouteType {
 export type RouteMeta = Record<string | symbol, any>;
 
 export type RouteState = Record<string, unknown>;
-export type RouteHandleResult = Record<string | symbol, any> | null;
+export type RouteHandleResult = Record<string | symbol, any> | null | void;
 
 export interface RouteLocation {
     path?: string;
