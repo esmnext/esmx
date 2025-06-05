@@ -31,7 +31,7 @@ export async function createApp({
             });
             return {
                 mount() {
-                    app.$mount('#app');
+                    app.$mount('#app', true);
                 },
                 unmount() {
                     app.$destroy();
