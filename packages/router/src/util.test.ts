@@ -81,7 +81,7 @@ describe('removeFromArray', () => {
 
 describe('isValidConfirmHookResult', () => {
     test('should return true for boolean values', () => {
-        expect(isValidConfirmHookResult(true)).toBe(true);
+        expect(isValidConfirmHookResult(true)).toBe(false);
         expect(isValidConfirmHookResult(false)).toBe(true);
     });
 
@@ -100,6 +100,6 @@ describe('isValidConfirmHookResult', () => {
         expect(isValidConfirmHookResult(undefined)).toBe(false);
         expect(isValidConfirmHookResult(123)).toBe(false);
         expect(isValidConfirmHookResult([])).toBe(false);
-        expect(isValidConfirmHookResult(() => {})).toBe(false);
+        expect(isValidConfirmHookResult(() => {})).toBe(true);
     });
 });

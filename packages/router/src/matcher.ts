@@ -32,7 +32,7 @@ function createRouteMatches(
     base = ''
 ): RouteParsedConfig[] {
     return routes.map((route: RouteConfig): RouteParsedConfig => {
-        const compilePath = '/' + joinPathname(route.path, base);
+        const compilePath = joinPathname(route.path, base);
         return {
             ...route,
             compilePath,
@@ -47,5 +47,5 @@ function createRouteMatches(
 }
 
 export function joinPathname(pathname: string, base = '') {
-    return `${base}/${pathname}`.split('/').filter(Boolean).join('/');
+    return '/' + `${base}/${pathname}`.split('/').filter(Boolean).join('/');
 }
