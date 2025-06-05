@@ -52,7 +52,6 @@ export class RouterVuePlugin {
                         }),
                         afterEach() {
                             this.ref.value++;
-                            console.log('router afterEach', router.route);
                         }
                     };
                     ctx.afterEach = ctx.afterEach.bind(ctx);

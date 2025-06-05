@@ -84,7 +84,7 @@ export interface RouteConfig {
     beforeLeave?: RouteConfirmHook;
 }
 export interface RouteParsedConfig extends RouteConfig {
-    absolutePath: string;
+    compilePath: string;
     children: RouteParsedConfig[];
     match: MatchFunction;
     compile: (params?: Record<string, string>) => string;

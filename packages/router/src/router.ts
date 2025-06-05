@@ -61,7 +61,7 @@ export class Router {
                                 : result;
                         } catch {
                             throw new Error(
-                                `Async component '${matched.absolutePath}' is not a valid component.`
+                                `Async component '${matched.compilePath}' is not a valid component.`
                             );
                         }
                     }

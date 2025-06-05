@@ -32,15 +32,15 @@ function createRouteMatches(
     base = ''
 ): RouteParsedConfig[] {
     return routes.map((route: RouteConfig): RouteParsedConfig => {
-        const absolutePath = '/' + joinPathname(route.path, base);
+        const compilePath = '/' + joinPathname(route.path, base);
         return {
             ...route,
-            absolutePath,
-            match: match(absolutePath),
-            compile: compile(absolutePath),
+            compilePath,
+            match: match(compilePath),
+            compile: compile(compilePath),
             meta: route.meta || {},
             children: Array.isArray(route.children)
-                ? createRouteMatches(route.children, absolutePath)
+                ? createRouteMatches(route.children, compilePath)
                 : []
         };
     });
