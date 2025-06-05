@@ -3,16 +3,24 @@ import type { RouteConfig, RouteMatcher, RouteParsedConfig } from './types';
 
 export function createMatcher(routes: RouteConfig[]): RouteMatcher {
     const compiledRoutes = createRouteMatches(routes);
-    return (currentURL: URL, baseUrl: URL) => {
-        const requestPath = currentURL.pathname.substring(
-            baseUrl.pathname.length - 1
-        );
+    return (toURL: URL, baseURL: URL) => {
+        const matchPath = toURL.pathname.substring(baseURL.pathname.length - 1);
         const matches: RouteParsedConfig[] = [];
         const params: Record<string, string> = {};
-        const findMatchingRoutes = (routes: RouteParsedConfig[]): boolean => {
+        const collectMatchingRoutes = (
+            routes: RouteParsedConfig[]
+        ): boolean => {
             for (const item of routes) {
-                const result = item.match(requestPath);
-                if (result || findMatchingRoutes(item.children)) {
+                // 深度优先遍历
+                if (
+                    item.children.length &&
+                    collectMatchingRoutes(item.children)
+                ) {
+                    matches.unshift(item);
+                    return true;
+                }
+                const result = item.match(matchPath);
+                if (result) {
                     matches.unshift(item);
                     if (typeof result === 'object') {
                         Object.assign(params, result.params);
@@ -22,7 +30,7 @@ export function createMatcher(routes: RouteConfig[]): RouteMatcher {
             }
             return false;
         };
-        findMatchingRoutes(compiledRoutes);
+        collectMatchingRoutes(compiledRoutes);
         return { matches, params };
     };
 }

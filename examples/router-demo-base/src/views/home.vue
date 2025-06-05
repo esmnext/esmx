@@ -2,8 +2,8 @@
     <div>
         <h1>Home</h1>
         <ul>
-            <li v-for="id in 100">
-                <RouterLink :to="`/news/${id}`" />
+            <li v-for="id in 10">
+                <RouterLink :to="`/news/${id}`">{{ id }}</RouterLink>
             </li>
         </ul>
     </div>

@@ -1,17 +1,6 @@
-<script lang="ts">
-export default {
-    name: 'test',
-    beforeCreate() {
-        console.log('@beforeCreate test');
-    }
-};
-</script>
-
 <template>
     <div>
-        <h3 class="color">Test</h3>
-        <pre>{{ $route }}</pre>
-        <router-view />
+        <h1>详情页面</h1>
     </div>
 </template>
 
@@ -22,6 +11,6 @@ h3 {
 }
 
 .color {
-    color: saddlebrown;
+    color: green;
 }
 </style>
