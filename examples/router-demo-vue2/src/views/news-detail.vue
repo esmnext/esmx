@@ -77,19 +77,15 @@ const router = createRouter({
     </div>
 </template>
 <script lang="ts" setup>
-import { RouterLink, useRoute } from '@esmx/router-vue2';
+import { RouterLink } from '@esmx/router-vue2';
 
 // 生成相关新闻ID（当前ID附近的3个ID）
 function getRelatedIds() {
-    const route = useRoute();
-    const currentId = Number(route.state.id);
     const relatedIds = [];
 
     for (let i = 1; i <= 3; i++) {
-        const relatedId = (currentId + i) % 10 || 10; // 确保ID在1-10范围内循环
-        relatedIds.push(relatedId);
+        relatedIds.push(i);
     }
-
     return relatedIds;
 }
 </script>

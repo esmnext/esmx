@@ -33,15 +33,19 @@ export async function createApp({
                 mount() {
                     const appEl = document.getElementById('app')!;
                     const ssrEl = appEl.firstElementChild;
-                    const hydrating =
-                        !!ssrEl && ssrEl.hasAttribute('data-server-rendered');
-                    if (appEl.parentNode && hydrating) {
+                    if (
+                        appEl.parentNode &&
+                        ssrEl &&
+                        ssrEl.hasAttribute('data-server-rendered')
+                    ) {
                         appEl.parentNode.replaceChild(ssrEl, appEl);
                         appEl.getAttributeNames().forEach((name) => {
                             ssrEl.setAttribute(name, appEl.getAttribute(name)!);
                         });
+                        app.$mount(ssrEl, true);
+                    } else {
+                        app.$mount(appEl, true);
                     }
-                    app.$mount(appEl, hydrating);
                 },
                 unmount() {
                     app.$destroy();
