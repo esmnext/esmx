@@ -4,7 +4,6 @@ import {
     type RouteHandleHook,
     type RouteHandleResult,
     type RouteLocationRaw,
-    type RouteParsedConfig,
     RouteStatus,
     type RouteType,
     type RouterParsedOptions
@@ -12,7 +11,7 @@ import {
 
 export function createRoute(
     options: RouterParsedOptions,
-    toType: RouteType | null,
+    toType: RouteType,
     toRaw: RouteLocationRaw,
     from: URL | null
 ): Route {

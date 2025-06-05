@@ -49,7 +49,7 @@ export const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
         RouteTaskType.beforeEach,
         RouteTaskType.popstate
     ],
-    [RouteType.popstate]: [
+    [RouteType.none]: [
         RouteTaskType.asyncComponent,
         RouteTaskType.beforeEach,
         RouteTaskType.popstate
@@ -64,5 +64,5 @@ export const AFTER_TASKS: Record<RouteType, RouteTaskType[]> = {
     [RouteType.back]: [RouteTaskType.afterEach],
     [RouteType.go]: [RouteTaskType.afterEach],
     [RouteType.forward]: [RouteTaskType.afterEach],
-    [RouteType.popstate]: [RouteTaskType.afterEach]
+    [RouteType.none]: [RouteTaskType.afterEach]
 };

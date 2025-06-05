@@ -139,7 +139,10 @@ export class Router {
         this._navigation = new Navigation(
             this._options,
             (url: string, state: RouteState) => {
-                this.popstate({ url, state });
+                this._transitionTo(RouteType.none, {
+                    url,
+                    state
+                });
             }
         );
     }
@@ -197,13 +200,10 @@ export class Router {
             state: result.state
         });
     }
-    public popstate(toRaw: RouteLocationRaw) {
-        return this._transitionTo(RouteType.popstate, toRaw);
-    }
     public resolve(toRaw: RouteLocationRaw): Route {
         return createRoute(
             this._options,
-            null,
+            RouteType.none,
             toRaw,
             this._route?.url ?? null
         );

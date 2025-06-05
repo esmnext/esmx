@@ -83,7 +83,7 @@ export enum RouteType {
     go = 'go',
     forward = 'forward',
     back = 'back',
-    popstate = 'popstate',
+    none = 'none',
     pushWindow = 'pushWindow',
     replaceWindow = 'replaceWindow'
 }
@@ -104,7 +104,7 @@ export interface RouteLocation {
 }
 export type RouteLocationRaw = RouteLocation | string;
 export interface Route {
-    readonly type: RouteType | null;
+    readonly type: RouteType;
     readonly req: IncomingMessage | null;
     readonly res: ServerResponse | null;
     readonly url: URL;
