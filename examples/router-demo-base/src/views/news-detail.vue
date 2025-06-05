@@ -1,6 +1,9 @@
 <template>
     <div>
         <h1>详情页面</h1>
+        <article>
+            {{$route.state.id ?? '--'}}
+        </article>
     </div>
 </template>
 

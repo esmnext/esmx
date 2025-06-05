@@ -3,7 +3,10 @@
         <h1>Home</h1>
         <ul>
             <li v-for="id in 10">
-                <RouterLink :to="`/news/${id}`">{{ id }}</RouterLink>
+                <RouterLink :to="{
+                    path: `/news/${id}`,
+                    state: { id }
+                }">{{ id }}</RouterLink>
             </li>
         </ul>
     </div>
