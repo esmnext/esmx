@@ -225,10 +225,11 @@ export class Router {
             const destroyed = layer.destroyed;
             layer.destroyed = (result) => {
                 if (result.type === 'push' && layer.autoPush) {
+                    const href = result.result.url.href;
                     if (layer.push) {
-                        this.push(result.result.url.href);
+                        this.push(href);
                     } else {
-                        this.replace(result.result.url.href);
+                        this.replace(href);
                     }
                 }
                 destroyed?.(result);
