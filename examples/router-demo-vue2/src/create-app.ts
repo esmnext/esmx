@@ -31,6 +31,12 @@ export async function createApp({
             });
             return {
                 mount() {
+                    if (router.isLayer) {
+                        const div = document.createElement('div');
+                        document.body.appendChild(div);
+                        app.$mount(div);
+                        return;
+                    }
                     const appEl = document.getElementById('app')!;
                     const ssrEl = appEl.firstElementChild;
                     if (
@@ -44,7 +50,7 @@ export async function createApp({
                         });
                         app.$mount(ssrEl, true);
                     } else {
-                        app.$mount(appEl, true);
+                        app.$mount(appEl);
                     }
                 },
                 unmount() {

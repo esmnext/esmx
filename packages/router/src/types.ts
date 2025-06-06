@@ -10,6 +10,7 @@ export enum RouterMode {
     abstract = 'abstract'
 }
 export interface RouterOptions {
+    context?: Record<string | symbol, any>;
     routes?: RouteConfig[];
     mode?: RouterMode;
     base?: URL;
