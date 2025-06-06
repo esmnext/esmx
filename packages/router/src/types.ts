@@ -128,6 +128,7 @@ export interface Route {
     handleResult: RouteHandleResult;
 }
 export interface RouteConfig {
+    /** 传递一个经过 URL 编码过后的路径 */
     path: string;
     component?: any;
     children?: RouteConfig[];
@@ -156,7 +157,7 @@ export enum RouteStatus {
 
 export interface RouteMatchResult {
     readonly matches: readonly RouteParsedConfig[];
-    readonly params: Record<string, string>;
+    readonly params: Record<string, string | string[] | undefined>;
 }
 
 export type RouteMatcher = (targetURL: URL, baseURL: URL) => RouteMatchResult;
