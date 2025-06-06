@@ -10,6 +10,7 @@ export enum RouterMode {
     abstract = 'abstract'
 }
 export interface RouterOptions {
+    id?: string;
     context?: Record<string | symbol, any>;
     routes?: RouteConfig[];
     mode?: RouterMode;
@@ -24,10 +25,6 @@ export interface RouterOptions {
 }
 
 export interface RouterLayerOptions {
-    /**
-     * 当前层挂载的元素，如果没有传，会自动创建一个元素，并追加到 document.body.appendChild(el)
-     */
-    el?: Element | string;
     /**
      * 路由层初始化参数，以键值对形式传递
      */
@@ -67,7 +64,7 @@ export interface RouterParsedOptions extends Required<RouterOptions> {
 }
 
 export interface RouterMicroAppOptions {
-    mount: () => void;
+    mount: (rootContainer: HTMLElement) => unknown | HTMLElement;
     unmount: () => void;
     renderToString?: () => Awaitable<string>;
 }

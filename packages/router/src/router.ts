@@ -21,7 +21,7 @@ import { isESModule, isValidConfirmHookResult, removeFromArray } from './util';
 
 export class Router {
     public readonly options: RouterOptions;
-    private readonly _options: RouterParsedOptions;
+    public readonly parsedOptions: RouterParsedOptions;
     public readonly isLayer: boolean;
     public readonly layerResult: Record<string, string> = {};
     private _route: null | Route = null;
@@ -31,7 +31,7 @@ export class Router {
     private readonly _tasks: Record<RouteTaskType, RouteConfirmHook> = {
         [RouteTaskType.location]: (to, from) => {
             if (to.matched.length === 0) {
-                return this._options.location;
+                return this.parsedOptions.location;
             }
         },
         [RouteTaskType.env]: async (to, from) => {
@@ -109,10 +109,10 @@ export class Router {
             };
         },
         [RouteTaskType.pushWindow]: async () => {
-            return this._options.location;
+            return this.parsedOptions.location;
         },
         [RouteTaskType.replaceWindow]: async (to) => {
-            return this._options.location;
+            return this.parsedOptions.location;
         },
         [RouteTaskType.afterEach]: (to, from) => {
             for (const guard of this._guards.afterEach) {
@@ -134,13 +134,16 @@ export class Router {
         }
         return this._route;
     }
+    public get id() {
+        return this.parsedOptions.id;
+    }
     public constructor(options: RouterOptions) {
         this.options = options;
-        this._options = parsedOptions(options);
-        this.isLayer = !!this._options.layer;
+        this.parsedOptions = parsedOptions(options);
+        this.isLayer = !!this.parsedOptions.layer;
 
         this._navigation = new Navigation(
-            this._options,
+            this.parsedOptions,
             (url: string, state: RouteState) => {
                 this._transitionTo(RouteType.none, {
                     url,
@@ -205,7 +208,7 @@ export class Router {
     }
     public resolve(toRaw: RouteLocationRaw): Route {
         return createRoute(
-            this._options,
+            this.parsedOptions,
             RouteType.none,
             toRaw,
             this._route?.url ?? null
@@ -295,7 +298,7 @@ export class Router {
         toType: RouteType,
         toRaw: RouteLocationRaw
     ): Promise<Route> {
-        const { _tasks, _options: options, _route: from } = this;
+        const { _tasks, parsedOptions: options, _route: from } = this;
         const to = await this._runTask(
             BEFORE_TASKS,
             createRoute(options, toType, toRaw, from?.url ?? null),
@@ -323,7 +326,7 @@ export class Router {
         from: Route | null
     ) {
         const names: RouteTaskType[] = to.type ? config[to.type] : [];
-        const { _tasks, _options: options } = this;
+        const { _tasks, parsedOptions: options } = this;
         const tasks: RouteTask[] = names.map((name) => {
             return {
                 name,
