@@ -173,7 +173,9 @@ describe('parseLocation', () => {
                 } as any as Record<string, string>
             },
             base: 'http://example.com',
-            expected: `http://example.com/products?symbol=Symbol()&fn=${String(async () => '')}&obj=${String({})}&big=12345678901234567891234567890123456789&b&c=0&d=0&e=1`,
+            expected: `http://example.com/products?symbol=Symbol()&fn=${String(
+                async () => ''
+            )}&obj=${String({})}&big=12345678901234567891234567890123456789&b&c=0&d=0&e=1`,
             description: '应该忽略null、undefined和NaN的query参数'
         },
         {
@@ -184,30 +186,30 @@ describe('parseLocation', () => {
         },
         {
             input: {
-                path: '/products?id=path',
+                path: '/products?id=path&a',
                 query: { id: 'query' }
             },
             base: 'http://example.com',
-            expected: 'http://example.com/products?id=query',
+            expected: 'http://example.com/products?id=query&a',
             description: 'query的值应覆盖path中的query参数'
         },
         {
             input: {
-                path: '/products?id=path',
+                path: '/products?id=path&a',
                 query: { id: 'query' },
                 queryArray: { id: ['queryArray'] }
             },
             base: 'http://example.com',
-            expected: 'http://example.com/products?id=queryArray',
+            expected: 'http://example.com/products?id=queryArray&a',
             description: 'queryArray的值应覆盖query和path中的query参数'
         },
         {
             input: {
-                path: '/products?id=path',
+                path: '/products?id=path&a',
                 queryArray: { id: ['queryArray'] }
             },
             base: 'http://example.com',
-            expected: 'http://example.com/products?id=queryArray',
+            expected: 'http://example.com/products?id=queryArray&a',
             description: 'queryArray的值应覆盖path中的query参数'
         },
         {
