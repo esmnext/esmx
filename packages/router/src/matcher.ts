@@ -6,7 +6,7 @@ export function createMatcher(routes: RouteConfig[]): RouteMatcher {
     return (toURL: URL, baseURL: URL) => {
         const matchPath = toURL.pathname.substring(baseURL.pathname.length - 1);
         const matches: RouteParsedConfig[] = [];
-        const params: Record<string, string> = {};
+        const params: Record<string, string | string[]> = {};
         const collectMatchingRoutes = (
             routes: RouteParsedConfig[]
         ): boolean => {
