@@ -21,11 +21,15 @@ export function isObject(o: unknown): o is Record<string, any> {
 }
 
 export function isESModule(obj: any): boolean {
-    return Boolean(obj.__esModule) || obj[Symbol.toStringTag] === 'Module';
+    return Boolean(obj?.__esModule) || obj?.[Symbol.toStringTag] === 'Module';
 }
 
 export const removeFromArray = <T>(arr: T[], ele: T) => {
-    const i = arr.findIndex((item) => item === ele);
+    if (!Array.isArray(arr) || arr.length === 0) return;
+    const i = Number.isNaN(ele)
+        ? // 如果 ele 是 NaN，使用 findIndex 查找 NaN，因为 NaN !== NaN，所以不能直接用 indexOf
+          arr.findIndex((item) => Number.isNaN(item))
+        : arr.indexOf(ele);
     if (i === -1) return;
     arr.splice(i, 1);
 };

@@ -24,6 +24,41 @@ describe('isESModule', () => {
         const obj = {};
         expect(isESModule(obj)).toBe(false);
     });
+
+    test('should handle edge cases', () => {
+        expect(isESModule(null)).toBe(false);
+        expect(isESModule(void 0)).toBe(false);
+
+        // 原始类型
+        expect(isESModule(123)).toBe(false);
+        expect(isESModule('string')).toBe(false);
+        expect(isESModule(true)).toBe(false);
+        expect(isESModule(Symbol('test'))).toBe(false);
+
+        // 包含 __esModule 但值为 falsy 的情况
+        expect(isESModule({ __esModule: false })).toBe(false);
+        expect(isESModule({ __esModule: 0 })).toBe(false);
+        expect(isESModule({ __esModule: '' })).toBe(false);
+        expect(isESModule({ __esModule: null })).toBe(false);
+        expect(isESModule({ __esModule: void 0 })).toBe(false);
+
+        // 包含 Symbol.toStringTag 但值不是 'Module' 的情况
+        expect(isESModule({ [Symbol.toStringTag]: 'Object' })).toBe(false);
+        expect(isESModule({ [Symbol.toStringTag]: 'Array' })).toBe(false);
+        expect(isESModule({ [Symbol.toStringTag]: null })).toBe(false);
+        expect(isESModule({ [Symbol.toStringTag]: void 0 })).toBe(false);
+
+        // 同时包含两个属性的情况
+        expect(
+            isESModule({ __esModule: true, [Symbol.toStringTag]: 'Module' })
+        ).toBe(true);
+        expect(
+            isESModule({ __esModule: false, [Symbol.toStringTag]: 'Module' })
+        ).toBe(true);
+        expect(
+            isESModule({ __esModule: true, [Symbol.toStringTag]: 'Object' })
+        ).toBe(true);
+    });
 });
 
 // 字面量和对象包装是存在区别的：
@@ -46,6 +81,7 @@ describe('isNotNullish', () => {
         expect(isNotNullish(new Number('1'))).toBe(true);
         expect(isNotNullish(Number.POSITIVE_INFINITY)).toBe(true);
         expect(isNotNullish(Number.NEGATIVE_INFINITY)).toBe(true);
+        expect(isNotNullish(Number.EPSILON)).toBe(true);
         // 字符串
         expect(isNotNullish('')).toBe(true);
         expect(isNotNullish('0')).toBe(true);
@@ -80,8 +116,6 @@ describe('isNotNullish', () => {
         // 函数
         expect(isNotNullish(() => {})).toBe(true);
         expect(isNotNullish(async () => {})).toBe(true);
-        expect(isNotNullish(() => {})).toBe(true);
-        expect(isNotNullish(async () => {})).toBe(true);
         expect(isNotNullish(new Function('return 1;'))).toBe(true);
         expect(isNotNullish(AsyncFunction('return 1;'))).toBe(true);
         // 特殊对象
@@ -92,7 +126,6 @@ describe('isNotNullish', () => {
         expect(isNotNullish(new WeakMap())).toBe(true);
         expect(isNotNullish(new WeakSet())).toBe(true);
         expect(isNotNullish(/test/)).toBe(true);
-        expect(isNotNullish(/test/)).toBe(true);
         expect(isNotNullish(new Error('test'))).toBe(true);
         expect(isNotNullish(Promise.resolve())).toBe(true);
         expect(isNotNullish(new URL('https://example.com'))).toBe(true);
@@ -101,6 +134,62 @@ describe('isNotNullish', () => {
         expect(isNotNullish(new File(['test'], 'file.txt'))).toBe(true);
         expect(isNotNullish(Math)).toBe(true);
         expect(isNotNullish(JSON)).toBe(true);
+        expect(isNotNullish(console)).toBe(true);
+    });
+
+    test('should handle edge cases with Number constructor', () => {
+        // Number 构造函数的各种用法
+        expect(isNotNullish(Number())).toBe(true); // Number() 返回 0
+        expect(isNotNullish(Number(undefined))).toBe(false); // Number(undefined) 返回 NaN
+        expect(isNotNullish(Number(null))).toBe(true); // Number(null) 返回 0
+        expect(isNotNullish(Number(''))).toBe(true); // Number('') 返回 0
+        expect(isNotNullish(Number('0'))).toBe(true); // Number('0') 返回 0
+        expect(isNotNullish(Number('123'))).toBe(true); // Number('123') 返回 123
+
+        // new Number 构造函数的各种用法
+        expect(isNotNullish(new Number())).toBe(true); // new Number() 返回 Number 对象
+        expect(isNotNullish(new Number(undefined))).toBe(false); // new Number(undefined) 包装 NaN
+        expect(isNotNullish(new Number(null))).toBe(true); // new Number(null) 包装 0
+        expect(isNotNullish(new Number(''))).toBe(true); // new Number('') 包装 0
+        expect(isNotNullish(new Number('0'))).toBe(true); // new Number('0') 包装 0
+        expect(isNotNullish(new Number('123'))).toBe(true); // new Number('123') 包装 123
+    });
+
+    test('should handle various NaN cases', () => {
+        // 各种产生 NaN 的情况
+        expect(isNotNullish(0 / 0)).toBe(false);
+        expect(isNotNullish(Math.sqrt(-1))).toBe(false);
+        expect(isNotNullish(Number.parseInt('abc'))).toBe(false);
+        expect(isNotNullish(Number.parseFloat('abc'))).toBe(false);
+        expect(isNotNullish(Number.NaN)).toBe(false);
+        expect(isNotNullish(Number.NaN)).toBe(false);
+
+        // 包装在 Number 对象中的 NaN
+        expect(isNotNullish(new Number(Number.NaN))).toBe(false);
+        expect(isNotNullish(new Number(0 / 0))).toBe(false);
+        expect(isNotNullish(new Number(Number.parseInt('abc')))).toBe(false);
+    });
+
+    test('should handle complex objects', () => {
+        // 自定义构造函数创建的对象
+        class CustomClass {
+            constructor(public value: number) {}
+        }
+        expect(isNotNullish(new CustomClass(123))).toBe(true);
+
+        // 冻结和密封的对象
+        const frozenObj = Object.freeze({ a: 1 });
+        const sealedObj = Object.seal({ b: 2 });
+        expect(isNotNullish(frozenObj)).toBe(true);
+        expect(isNotNullish(sealedObj)).toBe(true);
+
+        // 使用 defineProperty 创建的对象
+        const objWithDescriptor = {};
+        Object.defineProperty(objWithDescriptor, 'prop', {
+            value: 'test',
+            writable: false
+        });
+        expect(isNotNullish(objWithDescriptor)).toBe(true);
     });
 });
 
@@ -112,10 +201,13 @@ describe('isObject', () => {
         expect(isObject(Object.create(null))).toBe(true);
         expect(isObject(Object.create({}))).toBe(true);
         expect(isObject(Object.create(Object.prototype))).toBe(true);
+        expect(isObject(Object.create({ parent: 'value' }))).toBe(true);
         expect(isObject({ __proto__: null })).toBe(true);
         expect(isObject({ [Symbol.toStringTag]: 'Tag' })).toBe(true);
         expect(isObject(Math)).toBe(true);
         expect(isObject(JSON)).toBe(true);
+        class TestClass {}
+        expect(isObject(new TestClass())).toBe(true);
     });
 
     test('should return false for non-plain objects', () => {
@@ -157,8 +249,6 @@ describe('isObject', () => {
         // 函数
         expect(isObject(() => {})).toBe(false);
         expect(isObject(async () => {})).toBe(false);
-        expect(isObject(() => {})).toBe(false);
-        expect(isObject(async () => {})).toBe(false);
         expect(isObject(new Function('return 1;'))).toBe(false);
         expect(isObject(AsyncFunction('return 1;'))).toBe(false);
         // 特殊对象
@@ -169,13 +259,20 @@ describe('isObject', () => {
         expect(isObject(new WeakMap())).toBe(false);
         expect(isObject(new WeakSet())).toBe(false);
         expect(isObject(/test/)).toBe(false);
-        expect(isObject(/test/)).toBe(false);
         expect(isObject(new Error('test'))).toBe(false);
         expect(isObject(Promise.resolve())).toBe(false);
         expect(isObject(new URL('https://example.com'))).toBe(false);
         expect(isObject(new URLSearchParams('key=value'))).toBe(false);
         expect(isObject(new Blob(['test']))).toBe(false);
         expect(isObject(new File(['test'], 'file.txt'))).toBe(false);
+    });
+
+    test('should distinguish between objects and boxed primitives', () => {
+        // 确保包装对象被正确识别为非对象
+        expect(isObject(Object(42))).toBe(false); // 等同于 new Number(42)
+        expect(isObject(Object('str'))).toBe(false); // 等同于 new String('str')
+        expect(isObject(Object(true))).toBe(false); // 等同于 new Boolean(true)
+        expect(isObject(Object(Symbol('sym')))).toBe(false); // Symbol 包装对象
     });
 });
 
@@ -204,6 +301,7 @@ describe('removeFromArray', () => {
         removeFromArray(arrWithObj, num);
         expect(arrWithObj).toEqual([1, num, 3]);
     });
+
     test('should remove existing element from array', () => {
         const arr = [1, 2, 3];
         removeFromArray(arr, 2);
@@ -222,6 +320,139 @@ describe('removeFromArray', () => {
         const arr = [obj1, obj2];
         removeFromArray(arr, obj1);
         expect(arr).toEqual([obj2]);
+    });
+
+    test('should handle edge cases', () => {
+        // 空数组
+        const emptyArr: any[] = [];
+        removeFromArray(emptyArr, 1);
+        expect(emptyArr).toEqual([]);
+
+        // 单元素数组 - 移除存在的元素
+        const singleArr = [42];
+        removeFromArray(singleArr, 42);
+        expect(singleArr).toEqual([]);
+
+        // 单元素数组 - 移除不存在的元素
+        const singleArr2 = [42];
+        removeFromArray(singleArr2, 99);
+        expect(singleArr2).toEqual([42]);
+
+        // 所有元素都相同
+        const sameArr = [5, 5, 5, 5];
+        removeFromArray(sameArr, 5);
+        expect(sameArr).toEqual([5, 5, 5]);
+
+        // 包含 undefined 和 null
+        const nullishArr = [1, null, void 0, 2];
+        removeFromArray(nullishArr, null);
+        expect(nullishArr).toEqual([1, void 0, 2]);
+
+        const nullishArr2 = [1, null, void 0, 2];
+        removeFromArray(nullishArr2, void 0);
+        expect(nullishArr2).toEqual([1, null, 2]);
+    });
+
+    test('should handle NaN correctly', () => {
+        const nanArr = [1, Number.NaN, 2, Number.NaN];
+        removeFromArray(nanArr, Number.NaN);
+        expect(nanArr).toEqual([1, 2, Number.NaN]);
+    });
+
+    test('should handle sparse arrays', () => {
+        // 稀疏数组 - 包含空槽的数组
+        // biome-ignore lint/suspicious/noSparseArray: skip
+        const sparseArr = [1, , 3, , 5];
+        removeFromArray(sparseArr, void 0);
+        // 长度不应该有变化，空槽不能视作是 undefined 占位
+        expect(sparseArr).toHaveLength(5);
+        // biome-ignore lint/suspicious/noSparseArray: skip
+        expect(sparseArr).toEqual([1, , 3, , 5]);
+    });
+
+    test('should handle arrays with complex objects', () => {
+        // 复杂对象数组
+        const complexArr = [
+            { id: 1, nested: { value: 'a' } },
+            { id: 2, nested: { value: 'b' } },
+            { id: 1, nested: { value: 'a' } } // 内容相同但引用不同
+        ];
+        const targetObj = complexArr[0];
+        removeFromArray(complexArr, targetObj);
+        expect(complexArr).toHaveLength(2);
+        expect(complexArr[0]).toEqual({ id: 2, nested: { value: 'b' } });
+        expect(complexArr[1]).toEqual({ id: 1, nested: { value: 'a' } });
+
+        // 移除不存在的相似对象
+        removeFromArray(complexArr, { id: 1, nested: { value: 'a' } });
+        expect(complexArr).toHaveLength(2); // 没有变化
+    });
+
+    test('should handle arrays with different primitive types', () => {
+        let mixedArr: any[] = [1, '1', true, 1n, Symbol('test')];
+
+        // 移除数字 1
+        removeFromArray(mixedArr, 1);
+        expect(mixedArr).toEqual(['1', true, 1n, expect.any(Symbol)]);
+
+        // 重置数组
+        mixedArr = [1, '1', true, 1n, Symbol('test')];
+
+        // 移除字符串 '1'
+        removeFromArray(mixedArr, '1');
+        expect(mixedArr).toEqual([1, true, 1n, expect.any(Symbol)]);
+    });
+
+    test('should preserve array structure', () => {
+        // 确保数组的其他属性保持不变
+        const arr: any[] = [1, 2, 3];
+        (arr as any).customProperty = 'test';
+
+        removeFromArray(arr, 2);
+
+        // 检查数组元素
+        expect(arr.length).toBe(2);
+        expect(arr[0]).toBe(1);
+        expect(arr[1]).toBe(3);
+
+        // 检查自定义属性是否保留
+        expect(arr).toHaveProperty('customProperty', 'test');
+        expect((arr as any).customProperty).toBe('test');
+    });
+
+    test('should handle array with getter/setter elements', () => {
+        const arr: any[] = [1, 2, 3];
+
+        // 添加带有 getter/setter 的元素
+        Object.defineProperty(arr, '1', {
+            get() {
+                return 'getter';
+            },
+            set() {
+                /* setter */
+            },
+            enumerable: true
+        });
+
+        removeFromArray(arr, 'getter');
+        expect(arr).toHaveLength(2);
+        expect(arr[0]).toBe(1);
+        expect(arr[1]).toBe('getter'); // getter 仍然存在
+    });
+
+    test('should handle strict equality in removeFromArray', () => {
+        const obj1 = { id: 1 };
+        const obj2 = { id: 1 }; // 内容相同但引用不同
+        const arr = [obj1, obj2];
+
+        // 只删除引用相同的对象
+        removeFromArray(arr, obj1);
+        expect(arr).toHaveLength(1);
+        expect(arr[0]).toBe(obj2);
+
+        // 内容相同但引用不同的对象不会被删除
+        removeFromArray(arr, { id: 1 });
+        expect(arr).toHaveLength(1);
     });
 });
 
@@ -245,8 +476,6 @@ describe('isValidConfirmHookResult', () => {
     });
 
     test('should return true for function values', () => {
-        expect(isValidConfirmHookResult(() => {})).toBe(true);
-        expect(isValidConfirmHookResult(async () => {})).toBe(true);
         expect(isValidConfirmHookResult(() => {})).toBe(true);
         expect(isValidConfirmHookResult(async () => {})).toBe(true);
         expect(isValidConfirmHookResult(new Function('return 1;'))).toBe(true);
@@ -302,7 +531,6 @@ describe('isValidConfirmHookResult', () => {
         expect(isValidConfirmHookResult(new WeakMap())).toBe(false);
         expect(isValidConfirmHookResult(new WeakSet())).toBe(false);
         expect(isValidConfirmHookResult(/test/)).toBe(false);
-        expect(isValidConfirmHookResult(/test/)).toBe(false);
         expect(isValidConfirmHookResult(new Error('test'))).toBe(false);
         expect(isValidConfirmHookResult(Promise.resolve())).toBe(false);
         expect(isValidConfirmHookResult(new URL('https://example.com'))).toBe(
@@ -315,5 +543,209 @@ describe('isValidConfirmHookResult', () => {
         expect(isValidConfirmHookResult(new File(['test'], 'file.txt'))).toBe(
             false
         );
+    });
+
+    test('should handle edge cases for confirmation hook results', () => {
+        // 测试各种边界情况
+
+        // Promise 相关 - 应该返回 false
+        expect(isValidConfirmHookResult(Promise.resolve(true))).toBe(false);
+
+        // Handle rejected promise to avoid unhandled rejection
+        const rejectedPromise = Promise.reject(false);
+        rejectedPromise.catch(() => {}); // Prevent unhandled rejection
+        expect(isValidConfirmHookResult(rejectedPromise)).toBe(false);
+
+        // 异步函数返回的是 Promise，但函数本身是有效的
+        const asyncFn = async () => true;
+        expect(isValidConfirmHookResult(asyncFn)).toBe(true);
+
+        // 箭头函数和普通函数
+        expect(isValidConfirmHookResult((x: number) => x > 0)).toBe(true);
+        expect(isValidConfirmHookResult((x: number) => x > 0)).toBe(true);
+
+        // 生成器函数
+        expect(
+            isValidConfirmHookResult(function* () {
+                yield 1;
+            })
+        ).toBe(true);
+
+        // 类构造函数
+        class TestClass {}
+        expect(isValidConfirmHookResult(TestClass)).toBe(true);
+    });
+
+    test('should handle objects with Symbol properties', () => {
+        // 包含 Symbol 属性的对象
+        const symKey = Symbol('key');
+        const objWithSymbol = { [symKey]: 'value', regular: 'prop' };
+        expect(isValidConfirmHookResult(objWithSymbol)).toBe(true);
+
+        // Symbol.toStringTag 对象
+        const objWithToStringTag = { [Symbol.toStringTag]: 'CustomObject' };
+        expect(isValidConfirmHookResult(objWithToStringTag)).toBe(true);
+    });
+
+    test('should handle frozen and sealed objects', () => {
+        // 冻结的对象
+        const frozenObj = Object.freeze({ frozen: true });
+        expect(isValidConfirmHookResult(frozenObj)).toBe(true);
+
+        // 密封的对象
+        const sealedObj = Object.seal({ sealed: true });
+        expect(isValidConfirmHookResult(sealedObj)).toBe(true);
+
+        // 不可扩展的对象
+        const nonExtensibleObj = Object.preventExtensions({
+            nonExtensible: true
+        });
+        expect(isValidConfirmHookResult(nonExtensibleObj)).toBe(true);
+    });
+
+    test('should handle function edge cases', () => {
+        // 绑定函数
+        const originalFn = function (this: any, x: number) {
+            return this.value + x;
+        };
+        const boundFn = originalFn.bind({ value: 10 });
+        expect(isValidConfirmHookResult(boundFn)).toBe(true);
+
+        // 函数的 call 和 apply 方法
+        expect(isValidConfirmHookResult(originalFn.call)).toBe(true);
+        expect(isValidConfirmHookResult(originalFn.apply)).toBe(true);
+
+        // 内置函数
+        expect(isValidConfirmHookResult(console.log)).toBe(true);
+        expect(isValidConfirmHookResult(Math.max)).toBe(true);
+        expect(isValidConfirmHookResult(Array.prototype.push)).toBe(true);
+    });
+
+    test('should handle class and constructor edge cases', () => {
+        // 类实例 - 根据实际实现，类实例通过 toString 检查被识别为对象
+        class TestClass {
+            constructor(public value: number) {}
+        }
+        expect(isValidConfirmHookResult(new TestClass(42))).toBe(true); // 类实例通过 isObject 检查
+
+        // 继承的类实例
+        class ChildClass extends TestClass {}
+        expect(isValidConfirmHookResult(new ChildClass(42))).toBe(true); // 同样被识别为对象
+
+        // Error 实例
+        expect(isValidConfirmHookResult(new Error('test'))).toBe(false);
+        expect(isValidConfirmHookResult(new TypeError('test'))).toBe(false);
+    });
+});
+
+// Performance and stress tests
+describe('Performance Tests', () => {
+    test('should handle large arrays efficiently in removeFromArray', () => {
+        const largeArray = Array.from({ length: 10000 }, (_, i) => i);
+        const target = 5000;
+
+        const start = performance.now();
+        removeFromArray(largeArray, target);
+        const end = performance.now();
+
+        expect(largeArray).toHaveLength(9999);
+        expect(largeArray.includes(target)).toBe(false);
+        expect(end - start).toBeLessThan(100); // 应该在100ms内完成
+    });
+
+    test('should handle multiple rapid calls to utility functions', () => {
+        const iterations = 1000;
+        const start = performance.now();
+
+        for (let i = 0; i < iterations; ++i) {
+            isNotNullish(i);
+            isObject({ value: i });
+            isESModule({ __esModule: true });
+            isValidConfirmHookResult(false);
+        }
+
+        const end = performance.now();
+        expect(end - start).toBeLessThan(50); // 应该在50ms内完成
+    });
+
+    test('should handle rapid array modifications', () => {
+        const arr = [1, 2, 3, 4, 5];
+        const start = performance.now();
+
+        // 快速进行多次删除操作
+        removeFromArray(arr, 3);
+        removeFromArray(arr, 1);
+        removeFromArray(arr, 5);
+        removeFromArray(arr, 99); // 不存在的元素
+
+        const end = performance.now();
+        expect(arr).toEqual([2, 4]);
+        expect(end - start).toBeLessThan(10); // 应该非常快
+    });
+});
+
+// Type compatibility and edge cases
+describe('Type Compatibility Tests', () => {
+    test('should handle mixed type arrays in removeFromArray', () => {
+        const mixedArray: any[] = [
+            'string',
+            42,
+            true,
+            null,
+            undefined,
+            { obj: 'value' },
+            [1, 2, 3],
+            Symbol('test'),
+            () => 'fn',
+            new Date(),
+            /regex/,
+            new Map(),
+            new Set()
+        ];
+
+        const originalLength = mixedArray.length;
+
+        // 尝试删除不存在的元素
+        removeFromArray(mixedArray, 'nonexistent');
+        expect(mixedArray).toHaveLength(originalLength);
+
+        // 删除存在的元素
+        removeFromArray(mixedArray, 42);
+        expect(mixedArray).toHaveLength(originalLength - 1);
+        expect(mixedArray.includes(42)).toBe(false);
+    });
+});
+
+// Error handling and boundary tests
+describe('Error Handling Tests', () => {
+    test('should handle circular references in objects', () => {
+        const circularObj: any = { name: 'circular' };
+        circularObj.self = circularObj;
+
+        // 这些函数应该能处理循环引用而不崩溃
+        expect(() => isObject(circularObj)).not.toThrow();
+        expect(() => isValidConfirmHookResult(circularObj)).not.toThrow();
+        expect(() => isNotNullish(circularObj)).not.toThrow();
+
+        expect(isObject(circularObj)).toBe(true);
+        expect(isValidConfirmHookResult(circularObj)).toBe(true);
+        expect(isNotNullish(circularObj)).toBe(true);
+    });
+
+    test('should handle objects with overridden toString methods', () => {
+        const objWithCustomToString = {
+            toString: () => '[object CustomObject]'
+        };
+        expect(isObject(objWithCustomToString)).toBe(true);
+        expect(isValidConfirmHookResult(objWithCustomToString)).toBe(true);
+        expect(isNotNullish(objWithCustomToString)).toBe(true);
+    });
+
+    test('should handle objects with null prototype', () => {
+        const nullProtoObj = Object.create(null);
+        nullProtoObj.prop = 'value';
+        expect(isObject(nullProtoObj)).toBe(true);
+        expect(isValidConfirmHookResult(nullProtoObj)).toBe(true);
+        expect(isNotNullish(nullProtoObj)).toBe(true);
     });
 });
