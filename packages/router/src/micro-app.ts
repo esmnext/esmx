@@ -28,8 +28,26 @@ export class MicroApp {
         // 创建新的应用
         const app = factory ? factory(router) : null;
         if (isBrowser && app) {
-            const root: HTMLElement | null = this.root ?? getRootEl(router.id);
+            let root: HTMLElement | null = this.root;
+            if (root === null) {
+                root = document.getElementById(router.id);
+                if (root === null) {
+                    root = document.createElement('div');
+                    root.id = router.id;
+                }
+            } else if (router.isLayer) {
+                root = document.createElement('div');
+                if (router.parsedOptions.layer?.style) {
+                    Object.assign(
+                        root.style,
+                        router.parsedOptions.layer?.style
+                    );
+                }
+            }
             app.mount(root);
+            if (root.parentNode === null) {
+                document.body.appendChild(root);
+            }
             this.root = root;
             if (oldApp) {
                 oldApp.unmount();
