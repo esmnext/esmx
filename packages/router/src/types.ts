@@ -113,6 +113,7 @@ export interface RouteLocation {
 export type RouteLocationRaw = RouteLocation | string;
 export interface Route {
     readonly type: RouteType;
+    readonly isPush: boolean;
     readonly req: IncomingMessage | null;
     readonly res: ServerResponse | null;
     readonly url: URL;

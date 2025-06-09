@@ -72,6 +72,9 @@ export function createRoute(
             return options.res;
         },
         type: toType,
+        get isPush() {
+            return this.type.startsWith('push');
+        },
         url: to,
         params: {},
         query: {},

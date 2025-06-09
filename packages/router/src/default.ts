@@ -2,7 +2,7 @@ import type { Route } from './types';
 
 export function DEFAULT_LOCATION(to: Route, from: Route | null) {
     const href = to.url.href;
-    if (to.type.startsWith('push')) {
+    if (to.isPush) {
         try {
             const newWindow = window.open(href);
             if (!newWindow) {
