@@ -27,6 +27,7 @@ export class Router {
     private _route: null | Route = null;
     private readonly _navigation: Navigation;
     private readonly _microApp: MicroApp = new MicroApp();
+    private _destroys: Array<() => void> = [];
 
     private readonly _tasks: Record<RouteTaskType, RouteConfirmHook> = {
         [RouteTaskType.location]: (to, from) => {
@@ -231,7 +232,7 @@ export class Router {
             const destroyed = layer.destroyed;
             layer.destroyed = (result) => {
                 if (result.type === 'push' && layer.autoPush) {
-                    const href = result.result.url.href;
+                    const href = result.route.url.href;
                     if (layer.push) {
                         this.push(href);
                     } else {
@@ -282,6 +283,12 @@ export class Router {
     }
     public closeLayer() {
         if (this.isLayer) {
+            this._destroys.push(() => {
+                this.parsedOptions.layer?.destroyed?.({
+                    type: 'close',
+                    route: this._route
+                });
+            });
             this.destroy();
         }
     }
@@ -313,10 +320,8 @@ export class Router {
     public destroy() {
         this._navigation.destroy();
         this._microApp.destroy();
-        this.parsedOptions.layer?.destroyed?.({
-            type: 'close',
-            result: null
-        });
+        this._destroys.forEach((func) => func());
+        this._destroys.splice(0);
     }
     private async _transitionTo(
         toType: RouteType,

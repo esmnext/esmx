@@ -60,9 +60,9 @@ export interface RouterLayerOptions {
     destroyed?: (result: RouterLayerResult) => void;
 }
 export type RouterLayerResult =
-    | { type: 'push'; result: Route }
-    | { type: 'close'; result: null }
-    | { type: 'success'; result: any };
+    | { type: 'push'; route: Route }
+    | { type: 'close'; route: Route | null }
+    | { type: 'success'; route: Route };
 
 export interface RouterParsedOptions extends Required<RouterOptions> {
     /** 路由匹配器实例 */
