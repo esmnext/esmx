@@ -1,7 +1,6 @@
 import { DEFAULT_LOCATION } from './default';
 import { createMatcher } from './matcher';
 import {
-    type Route,
     RouterMode,
     type RouterOptions,
     type RouterParsedOptions
