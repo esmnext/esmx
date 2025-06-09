@@ -63,6 +63,7 @@ export class MicroApp {
     public destroy() {
         this.app?.unmount();
         this.app = null;
+        this.root?.remove();
         this._factory = null;
     }
 }

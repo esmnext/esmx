@@ -74,6 +74,7 @@ const router = createRouter({
                 </RouterLink>
             </div>
         </div>
+        <button v-if="$router.isLayer" class="close-btn" @click="$router.closeLayer()">关闭</button>
     </div>
 </template>
 <script lang="ts" setup>
@@ -419,4 +420,32 @@ function getRelatedIds() {
         grid-template-columns: 1fr;
     }
 }
+
+.close-btn {
+    position: fixed;
+    right: 20px;
+    top: 20px;
+    padding: 8px 16px;
+    background-color: #FFC107;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+    z-index: 1000;
+}
+
+.close-btn:hover {
+    background-color: #FFA000;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.close-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
 </style>
