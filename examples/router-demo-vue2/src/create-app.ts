@@ -30,16 +30,14 @@ export async function createApp({
                 render: (h) => h(RouterView)
             });
             return {
-                mount(el) {
-                    const ssrEl = el.querySelector(
+                mount(root) {
+                    const ssrEl = root.querySelector(
                         '[data-server-rendered="true"]'
                     );
                     if (ssrEl) {
                         app.$mount(ssrEl, true);
                     } else {
-                        const appEl = document.createElement('div');
-                        el.appendChild(appEl);
-                        app.$mount(appEl);
+                        root.appendChild(app.$mount().$el);
                     }
                 },
                 unmount() {
