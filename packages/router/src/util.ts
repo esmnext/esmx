@@ -13,7 +13,7 @@ export function isNotNullish(value: unknown): boolean {
     );
 }
 
-export function isObject(o: unknown) {
+export function isObject(o: unknown): o is Record<string, any> {
     return (
         o?.constructor === Object ||
         Object.prototype.toString.call(o) === '[object Object]'

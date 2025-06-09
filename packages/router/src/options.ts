@@ -19,6 +19,7 @@ export function parsedOptions(options: RouterOptions): RouterParsedOptions {
         );
     }
     const result: RouterParsedOptions = {
+        rootStyle: options.rootStyle ?? false,
         id: options.id || 'app',
         context: options.context ?? {},
         env: options.env || '',

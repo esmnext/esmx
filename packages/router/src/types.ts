@@ -21,6 +21,7 @@ export interface RouterOptions {
     apps?: RouterMicroApp;
     normalizeURL?: (to: URL, from: URL | null) => URL;
     location?: RouteHandleHook;
+    rootStyle?: Partial<CSSStyleDeclaration> | false;
     layer?: RouterLayerOptions | null;
 }
 
@@ -57,7 +58,6 @@ export interface RouterLayerOptions {
      * @param result - 包含路由层返回结果的对象
      */
     destroyed?: (result: RouterLayerResult) => void;
-    style?: Partial<CSSStyleDeclaration> | false;
 }
 export type RouterLayerResult =
     | { type: 'push'; result: Route }

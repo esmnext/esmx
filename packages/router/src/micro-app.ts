@@ -1,19 +1,6 @@
 import type { Router } from './router';
 import type { RouterMicroAppCallback, RouterMicroAppOptions } from './types';
-import { isBrowser } from './util';
-
-const getRootEl = (id: string): HTMLElement => {
-    let root: HTMLElement | null = null;
-    if (id) {
-        root = document.getElementById(id);
-    }
-    if (root === null) {
-        root = document.createElement('div');
-        root.id = id;
-        document.body.appendChild(root);
-    }
-    return root;
-};
+import { isBrowser, isObject } from './util';
 
 export class MicroApp {
     public app: RouterMicroAppOptions | null = null;
@@ -30,21 +17,15 @@ export class MicroApp {
         if (isBrowser && app) {
             let root: HTMLElement | null = this.root;
             if (root === null) {
-                if (router.isLayer) {
+                root = document.getElementById(router.id);
+                if (root === null) {
                     root = document.createElement('div');
-                    if (router.parsedOptions.layer?.style) {
-                        Object.assign(
-                            root.style,
-                            router.parsedOptions.layer?.style
-                        );
-                    }
                     root.id = router.id;
-                } else {
-                    root = document.getElementById(router.id);
-                    if (root === null) {
-                        root = document.createElement('div');
-                        root.id = router.id;
-                    }
+                }
+                const { rootStyle } = router.parsedOptions;
+                console.log('>>>>>>>', rootStyle);
+                if (isObject(rootStyle)) {
+                    Object.assign(root.style, router.parsedOptions.rootStyle);
                 }
             }
             app.mount(root);
