@@ -2,16 +2,28 @@ import type { RouteConfirmHookResult } from './types';
 export const isBrowser = typeof window === 'object';
 
 export function isNotNullish(value: unknown): boolean {
-    return value !== undefined && value !== null && !Number.isNaN(value);
+    return (
+        value !== undefined &&
+        value !== null &&
+        !Number.isNaN(
+            value instanceof Number
+                ? value.valueOf() // 对于 new Number() 的情况
+                : value
+        )
+    );
 }
 
 export function isObject(o: unknown) {
-    return Object.prototype.toString.call(o) === '[object Object]';
+    return (
+        o?.constructor === Object ||
+        Object.prototype.toString.call(o) === '[object Object]'
+    );
 }
 
 export function isESModule(obj: any): boolean {
     return Boolean(obj.__esModule) || obj[Symbol.toStringTag] === 'Module';
 }
+
 export const removeFromArray = <T>(arr: T[], ele: T) => {
     const i = arr.findIndex((item) => item === ele);
     if (i === -1) return;
@@ -23,8 +35,10 @@ export function isValidConfirmHookResult(
 ): result is Exclude<RouteConfirmHookResult, void> {
     return (
         result === false ||
+        (result instanceof Boolean && result.valueOf() === false) ||
         typeof result === 'function' ||
         typeof result === 'string' ||
+        result instanceof String ||
         isObject(result)
     );
 }
