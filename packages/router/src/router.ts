@@ -239,6 +239,7 @@ export class Router {
                     }
                 }
                 destroyed?.(result);
+                resolve(result);
             };
         });
         const router = new Router({
@@ -279,6 +280,11 @@ export class Router {
         });
         return promise;
     }
+    public closeLayer() {
+        if (this.isLayer) {
+            this.destroy();
+        }
+    }
     public async renderToString(throwError = false): Promise<string | null> {
         try {
             const result = await this._microApp.app?.renderToString?.();
@@ -307,6 +313,10 @@ export class Router {
     public destroy() {
         this._navigation.destroy();
         this._microApp.destroy();
+        this.parsedOptions.layer?.destroyed?.({
+            type: 'close',
+            result: null
+        });
     }
     private async _transitionTo(
         toType: RouteType,
