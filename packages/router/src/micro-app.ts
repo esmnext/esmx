@@ -28,28 +28,31 @@ export class MicroApp {
         // 创建新的应用
         const app = factory ? factory(router) : null;
         if (isBrowser && app) {
-            const root = getRootEl(this.root ? '' : router.id);
-            const result = app.mount(root);
-            this.root = result instanceof HTMLElement ? result : root;
+            const root: HTMLElement | null = this.root ?? getRootEl(router.id);
+            app.mount(root);
+            this.root = root;
+            if (oldApp) {
+                oldApp.unmount();
+            }
         }
         this.app = app;
         this._factory = factory;
         // 销毁旧的应用
-        isBrowser && oldApp?.unmount();
     }
     private _getNextFactory({
         route,
         options
     }: Router): RouterMicroAppCallback | null {
+        const name = route.matched[0].app;
         if (
-            typeof route.matched[0].app === 'string' &&
+            typeof name === 'string' &&
             options.apps &&
             typeof options.apps === 'object'
         ) {
-            return options.apps[route.matched[0].app] || null;
+            return options.apps[name] || null;
         }
-        if (typeof route.matched[0].app === 'function') {
-            return route.matched[0].app;
+        if (typeof name === 'function') {
+            return name;
         }
         if (typeof options.apps === 'function') {
             return options.apps;

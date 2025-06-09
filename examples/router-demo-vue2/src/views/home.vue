@@ -19,6 +19,7 @@
                         <div class="card-title">探索 Esmx 路由的强大功能</div>
                         <div class="card-meta">{{ new Date().toLocaleDateString() }}</div>
                     </div>
+                    <div @click="$router.pushLayer(`/news/${id}`)">弹层</div>
                     <RouterLink :to="{
                         path: `/news/${id}`,
                         state: { id }

@@ -52,6 +52,7 @@ export interface RouterLayerOptions {
      * @param result - 包含路由层返回结果的对象
      */
     destroyed?: (result: RouterLayerResult) => void;
+    style?: Partial<CSSStyleDeclaration> | false;
 }
 export type RouterLayerResult =
     | { type: 'push'; result: Route }
@@ -64,7 +65,7 @@ export interface RouterParsedOptions extends Required<RouterOptions> {
 }
 
 export interface RouterMicroAppOptions {
-    mount: (rootContainer: HTMLElement) => unknown | HTMLElement;
+    mount: (el: HTMLElement) => void;
     unmount: () => void;
     renderToString?: () => Awaitable<string>;
 }

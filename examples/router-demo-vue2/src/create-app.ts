@@ -30,25 +30,21 @@ export async function createApp({
                 render: (h) => h(RouterView)
             });
             return {
-                mount(root) {
-                    const ssrEl = root.firstElementChild;
-                    if (
-                        root.parentNode &&
-                        ssrEl &&
-                        ssrEl.hasAttribute('data-server-rendered')
-                    ) {
-                        root.parentNode.replaceChild(ssrEl, root);
-                        root.getAttributeNames().forEach((name) => {
-                            ssrEl.setAttribute(name, root.getAttribute(name)!);
-                        });
+                mount(el) {
+                    const ssrEl = el.querySelector(
+                        '[data-server-rendered="true"]'
+                    );
+                    if (ssrEl) {
                         app.$mount(ssrEl, true);
-                        return ssrEl;
                     } else {
-                        app.$mount(root);
+                        const appEl = document.createElement('div');
+                        el.appendChild(appEl);
+                        app.$mount(appEl);
                     }
                 },
                 unmount() {
                     app.$destroy();
+                    app.$el.remove();
                 },
                 async renderToString() {
                     if (typeof renderToString === 'function') {
