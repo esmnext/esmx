@@ -23,7 +23,6 @@ export class MicroApp {
                     root.id = router.id;
                 }
                 const { rootStyle } = router.parsedOptions;
-                console.log('>>>>>>>', rootStyle);
                 if (isObject(rootStyle)) {
                     Object.assign(root.style, router.parsedOptions.rootStyle);
                 }

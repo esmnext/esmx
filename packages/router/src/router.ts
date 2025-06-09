@@ -241,24 +241,6 @@ export class Router {
                 destroyed?.(result);
             };
         });
-        console.log('>>>>>>>>', {
-            rootStyle: {
-                position: 'fixed',
-                top: '0',
-                left: '0',
-                width: '100%',
-                height: '100%',
-                zIndex: '1000',
-                background: 'rgba(0, 0,0, 0.6)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-            },
-            ...this.options,
-            id: `${this.id}__route_layer__${LAYER_ID.generate()}`,
-            ...options,
-            layer
-        });
         const router = new Router({
             rootStyle: {
                 position: 'fixed',
