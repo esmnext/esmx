@@ -19,7 +19,7 @@ export function parsedOptions(options: RouterOptions): RouterParsedOptions {
         );
     }
     const result: RouterParsedOptions = {
-        id: options.id ?? 'app',
+        id: options.id || 'app',
         context: options.context ?? {},
         env: options.env || '',
         req: options.req || null,

@@ -1,7 +1,7 @@
 <template>
-    <div class="app">
+    <div class="app" :class="{ 'is-layer': $router.isLayer }">
         <div class="app-container">
-            <nav class="neo-nav">
+            <nav class="neo-nav" v-if="!$router.isLayer">
                 <div class="nav-brand">Esmx</div>
                 <div class="nav-links">
                     <router-link to="/" class="nav-item">
@@ -24,7 +24,7 @@
                 <router-view />
             </main>
 
-            <div class="neo-route-panel">
+            <div class="neo-route-panel"  v-if="!$router.isLayer">
                 <div class="panel-header">
                     <h2 class="panel-title">Route</h2>
                     <div class="panel-controls">
@@ -77,7 +77,6 @@ body {
 </style>
 <style scoped>
 .app {
-    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -253,5 +252,15 @@ body {
     .nav-item {
         padding: 0.5rem 0.75rem;
     }
+}
+.is-layer {
+    overflow-y: scroll;
+    width: 600px;
+    height: 600px;
+    background: #fff;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    margin: 0 auto;
+    overscroll-behavior: contain;
 }
 </style>

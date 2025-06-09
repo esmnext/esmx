@@ -38,6 +38,7 @@ export class MicroApp {
                             router.parsedOptions.layer?.style
                         );
                     }
+                    root.id = router.id;
                 } else {
                     root = document.getElementById(router.id);
                     if (root === null) {

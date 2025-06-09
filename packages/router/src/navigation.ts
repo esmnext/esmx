@@ -1,3 +1,4 @@
+import { PAGE_ID } from './increment-id';
 import {
     type Route,
     type RouteState,
@@ -12,7 +13,6 @@ type NavigationGoResult = null | {
     state: RouteState;
 };
 
-let __globalPageId__ = 0;
 const PAGE_ID_KEY = '__pageId__';
 
 export class Navigation {
@@ -53,7 +53,7 @@ export class Navigation {
     public push(route: Route): RouteState {
         const state: RouteState = {
             ...route.state,
-            [PAGE_ID_KEY]: ++__globalPageId__
+            [PAGE_ID_KEY]: PAGE_ID.generate()
         };
         this._navigation.pushState(state, '', route.fullPath);
         return Object.freeze(state);
@@ -64,8 +64,8 @@ export class Navigation {
         const oldId =
             oldState && typeof oldState[PAGE_ID_KEY] === 'number'
                 ? oldState[PAGE_ID_KEY]
-                : ++__globalPageId__;
-        const id = __globalPageId__ === 0 ? ++__globalPageId__ : oldId;
+                : PAGE_ID.generate();
+        const id = PAGE_ID.equal(0) ? PAGE_ID.generate() : oldId;
         const state: RouteState = Object.freeze({
             ...oldState,
             ...route.state,

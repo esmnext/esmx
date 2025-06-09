@@ -1,3 +1,4 @@
+import { LAYER_ID } from './increment-id';
 import { MicroApp } from './micro-app';
 import { Navigation } from './navigation';
 import { parsedOptions } from './options';
@@ -231,7 +232,10 @@ export class Router {
                 width: '100%',
                 height: '100%',
                 zIndex: '1000',
-                background: 'rgba(0, 0,0, 0.6)'
+                background: 'rgba(0, 0,0, 0.6)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
             },
             ...options?.layer
         };
@@ -251,6 +255,7 @@ export class Router {
         });
         const router = new Router({
             ...this.options,
+            id: `${this.id}__route_layer__${LAYER_ID.generate()}`,
             ...options,
             layer
         });
