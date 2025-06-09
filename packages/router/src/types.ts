@@ -26,6 +26,11 @@ export interface RouterOptions {
 
 export interface RouterLayerOptions {
     /**
+     * 是否启用弹层模式
+     */
+    enable?: boolean;
+
+    /**
      * 路由层初始化参数，以键值对形式传递
      */
     params?: Record<string, any>;

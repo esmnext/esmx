@@ -24,7 +24,6 @@ export class Router {
     public readonly options: RouterOptions;
     public readonly parsedOptions: RouterParsedOptions;
     public readonly isLayer: boolean;
-    public readonly layerResult: Record<string, string> = {};
     private _route: null | Route = null;
     private readonly _navigation: Navigation;
     private readonly _microApp: MicroApp = new MicroApp();
@@ -141,7 +140,7 @@ export class Router {
     public constructor(options: RouterOptions) {
         this.options = options;
         this.parsedOptions = parsedOptions(options);
-        this.isLayer = !!this.parsedOptions.layer;
+        this.isLayer = this.parsedOptions.layer?.enable === true;
 
         this._navigation = new Navigation(
             this.parsedOptions,
@@ -220,6 +219,7 @@ export class Router {
         options?: RouterOptions
     ): Promise<{ promise: Promise<RouterLayerResult>; router: Router }> {
         const layer: Required<RouterLayerOptions> = {
+            enable: true,
             params: {},
             shouldClose: () => false,
             autoPush: true,
