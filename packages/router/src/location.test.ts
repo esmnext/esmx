@@ -252,145 +252,144 @@ describe('parseLocation', () => {
 });
 
 describe('normalizeURL more', () => {
-    Object.entries({
-        'https://www.esmx.dev': {
-            '/': 'https://www.esmx.dev/',
-            '/new': 'https://www.esmx.dev/new',
-            '/new/': 'https://www.esmx.dev/new/',
-            '/new/100': 'https://www.esmx.dev/new/100',
-            '/new/100/': 'https://www.esmx.dev/new/100/',
-            '..': 'https://www.esmx.dev/',
-            '../': 'https://www.esmx.dev/',
-            '../new': 'https://www.esmx.dev/new',
-            '../new/': 'https://www.esmx.dev/new/',
-            '../new/100': 'https://www.esmx.dev/new/100',
-            '../new/100/': 'https://www.esmx.dev/new/100/',
-            '': 'https://www.esmx.dev/',
-            new: 'https://www.esmx.dev/new',
-            'new/': 'https://www.esmx.dev/new/',
-            'new/100': 'https://www.esmx.dev/new/100',
-            'new/100/': 'https://www.esmx.dev/new/100/',
-            '.': 'https://www.esmx.dev/',
-            './': 'https://www.esmx.dev/',
-            './new': 'https://www.esmx.dev/new',
-            './new/': 'https://www.esmx.dev/new/',
-            './new/100': 'https://www.esmx.dev/new/100',
-            './new/100/': 'https://www.esmx.dev/new/100/',
-            '.a': 'https://www.esmx.dev/.a',
-            '..a': 'https://www.esmx.dev/..a',
-            '.a/': 'https://www.esmx.dev/.a/',
-            '..a/': 'https://www.esmx.dev/..a/',
-            'new/../.': 'https://www.esmx.dev/'
-        },
-        'https://www.esmx.dev/': {
-            '/': 'https://www.esmx.dev/',
-            '/new': 'https://www.esmx.dev/new',
-            '/new/': 'https://www.esmx.dev/new/',
-            '/new/100': 'https://www.esmx.dev/new/100',
-            '/new/100/': 'https://www.esmx.dev/new/100/',
-            '..': 'https://www.esmx.dev/',
-            '../': 'https://www.esmx.dev/',
-            '../new': 'https://www.esmx.dev/new',
-            '../new/': 'https://www.esmx.dev/new/',
-            '../new/100': 'https://www.esmx.dev/new/100',
-            '../new/100/': 'https://www.esmx.dev/new/100/',
-            '': 'https://www.esmx.dev/',
-            new: 'https://www.esmx.dev/new',
-            'new/': 'https://www.esmx.dev/new/',
-            'new/100': 'https://www.esmx.dev/new/100',
-            'new/100/': 'https://www.esmx.dev/new/100/',
-            '.': 'https://www.esmx.dev/',
-            './': 'https://www.esmx.dev/',
-            './new': 'https://www.esmx.dev/new',
-            './new/': 'https://www.esmx.dev/new/',
-            './new/100': 'https://www.esmx.dev/new/100',
-            './new/100/': 'https://www.esmx.dev/new/100/',
-            '.a': 'https://www.esmx.dev/.a',
-            '..a': 'https://www.esmx.dev/..a',
-            '.a/': 'https://www.esmx.dev/.a/',
-            '..a/': 'https://www.esmx.dev/..a/',
-            'new/../.': 'https://www.esmx.dev/'
-        },
-        'https://www.esmx.dev/a/b/c': {
-            '/': 'https://www.esmx.dev/a/b/',
-            '/new': 'https://www.esmx.dev/a/b/new',
-            '/new/': 'https://www.esmx.dev/a/b/new/',
-            '/new/100': 'https://www.esmx.dev/a/b/new/100',
-            '/new/100/': 'https://www.esmx.dev/a/b/new/100/',
-            '..': 'https://www.esmx.dev/a/',
-            '../': 'https://www.esmx.dev/a/',
-            '../new': 'https://www.esmx.dev/a/new',
-            '../new/': 'https://www.esmx.dev/a/new/',
-            '../new/100': 'https://www.esmx.dev/a/new/100',
-            '../new/100/': 'https://www.esmx.dev/a/new/100/',
-            '': 'https://www.esmx.dev/a/b/c',
-            new: 'https://www.esmx.dev/a/b/new',
-            'new/': 'https://www.esmx.dev/a/b/new/',
-            'new/100': 'https://www.esmx.dev/a/b/new/100',
-            'new/100/': 'https://www.esmx.dev/a/b/new/100/',
-            '.': 'https://www.esmx.dev/a/b/',
-            './': 'https://www.esmx.dev/a/b/',
-            './new': 'https://www.esmx.dev/a/b/new',
-            './new/': 'https://www.esmx.dev/a/b/new/',
-            './new/100': 'https://www.esmx.dev/a/b/new/100',
-            './new/100/': 'https://www.esmx.dev/a/b/new/100/',
-            '.a': 'https://www.esmx.dev/a/b/.a',
-            '..a': 'https://www.esmx.dev/a/b/..a',
-            '.a/': 'https://www.esmx.dev/a/b/.a/',
-            '..a/': 'https://www.esmx.dev/a/b/..a/',
-            'new/../.': 'https://www.esmx.dev/a/b/',
-            'new/.././a/../../x/': 'https://www.esmx.dev/a/x/'
-        },
-        'https://www.esmx.dev/a/b/c/': {
-            '/': 'https://www.esmx.dev/a/b/c/',
-            '/new': 'https://www.esmx.dev/a/b/c/new',
-            '/new/': 'https://www.esmx.dev/a/b/c/new/',
-            '/new/100': 'https://www.esmx.dev/a/b/c/new/100',
-            '/new/100/': 'https://www.esmx.dev/a/b/c/new/100/',
-            '..': 'https://www.esmx.dev/a/b/',
-            '../': 'https://www.esmx.dev/a/b/',
-            '../new': 'https://www.esmx.dev/a/b/new',
-            '../new/': 'https://www.esmx.dev/a/b/new/',
-            '../new/100': 'https://www.esmx.dev/a/b/new/100',
-            '../new/100/': 'https://www.esmx.dev/a/b/new/100/',
-            '': 'https://www.esmx.dev/a/b/c/',
-            new: 'https://www.esmx.dev/a/b/c/new',
-            'new/': 'https://www.esmx.dev/a/b/c/new/',
-            'new/100': 'https://www.esmx.dev/a/b/c/new/100',
-            'new/100/': 'https://www.esmx.dev/a/b/c/new/100/',
-            '.': 'https://www.esmx.dev/a/b/c/',
-            './': 'https://www.esmx.dev/a/b/c/',
-            './new': 'https://www.esmx.dev/a/b/c/new',
-            './new/': 'https://www.esmx.dev/a/b/c/new/',
-            './new/100': 'https://www.esmx.dev/a/b/c/new/100',
-            './new/100/': 'https://www.esmx.dev/a/b/c/new/100/',
-            '.a': 'https://www.esmx.dev/a/b/c/.a',
-            '..a': 'https://www.esmx.dev/a/b/c/..a',
-            '.a/': 'https://www.esmx.dev/a/b/c/.a/',
-            '..a/': 'https://www.esmx.dev/a/b/c/..a/',
-            'new/.././': 'https://www.esmx.dev/a/b/c/',
-            'new/.././a/../../x/': 'https://www.esmx.dev/a/b/x/'
-        }
-    }).map(([base, cases]) => {
-        test.each(Object.entries(cases))(
-            `base: ${base}, input: $0`,
-            (input, expected) => {
-                const url = normalizeURL(input, new URL(base));
-                expect(url).toEqURL(expected);
-
-                const pathSuffix = '?a&b=1&c=2&a=&a=4&base=10#hash';
-                const urlWithSuffix = normalizeURL(
-                    input + pathSuffix,
-                    new URL(base)
-                );
-                expect(urlWithSuffix).toEqURL(expected + pathSuffix);
-
-                const urlWithBaseSuffix = normalizeURL(
-                    input + pathSuffix,
-                    new URL(base + '?base=base#base')
-                );
-                expect(urlWithBaseSuffix).toEqURL(expected + pathSuffix);
+    describe.for(
+        Object.entries({
+            'https://www.esmx.dev': {
+                '/': 'https://www.esmx.dev/',
+                '/new': 'https://www.esmx.dev/new',
+                '/new/': 'https://www.esmx.dev/new/',
+                '/new/100': 'https://www.esmx.dev/new/100',
+                '/new/100/': 'https://www.esmx.dev/new/100/',
+                '..': 'https://www.esmx.dev/',
+                '../': 'https://www.esmx.dev/',
+                '../new': 'https://www.esmx.dev/new',
+                '../new/': 'https://www.esmx.dev/new/',
+                '../new/100': 'https://www.esmx.dev/new/100',
+                '../new/100/': 'https://www.esmx.dev/new/100/',
+                '': 'https://www.esmx.dev/',
+                new: 'https://www.esmx.dev/new',
+                'new/': 'https://www.esmx.dev/new/',
+                'new/100': 'https://www.esmx.dev/new/100',
+                'new/100/': 'https://www.esmx.dev/new/100/',
+                '.': 'https://www.esmx.dev/',
+                './': 'https://www.esmx.dev/',
+                './new': 'https://www.esmx.dev/new',
+                './new/': 'https://www.esmx.dev/new/',
+                './new/100': 'https://www.esmx.dev/new/100',
+                './new/100/': 'https://www.esmx.dev/new/100/',
+                '.a': 'https://www.esmx.dev/.a',
+                '..a': 'https://www.esmx.dev/..a',
+                '.a/': 'https://www.esmx.dev/.a/',
+                '..a/': 'https://www.esmx.dev/..a/',
+                'new/../.': 'https://www.esmx.dev/'
+            },
+            'https://www.esmx.dev/': {
+                '/': 'https://www.esmx.dev/',
+                '/new': 'https://www.esmx.dev/new',
+                '/new/': 'https://www.esmx.dev/new/',
+                '/new/100': 'https://www.esmx.dev/new/100',
+                '/new/100/': 'https://www.esmx.dev/new/100/',
+                '..': 'https://www.esmx.dev/',
+                '../': 'https://www.esmx.dev/',
+                '../new': 'https://www.esmx.dev/new',
+                '../new/': 'https://www.esmx.dev/new/',
+                '../new/100': 'https://www.esmx.dev/new/100',
+                '../new/100/': 'https://www.esmx.dev/new/100/',
+                '': 'https://www.esmx.dev/',
+                new: 'https://www.esmx.dev/new',
+                'new/': 'https://www.esmx.dev/new/',
+                'new/100': 'https://www.esmx.dev/new/100',
+                'new/100/': 'https://www.esmx.dev/new/100/',
+                '.': 'https://www.esmx.dev/',
+                './': 'https://www.esmx.dev/',
+                './new': 'https://www.esmx.dev/new',
+                './new/': 'https://www.esmx.dev/new/',
+                './new/100': 'https://www.esmx.dev/new/100',
+                './new/100/': 'https://www.esmx.dev/new/100/',
+                '.a': 'https://www.esmx.dev/.a',
+                '..a': 'https://www.esmx.dev/..a',
+                '.a/': 'https://www.esmx.dev/.a/',
+                '..a/': 'https://www.esmx.dev/..a/',
+                'new/../.': 'https://www.esmx.dev/'
+            },
+            'https://www.esmx.dev/a/b/c': {
+                '/': 'https://www.esmx.dev/a/b/',
+                '/new': 'https://www.esmx.dev/a/b/new',
+                '/new/': 'https://www.esmx.dev/a/b/new/',
+                '/new/100': 'https://www.esmx.dev/a/b/new/100',
+                '/new/100/': 'https://www.esmx.dev/a/b/new/100/',
+                '..': 'https://www.esmx.dev/a/',
+                '../': 'https://www.esmx.dev/a/',
+                '../new': 'https://www.esmx.dev/a/new',
+                '../new/': 'https://www.esmx.dev/a/new/',
+                '../new/100': 'https://www.esmx.dev/a/new/100',
+                '../new/100/': 'https://www.esmx.dev/a/new/100/',
+                '': 'https://www.esmx.dev/a/b/c',
+                new: 'https://www.esmx.dev/a/b/new',
+                'new/': 'https://www.esmx.dev/a/b/new/',
+                'new/100': 'https://www.esmx.dev/a/b/new/100',
+                'new/100/': 'https://www.esmx.dev/a/b/new/100/',
+                '.': 'https://www.esmx.dev/a/b/',
+                './': 'https://www.esmx.dev/a/b/',
+                './new': 'https://www.esmx.dev/a/b/new',
+                './new/': 'https://www.esmx.dev/a/b/new/',
+                './new/100': 'https://www.esmx.dev/a/b/new/100',
+                './new/100/': 'https://www.esmx.dev/a/b/new/100/',
+                '.a': 'https://www.esmx.dev/a/b/.a',
+                '..a': 'https://www.esmx.dev/a/b/..a',
+                '.a/': 'https://www.esmx.dev/a/b/.a/',
+                '..a/': 'https://www.esmx.dev/a/b/..a/',
+                'new/../.': 'https://www.esmx.dev/a/b/',
+                'new/.././a/../../x/': 'https://www.esmx.dev/a/x/'
+            },
+            'https://www.esmx.dev/a/b/c/': {
+                '/': 'https://www.esmx.dev/a/b/c/',
+                '/new': 'https://www.esmx.dev/a/b/c/new',
+                '/new/': 'https://www.esmx.dev/a/b/c/new/',
+                '/new/100': 'https://www.esmx.dev/a/b/c/new/100',
+                '/new/100/': 'https://www.esmx.dev/a/b/c/new/100/',
+                '..': 'https://www.esmx.dev/a/b/',
+                '../': 'https://www.esmx.dev/a/b/',
+                '../new': 'https://www.esmx.dev/a/b/new',
+                '../new/': 'https://www.esmx.dev/a/b/new/',
+                '../new/100': 'https://www.esmx.dev/a/b/new/100',
+                '../new/100/': 'https://www.esmx.dev/a/b/new/100/',
+                '': 'https://www.esmx.dev/a/b/c/',
+                new: 'https://www.esmx.dev/a/b/c/new',
+                'new/': 'https://www.esmx.dev/a/b/c/new/',
+                'new/100': 'https://www.esmx.dev/a/b/c/new/100',
+                'new/100/': 'https://www.esmx.dev/a/b/c/new/100/',
+                '.': 'https://www.esmx.dev/a/b/c/',
+                './': 'https://www.esmx.dev/a/b/c/',
+                './new': 'https://www.esmx.dev/a/b/c/new',
+                './new/': 'https://www.esmx.dev/a/b/c/new/',
+                './new/100': 'https://www.esmx.dev/a/b/c/new/100',
+                './new/100/': 'https://www.esmx.dev/a/b/c/new/100/',
+                '.a': 'https://www.esmx.dev/a/b/c/.a',
+                '..a': 'https://www.esmx.dev/a/b/c/..a',
+                '.a/': 'https://www.esmx.dev/a/b/c/.a/',
+                '..a/': 'https://www.esmx.dev/a/b/c/..a/',
+                'new/.././': 'https://www.esmx.dev/a/b/c/',
+                'new/.././a/../../x/': 'https://www.esmx.dev/a/b/x/'
             }
-        );
+        })
+    )(`base: $0`, ([base, cases]) => {
+        test.each(Object.entries(cases))(`input: $0`, (input, expected) => {
+            const url = normalizeURL(input, new URL(base));
+            expect(url).toEqURL(expected);
+
+            const pathSuffix = '?a&b=1&c=2&a=&a=4&base=10#hash';
+            const urlWithSuffix = normalizeURL(
+                input + pathSuffix,
+                new URL(base)
+            );
+            expect(urlWithSuffix).toEqURL(expected + pathSuffix);
+
+            const urlWithBaseSuffix = normalizeURL(
+                input + pathSuffix,
+                new URL(base + '?base=base#base')
+            );
+            expect(urlWithBaseSuffix).toEqURL(expected + pathSuffix);
+        });
     });
 });

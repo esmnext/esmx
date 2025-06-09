@@ -104,6 +104,10 @@ describe('isNotNullish', () => {
         expect(isNotNullish(Object.create({}))).toBe(true);
         expect(isNotNullish(Object.create(Object.prototype))).toBe(true);
         expect(isNotNullish({ __proto__: null })).toBe(true);
+        expect(isNotNullish({ [Symbol.toStringTag]: 'Tag' })).toBe(true);
+        expect(isNotNullish({ toString: () => '[object CustomObject]' })).toBe(
+            true
+        );
         // 数组 & 类型化数组相关
         expect(isNotNullish([])).toBe(true);
         expect(isNotNullish(['a', 'b'])).toBe(true);
@@ -204,6 +208,9 @@ describe('isObject', () => {
         expect(isObject(Object.create({ parent: 'value' }))).toBe(true);
         expect(isObject({ __proto__: null })).toBe(true);
         expect(isObject({ [Symbol.toStringTag]: 'Tag' })).toBe(true);
+        expect(isObject({ toString: () => '[object CustomObject]' })).toBe(
+            true
+        );
         expect(isObject(Math)).toBe(true);
         expect(isObject(JSON)).toBe(true);
         class TestClass {}
@@ -401,6 +408,33 @@ describe('removeFromArray', () => {
         // 移除字符串 '1'
         removeFromArray(mixedArr, '1');
         expect(mixedArr).toEqual([1, true, 1n, expect.any(Symbol)]);
+
+        const mixedArray: any[] = [
+            'string',
+            42,
+            true,
+            null,
+            undefined,
+            { obj: 'value' },
+            [1, 2, 3],
+            Symbol('test'),
+            () => 'fn',
+            new Date(),
+            /regex/,
+            new Map(),
+            new Set()
+        ];
+
+        const originalLength = mixedArray.length;
+
+        // 尝试删除不存在的元素
+        removeFromArray(mixedArray, 'nonexistent');
+        expect(mixedArray).toHaveLength(originalLength);
+
+        // 删除存在的元素
+        removeFromArray(mixedArray, 42);
+        expect(mixedArray).toHaveLength(originalLength - 1);
+        expect(mixedArray.includes(42)).toBe(false);
     });
 
     test('should preserve array structure', () => {
@@ -495,6 +529,11 @@ describe('isValidConfirmHookResult', () => {
         expect(isValidConfirmHookResult({ [Symbol.toStringTag]: 'Tag' })).toBe(
             true
         );
+        expect(
+            isValidConfirmHookResult({
+                toString: () => '[object CustomObject]'
+            })
+        ).toBe(true);
         expect(isValidConfirmHookResult(Math)).toBe(true);
         expect(isValidConfirmHookResult(JSON)).toBe(true);
     });
@@ -684,38 +723,6 @@ describe('Performance Tests', () => {
     });
 });
 
-// Type compatibility and edge cases
-describe('Type Compatibility Tests', () => {
-    test('should handle mixed type arrays in removeFromArray', () => {
-        const mixedArray: any[] = [
-            'string',
-            42,
-            true,
-            null,
-            undefined,
-            { obj: 'value' },
-            [1, 2, 3],
-            Symbol('test'),
-            () => 'fn',
-            new Date(),
-            /regex/,
-            new Map(),
-            new Set()
-        ];
-
-        const originalLength = mixedArray.length;
-
-        // 尝试删除不存在的元素
-        removeFromArray(mixedArray, 'nonexistent');
-        expect(mixedArray).toHaveLength(originalLength);
-
-        // 删除存在的元素
-        removeFromArray(mixedArray, 42);
-        expect(mixedArray).toHaveLength(originalLength - 1);
-        expect(mixedArray.includes(42)).toBe(false);
-    });
-});
-
 // Error handling and boundary tests
 describe('Error Handling Tests', () => {
     test('should handle circular references in objects', () => {
@@ -730,22 +737,5 @@ describe('Error Handling Tests', () => {
         expect(isObject(circularObj)).toBe(true);
         expect(isValidConfirmHookResult(circularObj)).toBe(true);
         expect(isNotNullish(circularObj)).toBe(true);
-    });
-
-    test('should handle objects with overridden toString methods', () => {
-        const objWithCustomToString = {
-            toString: () => '[object CustomObject]'
-        };
-        expect(isObject(objWithCustomToString)).toBe(true);
-        expect(isValidConfirmHookResult(objWithCustomToString)).toBe(true);
-        expect(isNotNullish(objWithCustomToString)).toBe(true);
-    });
-
-    test('should handle objects with null prototype', () => {
-        const nullProtoObj = Object.create(null);
-        nullProtoObj.prop = 'value';
-        expect(isObject(nullProtoObj)).toBe(true);
-        expect(isValidConfirmHookResult(nullProtoObj)).toBe(true);
-        expect(isNotNullish(nullProtoObj)).toBe(true);
     });
 });
