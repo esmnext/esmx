@@ -243,7 +243,7 @@ export class Router {
         const router = new Router({
             ...this.options,
             ...options,
-            layer: layer
+            layer
         });
         await router.replace(toRaw);
         return {
