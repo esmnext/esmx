@@ -1,10 +1,10 @@
 import { createRoute } from './route';
-import {
-    type Route,
-    type RouteConfirmHook,
-    type RouteConfirmHookResult,
-    RouteStatus,
-    type RouterParsedOptions
+import { RouteStatus } from './types';
+import type {
+    Route,
+    RouteConfirmHook,
+    RouteConfirmHookResult,
+    RouterParsedOptions
 } from './types';
 import { isValidConfirmHookResult } from './util';
 
@@ -48,6 +48,7 @@ export async function createRouteTask(opts: RouteTaskOptions) {
     }
     return to;
 }
+
 export enum RouteTaskType {
     location = 'location',
     env = 'env',
@@ -61,6 +62,7 @@ export enum RouteTaskType {
     replaceWindow = 'replaceWindow',
     afterEach = 'afterEach'
 }
+
 export interface RouteTask {
     name: RouteTaskType;
     task: RouteConfirmHook;

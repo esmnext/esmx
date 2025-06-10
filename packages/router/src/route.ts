@@ -1,12 +1,12 @@
 import { parseLocation } from './location';
-import {
-    type Route,
-    type RouteHandleHook,
-    type RouteHandleResult,
-    type RouteLocationRaw,
-    RouteStatus,
-    type RouteType,
-    type RouterParsedOptions
+import { RouteStatus } from './types';
+import type {
+    Route,
+    RouteHandleHook,
+    RouteHandleResult,
+    RouteLocationRaw,
+    RouteType,
+    RouterParsedOptions
 } from './types';
 
 export function createRoute(

@@ -5,18 +5,18 @@ import { parsedOptions } from './options';
 import { createRoute } from './route';
 import { type RouteTask, RouteTaskType, createRouteTask } from './route-task';
 import { AFTER_TASKS, BEFORE_TASKS } from './route-task-config';
-import {
-    type Route,
-    type RouteConfirmHook,
-    type RouteHandleHook,
-    type RouteLocationRaw,
-    type RouteNotifyHook,
-    type RouteState,
-    RouteType,
-    type RouterLayerOptions,
-    type RouterLayerResult,
-    type RouterOptions,
-    type RouterParsedOptions
+import { RouteType } from './types';
+import type {
+    Route,
+    RouteConfirmHook,
+    RouteHandleHook,
+    RouteLocationRaw,
+    RouteNotifyHook,
+    RouteState,
+    RouterLayerOptions,
+    RouterLayerResult,
+    RouterOptions,
+    RouterParsedOptions
 } from './types';
 import { isESModule, isValidConfirmHookResult, removeFromArray } from './util';
 

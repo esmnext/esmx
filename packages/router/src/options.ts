@@ -1,10 +1,7 @@
 import { DEFAULT_LOCATION } from './default';
 import { createMatcher } from './matcher';
-import {
-    RouterMode,
-    type RouterOptions,
-    type RouterParsedOptions
-} from './types';
+import { RouterMode } from './types';
+import type { RouterOptions, RouterParsedOptions } from './types';
 import { isBrowser } from './util';
 
 export function parsedOptions(options: RouterOptions): RouterParsedOptions {
