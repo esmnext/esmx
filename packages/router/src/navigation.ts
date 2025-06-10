@@ -167,7 +167,11 @@ export class MemoryHistory implements History {
     }
 }
 
-function subscribeMemory(history: MemoryHistory, cb: NavigationSubscribe) {
+// 为了单元测试导出
+export function subscribeMemory(
+    history: MemoryHistory,
+    cb: NavigationSubscribe
+) {
     const _go = history.go;
     history.go = function (delta?: number) {
         _go.call(this, delta);
@@ -175,6 +179,7 @@ function subscribeMemory(history: MemoryHistory, cb: NavigationSubscribe) {
     };
     return () => {};
 }
+
 function subscribeHtmlHistory(cb: NavigationSubscribe) {
     const popstate = () => {
         cb(location.href, history.state);
