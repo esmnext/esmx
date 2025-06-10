@@ -1,12 +1,12 @@
 import { parseLocation } from './location';
-import {
-    type Route,
-    type RouteHandleHook,
-    type RouteHandleResult,
-    type RouteLocationRaw,
-    RouteStatus,
-    type RouteType,
-    type RouterParsedOptions
+import { RouteStatus } from './types';
+import type {
+    Route,
+    RouteHandleHook,
+    RouteHandleResult,
+    RouteLocationRaw,
+    RouteType,
+    RouterParsedOptions
 } from './types';
 
 export function createRoute(
@@ -15,16 +15,16 @@ export function createRoute(
     toRaw: RouteLocationRaw,
     from: URL | null
 ): Route {
-    const { base, normalizeURL } = options;
-    const to = normalizeURL(parseLocation(toRaw, base), from);
+    const base = new URL(options.base);
+    const to = options.normalizeURL(parseLocation(toRaw, base), from);
     const isSameOrigin = to.origin === base.origin;
-    const isSameBase = to.pathname.length >= base.pathname.length;
+    const isSameBase = to.pathname.startsWith(base.pathname);
     const match = isSameOrigin && isSameBase ? options.matcher(to, base) : null;
     let handle: RouteHandleHook | null = null;
     let handleResult: RouteHandleResult | null = null;
     let handled = false;
     const path = match
-        ? to.pathname.substring(options.base.pathname.length - 1)
+        ? to.pathname.substring(base.pathname.length - 1)
         : to.pathname;
     const fullPath = match
         ? `${path}${to.search}${to.hash}`
@@ -92,25 +92,24 @@ export function createRoute(
         }
     };
 
-    for (const key of to.searchParams.keys()) {
-        const values = to.searchParams.getAll(key);
-        route.query[key] = values[0] || '';
-        route.queryArray[key] = values;
+    for (const key of new Set(to.searchParams.keys())) {
+        route.query[key] = to.searchParams.get(key)!;
+        route.queryArray[key] = to.searchParams.getAll(key);
     }
-    if (match) {
-        if (typeof toRaw === 'object' && toRaw.params) {
-            const lastMatch = match.matches[match.matches.length - 1];
-            const current = to.pathname.split('/');
-            const next = new URL(
-                lastMatch.compile(toRaw.params).substring(1),
-                options.base
-            ).pathname.split('/');
-            next.forEach((item, index) => {
-                current[index] = item || current[index];
-            });
-            to.pathname = current.join('/');
-            Object.assign(match.params, toRaw.params);
-        }
+    if (!(match && typeof toRaw === 'object' && toRaw.params)) {
+        return route;
     }
+    // 将params参数拼接回路径
+    const lastMatch = match.matches[match.matches.length - 1];
+    const current = to.pathname.split('/');
+    const next = new URL(
+        lastMatch.compile(toRaw.params).substring(1),
+        options.base
+    ).pathname.split('/');
+    next.forEach((item, index) => {
+        current[index] = item || current[index];
+    });
+    to.pathname = current.join('/');
+    Object.assign(match.params, toRaw.params);
     return route;
 }

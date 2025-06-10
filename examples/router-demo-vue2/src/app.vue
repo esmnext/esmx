@@ -5,8 +5,8 @@
     </div>
 </template>
 <script lang="ts" setup>
-import ViewPage from './components/view-page.vue';
 import ViewLayer from './components/view-layer.vue';
+import ViewPage from './components/view-page.vue';
 </script>
 <style>
 /* 全局样式 */

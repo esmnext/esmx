@@ -14,6 +14,7 @@ export interface RouterOptions {
     context?: Record<string | symbol, any>;
     routes?: RouteConfig[];
     mode?: RouterMode;
+    /** 浏览器中是可选的，但服务端是必须的。 */
     base?: URL;
     env?: string;
     req?: IncomingMessage | null;
@@ -64,9 +65,11 @@ export type RouterLayerResult =
     | { type: 'close'; route: Route | null }
     | { type: 'success'; route: Route };
 
-export interface RouterParsedOptions extends Required<RouterOptions> {
+export interface RouterParsedOptions extends Readonly<Required<RouterOptions>> {
+    /** 解析好的，不包含 query 和 hash 的，pathname 只含有目录的 URL */
+    readonly base: URL;
     /** 路由匹配器实例 */
-    matcher: RouteMatcher;
+    readonly matcher: RouteMatcher;
 }
 
 export interface RouterMicroAppOptions {

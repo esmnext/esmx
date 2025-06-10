@@ -101,6 +101,7 @@ function getRelatedIds() {
 }
 </script>
 <style scoped>
+/* 容器基础样式 */
 .detail-container {
     padding: 0;
     max-width: 900px;
@@ -108,6 +109,7 @@ function getRelatedIds() {
     min-height: 100vh;
 }
 
+/* 弹层模式下的容器样式 */
 .detail-container.is-layer {
     max-width: 100%;
     margin: 0;
@@ -449,7 +451,7 @@ function getRelatedIds() {
     display: flex;
     align-items: center;
     padding: 0.75rem 1rem;
-    margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+    margin: 0 0 1rem 0;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(8px);
     border-bottom: 1px solid rgba(0,0,0,0.08);

@@ -3,9 +3,7 @@
         <button class="global-close-btn" @click="$router.closeLayer()">
             <span class="close-icon">×</span>
         </button>
-        <main class="neo-content">
-            <router-view />
-        </main>
+        <router-view />
     </div>
 </template>
 
@@ -77,46 +75,6 @@ const $router = useRouter();
 
 .layer-container::-webkit-scrollbar-thumb:hover {
     background-color: rgba(0, 0, 0, 0.5);
-}
-
-/* 内容区域 */
-.neo-content {
-    background-color: var(--card-color);
-    border-radius: 12px;
-    padding: 2rem;
-    box-shadow: none;
-    position: relative;
-    overflow: visible;
-    border: none;
-    height: 100%;
-    box-sizing: border-box;
-}
-
-/* 移动端内容区域适配 */
-@media (max-width: 768px) {
-    .neo-content {
-        border-radius: 0;
-        padding: 1rem;
-        border: none;
-        box-shadow: none;
-        min-height: calc(100% - 2rem);
-    }
-    
-    .neo-content::after {
-        display: none;
-    }
-}
-
-.neo-content::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 150px;
-    height: 150px;
-    background: linear-gradient(135deg, transparent 50%, rgba(109, 40, 217, 0.1));
-    border-radius: 0 0 var(--border-radius-lg) 0;
-    pointer-events: none;
 }
 
 /* 全局关闭按钮 */

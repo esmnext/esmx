@@ -55,6 +55,7 @@ export const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
         RouteTaskType.popstate
     ]
 };
+
 export const AFTER_TASKS: Record<RouteType, RouteTaskType[]> = {
     [RouteType.push]: [RouteTaskType.afterEach],
     [RouteType.replace]: [RouteTaskType.afterEach],

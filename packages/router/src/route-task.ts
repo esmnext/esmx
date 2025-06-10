@@ -1,10 +1,10 @@
 import { createRoute } from './route';
-import {
-    type Route,
-    type RouteConfirmHook,
-    type RouteConfirmHookResult,
-    RouteStatus,
-    type RouterParsedOptions
+import { RouteStatus } from './types';
+import type {
+    Route,
+    RouteConfirmHook,
+    RouteConfirmHookResult,
+    RouterParsedOptions
 } from './types';
 import { isValidConfirmHookResult } from './util';
 
@@ -16,10 +16,9 @@ export interface RouteTaskOptions {
 }
 
 export async function createRouteTask(opts: RouteTaskOptions) {
-    const to: Route = opts.to;
-    const from: Route | null = opts.from;
-    for (const item of opts.tasks) {
-        let result: unknown | RouteConfirmHookResult = null;
+    const { to, from, tasks } = opts;
+    for (const item of tasks) {
+        let result: RouteConfirmHookResult | null = null;
         try {
             result = await item.task(to, from);
         } catch (e) {
@@ -27,27 +26,31 @@ export async function createRouteTask(opts: RouteTaskOptions) {
             to.status = RouteStatus.error;
             break;
         }
-        if (isValidConfirmHookResult(result)) {
-            if (typeof result === 'function') {
-                // 导航确认成功
-                to.status = RouteStatus.success;
-                to.handle = result;
-                break;
-            } else if (result === false) {
-                // 导航被终止
-                to.status = RouteStatus.aborted;
-                break;
-            }
-            // 导航重定向
-            return createRouteTask({
-                ...opts,
-                to: createRoute(opts.options, to.type, result, to.url),
-                from: to
-            });
+        if (!isValidConfirmHookResult(result)) continue;
+        if (typeof result === 'function') {
+            // 导航确认成功
+            to.status = RouteStatus.success;
+            to.handle = result;
+            break;
         }
+        if (
+            result === false ||
+            (result instanceof Boolean && !result.valueOf())
+        ) {
+            // 导航被终止
+            to.status = RouteStatus.aborted;
+            break;
+        }
+        // 导航重定向
+        return createRouteTask({
+            ...opts,
+            to: createRoute(opts.options, to.type, result, to.url),
+            from: to
+        });
     }
     return to;
 }
+
 export enum RouteTaskType {
     location = 'location',
     env = 'env',
@@ -61,6 +64,7 @@ export enum RouteTaskType {
     replaceWindow = 'replaceWindow',
     afterEach = 'afterEach'
 }
+
 export interface RouteTask {
     name: RouteTaskType;
     task: RouteConfirmHook;
