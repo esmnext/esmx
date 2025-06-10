@@ -15,10 +15,10 @@ export function createRoute(
     toRaw: RouteLocationRaw,
     from: URL | null
 ): Route {
-    const { base, normalizeURL } = options;
-    const to = normalizeURL(parseLocation(toRaw, base), from);
+    const base = new URL(options.base);
+    const to = options.normalizeURL(parseLocation(toRaw, base), from);
     const isSameOrigin = to.origin === base.origin;
-    const isSameBase = to.pathname.length >= base.pathname.length;
+    const isSameBase = to.pathname.startsWith(base.pathname);
     const match = isSameOrigin && isSameBase ? options.matcher(to, base) : null;
     let handle: RouteHandleHook | null = null;
     let handleResult: RouteHandleResult | null = null;
@@ -92,10 +92,9 @@ export function createRoute(
         }
     };
 
-    for (const key of to.searchParams.keys()) {
-        const values = to.searchParams.getAll(key);
-        route.query[key] = values[0] || '';
-        route.queryArray[key] = values;
+    for (const key of new Set(to.searchParams.keys())) {
+        route.query[key] = to.searchParams.get(key)!;
+        route.queryArray[key] = to.searchParams.getAll(key);
     }
     if (!(match && typeof toRaw === 'object' && toRaw.params)) {
         return route;
