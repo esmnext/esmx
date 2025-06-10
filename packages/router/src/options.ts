@@ -37,6 +37,7 @@ export function parsedOptions(options: RouterOptions): RouterParsedOptions {
                 : Object.assign({}, options.apps),
         matcher: createMatcher(routes),
         normalizeURL: options.normalizeURL ?? ((url) => url),
-        location: options.location ?? DEFAULT_LOCATION
+        location: options.location ?? DEFAULT_LOCATION,
+        onBackNoResponse: options.onBackNoResponse ?? (() => {})
     });
 }
