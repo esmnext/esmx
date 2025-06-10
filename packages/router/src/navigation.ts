@@ -162,18 +162,9 @@ export class MemoryHistory implements History {
     }
 }
 
-const winPopStateCbs = new WeakMap<NavigationSubscribe, () => void>();
 function subscribeHtmlHistory(cb: NavigationSubscribe) {
     if (typeof cb !== 'function') return () => {};
-    if (!winPopStateCbs.has(cb)) {
-        const wrapper = () => cb(location.href, history.state || {});
-        winPopStateCbs.set(cb, wrapper);
-        window.addEventListener('popstate', wrapper);
-    }
-    return () => {
-        const wrapper = winPopStateCbs.get(cb);
-        if (!wrapper) return;
-        window.removeEventListener('popstate', wrapper);
-        winPopStateCbs.delete(cb);
-    };
+    const wrapper = () => cb(location.href, history.state || {});
+    window.addEventListener('popstate', wrapper);
+    return () => window.removeEventListener('popstate', wrapper);
 }
