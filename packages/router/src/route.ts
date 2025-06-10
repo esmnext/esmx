@@ -24,7 +24,7 @@ export function createRoute(
     let handleResult: RouteHandleResult | null = null;
     let handled = false;
     const path = match
-        ? to.pathname.substring(options.base.pathname.length - 1)
+        ? to.pathname.substring(base.pathname.length - 1)
         : to.pathname;
     const fullPath = match
         ? `${path}${to.search}${to.hash}`
@@ -97,20 +97,20 @@ export function createRoute(
         route.query[key] = values[0] || '';
         route.queryArray[key] = values;
     }
-    if (match) {
-        if (typeof toRaw === 'object' && toRaw.params) {
-            const lastMatch = match.matches[match.matches.length - 1];
-            const current = to.pathname.split('/');
-            const next = new URL(
-                lastMatch.compile(toRaw.params).substring(1),
-                options.base
-            ).pathname.split('/');
-            next.forEach((item, index) => {
-                current[index] = item || current[index];
-            });
-            to.pathname = current.join('/');
-            Object.assign(match.params, toRaw.params);
-        }
+    if (!(match && typeof toRaw === 'object' && toRaw.params)) {
+        return route;
     }
+    // 将params参数拼接回路径
+    const lastMatch = match.matches[match.matches.length - 1];
+    const current = to.pathname.split('/');
+    const next = new URL(
+        lastMatch.compile(toRaw.params).substring(1),
+        options.base
+    ).pathname.split('/');
+    next.forEach((item, index) => {
+        current[index] = item || current[index];
+    });
+    to.pathname = current.join('/');
+    Object.assign(match.params, toRaw.params);
     return route;
 }

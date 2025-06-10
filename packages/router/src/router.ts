@@ -297,11 +297,8 @@ export class Router {
             const result = await this._microApp.app?.renderToString?.();
             return result ?? null;
         } catch (e) {
-            if (throwError) {
-                throw e;
-            } else {
-                console.error(e);
-            }
+            if (throwError) throw e;
+            else console.error(e);
             return null;
         }
     }
@@ -356,12 +353,10 @@ export class Router {
     ) {
         const names: RouteTaskType[] = to.type ? config[to.type] : [];
         const { _tasks, parsedOptions: options } = this;
-        const tasks: RouteTask[] = names.map((name) => {
-            return {
-                name,
-                task: _tasks[name]
-            } satisfies RouteTask;
-        });
+        const tasks = names.map<RouteTask>((name) => ({
+            name,
+            task: _tasks[name]
+        }));
         return createRouteTask({
             options,
             to,
