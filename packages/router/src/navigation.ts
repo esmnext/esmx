@@ -43,7 +43,7 @@ export class Navigation {
         };
         this._destroy =
             this._navigation instanceof MemoryHistory
-                ? subscribeMemory(this._navigation, _subscribe)
+                ? this._navigation.onPopState(_subscribe)
                 : subscribeHtmlHistory(_subscribe);
     }
     public push(route: Route): RouteState {
@@ -155,24 +155,11 @@ export class MemoryHistory implements History {
         this._popStateCbs.forEach((cb) => cb(entry.url, entry.state));
     }
 
-    public onPopState(cb: NavigationSubscribe): void {
-        if (typeof cb !== 'function') return;
+    public onPopState(cb: NavigationSubscribe) {
+        if (typeof cb !== 'function') return () => {};
         this._popStateCbs.add(cb);
+        return () => this._popStateCbs.delete(cb);
     }
-
-    public offPopState(cb: NavigationSubscribe): void {
-        if (typeof cb !== 'function') return;
-        this._popStateCbs.delete(cb);
-    }
-}
-
-// 为了单元测试导出
-export function subscribeMemory(
-    history: MemoryHistory,
-    cb: NavigationSubscribe
-) {
-    history.onPopState(cb);
-    return () => history.offPopState(cb);
 }
 
 const winPopStateCbs = new WeakMap<NavigationSubscribe, () => void>();

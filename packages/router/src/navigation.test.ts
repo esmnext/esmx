@@ -1,5 +1,5 @@
 import { assert, describe, test } from 'vitest';
-import { MemoryHistory, subscribeMemory } from './navigation';
+import { MemoryHistory } from './navigation';
 
 describe('MemoryHistory', () => {
     test('should initialize with root path', () => {
@@ -106,7 +106,7 @@ describe('subscribeMemory', () => {
         history.pushState({ id: 1 }, '', '/page1');
         history.pushState({ id: 2 }, '', '/page2');
 
-        void subscribeMemory(history, () => {});
+        void history.onPopState(() => {});
 
         // 验证原始功能仍然正常工作
         history.go(-1);
@@ -125,7 +125,7 @@ describe('subscribeMemory', () => {
         history.pushState({ id: 2 }, '', '/page2');
 
         const callbacks: Array<{ url: string; state: any }> = [];
-        void subscribeMemory(history, (url, state) => {
+        void history.onPopState((url, state) => {
             callbacks.push({ url, state });
         });
 
@@ -145,7 +145,7 @@ describe('subscribeMemory', () => {
         history.pushState({ id: 3 }, '', '/page3');
 
         const callbacks: Array<{ url: string; state: any }> = [];
-        void subscribeMemory(history, (url, state) => {
+        void history.onPopState((url, state) => {
             callbacks.push({ url, state });
         });
 
@@ -167,7 +167,7 @@ describe('subscribeMemory', () => {
         const history = new MemoryHistory();
 
         const callbacks: Array<{ url: string; state: any }> = [];
-        void subscribeMemory(history, (url, state) => {
+        void history.onPopState((url, state) => {
             callbacks.push({ url, state });
         });
 
@@ -184,7 +184,7 @@ describe('subscribeMemory', () => {
         history.pushState({ id: 1 }, '', '/page1');
 
         const callbacks: Array<{ url: string; state: any }> = [];
-        void subscribeMemory(history, (url, state) => {
+        void history.onPopState((url, state) => {
             callbacks.push({ url, state });
         });
 
@@ -201,7 +201,7 @@ describe('subscribeMemory', () => {
         history.pushState({ id: 1 }, '', '/page1');
 
         const callbacks: Array<{ url: string; state: any }> = [];
-        void subscribeMemory(history, (url, state) => {
+        void history.onPopState((url, state) => {
             callbacks.push({ url, state });
         });
 
@@ -220,7 +220,7 @@ describe('subscribeMemory', () => {
         history.pushState({ id: 3 }, '', '/page3');
 
         const callbacks: Array<{ url: string; state: any }> = [];
-        void subscribeMemory(history, (url, state) => {
+        void history.onPopState((url, state) => {
             callbacks.push({ url, state });
         });
 
@@ -251,7 +251,7 @@ describe('subscribeMemory', () => {
 
         type Data = { url: string; state: any };
         let callbackData: Data | null = null;
-        void subscribeMemory(history, (url, state) => {
+        void history.onPopState((url, state) => {
             callbackData = { url, state };
         });
 
@@ -275,10 +275,10 @@ describe('subscribeMemory', () => {
         const callbacks2: Array<{ url: string; state: any }> = [];
 
         // 模拟多个组件都监听 popstate 事件
-        void subscribeMemory(history, (url, state) => {
+        void history.onPopState((url, state) => {
             callbacks1.push({ url, state });
         });
-        void subscribeMemory(history, (url, state) => {
+        void history.onPopState((url, state) => {
             callbacks2.push({ url, state });
         });
 
@@ -293,7 +293,7 @@ describe('subscribeMemory', () => {
     // 返回清理函数测试 - 测试是否返回清理函数
     test('should return cleanup function to unsubscribe', () => {
         const history = new MemoryHistory();
-        const unsubscribe = subscribeMemory(history, () => {});
+        const unsubscribe = history.onPopState(() => {});
 
         assert.equal(typeof unsubscribe, 'function');
     });
@@ -305,7 +305,7 @@ describe('subscribeMemory', () => {
         history.pushState({ id: 2 }, '', '/page2');
 
         const callbacks: Array<{ url: string; state: any }> = [];
-        const unsubscribe = subscribeMemory(history, (url, state) => {
+        const unsubscribe = history.onPopState((url, state) => {
             callbacks.push({ url, state });
         });
 
@@ -332,13 +332,13 @@ describe('subscribeMemory', () => {
         const callbacks2: Array<{ url: string; state: any }> = [];
         const callbacks3: Array<{ url: string; state: any }> = [];
 
-        void subscribeMemory(history, (url, state) => {
+        void history.onPopState((url, state) => {
             callbacks1.push({ url, state });
         });
-        const unsubscribe2 = subscribeMemory(history, (url, state) => {
+        const unsubscribe2 = history.onPopState((url, state) => {
             callbacks2.push({ url, state });
         });
-        void subscribeMemory(history, (url, state) => {
+        void history.onPopState((url, state) => {
             callbacks3.push({ url, state });
         });
 
@@ -359,5 +359,42 @@ describe('subscribeMemory', () => {
         assert.equal(callbacks1.length, 2); // 订阅者1应被触发
         assert.equal(callbacks2.length, 1); // 订阅者2应不再被触发
         assert.equal(callbacks3.length, 2); // 订阅者3应被触发
+    });
+
+    // 相同的回调只订阅一次，且清理函数可以正确取消订阅
+    test('should not subscribe the same callback multiple times', () => {
+        const history = new MemoryHistory();
+        history.pushState({ id: 1 }, '', '/page1');
+        history.pushState({ id: 2 }, '', '/page2');
+
+        const callbacks: Array<{ url: string; state: any }> = [];
+        const callback = (url: string, state: any) => {
+            callbacks.push({ url, state });
+        };
+
+        // 第一次订阅
+        const unSub1 = history.onPopState(callback);
+        // 第二次订阅同一个回调
+        const unSub2 = history.onPopState(callback);
+
+        // 导航一次，应该只触发一次回调
+        history.go(-1);
+        assert.equal(callbacks.length, 1);
+        assert.deepEqual(callbacks[0], { url: '/page1', state: { id: 1 } });
+
+        // 清理订阅
+        unSub1();
+        unSub2(); // 第二次订阅的清理函数不应该有任何效果
+
+        // 再次导航，不应该触发回调
+        history.go(1);
+        assert.equal(callbacks.length, 1); // 回调仍然只有一次
+
+        void history.onPopState(callback);
+        unSub1(); // 可以重复执行解绑函数来解绑同一个监听器
+
+        // 再次导航，仍然不应该触发回调
+        history.go(-1);
+        assert.equal(callbacks.length, 1); // 回调仍然只有一次
     });
 });
