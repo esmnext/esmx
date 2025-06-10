@@ -1,11 +1,21 @@
 <template>
-    <div class="detail-container">
-        <div class="news-header-bar">
+    <div class="detail-container" :class="{ 'is-layer': $router.isLayer }">
+        <div class="news-header-bar" v-if="!$router.isLayer">
             <RouterLink to="/" class="back-button">
                 <span class="back-icon">←</span>
                 <span>返回列表</span>
             </RouterLink>
             <div class="news-id-badge">新闻 #{{ $route.state.id }}</div>
+        </div>
+        
+        <div class="layer-header" v-if="$router.isLayer">
+            <button class="layer-back-button" @click="$router.back()">
+                <svg class="back-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <div class="layer-title">新闻详情</div>
         </div>
         
         <div class="news-detail-card">
@@ -74,7 +84,7 @@ const router = createRouter({
                 </RouterLink>
             </div>
         </div>
-        <button v-if="$router.isLayer" class="close-btn" @click="$router.closeLayer()">关闭</button>
+
     </div>
 </template>
 <script lang="ts" setup>
@@ -95,6 +105,16 @@ function getRelatedIds() {
     padding: 0;
     max-width: 900px;
     margin: 0 auto;
+    min-height: 100vh;
+}
+
+.detail-container.is-layer {
+    max-width: 100%;
+    margin: 0;
+    padding: 1rem;
+    min-height: auto;
+    background-color: var(--bg-color);
+    border-radius: var(--border-radius-lg);
 }
 
 /* 头部导航栏 */
@@ -421,31 +441,95 @@ function getRelatedIds() {
     }
 }
 
-.close-btn {
-    position: fixed;
-    right: 20px;
-    top: 20px;
-    padding: 8px 16px;
-    background-color: #FFC107;
-    color: white;
+/* 弹层头部 */
+.layer-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    gap: 0.75rem;
+}
+
+.layer-back-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.375rem;
     border: none;
-    border-radius: 4px;
-    font-weight: bold;
+    border-radius: 8px;
+    background: rgba(0,0,0,0.03);
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     transition: all 0.2s ease;
-    z-index: 1000;
+    color: #555;
+    line-height: 1;
+    min-width: 2rem;
+    min-height: 2rem;
 }
 
-.close-btn:hover {
-    background-color: #FFA000;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+.layer-back-button:hover {
+    background: rgba(0,0,0,0.06);
+    color: #333;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-.close-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+.layer-back-button:active {
+    background: rgba(0,0,0,0.08);
+    transform: scale(0.95);
+}
+
+.layer-back-button .back-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    stroke-width: 2;
+    transition: transform 0.2s ease;
+}
+
+.layer-back-button:hover .back-icon {
+    transform: translateX(-2px);
+}
+
+.layer-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    flex: 1;
+    text-align: center;
+    margin-right: 2rem;
+}
+
+/* 弹层模式下的样式调整 */
+.is-layer .news-detail-card {
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.is-layer .related-news {
+    margin-top: 1.5rem;
+}
+
+.is-layer .card-header,
+.is-layer .news-content,
+.is-layer .card-footer {
+    padding: 1.5rem;
+}
+
+.is-layer .news-title {
+    font-size: 1.5rem;
+}
+
+.is-layer .related-items {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+}
+
+.is-layer .related-item {
+    padding: 0.75rem 1rem;
 }
 
 </style>
