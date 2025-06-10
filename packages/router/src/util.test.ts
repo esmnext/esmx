@@ -494,8 +494,9 @@ describe('isValidConfirmHookResult', () => {
     test('should return true for boolean values', () => {
         expect(isValidConfirmHookResult(true)).toBe(false);
         expect(isValidConfirmHookResult(false)).toBe(true);
+        // 不接受 new Boolean() 包装的布尔值
         expect(isValidConfirmHookResult(new Boolean(true))).toBe(false);
-        expect(isValidConfirmHookResult(new Boolean(false))).toBe(true);
+        expect(isValidConfirmHookResult(new Boolean(false))).toBe(false);
     });
 
     test('should return true for string values', () => {
@@ -503,10 +504,11 @@ describe('isValidConfirmHookResult', () => {
         expect(isValidConfirmHookResult('0')).toBe(true);
         expect(isValidConfirmHookResult('1')).toBe(true);
         expect(isValidConfirmHookResult('test')).toBe(true);
-        expect(isValidConfirmHookResult(new String(''))).toBe(true);
-        expect(isValidConfirmHookResult(new String('0'))).toBe(true);
-        expect(isValidConfirmHookResult(new String('1'))).toBe(true);
-        expect(isValidConfirmHookResult(new String('test'))).toBe(true);
+        // 不接受 new String() 包装的字符串
+        expect(isValidConfirmHookResult(new String(''))).toBe(false);
+        expect(isValidConfirmHookResult(new String('0'))).toBe(false);
+        expect(isValidConfirmHookResult(new String('1'))).toBe(false);
+        expect(isValidConfirmHookResult(new String('test'))).toBe(false);
     });
 
     test('should return true for function values', () => {
