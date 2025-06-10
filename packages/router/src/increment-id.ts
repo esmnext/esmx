@@ -1,4 +1,4 @@
-class IncrementId {
+export class IncrementId {
     private value = 0;
     public equal(id: number) {
         return this.value === id;
