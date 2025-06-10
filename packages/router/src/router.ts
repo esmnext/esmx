@@ -269,7 +269,6 @@ export class Router {
             id: `${this.id}__route_layer__${LAYER_ID.generate()}`,
             ...options,
             onBackNoResponse: (router) => {
-                console.log('>>>>> onBackNoResponse');
                 // 当返回操作无响应时，关闭弹层
                 router.closeLayer();
                 // 如果原有 onBackNoResponse 存在，也调用它
