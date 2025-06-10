@@ -1,8 +1,7 @@
 <template>
     <div class="not-found-container">
         <div class="glitch-container">
-            <div class="glitch" data-text="404">404</div>
-            <div class="scanlines"></div>
+            <div class="glitch">404</div>
         </div>
         
         <div class="error-content">
@@ -22,14 +21,7 @@
             </div>
         </div>
         
-        <div class="error-decoration">
-            <div class="circuit-line line-1"></div>
-            <div class="circuit-line line-2"></div>
-            <div class="circuit-line line-3"></div>
-            <div class="circuit-dot dot-1"></div>
-            <div class="circuit-dot dot-2"></div>
-            <div class="circuit-dot dot-3"></div>
-        </div>
+
     </div>
 </template>
 <script lang="ts" setup>
@@ -62,12 +54,13 @@ function reportError() {
 }
 
 .glitch {
-    font-size: clamp(64px, 12vw, 128px);
+    font-size: clamp(var(--font-size-6xl), 12vw, 128px);
     font-weight: 900;
     line-height: 1;
     position: relative;
     color: var(--primary-color);
     letter-spacing: -0.05em;
+    font-family: var(--font-family-display);
 }
 
 /* 错误内容 */
@@ -83,6 +76,7 @@ function reportError() {
     color: var(--text-primary);
     margin-bottom: var(--spacing-4);
     letter-spacing: -0.02em;
+    font-family: var(--font-family-display);
 }
 
 .error-message {
@@ -107,33 +101,34 @@ function reportError() {
     border-radius: var(--border-radius-md);
     font-weight: 600;
     text-decoration: none;
-    transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
     position: relative;
+    font-size: var(--font-size-base);
 }
 
 .home-button {
     background: var(--primary-color);
     color: var(--text-white);
     box-shadow: var(--shadow-md);
-    border: none;
+    border: 1px solid var(--primary-color);
 }
 
 .report-button {
     background: var(--surface-color);
     color: var(--text-primary);
-    border: 2px solid var(--border-color);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-xs);
 }
 
 .home-button:hover {
     background: var(--primary-dark);
-    transform: translateY(-2px);
+    border-color: var(--primary-dark);
     box-shadow: var(--shadow-lg);
 }
 
 .report-button:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--primary-color);
+    background: var(--surface-hover);
+    box-shadow: var(--shadow-sm);
+    border-color: var(--border-color);
 }
 
 .button-icon {
@@ -163,11 +158,12 @@ function reportError() {
     .error-actions {
         flex-direction: column;
         align-items: center;
+        gap: var(--spacing-3);
     }
     
     .home-button, .report-button {
         width: 100%;
-        max-width: 200px;
+        max-width: 240px;
         justify-content: center;
     }
 }
@@ -178,11 +174,15 @@ function reportError() {
     }
     
     .glitch {
-        font-size: 64px;
+        font-size: var(--font-size-6xl);
     }
     
     .error-title {
         font-size: var(--font-size-xl);
+    }
+    
+    .error-message {
+        font-size: var(--font-size-sm);
     }
 }
 </style>

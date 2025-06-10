@@ -1,38 +1,52 @@
 <template>
-    <div class="app-container">
-        <nav class="neo-nav">
-            <div class="nav-brand">Esmx</div>
-            <div class="nav-links">
-                <router-link to="/" class="nav-item">
-                    <span class="nav-icon">🏠</span>
-                    <span class="nav-text">首页</span>
-                </router-link>
-                <router-link to="/about" class="nav-item">
-                    <span class="nav-icon">⚠️</span>
-                    <span class="nav-text">404</span>
-                </router-link>
-                <router-link to="https://github.com/esmnext/esmx/tree/master/examples/router-demo-base"
-                    class="nav-item">
-                    <span class="nav-icon">🔗</span>
-                    <span class="nav-text">Github</span>
-                </router-link>
-            </div>
-        </nav>
-
-        <main class="neo-content">
-            <router-view />
-        </main>
-
-        <div class="neo-route-panel">
-            <div class="panel-header">
-                <h2 class="panel-title">Route</h2>
-                <div class="panel-controls">
-                    <span class="control-dot"></span>
-                    <span class="control-dot"></span>
-                    <span class="control-dot"></span>
+    <div>
+        <!-- 全新设计的导航栏 -->
+        <nav class="esmx-nav">
+            <div class="nav-content">
+                <div class="nav-brand">
+                    <img class="esmx-logo" src="https://www.esmnext.com/logo.svg" alt="Esmx Logo" width="32" height="32" />
+                    <span class="brand-text">Esmx</span>
+                    <span class="brand-subtitle">Router</span>
+                </div>
+                <div class="nav-links">
+                    <router-link to="/" class="nav-item">
+                        <span class="nav-icon">🏠</span>
+                        <span class="nav-text">首页</span>
+                    </router-link>
+                    <router-link to="/about" class="nav-item">
+                        <span class="nav-icon">⚠️</span>
+                        <span class="nav-text">404</span>
+                    </router-link>
+                    <router-link to="https://github.com/esmnext/esmx/tree/master/examples/router-demo-base"
+                        class="nav-item nav-external">
+                        <span class="nav-icon">
+                            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                            </svg>
+                        </span>
+                        <span class="nav-text">Github</span>
+                    </router-link>
                 </div>
             </div>
-            <pre class="route-data">{{ $route }}</pre>
+            <div class="nav-wave"></div>
+        </nav>
+
+        <div class="app-container">
+            <main class="neo-content">
+                <router-view />
+            </main>
+
+            <div class="neo-route-panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">Route</h2>
+                    <div class="panel-controls">
+                        <span class="control-dot"></span>
+                        <span class="control-dot"></span>
+                        <span class="control-dot"></span>
+                    </div>
+                </div>
+                <pre class="route-data">{{ $route }}</pre>
+            </div>
         </div>
     </div>
 </template>
@@ -50,52 +64,85 @@ import { RouterLink } from '@esmx/router-vue2';
     display: grid;
     grid-template-columns: 1fr;
     grid-gap: var(--spacing-6);
-    min-height: 100vh;
+    min-height: calc(100vh - 120px); /* 调整高度，减去导航高度 */
 }
 
-/* 新型导航栏样式 */
-.neo-nav {
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    border-radius: var(--border-radius-xl);
-    padding: var(--spacing-4);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: var(--shadow-lg);
+/* 🌟 ESMX导航栏 */
+.esmx-nav {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
     position: relative;
+    width: 100%;
     overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    border-bottom: 1px solid rgba(255, 193, 7, 0.2);
 }
 
-.neo-nav::before {
+.esmx-nav::before {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 60%),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 60%);
     pointer-events: none;
 }
 
+.nav-content {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: var(--spacing-5) var(--spacing-6);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
 .nav-brand {
-    font-size: var(--font-size-2xl);
-    font-weight: 700;
-    color: var(--text-white);
-    letter-spacing: 0.05em;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
     padding: var(--spacing-2) var(--spacing-4);
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: var(--border-radius-sm);
-    transition: background var(--transition-fast);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
 }
 
 .nav-brand:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.esmx-logo {
+    filter: drop-shadow(0 2px 4px rgba(255, 160, 0, 0.3));
+}
+
+.brand-text {
+    font-size: var(--font-size-2xl);
+    font-weight: 800;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    letter-spacing: 0.05em;
+}
+
+.brand-subtitle {
+    font-size: var(--font-size-sm);
+    color: rgba(0, 0, 0, 0.7);
+    font-weight: 600;
     background: rgba(255, 255, 255, 0.2);
+    padding: var(--spacing-1) var(--spacing-2);
+    border-radius: var(--border-radius-full);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .nav-links {
     display: flex;
-    gap: var(--spacing-3);
+    gap: var(--spacing-2);
 }
 
 .nav-item {
@@ -103,27 +150,59 @@ import { RouterLink } from '@esmx/router-vue2';
     flex-direction: column;
     align-items: center;
     text-decoration: none;
-    color: var(--text-white);
-    padding: var(--spacing-3) var(--spacing-5);
-    border-radius: var(--border-radius-md);
-    transition: background var(--transition-fast), transform var(--transition-fast);
+    color: white;
+    padding: var(--spacing-3) var(--spacing-4);
+    border-radius: var(--border-radius-lg);
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(5px);
 }
 
 .nav-item:hover {
     background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
+}
+
+.nav-external {
+    background: rgba(255, 193, 7, 0.2);
+    border-color: rgba(255, 193, 7, 0.3);
+}
+
+.nav-external:hover {
+    background: rgba(255, 193, 7, 0.3);
 }
 
 .nav-icon {
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-lg);
     margin-bottom: var(--spacing-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 20px;
+    line-height: 1;
+}
+
+.nav-icon svg {
+    width: 18px;
+    height: 18px;
 }
 
 .nav-text {
     font-size: var(--font-size-sm);
     font-weight: 600;
+    white-space: nowrap;
+    line-height: 1.2;
+}
+
+.nav-wave {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: var(--spacing-1);
+    background: linear-gradient(90deg, 
+        rgba(255, 255, 255, 0.3) 0%, 
+        rgba(255, 255, 255, 0.6) 50%, 
+        rgba(255, 255, 255, 0.3) 100%);
 }
 
 /* 内容区域 */
@@ -134,7 +213,6 @@ import { RouterLink } from '@esmx/router-vue2';
     position: relative;
     overflow: hidden;
     border: 1px solid var(--border-color);
-    transition: box-shadow var(--transition-normal);
 }
 
 .neo-content:hover {
@@ -161,7 +239,6 @@ import { RouterLink } from '@esmx/router-vue2';
     overflow: hidden;
     box-shadow: var(--shadow-lg);
     border: 1px solid var(--border-color);
-    transition: box-shadow var(--transition-normal);
 }
 
 .neo-route-panel:hover {
@@ -169,7 +246,7 @@ import { RouterLink } from '@esmx/router-vue2';
 }
 
 .panel-header {
-    background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+    background: linear-gradient(135deg, #2196F3, #FF5722);
     padding: var(--spacing-4) var(--spacing-6);
     display: flex;
     justify-content: space-between;
@@ -190,11 +267,10 @@ import { RouterLink } from '@esmx/router-vue2';
 }
 
 .control-dot {
-    width: 12px;
-    height: 12px;
+    width: var(--spacing-3);
+    height: var(--spacing-3);
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.8);
-    transition: background var(--transition-fast);
     cursor: pointer;
 }
 
@@ -207,8 +283,8 @@ import { RouterLink } from '@esmx/router-vue2';
 .control-dot:nth-child(3) { background: #28ca42; }
 
 .route-data {
-    background: #0f172a;
-    color: #e2e8f0;
+    background: var(--background-dark);
+    color: var(--text-secondary);
     padding: var(--spacing-6);
     margin: 0;
     overflow-x: auto;
@@ -226,10 +302,18 @@ import { RouterLink } from '@esmx/router-vue2';
         grid-gap: var(--spacing-4);
     }
 
-    .neo-nav {
+    .nav-content {
         flex-direction: column;
         gap: var(--spacing-4);
         padding: var(--spacing-6);
+    }
+
+    .nav-brand {
+        flex-direction: row;
+    }
+
+    .brand-subtitle {
+        display: none;
     }
 
     .nav-links {
@@ -263,12 +347,19 @@ import { RouterLink } from '@esmx/router-vue2';
     .nav-item {
         flex-direction: row;
         justify-content: center;
+        align-items: center;
         gap: var(--spacing-2);
     }
 
     .nav-icon {
         margin-bottom: 0;
-        font-size: var(--font-size-lg);
+        font-size: var(--font-size-base);
+        height: 18px;
+    }
+
+    .nav-icon svg {
+        width: 16px;
+        height: 16px;
     }
 }
 </style>

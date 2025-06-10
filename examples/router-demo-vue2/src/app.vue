@@ -10,69 +10,68 @@ import ViewPage from './components/view-page.vue';
 </script>
 <style>
 /* 全局样式 */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-    /* 主色系 */
-    --primary-color: #6d28d9;
-    --primary-light: #8b5cf6;
-    --primary-dark: #5b21b6;
-    --primary-50: #faf5ff;
-    --primary-100: #f3e8ff;
-    --primary-500: #8b5cf6;
+    /* 🎯 主色系 - 基于 #FFC107 */
+    --primary-color: #FFC107;
+    --primary-light: #FFD54F;
+    --primary-dark: #FF8F00;
+    --primary-50: #FFFDE7;
+    --primary-100: #FFF9C4;
+    --primary-500: #FFC107;
     
-    /* 辅助色系 */
-    --secondary-color: #10b981;
-    --secondary-light: #34d399;
-    --secondary-dark: #047857;
+
     
-    /* 强调色 */
-    --accent-color: #f97316;
-    --accent-light: #fb923c;
-    --accent-dark: #ea580c;
+    /* 🌐 中性色系 - 现代简洁 */
+    --background-color: #FAFAFA;
+    --background-light: #FFFFFF;
+    --background-dark: #F5F5F5;
+    --card-color: #FFFFFF;
+    --surface-color: #FFFFFF;
+    --surface-hover: #F5F5F5;
     
-    /* 中性色系 */
-    --background-color: #f8fafc;
-    --background-light: #ffffff;
-    --background-dark: #f1f5f9;
-    --card-color: #ffffff;
-    --surface-color: #ffffff;
-    --surface-hover: #f8fafc;
+    /* 📝 文字颜色 */
+    --text-primary: #212121;
+    --text-secondary: #757575;
+    --text-tertiary: #9E9E9E;
+    --text-white: #FFFFFF;
+    --text-muted: #BDBDBD;
     
-    /* 文字颜色 */
-    --text-primary: #1e293b;
-    --text-secondary: #64748b;
-    --text-tertiary: #94a3b8;
-    --text-white: #ffffff;
-    --text-muted: #cbd5e1;
+    /* 🔗 链接颜色系统 */
+    --link-color: #1F72E8;
+    --link-hover: #1557B7;
+    --link-visited: #7B1FA2;
     
-    /* 边框颜色 */
-    --border-color: #e2e8f0;
-    --border-light: #f1f5f9;
-    --border-dark: #cbd5e1;
+    /* 🔙 返回按钮颜色 */
+    --back-color: #374151;
+    --back-hover: #1F2937;
     
-    /* 圆角系统 */
-    --border-radius-xs: 2px;
-    --border-radius-sm: 4px;
-    --border-radius-md: 6px;
-    --border-radius-lg: 8px;
-    --border-radius-xl: 12px;
-    --border-radius-2xl: 16px;
+    /* ✖️ 关闭按钮颜色 */
+    --close-color: #6B7280;
+    --close-hover: #4B5563;
     
-    /* 阴影系统 */
-    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    /* 🖼️ 边框颜色 */
+    --border-color: #E0E0E0;
+    --border-light: #F5F5F5;
+    --border-dark: #BDBDBD;
     
-    /* 动画系统 */
-    --transition-fast: 150ms ease;
-    --transition-normal: 200ms ease;
-    --transition-slow: 300ms ease;
+    /* 🔘 圆角系统 */
+    --border-radius-sm: 6px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+    --border-radius-xl: 16px;
+    --border-radius-full: 9999px;
     
-    /* 间距系统 */
+    /* 🌟 阴影系统 */
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    
+
+    
+    /* 📏 间距系统 */
     --spacing-0: 0;
     --spacing-1: 4px;
     --spacing-2: 8px;
@@ -84,11 +83,12 @@ import ViewPage from './components/view-page.vue';
     --spacing-10: 40px;
     --spacing-12: 48px;
     
-    /* 字体系统 */
-    --font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
-    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    /* 🔤 字体系统 */
+    --font-family: 'Inter', 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    --font-family-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
     
-    /* 字体大小 */
+    /* 📏 字体大小 */
     --font-size-xs: 12px;
     --font-size-sm: 14px;
     --font-size-base: 16px;
@@ -97,70 +97,139 @@ import ViewPage from './components/view-page.vue';
     --font-size-2xl: 24px;
     --font-size-3xl: 30px;
     --font-size-4xl: 36px;
+    --font-size-6xl: 60px;
     
-    /* 行高 */
+    /* 📐 行高 */
     --line-height-tight: 1.25;
     --line-height-normal: 1.5;
-    --line-height-relaxed: 1.75;
+    --line-height-relaxed: 1.625;
     
-    /* Z-index 层级 */
-    --z-dropdown: 1000;
+    /* 🎯 Z-index 层级 */
     --z-sticky: 1020;
     --z-modal: 1050;
-    --z-tooltip: 1070;
 }
 
-/* 暗色模式支持 */
+/* 🌙 暗色模式支持 */
 @media (prefers-color-scheme: dark) {
     :root {
-        --background-color: #0f172a;
-        --background-light: #1e293b;
-        --background-dark: #334155;
-        --card-color: #1e293b;
-        --surface-color: #1e293b;
-        --surface-hover: #334155;
+        --background-color: #121212;
+        --background-light: #1E1E1E;
+        --background-dark: #0A0A0A;
+        --card-color: #1E1E1E;
+        --surface-color: #2D2D2D;
+        --surface-hover: #3D3D3D;
         
-        --text-primary: #f1f5f9;
-        --text-secondary: #cbd5e1;
-        --text-tertiary: #94a3b8;
-        --text-muted: #64748b;
+        --text-primary: #FFFFFF;
+        --text-secondary: #E0E0E0;
+        --text-tertiary: #BDBDBD;
+        --text-muted: #757575;
         
-        --border-color: #334155;
-        --border-light: #475569;
-        --border-dark: #64748b;
+        /* 暗色模式链接颜色 */
+        --link-color: #5B9BF8;
+        --link-hover: #3B82F6;
+        --link-visited: #BA68C8;
         
-        --primary-color: #8b5cf6;
-        --primary-light: #a78bfa;
-        --primary-dark: #7c3aed;
+        /* 暗色模式返回按钮颜色 */
+        --back-color: #9CA3AF;
+        --back-hover: #D1D5DB;
+        
+        /* 暗色模式关闭按钮颜色 */
+        --close-color: #9CA3AF;
+        --close-hover: #D1D5DB;
+        
+        --border-color: #3D3D3D;
+        --border-light: #2D2D2D;
+        --border-dark: #555555;
+        
+        /* 保持主色不变 */
+        --primary-color: #FFC107;
+        --primary-light: #FFD54F;
+        --primary-dark: #FF8F00;
     }
 }
 
-/* 滚动条样式 */
+/* 💫 全局基础样式 */
+html {
+    font-family: var(--font-family);
+    line-height: var(--line-height-normal);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--background-color);
+    color: var(--text-primary);
+    overflow-x: hidden;
+}
+
+/* 🎨 滚动条样式 */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--background-color);
+    background: var(--background-dark);
+    border-radius: var(--border-radius-full);
 }
 
 ::-webkit-scrollbar-thumb {
     background: var(--border-dark);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-full);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--text-tertiary);
+    background: var(--primary-color);
 }
 
+/* 🎯 选中文本样式 */
+::selection {
+    background: rgba(255, 193, 7, 0.3);
+    color: var(--text-primary);
+}
+
+::-moz-selection {
+    background: rgba(255, 193, 7, 0.3);
+    color: var(--text-primary);
+}
+
+/* 🔗 链接默认样式 */
+a {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--link-hover);
+}
+
+a:visited {
+    color: var(--link-visited);
+}
+
+/* 🎛️ 表单元素样式重置 */
+button, input, select, textarea {
+    font-family: inherit;
+    font-size: inherit;
+}
+
+/* 🎯 焦点样式 */
+:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+    border-radius: var(--border-radius-sm);
+}
 
 </style>
 <style scoped>
 .app {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     min-height: 100vh;
+    background: var(--background-color);
+}
+
+.app.is-layer {
+    background: transparent;
 }
 </style>

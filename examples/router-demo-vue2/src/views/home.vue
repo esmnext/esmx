@@ -39,7 +39,7 @@ import { RouterLink } from '@esmx/router-vue2';
     margin: 0 auto;
 }
 
-/* 英雄区域 */
+/* 🌟 英雄区域 */
 .hero-section {
     padding: var(--spacing-12) var(--spacing-8);
     margin-bottom: var(--spacing-8);
@@ -52,7 +52,19 @@ import { RouterLink } from '@esmx/router-vue2';
     text-align: center;
     border: 1px solid var(--border-light);
     box-shadow: var(--shadow-sm);
-    transition: box-shadow var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--spacing-1);
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    opacity: 0.8;
 }
 
 .hero-section:hover {
@@ -60,11 +72,14 @@ import { RouterLink } from '@esmx/router-vue2';
 }
 
 .hero-title {
+    font-family: var(--font-family-display);
     font-size: var(--font-size-4xl);
     font-weight: 800;
     margin: 0 0 var(--spacing-4);
     color: var(--text-primary);
     letter-spacing: -0.02em;
+    position: relative;
+    z-index: 1;
 }
 
 .hero-subtitle {
@@ -73,6 +88,8 @@ import { RouterLink } from '@esmx/router-vue2';
     color: var(--text-secondary);
     margin: 0;
     max-width: 600px;
+    position: relative;
+    z-index: 1;
 }
 
 /* 新闻部分 */
@@ -98,7 +115,6 @@ import { RouterLink } from '@esmx/router-vue2';
     background: var(--card-color);
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-sm);
-    transition: transform var(--transition-normal), box-shadow var(--transition-normal), border-color var(--transition-normal);
     display: flex;
     flex-direction: column;
     border: 1px solid var(--border-light);
@@ -106,10 +122,24 @@ import { RouterLink } from '@esmx/router-vue2';
     overflow: hidden;
 }
 
+.news-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--spacing-1);
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    opacity: 0;
+}
+
 .news-card:hover {
-    transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
     border-color: var(--border-color);
+}
+
+.news-card:hover::before {
+    opacity: 1;
 }
 
 .card-content {
@@ -122,11 +152,11 @@ import { RouterLink } from '@esmx/router-vue2';
     padding: var(--spacing-1) var(--spacing-3);
     background: var(--primary-50);
     color: var(--primary-color);
-    border-radius: var(--border-radius-sm);
-    font-size: var(--font-size-xs);
-    font-weight: 700;
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
     margin-bottom: var(--spacing-3);
-    border: 1px solid rgba(109, 40, 217, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.2);
 }
 
 .card-title {
@@ -147,16 +177,17 @@ import { RouterLink } from '@esmx/router-vue2';
     position: absolute;
     top: var(--spacing-4);
     right: var(--spacing-4);
-    padding: var(--spacing-2) var(--spacing-3);
+    padding: var(--spacing-2) var(--spacing-4);
     background: var(--primary-color);
     color: var(--text-white);
     border: none;
-    border-radius: var(--border-radius-sm);
-    font-size: var(--font-size-xs);
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     display: none;
     z-index: 10;
+    box-shadow: var(--shadow-md);
 }
 
 .news-card:hover .layer-button {
@@ -165,6 +196,7 @@ import { RouterLink } from '@esmx/router-vue2';
 
 .layer-button:hover {
     background: var(--primary-dark);
+    box-shadow: var(--shadow-lg);
 }
 
 .card-link {
@@ -173,26 +205,24 @@ import { RouterLink } from '@esmx/router-vue2';
     justify-content: space-between;
     padding: var(--spacing-4) var(--spacing-6);
     background: var(--surface-color);
-    color: var(--primary-color);
+    color: var(--link-color);
     text-decoration: none;
     font-weight: 600;
     border-top: 1px solid var(--border-light);
-    transition: background var(--transition-fast), color var(--transition-fast);
 }
 
 .card-link:hover {
     background: var(--surface-hover);
-    color: var(--primary-dark);
+    color: var(--link-hover);
 }
 
 .link-icon {
-    transition: transform var(--transition-fast);
     font-size: var(--font-size-lg);
     font-weight: bold;
 }
 
 .card-link:hover .link-icon {
-    transform: translateX(4px);
+    color: var(--link-hover);
 }
 
 /* 响应式调整 */

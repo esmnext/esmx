@@ -3,9 +3,9 @@
     <header class="header">
       <button class="back-btn" @click="$router.back()">
         <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        返回
+        <span>返回</span>
       </button>
     </header>
     <div class="main-content">
@@ -117,54 +117,67 @@ function toggleLike() {
 .header {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: var(--z-sticky);
   display: flex;
   align-items: center;
-  padding: 16px 24px;
-  background: var(--card-color);
+  padding: var(--spacing-4) 0;
+  background: rgba(255, 255, 255, 0.95);
   border-bottom: 1px solid var(--border-light);
+  backdrop-filter: blur(8px);
+}
+
+.header .back-btn {
+  margin-left: var(--spacing-6);
+}
+
+@media (prefers-color-scheme: dark) {
+  .header {
+    background: rgba(30, 30, 30, 0.95);
+  }
 }
 
 .back-btn {
-  margin-right: 12px;
-  padding: 8px 12px;
-  font-size: 14px;
-  background: transparent;
+  margin-right: var(--spacing-3);
+  padding: var(--spacing-2) var(--spacing-4);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  background: var(--surface-color);
   border: none;
-  color: var(--primary-color);
-  border-radius: var(--border-radius-sm);
-  transition: background var(--transition-fast);
+  color: var(--back-color);
+  border-radius: var(--border-radius-md);
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--spacing-2);
   cursor: pointer;
 }
 .back-btn:hover {
-  background: rgba(109, 40, 217, 0.08);
+  background: var(--surface-hover);
+  color: var(--back-hover);
 }
-
-
+.back-btn .icon {
+  width: 16px;
+  height: 16px;
+}
 
 .main-content {
   width: 100%;
   background: var(--card-color);
-  min-height: calc(100vh - 100px);
 }
 
 .article {
-  padding: 24px 24px 20px 24px;
+  padding: var(--spacing-6) var(--spacing-6) var(--spacing-6) var(--spacing-6);
 }
 
 .article-header {
   padding: 0;
   border-bottom: none;
-  margin-bottom: 24px;
+  margin-bottom: var(--spacing-6);
 }
 
 .article-title {
-  margin: 0 0 8px 0;
-  font-size: 32px;
-  line-height: 1.2;
+  margin: 0 0 var(--spacing-2) 0;
+  font-size: var(--font-size-4xl);
+  line-height: var(--line-height-tight);
   color: var(--text-primary);
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -172,10 +185,10 @@ function toggleLike() {
 
 .article-meta {
   display: flex;
-  gap: 20px;
+  gap: var(--spacing-5);
   color: var(--text-secondary);
-  font-size: 16px;
-  margin-bottom: 8px;
+  font-size: var(--font-size-base);
+  margin-bottom: var(--spacing-2);
 }
 
 .article-content {
@@ -183,110 +196,118 @@ function toggleLike() {
 }
 
 .lead {
-  font-size: 18px;
-  line-height: 1.7;
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-relaxed);
   color: var(--text-primary);
-  margin-bottom: 24px;
+  margin-bottom: var(--spacing-6);
   font-weight: 500;
 }
 
 .feature-card {
   display: flex;
-  gap: 16px;
-  padding: 20px 24px;
-  margin: 24px 0;
-  background: #f6f5fd;
-  border-radius: var(--border-radius-md);
-  border-left: 4px solid var(--primary-color);
+  gap: var(--spacing-4);
+  padding: var(--spacing-5) var(--spacing-6);
+  margin: var(--spacing-6) 0;
+  background: var(--primary-50);
+  border-radius: var(--border-radius-lg);
+  border-left: var(--spacing-1) solid var(--primary-color);
   color: var(--text-primary);
   align-items: flex-start;
+  box-shadow: var(--shadow-sm);
 }
 
 .feature-icon {
-  font-size: 24px;
+  font-size: var(--font-size-2xl);
   margin-top: 0.1em;
 }
 
 .content-body {
-  line-height: 1.8;
+  line-height: var(--line-height-relaxed);
   color: var(--text-primary);
-  font-size: 17px;
+  font-size: var(--font-size-base);
 }
 
 .content-body pre {
-  padding: 16px;
+  padding: var(--spacing-4);
   background: var(--background-color);
-  border-radius: var(--border-radius-sm);
+  border-radius: var(--border-radius-md);
   overflow-x: auto;
-  margin: 19px 0;
-  border: 1px solid rgba(0,0,0,0.08);
+  margin: var(--spacing-5) 0;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-xs);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
 }
 
 .article-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 0 0 0;
+  padding: var(--spacing-6) 0 0 0;
   background: none;
-  border-top: 1px solid rgba(0,0,0,0.08);
-  margin-top: 32px;
+  border-top: 1px solid var(--border-light);
+  margin-top: var(--spacing-8);
 }
 
 .tags {
   display: flex;
-  gap: 8px;
+  gap: var(--spacing-2);
   flex-wrap: wrap;
 }
 
 .tag {
-  padding: 4px 12px;
-  font-size: 14px;
+  padding: var(--spacing-1) var(--spacing-3);
+  font-size: var(--font-size-sm);
   font-weight: 600;
   color: var(--primary-color);
-  background-color: rgba(109, 40, 217, 0.1);
-  border-radius: var(--border-radius-sm);
-  transition: background 0.15s, color 0.15s;
+  background-color: var(--primary-50);
+  border-radius: var(--border-radius-md);
+  border: 1px solid rgba(255, 193, 7, 0.2);
 }
 .tag:hover {
   background: var(--primary-color);
-  color: #fff;
+  color: var(--text-white);
 }
 
 .actions {
   display: flex;
-  gap: 8px;
+  gap: var(--spacing-2);
 }
 
 .action-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 18px;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-5);
   color: var(--primary-color);
   background: transparent;
   border: 1px solid var(--primary-color);
-  border-radius: var(--border-radius-sm);
-  font-size: 15px;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-sm);
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  box-shadow: var(--shadow-xs);
 }
 .action-btn:hover {
   background: var(--primary-color);
-  color: #fff;
+  color: var(--text-white);
+  box-shadow: var(--shadow-sm);
 }
 .action-btn.is-active {
   background: var(--primary-dark);
-  color: #fff;
+  color: var(--text-white);
   border-color: var(--primary-dark);
+  box-shadow: var(--shadow-sm);
 }
 
 .related {
-  margin-top: 40px;
+  margin-top: var(--spacing-8);
+  margin-bottom: 0;
 }
 .related-title {
-  margin: 0 0 13px 0;
-  font-size: 18px;
+  margin: 0 0 var(--spacing-3) 0;
+  font-size: var(--font-size-lg);
   font-weight: 700;
   color: var(--text-primary);
   text-align: left;
@@ -297,7 +318,7 @@ function toggleLike() {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--spacing-1);
 }
 .related-item {
   padding: 0;
@@ -309,18 +330,16 @@ function toggleLike() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 8px;
-  color: var(--primary-color);
+  padding: var(--spacing-3) var(--spacing-2);
+  color: var(--link-color);
   text-decoration: none;
-  border-radius: var(--border-radius-sm);
-  transition: background 0.15s, color 0.15s;
+  border-radius: var(--border-radius-md);
 }
 .related-link:hover {
-  background: rgba(109, 40, 217, 0.08);
-  color: var(--primary-dark);
+  background: rgba(31, 114, 232, 0.08);
+  color: var(--link-hover);
 }
 .related-link .icon {
-  transition: transform 0.15s;
 }
 .related-link:hover .icon {
   transform: translateX(4px);
@@ -328,23 +347,23 @@ function toggleLike() {
 
 @media (max-width: 900px) {
   .article {
-    padding: 24px 16px 16px 16px;
+    padding: var(--spacing-6) var(--spacing-4) var(--spacing-4) var(--spacing-4);
   }
-  .header {
-    padding: 16px 16px;
+  .header .back-btn {
+    margin-left: var(--spacing-4);
   }
 }
 @media (max-width: 600px) {
-  .header {
-    padding: 16px 8px;
+  .header .back-btn {
+    margin-left: var(--spacing-2);
   }
   .article {
-    padding: 16px 8px 8px 8px;
+    padding: var(--spacing-4) var(--spacing-2) var(--spacing-4) var(--spacing-2);
   }
   .article-footer {
     flex-direction: column;
-    gap: 12px;
-    padding: 16px 0 0 0;
+    gap: var(--spacing-3);
+    padding: var(--spacing-4) 0 0 0;
   }
 }
 </style>
