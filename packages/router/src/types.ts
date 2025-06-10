@@ -24,6 +24,8 @@ export interface RouterOptions {
     location?: RouteHandleHook;
     rootStyle?: Partial<CSSStyleDeclaration> | false;
     layer?: RouterLayerOptions | null;
+    /** 当 router.back() 或 router.go(负数) 无响应时的钩子函数 */
+    onBackNoResponse?: RouteBackNoResponseHook;
 }
 
 export interface RouterLayerOptions {
@@ -196,6 +198,12 @@ export type RouteHandleHook = (
     from: Route | null
 ) => Awaitable<RouteHandleResult>;
 export type RouteNotifyHook = (to: Route, from: Route | null) => void;
+
+/**
+ * 当 router.back() 或 router.go(负数) 无响应时的钩子函数类型
+ * @param router 路由器实例
+ */
+export type RouteBackNoResponseHook = (router: Router) => void;
 
 export interface RouteEnvOptions {
     handle?: RouteHandleHook;

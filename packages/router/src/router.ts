@@ -180,6 +180,10 @@ export class Router {
     public async back(): Promise<Route | null> {
         const result = await this._navigation.go(-1);
         if (result === null) {
+            // 调用 onBackNoResponse 钩子
+            if (this.parsedOptions.onBackNoResponse) {
+                this.parsedOptions.onBackNoResponse(this);
+            }
             return null;
         }
         return this._transitionTo(RouteType.back, {
@@ -190,6 +194,10 @@ export class Router {
     public async go(index: number): Promise<Route | null> {
         const result = await this._navigation.go(index);
         if (result === null) {
+            // 当向后导航无响应时调用 onBackNoResponse 钩子
+            if (index < 0 && this.parsedOptions.onBackNoResponse) {
+                this.parsedOptions.onBackNoResponse(this);
+            }
             return null;
         }
         return this._transitionTo(RouteType.go, {
@@ -202,7 +210,7 @@ export class Router {
         if (result === null) {
             return null;
         }
-        return this._transitionTo(RouteType.back, {
+        return this._transitionTo(RouteType.forward, {
             url: result.url,
             state: result.state
         });
@@ -260,6 +268,13 @@ export class Router {
             ...this.options,
             id: `${this.id}__route_layer__${LAYER_ID.generate()}`,
             ...options,
+            onBackNoResponse: (router) => {
+                console.log('>>>>> onBackNoResponse');
+                // 当返回操作无响应时，关闭弹层
+                router.closeLayer();
+                // 如果原有 onBackNoResponse 存在，也调用它
+                options?.onBackNoResponse?.(router);
+            },
             layer
         });
         await router.replace(toRaw);

@@ -66,19 +66,19 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
 import { RouterLink, useRoute } from '@esmx/router-vue2';
+import { ref } from 'vue';
 
 const route = useRoute();
 const isLayer = ref(false);
 const isLiked = ref(false);
 
 const news = {
-  title: '探索 Esmx 路由的强大功能',
-  date: new Date(),
-  author: 'Esmx 团队',
-  description: `这是新闻 #${route.state.id} 的详细内容，展示了 Esmx 路由的强大功能和灵活性。`,
-  content: `
+    title: '探索 Esmx 路由的强大功能',
+    date: new Date(),
+    author: 'Esmx 团队',
+    description: `这是新闻 #${route.state.id} 的详细内容，展示了 Esmx 路由的强大功能和灵活性。`,
+    content: `
     <p>Esmx 路由是一个现代化的路由解决方案，为 Vue 应用提供了强大的导航能力。它支持动态路由匹配、嵌套路由、路由守卫等多种功能，让开发者能够构建复杂而高效的单页应用。</p>
     <h2>技术细节</h2>
     <pre><code>// 路由配置示例
@@ -91,21 +91,21 @@ const router = createRouter({
   ]
 });</code></pre>
   `,
-  tags: ['路由', 'Vue', 'Esmx']
+    tags: ['路由', 'Vue', 'Esmx']
 };
 
 const relatedNews = [
-  { id: 1, title: '新闻 #1' },
-  { id: 2, title: '新闻 #2' },
-  { id: 3, title: '新闻 #3' }
+    { id: 1, title: '新闻 #1' },
+    { id: 2, title: '新闻 #2' },
+    { id: 3, title: '新闻 #3' }
 ];
 
 function formatDate(date) {
-  return new Date(date).toLocaleDateString();
+    return new Date(date).toLocaleDateString();
 }
 
 function toggleLike() {
-  isLiked.value = !isLiked.value;
+    isLiked.value = !isLiked.value;
 }
 </script>
 
