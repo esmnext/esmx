@@ -39,10 +39,8 @@ export function isValidConfirmHookResult(
 ): result is Exclude<RouteConfirmHookResult, void> {
     return (
         result === false ||
-        (result instanceof Boolean && result.valueOf() === false) ||
         typeof result === 'function' ||
         typeof result === 'string' ||
-        result instanceof String ||
         isObject(result)
     );
 }

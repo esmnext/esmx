@@ -43,7 +43,7 @@ export class Navigation {
         };
         this._destroy =
             this._navigation instanceof MemoryHistory
-                ? subscribeMemory(this._navigation, _subscribe)
+                ? this._navigation.onPopState(_subscribe)
                 : subscribeHtmlHistory(_subscribe);
     }
     public push(route: Route): RouteState {
@@ -95,17 +95,27 @@ export class Navigation {
 }
 
 export class MemoryHistory implements History {
-    private entries: Array<{ state: any; url: string }> = [];
-    private index = -1;
+    private _entries: Array<{ state: any; url: string }> = [];
+    private _index = -1;
+    private get _curEntry() {
+        const idx = this._index;
+        if (idx < 0 || idx >= this.length) return null;
+        return this._entries[idx];
+    }
+    private _popStateCbs = new Set<NavigationSubscribe>();
     public scrollRestoration: ScrollRestoration = 'auto';
-    public state: any = null;
-    public url = '/';
+    public get state() {
+        return this._curEntry?.state ?? null;
+    }
+    public get url() {
+        return this._curEntry?.url ?? '';
+    }
 
     constructor() {
         this.pushState(null, '', '/');
     }
     public get length() {
-        return this.entries.length;
+        return this._entries.length;
     }
 
     public pushState(
@@ -114,14 +124,9 @@ export class MemoryHistory implements History {
         url?: string | URL | null
     ): void {
         // 移除当前位置之后的所有记录
-        this.entries.splice(this.index + 1);
-
-        // 添加新的历史记录
-        const newUrl = url ? url.toString() : this.url;
-        this.entries.push({ state: data, url: newUrl });
-
-        // 通过 _applyByIndex 统一更新状态
-        this._applyByIndex(this.entries.length - 1);
+        this._entries.splice(this._index + 1);
+        this._entries.push({ state: data, url: url?.toString() ?? this.url });
+        this._index = this._entries.length - 1;
     }
 
     public replaceState(
@@ -129,63 +134,46 @@ export class MemoryHistory implements History {
         unused: string,
         url?: string | URL | null
     ): void {
-        if (this.index >= 0) {
-            const prevUrl = this.entries[this.index].url;
-            this.entries[this.index] = {
-                ...this.entries[this.index],
-                state: { ...data },
-                url: url ? url.toString() : prevUrl
-            };
-            this._applyByIndex(this.index);
-        }
+        const curEntry = this._curEntry;
+        if (!curEntry) return;
+        curEntry.state = { ...data };
+        if (url) curEntry.url = url.toString();
     }
 
     public back(): void {
         this.go(-1);
     }
-
     public forward(): void {
         this.go(1);
     }
-
     public go(delta?: number): void {
         if (!delta) return;
-
-        const newIndex = this.index + delta;
-
-        if (newIndex >= 0 && newIndex < this.entries.length) {
-            this._applyByIndex(newIndex);
-        }
+        const newIdx = this._index + delta;
+        if (newIdx < 0 || newIdx >= this.length) return;
+        this._index = newIdx;
+        const entry = this._curEntry!;
+        this._popStateCbs.forEach((cb) => cb(entry.url, entry.state));
     }
-    public _applyByIndex(index: number) {
-        const entry = this.entries[index];
-        if (entry) {
-            this.index = index;
-            this.state = entry.state;
-            this.url = entry.url;
-        }
+
+    public onPopState(cb: NavigationSubscribe) {
+        if (typeof cb !== 'function') return () => {};
+        this._popStateCbs.add(cb);
+        return () => this._popStateCbs.delete(cb);
     }
 }
 
-// 为了单元测试导出
-export function subscribeMemory(
-    history: MemoryHistory,
-    cb: NavigationSubscribe
-) {
-    const _go = history.go;
-    history.go = function (delta?: number) {
-        _go.call(this, delta);
-        cb(history.url, history.state);
-    };
-    return () => {};
-}
-
+const winPopStateCbs = new WeakMap<NavigationSubscribe, () => void>();
 function subscribeHtmlHistory(cb: NavigationSubscribe) {
-    const popstate = () => {
-        cb(location.href, history.state);
-    };
-    window.addEventListener('popstate', popstate);
+    if (typeof cb !== 'function') return () => {};
+    if (!winPopStateCbs.has(cb)) {
+        const wrapper = () => cb(location.href, history.state || {});
+        winPopStateCbs.set(cb, wrapper);
+        window.addEventListener('popstate', wrapper);
+    }
     return () => {
-        window.removeEventListener('popstate', popstate);
+        const wrapper = winPopStateCbs.get(cb);
+        if (!wrapper) return;
+        window.removeEventListener('popstate', wrapper);
+        winPopStateCbs.delete(cb);
     };
 }

@@ -15,7 +15,7 @@ export function createRoute(
     toRaw: RouteLocationRaw,
     from: URL | null
 ): Route {
-    const base = new URL(options.base);
+    const base = options.base;
     const to = options.normalizeURL(parseLocation(toRaw, base), from);
     const isSameOrigin = to.origin === base.origin;
     const isSameBase = to.pathname.startsWith(base.pathname);

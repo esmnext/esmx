@@ -25,7 +25,7 @@ export function parsedOptions(options: RouterOptions): RouterParsedOptions {
         res: options.res || null,
         layer: options.layer ? { ...options.layer } : null,
         get base() {
-            return base;
+            return new URL(base);
         },
         mode: isBrowser
             ? (options.mode ?? RouterMode.history)
