@@ -33,7 +33,10 @@ export async function createRouteTask(opts: RouteTaskOptions) {
             to.handle = result;
             break;
         }
-        if (result === false) {
+        if (
+            result === false ||
+            (result instanceof Boolean && !result.valueOf())
+        ) {
             // 导航被终止
             to.status = RouteStatus.aborted;
             break;
