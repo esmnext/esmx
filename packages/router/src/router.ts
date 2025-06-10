@@ -15,6 +15,7 @@ import {
     RouteType,
     type RouterLayerOptions,
     type RouterLayerResult,
+    RouterMode,
     type RouterOptions,
     type RouterParsedOptions
 } from './types';
@@ -244,6 +245,7 @@ export class Router {
             };
         });
         const router = new Router({
+            mode: RouterMode.abstract,
             rootStyle: {
                 position: 'fixed',
                 top: '0',
