@@ -1,4 +1,4 @@
-import type { RouteConfirmHookResult } from './types';
+import type { Route, RouteConfirmHookResult, RouteMatchType } from './types';
 export const isBrowser = typeof window === 'object';
 
 export function isNotNullish(value: unknown): boolean {
@@ -77,4 +77,40 @@ export function isUrlEqual(url1: URL, url2?: URL | null): boolean {
     // biome-ignore lint/correctness/noSelfAssign:
     url2.hash = url2.hash;
     return url1.href === url2.href;
+}
+
+/**
+ * 比较两个路由是否匹配
+ *
+ * @param route1 第一个路由对象
+ * @param route2 第二个路由对象，可能为 null
+ * @param matchType 匹配类型
+ * - 'route': 路由级匹配，比较路由配置是否相同
+ * - 'exact': 完全匹配，比较完整路径是否相同
+ * - 'include': 包含匹配，判断 route1 路径是否以 route2 路径开头
+ * @returns 是否匹配
+ */
+export function isRouteMatched(
+    route1: Route,
+    route2: Route | null,
+    matchType: RouteMatchType
+): boolean {
+    if (!route2) return false;
+
+    switch (matchType) {
+        case 'route':
+            // 路由级匹配 - 比较路由配置
+            return route1.config === route2.config;
+
+        case 'exact':
+            // 完全匹配 - 完整路径相同
+            return route1.fullPath === route2.fullPath;
+
+        case 'include':
+            // 包含匹配 - route1 路径包含 route2 路径
+            return route1.fullPath.startsWith(route2.fullPath);
+
+        default:
+            return false;
+    }
 }

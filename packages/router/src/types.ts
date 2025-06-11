@@ -102,7 +102,7 @@ export enum RouteType {
 }
 export type RouteMeta = Record<string | symbol, any>;
 
-export type RouteState = Readonly<Record<string, unknown>>;
+export type RouteState = Record<string, unknown>;
 export type RouteHandleResult = unknown | null | void;
 
 export interface RouteLocation {
@@ -121,6 +121,7 @@ export interface Route {
     readonly isPush: boolean;
     readonly req: IncomingMessage | null;
     readonly res: ServerResponse | null;
+    readonly context: Record<string | symbol, any>;
     readonly url: URL;
     readonly path: string;
     readonly fullPath: string;

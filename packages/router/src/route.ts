@@ -121,6 +121,9 @@ export function createRoute(
         get res() {
             return options.res;
         },
+        get context() {
+            return options.context;
+        },
         type: toType,
         get isPush() {
             return this.type.startsWith('push');
@@ -150,6 +153,8 @@ export function createRoute(
     // 应用用户传入的路由参数（如果匹配成功）
     if (match) {
         applyRouteParams(match, toRaw, base, to);
+        // 将匹配到的参数赋值给路由对象
+        Object.assign(route.params, match.params);
     }
 
     return route;

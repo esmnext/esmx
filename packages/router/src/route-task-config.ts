@@ -5,65 +5,55 @@ export const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
     [RouteType.push]: [
         RouteTaskType.location,
         RouteTaskType.env,
-        RouteTaskType.asyncComponent,
+        RouteTaskType.beforeLeave,
         RouteTaskType.beforeEach,
+        RouteTaskType.beforeUpdate,
+        RouteTaskType.beforeEnter,
+        RouteTaskType.asyncComponent,
         RouteTaskType.push
     ],
     [RouteType.replace]: [
         RouteTaskType.location,
         RouteTaskType.env,
-        RouteTaskType.asyncComponent,
+        RouteTaskType.beforeLeave,
         RouteTaskType.beforeEach,
+        RouteTaskType.beforeUpdate,
+        RouteTaskType.beforeEnter,
+        RouteTaskType.asyncComponent,
         RouteTaskType.replace
     ],
     [RouteType.pushWindow]: [
         RouteTaskType.location,
-        RouteTaskType.asyncComponent,
         RouteTaskType.env,
+        RouteTaskType.beforeLeave,
         RouteTaskType.beforeEach,
+        RouteTaskType.beforeUpdate,
+        RouteTaskType.beforeEnter,
+        RouteTaskType.asyncComponent,
         RouteTaskType.pushWindow
     ],
     [RouteType.replaceWindow]: [
         RouteTaskType.location,
+        RouteTaskType.env,
+        RouteTaskType.beforeLeave,
         RouteTaskType.beforeEach,
+        RouteTaskType.beforeUpdate,
+        RouteTaskType.beforeEnter,
+        RouteTaskType.asyncComponent,
         RouteTaskType.replaceWindow
     ],
     [RouteType.restartApp]: [
         RouteTaskType.location,
-        RouteTaskType.asyncComponent,
+        RouteTaskType.env,
+        RouteTaskType.beforeLeave,
         RouteTaskType.beforeEach,
-        RouteTaskType.popstate
+        RouteTaskType.beforeUpdate,
+        RouteTaskType.beforeEnter,
+        RouteTaskType.asyncComponent,
+        RouteTaskType.restartApp
     ],
-    [RouteType.back]: [
-        RouteTaskType.asyncComponent,
-        RouteTaskType.beforeEach,
-        RouteTaskType.popstate
-    ],
-    [RouteType.go]: [
-        RouteTaskType.asyncComponent,
-        RouteTaskType.beforeEach,
-        RouteTaskType.popstate
-    ],
-    [RouteType.forward]: [
-        RouteTaskType.asyncComponent,
-        RouteTaskType.beforeEach,
-        RouteTaskType.popstate
-    ],
-    [RouteType.none]: [
-        RouteTaskType.asyncComponent,
-        RouteTaskType.beforeEach,
-        RouteTaskType.popstate
-    ]
-};
-
-export const AFTER_TASKS: Record<RouteType, RouteTaskType[]> = {
-    [RouteType.push]: [RouteTaskType.afterEach],
-    [RouteType.replace]: [RouteTaskType.afterEach],
-    [RouteType.pushWindow]: [RouteTaskType.afterEach],
-    [RouteType.replaceWindow]: [RouteTaskType.afterEach],
-    [RouteType.restartApp]: [RouteTaskType.afterEach],
-    [RouteType.back]: [RouteTaskType.afterEach],
-    [RouteType.go]: [RouteTaskType.afterEach],
-    [RouteType.forward]: [RouteTaskType.afterEach],
-    [RouteType.none]: [RouteTaskType.afterEach]
+    [RouteType.back]: [RouteTaskType.popstate],
+    [RouteType.go]: [RouteTaskType.popstate],
+    [RouteType.forward]: [RouteTaskType.popstate],
+    [RouteType.none]: []
 };
