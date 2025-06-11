@@ -277,7 +277,7 @@ export class Router {
                 justifyContent: 'center'
             },
             ...this.options,
-            id: `${this.id}__route_layer__${LAYER_ID.generate()}`,
+            id: `${this.id}__route_layer__${LAYER_ID.next()}`,
             ...options,
             onBackNoResponse: (router) => {
                 // 当返回操作无响应时，关闭弹层

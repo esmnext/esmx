@@ -3,9 +3,8 @@ export class IncrementId {
     public equal(id: number) {
         return this.value === id;
     }
-    public generate() {
-        this.value++;
-        return this.value;
+    public next() {
+        return ++this.value;
     }
 }
 

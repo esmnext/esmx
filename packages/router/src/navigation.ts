@@ -13,73 +13,61 @@ const PAGE_ID_KEY = '__pageId__';
 
 export class Navigation {
     public options: RouterParsedOptions;
-    private _navigation: History;
-    private _destroy: () => void;
-    private _promiseResolve: ((data: NavigationGoResult) => void) | null = null;
+    private _history: History;
+    private _unSubscribePopState: () => void;
+    private _promiseResolve:
+        | ((url?: string | null, state?: RouteState) => void)
+        | null = null;
+
     public constructor(
         options: RouterParsedOptions,
-        update?: (url: string, state: RouteState) => void
+        onUpdated?: NavigationSubscribe
     ) {
         this.options = options;
-        this._navigation =
+        this._history =
             options.mode === RouterMode.history
                 ? window.history
                 : new MemoryHistory();
-        const _subscribe: NavigationSubscribe = (
-            url: string,
-            state: RouteState
-        ) => {
-            const { _promiseResolve } = this;
-            if (_promiseResolve) {
-                _promiseResolve({
-                    type: 'success',
-                    url,
-                    state
-                });
-            } else if (update) {
-                update(url, state);
-            }
-            this._promiseResolve = null;
+        const onPopStateChange: NavigationSubscribe = (url, state) => {
+            (this._promiseResolve || onUpdated)?.(url, state);
         };
-        this._destroy =
-            this._navigation instanceof MemoryHistory
-                ? this._navigation.onPopState(_subscribe)
-                : subscribeHtmlHistory(_subscribe);
+        this._unSubscribePopState =
+            this._history instanceof MemoryHistory
+                ? this._history.onPopState(onPopStateChange)
+                : subscribeHtmlHistory(onPopStateChange);
     }
+
     public push(route: Route): RouteState {
-        const state: RouteState = {
-            ...route.state,
-            [PAGE_ID_KEY]: PAGE_ID.generate()
-        };
-        this._navigation.pushState(state, '', route.fullPath);
-        return Object.freeze(state);
-    }
-    public replace(route: Route): RouteState {
-        const { _navigation } = this;
-        const oldState = _navigation.state;
-        const oldId =
-            oldState && typeof oldState[PAGE_ID_KEY] === 'number'
-                ? oldState[PAGE_ID_KEY]
-                : PAGE_ID.generate();
-        const id = PAGE_ID.equal(0) ? PAGE_ID.generate() : oldId;
         const state: RouteState = Object.freeze({
-            ...oldState,
-            ...route.state,
-            [PAGE_ID_KEY]: id
+            ...(route.state || {}),
+            [PAGE_ID_KEY]: PAGE_ID.next()
         });
-        _navigation.replaceState(state, '', route.fullPath);
-        return Object.freeze(state);
+        this._history.pushState(state, '', route.fullPath);
+        return state;
     }
+
+    public replace(route: Route): RouteState {
+        const oldId = this._history.state?.[PAGE_ID_KEY];
+        const state: RouteState = Object.freeze({
+            ...(route.state || {}),
+            [PAGE_ID_KEY]: typeof oldId === 'number' ? oldId : PAGE_ID.next()
+        });
+        this._history.replaceState(state, '', route.fullPath);
+        return state;
+    }
+
     public go(index: number): Promise<NavigationGoResult> {
         if (this._promiseResolve) {
             return Promise.resolve(null);
         }
-        return new Promise<NavigationGoResult>((resolve, reject) => {
-            this._promiseResolve = resolve;
-            this._navigation.go(index);
-            setTimeout(() => {
-                resolve(null);
-            }, 80);
+        return new Promise<NavigationGoResult>((resolve) => {
+            this._promiseResolve = (url, state) => {
+                this._promiseResolve = null;
+                if (url === void 0 || url === null) return resolve(null);
+                resolve({ type: 'success', url, state: state! });
+            };
+            setTimeout(this._promiseResolve, 80);
+            this._history.go(index);
         });
     }
     public forward(): Promise<NavigationGoResult> {
@@ -88,9 +76,10 @@ export class Navigation {
     public back(): Promise<NavigationGoResult> {
         return this.go(-1);
     }
+
     public destroy() {
-        this._promiseResolve = null;
-        this._destroy?.();
+        this._promiseResolve?.();
+        this._unSubscribePopState();
     }
 }
 
@@ -163,7 +152,6 @@ export class MemoryHistory implements History {
 }
 
 function subscribeHtmlHistory(cb: NavigationSubscribe) {
-    if (typeof cb !== 'function') return () => {};
     const wrapper = () => cb(location.href, history.state || {});
     window.addEventListener('popstate', wrapper);
     return () => window.removeEventListener('popstate', wrapper);
