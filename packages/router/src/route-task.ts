@@ -107,13 +107,15 @@ export enum RouteTaskType {
     env = 'env',
     asyncComponent = 'asyncComponent',
     beforeEach = 'beforeEach',
+    beforeEnter = 'beforeEnter',
+    beforeUpdate = 'beforeUpdate',
+    beforeLeave = 'beforeLeave',
     push = 'push',
     replace = 'replace',
     popstate = 'popstate',
     restartApp = 'restartApp',
     pushWindow = 'pushWindow',
-    replaceWindow = 'replaceWindow',
-    afterEach = 'afterEach'
+    replaceWindow = 'replaceWindow'
 }
 
 export interface RouteTask {

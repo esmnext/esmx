@@ -1704,3 +1704,78 @@ describe('Route 只读属性测试 (防止 matched 和 config 被 Vue2 劫持)',
         expect(spreadRoute.meta).toEqual({});
     });
 });
+
+describe('Route context 字段测试', () => {
+    test('should pass context from options to route', () => {
+        const mockContext = {
+            api: {
+                getUserData: () => Promise.resolve({ id: 1, name: 'test' }),
+                getAppData: () => Promise.resolve({ version: '1.0.0' })
+            },
+            request: { headers: { 'user-agent': 'test' } },
+            customSymbol: Symbol('test')
+        };
+
+        const createOptions = (
+            overrides: Partial<RouterOptions> = {}
+        ): RouterParsedOptions => {
+            return {
+                id: 'test',
+                context: mockContext,
+                routes: [],
+                mode: RouterMode.abstract,
+                base: new URL('http://localhost/'),
+                env: 'test',
+                req: null,
+                res: null,
+                apps: {},
+                normalizeURL: (to) => to,
+                location: () => {},
+                rootStyle: false,
+                layer: null,
+                onBackNoResponse: () => {},
+                matcher: () => ({ matches: [], params: {} }),
+                ...overrides
+            };
+        };
+
+        const options = createOptions();
+        const route = createRoute(options, RouteType.push, '/test', null);
+
+        expect(route.context).toBe(mockContext);
+        expect(route.context.api).toBe(mockContext.api);
+        expect(route.context.request).toBe(mockContext.request);
+        expect(route.context.customSymbol).toBe(mockContext.customSymbol);
+    });
+
+    test('should handle empty context', () => {
+        const createOptions = (
+            overrides: Partial<RouterOptions> = {}
+        ): RouterParsedOptions => {
+            return {
+                id: 'test',
+                context: {},
+                routes: [],
+                mode: RouterMode.abstract,
+                base: new URL('http://localhost/'),
+                env: 'test',
+                req: null,
+                res: null,
+                apps: {},
+                normalizeURL: (to) => to,
+                location: () => {},
+                rootStyle: false,
+                layer: null,
+                onBackNoResponse: () => {},
+                matcher: () => ({ matches: [], params: {} }),
+                ...overrides
+            };
+        };
+
+        const options = createOptions();
+        const route = createRoute(options, RouteType.push, '/test', null);
+
+        expect(route.context).toEqual({});
+        expect(typeof route.context).toBe('object');
+    });
+});
