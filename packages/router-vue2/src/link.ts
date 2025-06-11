@@ -1,9 +1,4 @@
-import {
-    type Route,
-    type RouteLocationRaw,
-    isEqualRoute,
-    isSameRoute
-} from '@esmx/router';
+import type { Route, RouteLocationRaw, RouteMatchType } from '@esmx/router';
 import { type PropType, defineComponent } from 'vue';
 
 import { useRoute, useRouter } from './use';
@@ -36,7 +31,7 @@ export interface RouterLinkProps {
      * 如: 当前路由为/en/news/list/123  此时router-link 的路径为 /en/news/list/123 才会激活，如果配置的路径为/en/news/list/123456 也不会激活
      * @default 'include'
      */
-    exact: 'include' | 'route' | 'exact';
+    exact: RouteMatchType;
 
     /**
      * 是否为相对路径
@@ -74,7 +69,7 @@ export const RouterLink = defineComponent({
             default: false
         },
         exact: {
-            type: String as PropType<RouterLinkProps['exact']>,
+            type: String as PropType<RouteMatchType>,
             default: 'include'
         },
         // append: {
@@ -96,29 +91,8 @@ export const RouterLink = defineComponent({
         const current = useRoute();
         const resolveRoute = router.resolve(to);
 
-        /* 匹配函数 */
-        let compare: (current: Route, route: Route) => Boolean;
-        switch (exact) {
-            /* 路由级匹配 */
-            case 'route':
-                compare = isSameRoute;
-                break;
-
-            /* 全匹配 */
-            case 'exact':
-                compare = isEqualRoute;
-                break;
-
-            /* 是否包含 */
-            default:
-                compare = (current: Route, route: Route) => {
-                    return current.fullPath.startsWith(route.fullPath);
-                };
-                break;
-        }
-
         /* 根据路由是否匹配获取高亮 */
-        const active = compare(current, resolveRoute);
+        const active = router.isRouteMatched(resolveRoute, exact);
 
         /* 事件处理函数 */
         const handler = (e: MouseEvent) => {

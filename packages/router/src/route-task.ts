@@ -110,7 +110,7 @@ export enum RouteTaskType {
     push = 'push',
     replace = 'replace',
     popstate = 'popstate',
-    reload = 'reload',
+    restartApp = 'restartApp',
     pushWindow = 'pushWindow',
     replaceWindow = 'replaceWindow',
     afterEach = 'afterEach'

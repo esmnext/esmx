@@ -16,6 +16,7 @@ import type {
     RouteConfirmHook,
     RouteHandleHook,
     RouteLocationRaw,
+    RouteMatchType,
     RouteNotifyHook,
     RouteState,
     RouterLayerOptions,
@@ -124,7 +125,7 @@ export class Router {
                 }
             };
         },
-        [RouteTaskType.reload]: async () => {
+        [RouteTaskType.restartApp]: async () => {
             return async (to, from) => {
                 this._route = to;
                 this._microApp._update(this, true);
@@ -176,7 +177,7 @@ export class Router {
     public push(toRaw: RouteLocationRaw): Promise<Route> {
         return this._transitionTo(RouteType.push, toRaw);
     }
-    public replace(toRaw: RouteLocationRaw) {
+    public replace(toRaw: RouteLocationRaw): Promise<Route> {
         return this._transitionTo(RouteType.replace, toRaw);
     }
     public pushWindow(toRaw?: RouteLocationRaw): Promise<Route> {
@@ -191,9 +192,11 @@ export class Router {
             toRaw ?? this.route.url.href
         );
     }
-    public reload(toRaw?: RouteLocationRaw): Promise<Route> {
+    public restartApp(): Promise<Route>;
+    public restartApp(toRaw: RouteLocationRaw): Promise<Route>;
+    public restartApp(toRaw?: RouteLocationRaw | undefined): Promise<Route> {
         return this._transitionTo(
-            RouteType.reload,
+            RouteType.restartApp,
             toRaw ?? this.route.url.href
         );
     }
@@ -235,6 +238,39 @@ export class Router {
             state: result.state
         });
     }
+    /**
+     * 解析路由位置而不进行实际导航
+     *
+     * 此方法用于解析路由配置并返回对应的路由对象，但不会触发实际的页面导航。
+     * 主要用于以下场景：
+     * - 生成链接URL而不进行跳转
+     * - 预检查路由匹配情况
+     * - 获取路由参数、元信息等
+     * - 测试路由配置的有效性
+     *
+     * @param toRaw 目标路由位置，可以是字符串路径或路由配置对象
+     * @returns 解析后的路由对象，包含完整的路由信息
+     *
+     * @example
+     * ```typescript
+     * // 解析字符串路径
+     * const route = router.resolve('/user/123');
+     * const url = route.url.href; // 获取完整URL
+     *
+     * // 解析命名路由
+     * const userRoute = router.resolve({
+     *   name: 'user',
+     *   params: { id: '123' }
+     * });
+     * console.log(userRoute.params.id); // '123'
+     *
+     * // 检查路由有效性
+     * const testRoute = router.resolve('/some/path');
+     * if (testRoute.matched.length > 0) {
+     *   // 路由匹配成功
+     * }
+     * ```
+     */
     public resolve(toRaw: RouteLocationRaw): Route {
         return createRoute(
             this.parsedOptions,
@@ -243,6 +279,56 @@ export class Router {
             this._route?.url ?? null
         );
     }
+
+    /**
+     * 判断路由是否匹配当前路由
+     *
+     * @param targetRoute 要比较的目标路由对象
+     * @param matchType 匹配类型
+     * - 'route': 路由级匹配，比较路由配置是否相同
+     * - 'exact': 完全匹配，比较路径是否完全相同
+     * - 'include': 包含匹配，判断当前路径是否包含目标路径
+     * @returns 是否匹配
+     *
+     * @example
+     * ```typescript
+     * const targetRoute = router.resolve('/user/123');
+     *
+     * // 路由级匹配 - 比较路由配置
+     * const isRouteMatch = router.isRouteMatched(targetRoute, 'route');
+     *
+     * // 完全匹配 - 路径和配置都要相同
+     * const isExactMatch = router.isRouteMatched(targetRoute, 'exact');
+     *
+     * // 包含匹配 - 当前路径包含目标路径
+     * const isIncludeMatch = router.isRouteMatched(targetRoute, 'include');
+     * ```
+     */
+    public isRouteMatched(
+        targetRoute: Route,
+        matchType: RouteMatchType
+    ): boolean {
+        const currentRoute = this._route;
+        if (!currentRoute) return false;
+
+        switch (matchType) {
+            case 'route':
+                // 路由级匹配 - 比较路由配置
+                return currentRoute.config === targetRoute.config;
+
+            case 'exact':
+                // 完全匹配 - 路径完全相同
+                return currentRoute.fullPath === targetRoute.fullPath;
+
+            case 'include':
+                // 包含匹配 - 当前路径包含目标路径
+                return currentRoute.fullPath.startsWith(targetRoute.fullPath);
+
+            default:
+                return false;
+        }
+    }
+
     public async createLayer(
         toRaw: RouteLocationRaw,
         options?: RouterOptions
@@ -337,17 +423,20 @@ export class Router {
             return null;
         }
     }
-    public beforeEach(guard: RouteConfirmHook) {
+    public beforeEach(guard: RouteConfirmHook): () => void {
         this._guards.beforeEach.push(guard);
+        // 返回清理函数
+        return () => {
+            removeFromArray(this._guards.beforeEach, guard);
+        };
     }
-    public unBeforeEach(guard: RouteConfirmHook) {
-        removeFromArray(this._guards.beforeEach, guard);
-    }
-    public afterEach(guard: RouteNotifyHook) {
+
+    public afterEach(guard: RouteNotifyHook): () => void {
         this._guards.afterEach.push(guard);
-    }
-    public unAfterEach(guard: RouteNotifyHook) {
-        removeFromArray(this._guards.afterEach, guard);
+        // 返回清理函数
+        return () => {
+            removeFromArray(this._guards.afterEach, guard);
+        };
     }
     public destroy() {
         // 重置任务ID为0，取消所有正在进行的任务

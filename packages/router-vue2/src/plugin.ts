@@ -10,6 +10,7 @@ interface RouterContext {
     router: Router;
     route: Route;
     afterEach: () => void;
+    removeAfterEach: () => void; // 清理函数
 }
 
 declare module 'vue/types/vue' {
@@ -43,22 +44,28 @@ export class RouterVuePlugin {
                     if (!router) {
                         return;
                     }
+                    const afterEach = function (this: RouterContext) {
+                        Object.assign(this.route, router.route);
+                    };
+
                     const ctx: RouterContext = {
                         router,
                         route: reactive(router.route),
-                        afterEach() {
-                            Object.assign(this.route, router.route);
-                        }
+                        afterEach,
+                        removeAfterEach: () => {} // 将被重新赋值
                     };
+
                     ctx.afterEach = ctx.afterEach.bind(ctx);
+                    // 使用新的API：afterEach返回清理函数
+                    ctx.removeAfterEach = router.afterEach(ctx.afterEach);
                     this[ROUTER_CONTEXT] = ctx;
-                    router.afterEach(ctx.afterEach);
                 }
             },
             beforeDestroy() {
                 const ctx: RouterContext | undefined = this[ROUTER_CONTEXT];
                 if (ctx) {
-                    ctx.router.unAfterEach(ctx.afterEach);
+                    // 使用新的清理函数，而不是废弃的 unAfterEach
+                    ctx.removeAfterEach();
                 }
             }
         });
