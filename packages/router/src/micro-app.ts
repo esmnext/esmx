@@ -44,6 +44,9 @@ export class MicroApp {
         route,
         options
     }: Router): RouterMicroAppCallback | null {
+        if (!route.matched || route.matched.length === 0) {
+            return null;
+        }
         const name = route.matched[0].app;
         if (
             typeof name === 'string' &&
@@ -64,6 +67,7 @@ export class MicroApp {
         this.app?.unmount();
         this.app = null;
         this.root?.remove();
+        this.root = null;
         this._factory = null;
     }
 }
