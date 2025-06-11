@@ -6,6 +6,7 @@ import type {
     RouteHandleResult,
     RouteLocationRaw,
     RouteMatchResult,
+    RouteMeta,
     RouteType,
     RouterParsedOptions
 } from './types';
@@ -77,10 +78,12 @@ export function createRoute(
         ? `${path}${to.search}${to.hash}`
         : to.pathname + to.search + to.hash;
     const state = isPlainObject(toRaw) && toRaw.state ? toRaw.state : {};
-    const matched = match ? match.matches : [];
+    const matched = match ? match.matches : Object.freeze([]);
     const keepScrollPosition = isPlainObject(toRaw)
         ? Boolean(toRaw.keepScrollPosition)
         : false;
+    const config = matched.length > 0 ? matched[matched.length - 1] : null;
+    const meta = config?.meta || {};
     const route: Route = {
         status: RouteStatus.resolve,
         get handle() {
@@ -128,14 +131,14 @@ export function createRoute(
         queryArray: {},
         state,
         get meta() {
-            return this.config?.meta || {};
+            return meta;
         },
         path,
         fullPath,
         matched,
         keepScrollPosition,
         get config() {
-            return this.matched[this.matched.length - 1] || null;
+            return config;
         }
     };
 

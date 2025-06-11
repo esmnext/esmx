@@ -3,6 +3,7 @@ import { parsedOptions } from './options';
 import { applyRouteParams, createRoute } from './route';
 import { RouteStatus, RouteType, RouterMode } from './types';
 import type {
+    Route,
     RouteConfig,
     RouteHandleHook,
     RouterOptions,
@@ -793,5 +794,913 @@ describe('createRoute', () => {
             // 按 URL 标准：不带尾斜杠的 base 相对于父目录解析
             expect(routeWithoutSlash.url.pathname).toBe('/api/users'); // 实际的URL标准行为
         });
+    });
+});
+
+describe('Route handle hook 测试', () => {
+    const createOptions = (
+        overrides: Partial<RouterOptions> = {}
+    ): RouterParsedOptions => {
+        const base = new URL('http://localhost:3000/app/');
+        const mockRoutes: RouteConfig[] = [
+            {
+                path: '/users/:id',
+                meta: { title: 'User Detail' }
+            }
+        ];
+
+        const routerOptions: RouterOptions = {
+            id: 'test',
+            context: {},
+            routes: mockRoutes,
+            mode: RouterMode.history,
+            base,
+            env: 'test',
+            req: null,
+            res: null,
+            apps: {},
+            normalizeURL: (url: URL) => url,
+            location: () => {},
+            rootStyle: false,
+            layer: null,
+            onBackNoResponse: () => {},
+            ...overrides
+        };
+
+        return parsedOptions(routerOptions);
+    };
+
+    test('应该在设置非函数 handle 时将其设为 null', () => {
+        const options = createOptions();
+        const route = createRoute(options, RouteType.push, '/users/123', null);
+
+        // 测试设置非函数值
+        route.handle = 'not a function' as any;
+        expect(route.handle).toBeNull();
+
+        route.handle = 123 as any;
+        expect(route.handle).toBeNull();
+
+        route.handle = {} as any;
+        expect(route.handle).toBeNull();
+
+        route.handle = null as any;
+        expect(route.handle).toBeNull();
+
+        route.handle = undefined as any;
+        expect(route.handle).toBeNull();
+    });
+
+    test('应该在路由状态不是 success 时抛出错误', () => {
+        const options = createOptions();
+        const route = createRoute(options, RouteType.push, '/users/123', null);
+
+        const mockHandle: RouteHandleHook = (
+            to: Route,
+            from: Route | null
+        ) => ({ result: 'test result' });
+
+        route.handle = mockHandle;
+
+        // 默认状态是 resolve，不是 success
+        expect(() => {
+            route.handle!(route, null);
+        }).toThrow(
+            'Cannot call route handle hook - current status is resolve (expected: success)'
+        );
+
+        // 测试其他非 success 状态
+        route.status = RouteStatus.aborted;
+        expect(() => {
+            route.handle!(route, null);
+        }).toThrow(
+            'Cannot call route handle hook - current status is aborted (expected: success)'
+        );
+
+        route.status = RouteStatus.error;
+        expect(() => {
+            route.handle!(route, null);
+        }).toThrow(
+            'Cannot call route handle hook - current status is error (expected: success)'
+        );
+    });
+
+    test('应该在 handle 被重复调用时抛出错误', () => {
+        const options = createOptions();
+        const route = createRoute(options, RouteType.push, '/users/123', null);
+
+        const mockHandle: RouteHandleHook = (
+            to: Route,
+            from: Route | null
+        ) => ({ result: 'test result' });
+
+        route.handle = mockHandle;
+        route.status = RouteStatus.success; // 设置正确状态
+
+        // 第一次调用应该成功
+        const result = route.handle!(route, null);
+        expect(result).toEqual({ result: 'test result' });
+
+        // 第二次调用应该抛出错误
+        expect(() => {
+            route.handle!(route, null);
+        }).toThrow('Route handle hook can only be called once per navigation');
+    });
+
+    test('应该正确设置和获取 handleResult', () => {
+        const options = createOptions();
+        const route = createRoute(options, RouteType.push, '/users/123', null);
+
+        expect(route.handleResult).toBeNull();
+
+        const testResult = { data: 'test', status: 'ok' };
+        route.handleResult = testResult;
+        expect(route.handleResult).toBe(testResult);
+
+        route.handleResult = null;
+        expect(route.handleResult).toBeNull();
+    });
+
+    test('应该在设置新的 handle 后仍然遵循只能调用一次的规则', () => {
+        const options = createOptions();
+        const route = createRoute(options, RouteType.push, '/users/123', null);
+
+        const firstHandle: RouteHandleHook = (
+            to: Route,
+            from: Route | null
+        ) => ({ result: 'first' });
+
+        const secondHandle: RouteHandleHook = (
+            to: Route,
+            from: Route | null
+        ) => ({ result: 'second' });
+
+        route.status = RouteStatus.success;
+
+        // 设置第一个 handle 并调用
+        route.handle = firstHandle;
+        expect(route.handle!(route, null)).toEqual({ result: 'first' });
+
+        // 设置新的 handle 不会重置 handled 标志
+        route.handle = secondHandle;
+
+        // 尝试调用新的 handle 应该失败，因为已经调用过一次了
+        expect(() => {
+            route.handle!(route, null);
+        }).toThrow('Route handle hook can only be called once per navigation');
+    });
+
+    test('应该处理 handle 返回 undefined 的情况', () => {
+        const options = createOptions();
+        const route = createRoute(options, RouteType.push, '/users/123', null);
+
+        const voidHandle: RouteHandleHook = (to: Route, from: Route | null) => {
+            // 不显式返回任何值
+        };
+
+        route.handle = voidHandle;
+        route.status = RouteStatus.success;
+
+        const result = route.handle!(route, null);
+        expect(result).toBeUndefined();
+    });
+
+    test('应该处理 handle 抛出异常的情况', () => {
+        const options = createOptions();
+        const route = createRoute(options, RouteType.push, '/users/123', null);
+
+        const throwingHandle: RouteHandleHook = (
+            to: Route,
+            from: Route | null
+        ) => {
+            throw new Error('Handle error');
+        };
+
+        route.handle = throwingHandle;
+        route.status = RouteStatus.success;
+
+        expect(() => {
+            route.handle!(route, null);
+        }).toThrow('Handle error');
+
+        // 即使抛出异常，handled 标志也应该被设置
+        expect(() => {
+            route.handle!(route, null);
+        }).toThrow('Route handle hook can only be called once per navigation');
+    });
+});
+
+describe('Route meta getter 测试', () => {
+    const createOptions = (
+        overrides: Partial<RouterOptions> = {}
+    ): RouterParsedOptions => {
+        const base = new URL('http://localhost:3000/app/');
+        const routerOptions: RouterOptions = {
+            id: 'test',
+            context: {},
+            routes: [],
+            mode: RouterMode.history,
+            base,
+            env: 'test',
+            req: null,
+            res: null,
+            apps: {},
+            normalizeURL: (url: URL) => url,
+            location: () => {},
+            rootStyle: false,
+            layer: null,
+            onBackNoResponse: () => {},
+            ...overrides
+        };
+
+        return parsedOptions(routerOptions);
+    };
+
+    test('应该在没有匹配路由时返回空对象', () => {
+        const options = createOptions();
+        const route = createRoute(options, RouteType.push, '/unmatched', null);
+
+        // 没有匹配的路由，config为null
+        expect(route.config).toBeNull();
+        expect(route.meta).toEqual({});
+    });
+
+    test('应该在有匹配路由但没有meta时返回空对象', () => {
+        const routesWithoutMeta: RouteConfig[] = [
+            { path: '/users/:id' } // 没有meta字段
+        ];
+        const options = createOptions({ routes: routesWithoutMeta });
+        const route = createRoute(options, RouteType.push, '/users/123', null);
+
+        // 有匹配的路由，由于matcher会为没有meta的路由设置空对象，所以config.meta为{}
+        expect(route.config).not.toBeNull();
+        expect(route.config!.meta).toEqual({});
+        expect(route.meta).toEqual({});
+    });
+
+    test('应该在有匹配路由且meta为空对象时返回空对象', () => {
+        const routesWithEmptyMeta: RouteConfig[] = [
+            { path: '/users/:id', meta: {} }
+        ];
+        const options = createOptions({ routes: routesWithEmptyMeta });
+        const route = createRoute(options, RouteType.push, '/users/123', null);
+
+        // 有匹配的路由，config.meta为空对象
+        expect(route.config).not.toBeNull();
+        expect(route.config!.meta).toEqual({});
+        expect(route.meta).toEqual({});
+    });
+
+    test('应该在有匹配路由且meta有值时返回meta对象', () => {
+        const metaData = { title: 'User Detail', requiresAuth: true, level: 1 };
+        const routesWithMeta: RouteConfig[] = [
+            { path: '/users/:id', meta: metaData }
+        ];
+        const options = createOptions({ routes: routesWithMeta });
+        const route = createRoute(options, RouteType.push, '/users/123', null);
+
+        // 有匹配的路由，config.meta有值
+        expect(route.config).not.toBeNull();
+        expect(route.config!.meta).toEqual(metaData);
+        expect(route.meta).toEqual(metaData);
+        expect(route.meta).toBe(metaData); // 应该是同一个引用
+    });
+
+    test('应该在有多个匹配路由时返回最后一个路由的meta', () => {
+        const parentMeta = { section: 'admin' };
+        const childMeta = { title: 'User Detail', requiresAuth: true };
+        const nestedRoutes: RouteConfig[] = [
+            {
+                path: '/admin',
+                meta: parentMeta,
+                children: [{ path: '/users/:id', meta: childMeta }]
+            }
+        ];
+        const options = createOptions({ routes: nestedRoutes });
+        const route = createRoute(
+            options,
+            RouteType.push,
+            '/admin/users/123',
+            null
+        );
+
+        // 应该返回最后匹配的路由（子路由）的meta
+        expect(route.matched.length).toBeGreaterThan(0);
+        expect(route.config).not.toBeNull();
+        expect(route.meta).toEqual(childMeta);
+        expect(route.meta).not.toEqual(parentMeta);
+    });
+
+    test('应该在最后匹配的路由没有meta时返回空对象', () => {
+        const parentMeta = { section: 'admin' };
+        const nestedRoutes: RouteConfig[] = [
+            {
+                path: '/admin',
+                meta: parentMeta,
+                children: [
+                    { path: '/users/:id' } // 子路由没有meta
+                ]
+            }
+        ];
+        const options = createOptions({ routes: nestedRoutes });
+        const route = createRoute(
+            options,
+            RouteType.push,
+            '/admin/users/123',
+            null
+        );
+
+        // 最后匹配的路由（子路由）没有meta，由于matcher会设置空对象，所以config.meta为{}
+        expect(route.matched.length).toBeGreaterThan(0);
+        expect(route.config).not.toBeNull();
+        expect(route.config!.meta).toEqual({});
+        expect(route.meta).toEqual({});
+    });
+});
+
+describe('Route meta 内存引用一致性测试', () => {
+    const createOptions = (
+        overrides: Partial<RouterOptions> = {}
+    ): RouterParsedOptions => {
+        const base = new URL('http://localhost:3000/app/');
+        const routerOptions: RouterOptions = {
+            id: 'test',
+            context: {},
+            routes: [],
+            mode: RouterMode.history,
+            base,
+            env: 'test',
+            req: null,
+            res: null,
+            apps: {},
+            normalizeURL: (url: URL) => url,
+            location: () => {},
+            rootStyle: false,
+            layer: null,
+            onBackNoResponse: () => {},
+            ...overrides
+        };
+
+        return parsedOptions(routerOptions);
+    };
+
+    test('应该在多次获取没有匹配路由的meta时返回同一个空对象引用', () => {
+        const options = createOptions();
+        const route = createRoute(options, RouteType.push, '/unmatched', null);
+
+        const meta1 = route.meta;
+        const meta2 = route.meta;
+        const meta3 = route.meta;
+
+        expect(meta1).toEqual({});
+        expect(meta2).toEqual({});
+        expect(meta3).toEqual({});
+
+        // 关键测试：应该是同一个对象引用
+        expect(meta1).toBe(meta2);
+        expect(meta2).toBe(meta3);
+        expect(meta1).toBe(meta3);
+    });
+
+    test('应该在多次获取有匹配但无meta路由时返回同一个空对象引用', () => {
+        const routesWithoutMeta: RouteConfig[] = [
+            { path: '/users/:id' } // 没有meta字段，matcher会设置为{}
+        ];
+        const options = createOptions({ routes: routesWithoutMeta });
+        const route = createRoute(options, RouteType.push, '/users/123', null);
+
+        const meta1 = route.meta;
+        const meta2 = route.meta;
+        const meta3 = route.meta;
+
+        expect(meta1).toEqual({});
+        expect(meta2).toEqual({});
+        expect(meta3).toEqual({});
+
+        // 应该是同一个对象引用
+        expect(meta1).toBe(meta2);
+        expect(meta2).toBe(meta3);
+        expect(meta1).toBe(meta3);
+    });
+
+    test('应该在多次获取有meta值的路由时返回同一个对象引用', () => {
+        const metaData = { title: 'User Detail', requiresAuth: true, level: 1 };
+        const routesWithMeta: RouteConfig[] = [
+            { path: '/users/:id', meta: metaData }
+        ];
+        const options = createOptions({ routes: routesWithMeta });
+        const route = createRoute(options, RouteType.push, '/users/123', null);
+
+        const meta1 = route.meta;
+        const meta2 = route.meta;
+        const meta3 = route.meta;
+
+        expect(meta1).toEqual(metaData);
+        expect(meta2).toEqual(metaData);
+        expect(meta3).toEqual(metaData);
+
+        // 应该是同一个对象引用
+        expect(meta1).toBe(meta2);
+        expect(meta2).toBe(meta3);
+        expect(meta1).toBe(meta3);
+
+        // 同时也应该和原始meta是同一个引用（因为matcher处理时直接引用）
+        expect(meta1).toBe(route.config!.meta);
+    });
+
+    test('应该在meta为空对象时也保持引用一致性', () => {
+        const routesWithEmptyMeta: RouteConfig[] = [
+            { path: '/users/:id', meta: {} }
+        ];
+        const options = createOptions({ routes: routesWithEmptyMeta });
+        const route = createRoute(options, RouteType.push, '/users/123', null);
+
+        const meta1 = route.meta;
+        const meta2 = route.meta;
+        const meta3 = route.meta;
+
+        expect(meta1).toEqual({});
+        expect(meta2).toEqual({});
+        expect(meta3).toEqual({});
+
+        // 应该是同一个对象引用
+        expect(meta1).toBe(meta2);
+        expect(meta2).toBe(meta3);
+        expect(meta1).toBe(meta3);
+
+        // 应该和config.meta是同一个引用
+        expect(meta1).toBe(route.config!.meta);
+    });
+
+    test('不同路由实例的meta应该有不同的引用', () => {
+        const options = createOptions();
+        const route1 = createRoute(
+            options,
+            RouteType.push,
+            '/unmatched1',
+            null
+        );
+        const route2 = createRoute(
+            options,
+            RouteType.push,
+            '/unmatched2',
+            null
+        );
+
+        const meta1 = route1.meta;
+        const meta2 = route2.meta;
+
+        expect(meta1).toEqual({});
+        expect(meta2).toEqual({});
+
+        // 不同路由实例的meta应该是不同的对象引用
+        expect(meta1).not.toBe(meta2);
+    });
+
+    test('应该在嵌套路由中保持引用一致性', () => {
+        const childMeta = { title: 'User Detail', requiresAuth: true };
+        const nestedRoutes: RouteConfig[] = [
+            {
+                path: '/admin',
+                meta: { section: 'admin' },
+                children: [{ path: '/users/:id', meta: childMeta }]
+            }
+        ];
+        const options = createOptions({ routes: nestedRoutes });
+        const route = createRoute(
+            options,
+            RouteType.push,
+            '/admin/users/123',
+            null
+        );
+
+        const meta1 = route.meta;
+        const meta2 = route.meta;
+        const meta3 = route.meta;
+
+        expect(meta1).toEqual(childMeta);
+        expect(meta2).toEqual(childMeta);
+        expect(meta3).toEqual(childMeta);
+
+        // 应该是同一个对象引用
+        expect(meta1).toBe(meta2);
+        expect(meta2).toBe(meta3);
+        expect(meta1).toBe(meta3);
+
+        // 应该和config.meta是同一个引用
+        expect(meta1).toBe(route.config!.meta);
+    });
+
+    test('演示：优化后不会创建多个空对象实例', () => {
+        const options = createOptions();
+        const route = createRoute(options, RouteType.push, '/unmatched', null);
+
+        // 模拟多次访问meta属性（实际应用中可能发生）
+        const metas: any[] = [];
+        for (let i = 0; i < 10; i++) {
+            metas.push(route.meta);
+        }
+
+        // 验证所有的meta都是同一个对象引用
+        for (let i = 1; i < metas.length; i++) {
+            expect(metas[i]).toBe(metas[0]);
+        }
+
+        // 验证确实是空对象
+        expect(metas[0]).toEqual({});
+
+        // 这展示了优化的效果：
+        // - 优化前：每次调用 route.meta 都会创建新的 {} 对象
+        // - 优化后：第一次调用时缓存结果，后续调用返回相同的引用
+        console.log('优化效果验证: 10次访问meta都返回同一个对象引用 ✓');
+    });
+});
+
+describe('Route state 处理测试', () => {
+    const createOptions = (
+        overrides: Partial<RouterOptions> = {}
+    ): RouterParsedOptions => {
+        const base = new URL('http://localhost:3000/app/');
+        const routerOptions: RouterOptions = {
+            id: 'test',
+            context: {},
+            routes: [],
+            mode: RouterMode.history,
+            base,
+            env: 'test',
+            req: null,
+            res: null,
+            apps: {},
+            normalizeURL: (url: URL) => url,
+            location: () => {},
+            rootStyle: false,
+            layer: null,
+            onBackNoResponse: () => {},
+            ...overrides
+        };
+
+        return parsedOptions(routerOptions);
+    };
+
+    test('应该在toRaw为字符串时使用空对象作为state', () => {
+        const options = createOptions();
+        const route = createRoute(options, RouteType.push, '/test', null);
+
+        // toRaw为字符串，不是对象，应该使用空对象
+        expect(route.state).toEqual({});
+    });
+
+    test('应该在toRaw为对象但没有state时使用空对象', () => {
+        const options = createOptions();
+        const toRaw = { path: '/test' }; // 没有state字段
+        const route = createRoute(options, RouteType.push, toRaw, null);
+
+        expect(route.state).toEqual({});
+    });
+
+    test('应该在toRaw.state存在时使用该state', () => {
+        const options = createOptions();
+        const stateData = { userId: 123, fromPage: 'dashboard' };
+        const toRaw = { path: '/test', state: stateData };
+        const route = createRoute(options, RouteType.push, toRaw, null);
+
+        expect(route.state).toEqual(stateData);
+        expect(route.state).toBe(stateData); // 应该是同一个引用
+    });
+
+    test('应该在toRaw.state为undefined时使用空对象', () => {
+        const options = createOptions();
+        const toRaw = { path: '/test', state: undefined };
+        const route = createRoute(options, RouteType.push, toRaw, null);
+
+        expect(route.state).toEqual({});
+    });
+
+    test('应该在toRaw.state为空对象时使用空对象', () => {
+        const options = createOptions();
+        const toRaw = { path: '/test', state: {} };
+        const route = createRoute(options, RouteType.push, toRaw, null);
+
+        expect(route.state).toEqual({});
+    });
+});
+
+describe('Route 只读属性测试 (防止 matched 和 config 被 Vue2 劫持)', () => {
+    const createOptions = (
+        overrides: Partial<RouterOptions> = {}
+    ): RouterParsedOptions => {
+        const base = new URL('http://localhost:3000/app/');
+        const routerOptions: RouterOptions = {
+            id: 'test',
+            context: {},
+            routes: [],
+            mode: RouterMode.history,
+            base,
+            env: 'test',
+            req: null,
+            res: null,
+            apps: {},
+            normalizeURL: (url: URL) => url,
+            location: () => {},
+            rootStyle: false,
+            layer: null,
+            onBackNoResponse: () => {},
+            ...overrides
+        };
+
+        return parsedOptions(routerOptions);
+    };
+
+    test('matched 数组应该是只读的', () => {
+        const customRoutes: RouteConfig[] = [
+            { path: '/users/:id', meta: { title: 'User Detail' } }
+        ];
+        const options = createOptions({ routes: customRoutes });
+        const route = createRoute(options, RouteType.push, '/users/123', null);
+
+        // 验证 matched 数组是冻结的
+        expect(Object.isFrozen(route.matched)).toBe(true);
+
+        // 尝试修改数组应该失败（在严格模式下会抛出错误，非严格模式下会静默失败）
+        const originalLength = route.matched.length;
+        expect(() => {
+            (route.matched as any).push({ path: '/fake' });
+        }).toThrow(); // 在冻结的数组上 push 会抛出错误
+
+        // 验证数组长度没有变化
+        expect(route.matched.length).toBe(originalLength);
+    });
+
+    test('matched 数组中的每个配置对象应该是可访问的', () => {
+        const customRoutes: RouteConfig[] = [
+            { path: '/users/:id', meta: { title: 'User Detail' } },
+            { path: '/admin', meta: { section: 'admin' } }
+        ];
+        const options = createOptions({ routes: customRoutes });
+        const route = createRoute(options, RouteType.push, '/users/123', null);
+
+        if (route.matched.length > 0) {
+            // 验证每个匹配的配置对象都是可访问的（不冻结）
+            route.matched.forEach((matchedConfig, index) => {
+                expect(Object.isFrozen(matchedConfig)).toBe(false);
+
+                // 应该可以正常访问配置对象的属性
+                expect(matchedConfig.path).toBeDefined();
+                expect(typeof matchedConfig.path).toBe('string');
+            });
+        }
+    });
+
+    test('config 对象应该是可访问的', () => {
+        const customRoutes: RouteConfig[] = [
+            { path: '/users/:id', meta: { title: 'User Detail' } }
+        ];
+        const options = createOptions({ routes: customRoutes });
+        const route = createRoute(options, RouteType.push, '/users/123', null);
+
+        if (route.config) {
+            // 验证 config 对象是可访问的（不冻结）
+            expect(Object.isFrozen(route.config)).toBe(false);
+
+            // 应该可以正常访问 config 对象的属性
+            expect(route.config.path).toBeDefined();
+            expect(typeof route.config.path).toBe('string');
+        }
+    });
+
+    test('没有匹配路由时，matched 应该是空的只读数组', () => {
+        const options = createOptions();
+        const route = createRoute(options, RouteType.push, '/unmatched', null);
+
+        // 验证是空数组且只读
+        expect(route.matched).toEqual([]);
+        expect(Object.isFrozen(route.matched)).toBe(true);
+
+        // 尝试向空数组添加元素应该失败
+        expect(() => {
+            (route.matched as any).push({ path: '/fake' });
+        }).toThrow();
+    });
+
+    test('config 为 null 时应该保持 null', () => {
+        const options = createOptions();
+        const route = createRoute(options, RouteType.push, '/unmatched', null);
+
+        // 没有匹配路由时，config 应该是 null
+        expect(route.config).toBeNull();
+    });
+
+    test('嵌套路由的每个层级都应该是可访问的', () => {
+        const nestedRoutes: RouteConfig[] = [
+            {
+                path: '/admin',
+                meta: { section: 'admin' },
+                children: [
+                    {
+                        path: '/users/:id',
+                        meta: { title: 'User Detail' },
+                        children: [
+                            { path: '/profile', meta: { view: 'profile' } }
+                        ]
+                    }
+                ]
+            }
+        ];
+        const options = createOptions({ routes: nestedRoutes });
+        const route = createRoute(
+            options,
+            RouteType.push,
+            '/admin/users/123/profile',
+            null
+        );
+
+        // 验证所有匹配的路由配置都是可访问的（不冻结）
+        route.matched.forEach((matchedConfig, index) => {
+            expect(Object.isFrozen(matchedConfig)).toBe(false);
+
+            // 应该可以正常访问配置对象的属性
+            expect(matchedConfig.path).toBeDefined();
+            expect(matchedConfig.meta).toBeDefined();
+        });
+    });
+
+    test('meta 对象本身应该是可访问且允许被 Vue 劫持的', () => {
+        const metaData = { title: 'User Detail', count: 0 };
+        const customRoutes: RouteConfig[] = [
+            { path: '/users/:id', meta: metaData }
+        ];
+        const options = createOptions({ routes: customRoutes });
+        const route = createRoute(options, RouteType.push, '/users/123', null);
+
+        // meta 可以正常访问
+        expect(route.meta).toEqual(metaData);
+        expect(route.meta.title).toBe('User Detail');
+
+        // 验证 meta 是可以被 Vue 劫持的（不应该被冻结）
+        if (route.config?.meta) {
+            expect(Object.isFrozen(route.config.meta)).toBe(false);
+
+            // 应该可以修改 meta 对象的属性（为了让 Vue 能够劫持）
+            expect(() => {
+                route.config!.meta!.title = 'Modified Title';
+            }).not.toThrow();
+
+            expect(route.config.meta!.title).toBe('Modified Title');
+        }
+    });
+
+    test('验证对象属性描述符应该可配置（允许Vue劫持）', () => {
+        const customRoutes: RouteConfig[] = [
+            { path: '/users/:id', meta: { title: 'User Detail' } }
+        ];
+        const options = createOptions({ routes: customRoutes });
+        const route = createRoute(options, RouteType.push, '/users/123', null);
+
+        if (route.config) {
+            // 检查属性描述符，确保可配置（允许Vue2劫持）
+            const pathDescriptor = Object.getOwnPropertyDescriptor(
+                route.config,
+                'path'
+            );
+            const metaDescriptor = Object.getOwnPropertyDescriptor(
+                route.config,
+                'meta'
+            );
+
+            expect(pathDescriptor?.configurable).toBe(true);
+            expect(metaDescriptor?.configurable).toBe(true);
+
+            // 这些属性可以被重新定义，允许 Vue2 添加 getter/setter
+            expect(() => {
+                Object.defineProperty(route.config!, 'testProp', {
+                    get() {
+                        return 'test';
+                    },
+                    configurable: true
+                });
+            }).not.toThrow();
+        }
+    });
+
+    test('对象复制测试：{...route} 后第一层属性值应该使用 === 比较相等', () => {
+        const customRoutes: RouteConfig[] = [
+            {
+                path: '/users/:id',
+                meta: { title: 'User Detail', count: 1 }
+            }
+        ];
+        const options = createOptions({ routes: customRoutes });
+
+        // 创建 route 对象
+        const route = createRoute(options, RouteType.push, '/users/123', null);
+
+        // 对象展开复制
+        const spreadRoute = { ...route };
+
+        // 验证第一层属性值完全相等（使用 === 比较）
+        expect(spreadRoute.status).toBe(route.status);
+        expect(spreadRoute.handle).toBe(route.handle);
+        expect(spreadRoute.handleResult).toBe(route.handleResult);
+        expect(spreadRoute.req).toBe(route.req);
+        expect(spreadRoute.res).toBe(route.res);
+        expect(spreadRoute.type).toBe(route.type);
+        expect(spreadRoute.isPush).toBe(route.isPush);
+        expect(spreadRoute.url).toBe(route.url);
+        expect(spreadRoute.params).toBe(route.params);
+        expect(spreadRoute.query).toBe(route.query);
+        expect(spreadRoute.queryArray).toBe(route.queryArray);
+        expect(spreadRoute.state).toBe(route.state);
+        expect(spreadRoute.meta).toBe(route.meta);
+        expect(spreadRoute.path).toBe(route.path);
+        expect(spreadRoute.fullPath).toBe(route.fullPath);
+        expect(spreadRoute.matched).toBe(route.matched);
+        expect(spreadRoute.keepScrollPosition).toBe(route.keepScrollPosition);
+        expect(spreadRoute.config).toBe(route.config);
+    });
+
+    test('嵌套路由的对象复制测试：{...route} 后第一层属性值相等', () => {
+        const nestedRoutes: RouteConfig[] = [
+            {
+                path: '/admin',
+                meta: { section: 'admin' },
+                children: [
+                    {
+                        path: '/users/:id',
+                        meta: { title: 'User Detail' },
+                        children: [
+                            {
+                                path: '/profile',
+                                meta: { view: 'profile' }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+        const options = createOptions({ routes: nestedRoutes });
+
+        // 创建 route 对象
+        const route = createRoute(
+            options,
+            RouteType.push,
+            '/admin/users/123/profile',
+            null
+        );
+
+        // 对象展开复制
+        const spreadRoute = { ...route };
+
+        // 验证第一层属性值完全相等（使用 === 比较）
+        expect(spreadRoute.status).toBe(route.status);
+        expect(spreadRoute.type).toBe(route.type);
+        expect(spreadRoute.url).toBe(route.url);
+        expect(spreadRoute.params).toBe(route.params);
+        expect(spreadRoute.query).toBe(route.query);
+        expect(spreadRoute.queryArray).toBe(route.queryArray);
+        expect(spreadRoute.state).toBe(route.state);
+        expect(spreadRoute.meta).toBe(route.meta);
+        expect(spreadRoute.path).toBe(route.path);
+        expect(spreadRoute.fullPath).toBe(route.fullPath);
+        expect(spreadRoute.matched).toBe(route.matched);
+        expect(spreadRoute.keepScrollPosition).toBe(route.keepScrollPosition);
+        expect(spreadRoute.config).toBe(route.config);
+
+        // 验证嵌套情况下 matched 数组和 config 的引用一致性
+        expect(spreadRoute.matched.length).toBe(3); // admin + users/:id + profile
+        expect(spreadRoute.config).toBe(route.config);
+        if (spreadRoute.config) {
+            expect(spreadRoute.meta).toBe(spreadRoute.config.meta);
+        }
+    });
+
+    test('无匹配路由时的对象复制测试：{...route} 后第一层属性值相等', () => {
+        const options = createOptions();
+
+        // 创建 route 对象
+        const route = createRoute(options, RouteType.push, '/unmatched', null);
+
+        // 对象展开复制
+        const spreadRoute = { ...route };
+
+        // 验证第一层属性值完全相等（使用 === 比较）
+        expect(spreadRoute.status).toBe(route.status);
+        expect(spreadRoute.type).toBe(route.type);
+        expect(spreadRoute.url).toBe(route.url);
+        expect(spreadRoute.params).toBe(route.params);
+        expect(spreadRoute.query).toBe(route.query);
+        expect(spreadRoute.queryArray).toBe(route.queryArray);
+        expect(spreadRoute.state).toBe(route.state);
+        expect(spreadRoute.meta).toBe(route.meta);
+        expect(spreadRoute.path).toBe(route.path);
+        expect(spreadRoute.fullPath).toBe(route.fullPath);
+        expect(spreadRoute.matched).toBe(route.matched);
+        expect(spreadRoute.keepScrollPosition).toBe(route.keepScrollPosition);
+        expect(spreadRoute.config).toBe(route.config);
+
+        // 验证无匹配情况下的特殊值
+        expect(spreadRoute.config).toBeNull();
+        expect(spreadRoute.matched).toEqual([]);
+        expect(Object.isFrozen(spreadRoute.matched)).toBe(true);
+        expect(spreadRoute.meta).toEqual({});
     });
 });
