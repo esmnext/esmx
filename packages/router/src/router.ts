@@ -9,8 +9,8 @@ import {
     RouteTaskType,
     createRouteTask
 } from './route-task';
-import { AFTER_TASKS, BEFORE_TASKS } from './route-task-config';
-import { RouteType, RouterMode } from './types';
+import { BEFORE_TASKS } from './route-task-config';
+import { RouteStatus, RouteType, RouterMode } from './types';
 import type {
     Route,
     RouteConfirmHook,
@@ -24,7 +24,12 @@ import type {
     RouterOptions,
     RouterParsedOptions
 } from './types';
-import { isUrlEqual, isValidConfirmHookResult, removeFromArray } from './util';
+import {
+    isRouteMatched,
+    isUrlEqual,
+    isValidConfirmHookResult,
+    removeFromArray
+} from './util';
 
 export class Router {
     public readonly options: RouterOptions;
@@ -88,6 +93,70 @@ export class Router {
                 }
             }
         },
+        [RouteTaskType.beforeLeave]: async (to, from) => {
+            if (!from?.matched.length) return;
+
+            // 找出需要离开的路由（在 from 中但不在 to 中的路由）
+            const leavingRoutes = from.matched.filter(
+                (fromRoute) =>
+                    !to.matched.some((toRoute) => toRoute === fromRoute)
+            );
+
+            // 按照从子路由到父路由的顺序执行 beforeLeave
+            for (let i = leavingRoutes.length - 1; i >= 0; i--) {
+                const route = leavingRoutes[i];
+                if (route.beforeLeave) {
+                    const result = await route.beforeLeave(to, from);
+                    if (isValidConfirmHookResult(result)) {
+                        return result;
+                    }
+                }
+            }
+        },
+        [RouteTaskType.beforeEnter]: async (to, from) => {
+            if (!to.matched.length) return;
+
+            // 找出需要进入的路由（在 to 中但不在 from 中的路由）
+            const enteringRoutes = to.matched.filter(
+                (toRoute) =>
+                    !from?.matched.some((fromRoute) => fromRoute === toRoute)
+            );
+
+            // 按照从父路由到子路由的顺序执行 beforeEnter
+            for (const route of enteringRoutes) {
+                if (route.beforeEnter) {
+                    const result = await route.beforeEnter(to, from);
+                    if (isValidConfirmHookResult(result)) {
+                        return result;
+                    }
+                }
+            }
+        },
+        [RouteTaskType.beforeUpdate]: async (to, from) => {
+            // beforeUpdate 只在完全相同的路由组合中的参数变化时执行
+            // 快速检查：如果连最终路由配置都不同，肯定不是相同组合
+            if (!isRouteMatched(to, from, 'route')) return;
+
+            // 详细检查：两个路由的 matched 数组必须完全相同
+            if (!from || to.matched.length !== from.matched.length) return;
+            const isSameRouteSet = to.matched.every(
+                (toRoute, index) => toRoute === from.matched[index]
+            );
+            if (!isSameRouteSet) return;
+
+            // 只有在路径参数或查询参数变化时才执行 beforeUpdate
+            if (!isRouteMatched(to, from, 'exact')) {
+                // 按照从父路由到子路由的顺序执行 beforeUpdate
+                for (const route of to.matched) {
+                    if (route.beforeUpdate) {
+                        const result = await route.beforeUpdate(to, from);
+                        if (isValidConfirmHookResult(result)) {
+                            return result;
+                        }
+                    }
+                }
+            }
+        },
         [RouteTaskType.push]: async () => {
             return async (to, from) => {
                 this._route = to;
@@ -130,11 +199,6 @@ export class Router {
         },
         [RouteTaskType.replaceWindow]: async (to) => {
             return this.parsedOptions.location;
-        },
-        [RouteTaskType.afterEach]: (to, from) => {
-            for (const guard of this._guards.afterEach) {
-                guard(to, from);
-            }
         }
     };
 
@@ -282,20 +346,6 @@ export class Router {
      * - 'exact': 完全匹配，比较路径是否完全相同
      * - 'include': 包含匹配，判断当前路径是否包含目标路径
      * @returns 是否匹配
-     *
-     * @example
-     * ```typescript
-     * const targetRoute = router.resolve('/user/123');
-     *
-     * // 路由级匹配 - 比较路由配置
-     * const isRouteMatch = router.isRouteMatched(targetRoute, 'route');
-     *
-     * // 完全匹配 - 路径和配置都要相同
-     * const isExactMatch = router.isRouteMatched(targetRoute, 'exact');
-     *
-     * // 包含匹配 - 当前路径包含目标路径
-     * const isIncludeMatch = router.isRouteMatched(targetRoute, 'include');
-     * ```
      */
     public isRouteMatched(
         targetRoute: Route,
@@ -304,22 +354,7 @@ export class Router {
         const currentRoute = this._route;
         if (!currentRoute) return false;
 
-        switch (matchType) {
-            case 'route':
-                // 路由级匹配 - 比较路由配置
-                return currentRoute.config === targetRoute.config;
-
-            case 'exact':
-                // 完全匹配 - 路径完全相同
-                return currentRoute.fullPath === targetRoute.fullPath;
-
-            case 'include':
-                // 包含匹配 - 当前路径包含目标路径
-                return currentRoute.fullPath.startsWith(targetRoute.fullPath);
-
-            default:
-                return false;
-        }
+        return isRouteMatched(targetRoute, currentRoute, matchType);
     }
 
     public async createLayer(
@@ -452,20 +487,17 @@ export class Router {
         );
         if (typeof to.handle === 'function') {
             to.handleResult = await to.handle(to, from);
-            await this._runTask(AFTER_TASKS, to, from);
         }
 
-        return createRouteTask({
-            options,
-            to,
-            from,
-            tasks: [
-                {
-                    name: RouteTaskType.afterEach,
-                    task: _tasks[RouteTaskType.afterEach]
-                }
-            ]
-        });
+        // 导航完成后，只有在状态为 success 时才调用 afterEach 守卫
+        // 这确保了只有成功的导航才会触发 afterEach，被取消的导航不会触发
+        if (to.status === RouteStatus.success) {
+            for (const guard of this._guards.afterEach) {
+                guard(to, from);
+            }
+        }
+
+        return to;
     }
     private _runTask(
         config: Record<RouteType, RouteTaskType[]>,
