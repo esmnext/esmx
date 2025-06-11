@@ -19,6 +19,10 @@ expect.extend({
         }
         (received = new URL(received)).searchParams.sort();
         (expected = new URL(expected)).searchParams.sort();
+        // biome-ignore lint/correctness/noSelfAssign:
+        received.hash = received.hash;
+        // biome-ignore lint/correctness/noSelfAssign:
+        expected.hash = expected.hash;
         return {
             message: () => `输出 ${received.href} 应该为 ${expected.href}`,
             pass: received.href === expected.href

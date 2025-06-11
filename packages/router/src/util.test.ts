@@ -946,7 +946,8 @@ describe('isUrlEqual', () => {
     test('should handle duplicate query parameters correctly', () => {
         const url1 = new URL('https://example.com/path?a=1&a=2&b=3');
         const url2 = new URL('https://example.com/path?b=3&a=2&a=1');
-        expect(isUrlEqual(url1, url2)).toBe(true);
+        // url1 的 query `a` 应该是 2，但 url2 的 query `a` 应该是 1，因此它们应该是不相等的
+        expect(isUrlEqual(url1, url2)).toBe(false);
     });
 
     test('should return false for different duplicate parameter values', () => {
@@ -969,7 +970,8 @@ describe('isUrlEqual', () => {
         const url2 = new URL(
             'https://example.com/path?category=tech&tag=blue&tag=green&tag=red'
         );
-        expect(isUrlEqual(url1, url2)).toBe(true);
+        // query `tag` 一个是 green 一个是 red，因此不同
+        expect(isUrlEqual(url1, url2)).toBe(false);
 
         // 参数值包含特殊字符
         const url3 = new URL(
@@ -1090,7 +1092,7 @@ describe('isUrlEqual', () => {
 
         // 分页和过滤参数
         const url1 = new URL(
-            `${baseUrl}?page=1&limit=20&sort=name&filter=active&tag=admin&tag=user`
+            `${baseUrl}?page=1&limit=20&sort=name&filter=active&tag=user&tag=admin`
         );
         const url2 = new URL(
             `${baseUrl}?limit=20&tag=user&page=1&tag=admin&filter=active&sort=name`
