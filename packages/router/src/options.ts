@@ -19,7 +19,7 @@ export function parsedOptions(options: RouterOptions): RouterParsedOptions {
     return Object.freeze<RouterParsedOptions>({
         rootStyle: options.rootStyle ? { ...options.rootStyle } : false,
         id: options.id || 'app',
-        context: Object.assign({}, options.context),
+        context: options.context ?? {},
         env: options.env || '',
         req: options.req || null,
         res: options.res || null,
