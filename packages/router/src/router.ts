@@ -3,7 +3,12 @@ import { MicroApp } from './micro-app';
 import { Navigation } from './navigation';
 import { parsedOptions } from './options';
 import { createRoute } from './route';
-import { type RouteTask, RouteTaskType, createRouteTask } from './route-task';
+import {
+    type RouteTask,
+    RouteTaskController,
+    RouteTaskType,
+    createRouteTask
+} from './route-task';
 import { AFTER_TASKS, BEFORE_TASKS } from './route-task-config';
 import { RouteType, RouterMode } from './types';
 import type {
@@ -33,6 +38,9 @@ export class Router {
     private readonly _navigation: Navigation;
     private readonly _microApp: MicroApp = new MicroApp();
     private _destroys: Array<() => void> = [];
+
+    // 任务控制器相关
+    private _taskId = 0;
 
     private readonly _tasks: Record<RouteTaskType, RouteConfirmHook> = {
         [RouteTaskType.location]: (to, from) => {
@@ -149,6 +157,7 @@ export class Router {
     public get id() {
         return this.parsedOptions.id;
     }
+
     public constructor(options: RouterOptions) {
         this.options = options;
         this.parsedOptions = parsedOptions(options);
@@ -341,6 +350,9 @@ export class Router {
         removeFromArray(this._guards.afterEach, guard);
     }
     public destroy() {
+        // 重置任务ID为0，取消所有正在进行的任务
+        this._taskId = 0;
+
         this._navigation.destroy();
         this._microApp.destroy();
         this._destroys.forEach((func) => func());
@@ -360,6 +372,7 @@ export class Router {
             to.handleResult = await to.handle(to, from);
             await this._runTask(AFTER_TASKS, to, from);
         }
+
         return createRouteTask({
             options,
             to,
@@ -377,17 +390,24 @@ export class Router {
         to: Route,
         from: Route | null
     ) {
+        this._taskId++;
+
         const names: RouteTaskType[] = to.type ? config[to.type] : [];
         const { _tasks, parsedOptions: options } = this;
         const tasks = names.map<RouteTask>((name) => ({
             name,
             task: _tasks[name]
         }));
+
+        // 直接构造 controller 对象
+        const controller = new RouteTaskController(() => this._taskId);
+
         return createRouteTask({
             options,
             to,
             from,
-            tasks
+            tasks,
+            controller
         });
     }
 }
