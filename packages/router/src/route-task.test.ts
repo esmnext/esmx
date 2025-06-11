@@ -2,12 +2,11 @@ import { describe, expect, it, vi } from 'vitest';
 import { parsedOptions } from './options';
 import { createRoute } from './route';
 import {
-    type RouteTask,
     RouteTaskController,
-    type RouteTaskOptions,
     RouteTaskType,
     createRouteTask
 } from './route-task';
+import type { RouteTask, RouteTaskOptions } from './route-task';
 import { RouteStatus, RouteType } from './types';
 import type { Route, RouterParsedOptions } from './types';
 
@@ -100,14 +99,11 @@ describe('createRouteTask', () => {
         const from = createRealRoute('/home', options);
 
         // 真实的处理函数
-        const handleFunction = async (
-            route: Route,
-            fromRoute: Route | null
-        ) => {
+        const handleFunction = async () => {
             return { message: 'Route handled successfully' };
         };
 
-        const successTask = async (route: Route, fromRoute: Route | null) => {
+        const successTask = async () => {
             return handleFunction; // 返回处理函数
         };
 
@@ -210,7 +206,6 @@ describe('createRouteTask', () => {
                     query: { source: 'test' }
                 };
             }
-            return;
         };
 
         const tasks: RouteTask[] = [
@@ -858,7 +853,7 @@ describe('RouteTaskOptions interface', () => {
         const to = createRealRoute('/test', options);
         const from = createRealRoute('/home', options);
         const tasks: RouteTask[] = [];
-        const getCurrentTaskId = () => 'task-123';
+        const getCurrentTaskId = () => 123;
         const controller = new RouteTaskController(getCurrentTaskId);
 
         const routeTaskOptions: RouteTaskOptions = {

@@ -1,4 +1,4 @@
-import { assert, describe, expect, test } from 'vitest';
+import { assert, describe, test } from 'vitest';
 import { createMatcher, joinPathname } from './matcher';
 
 const BASE_URL = new URL('https://www.esmx.dev');
@@ -14,6 +14,7 @@ describe('joinPathname', () => {
         cases: TestCase[] | (() => TestCase[]);
     };
 
+    // biome-ignore format:
     const testCases: JoinPathnameTestCase[] = [
         {
             description: '基本路径拼接',
@@ -21,7 +22,7 @@ describe('joinPathname', () => {
                 { path: 'test', expected: '/test' },
                 { path: '/test', expected: '/test' },
                 { path: 'test/', expected: '/test' },
-                { path: '/test/', expected: '/test' }
+                { path: '/test/', expected: '/test' },
             ]
         },
         {
@@ -30,7 +31,7 @@ describe('joinPathname', () => {
                 { path: 'test', base: '/api', expected: '/api/test' },
                 { path: '/test', base: '/api', expected: '/api/test' },
                 { path: 'test', base: 'api', expected: '/api/test' },
-                { path: '/test', base: 'api', expected: '/api/test' }
+                { path: '/test', base: 'api', expected: '/api/test' },
             ]
         },
         {
@@ -39,20 +40,16 @@ describe('joinPathname', () => {
                 { path: 'test/path', expected: '/test/path' },
                 { path: '/test/path', expected: '/test/path' },
                 { path: 'test/path/', expected: '/test/path' },
-                { path: '/test/path/', expected: '/test/path' }
+                { path: '/test/path/', expected: '/test/path' },
             ]
         },
         {
             description: '带base的多层级路径拼接',
             cases: [
                 { path: 'test/path', base: '/api', expected: '/api/test/path' },
-                {
-                    path: '/test/path',
-                    base: '/api',
-                    expected: '/api/test/path'
-                },
+                { path: '/test/path', base: '/api', expected: '/api/test/path' },
                 { path: 'test/path', base: 'api', expected: '/api/test/path' },
-                { path: '/test/path', base: 'api', expected: '/api/test/path' }
+                { path: '/test/path', base: 'api', expected: '/api/test/path' },
             ]
         },
         {
@@ -61,11 +58,7 @@ describe('joinPathname', () => {
                 { path: '//test', expected: '/test' },
                 { path: 'test//path', expected: '/test/path' },
                 { path: '//test//path//', expected: '/test/path' },
-                {
-                    path: 'test//path',
-                    base: '/api//',
-                    expected: '/api/test/path'
-                }
+                { path: 'test//path', base: '/api//', expected: '/api/test/path' },
             ]
         },
         {
@@ -74,7 +67,7 @@ describe('joinPathname', () => {
                 { path: '', expected: '/' },
                 { path: '', base: '', expected: '/' },
                 { path: 'test', base: '', expected: '/test' },
-                { path: '', base: 'api', expected: '/api' }
+                { path: '', base: 'api', expected: '/api' },
             ]
         },
         {
@@ -84,7 +77,7 @@ describe('joinPathname', () => {
                 { path: 'test_path', expected: '/test_path' },
                 { path: 'test.path', expected: '/test.path' },
                 { path: 'test:path', expected: '/test:path' },
-                { path: 'test@path', expected: '/test@path' }
+                { path: 'test@path', expected: '/test@path' },
             ]
         },
         {
@@ -92,11 +85,12 @@ describe('joinPathname', () => {
             cases: [
                 { path: '测试', expected: '/测试' },
                 { path: '测试/路径', expected: '/测试/路径' },
-                { path: '测试', base: '/api', expected: '/api/测试' }
+                { path: '测试', base: '/api', expected: '/api/测试' },
             ]
         }
     ];
     // 各种极端边界情况的测试用例
+    // biome-ignore format:
     const edgeCases: JoinPathnameTestCase[] = [
         {
             description: '仅斜杠或空的路径',
@@ -107,7 +101,7 @@ describe('joinPathname', () => {
                 { path: '/', base: '/', expected: '/' },
                 { path: '/', base: '//', expected: '/' },
                 { path: '//', base: '/', expected: '/' },
-                { path: '//', base: '//', expected: '/' }
+                { path: '//', base: '//', expected: '/' },
             ]
         },
         {
@@ -125,31 +119,15 @@ describe('joinPathname', () => {
             description: '特殊字符路径拼接',
             cases: [
                 { path: '测试路径', base: '基础', expected: '/基础/测试路径' },
-                {
-                    path: 'path with spaces',
-                    base: 'base',
-                    expected: '/base/path with spaces'
-                },
-                {
-                    path: 'path-with-dashes',
-                    base: 'base_with_underscores',
-                    expected: '/base_with_underscores/path-with-dashes'
-                }
+                { path: 'path with spaces', base: 'base', expected: '/base/path with spaces' },
+                { path: 'path-with-dashes', base: 'base_with_underscores', expected: '/base_with_underscores/path-with-dashes' },
             ]
         },
         {
             description: 'URL编码字符处理',
             cases: [
-                {
-                    path: 'hello%20world',
-                    base: 'api',
-                    expected: '/api/hello%20world'
-                },
-                {
-                    path: 'user%2Fprofile',
-                    base: 'v1',
-                    expected: '/v1/user%2Fprofile'
-                }
+                { path: 'hello%20world', base: 'api', expected: '/api/hello%20world' },
+                { path: 'user%2Fprofile', base: 'v1', expected: '/v1/user%2Fprofile' },
             ]
         },
         {
@@ -157,43 +135,23 @@ describe('joinPathname', () => {
             cases: [
                 { path: '.', expected: '/.' },
                 { path: '..', expected: '/..' },
-                {
-                    path: './relative',
-                    base: 'base',
-                    expected: '/base/./relative'
-                },
-                { path: '../parent', base: 'base', expected: '/base/../parent' }
+                { path: './relative', base: 'base', expected: '/base/./relative' },
+                { path: '../parent', base: 'base', expected: '/base/../parent' },
             ]
         },
         {
             description: '查询参数和hash不影响拼接',
             cases: [
-                {
-                    path: 'path?query=1',
-                    base: 'base',
-                    expected: '/base/path?query=1'
-                },
-                {
-                    path: 'path#hash',
-                    base: 'base',
-                    expected: '/base/path#hash'
-                },
-                {
-                    path: 'path?q=1#hash',
-                    base: 'base',
-                    expected: '/base/path?q=1#hash'
-                }
+                { path: 'path?query=1', base: 'base', expected: '/base/path?query=1' },
+                { path: 'path#hash', base: 'base', expected: '/base/path#hash' },
+                { path: 'path?q=1#hash', base: 'base', expected: '/base/path?q=1#hash' },
             ]
         },
         {
             description: '冒号开头的路径（路由参数）',
             cases: [
                 { path: ':id', base: 'users', expected: '/users/:id' },
-                {
-                    path: ':userId/profile',
-                    base: 'api',
-                    expected: '/api/:userId/profile'
-                }
+                { path: ':userId/profile', base: 'api', expected: '/api/:userId/profile' },
             ]
         },
         {
@@ -201,59 +159,31 @@ describe('joinPathname', () => {
             cases: [
                 { path: ':rest*', base: 'files', expected: '/files/:rest*' },
                 { path: ':rest*', base: 'assets', expected: '/assets/:rest*' },
-                {
-                    path: 'images/:rest*',
-                    base: 'static',
-                    expected: '/static/images/:rest*'
-                },
-                { path: '/*splat', base: 'base', expected: '/base/*splat' }
+                { path: 'images/:rest*', base: 'static', expected: '/static/images/:rest*' },
+                { path: '/*splat', base: 'base', expected: '/base/*splat' },
             ]
         },
         {
             description: '可选路径',
             cases: [
                 { path: ':id?', base: 'posts', expected: '/posts/:id?' },
-                {
-                    path: 'comments/:commentId?',
-                    base: 'articles',
-                    expected: '/articles/comments/:commentId?'
-                },
-                {
-                    path: '/users{/:id}/delete?',
-                    base: 'base',
-                    expected: '/base/users{/:id}/delete?'
-                }
+                { path: 'comments/:commentId?', base: 'articles', expected: '/articles/comments/:commentId?' },
+                { path: '/users{/:id}/delete?', base: 'base', expected: '/base/users{/:id}/delete?' },
             ]
         },
         {
             description: '数字和特殊符号组合',
             cases: [
                 { path: 'v1.2.3', base: 'api', expected: '/api/v1.2.3' },
-                {
-                    path: 'user@domain',
-                    base: 'profile',
-                    expected: '/profile/user@domain'
-                },
-                {
-                    path: 'item_123',
-                    base: 'products',
-                    expected: '/products/item_123'
-                }
+                { path: 'user@domain', base: 'profile', expected: '/profile/user@domain' },
+                { path: 'item_123', base: 'products', expected: '/products/item_123' },
             ]
         },
         {
             description: '空白字符处理',
             cases: [
-                {
-                    path: '  path  ',
-                    base: '  base  ',
-                    expected: '/  base  /  path  '
-                },
-                {
-                    path: '\tpath\t',
-                    base: '\tbase\t',
-                    expected: '/\tbase\t/\tpath\t'
-                }
+                { path: '  path  ', base: '  base  ', expected: '/  base  /  path  ' },
+                { path: '\tpath\t', base: '\tbase\t', expected: '/\tbase\t/\tpath\t' },
             ]
         },
         {
@@ -262,23 +192,15 @@ describe('joinPathname', () => {
                 // 这些在实际使用中可能不常见，但测试类型安全
                 { path: 'true', base: 'false', expected: '/false/true' },
                 { path: '0', base: '1', expected: '/1/0' },
-                { path: 'NaN', base: 'undefined', expected: '/undefined/NaN' }
+                { path: 'NaN', base: 'undefined', expected: '/undefined/NaN' },
             ]
         },
         {
             description: '路径标准化极端情况',
             cases: [
                 // 测试多重斜杠标准化
-                {
-                    path: '///path///',
-                    base: '///base///',
-                    expected: '/base/path'
-                },
-                {
-                    path: 'path////with////slashes',
-                    base: 'base////with////slashes',
-                    expected: '/base/with/slashes/path/with/slashes'
-                }
+                { path: '///path///', base: '///base///', expected: '/base/path' },
+                { path: 'path////with////slashes', base: 'base////with////slashes', expected: '/base/with/slashes/path/with/slashes' },
             ]
         },
         {
@@ -288,47 +210,23 @@ describe('joinPathname', () => {
                 { path: 'путь', base: 'база', expected: '/база/путь' }, // 俄文
                 { path: 'パス', base: 'ベース', expected: '/ベース/パス' }, // 日文
                 { path: '경로', base: '기본', expected: '/기본/경로' }, // 韩文
-                { path: 'مسار', base: 'قاعدة', expected: '/قاعدة/مسار' } // 阿拉伯文
+                { path: 'مسار', base: 'قاعدة', expected: '/قاعدة/مسار' }, // 阿拉伯文
             ]
         },
         {
             description: '特殊符号和标点处理',
             cases: [
-                {
-                    path: 'path!@#$%^&\\*()',
-                    base: 'base!@#$%^&\\*()',
-                    expected: '/base!@#$%^&\\*()/path!@#$%^&\\*()'
-                },
-                {
-                    path: 'path\\[]{};:"\'<>\\?',
-                    base: 'base\\[]{};:"\'<>\\?',
-                    expected: '/base\\[]{};:"\'<>\\?/path\\[]{};:"\'<>\\?'
-                },
-                {
-                    path: 'path\\backslash',
-                    base: 'base\\backslash\\',
-                    expected: '/base\\backslash\\/path\\backslash'
-                }
+                { path: 'path!@#$%^&\\*()', base: 'base!@#$%^&\\*()', expected: '/base!@#$%^&\\*()/path!@#$%^&\\*()' },
+                { path: 'path\\[]{};:"\'<>\\?', base: 'base\\[]{};:"\'<>\\?', expected: '/base\\[]{};:"\'<>\\?/path\\[]{};:"\'<>\\?' },
+                { path: 'path\\backslash', base: 'base\\backslash\\', expected: '/base\\backslash\\/path\\backslash' },
             ]
         },
         {
             description: '数字和符号组合路径',
             cases: [
-                {
-                    path: '123.456.789',
-                    base: 'v1.0.0',
-                    expected: '/v1.0.0/123.456.789'
-                },
-                {
-                    path: 'item-123_abc',
-                    base: 'category-456_def',
-                    expected: '/category-456_def/item-123_abc'
-                },
-                {
-                    path: '2023-12-31',
-                    base: '2024-01-01',
-                    expected: '/2024-01-01/2023-12-31'
-                }
+                { path: '123.456.789', base: 'v1.0.0', expected: '/v1.0.0/123.456.789' },
+                { path: 'item-123_abc', base: 'category-456_def', expected: '/category-456_def/item-123_abc' },
+                { path: '2023-12-31', base: '2024-01-01', expected: '/2024-01-01/2023-12-31' },
             ]
         },
         {
@@ -337,7 +235,7 @@ describe('joinPathname', () => {
                 { path: ' ', base: ' ', expected: '/ / ' },
                 { path: '\n', base: '\t', expected: '/\t/\n' },
                 { path: '\r\n', base: '\t\r', expected: '/\t\r/\r\n' }, // 测试回车换行符
-                { path: '\u00A0', base: '\u2000', expected: '/\u2000/\u00A0' } // 不间断空格和em空格
+                { path: '\u00A0', base: '\u2000', expected: '/\u2000/\u00A0' }, // 不间断空格和em空格
             ]
         },
         {
@@ -358,23 +256,15 @@ describe('joinPathname', () => {
                 { path: '//', base: '//', expected: '/' },
                 { path: '///', base: '///', expected: '/' },
                 { path: 'path/', base: '/base', expected: '/base/path' },
-                { path: '/path/', base: '/base/', expected: '/base/path' }
+                { path: '/path/', base: '/base/', expected: '/base/path' },
             ]
         },
         {
             description: 'URL编码路径片段',
             cases: [
-                {
-                    path: '%20space%20',
-                    base: '%20base%20',
-                    expected: '/%20base%20/%20space%20'
-                },
+                { path: '%20space%20', base: '%20base%20', expected: '/%20base%20/%20space%20' },
                 { path: '%2F%2F', base: '%2F', expected: '/%2F/%2F%2F' },
-                {
-                    path: 'path%3Fquery%3D1',
-                    base: 'base%23hash',
-                    expected: '/base%23hash/path%3Fquery%3D1'
-                }
+                { path: 'path%3Fquery%3D1', base: 'base%23hash', expected: '/base%23hash/path%3Fquery%3D1' },
             ]
         },
         {
@@ -383,58 +273,30 @@ describe('joinPathname', () => {
                 // 虽然函数签名要求string，但测试潜在的类型强制转换
                 { path: '123', base: '456', expected: '/456/123' },
                 { path: '0', expected: '/0' },
-                { path: '', base: '0', expected: '/0' }
+                { path: '', base: '0', expected: '/0' },
             ]
         },
         {
             description: '路径包含点号的复杂情况',
             cases: [
-                {
-                    path: '../../../path',
-                    base: '../../base',
-                    expected: '/../../base/../../../path'
-                },
-                {
-                    path: './././path',
-                    base: './././base',
-                    expected: '/./././base/./././path'
-                },
-                {
-                    path: 'path/./file',
-                    base: 'base/../dir',
-                    expected: '/base/../dir/path/./file'
-                }
+                { path: '../../../path', base: '../../base', expected: '/../../base/../../../path' },
+                { path: './././path', base: './././base', expected: '/./././base/./././path' },
+                { path: 'path/./file', base: 'base/../dir', expected: '/base/../dir/path/./file' },
             ]
         },
         {
             description: '混合字符集路径',
             cases: [
-                {
-                    path: '中文/english/русский',
-                    base: '日本語/العربية',
-                    expected: '/日本語/العربية/中文/english/русский'
-                },
-                {
-                    path: '测试-test-тест',
-                    base: '基础-base-база',
-                    expected: '/基础-base-база/测试-test-тест'
-                }
+                { path: '中文/english/русский', base: '日本語/العربية', expected: '/日本語/العربية/中文/english/русский' },
+                { path: '测试-test-тест', base: '基础-base-база', expected: '/基础-base-база/测试-test-тест' },
             ]
         },
         {
             description: '控制字符处理',
             cases: [
                 // 测试控制字符（虽然在实际URL中不常见）
-                {
-                    path: '\u0001\u0002',
-                    base: '\u0003\u0004',
-                    expected: '/\u0003\u0004/\u0001\u0002'
-                },
-                {
-                    path: 'path\u007F',
-                    base: 'base\u007F',
-                    expected: '/base\u007F/path\u007F'
-                }
+                { path: '\u0001\u0002', base: '\u0003\u0004', expected: '/\u0003\u0004/\u0001\u0002' },
+                { path: 'path\u007F', base: 'base\u007F', expected: '/base\u007F/path\u007F' },
             ]
         },
         {
@@ -443,7 +305,7 @@ describe('joinPathname', () => {
                 { path: 'path.', base: 'base.', expected: '/base./path.' },
                 { path: 'path-', base: 'base-', expected: '/base-/path-' },
                 { path: 'path_', base: 'base_', expected: '/base_/path_' },
-                { path: 'path~', base: 'base~', expected: '/base~/path~' }
+                { path: 'path~', base: 'base~', expected: '/base~/path~' },
             ]
         }
     ];
@@ -467,12 +329,8 @@ describe('joinPathname', () => {
 describe('createMatcher', () => {
     test('基本路由匹配', () => {
         const matcher = createMatcher([
-            {
-                path: '/news'
-            },
-            {
-                path: '/news/:id'
-            }
+            { path: '/news' },
+            { path: '/news/:id' }
         ]);
         const result = matcher(new URL('/news/123', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
@@ -482,12 +340,8 @@ describe('createMatcher', () => {
 
     test('精确路由匹配优先级', () => {
         const matcher = createMatcher([
-            {
-                path: '/news/:id'
-            },
-            {
-                path: '/news'
-            }
+            { path: '/news/:id' },
+            { path: '/news' }
         ]);
         const result = matcher(new URL('/news', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
@@ -499,11 +353,7 @@ describe('createMatcher', () => {
         const matcher = createMatcher([
             {
                 path: '/news',
-                children: [
-                    {
-                        path: ':id'
-                    }
-                ]
+                children: [{ path: ':id' }]
             }
         ]);
         const result = matcher(new URL('/news/123', BASE_URL), BASE_URL);
@@ -520,14 +370,7 @@ describe('createMatcher', () => {
                 children: [
                     {
                         path: ':userId',
-                        children: [
-                            {
-                                path: 'profile'
-                            },
-                            {
-                                path: 'settings'
-                            }
-                        ]
+                        children: [{ path: 'profile' }, { path: 'settings' }]
                     }
                 ]
             }
@@ -544,11 +387,7 @@ describe('createMatcher', () => {
     });
 
     test('多参数路由匹配', () => {
-        const matcher = createMatcher([
-            {
-                path: '/user/:userId/post/:postId'
-            }
-        ]);
+        const matcher = createMatcher([{ path: '/user/:userId/post/:postId' }]);
         const result = matcher(
             new URL('/user/123/post/456', BASE_URL),
             BASE_URL
@@ -660,11 +499,7 @@ describe('createMatcher', () => {
                         children: [
                             {
                                 path: ':userId',
-                                children: [
-                                    {
-                                        path: 'edit'
-                                    }
-                                ]
+                                children: [{ path: 'edit' }]
                             }
                         ]
                     }
@@ -719,11 +554,7 @@ describe('createMatcher', () => {
         const matcher = createMatcher([
             {
                 path: '/parent/:id',
-                children: [
-                    {
-                        path: 'child/:childId'
-                    }
-                ]
+                children: [{ path: 'child/:childId' }]
             }
         ]);
         const result = matcher(
@@ -759,35 +590,25 @@ describe('createMatcher', () => {
     });
 
     test('特殊字符在路径中的处理', () => {
-        const matcher = createMatcher([
+        const routes = [
             { path: '/test-path' },
             { path: '/test_path' },
             { path: '/test.path' }
-        ]);
+        ];
+        const matcher = createMatcher(routes);
 
-        assert.equal(
-            matcher(new URL('/test-path', BASE_URL), BASE_URL).matches.length,
-            1
-        );
-        assert.equal(
-            matcher(new URL('/test_path', BASE_URL), BASE_URL).matches.length,
-            1
-        );
-        assert.equal(
-            matcher(new URL('/test.path', BASE_URL), BASE_URL).matches.length,
-            1
-        );
+        for (const { path } of routes) {
+            const result = matcher(new URL(path, BASE_URL), BASE_URL);
+            assert.equal(result.matches.length, 1);
+            assert.equal(result.matches[0].path, path);
+        }
     });
 
     test('空字符串路径处理', () => {
         const matcher = createMatcher([
             {
                 path: '',
-                children: [
-                    {
-                        path: 'child'
-                    }
-                ]
+                children: [{ path: 'child' }]
             }
         ]);
         const result = matcher(new URL('/child', BASE_URL), BASE_URL);
@@ -1137,14 +958,8 @@ describe('createMatcher', () => {
         const appCallback = () => ({ mount: () => {}, unmount: () => {} });
 
         const matcher = createMatcher([
-            {
-                path: '/app1',
-                app: appConfig
-            },
-            {
-                path: '/app2',
-                app: appCallback
-            }
+            { path: '/app1', app: appConfig },
+            { path: '/app2', app: appCallback }
         ]);
 
         const result1 = matcher(new URL('/app1', BASE_URL), BASE_URL);
@@ -1250,9 +1065,7 @@ describe('createMatcher', () => {
 
     test('params参数类型和值验证', () => {
         const matcher = createMatcher([
-            {
-                path: '/typed/:stringParam/:numberParam(\\d+)/:optionalParam?'
-            }
+            { path: '/typed/:stringParam/:numberParam(\\d+)/:optionalParam?' }
         ]);
 
         const result = matcher(
