@@ -28,7 +28,7 @@ export const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
         RouteTaskType.beforeEach,
         RouteTaskType.replaceWindow
     ],
-    [RouteType.reload]: [
+    [RouteType.restartApp]: [
         RouteTaskType.location,
         RouteTaskType.asyncComponent,
         RouteTaskType.beforeEach,
@@ -61,7 +61,7 @@ export const AFTER_TASKS: Record<RouteType, RouteTaskType[]> = {
     [RouteType.replace]: [RouteTaskType.afterEach],
     [RouteType.pushWindow]: [RouteTaskType.afterEach],
     [RouteType.replaceWindow]: [RouteTaskType.afterEach],
-    [RouteType.reload]: [RouteTaskType.afterEach],
+    [RouteType.restartApp]: [RouteTaskType.afterEach],
     [RouteType.back]: [RouteTaskType.afterEach],
     [RouteType.go]: [RouteTaskType.afterEach],
     [RouteType.forward]: [RouteTaskType.afterEach],

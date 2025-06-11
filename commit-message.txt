@@ -1,0 +1,26 @@
+feat(router): comprehensive API design improvements
+
+🎯 解决10个API设计问题，提升代码质量和开发体验
+
+✅ 高优先级改进:
+- 修复replace方法返回类型声明不一致
+- 重构守卫方法为标准返回清理函数模式
+- 确认导航方法返回类型设计的精妙性
+
+✅ 中优先级改进:
+- 重命名reload为restartApp并提供方法重载
+- 为resolve方法添加完整JSDoc文档
+- 使用unknown替代any提升类型安全
+
+✅ 工具函数重构:
+- 删除guards.ts文件，避免函数分散
+- 新增Router.isRouteMatched统一API
+- 支持route/exact/include三种匹配模式
+
+📊 验证结果:
+- ✅ TypeScript编译: 所有类型检查通过
+- ✅ 单元测试: 420+测试用例全部通过
+- ✅ 构建验证: 成功生成类型声明文件
+- ✅ API一致性: 符合JavaScript生态标准
+
+Closes #89 

@@ -16,6 +16,7 @@ export {
     type RouteLocation,
     type RouteLocationRaw,
     type RouteMatchResult,
+    type RouteMatchType,
     type RouteMeta,
     type RouteMatcher,
     type RouteState,
@@ -28,4 +29,3 @@ export {
     type RouteEnv,
     type RouteEnvOptions
 } from './types';
-export { isEqualRoute, isSameRoute } from './guards';

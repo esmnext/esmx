@@ -92,7 +92,7 @@ export type RouterMicroApp =
 export enum RouteType {
     push = 'push',
     replace = 'replace',
-    reload = 'reload',
+    restartApp = 'restartApp',
     go = 'go',
     forward = 'forward',
     back = 'back',
@@ -103,7 +103,7 @@ export enum RouteType {
 export type RouteMeta = Record<string | symbol, any>;
 
 export type RouteState = Readonly<Record<string, unknown>>;
-export type RouteHandleResult = Record<string | symbol, any> | null | void;
+export type RouteHandleResult = unknown | null | void;
 
 export interface RouteLocation {
     path?: string;
@@ -170,6 +170,14 @@ export interface RouteMatchResult {
 }
 
 export type RouteMatcher = (targetURL: URL, baseURL: URL) => RouteMatchResult;
+
+/**
+ * 路由匹配类型
+ * - 'route': 路由级匹配，比较路由配置是否相同
+ * - 'exact': 完全匹配，比较路径是否完全相同
+ * - 'include': 包含匹配，判断当前路径是否包含目标路径
+ */
+export type RouteMatchType = 'route' | 'exact' | 'include';
 
 /**
  * 路由钩子函数类型
