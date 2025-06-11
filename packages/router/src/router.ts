@@ -18,7 +18,12 @@ import type {
     RouterOptions,
     RouterParsedOptions
 } from './types';
-import { isESModule, isValidConfirmHookResult, removeFromArray } from './util';
+import {
+    isESModule,
+    isUrlEqual,
+    isValidConfirmHookResult,
+    removeFromArray
+} from './util';
 
 export class Router {
     public readonly options: RouterOptions;
@@ -82,31 +87,40 @@ export class Router {
             }
         },
         [RouteTaskType.push]: async () => {
-            return async (to) => {
+            return async (to, from) => {
                 this._route = to;
                 this._microApp._update(this);
-                to.state = this._navigation.push(to);
+                // 变化时执行 push，未变化执行 replace
+                if (!isUrlEqual(to.url, from?.url)) {
+                    to.state = this._navigation.push(to);
+                } else {
+                    to.state = this._navigation.replace(to);
+                }
             };
         },
         [RouteTaskType.replace]: async () => {
             return async (to, from) => {
                 this._route = to;
                 this._microApp._update(this);
-                this._applyReplace(to, from);
+                // 始终执行替换
+                to.state = this._navigation.replace(to);
             };
         },
         [RouteTaskType.popstate]: async () => {
             return async (to, from) => {
                 this._route = to;
                 this._microApp._update(this);
-                this._applyReplace(to, from);
+                // 有变化时执行 replace
+                if (!isUrlEqual(to.url, from?.url)) {
+                    to.state = this._navigation.replace(to);
+                }
             };
         },
         [RouteTaskType.reload]: async () => {
             return async (to, from) => {
                 this._route = to;
                 this._microApp._update(this, true);
-                this._applyReplace(to, from);
+                to.state = this._navigation.replace(to);
             };
         },
         [RouteTaskType.pushWindow]: async () => {
@@ -121,10 +135,7 @@ export class Router {
             }
         }
     };
-    private _applyReplace(to: Route, from: Route | null) {
-        // TODO: 只有 URL 变化了才更新导航
-        to.state = this._navigation.replace(to);
-    }
+
     private readonly _guards = {
         beforeEach: [] as RouteConfirmHook[],
         afterEach: [] as RouteNotifyHook[]

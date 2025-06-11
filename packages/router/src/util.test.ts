@@ -3,6 +3,7 @@ import {
     isESModule,
     isNotNullish,
     isObject,
+    isUrlEqual,
     isValidConfirmHookResult,
     removeFromArray
 } from './util';
@@ -739,5 +740,251 @@ describe('Error Handling Tests', () => {
         expect(isObject(circularObj)).toBe(true);
         expect(isValidConfirmHookResult(circularObj)).toBe(true);
         expect(isNotNullish(circularObj)).toBe(true);
+    });
+});
+
+describe('isUrlEqual', () => {
+    test('should return false when url2 is null or undefined', () => {
+        const url1 = new URL('https://example.com/path');
+
+        // 测试与 null 比较
+        expect(isUrlEqual(url1, null)).toBe(false);
+
+        // 测试与 undefined 比较（可选参数未提供）
+        expect(isUrlEqual(url1, undefined)).toBe(false);
+
+        // 测试省略第二个参数（自动为 undefined）
+        expect(isUrlEqual(url1)).toBe(false);
+
+        // 测试各种不同的 URL 与 null/undefined 比较
+        const urlWithQuery = new URL('https://example.com/path?a=1&b=2');
+        expect(isUrlEqual(urlWithQuery, null)).toBe(false);
+        expect(isUrlEqual(urlWithQuery, undefined)).toBe(false);
+        expect(isUrlEqual(urlWithQuery)).toBe(false);
+
+        const urlWithHash = new URL('https://example.com/path#section');
+        expect(isUrlEqual(urlWithHash, null)).toBe(false);
+        expect(isUrlEqual(urlWithHash)).toBe(false);
+
+        const urlWithUserInfo = new URL('https://user:pass@example.com/path');
+        expect(isUrlEqual(urlWithUserInfo, null)).toBe(false);
+        expect(isUrlEqual(urlWithUserInfo)).toBe(false);
+    });
+
+    test('should return true for identical URL objects', () => {
+        const url1 = new URL('https://example.com/path?a=1&b=2');
+        const url2 = new URL('https://example.com/path?a=1&b=2');
+        expect(isUrlEqual(url1, url2)).toBe(true);
+    });
+
+    test('should return true for same reference', () => {
+        const url = new URL('https://example.com/path');
+        expect(isUrlEqual(url, url)).toBe(true);
+    });
+
+    test('should return false for different protocols', () => {
+        const url1 = new URL('http://example.com/path');
+        const url2 = new URL('https://example.com/path');
+        expect(isUrlEqual(url1, url2)).toBe(false);
+    });
+
+    test('should return false for different hostnames', () => {
+        const url1 = new URL('https://example.com/path');
+        const url2 = new URL('https://test.com/path');
+        expect(isUrlEqual(url1, url2)).toBe(false);
+    });
+
+    test('should return false for different ports', () => {
+        const url1 = new URL('https://example.com:8080/path');
+        const url2 = new URL('https://example.com:9090/path');
+        expect(isUrlEqual(url1, url2)).toBe(false);
+    });
+
+    test('should return false for different pathnames', () => {
+        const url1 = new URL('https://example.com/path1');
+        const url2 = new URL('https://example.com/path2');
+        expect(isUrlEqual(url1, url2)).toBe(false);
+    });
+
+    test('should return false for different hashes', () => {
+        const url1 = new URL('https://example.com/path#section1');
+        const url2 = new URL('https://example.com/path#section2');
+        expect(isUrlEqual(url1, url2)).toBe(false);
+    });
+
+    test('should handle empty hashes correctly', () => {
+        const url1 = new URL('https://example.com/path');
+        const url2 = new URL('https://example.com/path#');
+        expect(isUrlEqual(url1, url2)).toBe(true); // 两者的 hash 都是空字符串，应该相等
+    });
+
+    test('should ignore query parameter order', () => {
+        const url1 = new URL('https://example.com/path?a=1&b=2&c=3');
+        const url2 = new URL('https://example.com/path?c=3&a=1&b=2');
+        expect(isUrlEqual(url1, url2)).toBe(true);
+    });
+
+    test('should handle duplicate query parameters correctly', () => {
+        const url1 = new URL('https://example.com/path?a=1&a=2&b=3');
+        const url2 = new URL('https://example.com/path?b=3&a=2&a=1');
+        expect(isUrlEqual(url1, url2)).toBe(true);
+    });
+
+    test('should return false for different duplicate parameter values', () => {
+        const url1 = new URL('https://example.com/path?a=1&a=2');
+        const url2 = new URL('https://example.com/path?a=1&a=3');
+        expect(isUrlEqual(url1, url2)).toBe(false);
+    });
+
+    test('should return false for different number of duplicate parameters', () => {
+        const url1 = new URL('https://example.com/path?a=1&a=2');
+        const url2 = new URL('https://example.com/path?a=1');
+        expect(isUrlEqual(url1, url2)).toBe(false);
+    });
+
+    test('should handle complex query parameter scenarios', () => {
+        // 多个重复参数，不同顺序
+        const url1 = new URL(
+            'https://example.com/path?tag=red&tag=blue&category=tech&tag=green'
+        );
+        const url2 = new URL(
+            'https://example.com/path?category=tech&tag=blue&tag=green&tag=red'
+        );
+        expect(isUrlEqual(url1, url2)).toBe(true);
+
+        // 参数值包含特殊字符
+        const url3 = new URL(
+            'https://example.com/path?search=hello%20world&filter=a%26b'
+        );
+        const url4 = new URL(
+            'https://example.com/path?filter=a%26b&search=hello%20world'
+        );
+        expect(isUrlEqual(url3, url4)).toBe(true);
+    });
+
+    test('should handle empty query parameters', () => {
+        const url1 = new URL('https://example.com/path?');
+        const url2 = new URL('https://example.com/path');
+        expect(isUrlEqual(url1, url2)).toBe(true);
+
+        const url3 = new URL('https://example.com/path?a=');
+        const url4 = new URL('https://example.com/path?a=');
+        expect(isUrlEqual(url3, url4)).toBe(true);
+    });
+
+    test('should handle URLs with userinfo', () => {
+        const url1 = new URL('https://user:pass@example.com/path');
+        const url2 = new URL('https://user:pass@example.com/path');
+        expect(isUrlEqual(url1, url2)).toBe(true);
+
+        const url3 = new URL('https://user1:pass@example.com/path');
+        const url4 = new URL('https://user2:pass@example.com/path');
+        expect(isUrlEqual(url3, url4)).toBe(false);
+    });
+
+    test('should handle default ports correctly', () => {
+        const url1 = new URL('https://example.com/path');
+        const url2 = new URL('https://example.com:443/path');
+        expect(isUrlEqual(url1, url2)).toBe(true);
+
+        const url3 = new URL('http://example.com/path');
+        const url4 = new URL('http://example.com:80/path');
+        expect(isUrlEqual(url3, url4)).toBe(true);
+    });
+
+    test('should handle trailing slashes in pathnames', () => {
+        const url1 = new URL('https://example.com/path/');
+        const url2 = new URL('https://example.com/path');
+        expect(isUrlEqual(url1, url2)).toBe(false);
+    });
+
+    test('should handle case sensitivity correctly', () => {
+        // 主机名应该不区分大小写（由URL构造函数处理）
+        const url1 = new URL('https://Example.Com/path');
+        const url2 = new URL('https://example.com/path');
+        expect(isUrlEqual(url1, url2)).toBe(true);
+
+        // 路径区分大小写
+        const url3 = new URL('https://example.com/Path');
+        const url4 = new URL('https://example.com/path');
+        expect(isUrlEqual(url3, url4)).toBe(false);
+
+        // 查询参数区分大小写
+        const url5 = new URL('https://example.com/path?Key=Value');
+        const url6 = new URL('https://example.com/path?key=value');
+        expect(isUrlEqual(url5, url6)).toBe(false);
+    });
+
+    test('should handle special characters in URLs', () => {
+        const url1 = new URL(
+            'https://example.com/path with spaces?q=hello world'
+        );
+        const url2 = new URL(
+            'https://example.com/path%20with%20spaces?q=hello%20world'
+        );
+        expect(isUrlEqual(url1, url2)).toBe(true);
+
+        const url3 = new URL('https://example.com/path?unicode=测试');
+        const url4 = new URL(
+            'https://example.com/path?unicode=%E6%B5%8B%E8%AF%95'
+        );
+        expect(isUrlEqual(url3, url4)).toBe(true);
+    });
+
+    test('should handle edge cases with empty values', () => {
+        // 空查询参数值
+        const url1 = new URL('https://example.com/path?a=&b=test');
+        const url2 = new URL('https://example.com/path?b=test&a=');
+        expect(isUrlEqual(url1, url2)).toBe(true);
+
+        // 只有键没有值的参数
+        const url3 = new URL('https://example.com/path?flag');
+        const url4 = new URL('https://example.com/path?flag=');
+        expect(isUrlEqual(url3, url4)).toBe(true);
+    });
+
+    test('should handle performance with many parameters', () => {
+        // 构建包含大量参数的URL
+        const params1 = new URLSearchParams();
+        const params2 = new URLSearchParams();
+
+        // 添加100个参数，顺序不同
+        for (let i = 0; i < 100; i++) {
+            params1.append(`param${i}`, `value${i}`);
+            params2.append(`param${99 - i}`, `value${99 - i}`);
+        }
+
+        const url1 = new URL(`https://example.com/path?${params1}`);
+        const url2 = new URL(`https://example.com/path?${params2}`);
+
+        const start = performance.now();
+        const result = isUrlEqual(url1, url2);
+        const end = performance.now();
+
+        expect(result).toBe(true);
+        expect(end - start).toBeLessThan(50); // 应该在50ms内完成
+    });
+
+    test('should handle complex real-world scenarios', () => {
+        // 模拟实际应用中的URL比较场景
+        const baseUrl = 'https://api.example.com/v1/users';
+
+        // 分页和过滤参数
+        const url1 = new URL(
+            `${baseUrl}?page=1&limit=20&sort=name&filter=active&tag=admin&tag=user`
+        );
+        const url2 = new URL(
+            `${baseUrl}?limit=20&tag=user&page=1&tag=admin&filter=active&sort=name`
+        );
+        expect(isUrlEqual(url1, url2)).toBe(true);
+
+        // OAuth参数
+        const oauthUrl1 = new URL(
+            'https://oauth.example.com/authorize?client_id=123&redirect_uri=https%3A%2F%2Fapp.com%2Fcallback&scope=read%20write&state=random123'
+        );
+        const oauthUrl2 = new URL(
+            'https://oauth.example.com/authorize?scope=read%20write&state=random123&client_id=123&redirect_uri=https%3A%2F%2Fapp.com%2Fcallback'
+        );
+        expect(isUrlEqual(oauthUrl1, oauthUrl2)).toBe(true);
     });
 });

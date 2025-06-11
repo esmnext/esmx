@@ -44,3 +44,54 @@ export function isValidConfirmHookResult(
         isObject(result)
     );
 }
+
+export function isUrlEqual(url1: URL, url2?: URL | null): boolean {
+    // 如果 url2 不存在，返回 false
+    if (!url2) {
+        return false;
+    }
+
+    // 如果是同一个对象引用，直接返回 true
+    if (url1 === url2) {
+        return true;
+    }
+
+    // 比较协议、主机名、端口、路径名、哈希、用户名和密码
+    if (
+        url1.protocol !== url2.protocol ||
+        url1.hostname !== url2.hostname ||
+        url1.port !== url2.port ||
+        url1.pathname !== url2.pathname ||
+        url1.hash !== url2.hash ||
+        url1.username !== url2.username ||
+        url1.password !== url2.password
+    ) {
+        return false;
+    }
+
+    // 比较查询参数（忽略参数顺序，处理重复参数名）
+    const params1 = url1.searchParams;
+    const params2 = url2.searchParams;
+
+    // 检查参数数量是否相同
+    if (params1.size !== params2.size) {
+        return false;
+    }
+
+    // 检查每个键名对应的所有值是否相同
+    for (const key of new Set(params1.keys())) {
+        // 获取所有同名参数的值并排序比较
+        const values1 = params1.getAll(key).sort();
+        const values2 = params2.getAll(key).sort();
+
+        // 比较数组长度和内容
+        if (
+            values1.length !== values2.length ||
+            !values1.every((value, index) => value === values2[index])
+        ) {
+            return false;
+        }
+    }
+
+    return true;
+}
