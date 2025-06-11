@@ -5,9 +5,56 @@ import type {
     RouteHandleHook,
     RouteHandleResult,
     RouteLocationRaw,
+    RouteMatchResult,
     RouteType,
     RouterParsedOptions
 } from './types';
+import { isNonEmptyPlainObject, isPlainObject } from './util';
+
+/**
+ * 将用户传入的参数拼接到URL路径中
+ * @param match 路由匹配结果
+ * @param toRaw 用户传入的路由位置对象
+ * @param base 基础URL
+ * @param to 当前解析的URL对象
+ */
+export function applyRouteParams(
+    match: RouteMatchResult,
+    toRaw: RouteLocationRaw,
+    base: URL,
+    to: URL
+): void {
+    if (
+        !isPlainObject(toRaw) ||
+        !isNonEmptyPlainObject(toRaw.params) ||
+        !match.matches.length
+    ) {
+        return;
+    }
+
+    // 获取最后匹配的路由配置
+    const lastMatch = match.matches[match.matches.length - 1];
+
+    // 分割当前路径
+    const current = to.pathname.split('/');
+
+    // 用用户参数编译新路径并分割
+    const next = new URL(
+        lastMatch.compile(toRaw.params).substring(1),
+        base
+    ).pathname.split('/');
+
+    // 用新路径片段替换当前路径片段
+    next.forEach((item, index) => {
+        current[index] = item || current[index];
+    });
+
+    // 更新URL路径
+    to.pathname = current.join('/');
+
+    // 合并参数到匹配结果中，用户参数优先
+    Object.assign(match.params, toRaw.params);
+}
 
 export function createRoute(
     options: RouterParsedOptions,
@@ -29,11 +76,11 @@ export function createRoute(
     const fullPath = match
         ? `${path}${to.search}${to.hash}`
         : to.pathname + to.search + to.hash;
-    const state = typeof toRaw === 'object' && toRaw.state ? toRaw.state : {};
+    const state = isPlainObject(toRaw) && toRaw.state ? toRaw.state : {};
     const matched = match ? match.matches : [];
-    const keepScrollPosition = Boolean(
-        typeof toRaw === 'object' && toRaw.keepScrollPosition
-    );
+    const keepScrollPosition = isPlainObject(toRaw)
+        ? Boolean(toRaw.keepScrollPosition)
+        : false;
     const route: Route = {
         status: RouteStatus.resolve,
         get handle() {
@@ -96,20 +143,11 @@ export function createRoute(
         route.query[key] = to.searchParams.get(key)!;
         route.queryArray[key] = to.searchParams.getAll(key);
     }
-    if (!(match && typeof toRaw === 'object' && toRaw.params)) {
-        return route;
+
+    // 应用用户传入的路由参数（如果匹配成功）
+    if (match) {
+        applyRouteParams(match, toRaw, base, to);
     }
-    // 将params参数拼接回路径
-    const lastMatch = match.matches[match.matches.length - 1];
-    const current = to.pathname.split('/');
-    const next = new URL(
-        lastMatch.compile(toRaw.params).substring(1),
-        options.base
-    ).pathname.split('/');
-    next.forEach((item, index) => {
-        current[index] = item || current[index];
-    });
-    to.pathname = current.join('/');
-    Object.assign(match.params, toRaw.params);
+
     return route;
 }

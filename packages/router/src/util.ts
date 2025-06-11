@@ -13,11 +13,27 @@ export function isNotNullish(value: unknown): boolean {
     );
 }
 
-export function isObject(o: unknown): o is Record<string, any> {
+export function isPlainObject(o: unknown): o is Record<string, any> {
     return (
         o?.constructor === Object ||
         Object.prototype.toString.call(o) === '[object Object]'
     );
+}
+
+/**
+ * 检查值是否是一个有效的非空普通对象
+ * 只检查可枚举的字符串键，确保是真正的普通对象
+ * @param value 要检查的值
+ * @returns 如果是有效的非空普通对象则返回 true
+ */
+export function isNonEmptyPlainObject(
+    value: unknown
+): value is Record<string, any> {
+    if (!isPlainObject(value)) {
+        return false;
+    }
+    // 只检查可枚举的字符串键，确保是普通对象的有效属性
+    return Object.keys(value as Record<string, any>).length > 0;
 }
 
 export function isESModule(obj: any): boolean {
@@ -41,7 +57,7 @@ export function isValidConfirmHookResult(
         result === false ||
         typeof result === 'function' ||
         typeof result === 'string' ||
-        isObject(result)
+        isPlainObject(result)
     );
 }
 

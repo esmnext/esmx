@@ -1,6 +1,6 @@
 import type { Router } from './router';
 import type { RouterMicroAppCallback, RouterMicroAppOptions } from './types';
-import { isBrowser, isObject } from './util';
+import { isBrowser, isPlainObject } from './util';
 
 export class MicroApp {
     public app: RouterMicroAppOptions | null = null;
@@ -23,7 +23,7 @@ export class MicroApp {
                     root.id = router.id;
                 }
                 const { rootStyle } = router.parsedOptions;
-                if (isObject(rootStyle)) {
+                if (isPlainObject(rootStyle)) {
                     Object.assign(root.style, router.parsedOptions.rootStyle);
                 }
             }

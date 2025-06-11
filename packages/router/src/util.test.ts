@@ -1,8 +1,9 @@
 import { describe, expect, test } from 'vitest';
 import {
     isESModule,
+    isNonEmptyPlainObject,
     isNotNullish,
-    isObject,
+    isPlainObject,
     isUrlEqual,
     isValidConfirmHookResult,
     removeFromArray
@@ -198,89 +199,207 @@ describe('isNotNullish', () => {
     });
 });
 
-describe('isObject', () => {
+describe('isPlainObject', () => {
     test('should return true for plain objects', () => {
-        expect(isObject({})).toBe(true);
-        expect(isObject({ key: 'value' })).toBe(true);
-        expect(isObject(new Object())).toBe(true);
-        expect(isObject(Object.create(null))).toBe(true);
-        expect(isObject(Object.create({}))).toBe(true);
-        expect(isObject(Object.create(Object.prototype))).toBe(true);
-        expect(isObject(Object.create({ parent: 'value' }))).toBe(true);
-        expect(isObject({ __proto__: null })).toBe(true);
-        expect(isObject({ [Symbol.toStringTag]: 'Tag' })).toBe(true);
-        expect(isObject({ toString: () => '[object CustomObject]' })).toBe(
+        expect(isPlainObject({})).toBe(true);
+        expect(isPlainObject({ key: 'value' })).toBe(true);
+        expect(isPlainObject(new Object())).toBe(true);
+        expect(isPlainObject(Object.create(null))).toBe(true);
+        expect(isPlainObject(Object.create({}))).toBe(true);
+        expect(isPlainObject(Object.create(Object.prototype))).toBe(true);
+        expect(isPlainObject(Object.create({ parent: 'value' }))).toBe(true);
+        expect(isPlainObject({ __proto__: null })).toBe(true);
+        expect(isPlainObject({ [Symbol.toStringTag]: 'Tag' })).toBe(true);
+        expect(isPlainObject({ toString: () => '[object CustomObject]' })).toBe(
             true
         );
-        expect(isObject(Math)).toBe(true);
-        expect(isObject(JSON)).toBe(true);
+        expect(isPlainObject(Math)).toBe(true);
+        expect(isPlainObject(JSON)).toBe(true);
         class TestClass {}
-        expect(isObject(new TestClass())).toBe(true);
+        expect(isPlainObject(new TestClass())).toBe(true);
     });
 
     test('should return false for non-plain objects', () => {
         // 特殊值
-        expect(isObject(null)).toBe(false);
-        expect(isObject(void 0)).toBe(false);
+        expect(isPlainObject(null)).toBe(false);
+        expect(isPlainObject(void 0)).toBe(false);
         // 数组 & 类型化数组相关
-        expect(isObject([])).toBe(false);
-        expect(isObject(['a', 'b'])).toBe(false);
-        expect(isObject(new Array())).toBe(false);
-        expect(isObject(new Array(1, 2, 3))).toBe(false);
-        expect(isObject(new Array(1))).toBe(false);
-        expect(isObject(new Uint8Array(8))).toBe(false);
-        expect(isObject(new ArrayBuffer(8))).toBe(false);
-        expect(isObject(new DataView(new ArrayBuffer(8)))).toBe(false);
+        expect(isPlainObject([])).toBe(false);
+        expect(isPlainObject(['a', 'b'])).toBe(false);
+        expect(isPlainObject(new Array())).toBe(false);
+        expect(isPlainObject(new Array(1, 2, 3))).toBe(false);
+        expect(isPlainObject(new Array(1))).toBe(false);
+        expect(isPlainObject(new Uint8Array(8))).toBe(false);
+        expect(isPlainObject(new ArrayBuffer(8))).toBe(false);
+        expect(isPlainObject(new DataView(new ArrayBuffer(8)))).toBe(false);
         // 字符串
-        expect(isObject('')).toBe(false);
-        expect(isObject('0')).toBe(false);
-        expect(isObject('1')).toBe(false);
-        expect(isObject('string')).toBe(false);
-        expect(isObject(new String(''))).toBe(false); // typeof (new String('')) === 'object'
-        expect(isObject(new String('0'))).toBe(false);
-        expect(isObject(new String('1'))).toBe(false);
-        expect(isObject(new String('string'))).toBe(false);
+        expect(isPlainObject('')).toBe(false);
+        expect(isPlainObject('0')).toBe(false);
+        expect(isPlainObject('1')).toBe(false);
+        expect(isPlainObject('string')).toBe(false);
+        expect(isPlainObject(new String(''))).toBe(false); // typeof (new String('')) === 'object'
+        expect(isPlainObject(new String('0'))).toBe(false);
+        expect(isPlainObject(new String('1'))).toBe(false);
+        expect(isPlainObject(new String('string'))).toBe(false);
         // 布尔值
-        expect(isObject(true)).toBe(false);
-        expect(isObject(false)).toBe(false);
-        expect(isObject(new Boolean(true))).toBe(false);
-        expect(isObject(new Boolean(false))).toBe(false);
+        expect(isPlainObject(true)).toBe(false);
+        expect(isPlainObject(false)).toBe(false);
+        expect(isPlainObject(new Boolean(true))).toBe(false);
+        expect(isPlainObject(new Boolean(false))).toBe(false);
         // 数字 & bigint
-        expect(isObject(0)).toBe(false);
-        expect(isObject(0n)).toBe(false);
-        expect(isObject(123)).toBe(false);
-        expect(isObject(123n)).toBe(false);
-        expect(isObject(new Number('1'))).toBe(false);
-        expect(isObject(+'a')).toBe(false);
-        expect(isObject(Number.NaN)).toBe(false);
-        expect(isObject(new Number('a'))).toBe(false);
+        expect(isPlainObject(0)).toBe(false);
+        expect(isPlainObject(0n)).toBe(false);
+        expect(isPlainObject(123)).toBe(false);
+        expect(isPlainObject(123n)).toBe(false);
+        expect(isPlainObject(new Number('1'))).toBe(false);
+        expect(isPlainObject(+'a')).toBe(false);
+        expect(isPlainObject(Number.NaN)).toBe(false);
+        expect(isPlainObject(new Number('a'))).toBe(false);
         // 函数
-        expect(isObject(() => {})).toBe(false);
-        expect(isObject(async () => {})).toBe(false);
-        expect(isObject(new Function('return 1;'))).toBe(false);
-        expect(isObject(AsyncFunction('return 1;'))).toBe(false);
+        expect(isPlainObject(() => {})).toBe(false);
+        expect(isPlainObject(async () => {})).toBe(false);
+        expect(isPlainObject(new Function('return 1;'))).toBe(false);
+        expect(isPlainObject(AsyncFunction('return 1;'))).toBe(false);
         // 特殊对象
-        expect(isObject(new Date())).toBe(false);
-        expect(isObject(Symbol('test'))).toBe(false);
-        expect(isObject(new Map())).toBe(false);
-        expect(isObject(new Set())).toBe(false);
-        expect(isObject(new WeakMap())).toBe(false);
-        expect(isObject(new WeakSet())).toBe(false);
-        expect(isObject(/test/)).toBe(false);
-        expect(isObject(new Error('test'))).toBe(false);
-        expect(isObject(Promise.resolve())).toBe(false);
-        expect(isObject(new URL('https://example.com'))).toBe(false);
-        expect(isObject(new URLSearchParams('key=value'))).toBe(false);
-        expect(isObject(new Blob(['test']))).toBe(false);
-        expect(isObject(new File(['test'], 'file.txt'))).toBe(false);
+        expect(isPlainObject(new Date())).toBe(false);
+        expect(isPlainObject(Symbol('test'))).toBe(false);
+        expect(isPlainObject(new Map())).toBe(false);
+        expect(isPlainObject(new Set())).toBe(false);
+        expect(isPlainObject(new WeakMap())).toBe(false);
+        expect(isPlainObject(new WeakSet())).toBe(false);
+        expect(isPlainObject(/test/)).toBe(false);
+        expect(isPlainObject(new Error('test'))).toBe(false);
+        expect(isPlainObject(Promise.resolve())).toBe(false);
+        expect(isPlainObject(new URL('https://example.com'))).toBe(false);
+        expect(isPlainObject(new URLSearchParams('key=value'))).toBe(false);
+        expect(isPlainObject(new Blob(['test']))).toBe(false);
+        expect(isPlainObject(new File(['test'], 'file.txt'))).toBe(false);
     });
 
     test('should distinguish between objects and boxed primitives', () => {
         // 确保包装对象被正确识别为非对象
-        expect(isObject(Object(42))).toBe(false); // 等同于 new Number(42)
-        expect(isObject(Object('str'))).toBe(false); // 等同于 new String('str')
-        expect(isObject(Object(true))).toBe(false); // 等同于 new Boolean(true)
-        expect(isObject(Object(Symbol('sym')))).toBe(false); // Symbol 包装对象
+        expect(isPlainObject(Object(42))).toBe(false); // 等同于 new Number(42)
+        expect(isPlainObject(Object('str'))).toBe(false); // 等同于 new String('str')
+        expect(isPlainObject(Object(true))).toBe(false); // 等同于 new Boolean(true)
+        expect(isPlainObject(Object(Symbol('sym')))).toBe(false); // Symbol 包装对象
+    });
+});
+
+describe('isNonEmptyPlainObject', () => {
+    test('should return true for non-empty plain objects', () => {
+        expect(isNonEmptyPlainObject({ key: 'value' })).toBe(true);
+        expect(isNonEmptyPlainObject({ a: 1, b: 2 })).toBe(true);
+        expect(isNonEmptyPlainObject({ nested: { value: 'test' } })).toBe(true);
+        expect(
+            isNonEmptyPlainObject({ toString: () => '[object CustomObject]' })
+        ).toBe(true);
+
+        // 对象创建的不同方式
+        const obj = new Object() as any;
+        obj.prop = 'value';
+        expect(isNonEmptyPlainObject(obj)).toBe(true);
+
+        const objWithProto = Object.create({ parent: 'value' });
+        objWithProto.own = 'property';
+        expect(isNonEmptyPlainObject(objWithProto)).toBe(true);
+
+        class TestClass {}
+        const instance = new TestClass() as any;
+        instance.prop = 'value';
+        expect(isNonEmptyPlainObject(instance)).toBe(true);
+    });
+
+    test('should return false for empty objects', () => {
+        expect(isNonEmptyPlainObject({})).toBe(false);
+        expect(isNonEmptyPlainObject(new Object())).toBe(false);
+        expect(isNonEmptyPlainObject(Object.create(null))).toBe(false);
+        expect(isNonEmptyPlainObject(Object.create({}))).toBe(false);
+        expect(isNonEmptyPlainObject(Object.create(Object.prototype))).toBe(
+            false
+        );
+        expect(isNonEmptyPlainObject({ __proto__: null })).toBe(false);
+
+        class TestClass {}
+        expect(isNonEmptyPlainObject(new TestClass())).toBe(false);
+
+        // Symbol 属性的对象应该被认为是空的
+        expect(isNonEmptyPlainObject({ [Symbol.toStringTag]: 'Tag' })).toBe(
+            false
+        );
+        expect(isNonEmptyPlainObject({ [Symbol('key')]: 'value' })).toBe(false);
+    });
+
+    test('should return false for non-objects', () => {
+        // 特殊值
+        expect(isNonEmptyPlainObject(null)).toBe(false);
+        expect(isNonEmptyPlainObject(void 0)).toBe(false);
+
+        // 原始类型
+        expect(isNonEmptyPlainObject('')).toBe(false);
+        expect(isNonEmptyPlainObject('non-empty')).toBe(false);
+        expect(isNonEmptyPlainObject(0)).toBe(false);
+        expect(isNonEmptyPlainObject(123)).toBe(false);
+        expect(isNonEmptyPlainObject(0n)).toBe(false);
+        expect(isNonEmptyPlainObject(123n)).toBe(false);
+        expect(isNonEmptyPlainObject(true)).toBe(false);
+        expect(isNonEmptyPlainObject(false)).toBe(false);
+        expect(isNonEmptyPlainObject(Symbol('test'))).toBe(false);
+
+        // 数组
+        expect(isNonEmptyPlainObject([])).toBe(false);
+        expect(isNonEmptyPlainObject(['a', 'b'])).toBe(false);
+
+        // 函数
+        expect(isNonEmptyPlainObject(() => {})).toBe(false);
+        expect(isNonEmptyPlainObject(async () => {})).toBe(false);
+
+        // 特殊对象类型
+        expect(isNonEmptyPlainObject(new Date())).toBe(false);
+        expect(isNonEmptyPlainObject(new Map())).toBe(false);
+        expect(isNonEmptyPlainObject(new Set())).toBe(false);
+        expect(isNonEmptyPlainObject(/test/)).toBe(false);
+        expect(isNonEmptyPlainObject(new Error('test'))).toBe(false);
+        expect(isNonEmptyPlainObject(Promise.resolve())).toBe(false);
+
+        // 包装对象
+        expect(isNonEmptyPlainObject(new String('test'))).toBe(false);
+        expect(isNonEmptyPlainObject(new Number(123))).toBe(false);
+        expect(isNonEmptyPlainObject(new Boolean(true))).toBe(false);
+    });
+
+    test('should handle objects with only inherited properties', () => {
+        // 对象只有继承属性，没有自有属性
+        const parentObj = { parentProp: 'value' };
+        const childObj = Object.create(parentObj);
+        expect(isNonEmptyPlainObject(childObj)).toBe(false);
+
+        // 添加自有属性后应该返回 true
+        childObj.ownProp = 'own';
+        expect(isNonEmptyPlainObject(childObj)).toBe(true);
+    });
+
+    test('should handle edge cases', () => {
+        // 对象具有非枚举属性
+        const objWithNonEnum = {};
+        Object.defineProperty(objWithNonEnum, 'nonEnum', {
+            value: 'hidden',
+            enumerable: false
+        });
+        expect(isNonEmptyPlainObject(objWithNonEnum)).toBe(false); // Object.keys 不会包含非枚举属性
+
+        Object.defineProperty(objWithNonEnum, 'visible', {
+            value: 'visible',
+            enumerable: true
+        });
+        expect(isNonEmptyPlainObject(objWithNonEnum)).toBe(true); // 现在有可枚举属性了
+
+        // 冻结的对象
+        const frozenObj = Object.freeze({ prop: 'value' });
+        expect(isNonEmptyPlainObject(frozenObj)).toBe(true);
+
+        // 密封的对象
+        const sealedObj = Object.seal({ prop: 'value' });
+        expect(isNonEmptyPlainObject(sealedObj)).toBe(true);
     });
 });
 
@@ -668,7 +787,7 @@ describe('isValidConfirmHookResult', () => {
         class TestClass {
             constructor(public value: number) {}
         }
-        expect(isValidConfirmHookResult(new TestClass(42))).toBe(true); // 类实例通过 isObject 检查
+        expect(isValidConfirmHookResult(new TestClass(42))).toBe(true); // 类实例通过 isPlainObject 检查
 
         // 继承的类实例
         class ChildClass extends TestClass {}
@@ -701,7 +820,7 @@ describe('Performance Tests', () => {
 
         for (let i = 0; i < iterations; ++i) {
             isNotNullish(i);
-            isObject({ value: i });
+            isPlainObject({ value: i });
             isESModule({ __esModule: true });
             isValidConfirmHookResult(false);
         }
@@ -733,11 +852,11 @@ describe('Error Handling Tests', () => {
         circularObj.self = circularObj;
 
         // 这些函数应该能处理循环引用而不崩溃
-        expect(() => isObject(circularObj)).not.toThrow();
+        expect(() => isPlainObject(circularObj)).not.toThrow();
         expect(() => isValidConfirmHookResult(circularObj)).not.toThrow();
         expect(() => isNotNullish(circularObj)).not.toThrow();
 
-        expect(isObject(circularObj)).toBe(true);
+        expect(isPlainObject(circularObj)).toBe(true);
         expect(isValidConfirmHookResult(circularObj)).toBe(true);
         expect(isNotNullish(circularObj)).toBe(true);
     });
