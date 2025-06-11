@@ -13,7 +13,7 @@ const PAGE_ID_KEY = '__pageId__';
 
 export class Navigation {
     public options: RouterParsedOptions;
-    private _history: History;
+    private _history: History | MemoryHistory;
     private _unSubscribePopState: () => void;
     private _promiseResolve:
         | ((url?: string | null, state?: RouteState) => void)
@@ -32,6 +32,7 @@ export class Navigation {
             (this._promiseResolve || onUpdated)?.(url, state);
         };
         this._unSubscribePopState =
+            options.mode !== RouterMode.history &&
             this._history instanceof MemoryHistory
                 ? this._history.onPopState(onPopStateChange)
                 : subscribeHtmlHistory(onPopStateChange);
@@ -141,7 +142,10 @@ export class MemoryHistory implements History {
         if (newIdx < 0 || newIdx >= this.length) return;
         this._index = newIdx;
         const entry = this._curEntry!;
-        this._popStateCbs.forEach((cb) => cb(entry.url, entry.state));
+        // 尽可能的模拟 html history 的 go（异步触发 popstate 事件）
+        setTimeout(() => {
+            this._popStateCbs.forEach((cb) => cb(entry.url, entry.state));
+        });
     }
 
     public onPopState(cb: NavigationSubscribe) {

@@ -7,21 +7,33 @@ describe('DEFAULT_LOCATION', () => {
     let mockLocation: Partial<Location>;
 
     beforeEach(() => {
-        if (typeof window === 'object') {
+        if (typeof globalThis === 'object') {
+            mockLocation = { href: '' };
+            (globalThis.window as any) = {
+                get location() {
+                    return mockLocation;
+                }
+            };
+            Object.defineProperty(globalThis, 'location', {
+                configurable: true,
+                get: () => mockLocation
+            });
+        } else if (typeof window === 'object') {
             originalWindowOpen = window.open;
         }
-        mockLocation = { href: '' };
-        if (typeof globalThis !== 'object') {
-            return;
-        }
-        (globalThis.window as any) = {
-            location: mockLocation
-        };
-        globalThis.location = window.location;
     });
 
     afterEach(() => {
-        window.open = originalWindowOpen;
+        if (typeof globalThis === 'object') {
+            // @ts-ignore
+            // biome-ignore lint/performance/noDelete:
+            delete globalThis.window;
+            // @ts-ignore
+            // biome-ignore lint/performance/noDelete:
+            delete globalThis.location;
+        } else if (typeof window === 'object') {
+            window.open = originalWindowOpen;
+        }
     });
 
     it('should open a new window if isPush is true and window.open returns a window', () => {

@@ -735,7 +735,7 @@ describe('createMatcher', () => {
         assert.equal(result.params.childId, '456');
     });
 
-    test.skip('路由匹配顺序一致性', () => {
+    test.todo('路由匹配顺序一致性', () => {
         const matcher = createMatcher([
             {
                 path: '/a/:id',
@@ -797,7 +797,7 @@ describe('createMatcher', () => {
     });
 
     // 后面优化性能的时候再验证
-    test.skip('路由匹配性能验证', () => {
+    test.todo('路由匹配性能验证', () => {
         // 创建大量路由配置
         const routes = Array.from({ length: 1000 }, (_, i) => ({
             path: `/route${i}/:id`
@@ -866,7 +866,7 @@ describe('createMatcher', () => {
         assert.equal(result.matches[0].path, '/page');
     });
 
-    test.skip('大小写敏感匹配', () => {
+    test.todo('大小写敏感匹配', () => {
         const matcher = createMatcher([{ path: '/API' }, { path: '/api' }]);
         const result1 = matcher(new URL('/API', BASE_URL), BASE_URL);
         const result2 = matcher(new URL('/api', BASE_URL), BASE_URL);
@@ -1051,7 +1051,7 @@ describe('createMatcher', () => {
         assert.equal(result.matches[0].children.length, 1);
     });
 
-    test.skip('路由冲突和优先级处理', () => {
+    test.todo('路由冲突和优先级处理', () => {
         const matcher = createMatcher([
             {
                 path: '/conflict/:id',
@@ -1221,7 +1221,7 @@ describe('createMatcher', () => {
     });
 
     // 后面优化性能的时候再验证
-    test.skip('matcher性能边界测试', () => {
+    test.todo('matcher性能边界测试', () => {
         // 创建大量复杂路由配置
         const routes: Parameters<typeof createMatcher>[0] = [];
         for (let i = 0; i < 500; i++) {
@@ -1861,7 +1861,7 @@ describe('createMatcher', () => {
         assert.equal(result.matches[0].path, '(.*)*');
     });
 
-    test.skip('通配符路由匹配 - 新版', () => {
+    test.todo('通配符路由匹配 - 新版', () => {
         const routes = [
             { path: '/files{/*path}/:file{.:ext}', component: 'FilesPage' }, // /files/:path*/:file.:ext?
             { path: '/api/*section/data', component: 'ApiDataPage' }, // /api/:section?/data
