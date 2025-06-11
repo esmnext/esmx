@@ -24,10 +24,10 @@ describe('IncrementId', () => {
         test('应该正确比较相等的值', () => {
             expect(incrementId.equal(0)).toBe(true);
 
-            incrementId.generate(); // 值变为 1
+            incrementId.next(); // 值变为 1
             expect(incrementId.equal(1)).toBe(true);
 
-            incrementId.generate(); // 值变为 2
+            incrementId.next(); // 值变为 2
             expect(incrementId.equal(2)).toBe(true);
         });
 
@@ -35,7 +35,7 @@ describe('IncrementId', () => {
             expect(incrementId.equal(1)).toBe(false);
             expect(incrementId.equal(-1)).toBe(false);
 
-            incrementId.generate(); // 值变为 1
+            incrementId.next(); // 值变为 1
             expect(incrementId.equal(0)).toBe(false);
             expect(incrementId.equal(2)).toBe(false);
         });
@@ -56,14 +56,14 @@ describe('IncrementId', () => {
 
     describe('generate 方法', () => {
         test('应该从 1 开始生成', () => {
-            const firstId = incrementId.generate();
+            const firstId = incrementId.next();
             expect(firstId).toBe(1);
         });
 
         test('应该递增生成 ID', () => {
-            const id1 = incrementId.generate();
-            const id2 = incrementId.generate();
-            const id3 = incrementId.generate();
+            const id1 = incrementId.next();
+            const id2 = incrementId.next();
+            const id3 = incrementId.next();
 
             expect(id1).toBe(1);
             expect(id2).toBe(2);
@@ -73,7 +73,7 @@ describe('IncrementId', () => {
         test('应该连续生成唯一 ID', () => {
             const ids: number[] = [];
             for (let i = 0; i < 100; i++) {
-                ids.push(incrementId.generate());
+                ids.push(incrementId.next());
             }
 
             // 检查所有 ID 都是唯一的
@@ -87,18 +87,18 @@ describe('IncrementId', () => {
         test('生成后 equal 方法应该反映新值', () => {
             expect(incrementId.equal(0)).toBe(true);
 
-            const id1 = incrementId.generate();
+            const id1 = incrementId.next();
             expect(incrementId.equal(id1)).toBe(true);
             expect(incrementId.equal(0)).toBe(false);
 
-            const id2 = incrementId.generate();
+            const id2 = incrementId.next();
             expect(incrementId.equal(id2)).toBe(true);
             expect(incrementId.equal(id1)).toBe(false);
         });
 
         test('应该返回生成的 ID 值', () => {
             for (let i = 1; i <= 10; i++) {
-                const generatedId = incrementId.generate();
+                const generatedId = incrementId.next();
                 expect(generatedId).toBe(i);
                 expect(incrementId.equal(i)).toBe(true);
             }
@@ -111,7 +111,7 @@ describe('IncrementId', () => {
             const ids: number[] = [];
 
             for (let i = 0; i < count; i++) {
-                ids.push(incrementId.generate());
+                ids.push(incrementId.next());
             }
 
             expect(ids.length).toBe(count);
@@ -126,10 +126,10 @@ describe('多个实例的独立性', () => {
         const id1 = new IncrementId();
         const id2 = new IncrementId();
 
-        const firstId1 = id1.generate();
-        const firstId2 = id2.generate();
-        const secondId1 = id1.generate();
-        const secondId2 = id2.generate();
+        const firstId1 = id1.next();
+        const firstId2 = id2.next();
+        const secondId1 = id1.next();
+        const secondId2 = id2.next();
 
         expect(firstId1).toBe(1);
         expect(firstId2).toBe(1);
@@ -147,12 +147,12 @@ describe('多个实例的独立性', () => {
 
         // 每个实例都从 1 开始
         instances.forEach((instance) => {
-            expect(instance.generate()).toBe(1);
+            expect(instance.next()).toBe(1);
         });
 
         // 每个实例都独立计数
         instances.forEach((instance) => {
-            expect(instance.generate()).toBe(2);
+            expect(instance.next()).toBe(2);
             expect(instance.equal(2)).toBe(true);
         });
     });
@@ -177,7 +177,7 @@ describe('边界情况和错误处理', () => {
     test('应该能处理大量调用而不溢出（在合理范围内）', () => {
         // 测试相对较大的数值，但不到会导致性能问题的程度
         for (let i = 0; i < 1000; i++) {
-            const id = incrementId.generate();
+            const id = incrementId.next();
             expect(id).toBe(i + 1);
             expect(incrementId.equal(id)).toBe(true);
         }
