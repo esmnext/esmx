@@ -36,10 +36,6 @@ export function isNonEmptyPlainObject(
     return Object.keys(value as Record<string, any>).length > 0;
 }
 
-export function isESModule(obj: any): boolean {
-    return Boolean(obj?.__esModule) || obj?.[Symbol.toStringTag] === 'Module';
-}
-
 export const removeFromArray = <T>(arr: T[], ele: T) => {
     if (!Array.isArray(arr) || arr.length === 0) return;
     const i = Number.isNaN(ele)

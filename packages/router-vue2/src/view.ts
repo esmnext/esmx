@@ -6,6 +6,10 @@ declare module 'vue/types' {
     }
 }
 
+function isESModule(obj: any): boolean {
+    return Boolean(obj?.__esModule) || obj?.[Symbol.toStringTag] === 'Module';
+}
+
 export const RouterView = defineComponent({
     functional: true,
     render(h, ctx) {
@@ -38,6 +42,12 @@ export const RouterView = defineComponent({
             return h();
         }
 
-        return h(matchRoute.component, data);
+        // 处理 ES 模块格式的组件
+        let componentToRender = matchRoute.component;
+        if (isESModule(componentToRender)) {
+            componentToRender = componentToRender.default || componentToRender;
+        }
+
+        return h(componentToRender, data);
     }
 });
