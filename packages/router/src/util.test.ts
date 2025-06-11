@@ -1,6 +1,5 @@
 import { describe, expect, test } from 'vitest';
 import {
-    isESModule,
     isNonEmptyPlainObject,
     isNotNullish,
     isPlainObject,
@@ -10,58 +9,6 @@ import {
 } from './util';
 
 const AsyncFunction = (async () => {}).constructor;
-
-describe('isESModule', () => {
-    test('should return true for ES module', () => {
-        const esModule = { __esModule: true };
-        expect(isESModule(esModule)).toBe(true);
-    });
-
-    test('should return true for module with Symbol.toStringTag', () => {
-        const module = { [Symbol.toStringTag]: 'Module' };
-        expect(isESModule(module)).toBe(true);
-    });
-
-    test('should return false for non-ES module', () => {
-        const obj = {};
-        expect(isESModule(obj)).toBe(false);
-    });
-
-    test('should handle edge cases', () => {
-        expect(isESModule(null)).toBe(false);
-        expect(isESModule(void 0)).toBe(false);
-
-        // 原始类型
-        expect(isESModule(123)).toBe(false);
-        expect(isESModule('string')).toBe(false);
-        expect(isESModule(true)).toBe(false);
-        expect(isESModule(Symbol('test'))).toBe(false);
-
-        // 包含 __esModule 但值为 falsy 的情况
-        expect(isESModule({ __esModule: false })).toBe(false);
-        expect(isESModule({ __esModule: 0 })).toBe(false);
-        expect(isESModule({ __esModule: '' })).toBe(false);
-        expect(isESModule({ __esModule: null })).toBe(false);
-        expect(isESModule({ __esModule: void 0 })).toBe(false);
-
-        // 包含 Symbol.toStringTag 但值不是 'Module' 的情况
-        expect(isESModule({ [Symbol.toStringTag]: 'Object' })).toBe(false);
-        expect(isESModule({ [Symbol.toStringTag]: 'Array' })).toBe(false);
-        expect(isESModule({ [Symbol.toStringTag]: null })).toBe(false);
-        expect(isESModule({ [Symbol.toStringTag]: void 0 })).toBe(false);
-
-        // 同时包含两个属性的情况
-        expect(
-            isESModule({ __esModule: true, [Symbol.toStringTag]: 'Module' })
-        ).toBe(true);
-        expect(
-            isESModule({ __esModule: false, [Symbol.toStringTag]: 'Module' })
-        ).toBe(true);
-        expect(
-            isESModule({ __esModule: true, [Symbol.toStringTag]: 'Object' })
-        ).toBe(true);
-    });
-});
 
 // 字面量和对象包装是存在区别的：
 // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String#字符串原始值和字符串对象
@@ -821,7 +768,6 @@ describe('Performance Tests', () => {
         for (let i = 0; i < iterations; ++i) {
             isNotNullish(i);
             isPlainObject({ value: i });
-            isESModule({ __esModule: true });
             isValidConfirmHookResult(false);
         }
 

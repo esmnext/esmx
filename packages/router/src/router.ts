@@ -24,12 +24,7 @@ import type {
     RouterOptions,
     RouterParsedOptions
 } from './types';
-import {
-    isESModule,
-    isUrlEqual,
-    isValidConfirmHookResult,
-    removeFromArray
-} from './util';
+import { isUrlEqual, isValidConfirmHookResult, removeFromArray } from './util';
 
 export class Router {
     public readonly options: RouterOptions;
@@ -75,9 +70,7 @@ export class Router {
                     if (!component && typeof asyncComponent === 'function') {
                         try {
                             const result = await asyncComponent();
-                            matched.component = isESModule(result)
-                                ? result.default
-                                : result;
+                            matched.component = result;
                         } catch {
                             throw new Error(
                                 `Async component '${matched.compilePath}' is not a valid component.`
