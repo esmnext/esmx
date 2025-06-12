@@ -3,21 +3,29 @@ import { RouterMode } from './types';
 
 const setIsBrowserTrue = () => {
     if (typeof globalThis !== 'object') return;
-    (globalThis as any).window = {
-        location: {
-            href: 'http://test.com/base/'
+    const mockLocation = new URL('http://test.com/base/');
+    const mockWindow = {
+        get location() {
+            return mockLocation;
         }
     };
-    (globalThis as any).location = window.location;
+    Object.defineProperties(globalThis, {
+        window: {
+            configurable: true,
+            get: () => mockWindow
+        },
+        location: {
+            configurable: true,
+            get: () => mockLocation
+        }
+    });
     vi.resetModules();
 };
 
 const setIsBrowserFalse = () => {
     if (typeof globalThis !== 'object') return;
-    // biome-ignore lint/performance/noDelete:
-    delete (globalThis as any).window;
-    // biome-ignore lint/performance/noDelete:
-    delete (globalThis as any).location;
+    Reflect.deleteProperty(globalThis, 'window');
+    Reflect.deleteProperty(globalThis, 'location');
     vi.resetModules();
 };
 

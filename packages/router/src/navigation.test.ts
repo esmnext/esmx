@@ -565,23 +565,33 @@ describe('Navigation', () => {
                 }
             });
             if (typeof globalThis === 'object') {
-                (globalThis.window as any) = {
+                const mockWindow = {
                     get history() {
                         return mockHistory;
                     },
                     get location() {
                         return mockLocation;
                     },
-                    addEventListener: mockAddEventListener,
-                    removeEventListener: mockRemoveEventListener
+                    get addEventListener() {
+                        return mockAddEventListener;
+                    },
+                    get removeEventListener() {
+                        return mockRemoveEventListener;
+                    }
                 };
-                Object.defineProperty(globalThis, 'location', {
-                    configurable: true,
-                    get: () => mockLocation
-                });
-                Object.defineProperty(globalThis, 'history', {
-                    configurable: true,
-                    get: () => mockHistory
+                Object.defineProperties(globalThis, {
+                    window: {
+                        configurable: true,
+                        get: () => mockWindow
+                    },
+                    history: {
+                        configurable: true,
+                        get: () => mockHistory
+                    },
+                    location: {
+                        configurable: true,
+                        get: () => mockLocation
+                    }
                 });
             } else if (typeof window === 'object') {
                 originalHistory = window.history;
@@ -594,15 +604,9 @@ describe('Navigation', () => {
         });
         afterEach(() => {
             if (typeof globalThis === 'object') {
-                // @ts-ignore
-                // biome-ignore lint/performance/noDelete:
-                delete globalThis.window;
-                // @ts-ignore
-                // biome-ignore lint/performance/noDelete:
-                delete globalThis.location;
-                // @ts-ignore
-                // biome-ignore lint/performance/noDelete:
-                delete globalThis.history;
+                Reflect.deleteProperty(globalThis, 'window');
+                Reflect.deleteProperty(globalThis, 'location');
+                Reflect.deleteProperty(globalThis, 'history');
             } else if (typeof window === 'object') {
                 window.history = originalHistory;
                 window.addEventListener = originalAddEventListener;

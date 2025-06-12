@@ -9,14 +9,20 @@ describe('DEFAULT_LOCATION', () => {
     beforeEach(() => {
         if (typeof globalThis === 'object') {
             mockLocation = { href: '' };
-            (globalThis.window as any) = {
+            const mockWindow = {
                 get location() {
                     return mockLocation;
                 }
             };
-            Object.defineProperty(globalThis, 'location', {
-                configurable: true,
-                get: () => mockLocation
+            Object.defineProperties(globalThis, {
+                window: {
+                    configurable: true,
+                    get: () => mockWindow
+                },
+                location: {
+                    configurable: true,
+                    get: () => mockLocation
+                }
             });
         } else if (typeof window === 'object') {
             originalWindowOpen = window.open;
@@ -25,12 +31,8 @@ describe('DEFAULT_LOCATION', () => {
 
     afterEach(() => {
         if (typeof globalThis === 'object') {
-            // @ts-ignore
-            // biome-ignore lint/performance/noDelete:
-            delete globalThis.window;
-            // @ts-ignore
-            // biome-ignore lint/performance/noDelete:
-            delete globalThis.location;
+            Reflect.deleteProperty(globalThis, 'window');
+            Reflect.deleteProperty(globalThis, 'location');
         } else if (typeof window === 'object') {
             window.open = originalWindowOpen;
         }

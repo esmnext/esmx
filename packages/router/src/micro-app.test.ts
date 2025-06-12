@@ -28,8 +28,21 @@ const setIsBrowserTrue = () => {
         }
     };
 
-    (globalThis as any).document = mockDocument;
-    (globalThis as any).window = { document: mockDocument };
+    const mockWindow = {
+        get document() {
+            return mockDocument;
+        }
+    };
+    Object.defineProperties(globalThis, {
+        window: {
+            configurable: true,
+            get: () => mockWindow
+        },
+        document: {
+            configurable: true,
+            get: () => mockDocument
+        }
+    });
 
     // 模拟 Object.assign
     vi.spyOn(Object, 'assign').mockImplementation((target, ...sources) => {
@@ -48,10 +61,8 @@ const setIsBrowserTrue = () => {
 
 const setIsBrowserFalse = () => {
     if (typeof globalThis !== 'object') return;
-    // biome-ignore lint/performance/noDelete:
-    delete (globalThis as any).document;
-    // biome-ignore lint/performance/noDelete:
-    delete (globalThis as any).window;
+    Reflect.deleteProperty(globalThis, 'window');
+    Reflect.deleteProperty(globalThis, 'document');
 
     // 恢复 Object.assign 模拟
     vi.restoreAllMocks();
