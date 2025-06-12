@@ -299,7 +299,7 @@ importers:
         version: 22.15.18
       '@vitest/coverage-v8':
         specifier: 3.1.3
-        version: 3.1.3(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
+        version: 3.1.3(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
       '@vue/compiler-dom':
         specifier: ^3.5.13
         version: 3.5.14
@@ -314,7 +314,7 @@ importers:
         version: 3.5.0(typescript@5.8.2)(vue-tsc@2.2.10(typescript@5.8.2))(vue@3.5.14(typescript@5.8.2))
       vitest:
         specifier: 3.1.3
-        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
+        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
       vue:
         specifier: ^3.5.13
         version: 3.5.14(typescript@5.8.2)
@@ -360,7 +360,7 @@ importers:
         version: 2.0.4
       '@vitest/coverage-v8':
         specifier: 3.1.3
-        version: 3.1.3(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
+        version: 3.1.3(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
       stylelint:
         specifier: 16.19.1
         version: 16.19.1(typescript@5.8.2)
@@ -372,7 +372,7 @@ importers:
         version: 3.5.0(typescript@5.8.2)(vue-tsc@2.2.10(typescript@5.8.2))(vue@3.5.14(typescript@5.8.2))
       vitest:
         specifier: 3.1.3
-        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
+        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
 
   packages/fetch:
     dependencies:
@@ -403,7 +403,7 @@ importers:
         version: 22.13.10
       '@vitest/coverage-v8':
         specifier: 3.0.8
-        version: 3.0.8(vitest@3.0.8(@types/debug@4.1.12)(@types/node@22.13.10)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
+        version: 3.0.8(vitest@3.0.8(@types/debug@4.1.12)(@types/node@22.13.10)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
       stylelint:
         specifier: 16.15.0
         version: 16.15.0(typescript@5.8.2)
@@ -415,7 +415,7 @@ importers:
         version: 2.0.0(typescript@5.8.2)(vue-tsc@2.2.10(typescript@5.8.2))
       vitest:
         specifier: 3.0.8
-        version: 3.0.8(@types/debug@4.1.12)(@types/node@22.13.10)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
+        version: 3.0.8(@types/debug@4.1.12)(@types/node@22.13.10)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
 
   packages/import:
     dependencies:
@@ -434,7 +434,7 @@ importers:
         version: 22.15.18
       '@vitest/coverage-v8':
         specifier: 3.1.3
-        version: 3.1.3(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
+        version: 3.1.3(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
       stylelint:
         specifier: 16.19.1
         version: 16.19.1(typescript@5.8.2)
@@ -446,7 +446,7 @@ importers:
         version: 3.5.0(typescript@5.8.2)(vue-tsc@2.2.10(typescript@5.8.2))(vue@3.5.14(typescript@5.8.2))
       vitest:
         specifier: 3.1.3
-        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
+        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
 
   packages/lint:
     dependencies:
@@ -480,7 +480,7 @@ importers:
         version: 22.15.18
       '@vitest/coverage-v8':
         specifier: 3.1.3
-        version: 3.1.3(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
+        version: 3.1.3(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
       stylelint:
         specifier: 16.19.1
         version: 16.19.1(typescript@5.8.2)
@@ -492,10 +492,13 @@ importers:
         version: 3.5.0(typescript@5.8.2)(vue-tsc@2.2.10(typescript@5.8.2))(vue@3.5.14(typescript@5.8.2))
       vitest:
         specifier: 3.1.3
-        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
+        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
 
   packages/router:
     dependencies:
+      happy-dom:
+        specifier: ^18.0.1
+        version: 18.0.1
       path-to-regexp:
         specifier: ^6.2.2
         version: 6.3.0
@@ -511,7 +514,7 @@ importers:
         version: 22.15.18
       '@vitest/coverage-v8':
         specifier: 3.1.3
-        version: 3.1.3(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
+        version: 3.1.3(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
       stylelint:
         specifier: 16.19.1
         version: 16.19.1(typescript@5.8.2)
@@ -523,7 +526,7 @@ importers:
         version: 3.5.0(typescript@5.8.2)(vue-tsc@2.2.10(typescript@5.8.2))(vue@3.5.14(typescript@5.8.2))
       vitest:
         specifier: 3.1.3
-        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
+        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
 
   packages/router-vue2:
     dependencies:
@@ -542,7 +545,7 @@ importers:
         version: 22.15.18
       '@vitest/coverage-v8':
         specifier: 3.1.3
-        version: 3.1.3(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
+        version: 3.1.3(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
       stylelint:
         specifier: 16.19.1
         version: 16.19.1(typescript@5.8.2)
@@ -554,7 +557,7 @@ importers:
         version: 3.5.0(typescript@5.8.2)(vue-tsc@2.2.10(typescript@5.8.2))(vue@2.7.16)
       vitest:
         specifier: 3.1.3
-        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
+        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
       vue:
         specifier: ^2.7.16
         version: 2.7.16
@@ -576,7 +579,7 @@ importers:
         version: 22.15.18
       '@vitest/coverage-v8':
         specifier: 3.1.3
-        version: 3.1.3(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
+        version: 3.1.3(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
       '@vue/runtime-core':
         specifier: ^3.4.27
         version: 3.5.14
@@ -594,7 +597,7 @@ importers:
         version: 3.5.0(typescript@5.8.2)(vue-tsc@2.2.10(typescript@5.8.2))(vue@3.5.14(typescript@5.8.2))
       vitest:
         specifier: 3.1.3
-        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
+        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
       vue:
         specifier: ^3.4.27
         version: 3.5.14(typescript@5.8.2)
@@ -670,7 +673,7 @@ importers:
         version: 3.0.4
       '@vitest/coverage-v8':
         specifier: 3.1.3
-        version: 3.1.3(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
+        version: 3.1.3(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
       stylelint:
         specifier: 16.19.1
         version: 16.19.1(typescript@5.8.2)
@@ -682,7 +685,7 @@ importers:
         version: 3.5.0(typescript@5.8.2)(vue-tsc@2.2.10(typescript@5.8.2))(vue@3.5.14(typescript@5.8.2))
       vitest:
         specifier: 3.1.3
-        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
+        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
 
   packages/rspack-module-link-plugin:
     dependencies:
@@ -707,7 +710,7 @@ importers:
         version: 22.15.18
       '@vitest/coverage-v8':
         specifier: 3.1.3
-        version: 3.1.3(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
+        version: 3.1.3(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
       stylelint:
         specifier: 16.19.1
         version: 16.19.1(typescript@5.8.2)
@@ -719,7 +722,7 @@ importers:
         version: 3.5.0(typescript@5.8.2)(vue-tsc@2.2.10(typescript@5.8.2))(vue@3.5.14(typescript@5.8.2))
       vitest:
         specifier: 3.1.3
-        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
+        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
 
   packages/rspack-vue:
     dependencies:
@@ -753,7 +756,7 @@ importers:
         version: 22.15.18
       '@vitest/coverage-v8':
         specifier: 3.1.3
-        version: 3.1.3(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
+        version: 3.1.3(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
       stylelint:
         specifier: 16.19.1
         version: 16.19.1(typescript@5.8.2)
@@ -765,7 +768,7 @@ importers:
         version: 3.5.0(typescript@5.8.2)(vue-tsc@2.2.10(typescript@5.8.2))(vue@3.5.14(typescript@5.8.2))
       vitest:
         specifier: 3.1.3
-        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
+        version: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
 
 packages:
 
@@ -2296,6 +2299,9 @@ packages:
   '@types/webpack-node-externals@3.0.4':
     resolution: {integrity: sha512-8Z3/edqxE3RRlOJwKSgOFxLZRt/i1qFlv/Bi308ZUKo9jh8oGngd9r8GR0ZNKW5AEJq8QNQE3b17CwghTjQ0Uw==}
 
+  '@types/whatwg-mimetype@3.0.2':
+    resolution: {integrity: sha512-c2AKvDT8ToxLIOUlN51gTiHXflsfIFisS4pO7pDPoKouJCESkhZnEy623gwP9laCy5lnLDAw1vAzu2vM2YLOrA==}
+
   '@types/write@2.0.4':
     resolution: {integrity: sha512-eQx3A1xSUNGLvblP/DSTjSYnuLmLZ0Gx6PKl8viN4/VpIsMsLXzcFpOdH6qmA5GXp7WoNkorbhP8dmDBa6eb3A==}
 
@@ -3714,6 +3720,10 @@ packages:
   gray-matter@4.0.3:
     resolution: {integrity: sha512-5v6yZd4JK3eMI3FqqCouswVqwugaA9r4dNZB1wwcmrD02QkV5H0y7XBQW8QwQqEaZY1pM9aqORSORhJRdNK44Q==}
     engines: {node: '>=6.0'}
+
+  happy-dom@18.0.1:
+    resolution: {integrity: sha512-qn+rKOW7KWpVTtgIUi6RVmTBZJSe2k0Db0vh1f7CWrWclkkc7/Q+FrOfkZIb2eiErLyqu5AXEzE7XthO9JVxRA==}
+    engines: {node: '>=20.0.0'}
 
   has-flag@4.0.0:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
@@ -6488,6 +6498,10 @@ packages:
       webpack-cli:
         optional: true
 
+  whatwg-mimetype@3.0.0:
+    resolution: {integrity: sha512-nt+N2dzIutVRxARx1nghPKGv1xHikU7HKdfafKkLNLindmPU/ch3U31NOCGGA/dmPcmb1VlofO0vnKAcsm0o/Q==}
+    engines: {node: '>=12'}
+
   which-typed-array@1.1.19:
     resolution: {integrity: sha512-rEvr90Bck4WZt9HHFC4DJMsjvu7x+r6bImz0/BrbWb7A2djJ8hnZMrWnHo9F8ssv0OMErasDhftrfROTyqSDrw==}
     engines: {node: '>= 0.4'}
@@ -8072,13 +8086,15 @@ snapshots:
       - uglify-js
       - webpack-cli
 
+  '@types/whatwg-mimetype@3.0.2': {}
+
   '@types/write@2.0.4':
     dependencies:
       '@types/node': 20.17.48
 
   '@ungap/structured-clone@1.3.0': {}
 
-  '@vitest/coverage-v8@3.0.8(vitest@3.0.8(@types/debug@4.1.12)(@types/node@22.13.10)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))':
+  '@vitest/coverage-v8@3.0.8(vitest@3.0.8(@types/debug@4.1.12)(@types/node@22.13.10)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 1.0.2
@@ -8092,11 +8108,11 @@ snapshots:
       std-env: 3.9.0
       test-exclude: 7.0.1
       tinyrainbow: 2.0.0
-      vitest: 3.0.8(@types/debug@4.1.12)(@types/node@22.13.10)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
+      vitest: 3.0.8(@types/debug@4.1.12)(@types/node@22.13.10)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@3.1.3(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))':
+  '@vitest/coverage-v8@3.1.3(vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 1.0.2
@@ -8110,7 +8126,7 @@ snapshots:
       std-env: 3.9.0
       test-exclude: 7.0.1
       tinyrainbow: 2.0.0
-      vitest: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
+      vitest: 3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2)
     transitivePeerDependencies:
       - supports-color
 
@@ -9674,6 +9690,12 @@ snapshots:
       kind-of: 6.0.3
       section-matter: 1.0.0
       strip-bom-string: 1.0.0
+
+  happy-dom@18.0.1:
+    dependencies:
+      '@types/node': 20.17.48
+      '@types/whatwg-mimetype': 3.0.2
+      whatwg-mimetype: 3.0.0
 
   has-flag@4.0.0: {}
 
@@ -12961,7 +12983,7 @@ snapshots:
       terser: 5.39.2
       yaml: 2.4.2
 
-  vitest@3.0.8(@types/debug@4.1.12)(@types/node@22.13.10)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2):
+  vitest@3.0.8(@types/debug@4.1.12)(@types/node@22.13.10)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2):
     dependencies:
       '@vitest/expect': 3.0.8
       '@vitest/mocker': 3.0.8(vite@6.3.5(@types/node@22.13.10)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
@@ -12986,6 +13008,7 @@ snapshots:
     optionalDependencies:
       '@types/debug': 4.1.12
       '@types/node': 22.13.10
+      happy-dom: 18.0.1
     transitivePeerDependencies:
       - jiti
       - less
@@ -13000,7 +13023,7 @@ snapshots:
       - tsx
       - yaml
 
-  vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2):
+  vitest@3.1.3(@types/debug@4.1.12)(@types/node@22.15.18)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2):
     dependencies:
       '@vitest/expect': 3.1.3
       '@vitest/mocker': 3.1.3(vite@6.3.5(@types/node@22.15.18)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.0)(terser@5.39.2)(yaml@2.4.2))
@@ -13026,6 +13049,7 @@ snapshots:
     optionalDependencies:
       '@types/debug': 4.1.12
       '@types/node': 22.15.18
+      happy-dom: 18.0.1
     transitivePeerDependencies:
       - jiti
       - less
@@ -13210,6 +13234,8 @@ snapshots:
       - '@swc/core'
       - esbuild
       - uglify-js
+
+  whatwg-mimetype@3.0.0: {}
 
   which-typed-array@1.1.19:
     dependencies:
