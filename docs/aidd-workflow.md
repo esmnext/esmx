@@ -6,7 +6,7 @@
 graph TD
     A["🎯 AI 创建工单<br/>读取 .ai/standards/issue.md"] --> A1["📝 创建工单文件<br/>保存到 .ai/issues/"]
     
-    A1 --> B["🤖 AI 需求分析<br/>读取 .ai/standards/requirements.md"]
+    A1 --> B["🤖 AI 需求分析<br/>读取 .ai/standards/requirements-analysis.md"]
     
     B --> B1["📝 更新工单进度<br/>需求分析完成"]
     
@@ -37,11 +37,11 @@ graph TD
     H1 --> I{"🔍 质量达标?"}
     
     %% 主流程 - 垂直对齐
-    I -->|✅| K["👨‍💻 人类审查<br/>读取 .ai/standards/review.md"]
+    I -->|✅| K["👨‍💻 人类审查<br/>"]
     K --> L{"🤔 质量达标？"}
     L -->|✅| K1["📝 更新工单进度<br/>人类审核完成"]
     K1 --> O["📊 AI 输出完整报告<br/>读取 .ai/standards/report.md"]
-    O --> P["👨‍💻 人类审查<br/>读取 .ai/standards/review.md"]
+    O --> P["👨‍💻 人类审查<br/>"]
     P --> Q{"📋 质量达标?"}
     Q -->|✅ 完整| R["🚀 AI 提交PR<br/>读取 .ai/standards/pull-request.md"]
     
@@ -91,7 +91,7 @@ graph TB
     
     subgraph "📖 项目规范层"
         F1["工单规范<br/>• .ai/standards/issue.md"]
-        F2["需求分析规范<br/>• .ai/standards/requirements.md"]
+        F2["需求分析规范<br/>• .ai/standards/requirements-analysis.md"]
         F3["架构规范<br/>• .ai/architecture/"]
         F4["分支管理规范<br/>• .ai/standards/branch.md"]
         F5["测试标准<br/>• .ai/standards/testing.md"]
@@ -193,7 +193,7 @@ graph TB
 └── .ai/                             # AI 规范文件根目录
     ├── standards/                   # 📋 规范目录
     │   ├── issue.md                 # 工单创建
-    │   ├── requirements.md          # 需求分析
+    │   ├── requirements-analysis.md # 需求分析
     │   ├── branch.md                # 分支管理
     │   ├── testing.md               # 测试编写
     │   ├── coding.md                # 代码编写

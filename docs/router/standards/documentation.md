@@ -1,0 +1,167 @@
+# 文档编写规范
+
+## 文档编写规范
+文档编写必须遵循以下标准流程：
+
+### Router文档结构大纲
+
+#### 主要文档位置
+```
+packages/router/
+├── README.md              # 英文主文档
+└── README_CN.md           # 中文主文档
+
+examples/docs/src/
+├── en/router/             # 英文详细文档
+│   ├── getting-started.md # 快速开始
+│   ├── basic-usage.md     # 基础用法
+│   ├── advanced.md        # 高级特性
+│   ├── api/              # API参考
+│   │   ├── router.md     # Router类
+│   │   ├── route.md      # Route类
+│   │   └── navigation.md # Navigation类
+│   ├── guides/           # 使用指南
+│   │   ├── routing.md    # 路由配置
+│   │   ├── guards.md     # 路由守卫
+│   │   └── history.md    # 历史记录
+│   └── examples/         # 示例代码
+│       ├── basic.md      # 基础示例
+│       └── advanced.md   # 高级示例
+└── zh/router/            # 中文详细文档 (与英文保持一致结构)
+    ├── getting-started.md
+    ├── basic-usage.md
+    ├── advanced.md
+    ├── api/
+    │   ├── router.md
+    │   ├── route.md
+    │   └── navigation.md
+    ├── guides/
+    │   ├── routing.md
+    │   ├── guards.md
+    │   └── history.md
+    └── examples/
+        ├── basic.md
+        └── advanced.md
+```
+
+#### 文档类型定义
+##### 主文档 (README)
+- **目标**: 项目概览和快速入门
+- **格式**: Markdown
+- **位置**: packages/router/README.md (英文) / README_CN.md (中文)
+- **内容**: 安装、基础用法、主要特性
+
+##### API文档
+- **目标**: 详细的接口说明
+- **格式**: JSDoc注释 + Markdown
+- **位置**: examples/docs/src/{lang}/router/api/
+- **内容**: 类、方法、参数、返回值、示例
+
+##### 使用指南
+- **目标**: 功能使用教程
+- **格式**: Markdown + 代码示例
+- **位置**: examples/docs/src/{lang}/router/guides/
+- **内容**: 具体功能的使用方法和最佳实践
+
+##### 示例文档
+- **目标**: 可运行的代码示例
+- **格式**: Markdown + 完整代码
+- **位置**: examples/docs/src/{lang}/router/examples/
+- **内容**: 典型使用场景的完整示例
+
+### 编写流程
+1. **分析文档需求**
+   - 确定目标读者和使用场景
+   - 明确文档类型和覆盖范围
+
+2. **设计文档结构**
+   - 建立清晰的信息层次
+   - 规划章节和内容组织
+
+3. **编写文档内容**
+   - 使用简洁明确的语言
+   - 提供完整的代码示例
+   - 确保内容准确性和时效性
+
+### 内容标准
+- **准确性**: 与代码实现保持同步
+- **完整性**: 覆盖主要功能和边界情况  
+- **可读性**: 逻辑清晰，语言简洁
+- **实用性**: 提供可运行的示例代码
+- **维护性**: 结构化组织，易于更新
+
+### 格式规范
+#### 代码示例
+```typescript
+// 提供完整可运行的示例
+const router = new Router({
+  routes: [
+    { path: '/', component: 'Home' }
+  ]
+});
+
+// 展示实际使用效果
+await router.push('/user/123');
+```
+
+#### 文档结构
+```markdown
+# 功能标题
+
+## 快速开始
+[最简单的使用方式]
+
+## API参考
+### 方法名称
+- **参数**: 类型和说明
+- **返回值**: 类型和说明
+- **示例**: 完整代码示例
+
+## 进阶用法
+[复杂场景和配置]
+```
+
+### 维护要求
+- 代码变更时同步更新文档
+- 定期检查文档的准确性
+- 保持示例代码的可执行性
+- 及时修复文档中的错误
+
+### 中英文一致性要求
+- **结构一致**: 中文和英文文档必须保持相同的文件结构
+- **内容对应**: 每个英文文档都必须有对应的中文版本
+- **同步更新**: 更新英文文档时必须同步更新中文文档
+- **版本检查**: 定期检查中英文文档的版本一致性
+- **验证清单**:
+  ```
+  □ 文件数量一致
+  □ 文件名一致 
+  □ 章节结构一致
+  □ 代码示例一致
+  □ API说明完整性一致
+  ```
+
+## 输出报告规范
+
+```markdown
+已完成 [功能名称] 文档编写：
+- 中文文档：[具体文件路径]
+- 英文文档：[具体文件路径]  
+- 文档类型：[API文档/使用指南/示例文档]
+- 代码示例：[数量] 个
+- 一致性检查：✅ 通过 / ❌ 需要修复
+```
+
+### 输出示例
+```markdown
+已完成 Router.push 文档编写：
+- 中文文档：examples/docs/src/zh/router/api/router.md
+- 英文文档：examples/docs/src/en/router/api/router.md
+- 文档类型：API文档
+- 代码示例：5 个
+- 一致性检查：✅ 通过
+```
+
+---
+
+*文档是代码的重要组成部分，必须与功能实现同步维护。* 
