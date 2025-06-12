@@ -461,7 +461,7 @@ describe('createRouteTask', () => {
                 task: secondTask
             },
             {
-                name: RouteTaskType.afterEach,
+                name: RouteTaskType.beforeEnter,
                 task: thirdTask
             }
         ];
@@ -517,7 +517,7 @@ describe('createRouteTask', () => {
                 task: secondTask
             },
             {
-                name: RouteTaskType.afterEach,
+                name: RouteTaskType.beforeEnter,
                 task: thirdTask
             }
         ];
@@ -673,7 +673,7 @@ describe('Task cancellation with getCurrentTaskId', () => {
                 task: secondTask
             },
             {
-                name: RouteTaskType.afterEach,
+                name: RouteTaskType.beforeEnter,
                 task: thirdTask
             }
         ];

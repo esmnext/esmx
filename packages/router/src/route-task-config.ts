@@ -52,8 +52,47 @@ export const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
         RouteTaskType.asyncComponent,
         RouteTaskType.restartApp
     ],
-    [RouteType.back]: [RouteTaskType.popstate],
-    [RouteType.go]: [RouteTaskType.popstate],
-    [RouteType.forward]: [RouteTaskType.popstate],
+    [RouteType.back]: [
+        RouteTaskType.location,
+        RouteTaskType.env,
+        RouteTaskType.beforeLeave,
+        RouteTaskType.beforeEach,
+        RouteTaskType.beforeUpdate,
+        RouteTaskType.beforeEnter,
+        RouteTaskType.asyncComponent,
+        RouteTaskType.popstate
+    ],
+    [RouteType.go]: [
+        RouteTaskType.location,
+        RouteTaskType.env,
+        RouteTaskType.beforeLeave,
+        RouteTaskType.beforeEach,
+        RouteTaskType.beforeUpdate,
+        RouteTaskType.beforeEnter,
+        RouteTaskType.asyncComponent,
+        RouteTaskType.popstate
+    ],
+    [RouteType.forward]: [
+        RouteTaskType.location,
+        RouteTaskType.env,
+        RouteTaskType.beforeLeave,
+        RouteTaskType.beforeEach,
+        RouteTaskType.beforeUpdate,
+        RouteTaskType.beforeEnter,
+        RouteTaskType.asyncComponent,
+        RouteTaskType.popstate
+    ],
+    [RouteType.none]: []
+};
+
+export const AFTER_TASKS: Record<RouteType, RouteTaskType[]> = {
+    [RouteType.push]: [],
+    [RouteType.replace]: [],
+    [RouteType.pushWindow]: [],
+    [RouteType.replaceWindow]: [],
+    [RouteType.restartApp]: [],
+    [RouteType.back]: [],
+    [RouteType.go]: [],
+    [RouteType.forward]: [],
     [RouteType.none]: []
 };

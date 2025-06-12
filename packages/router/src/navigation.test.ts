@@ -436,6 +436,7 @@ describe('Navigation', () => {
         isPush: true,
         req: null,
         res: null,
+        context: {},
         url: new URL('http://test.com' + path),
         path,
         fullPath: path,
