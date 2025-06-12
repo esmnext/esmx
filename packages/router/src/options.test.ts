@@ -2,7 +2,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { RouterMode } from './types';
 
 const setIsBrowserTrue = () => {
-    if (typeof globalThis !== 'object') return;
     vi.stubGlobal('window', {
         location: {
             href: 'http://test.com/base/'
@@ -16,7 +15,6 @@ const setIsBrowserTrue = () => {
 };
 
 const setIsBrowserFalse = () => {
-    if (typeof globalThis !== 'object') return;
     vi.unstubAllGlobals();
     vi.resetModules();
 };

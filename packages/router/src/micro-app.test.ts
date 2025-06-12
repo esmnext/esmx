@@ -14,8 +14,6 @@ import { RouteStatus, RouteType, RouterMode } from './types';
 
 // 模拟浏览器环境
 const setIsBrowserTrue = () => {
-    if (typeof globalThis !== 'object') return;
-
     // 模拟 DOM 环境
     const mockDocument = {
         getElementById: vi.fn(),
@@ -49,7 +47,6 @@ const setIsBrowserTrue = () => {
 };
 
 const setIsBrowserFalse = () => {
-    if (typeof globalThis !== 'object') return;
     vi.unstubAllGlobals();
 
     // 恢复 Object.assign 模拟

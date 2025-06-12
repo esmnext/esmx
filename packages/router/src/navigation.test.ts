@@ -595,10 +595,7 @@ describe('Navigation', () => {
 
     // history 模式下的 Navigation 测试
     describe('in history mode', () => {
-        let originalHistory: any;
         let mockHistory: any;
-        let originalAddEventListener: any;
-        let originalRemoveEventListener: any;
         let popstateHandler: any;
 
         beforeEach(() => {
@@ -628,36 +625,21 @@ describe('Navigation', () => {
                     popstateHandler = null;
                 }
             });
-            if (typeof globalThis === 'object') {
-                vi.stubGlobal('window', {
-                    get history() {
-                        return mockHistory;
-                    },
-                    get location() {
-                        return mockLocation;
-                    },
-                    addEventListener: mockAddEventListener,
-                    removeEventListener: mockRemoveEventListener
-                });
-                vi.stubGlobal('location', mockLocation);
-                vi.stubGlobal('history', mockHistory);
-            } else if (typeof window === 'object') {
-                originalHistory = window.history;
-                originalAddEventListener = window.addEventListener;
-                originalRemoveEventListener = window.removeEventListener;
-                window.history = mockHistory;
-                window.addEventListener = mockAddEventListener;
-                window.removeEventListener = mockRemoveEventListener;
-            }
+            vi.stubGlobal('window', {
+                get history() {
+                    return mockHistory;
+                },
+                get location() {
+                    return mockLocation;
+                },
+                addEventListener: mockAddEventListener,
+                removeEventListener: mockRemoveEventListener
+            });
+            vi.stubGlobal('location', mockLocation);
+            vi.stubGlobal('history', mockHistory);
         });
         afterEach(() => {
-            if (typeof globalThis === 'object') {
-                vi.unstubAllGlobals();
-            } else if (typeof window === 'object') {
-                window.history = originalHistory;
-                window.addEventListener = originalAddEventListener;
-                window.removeEventListener = originalRemoveEventListener;
-            }
+            vi.unstubAllGlobals();
             popstateHandler = null;
             mockHistory = null;
         });
@@ -878,59 +860,48 @@ describe('Navigation', () => {
                 removeEventListener: vi.fn()
             };
 
-            // 保存原始值
-            const originalWindow = globalThis.window;
-            const originalHistory = globalThis.history;
-            const originalLocation = globalThis.location;
-
-            try {
-                // 设置模拟对象
-                (globalThis as any).window = mockWindow;
-                (globalThis as any).history = mockHistory;
-                (globalThis as any).location = mockLocation;
-
-                let capturedCallback: any = null;
-                mockWindow.addEventListener.mockImplementation(
-                    (event, callback) => {
-                        if (event === 'popstate') {
-                            capturedCallback = callback;
-                        }
+            let capturedCallback: any = null;
+            mockWindow.addEventListener.mockImplementation(
+                (event, callback) => {
+                    if (event === 'popstate') {
+                        capturedCallback = callback;
                     }
-                );
-
-                const callbackData: Array<{ url: string; state: any }> = [];
-
-                // 创建一个新的 Navigation 实例来测试 history 模式
-                const nav = new Navigation(
-                    { mode: RouterMode.history } as any,
-                    (url: string, state: any) => {
-                        callbackData.push({ url, state });
-                    }
-                );
-
-                // 验证 addEventListener 被调用
-                expect(mockWindow.addEventListener).toHaveBeenCalledWith(
-                    'popstate',
-                    expect.any(Function)
-                );
-
-                // 模拟 popstate 事件触发
-                if (capturedCallback) {
-                    capturedCallback(); // 这里会触发 line 160: history.state || {}
                 }
+            );
 
-                // 验证回调被正确调用，且 null state 被转换为 {}
-                expect(callbackData.length).toBe(1);
-                expect(callbackData[0].url).toBe('http://test.com/page');
-                expect(callbackData[0].state).toEqual({}); // history.state 为 null 时应该使用 {}
+            // 使用 vi.stubGlobal 设置模拟对象
+            vi.stubGlobal('window', mockWindow);
+            vi.stubGlobal('history', mockHistory);
+            vi.stubGlobal('location', mockLocation);
 
-                nav.destroy();
-            } finally {
-                // 恢复原始值
-                (globalThis as any).window = originalWindow;
-                (globalThis as any).history = originalHistory;
-                (globalThis as any).location = originalLocation;
+            const callbackData: Array<{ url: string; state: any }> = [];
+
+            // 创建一个新的 Navigation 实例来测试 history 模式
+            const nav = new Navigation(
+                { mode: RouterMode.history } as any,
+                (url: string, state: any) => {
+                    callbackData.push({ url, state });
+                }
+            );
+
+            // 验证 addEventListener 被调用
+            expect(mockWindow.addEventListener).toHaveBeenCalledWith(
+                'popstate',
+                expect.any(Function)
+            );
+
+            // 模拟 popstate 事件触发
+            if (capturedCallback) {
+                capturedCallback(); // 这里会触发 line 160: history.state || {}
             }
+
+            // 验证回调被正确调用，且 null state 被转换为 {}
+            expect(callbackData.length).toBe(1);
+            expect(callbackData[0].url).toBe('http://test.com/page');
+            expect(callbackData[0].state).toEqual({}); // history.state 为 null 时应该使用 {}
+
+            nav.destroy();
+            vi.unstubAllGlobals();
         });
     });
 });
