@@ -53,7 +53,9 @@ graph TD
     
     R --> R1["📝 更新工单进度<br/>PR提交完成"]
     
-    R1 --> S["✨ 任务完成<br/>工单状态更新为已完成"]
+    R1 --> U{"🔍 CI/CD"}
+    U -->|✅| S["✨ 任务完成<br/>工单状态更新为已完成"]
+    U -->|❌| J
     
     %% 样式定义
     classDef aiProcess fill:#e1f5fe,stroke:#01579b,stroke-width:2px
@@ -64,7 +66,7 @@ graph TD
     
     class A,A1,B,B1,C,C1,D,D1,E,E1,F,F1,G,G1,H,H1,J,K1,O,R,R1 aiProcess
     class K,P humanProcess
-    class I,L,Q decision
+    class I,L,Q,U decision
     class S output
 ```
 
@@ -98,9 +100,8 @@ graph TB
         F6["编码标准<br/>• .ai/standards/coding.md"]
         F7["文档标准<br/>• .ai/standards/documentation.md"]
         F8["质量标准<br/>• .ai/standards/quality.md"]
-        F9["审查标准<br/>• .ai/standards/review.md"]
+        F9["报告模板<br/>• .ai/standards/report.md"]
         F10["PR规范<br/>• .ai/standards/pull-request.md"]
-        F11["报告模板<br/>• .ai/standards/report.md"]
     end
     
     subgraph "🔍 质量保证层"
@@ -144,9 +145,8 @@ graph TB
     F6 --> B5
     F7 --> B6
     F8 --> B7
-    F9 --> D1
+    F9 --> B1
     F10 --> B1
-    F11 --> B1
     
     %% 质量检查
     B4 --> C2
@@ -180,7 +180,7 @@ graph TB
     
     class A1,A2,A3,A4 input
     class B1,B2,B3,B4,B5,B6,B7 ai
-    class F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11 specification
+    class F1,F2,F3,F4,F5,F6,F7,F8,F9,F10 specification
     class C1,C2,C3,C4 quality
     class D1,D2,D3 human
     class E1,E2,E3 monitor
@@ -199,7 +199,6 @@ graph TB
     │   ├── coding.md                # 代码编写
     │   ├── documentation.md         # 文档编写
     │   ├── quality.md               # 质量检测
-    │   ├── review.md                # 审查检查
     │   ├── pull-request.md          # PR 提交
     │   └── report.md                # 报告格式
     ├── architecture/                # 🏗️ 架构文档目录
