@@ -2,7 +2,7 @@ import { LAYER_ID } from './increment-id';
 import { MicroApp } from './micro-app';
 import { Navigation } from './navigation';
 import { parsedOptions } from './options';
-import { createRoute } from './route';
+import { Route } from './route';
 import {
     type RouteTask,
     RouteTaskController,
@@ -12,7 +12,6 @@ import {
 import { BEFORE_TASKS } from './route-task-config';
 import { RouteStatus, RouteType, RouterMode } from './types';
 import type {
-    Route,
     RouteConfirmHook,
     RouteHandleHook,
     RouteLocationRaw,
@@ -163,9 +162,11 @@ export class Router {
                 this.microApp._update(this);
                 // 变化时执行 push，未变化执行 replace
                 if (!isUrlEqual(to.url, from?.url)) {
-                    to.state = this.navigation.push(to);
+                    const newState = this.navigation.push(to);
+                    to.mergeState(newState);
                 } else {
-                    to.state = this.navigation.replace(to);
+                    const newState = this.navigation.replace(to);
+                    to.mergeState(newState);
                 }
             };
         },
@@ -174,7 +175,8 @@ export class Router {
                 this._route = to;
                 this.microApp._update(this);
                 // 始终执行替换
-                to.state = this.navigation.replace(to);
+                const newState = this.navigation.replace(to);
+                to.mergeState(newState);
             };
         },
         [RouteTaskType.popstate]: async () => {
@@ -183,7 +185,8 @@ export class Router {
                 this.microApp._update(this);
                 // 有变化时执行 replace
                 if (!isUrlEqual(to.url, from?.url)) {
-                    to.state = this.navigation.replace(to);
+                    const newState = this.navigation.replace(to);
+                    to.mergeState(newState);
                 }
             };
         },
@@ -191,7 +194,8 @@ export class Router {
             return async (to, from) => {
                 this._route = to;
                 this.microApp._update(this, true);
-                to.state = this.navigation.replace(to);
+                const newState = this.navigation.replace(to);
+                to.mergeState(newState);
             };
         },
         [RouteTaskType.pushWindow]: async () => {
@@ -334,12 +338,12 @@ export class Router {
      * ```
      */
     public resolve(toRaw: RouteLocationRaw): Route {
-        return createRoute(
-            this.parsedOptions,
-            RouteType.none,
+        return new Route({
+            options: this.parsedOptions,
+            toType: RouteType.none,
             toRaw,
-            this._route?.url ?? null
-        );
+            from: this._route?.url ?? null
+        });
     }
 
     /**
@@ -487,7 +491,7 @@ export class Router {
         const { _tasks, parsedOptions: options, _route: from } = this;
         const to = await this._runTask(
             BEFORE_TASKS,
-            createRoute(options, toType, toRaw, from?.url ?? null),
+            new Route({ options, toType, toRaw, from: from?.url ?? null }),
             from
         );
         if (typeof to.handle === 'function') {

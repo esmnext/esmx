@@ -45,12 +45,12 @@ export class RouterVuePlugin {
                         return;
                     }
                     const afterEach = function (this: RouterContext) {
-                        Object.assign(this.route, router.route);
+                        this.router.route.syncTo(this.route);
                     };
 
                     const ctx: RouterContext = {
                         router,
-                        route: reactive(router.route),
+                        route: reactive(router.route.clone()) as Route,
                         afterEach,
                         removeAfterEach: () => {} // 将被重新赋值
                     };

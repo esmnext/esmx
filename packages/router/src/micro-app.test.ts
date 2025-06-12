@@ -1,14 +1,16 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MicroApp } from './micro-app';
+import { parsedOptions } from './options';
+import { Route } from './route';
 import type { Router } from './router';
 import type {
-    Route,
     RouteParsedConfig,
     RouterMicroAppCallback,
     RouterMicroAppOptions,
+    RouterOptions,
     RouterParsedOptions
 } from './types';
-import { RouteStatus, RouteType } from './types';
+import { RouteStatus, RouteType, RouterMode } from './types';
 
 // 模拟浏览器环境
 const setIsBrowserTrue = () => {
@@ -28,8 +30,8 @@ const setIsBrowserTrue = () => {
         }
     };
 
-    (globalThis as any).document = mockDocument;
-    (globalThis as any).window = { document: mockDocument };
+    vi.stubGlobal('document', mockDocument);
+    vi.stubGlobal('window', { document: mockDocument });
 
     // 模拟 Object.assign
     vi.spyOn(Object, 'assign').mockImplementation((target, ...sources) => {
@@ -48,10 +50,7 @@ const setIsBrowserTrue = () => {
 
 const setIsBrowserFalse = () => {
     if (typeof globalThis !== 'object') return;
-    // biome-ignore lint/performance/noDelete:
-    delete (globalThis as any).document;
-    // biome-ignore lint/performance/noDelete:
-    delete (globalThis as any).window;
+    vi.unstubAllGlobals();
 
     // 恢复 Object.assign 模拟
     vi.restoreAllMocks();
@@ -81,43 +80,48 @@ const createMockRouter = (
         parsedOptions?: Partial<RouterParsedOptions>;
     } = {}
 ): Router => {
-    // 处理匹配结果
-    let matched = [createMockParsedConfig('test-app')];
-    if (overrides.matched) {
-        matched = overrides.matched.map((item) =>
-            createMockParsedConfig(item.app || 'test-app')
-        );
-    }
-
-    const mockRoute = {
-        type: RouteType.push,
-        isPush: true,
+    // 创建基础的路由选项
+    const baseOptions: RouterOptions = {
+        id: overrides.id || 'test-router',
+        context: {},
+        routes: [],
+        mode: RouterMode.abstract,
+        base: new URL('http://test.com'),
+        env: 'test',
         req: null,
         res: null,
-        context: {},
-        url: new URL('http://test.com/test'),
-        path: '/test',
-        fullPath: '/test',
-        params: {},
-        query: {},
-        queryArray: {},
-        meta: {},
-        matched,
-        config: null,
-        state: {},
-        status: RouteStatus.success,
-        keepScrollPosition: false,
-        handle: null,
-        handleResult: null
-    } as Route;
-
-    const mockParsedOptions = {
+        apps: overrides.options?.apps || {},
+        normalizeURL: (url: URL) => url,
+        location: () => {},
         rootStyle: false,
-        id: 'test-router',
-        base: new URL('http://test.com'),
-        matcher: vi.fn(),
+        layer: null,
+        onBackNoResponse: () => {}
+    };
+
+    // 创建解析后的选项，如果需要自定义匹配结果，修改 matcher
+    const mockParsedOptions = {
+        ...parsedOptions(baseOptions),
         ...overrides.parsedOptions
-    } as RouterParsedOptions;
+    };
+
+    // 如果需要自定义匹配结果，创建自定义 matcher
+    if (overrides.matched) {
+        const customMatched = overrides.matched.map((item) =>
+            createMockParsedConfig(item.app || 'test-app')
+        );
+
+        mockParsedOptions.matcher = () => ({
+            matches: customMatched,
+            params: {}
+        });
+    }
+
+    // 使用真实的 Route 构造函数创建路由对象
+    const mockRoute = new Route({
+        options: mockParsedOptions,
+        toType: RouteType.push,
+        toRaw: '/test'
+    });
 
     return {
         id: overrides.id || 'test-router',
@@ -674,11 +678,17 @@ describe('MicroApp', () => {
             document.getElementById = vi.fn().mockReturnValue(null);
             document.createElement = vi.fn().mockReturnValue(mockElement);
 
+            // 为了避免其他地方的 Object.assign 调用影响测试，我们在调用前清除 mock
+            vi.clearAllMocks();
+
             const router = createMockRouter({
                 matched: [{ app: 'test-app' }],
                 options: { apps: { 'test-app': mockFactory } },
                 parsedOptions: { rootStyle: false }
             });
+
+            // 在 _update 调用前再次清除，确保只检测 _update 内部的调用
+            vi.clearAllMocks();
 
             microApp._update(router);
 

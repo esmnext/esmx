@@ -9,7 +9,9 @@ import {
     vi
 } from 'vitest';
 import { MemoryHistory, Navigation } from './navigation';
-import type { Route } from './types';
+import { parsedOptions } from './options';
+import { Route } from './route';
+import type { RouterOptions } from './types';
 import { RouteStatus, RouteType, RouterMode } from './types';
 
 const sleep = (ms?: number) => new Promise((s) => setTimeout(s, ms));
@@ -430,43 +432,69 @@ describe.concurrent('subscribeMemory', () => {
 });
 
 describe('Navigation', () => {
-    // 构造一个最小 Route 对象，满足类型要求
-    const createRoute = (path: string, state?: any): Route => ({
-        type: RouteType.push,
-        isPush: true,
-        req: null,
-        res: null,
-        context: {},
-        url: new URL('http://test.com' + path),
-        path,
-        fullPath: path,
-        params: {},
-        query: {},
-        queryArray: {},
-        meta: {},
-        matched: [],
-        config: null,
-        state: state ?? {},
-        status: RouteStatus.success,
-        keepScrollPosition: false,
-        handle: null,
-        handleResult: null
-    });
+    // 创建测试用的路由选项
+    const createTestOptions = () => {
+        const baseOptions: RouterOptions = {
+            id: 'test-router',
+            context: {},
+            routes: [],
+            mode: RouterMode.abstract,
+            base: new URL('http://test.com'),
+            env: 'test',
+            req: null,
+            res: null,
+            apps: {},
+            normalizeURL: (url: URL) => url,
+            location: () => {},
+            rootStyle: false,
+            layer: null,
+            onBackNoResponse: () => {}
+        };
+        return parsedOptions(baseOptions);
+    };
 
     test('should push and replace state correctly', () => {
         const nav = new Navigation({ mode: RouterMode.abstract } as any);
-        const state1 = nav.push(createRoute('/foo', { a: 1 }));
+        const route1 = new Route({
+            options: createTestOptions(),
+            toType: RouteType.push,
+            toRaw: { path: '/foo', state: { a: 1 } }
+        });
+        const state1 = nav.push(route1);
         assert.deepEqual(state1.a, 1);
-        const state2 = nav.replace(createRoute('/bar', { b: 2 }));
+        const route2 = new Route({
+            options: createTestOptions(),
+            toType: RouteType.push,
+            toRaw: { path: '/bar', state: { b: 2 } }
+        });
+        const state2 = nav.replace(route2);
         assert.deepEqual(state2.b, 2);
         nav.destroy();
     });
 
     test('should resolve go/back/forward with correct url and state', async () => {
         const nav = new Navigation({ mode: RouterMode.abstract } as any);
-        nav.push(createRoute('/a', { a: 1 }));
-        nav.push(createRoute('/b', { b: 2 }));
-        nav.push(createRoute('/c', { c: 3 }));
+        nav.push(
+            new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/a', state: { a: 1 } }
+            })
+        );
+        nav.push(
+            new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/b', state: { b: 2 } }
+            })
+        );
+        nav.push(
+            new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/c', state: { c: 3 } }
+            })
+        );
         // go(-2) 回到 /a
         const res1 = await nav.go(-2);
         assert.equal(res1?.url, '/a');
@@ -488,8 +516,20 @@ describe('Navigation', () => {
             { mode: RouterMode.abstract } as any,
             (url, state) => updates.push({ url, state })
         );
-        nav.push(createRoute('/a', { a: 1 }));
-        nav.push(createRoute('/b', { b: 2 }));
+        nav.push(
+            new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/a', state: { a: 1 } }
+            })
+        );
+        nav.push(
+            new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/b', state: { b: 2 } }
+            })
+        );
         // await nav.go(-1);
         // 模拟浏览器的后退操作
         ((nav as any)._history as MemoryHistory).back();
@@ -501,8 +541,20 @@ describe('Navigation', () => {
 
     test('should resolve null if go is called while pending', async () => {
         const nav = new Navigation({ mode: RouterMode.abstract } as any);
-        nav.push(createRoute('/a'));
-        nav.push(createRoute('/b'));
+        nav.push(
+            new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/a', state: { a: 1 } }
+            })
+        );
+        nav.push(
+            new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/b', state: { b: 2 } }
+            })
+        );
 
         const p1 = nav.go(-1);
         const p2 = nav.go(1); // 第二次 go 应直接返回 null
@@ -518,8 +570,20 @@ describe('Navigation', () => {
             { mode: RouterMode.abstract } as any,
             (url, state) => updates.push({ url, state })
         );
-        nav.push(createRoute('/a'));
-        nav.push(createRoute('/b'));
+        nav.push(
+            new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/a', state: { a: 1 } }
+            })
+        );
+        nav.push(
+            new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/b', state: { b: 2 } }
+            })
+        );
         nav.destroy();
         // destroy 后再次 go 不应抛错
         nav.go(-1);
@@ -565,7 +629,7 @@ describe('Navigation', () => {
                 }
             });
             if (typeof globalThis === 'object') {
-                (globalThis.window as any) = {
+                vi.stubGlobal('window', {
                     get history() {
                         return mockHistory;
                     },
@@ -574,15 +638,9 @@ describe('Navigation', () => {
                     },
                     addEventListener: mockAddEventListener,
                     removeEventListener: mockRemoveEventListener
-                };
-                Object.defineProperty(globalThis, 'location', {
-                    configurable: true,
-                    get: () => mockLocation
                 });
-                Object.defineProperty(globalThis, 'history', {
-                    configurable: true,
-                    get: () => mockHistory
-                });
+                vi.stubGlobal('location', mockLocation);
+                vi.stubGlobal('history', mockHistory);
             } else if (typeof window === 'object') {
                 originalHistory = window.history;
                 originalAddEventListener = window.addEventListener;
@@ -594,15 +652,7 @@ describe('Navigation', () => {
         });
         afterEach(() => {
             if (typeof globalThis === 'object') {
-                // @ts-ignore
-                // biome-ignore lint/performance/noDelete:
-                delete globalThis.window;
-                // @ts-ignore
-                // biome-ignore lint/performance/noDelete:
-                delete globalThis.location;
-                // @ts-ignore
-                // biome-ignore lint/performance/noDelete:
-                delete globalThis.history;
+                vi.unstubAllGlobals();
             } else if (typeof window === 'object') {
                 window.history = originalHistory;
                 window.addEventListener = originalAddEventListener;
@@ -616,7 +666,12 @@ describe('Navigation', () => {
             const nav = new Navigation({ mode: RouterMode.history } as any);
             // console.log('new', (nav as any)._history._entries, (nav as any)._history._index);
             // push
-            const state1 = nav.push(createRoute('/foo', { a: 1 }));
+            const route1 = new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/foo', state: { a: 1 } }
+            });
+            const state1 = nav.push(route1);
             // console.log('push /foo', (nav as any)._history._entries, (nav as any)._history._index);
             expect(mockHistory.pushState).toHaveBeenCalledWith(
                 expect.objectContaining({ a: 1 }),
@@ -624,7 +679,12 @@ describe('Navigation', () => {
                 '/foo'
             );
             // replace
-            const state2 = nav.replace(createRoute('/bar', { b: 2 }));
+            const route2 = new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/bar', state: { b: 2 } }
+            });
+            const state2 = nav.replace(route2);
             // console.log('replace /bar', (nav as any)._history._entries, (nav as any)._history._index);
             expect(mockHistory.replaceState).toHaveBeenCalledWith(
                 expect.objectContaining({ b: 2 }),

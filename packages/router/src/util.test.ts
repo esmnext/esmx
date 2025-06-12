@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { parsedOptions } from './options';
-import { createRoute } from './route';
+import { Route } from './route';
+import type { RouterParsedOptions } from './types';
 import { RouteType, RouterMode } from './types';
 import {
     isNonEmptyPlainObject,
@@ -1061,67 +1062,56 @@ describe('isUrlEqual', () => {
 });
 
 describe('isRouteMatched', () => {
-    const options = parsedOptions({
-        mode: RouterMode.abstract,
-        base: new URL('http://localhost:3000/'),
-        routes: [
-            {
-                path: '/user/:id',
-                component: () => 'User'
-            },
-            {
-                path: '/settings',
-                component: () => 'Settings'
-            },
-            {
-                path: '/',
-                component: () => 'Home'
-            }
-        ]
-    });
+    const createOptions = (): RouterParsedOptions => {
+        return parsedOptions({
+            base: new URL('http://localhost:3000/'),
+            routes: [
+                { path: '/user/:id', component: 'UserComponent' },
+                { path: '/settings', component: 'SettingsComponent' }
+            ]
+        });
+    };
 
     describe('route match type', () => {
         test('should match routes with same config', () => {
-            const route1 = createRoute(
+            const options = createOptions();
+            const route1 = new Route({
                 options,
-                RouteType.push,
-                '/user/123',
-                null
-            );
-            const route2 = createRoute(
+                toType: RouteType.push,
+                toRaw: '/user/123'
+            });
+            const route2 = new Route({
                 options,
-                RouteType.push,
-                '/user/456',
-                null
-            );
+                toType: RouteType.push,
+                toRaw: '/user/456'
+            });
 
             expect(isRouteMatched(route1, route2, 'route')).toBe(true);
         });
 
         test('should not match routes with different config', () => {
-            const route1 = createRoute(
+            const options = createOptions();
+            const route1 = new Route({
                 options,
-                RouteType.push,
-                '/user/123',
-                null
-            );
-            const route2 = createRoute(
+                toType: RouteType.push,
+                toRaw: '/user/123'
+            });
+            const route2 = new Route({
                 options,
-                RouteType.push,
-                '/settings',
-                null
-            );
+                toType: RouteType.push,
+                toRaw: '/settings'
+            });
 
             expect(isRouteMatched(route1, route2, 'route')).toBe(false);
         });
 
         test('should return false when second route is null', () => {
-            const route1 = createRoute(
+            const options = createOptions();
+            const route1 = new Route({
                 options,
-                RouteType.push,
-                '/user/123',
-                null
-            );
+                toType: RouteType.push,
+                toRaw: '/user/123'
+            });
 
             expect(isRouteMatched(route1, null, 'route')).toBe(false);
         });
@@ -1129,52 +1119,49 @@ describe('isRouteMatched', () => {
 
     describe('exact match type', () => {
         test('should match routes with same fullPath', () => {
-            const route1 = createRoute(
+            const options = createOptions();
+            const route1 = new Route({
                 options,
-                RouteType.push,
-                '/user/123?tab=profile',
-                null
-            );
-            const route2 = createRoute(
+                toType: RouteType.push,
+                toRaw: '/user/123?tab=profile'
+            });
+            const route2 = new Route({
                 options,
-                RouteType.push,
-                '/user/123?tab=profile',
-                null
-            );
+                toType: RouteType.push,
+                toRaw: '/user/123?tab=profile'
+            });
 
             expect(isRouteMatched(route1, route2, 'exact')).toBe(true);
         });
 
         test('should not match routes with different fullPath', () => {
-            const route1 = createRoute(
+            const options = createOptions();
+            const route1 = new Route({
                 options,
-                RouteType.push,
-                '/user/123?tab=profile',
-                null
-            );
-            const route2 = createRoute(
+                toType: RouteType.push,
+                toRaw: '/user/123?tab=profile'
+            });
+            const route2 = new Route({
                 options,
-                RouteType.push,
-                '/user/123?tab=settings',
-                null
-            );
+                toType: RouteType.push,
+                toRaw: '/user/123?tab=settings'
+            });
 
             expect(isRouteMatched(route1, route2, 'exact')).toBe(false);
         });
 
         test('should not match routes with same path but different query', () => {
-            const route1 = createRoute(
+            const options = createOptions();
+            const route1 = new Route({
                 options,
-                RouteType.push,
-                '/user/123',
-                null
-            );
-            const route2 = createRoute(
+                toType: RouteType.push,
+                toRaw: '/user/123'
+            });
+            const route2 = new Route({
                 options,
-                RouteType.push,
-                '/user/123?tab=profile',
-                null
-            );
+                toType: RouteType.push,
+                toRaw: '/user/123?tab=profile'
+            });
 
             expect(isRouteMatched(route1, route2, 'exact')).toBe(false);
         });
@@ -1182,64 +1169,65 @@ describe('isRouteMatched', () => {
 
     describe('include match type', () => {
         test('should match when route1 fullPath starts with route2 fullPath', () => {
-            const route1 = createRoute(
+            const options = createOptions();
+            const route1 = new Route({
                 options,
-                RouteType.push,
-                '/user/123/profile/settings',
-                null
-            );
-            const route2 = createRoute(
+                toType: RouteType.push,
+                toRaw: '/user/123/profile/settings'
+            });
+            const route2 = new Route({
                 options,
-                RouteType.push,
-                '/user/123',
-                null
-            );
+                toType: RouteType.push,
+                toRaw: '/user/123'
+            });
 
             expect(isRouteMatched(route1, route2, 'include')).toBe(true);
         });
 
         test('should match when fullPaths are exactly the same', () => {
-            const route1 = createRoute(
+            const options = createOptions();
+            const route1 = new Route({
                 options,
-                RouteType.push,
-                '/user/123',
-                null
-            );
-            const route2 = createRoute(
+                toType: RouteType.push,
+                toRaw: '/user/123'
+            });
+            const route2 = new Route({
                 options,
-                RouteType.push,
-                '/user/123',
-                null
-            );
+                toType: RouteType.push,
+                toRaw: '/user/123'
+            });
 
             expect(isRouteMatched(route1, route2, 'include')).toBe(true);
         });
 
         test('should not match when route1 fullPath does not start with route2 fullPath', () => {
-            const route1 = createRoute(
+            const options = createOptions();
+            const route1 = new Route({
                 options,
-                RouteType.push,
-                '/user/123',
-                null
-            );
-            const route2 = createRoute(
+                toType: RouteType.push,
+                toRaw: '/user/123'
+            });
+            const route2 = new Route({
                 options,
-                RouteType.push,
-                '/user/456',
-                null
-            );
+                toType: RouteType.push,
+                toRaw: '/user/456'
+            });
 
             expect(isRouteMatched(route1, route2, 'include')).toBe(false);
         });
 
         test('should not match when route2 fullPath is longer', () => {
-            const route1 = createRoute(options, RouteType.push, '/user', null);
-            const route2 = createRoute(
+            const options = createOptions();
+            const route1 = new Route({
                 options,
-                RouteType.push,
-                '/user/123',
-                null
-            );
+                toType: RouteType.push,
+                toRaw: '/user'
+            });
+            const route2 = new Route({
+                options,
+                toType: RouteType.push,
+                toRaw: '/user/123'
+            });
 
             expect(isRouteMatched(route1, route2, 'include')).toBe(false);
         });
@@ -1247,8 +1235,9 @@ describe('isRouteMatched', () => {
 
     describe('edge cases', () => {
         test('should handle root path correctly', () => {
-            const route1 = createRoute(options, RouteType.push, '/', null);
-            const route2 = createRoute(options, RouteType.push, '/', null);
+            const options = createOptions();
+            const route1 = new Route({ options });
+            const route2 = new Route({ options });
 
             expect(isRouteMatched(route1, route2, 'route')).toBe(true);
             expect(isRouteMatched(route1, route2, 'exact')).toBe(true);
@@ -1256,36 +1245,34 @@ describe('isRouteMatched', () => {
         });
 
         test('should handle hash in fullPath', () => {
-            const route1 = createRoute(
+            const options = createOptions();
+            const route1 = new Route({
                 options,
-                RouteType.push,
-                '/user/123#section1',
-                null
-            );
-            const route2 = createRoute(
+                toType: RouteType.push,
+                toRaw: '/user/123#section1'
+            });
+            const route2 = new Route({
                 options,
-                RouteType.push,
-                '/user/123#section2',
-                null
-            );
+                toType: RouteType.push,
+                toRaw: '/user/123#section2'
+            });
 
             expect(isRouteMatched(route1, route2, 'route')).toBe(true);
             expect(isRouteMatched(route1, route2, 'exact')).toBe(false);
         });
 
         test('should return false for invalid match type', () => {
-            const route1 = createRoute(
+            const options = createOptions();
+            const route1 = new Route({
                 options,
-                RouteType.push,
-                '/user/123',
-                null
-            );
-            const route2 = createRoute(
+                toType: RouteType.push,
+                toRaw: '/user/123'
+            });
+            const route2 = new Route({
                 options,
-                RouteType.push,
-                '/user/123',
-                null
-            );
+                toType: RouteType.push,
+                toRaw: '/user/123'
+            });
 
             // @ts-expect-error - testing invalid match type
             expect(isRouteMatched(route1, route2, 'invalid')).toBe(false);
