@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { parsedOptions } from './options';
-import { createRoute } from './route';
+import { Route } from './route';
 import {
     RouteTaskController,
     RouteTaskType,
@@ -8,7 +8,7 @@ import {
 } from './route-task';
 import type { RouteTask, RouteTaskOptions } from './route-task';
 import { RouteStatus, RouteType } from './types';
-import type { Route, RouterParsedOptions } from './types';
+import type { RouterParsedOptions } from './types';
 
 // Helper function to create real RouterParsedOptions
 function createRealOptions(): RouterParsedOptions {
@@ -24,23 +24,19 @@ function createRealOptions(): RouterParsedOptions {
     });
 }
 
-// Helper function to create real Route using createRoute
-function createRealRoute(
-    path: string,
-    options: RouterParsedOptions,
-    overrides: Partial<Route> = {}
-): Route {
-    const route = createRoute(options, RouteType.push, path, null);
-    // Apply overrides by directly setting properties
-    Object.assign(route, overrides);
-    return route;
-}
-
 describe('createRouteTask', () => {
     it('should handle empty tasks array', async () => {
         const options = createRealOptions();
-        const to = createRealRoute('/test', options);
-        const from = createRealRoute('/home', options);
+        const to = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/test'
+        });
+        const from = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/home'
+        });
         const tasks: RouteTask[] = [];
 
         const result = await createRouteTask({
@@ -56,8 +52,16 @@ describe('createRouteTask', () => {
 
     it('should execute tasks in sequence', async () => {
         const options = createRealOptions();
-        const to = createRealRoute('/test', options);
-        const from = createRealRoute('/home', options);
+        const to = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/test'
+        });
+        const from = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/home'
+        });
 
         // 使用真实的执行顺序跟踪
         const executionOrder: string[] = [];
@@ -95,8 +99,16 @@ describe('createRouteTask', () => {
 
     it('should set status to success when task returns a function', async () => {
         const options = createRealOptions();
-        const to = createRealRoute('/test', options);
-        const from = createRealRoute('/home', options);
+        const to = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/test'
+        });
+        const from = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/home'
+        });
 
         // 真实的处理函数
         const handleFunction = async () => {
@@ -129,8 +141,16 @@ describe('createRouteTask', () => {
 
     it('should set status to aborted when task returns false', async () => {
         const options = createRealOptions();
-        const to = createRealRoute('/test', options);
-        const from = createRealRoute('/home', options);
+        const to = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/test'
+        });
+        const from = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/home'
+        });
 
         // 真实的阻止任务
         const blockingTask = async (route: Route, fromRoute: Route | null) => {
@@ -159,8 +179,16 @@ describe('createRouteTask', () => {
 
     it('should handle redirection when task returns a route location string', async () => {
         const options = createRealOptions();
-        const to = createRealRoute('/test', options);
-        const from = createRealRoute('/home', options);
+        const to = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/test'
+        });
+        const from = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/home'
+        });
 
         // 真实的重定向任务函数
         const redirectTask = async (route: Route, fromRoute: Route | null) => {
@@ -195,8 +223,16 @@ describe('createRouteTask', () => {
 
     it('should handle redirection when task returns a route location object', async () => {
         const options = createRealOptions();
-        const to = createRealRoute('/test', options);
-        const from = createRealRoute('/home', options);
+        const to = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/test'
+        });
+        const from = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/home'
+        });
 
         // 真实的重定向任务函数，返回路由对象
         const redirectTask = async (route: Route, fromRoute: Route | null) => {
@@ -232,8 +268,16 @@ describe('createRouteTask', () => {
 
     it('should handle conditional redirection based on route state', async () => {
         const options = createRealOptions();
-        const to = createRealRoute('/admin', options);
-        const from = createRealRoute('/home', options);
+        const to = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/admin'
+        });
+        const from = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/home'
+        });
 
         // 模拟权限检查的真实逻辑
         const authCheckTask = async (route: Route, fromRoute: Route | null) => {
@@ -271,8 +315,16 @@ describe('createRouteTask', () => {
 
     it('should set status to error and break on task error', async () => {
         const options = createRealOptions();
-        const to = createRealRoute('/test', options);
-        const from = createRealRoute('/home', options);
+        const to = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/test'
+        });
+        const from = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/home'
+        });
 
         const consoleErrorSpy = vi
             .spyOn(console, 'error')
@@ -317,8 +369,16 @@ describe('createRouteTask', () => {
 
     it('should continue processing when task returns undefined', async () => {
         const options = createRealOptions();
-        const to = createRealRoute('/test', options);
-        const from = createRealRoute('/home', options);
+        const to = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/test'
+        });
+        const from = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/home'
+        });
 
         const executionOrder: string[] = [];
 
@@ -356,8 +416,16 @@ describe('createRouteTask', () => {
 
     it('should continue processing when task returns null', async () => {
         const options = createRealOptions();
-        const to = createRealRoute('/test', options);
-        const from = createRealRoute('/home', options);
+        const to = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/test'
+        });
+        const from = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/home'
+        });
 
         const executionOrder: string[] = [];
 
@@ -395,7 +463,11 @@ describe('createRouteTask', () => {
 
     it('should handle from route being null', async () => {
         const options = createRealOptions();
-        const to = createRealRoute('/test', options);
+        const to = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/test'
+        });
         const from = null;
 
         let receivedFromRoute: Route | null | undefined;
@@ -428,8 +500,16 @@ describe('createRouteTask', () => {
 
     it('should break on first task that returns false', async () => {
         const options = createRealOptions();
-        const to = createRealRoute('/test', options);
-        const from = createRealRoute('/home', options);
+        const to = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/test'
+        });
+        const from = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/home'
+        });
 
         const executionOrder: string[] = [];
 
@@ -480,8 +560,16 @@ describe('createRouteTask', () => {
 
     it('should break on first task that returns a function', async () => {
         const options = createRealOptions();
-        const to = createRealRoute('/test', options);
-        const from = createRealRoute('/home', options);
+        const to = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/test'
+        });
+        const from = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/home'
+        });
 
         const executionOrder: string[] = [];
 
@@ -540,8 +628,16 @@ describe('createRouteTask', () => {
 describe('Task cancellation with getCurrentTaskId', () => {
     it('should cancel task when task id changes after first task execution', async () => {
         const options = createRealOptions();
-        const to = createRealRoute('/test', options);
-        const from = createRealRoute('/home', options);
+        const to = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/test'
+        });
+        const from = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/home'
+        });
 
         const executionOrder: string[] = [];
 
@@ -591,8 +687,16 @@ describe('Task cancellation with getCurrentTaskId', () => {
 
     it('should cancel task when task id changes before task execution', async () => {
         const options = createRealOptions();
-        const to = createRealRoute('/test', options);
-        const from = createRealRoute('/home', options);
+        const to = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/test'
+        });
+        const from = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/home'
+        });
 
         const executionOrder: string[] = [];
 
@@ -643,8 +747,16 @@ describe('Task cancellation with getCurrentTaskId', () => {
 
     it('should cancel task when task id changes after second task execution', async () => {
         const options = createRealOptions();
-        const to = createRealRoute('/test', options);
-        const from = createRealRoute('/home', options);
+        const to = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/test'
+        });
+        const from = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/home'
+        });
 
         const executionOrder: string[] = [];
 
@@ -705,8 +817,16 @@ describe('Task cancellation with getCurrentTaskId', () => {
 
     it('should continue execution when task id remains unchanged', async () => {
         const options = createRealOptions();
-        const to = createRealRoute('/test', options);
-        const from = createRealRoute('/home', options);
+        const to = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/test'
+        });
+        const from = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/home'
+        });
 
         const executionOrder: string[] = [];
 
@@ -750,8 +870,16 @@ describe('Task cancellation with getCurrentTaskId', () => {
 
     it('should work normally without getCurrentTaskId parameter', async () => {
         const options = createRealOptions();
-        const to = createRealRoute('/test', options);
-        const from = createRealRoute('/home', options);
+        const to = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/test'
+        });
+        const from = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/home'
+        });
 
         const executionOrder: string[] = [];
 
@@ -791,8 +919,16 @@ describe('Task cancellation with getCurrentTaskId', () => {
 
     it('should pass controller to redirection and cancel if task id changes', async () => {
         const options = createRealOptions();
-        const to = createRealRoute('/test', options);
-        const from = createRealRoute('/home', options);
+        const to = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/test'
+        });
+        const from = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/home'
+        });
 
         const redirectTask = async (route: Route, fromRoute: Route | null) => {
             if (route.path === '/test') {
@@ -831,8 +967,16 @@ describe('Task cancellation with getCurrentTaskId', () => {
 describe('RouteTaskOptions interface', () => {
     it('should create valid RouteTaskOptions object', () => {
         const options = createRealOptions();
-        const to = createRealRoute('/test', options);
-        const from = createRealRoute('/home', options);
+        const to = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/test'
+        });
+        const from = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/home'
+        });
         const tasks: RouteTask[] = [];
 
         const routeTaskOptions: RouteTaskOptions = {
@@ -850,8 +994,16 @@ describe('RouteTaskOptions interface', () => {
 
     it('should create valid RouteTaskOptions object with controller', () => {
         const options = createRealOptions();
-        const to = createRealRoute('/test', options);
-        const from = createRealRoute('/home', options);
+        const to = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/test'
+        });
+        const from = new Route({
+            options,
+            toType: RouteType.push,
+            toRaw: '/home'
+        });
         const tasks: RouteTask[] = [];
         const getCurrentTaskId = () => 123;
         const controller = new RouteTaskController(getCurrentTaskId);

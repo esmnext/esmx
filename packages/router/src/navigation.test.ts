@@ -9,7 +9,9 @@ import {
     vi
 } from 'vitest';
 import { MemoryHistory, Navigation } from './navigation';
-import type { Route } from './types';
+import { parsedOptions } from './options';
+import { Route } from './route';
+import type { RouterOptions } from './types';
 import { RouteStatus, RouteType, RouterMode } from './types';
 
 const sleep = (ms?: number) => new Promise((s) => setTimeout(s, ms));
@@ -430,43 +432,69 @@ describe.concurrent('subscribeMemory', () => {
 });
 
 describe('Navigation', () => {
-    // 构造一个最小 Route 对象，满足类型要求
-    const createRoute = (path: string, state?: any): Route => ({
-        type: RouteType.push,
-        isPush: true,
-        req: null,
-        res: null,
-        context: {},
-        url: new URL('http://test.com' + path),
-        path,
-        fullPath: path,
-        params: {},
-        query: {},
-        queryArray: {},
-        meta: {},
-        matched: [],
-        config: null,
-        state: state ?? {},
-        status: RouteStatus.success,
-        keepScrollPosition: false,
-        handle: null,
-        handleResult: null
-    });
+    // 创建测试用的路由选项
+    const createTestOptions = () => {
+        const baseOptions: RouterOptions = {
+            id: 'test-router',
+            context: {},
+            routes: [],
+            mode: RouterMode.abstract,
+            base: new URL('http://test.com'),
+            env: 'test',
+            req: null,
+            res: null,
+            apps: {},
+            normalizeURL: (url: URL) => url,
+            location: () => {},
+            rootStyle: false,
+            layer: null,
+            onBackNoResponse: () => {}
+        };
+        return parsedOptions(baseOptions);
+    };
 
     test('should push and replace state correctly', () => {
         const nav = new Navigation({ mode: RouterMode.abstract } as any);
-        const state1 = nav.push(createRoute('/foo', { a: 1 }));
+        const route1 = new Route({
+            options: createTestOptions(),
+            toType: RouteType.push,
+            toRaw: { path: '/foo', state: { a: 1 } }
+        });
+        const state1 = nav.push(route1);
         assert.deepEqual(state1.a, 1);
-        const state2 = nav.replace(createRoute('/bar', { b: 2 }));
+        const route2 = new Route({
+            options: createTestOptions(),
+            toType: RouteType.push,
+            toRaw: { path: '/bar', state: { b: 2 } }
+        });
+        const state2 = nav.replace(route2);
         assert.deepEqual(state2.b, 2);
         nav.destroy();
     });
 
     test('should resolve go/back/forward with correct url and state', async () => {
         const nav = new Navigation({ mode: RouterMode.abstract } as any);
-        nav.push(createRoute('/a', { a: 1 }));
-        nav.push(createRoute('/b', { b: 2 }));
-        nav.push(createRoute('/c', { c: 3 }));
+        nav.push(
+            new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/a', state: { a: 1 } }
+            })
+        );
+        nav.push(
+            new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/b', state: { b: 2 } }
+            })
+        );
+        nav.push(
+            new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/c', state: { c: 3 } }
+            })
+        );
         // go(-2) 回到 /a
         const res1 = await nav.go(-2);
         assert.equal(res1?.url, '/a');
@@ -488,8 +516,20 @@ describe('Navigation', () => {
             { mode: RouterMode.abstract } as any,
             (url, state) => updates.push({ url, state })
         );
-        nav.push(createRoute('/a', { a: 1 }));
-        nav.push(createRoute('/b', { b: 2 }));
+        nav.push(
+            new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/a', state: { a: 1 } }
+            })
+        );
+        nav.push(
+            new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/b', state: { b: 2 } }
+            })
+        );
         // await nav.go(-1);
         // 模拟浏览器的后退操作
         ((nav as any)._history as MemoryHistory).back();
@@ -501,8 +541,20 @@ describe('Navigation', () => {
 
     test('should resolve null if go is called while pending', async () => {
         const nav = new Navigation({ mode: RouterMode.abstract } as any);
-        nav.push(createRoute('/a'));
-        nav.push(createRoute('/b'));
+        nav.push(
+            new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/a', state: { a: 1 } }
+            })
+        );
+        nav.push(
+            new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/b', state: { b: 2 } }
+            })
+        );
 
         const p1 = nav.go(-1);
         const p2 = nav.go(1); // 第二次 go 应直接返回 null
@@ -518,8 +570,20 @@ describe('Navigation', () => {
             { mode: RouterMode.abstract } as any,
             (url, state) => updates.push({ url, state })
         );
-        nav.push(createRoute('/a'));
-        nav.push(createRoute('/b'));
+        nav.push(
+            new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/a', state: { a: 1 } }
+            })
+        );
+        nav.push(
+            new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/b', state: { b: 2 } }
+            })
+        );
         nav.destroy();
         // destroy 后再次 go 不应抛错
         nav.go(-1);
@@ -531,10 +595,7 @@ describe('Navigation', () => {
 
     // history 模式下的 Navigation 测试
     describe('in history mode', () => {
-        let originalHistory: any;
         let mockHistory: any;
-        let originalAddEventListener: any;
-        let originalRemoveEventListener: any;
         let popstateHandler: any;
 
         beforeEach(() => {
@@ -564,54 +625,21 @@ describe('Navigation', () => {
                     popstateHandler = null;
                 }
             });
-            if (typeof globalThis === 'object') {
-                const mockWindow = {
-                    get history() {
-                        return mockHistory;
-                    },
-                    get location() {
-                        return mockLocation;
-                    },
-                    get addEventListener() {
-                        return mockAddEventListener;
-                    },
-                    get removeEventListener() {
-                        return mockRemoveEventListener;
-                    }
-                };
-                Object.defineProperties(globalThis, {
-                    window: {
-                        configurable: true,
-                        get: () => mockWindow
-                    },
-                    history: {
-                        configurable: true,
-                        get: () => mockHistory
-                    },
-                    location: {
-                        configurable: true,
-                        get: () => mockLocation
-                    }
-                });
-            } else if (typeof window === 'object') {
-                originalHistory = window.history;
-                originalAddEventListener = window.addEventListener;
-                originalRemoveEventListener = window.removeEventListener;
-                window.history = mockHistory;
-                window.addEventListener = mockAddEventListener;
-                window.removeEventListener = mockRemoveEventListener;
-            }
+            vi.stubGlobal('window', {
+                get history() {
+                    return mockHistory;
+                },
+                get location() {
+                    return mockLocation;
+                },
+                addEventListener: mockAddEventListener,
+                removeEventListener: mockRemoveEventListener
+            });
+            vi.stubGlobal('location', mockLocation);
+            vi.stubGlobal('history', mockHistory);
         });
         afterEach(() => {
-            if (typeof globalThis === 'object') {
-                Reflect.deleteProperty(globalThis, 'window');
-                Reflect.deleteProperty(globalThis, 'location');
-                Reflect.deleteProperty(globalThis, 'history');
-            } else if (typeof window === 'object') {
-                window.history = originalHistory;
-                window.addEventListener = originalAddEventListener;
-                window.removeEventListener = originalRemoveEventListener;
-            }
+            vi.unstubAllGlobals();
             popstateHandler = null;
             mockHistory = null;
         });
@@ -620,7 +648,12 @@ describe('Navigation', () => {
             const nav = new Navigation({ mode: RouterMode.history } as any);
             // console.log('new', (nav as any)._history._entries, (nav as any)._history._index);
             // push
-            const state1 = nav.push(createRoute('/foo', { a: 1 }));
+            const route1 = new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/foo', state: { a: 1 } }
+            });
+            const state1 = nav.push(route1);
             // console.log('push /foo', (nav as any)._history._entries, (nav as any)._history._index);
             expect(mockHistory.pushState).toHaveBeenCalledWith(
                 expect.objectContaining({ a: 1 }),
@@ -628,7 +661,12 @@ describe('Navigation', () => {
                 '/foo'
             );
             // replace
-            const state2 = nav.replace(createRoute('/bar', { b: 2 }));
+            const route2 = new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/bar', state: { b: 2 } }
+            });
+            const state2 = nav.replace(route2);
             // console.log('replace /bar', (nav as any)._history._entries, (nav as any)._history._index);
             expect(mockHistory.replaceState).toHaveBeenCalledWith(
                 expect.objectContaining({ b: 2 }),
@@ -653,15 +691,21 @@ describe('Navigation', () => {
             const nav = new Navigation({ mode: RouterMode.abstract } as any);
 
             // 测试 route.state 为 null 的情况
-            const routeWithNullState = createRoute('/test');
-            routeWithNullState.state = null as any;
+            const routeWithNullState = new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/test', state: null as any }
+            });
             const state1 = nav.push(routeWithNullState);
             assert.ok(state1);
             assert.ok('__pageId__' in state1);
 
             // 测试 route.state 为 undefined 的情况
-            const routeWithUndefinedState = createRoute('/test2');
-            routeWithUndefinedState.state = undefined as any;
+            const routeWithUndefinedState = new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/test2', state: undefined }
+            });
             const state2 = nav.push(routeWithUndefinedState);
             assert.ok(state2);
             assert.ok('__pageId__' in state2);
@@ -671,18 +715,30 @@ describe('Navigation', () => {
 
         test('should handle null/undefined route.state in replace method (line 53)', () => {
             const nav = new Navigation({ mode: RouterMode.abstract } as any);
-            nav.push(createRoute('/initial'));
+            nav.push(
+                new Route({
+                    options: createTestOptions(),
+                    toType: RouteType.push,
+                    toRaw: '/initial'
+                })
+            );
 
             // 测试 route.state 为 null 的情况
-            const routeWithNullState = createRoute('/test');
-            routeWithNullState.state = null as any;
+            const routeWithNullState = new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/test', state: null as any }
+            });
             const state1 = nav.replace(routeWithNullState);
             assert.ok(state1);
             assert.ok('__pageId__' in state1);
 
             // 测试 route.state 为 undefined 的情况
-            const routeWithUndefinedState = createRoute('/test2');
-            routeWithUndefinedState.state = undefined as any;
+            const routeWithUndefinedState = new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/test2', state: undefined }
+            });
             const state2 = nav.replace(routeWithUndefinedState);
             assert.ok(state2);
             assert.ok('__pageId__' in state2);
@@ -692,8 +748,20 @@ describe('Navigation', () => {
 
         test('should call _promiseResolve when destroying with pending promise (line 82)', async () => {
             const nav = new Navigation({ mode: RouterMode.abstract } as any);
-            nav.push(createRoute('/test1'));
-            nav.push(createRoute('/test2'));
+            nav.push(
+                new Route({
+                    options: createTestOptions(),
+                    toType: RouteType.push,
+                    toRaw: '/test1'
+                })
+            );
+            nav.push(
+                new Route({
+                    options: createTestOptions(),
+                    toType: RouteType.push,
+                    toRaw: '/test2'
+                })
+            );
 
             // 启动一个 go 操作但不等待它完成
             const goPromise = nav.go(-1);
@@ -792,59 +860,48 @@ describe('Navigation', () => {
                 removeEventListener: vi.fn()
             };
 
-            // 保存原始值
-            const originalWindow = globalThis.window;
-            const originalHistory = globalThis.history;
-            const originalLocation = globalThis.location;
-
-            try {
-                // 设置模拟对象
-                (globalThis as any).window = mockWindow;
-                (globalThis as any).history = mockHistory;
-                (globalThis as any).location = mockLocation;
-
-                let capturedCallback: any = null;
-                mockWindow.addEventListener.mockImplementation(
-                    (event, callback) => {
-                        if (event === 'popstate') {
-                            capturedCallback = callback;
-                        }
+            let capturedCallback: any = null;
+            mockWindow.addEventListener.mockImplementation(
+                (event, callback) => {
+                    if (event === 'popstate') {
+                        capturedCallback = callback;
                     }
-                );
-
-                const callbackData: Array<{ url: string; state: any }> = [];
-
-                // 创建一个新的 Navigation 实例来测试 history 模式
-                const nav = new Navigation(
-                    { mode: RouterMode.history } as any,
-                    (url: string, state: any) => {
-                        callbackData.push({ url, state });
-                    }
-                );
-
-                // 验证 addEventListener 被调用
-                expect(mockWindow.addEventListener).toHaveBeenCalledWith(
-                    'popstate',
-                    expect.any(Function)
-                );
-
-                // 模拟 popstate 事件触发
-                if (capturedCallback) {
-                    capturedCallback(); // 这里会触发 line 160: history.state || {}
                 }
+            );
 
-                // 验证回调被正确调用，且 null state 被转换为 {}
-                expect(callbackData.length).toBe(1);
-                expect(callbackData[0].url).toBe('http://test.com/page');
-                expect(callbackData[0].state).toEqual({}); // history.state 为 null 时应该使用 {}
+            // 使用 vi.stubGlobal 设置模拟对象
+            vi.stubGlobal('window', mockWindow);
+            vi.stubGlobal('history', mockHistory);
+            vi.stubGlobal('location', mockLocation);
 
-                nav.destroy();
-            } finally {
-                // 恢复原始值
-                (globalThis as any).window = originalWindow;
-                (globalThis as any).history = originalHistory;
-                (globalThis as any).location = originalLocation;
+            const callbackData: Array<{ url: string; state: any }> = [];
+
+            // 创建一个新的 Navigation 实例来测试 history 模式
+            const nav = new Navigation(
+                { mode: RouterMode.history } as any,
+                (url: string, state: any) => {
+                    callbackData.push({ url, state });
+                }
+            );
+
+            // 验证 addEventListener 被调用
+            expect(mockWindow.addEventListener).toHaveBeenCalledWith(
+                'popstate',
+                expect.any(Function)
+            );
+
+            // 模拟 popstate 事件触发
+            if (capturedCallback) {
+                capturedCallback(); // 这里会触发 line 160: history.state || {}
             }
+
+            // 验证回调被正确调用，且 null state 被转换为 {}
+            expect(callbackData.length).toBe(1);
+            expect(callbackData[0].url).toBe('http://test.com/page');
+            expect(callbackData[0].state).toEqual({}); // history.state 为 null 时应该使用 {}
+
+            nav.destroy();
+            vi.unstubAllGlobals();
         });
     });
 });

@@ -1,6 +1,10 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { MatchFunction } from 'path-to-regexp';
+import type { Route } from './route';
 import type { Router } from './router';
+
+// 重新导出 Route 类型，保持向后兼容
+export type { Route };
 
 // ============================================================================
 // 路由器相关
@@ -89,6 +93,21 @@ export type RouterMicroApp =
 // ============================================================================
 // 路由相关
 // ============================================================================
+
+/**
+ * Route 构造函数的选项接口
+ */
+export interface RouteOptions {
+    /** 路由器解析选项 */
+    options?: RouterParsedOptions;
+    /** 路由类型 */
+    toType?: RouteType;
+    /** 目标路由位置 */
+    toRaw?: RouteLocationRaw;
+    /** 来源 URL */
+    from?: URL | null;
+}
+
 export enum RouteType {
     push = 'push',
     replace = 'replace',
@@ -114,29 +133,10 @@ export interface RouteLocation {
     hash?: string;
     state?: RouteState;
     keepScrollPosition?: boolean;
+    statusCode?: number | null;
 }
 export type RouteLocationRaw = RouteLocation | string;
-export interface Route {
-    readonly type: RouteType;
-    readonly isPush: boolean;
-    readonly req: IncomingMessage | null;
-    readonly res: ServerResponse | null;
-    readonly context: Record<string | symbol, any>;
-    readonly url: URL;
-    readonly path: string;
-    readonly fullPath: string;
-    readonly params: Record<string, string>;
-    readonly query: Record<string, string | undefined>;
-    readonly queryArray: Record<string, string[] | undefined>;
-    readonly meta: RouteMeta;
-    readonly matched: readonly RouteParsedConfig[];
-    readonly config: RouteParsedConfig | null;
-    state: RouteState;
-    status: RouteStatus;
-    keepScrollPosition: boolean;
-    handle: RouteHandleHook | null;
-    handleResult: RouteHandleResult;
-}
+
 export interface RouteConfig {
     /** 传递一个经过 URL 编码过后的路径 */
     path: string;

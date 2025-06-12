@@ -1,16 +1,54 @@
+import type { IncomingMessage, ServerResponse } from 'node:http';
 import { parseLocation } from './location';
+import { parsedOptions } from './options';
 import { RouteStatus } from './types';
-import type {
-    Route,
-    RouteHandleHook,
-    RouteHandleResult,
-    RouteLocationRaw,
-    RouteMatchResult,
-    RouteMeta,
+import {
+    type RouteHandleHook,
+    type RouteHandleResult,
+    type RouteLocationRaw,
+    type RouteMatchResult,
+    type RouteMeta,
+    type RouteOptions,
+    type RouteParsedConfig,
+    type RouteState,
     RouteType,
-    RouterParsedOptions
+    type RouterParsedOptions
 } from './types';
 import { isNonEmptyPlainObject, isPlainObject } from './util';
+
+/**
+ * Route 类中不可枚举属性的配置
+ * 这些属性在对象遍历、序列化等操作中会被隐藏
+ */
+export const NON_ENUMERABLE_PROPERTIES = [
+    // 私有字段 - 内部实现细节
+    '_handled',
+    '_handle',
+    '_handleResult',
+    '_options',
+
+    // SSR 专用属性 - 在客户端环境中无意义
+    'req',
+    'res',
+
+    // 内部上下文 - 框架内部使用
+    'context',
+
+    // 状态码 - 内部状态信息
+    'statusCode'
+] satisfies string[];
+
+/**
+ * 创建默认的路由选项
+ */
+function createDefaultRouteOptions(): Required<RouteOptions> {
+    return {
+        options: parsedOptions(),
+        toType: RouteType.none,
+        toRaw: '/',
+        from: null
+    };
+}
 
 /**
  * 将用户传入的参数拼接到URL路径中
@@ -57,105 +95,228 @@ export function applyRouteParams(
     Object.assign(match.params, toRaw.params);
 }
 
-export function createRoute(
-    options: RouterParsedOptions,
-    toType: RouteType,
-    toRaw: RouteLocationRaw,
-    from: URL | null
-): Route {
-    const base = options.base;
-    const to = options.normalizeURL(parseLocation(toRaw, base), from);
-    const isSameOrigin = to.origin === base.origin;
-    const isSameBase = to.pathname.startsWith(base.pathname);
-    const match = isSameOrigin && isSameBase ? options.matcher(to, base) : null;
-    let handle: RouteHandleHook | null = null;
-    let handleResult: RouteHandleResult | null = null;
-    let handled = false;
-    const path = match
-        ? to.pathname.substring(base.pathname.length - 1)
-        : to.pathname;
-    const fullPath = match
-        ? `${path}${to.search}${to.hash}`
-        : to.pathname + to.search + to.hash;
-    const state = isPlainObject(toRaw) && toRaw.state ? toRaw.state : {};
-    const matched = match ? match.matches : Object.freeze([]);
-    const keepScrollPosition = isPlainObject(toRaw)
-        ? Boolean(toRaw.keepScrollPosition)
-        : false;
-    const config = matched.length > 0 ? matched[matched.length - 1] : null;
-    const meta = config?.meta || {};
-    const route: Route = {
-        status: RouteStatus.resolve,
-        get handle() {
-            return handle;
-        },
-        set handle(val) {
-            if (typeof val !== 'function') {
-                handle = null;
-                return;
-            }
-            handle = function handle(this: Route, ...args) {
-                if (this.status !== RouteStatus.success) {
-                    throw new Error(
-                        `Cannot call route handle hook - current status is ${this.status} (expected: ${RouteStatus.success})`
-                    );
-                }
-                if (handled) {
-                    throw new Error(
-                        'Route handle hook can only be called once per navigation'
-                    );
-                }
-                handled = true;
-                return val.call(this, ...args);
-            };
-        },
-        get handleResult() {
-            return handleResult;
-        },
-        set handleResult(val) {
-            handleResult = val;
-        },
-        get req() {
-            return options.req;
-        },
-        get res() {
-            return options.res;
-        },
-        get context() {
-            return options.context;
-        },
-        type: toType,
-        get isPush() {
-            return this.type.startsWith('push');
-        },
-        url: to,
-        params: {},
-        query: {},
-        queryArray: {},
-        state,
-        get meta() {
-            return meta;
-        },
-        path,
-        fullPath,
-        matched,
-        keepScrollPosition,
-        get config() {
-            return config;
+/**
+ * Route 类提供完整的路由对象功能
+ */
+export class Route {
+    // 私有字段用于 handle 验证
+    private _handled = false;
+    private _handle: RouteHandleHook | null = null;
+    private _handleResult: RouteHandleResult | null = null;
+    private _options: RouterParsedOptions;
+
+    // 公共属性
+    public status: RouteStatus = RouteStatus.resolve;
+    public statusCode: number | null = null;
+    public readonly state: RouteState;
+    public readonly keepScrollPosition: boolean;
+
+    // 只读属性
+    public readonly type: RouteType;
+    public readonly isPush: boolean;
+    public readonly req: IncomingMessage | null;
+    public readonly res: ServerResponse | null;
+    public readonly context: Record<string | symbol, any>;
+    public readonly url: URL;
+    public readonly path: string;
+    public readonly fullPath: string;
+    public readonly params: Record<string, string> = {};
+    public readonly query: Record<string, string | undefined>;
+    public readonly queryArray: Record<string, string[] | undefined>;
+    public readonly meta: RouteMeta;
+    public readonly matched: readonly RouteParsedConfig[];
+    public readonly config: RouteParsedConfig | null;
+
+    constructor(routeOptions: Partial<RouteOptions> = {}) {
+        // 合并默认选项
+        const defaults = createDefaultRouteOptions();
+        const finalOptions = { ...defaults, ...routeOptions };
+
+        const { options, toType, toRaw, from } = finalOptions;
+
+        // 保存原始选项用于克隆
+        this._options = options;
+        this.type = toType;
+        this.isPush = toType.startsWith('push');
+        this.req = options.req;
+        this.res = options.res;
+        this.context = options.context;
+
+        const base = options.base;
+        const to = options.normalizeURL(parseLocation(toRaw, base), from);
+        const isSameOrigin = to.origin === base.origin;
+        const isSameBase = to.pathname.startsWith(base.pathname);
+        const match =
+            isSameOrigin && isSameBase ? options.matcher(to, base) : null;
+
+        this.url = to;
+        this.path = match
+            ? to.pathname.substring(base.pathname.length - 1)
+            : to.pathname;
+        this.fullPath = match
+            ? `${this.path}${to.search}${to.hash}`
+            : to.pathname + to.search + to.hash;
+        this.matched = match ? match.matches : Object.freeze([]);
+        this.keepScrollPosition = isPlainObject(toRaw)
+            ? Boolean(toRaw.keepScrollPosition)
+            : false;
+        this.config =
+            this.matched.length > 0
+                ? this.matched[this.matched.length - 1]
+                : null;
+        this.meta = this.config?.meta || {};
+
+        // 初始化状态对象 - 创建新的本地对象，合并外部传入的状态
+        const state: RouteState = {};
+        if (isPlainObject(toRaw) && toRaw.state) {
+            Object.assign(state, toRaw.state);
         }
-    };
+        this.state = state;
 
-    for (const key of new Set(to.searchParams.keys())) {
-        route.query[key] = to.searchParams.get(key)!;
-        route.queryArray[key] = to.searchParams.getAll(key);
+        // 初始化查询参数对象
+        const query: Record<string, string | undefined> = {};
+        const queryArray: Record<string, string[] | undefined> = {};
+
+        // 处理查询参数
+        for (const key of new Set(to.searchParams.keys())) {
+            query[key] = to.searchParams.get(key)!;
+            queryArray[key] = to.searchParams.getAll(key);
+        }
+        this.query = query;
+        this.queryArray = queryArray;
+
+        // 应用用户传入的路由参数（如果匹配成功）
+        if (match) {
+            applyRouteParams(match, toRaw, base, to);
+            // 将匹配到的参数赋值给路由对象
+            Object.assign(this.params, match.params);
+        }
+
+        // 设置状态码
+        // 优先使用用户传入的statusCode
+        if (isPlainObject(toRaw) && typeof toRaw.statusCode === 'number') {
+            this.statusCode = toRaw.statusCode;
+        } else if (isPlainObject(toRaw) && toRaw.statusCode === null) {
+            this.statusCode = null;
+        }
+        // 如果没有传入statusCode，保持默认的null值
+
+        // 设置属性的可枚举性
+        this._configureEnumerability();
     }
 
-    // 应用用户传入的路由参数（如果匹配成功）
-    if (match) {
-        applyRouteParams(match, toRaw, base, to);
-        // 将匹配到的参数赋值给路由对象
-        Object.assign(route.params, match.params);
+    // handle 相关的 getter/setter
+    get handle(): RouteHandleHook | null {
+        return this._handle;
     }
 
-    return route;
+    set handle(val: RouteHandleHook | null) {
+        this.setHandle(val);
+    }
+
+    get handleResult(): RouteHandleResult | null {
+        return this._handleResult;
+    }
+
+    set handleResult(val: RouteHandleResult | null) {
+        this._handleResult = val;
+    }
+
+    /**
+     * 配置属性的可枚举性
+     * 将内部实现细节设为不可枚举，保持用户常用属性可枚举
+     */
+    private _configureEnumerability(): void {
+        // 根据配置将指定属性设为不可枚举
+        for (const property of NON_ENUMERABLE_PROPERTIES) {
+            Object.defineProperty(this, property, { enumerable: false });
+        }
+    }
+
+    /**
+     * 设置 handle 函数，包装验证逻辑
+     */
+    setHandle(val: RouteHandleHook | null): void {
+        if (typeof val !== 'function') {
+            this._handle = null;
+            return;
+        }
+        const self = this;
+        this._handle = function handle(
+            this: Route,
+            ...args: Parameters<RouteHandleHook>
+        ) {
+            if (this.status !== RouteStatus.success) {
+                throw new Error(
+                    `Cannot call route handle hook - current status is ${this.status} (expected: ${RouteStatus.success})`
+                );
+            }
+            if (self._handled) {
+                throw new Error(
+                    'Route handle hook can only be called once per navigation'
+                );
+            }
+            self._handled = true;
+            return val.call(this, ...args);
+        };
+    }
+
+    /**
+     * 合并新的状态到当前路由的 state 中
+     * @param newState 要合并的新状态
+     */
+    mergeState(newState: Partial<RouteState>): void {
+        // 直接合并新的状态，不清空现有状态
+        Object.assign(this.state, newState);
+    }
+
+    /**
+     * 设置单个状态值
+     * @param name 状态名称
+     * @param value 状态值
+     */
+    setState(name: string, value: any): void {
+        this.state[name] = value;
+    }
+
+    /**
+     * 将当前路由的所有属性同步到目标路由对象中
+     * 用于响应式系统中的路由对象更新
+     * @param targetRoute 目标路由对象
+     */
+    syncTo(targetRoute: Route): void {
+        // 复制可枚举属性
+        Object.assign(targetRoute, this);
+
+        // 复制不可枚举属性
+        for (const property of NON_ENUMERABLE_PROPERTIES) {
+            (targetRoute as any)[property] = (this as any)[property];
+        }
+    }
+
+    /**
+     * 克隆当前路由实例
+     * 返回一个新的 Route 实例，包含相同的配置和状态
+     */
+    clone(): Route {
+        // 重新构造路由对象，传入当前的状态
+        const toRaw = {
+            path: this.fullPath,
+            state: { ...this.state }
+        };
+
+        // 从构造函数的 finalOptions 中获取原始的 options
+        const options = this._options;
+
+        const clonedRoute = new Route({
+            options,
+            toType: this.type,
+            toRaw
+        });
+
+        // 手动复制statusCode，因为它可能被手动修改过
+        clonedRoute.statusCode = this.statusCode;
+
+        return clonedRoute;
+    }
 }

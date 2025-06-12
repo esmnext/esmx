@@ -1,7 +1,6 @@
-import { createRoute } from './route';
+import { Route } from './route';
 import { RouteStatus } from './types';
 import type {
-    Route,
     RouteConfirmHook,
     RouteConfirmHookResult,
     RouterParsedOptions
@@ -94,7 +93,12 @@ export async function createRouteTask(opts: RouteTaskOptions) {
         // 导航重定向，传递控制器
         return createRouteTask({
             ...opts,
-            to: createRoute(opts.options, to.type, result, to.url),
+            to: new Route({
+                options: opts.options,
+                toType: to.type,
+                toRaw: result,
+                from: to.url
+            }),
             from: to,
             controller
         });
