@@ -702,4 +702,235 @@ describe('Navigation', () => {
             nav.destroy();
         });
     });
+
+    // 新增测试用例来覆盖未测试的分支
+    describe('未覆盖分支测试', () => {
+        test('should handle null/undefined route.state in push method (line 43)', () => {
+            const nav = new Navigation({ mode: RouterMode.abstract } as any);
+
+            // 测试 route.state 为 null 的情况
+            const routeWithNullState = new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/test', state: null as any }
+            });
+            const state1 = nav.push(routeWithNullState);
+            assert.ok(state1);
+            assert.ok('__pageId__' in state1);
+
+            // 测试 route.state 为 undefined 的情况
+            const routeWithUndefinedState = new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/test2', state: undefined }
+            });
+            const state2 = nav.push(routeWithUndefinedState);
+            assert.ok(state2);
+            assert.ok('__pageId__' in state2);
+
+            nav.destroy();
+        });
+
+        test('should handle null/undefined route.state in replace method (line 53)', () => {
+            const nav = new Navigation({ mode: RouterMode.abstract } as any);
+            nav.push(
+                new Route({
+                    options: createTestOptions(),
+                    toType: RouteType.push,
+                    toRaw: '/initial'
+                })
+            );
+
+            // 测试 route.state 为 null 的情况
+            const routeWithNullState = new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/test', state: null as any }
+            });
+            const state1 = nav.replace(routeWithNullState);
+            assert.ok(state1);
+            assert.ok('__pageId__' in state1);
+
+            // 测试 route.state 为 undefined 的情况
+            const routeWithUndefinedState = new Route({
+                options: createTestOptions(),
+                toType: RouteType.push,
+                toRaw: { path: '/test2', state: undefined }
+            });
+            const state2 = nav.replace(routeWithUndefinedState);
+            assert.ok(state2);
+            assert.ok('__pageId__' in state2);
+
+            nav.destroy();
+        });
+
+        test('should call _promiseResolve when destroying with pending promise (line 82)', async () => {
+            const nav = new Navigation({ mode: RouterMode.abstract } as any);
+            nav.push(
+                new Route({
+                    options: createTestOptions(),
+                    toType: RouteType.push,
+                    toRaw: '/test1'
+                })
+            );
+            nav.push(
+                new Route({
+                    options: createTestOptions(),
+                    toType: RouteType.push,
+                    toRaw: '/test2'
+                })
+            );
+
+            // 启动一个 go 操作但不等待它完成
+            const goPromise = nav.go(-1);
+
+            // 立即销毁，应该调用 _promiseResolve?.()
+            nav.destroy();
+
+            // go 操作应该返回 null
+            const result = await goPromise;
+            assert.equal(result, null);
+        });
+
+        test('should return null when _curEntry index is out of bounds (line 92)', () => {
+            const history = new MemoryHistory();
+
+            // 通过直接修改内部状态来模拟索引越界
+            (history as any)._index = -1;
+            assert.equal((history as any)._curEntry, null);
+
+            (history as any)._index = 999; // 超出长度
+            assert.equal((history as any)._curEntry, null);
+        });
+
+        test('should return empty string when _curEntry.url is null/undefined (line 101)', () => {
+            const history = new MemoryHistory();
+
+            // 模拟 _curEntry.url 为 undefined 的情况
+            const mockEntry = { state: {}, url: undefined };
+            (history as any)._entries = [mockEntry];
+            (history as any)._index = 0;
+
+            assert.equal(history.url, '');
+        });
+
+        test('should use this.url when pushState url parameter is null/undefined (line 108)', () => {
+            const history = new MemoryHistory();
+            const currentUrl = history.url; // 获取当前 URL
+
+            // 测试 url 为 null
+            history.pushState({ test: 1 }, '', null);
+            assert.equal(history.url, currentUrl);
+
+            // 测试 url 为 undefined
+            history.pushState({ test: 2 }, '', undefined);
+            assert.equal(history.url, currentUrl);
+        });
+
+        test('should return early when curEntry is null in replaceState (line 128)', () => {
+            const history = new MemoryHistory();
+
+            // 模拟 _curEntry 为 null 的情况
+            (history as any)._index = -1; // 设置为无效索引
+
+            // 调用 replaceState 应该直接返回而不执行任何操作
+            const originalEntries = [...(history as any)._entries];
+            history.replaceState({ test: 1 }, '', '/test');
+
+            // entries 应该没有变化
+            assert.deepEqual((history as any)._entries, originalEntries);
+        });
+
+        test('should return empty function when cb is not a function in onPopState (line 152)', () => {
+            const history = new MemoryHistory();
+
+            // 测试传入非函数类型
+            const unsubscribe1 = history.onPopState(null as any);
+            const unsubscribe2 = history.onPopState(undefined as any);
+            const unsubscribe3 = history.onPopState('not a function' as any);
+            const unsubscribe4 = history.onPopState(123 as any);
+
+            assert.equal(typeof unsubscribe1, 'function');
+            assert.equal(typeof unsubscribe2, 'function');
+            assert.equal(typeof unsubscribe3, 'function');
+            assert.equal(typeof unsubscribe4, 'function');
+
+            // 这些函数应该是空函数，调用时不会出错
+            assert.doesNotThrow(() => {
+                unsubscribe1();
+                unsubscribe2();
+                unsubscribe3();
+                unsubscribe4();
+            });
+        });
+
+        test('should handle null history.state in subscribeHtmlHistory (line 159)', () => {
+            // 模拟浏览器环境
+            const mockHistory = {
+                state: null // 模拟 history.state 为 null
+            };
+            const mockLocation = {
+                href: 'http://test.com/page'
+            };
+
+            const mockWindow = {
+                addEventListener: vi.fn(),
+                removeEventListener: vi.fn()
+            };
+
+            // 保存原始值
+            const originalWindow = globalThis.window;
+            const originalHistory = globalThis.history;
+            const originalLocation = globalThis.location;
+
+            try {
+                // 设置模拟对象
+                (globalThis as any).window = mockWindow;
+                (globalThis as any).history = mockHistory;
+                (globalThis as any).location = mockLocation;
+
+                let capturedCallback: any = null;
+                mockWindow.addEventListener.mockImplementation(
+                    (event, callback) => {
+                        if (event === 'popstate') {
+                            capturedCallback = callback;
+                        }
+                    }
+                );
+
+                const callbackData: Array<{ url: string; state: any }> = [];
+
+                // 创建一个新的 Navigation 实例来测试 history 模式
+                const nav = new Navigation(
+                    { mode: RouterMode.history } as any,
+                    (url: string, state: any) => {
+                        callbackData.push({ url, state });
+                    }
+                );
+
+                // 验证 addEventListener 被调用
+                expect(mockWindow.addEventListener).toHaveBeenCalledWith(
+                    'popstate',
+                    expect.any(Function)
+                );
+
+                // 模拟 popstate 事件触发
+                if (capturedCallback) {
+                    capturedCallback(); // 这里会触发 line 160: history.state || {}
+                }
+
+                // 验证回调被正确调用，且 null state 被转换为 {}
+                expect(callbackData.length).toBe(1);
+                expect(callbackData[0].url).toBe('http://test.com/page');
+                expect(callbackData[0].state).toEqual({}); // history.state 为 null 时应该使用 {}
+
+                nav.destroy();
+            } finally {
+                // 恢复原始值
+                (globalThis as any).window = originalWindow;
+                (globalThis as any).history = originalHistory;
+                (globalThis as any).location = originalLocation;
+            }
+        });
+    });
 });

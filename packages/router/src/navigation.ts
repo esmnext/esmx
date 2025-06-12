@@ -141,8 +141,7 @@ export class MemoryHistory implements History {
         const newIdx = this._index + delta;
         if (newIdx < 0 || newIdx >= this.length) return;
         this._index = newIdx;
-        const entry = this._curEntry;
-        if (!entry) return;
+        const entry = this._curEntry!;
         // 尽可能的模拟 html history 的 go（异步触发 popstate 事件）
         setTimeout(() => {
             this._popStateCbs.forEach((cb) => cb(entry.url, entry.state));
