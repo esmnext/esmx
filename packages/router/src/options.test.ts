@@ -298,6 +298,89 @@ describe('parsedOptions', () => {
             expect(opts.base.search).toBe('');
             expect(opts.base.hash).toBe('');
         });
+
+        it('should handle empty req.url', async () => {
+            const { parsedOptions } = await import('./options');
+            const req = createMockReq(
+                {
+                    host: 'example.com',
+                    'x-forwarded-proto': 'https'
+                },
+                '' // 空字符串
+            );
+
+            const opts = parsedOptions({ req } as any);
+            expect(opts.base.href).toBe('https://example.com/');
+        });
+
+        it('should handle undefined req.url', async () => {
+            const { parsedOptions } = await import('./options');
+            const req = {
+                headers: {
+                    host: 'example.com',
+                    'x-forwarded-proto': 'https'
+                },
+                socket: { encrypted: false },
+                url: undefined // 明确设置为undefined
+            };
+
+            const opts = parsedOptions({ req } as any);
+            expect(opts.base.href).toBe('https://example.com/');
+        });
+
+        it('should fallback to default URL in server environment without req', async () => {
+            const { parsedOptions } = await import('./options');
+            // 确保在服务端环境（没有浏览器全局变量）
+            vi.stubGlobal('window', undefined);
+            vi.stubGlobal('location', undefined);
+
+            const options = parsedOptions({}); // 没有传入req
+            expect(options.base.href).toBe('https://www.esmnext.com/');
+        });
+
+        it('should handle browser environment with location.href error (unknown context)', async () => {
+            const { parsedOptions } = await import('./options');
+
+            // 模拟浏览器环境，但是访问location.href时抛出异常
+            // 这样会进入第44行的'unknown context'分支
+            vi.stubGlobal('window', {});
+            const mockLocation = {
+                get href() {
+                    throw new Error('Cannot access location.href');
+                }
+            };
+            vi.stubGlobal('location', mockLocation);
+
+            const options = parsedOptions({}); // 没有传入base和req
+            expect(options.base.href).toBe('https://www.esmnext.com/');
+        });
+
+        it('should handle URL parsing failure and fallback to default', async () => {
+            const { parsedOptions } = await import('./options');
+
+            // 模拟URL.parse返回null的情况
+            const originalParse = URL.parse;
+            vi.spyOn(URL, 'parse').mockReturnValueOnce(null);
+
+            const consoleSpy = vi
+                .spyOn(console, 'warn')
+                .mockImplementation(() => {});
+
+            const req = createMockReq({
+                host: 'example.com',
+                'x-forwarded-proto': 'https'
+            });
+
+            const opts = parsedOptions({ req } as any);
+
+            expect(consoleSpy).toHaveBeenCalledWith(
+                expect.stringContaining('Failed to parse base URL')
+            );
+            expect(opts.base.href).toBe('https://www.esmnext.com/');
+
+            consoleSpy.mockRestore();
+            URL.parse = originalParse;
+        });
     });
 
     // 新增测试：其他选项处理
