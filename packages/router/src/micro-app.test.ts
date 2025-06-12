@@ -94,6 +94,7 @@ const createMockRouter = (
         isPush: true,
         req: null,
         res: null,
+        context: {},
         url: new URL('http://test.com/test'),
         path: '/test',
         fullPath: '/test',

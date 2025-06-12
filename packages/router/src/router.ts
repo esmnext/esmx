@@ -36,8 +36,8 @@ export class Router {
     public readonly parsedOptions: RouterParsedOptions;
     public readonly isLayer: boolean;
     private _route: null | Route = null;
-    private readonly _navigation: Navigation;
-    private readonly _microApp: MicroApp = new MicroApp();
+    public readonly navigation: Navigation;
+    public readonly microApp: MicroApp = new MicroApp();
     private _destroys: Array<() => void> = [];
 
     // 任务控制器相关
@@ -160,38 +160,38 @@ export class Router {
         [RouteTaskType.push]: async () => {
             return async (to, from) => {
                 this._route = to;
-                this._microApp._update(this);
+                this.microApp._update(this);
                 // 变化时执行 push，未变化执行 replace
                 if (!isUrlEqual(to.url, from?.url)) {
-                    to.state = this._navigation.push(to);
+                    to.state = this.navigation.push(to);
                 } else {
-                    to.state = this._navigation.replace(to);
+                    to.state = this.navigation.replace(to);
                 }
             };
         },
         [RouteTaskType.replace]: async () => {
             return async (to, from) => {
                 this._route = to;
-                this._microApp._update(this);
+                this.microApp._update(this);
                 // 始终执行替换
-                to.state = this._navigation.replace(to);
+                to.state = this.navigation.replace(to);
             };
         },
         [RouteTaskType.popstate]: async () => {
             return async (to, from) => {
                 this._route = to;
-                this._microApp._update(this);
+                this.microApp._update(this);
                 // 有变化时执行 replace
                 if (!isUrlEqual(to.url, from?.url)) {
-                    to.state = this._navigation.replace(to);
+                    to.state = this.navigation.replace(to);
                 }
             };
         },
         [RouteTaskType.restartApp]: async () => {
             return async (to, from) => {
                 this._route = to;
-                this._microApp._update(this, true);
-                to.state = this._navigation.replace(to);
+                this.microApp._update(this, true);
+                to.state = this.navigation.replace(to);
             };
         },
         [RouteTaskType.pushWindow]: async () => {
@@ -221,7 +221,7 @@ export class Router {
         this.parsedOptions = parsedOptions(options);
         this.isLayer = this.parsedOptions.layer?.enable === true;
 
-        this._navigation = new Navigation(
+        this.navigation = new Navigation(
             this.parsedOptions,
             (url: string, state: RouteState) => {
                 this._transitionTo(RouteType.none, {
@@ -258,7 +258,7 @@ export class Router {
         );
     }
     public async back(): Promise<Route | null> {
-        const result = await this._navigation.go(-1);
+        const result = await this.navigation.go(-1);
         if (result === null) {
             // 调用 onBackNoResponse 钩子
             if (this.parsedOptions.onBackNoResponse) {
@@ -272,7 +272,12 @@ export class Router {
         });
     }
     public async go(index: number): Promise<Route | null> {
-        const result = await this._navigation.go(index);
+        // go(0) 在浏览器中会刷新页面，但在路由库中我们直接返回 null
+        if (index === 0) {
+            return null;
+        }
+
+        const result = await this.navigation.go(index);
         if (result === null) {
             // 当向后导航无响应时调用 onBackNoResponse 钩子
             if (index < 0 && this.parsedOptions.onBackNoResponse) {
@@ -286,7 +291,7 @@ export class Router {
         });
     }
     public async forward(): Promise<Route | null> {
-        const result = await this._navigation.go(1);
+        const result = await this.navigation.go(1);
         if (result === null) {
             return null;
         }
@@ -443,7 +448,7 @@ export class Router {
     }
     public async renderToString(throwError = false): Promise<string | null> {
         try {
-            const result = await this._microApp.app?.renderToString?.();
+            const result = await this.microApp.app?.renderToString?.();
             return result ?? null;
         } catch (e) {
             if (throwError) throw e;
@@ -470,8 +475,8 @@ export class Router {
         // 重置任务ID为0，取消所有正在进行的任务
         this._taskId = 0;
 
-        this._navigation.destroy();
-        this._microApp.destroy();
+        this.navigation.destroy();
+        this.microApp.destroy();
         this._destroys.forEach((func) => func());
         this._destroys.splice(0);
     }
