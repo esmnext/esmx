@@ -28,6 +28,7 @@
         }
     ],
     "dependencies": {
+        "happy-dom": "^18.0.1",
         "path-to-regexp": "^6.2.2"
     },
     "devDependencies": {

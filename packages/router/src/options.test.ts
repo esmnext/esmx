@@ -4,12 +4,14 @@ import { RouterMode } from './types';
 const setIsBrowserTrue = () => {
     vi.stubGlobal('window', {
         location: {
-            href: 'http://test.com/base/'
+            href: 'http://test.com/base/',
+            origin: 'http://test.com'
         },
         open: vi.fn()
     });
     vi.stubGlobal('location', {
-        href: 'http://test.com/base/'
+        href: 'http://test.com/base/',
+        origin: 'http://test.com'
     });
     vi.resetModules();
 };
@@ -111,11 +113,11 @@ describe('parsedOptions', () => {
         expect(obj.a).toBe(1);
     });
 
-    it('should use location.href if base is not provided (in browser)', async () => {
+    it('should use location.origin + "/" if base is not provided (in browser)', async () => {
         setIsBrowserTrue();
         const { parsedOptions } = await import('./options');
         const opts = parsedOptions({ routes: [] } as any);
-        expect(opts.base.href).toBe(location.href);
+        expect(opts.base.href).toBe(location.origin + '/');
     });
 
     it('should use empty array if routes is not provided', async () => {

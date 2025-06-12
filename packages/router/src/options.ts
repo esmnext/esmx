@@ -16,7 +16,7 @@ function getBaseUrl(options: RouterOptions): URL {
     if (options.base) {
         sourceUrl = options.base;
     } else if (isBrowser) {
-        sourceUrl = location.href;
+        sourceUrl = location.origin;
     } else if (!isBrowser && options.req) {
         // 服务端：尝试从 req 对象中获取
         const { req } = options;
