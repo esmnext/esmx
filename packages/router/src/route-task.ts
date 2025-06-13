@@ -12,29 +12,30 @@ import { isValidConfirmHookResult } from './util';
  * 用于控制任务的执行和取消
  */
 export class RouteTaskController {
-    private readonly initId: number;
-    private readonly getId: () => number;
+    private _aborted = false;
 
     /**
      * 创建路由任务控制器
-     * @param getId 获取当前任务ID的函数
      */
-    constructor(getId: () => number) {
-        this.getId = getId;
-        this.initId = getId();
+    constructor() {
+        // 每次创建任务都是新实例，默认未中断
     }
 
     /**
-     * 检查任务是否应该被取消
+     * 终止当前任务
+     */
+    abort(): void {
+        this._aborted = true;
+    }
+
+    /**
+     * 检查任务是否被取消
      * @param name 当前任务名称，用于日志
      * @returns 如果任务应该被取消返回 true，否则返回 false
      */
     shouldCancel(name: string): boolean {
-        const id = this.getId();
-        if (id !== this.initId) {
-            console.warn(
-                `[${name}] route task cancelled after execution due to task id change (${this.initId} -> ${id})`
-            );
+        if (this._aborted) {
+            console.warn(`[${name}] route task cancelled`);
             return true;
         }
         return false;

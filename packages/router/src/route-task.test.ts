@@ -625,8 +625,8 @@ describe('createRouteTask', () => {
     });
 });
 
-describe('Task cancellation with getCurrentTaskId', () => {
-    it('should cancel task when task id changes after first task execution', async () => {
+describe('Task cancellation with RouteTaskController', () => {
+    it('should cancel task when abort is called after first task execution', async () => {
         const options = createRealOptions();
         const to = new Route({
             options,
@@ -640,9 +640,12 @@ describe('Task cancellation with getCurrentTaskId', () => {
         });
 
         const executionOrder: string[] = [];
+        const controller = new RouteTaskController();
 
         const firstTask = async (route: Route, fromRoute: Route | null) => {
             executionOrder.push('task1');
+            // 在第一个任务执行后中断任务
+            controller.abort();
             return;
         };
 
@@ -661,15 +664,6 @@ describe('Task cancellation with getCurrentTaskId', () => {
                 task: secondTask
             }
         ];
-
-        // 创建控制器，在第一个任务执行后改变任务 id
-        const mockGetCurrentTaskId = vi
-            .fn()
-            .mockReturnValueOnce('task-1') // 初始调用（控制器构造时）
-            .mockReturnValueOnce('task-1') // 第一个任务执行前检查
-            .mockReturnValueOnce('task-2'); // 第一个任务执行后检查 - 任务 id 已变化
-
-        const controller = new RouteTaskController(mockGetCurrentTaskId);
 
         const result = await createRouteTask({
             to,
@@ -682,10 +676,9 @@ describe('Task cancellation with getCurrentTaskId', () => {
         expect(result).toBe(to);
         expect(to.status).toBe(RouteStatus.aborted);
         expect(executionOrder).toEqual(['task1']); // 第二个任务不应该执行
-        expect(mockGetCurrentTaskId).toHaveBeenCalledTimes(3);
     });
 
-    it('should cancel task when task id changes before task execution', async () => {
+    it('should cancel task when abort is called before task execution', async () => {
         const options = createRealOptions();
         const to = new Route({
             options,
@@ -699,6 +692,7 @@ describe('Task cancellation with getCurrentTaskId', () => {
         });
 
         const executionOrder: string[] = [];
+        const controller = new RouteTaskController();
 
         const firstTask = async (route: Route, fromRoute: Route | null) => {
             executionOrder.push('task1');
@@ -721,15 +715,8 @@ describe('Task cancellation with getCurrentTaskId', () => {
             }
         ];
 
-        // 创建控制器，在第二个任务执行前改变任务 id
-        const mockGetCurrentTaskId = vi
-            .fn()
-            .mockReturnValueOnce('task-1') // 初始调用（控制器构造时）
-            .mockReturnValueOnce('task-1') // 第一个任务执行前检查
-            .mockReturnValueOnce('task-1') // 第一个任务执行后检查
-            .mockReturnValueOnce('task-2'); // 第二个任务执行前检查 - 任务 id 已变化
-
-        const controller = new RouteTaskController(mockGetCurrentTaskId);
+        // 在任务执行前就中断
+        controller.abort();
 
         const result = await createRouteTask({
             to,
@@ -741,11 +728,10 @@ describe('Task cancellation with getCurrentTaskId', () => {
 
         expect(result).toBe(to);
         expect(to.status).toBe(RouteStatus.aborted);
-        expect(executionOrder).toEqual(['task1']); // 第二个任务不应该执行
-        expect(mockGetCurrentTaskId).toHaveBeenCalledTimes(4);
+        expect(executionOrder).toEqual([]); // 没有任务应该执行
     });
 
-    it('should cancel task when task id changes after second task execution', async () => {
+    it('should continue execution when task is not aborted', async () => {
         const options = createRealOptions();
         const to = new Route({
             options,
@@ -759,76 +745,7 @@ describe('Task cancellation with getCurrentTaskId', () => {
         });
 
         const executionOrder: string[] = [];
-
-        const firstTask = async (route: Route, fromRoute: Route | null) => {
-            executionOrder.push('task1');
-            return;
-        };
-
-        const secondTask = async (route: Route, fromRoute: Route | null) => {
-            executionOrder.push('task2');
-            return;
-        };
-
-        const thirdTask = async (route: Route, fromRoute: Route | null) => {
-            executionOrder.push('task3');
-            return;
-        };
-
-        const tasks: RouteTask[] = [
-            {
-                name: RouteTaskType.beforeEach,
-                task: firstTask
-            },
-            {
-                name: RouteTaskType.env,
-                task: secondTask
-            },
-            {
-                name: RouteTaskType.beforeEnter,
-                task: thirdTask
-            }
-        ];
-
-        // 创建控制器，在第二个任务执行完成后改变任务 id
-        const mockGetCurrentTaskId = vi
-            .fn()
-            .mockReturnValueOnce('task-1') // 初始调用（控制器构造时）
-            .mockReturnValueOnce('task-1') // 第一个任务执行前检查
-            .mockReturnValueOnce('task-1') // 第一个任务执行后检查
-            .mockReturnValueOnce('task-1') // 第二个任务执行前检查
-            .mockReturnValueOnce('task-2'); // 第二个任务执行后检查 - 任务 id 已变化
-
-        const controller = new RouteTaskController(mockGetCurrentTaskId);
-
-        const result = await createRouteTask({
-            to,
-            from,
-            tasks,
-            options,
-            controller
-        });
-
-        expect(result).toBe(to);
-        expect(to.status).toBe(RouteStatus.aborted);
-        expect(executionOrder).toEqual(['task1', 'task2']); // 第三个任务不应该执行
-        expect(mockGetCurrentTaskId).toHaveBeenCalledTimes(5);
-    });
-
-    it('should continue execution when task id remains unchanged', async () => {
-        const options = createRealOptions();
-        const to = new Route({
-            options,
-            toType: RouteType.push,
-            toRaw: '/test'
-        });
-        const from = new Route({
-            options,
-            toType: RouteType.push,
-            toRaw: '/home'
-        });
-
-        const executionOrder: string[] = [];
+        const controller = new RouteTaskController();
 
         const firstTask = async (route: Route, fromRoute: Route | null) => {
             executionOrder.push('task1');
@@ -850,10 +767,6 @@ describe('Task cancellation with getCurrentTaskId', () => {
                 task: secondTask
             }
         ];
-
-        // 任务 id 始终保持不变
-        const mockGetCurrentTaskId = vi.fn().mockReturnValue('task-1');
-        const controller = new RouteTaskController(mockGetCurrentTaskId);
 
         const result = await createRouteTask({
             to,
@@ -868,7 +781,7 @@ describe('Task cancellation with getCurrentTaskId', () => {
         expect(executionOrder).toEqual(['task1', 'task2']); // 两个任务都应该执行
     });
 
-    it('should work normally without getCurrentTaskId parameter', async () => {
+    it('should work normally without controller parameter', async () => {
         const options = createRealOptions();
         const to = new Route({
             options,
@@ -904,7 +817,7 @@ describe('Task cancellation with getCurrentTaskId', () => {
             }
         ];
 
-        // 不提供 getCurrentTaskId 参数
+        // 不提供 controller 参数
         const result = await createRouteTask({
             to,
             from,
@@ -917,7 +830,7 @@ describe('Task cancellation with getCurrentTaskId', () => {
         expect(executionOrder).toEqual(['task1', 'task2']); // 所有任务都应该正常执行
     });
 
-    it('should pass controller to redirection and cancel if task id changes', async () => {
+    it('should pass controller to redirection', async () => {
         const options = createRealOptions();
         const to = new Route({
             options,
@@ -929,6 +842,8 @@ describe('Task cancellation with getCurrentTaskId', () => {
             toType: RouteType.push,
             toRaw: '/home'
         });
+
+        const controller = new RouteTaskController();
 
         const redirectTask = async (route: Route, fromRoute: Route | null) => {
             if (route.path === '/test') {
@@ -944,10 +859,6 @@ describe('Task cancellation with getCurrentTaskId', () => {
             }
         ];
 
-        const mockGetCurrentTaskId = vi.fn().mockReturnValue('task-1'); // 任务 ID 始终保持不变
-
-        const controller = new RouteTaskController(mockGetCurrentTaskId);
-
         const result = await createRouteTask({
             to,
             from,
@@ -956,11 +867,10 @@ describe('Task cancellation with getCurrentTaskId', () => {
             controller
         });
 
-        // 应该返回重定向的路由，控制器传递给重定向的任务，任务ID不变所以正常执行
+        // 应该返回重定向的路由，控制器传递给重定向的任务
         expect(result).not.toBe(to);
         expect(result.path).toBe('/redirected');
         expect(result.status).toBe(RouteStatus.resolve); // 重定向后没有其他任务，所以状态保持 resolve
-        expect(mockGetCurrentTaskId).toHaveBeenCalled();
     });
 });
 
@@ -1005,8 +915,7 @@ describe('RouteTaskOptions interface', () => {
             toRaw: '/home'
         });
         const tasks: RouteTask[] = [];
-        const getCurrentTaskId = () => 123;
-        const controller = new RouteTaskController(getCurrentTaskId);
+        const controller = new RouteTaskController();
 
         const routeTaskOptions: RouteTaskOptions = {
             to,

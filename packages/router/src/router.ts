@@ -39,8 +39,8 @@ export class Router {
     public readonly microApp: MicroApp = new MicroApp();
     private _destroys: Array<() => void> = [];
 
-    // 任务控制器相关
-    private _taskId = 0;
+    // 任务控制器
+    private _taskController: RouteTaskController | null = null;
 
     private readonly _tasks: Record<RouteTaskType, RouteConfirmHook> = {
         [RouteTaskType.location]: (to, from) => {
@@ -476,8 +476,9 @@ export class Router {
         };
     }
     public destroy() {
-        // 重置任务ID为0，取消所有正在进行的任务
-        this._taskId = 0;
+        // 终止当前任务
+        this._taskController?.abort();
+        this._taskController = null;
 
         this.navigation.destroy();
         this.microApp.destroy();
@@ -513,7 +514,11 @@ export class Router {
         to: Route,
         from: Route | null
     ) {
-        this._taskId++;
+        // 终止之前的任务
+        this._taskController?.abort();
+
+        // 创建新的任务控制器
+        this._taskController = new RouteTaskController();
 
         const names: RouteTaskType[] = to.type ? config[to.type] : [];
         const { _tasks, parsedOptions: options } = this;
@@ -522,15 +527,12 @@ export class Router {
             task: _tasks[name]
         }));
 
-        // 直接构造 controller 对象
-        const controller = new RouteTaskController(() => this._taskId);
-
         return createRouteTask({
             options,
             to,
             from,
             tasks,
-            controller
+            controller: this._taskController
         });
     }
 }
