@@ -123,12 +123,6 @@ cd packages/router
 ### 创建工单
 参考 `standards/issue.md` 规范创建工单文件
 
-## 📞 联系信息
-
-- **项目仓库**：[esmx](https://github.com/your-org/esmx)
-- **文档地址**：[Router 文档](https://your-docs-site.com/router)
-- **问题反馈**：[GitHub Issues](https://github.com/your-org/esmx/issues)
-
 ---
 
 *本文件是 AI 开发 Router 功能的必读指南，请在开始任何开发工作前仔细阅读。*
