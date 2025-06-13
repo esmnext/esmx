@@ -3,6 +3,14 @@
 ## 质量检测规范
 质量检测必须执行以下命令并通过所有检查：
 
+### 开发工具配置
+- **包管理器**：pnpm
+- **测试框架**：Vitest
+- **代码格式化**：Biome
+- **类型检查**：TypeScript
+- **构建工具**：Vite
+- **样式检查**：Stylelint
+
 ### 检测命令
 ```bash
 pnpm lint:type    # tsc --noEmit
@@ -11,6 +19,13 @@ pnpm lint:css     # stylelint '**/*.{css,vue}' --fix --aei
 pnpm test         # vitest run --pass-with-no-tests
 pnpm coverage     # vitest run --coverage --pass-with-no-tests
 ```
+
+### 质量标准
+- **TypeScript 严格模式**：所有代码必须通过类型检查
+- **测试覆盖率**：≥ 85%
+- **代码规范**：使用 Biome 格式化，零错误零警告
+- **文档一致性**：中英文文档必须保持同步
+- **架构合规**：符合架构设计规范
 
 ### 架构优化检查
 - **代码重复**: 检查是否存在重复代码和逻辑
@@ -24,7 +39,7 @@ pnpm coverage     # vitest run --coverage --pass-with-no-tests
 - 代码规范：零错误
 - 样式规范：零错误  
 - 测试结果：全部通过
-- 测试覆盖：≥ 85%
+- 测试覆盖：达到覆盖率要求
 - 架构优化：通过整体架构检查
 
 

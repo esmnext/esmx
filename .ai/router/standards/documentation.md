@@ -3,46 +3,7 @@
 ## 文档编写规范
 文档编写必须遵循以下标准流程：
 
-### Router文档结构大纲
-
-#### 主要文档位置
-```
-packages/router/
-├── README.md              # 英文主文档
-└── README_CN.md           # 中文主文档
-
-examples/docs/src/
-├── en/router/             # 英文详细文档
-│   ├── getting-started.md # 快速开始
-│   ├── basic-usage.md     # 基础用法
-│   ├── advanced.md        # 高级特性
-│   ├── api/              # API参考
-│   │   ├── router.md     # Router类
-│   │   ├── route.md      # Route类
-│   │   └── navigation.md # Navigation类
-│   ├── guides/           # 使用指南
-│   │   ├── routing.md    # 路由配置
-│   │   ├── guards.md     # 路由守卫
-│   │   └── history.md    # 历史记录
-│   └── examples/         # 示例代码
-│       ├── basic.md      # 基础示例
-│       └── advanced.md   # 高级示例
-└── zh/router/            # 中文详细文档 (与英文保持一致结构)
-    ├── getting-started.md
-    ├── basic-usage.md
-    ├── advanced.md
-    ├── api/
-    │   ├── router.md
-    │   ├── route.md
-    │   └── navigation.md
-    ├── guides/
-    │   ├── routing.md
-    │   ├── guards.md
-    │   └── history.md
-    └── examples/
-        ├── basic.md
-        └── advanced.md
-```
+### Router文档结构要求
 
 #### 文档类型定义
 ##### 主文档 (README)
@@ -53,19 +14,16 @@ examples/docs/src/
 
 ##### API文档
 - **目标**: 详细的接口说明
-- **格式**: JSDoc注释 + Markdown
 - **位置**: examples/docs/src/{lang}/router/api/
 - **内容**: 类、方法、参数、返回值、示例
 
 ##### 使用指南
 - **目标**: 功能使用教程
-- **格式**: Markdown + 代码示例
 - **位置**: examples/docs/src/{lang}/router/guides/
 - **内容**: 具体功能的使用方法和最佳实践
 
 ##### 示例文档
 - **目标**: 可运行的代码示例
-- **格式**: Markdown + 完整代码
 - **位置**: examples/docs/src/{lang}/router/examples/
 - **内容**: 典型使用场景的完整示例
 
@@ -141,7 +99,7 @@ await router.push('/user/123');
   □ API说明完整性一致
   ```
 
-## 输出报告规范
+## 工单报告输出规范
 
 ```markdown
 已完成 [功能名称] 文档编写：
