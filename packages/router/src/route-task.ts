@@ -102,7 +102,7 @@ export async function createRouteTask(opts: RouteTaskOptions) {
             to: new Route({
                 options: opts.options,
                 toType: to.type,
-                totoInput: result,
+                toInput: result,
                 from: to.url
             }),
             from: to,

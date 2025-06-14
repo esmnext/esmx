@@ -117,7 +117,7 @@ const createMockRouter = (
     const mockRoute = new Route({
         options: mockParsedOptions,
         toType: RouteType.push,
-        totoInput: '/test'
+        toInput: '/test'
     });
 
     return {

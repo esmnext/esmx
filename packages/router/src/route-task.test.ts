@@ -30,12 +30,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/test'
+            toInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/home'
+            toInput: '/home'
         });
         const tasks: RouteTask[] = [];
 
@@ -55,12 +55,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/test'
+            toInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/home'
+            toInput: '/home'
         });
 
         // 使用真实的执行顺序跟踪
@@ -102,12 +102,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/test'
+            toInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/home'
+            toInput: '/home'
         });
 
         // 真实的处理函数
@@ -144,12 +144,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/test'
+            toInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/home'
+            toInput: '/home'
         });
 
         // 真实的阻止任务
@@ -182,12 +182,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/test'
+            toInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/home'
+            toInput: '/home'
         });
 
         // 真实的重定向任务函数
@@ -226,12 +226,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/test'
+            toInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/home'
+            toInput: '/home'
         });
 
         // 真实的重定向任务函数，返回路由对象
@@ -271,12 +271,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/admin'
+            toInput: '/admin'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/home'
+            toInput: '/home'
         });
 
         // 模拟权限检查的真实逻辑
@@ -318,12 +318,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/test'
+            toInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/home'
+            toInput: '/home'
         });
 
         const consoleErrorSpy = vi
@@ -372,12 +372,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/test'
+            toInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/home'
+            toInput: '/home'
         });
 
         const executionOrder: string[] = [];
@@ -419,12 +419,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/test'
+            toInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/home'
+            toInput: '/home'
         });
 
         const executionOrder: string[] = [];
@@ -466,7 +466,7 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/test'
+            toInput: '/test'
         });
         const from = null;
 
@@ -503,12 +503,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/test'
+            toInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/home'
+            toInput: '/home'
         });
 
         const executionOrder: string[] = [];
@@ -563,12 +563,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/test'
+            toInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/home'
+            toInput: '/home'
         });
 
         const executionOrder: string[] = [];
@@ -631,12 +631,12 @@ describe('Task cancellation with RouteTaskController', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/test'
+            toInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/home'
+            toInput: '/home'
         });
 
         const executionOrder: string[] = [];
@@ -683,12 +683,12 @@ describe('Task cancellation with RouteTaskController', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/test'
+            toInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/home'
+            toInput: '/home'
         });
 
         const executionOrder: string[] = [];
@@ -736,12 +736,12 @@ describe('Task cancellation with RouteTaskController', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/test'
+            toInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/home'
+            toInput: '/home'
         });
 
         const executionOrder: string[] = [];
@@ -786,12 +786,12 @@ describe('Task cancellation with RouteTaskController', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/test'
+            toInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/home'
+            toInput: '/home'
         });
 
         const executionOrder: string[] = [];
@@ -835,12 +835,12 @@ describe('Task cancellation with RouteTaskController', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/test'
+            toInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/home'
+            toInput: '/home'
         });
 
         const controller = new RouteTaskController();
@@ -880,12 +880,12 @@ describe('RouteTaskOptions interface', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/test'
+            toInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/home'
+            toInput: '/home'
         });
         const tasks: RouteTask[] = [];
 
@@ -907,12 +907,12 @@ describe('RouteTaskOptions interface', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/test'
+            toInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            totoInput: '/home'
+            toInput: '/home'
         });
         const tasks: RouteTask[] = [];
         const controller = new RouteTaskController();

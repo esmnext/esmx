@@ -458,14 +458,14 @@ describe('Navigation', () => {
         const route1 = new Route({
             options: createTestOptions(),
             toType: RouteType.push,
-            totoInput: { path: '/foo', state: { a: 1 } }
+            toInput: { path: '/foo', state: { a: 1 } }
         });
         const state1 = nav.push(route1);
         assert.deepEqual(state1.a, 1);
         const route2 = new Route({
             options: createTestOptions(),
             toType: RouteType.push,
-            totoInput: { path: '/bar', state: { b: 2 } }
+            toInput: { path: '/bar', state: { b: 2 } }
         });
         const state2 = nav.replace(route2);
         assert.deepEqual(state2.b, 2);
@@ -478,21 +478,21 @@ describe('Navigation', () => {
             new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                totoInput: { path: '/a', state: { a: 1 } }
+                toInput: { path: '/a', state: { a: 1 } }
             })
         );
         nav.push(
             new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                totoInput: { path: '/b', state: { b: 2 } }
+                toInput: { path: '/b', state: { b: 2 } }
             })
         );
         nav.push(
             new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                totoInput: { path: '/c', state: { c: 3 } }
+                toInput: { path: '/c', state: { c: 3 } }
             })
         );
         // go(-2) 回到 /a
@@ -520,14 +520,14 @@ describe('Navigation', () => {
             new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                totoInput: { path: '/a', state: { a: 1 } }
+                toInput: { path: '/a', state: { a: 1 } }
             })
         );
         nav.push(
             new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                totoInput: { path: '/b', state: { b: 2 } }
+                toInput: { path: '/b', state: { b: 2 } }
             })
         );
         // await nav.go(-1);
@@ -545,14 +545,14 @@ describe('Navigation', () => {
             new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                totoInput: { path: '/a', state: { a: 1 } }
+                toInput: { path: '/a', state: { a: 1 } }
             })
         );
         nav.push(
             new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                totoInput: { path: '/b', state: { b: 2 } }
+                toInput: { path: '/b', state: { b: 2 } }
             })
         );
 
@@ -574,14 +574,14 @@ describe('Navigation', () => {
             new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                totoInput: { path: '/a', state: { a: 1 } }
+                toInput: { path: '/a', state: { a: 1 } }
             })
         );
         nav.push(
             new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                totoInput: { path: '/b', state: { b: 2 } }
+                toInput: { path: '/b', state: { b: 2 } }
             })
         );
         nav.destroy();
@@ -651,7 +651,7 @@ describe('Navigation', () => {
             const route1 = new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                totoInput: { path: '/foo', state: { a: 1 } }
+                toInput: { path: '/foo', state: { a: 1 } }
             });
             const state1 = nav.push(route1);
             // console.log('push /foo', (nav as any)._history._entries, (nav as any)._history._index);
@@ -664,7 +664,7 @@ describe('Navigation', () => {
             const route2 = new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                totoInput: { path: '/bar', state: { b: 2 } }
+                toInput: { path: '/bar', state: { b: 2 } }
             });
             const state2 = nav.replace(route2);
             // console.log('replace /bar', (nav as any)._history._entries, (nav as any)._history._index);
@@ -694,7 +694,7 @@ describe('Navigation', () => {
             const routeWithNullState = new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                totoInput: { path: '/test', state: null as any }
+                toInput: { path: '/test', state: null as any }
             });
             const state1 = nav.push(routeWithNullState);
             assert.ok(state1);
@@ -704,7 +704,7 @@ describe('Navigation', () => {
             const routeWithUndefinedState = new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                totoInput: { path: '/test2', state: undefined }
+                toInput: { path: '/test2', state: undefined }
             });
             const state2 = nav.push(routeWithUndefinedState);
             assert.ok(state2);
@@ -719,7 +719,7 @@ describe('Navigation', () => {
                 new Route({
                     options: createTestOptions(),
                     toType: RouteType.push,
-                    totoInput: '/initial'
+                    toInput: '/initial'
                 })
             );
 
@@ -727,7 +727,7 @@ describe('Navigation', () => {
             const routeWithNullState = new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                totoInput: { path: '/test', state: null as any }
+                toInput: { path: '/test', state: null as any }
             });
             const state1 = nav.replace(routeWithNullState);
             assert.ok(state1);
@@ -737,7 +737,7 @@ describe('Navigation', () => {
             const routeWithUndefinedState = new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                totoInput: { path: '/test2', state: undefined }
+                toInput: { path: '/test2', state: undefined }
             });
             const state2 = nav.replace(routeWithUndefinedState);
             assert.ok(state2);
@@ -752,14 +752,14 @@ describe('Navigation', () => {
                 new Route({
                     options: createTestOptions(),
                     toType: RouteType.push,
-                    totoInput: '/test1'
+                    toInput: '/test1'
                 })
             );
             nav.push(
                 new Route({
                     options: createTestOptions(),
                     toType: RouteType.push,
-                    totoInput: '/test2'
+                    toInput: '/test2'
                 })
             );
 

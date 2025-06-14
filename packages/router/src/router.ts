@@ -59,32 +59,32 @@ export class Router {
             }
         );
     }
-    public push(totoInput: RouteLocationInput): Promise<Route> {
-        return this.transition.to(RouteType.push, totoInput);
+    public push(toInput: RouteLocationInput): Promise<Route> {
+        return this.transition.to(RouteType.push, toInput);
     }
-    public replace(totoInput: RouteLocationInput): Promise<Route> {
-        return this.transition.to(RouteType.replace, totoInput);
+    public replace(toInput: RouteLocationInput): Promise<Route> {
+        return this.transition.to(RouteType.replace, toInput);
     }
-    public pushWindow(totoInput?: RouteLocationInput): Promise<Route> {
+    public pushWindow(toInput?: RouteLocationInput): Promise<Route> {
         return this.transition.to(
             RouteType.pushWindow,
-            totoInput ?? this.route.url.href
+            toInput ?? this.route.url.href
         );
     }
-    public replaceWindow(totoInput?: RouteLocationInput): Promise<Route> {
+    public replaceWindow(toInput?: RouteLocationInput): Promise<Route> {
         return this.transition.to(
             RouteType.replaceWindow,
-            totoInput ?? this.route.url.href
+            toInput ?? this.route.url.href
         );
     }
     public restartApp(): Promise<Route>;
-    public restartApp(totoInput: RouteLocationInput): Promise<Route>;
+    public restartApp(toInput: RouteLocationInput): Promise<Route>;
     public restartApp(
-        totoInput?: RouteLocationInput | undefined
+        toInput?: RouteLocationInput | undefined
     ): Promise<Route> {
         return this.transition.to(
             RouteType.restartApp,
-            totoInput ?? this.route.url.href
+            toInput ?? this.route.url.href
         );
     }
     public async back(): Promise<Route | null> {
@@ -140,7 +140,7 @@ export class Router {
      * - 获取路由参数、元信息等
      * - 测试路由配置的有效性
      *
-     * @param totoInput 目标路由位置，可以是字符串路径或路由配置对象
+     * @param toInput 目标路由位置，可以是字符串路径或路由配置对象
      * @returns 解析后的路由对象，包含完整的路由信息
      *
      * @example
@@ -163,11 +163,11 @@ export class Router {
      * }
      * ```
      */
-    public resolve(totoInput: RouteLocationInput): Route {
+    public resolve(toInput: RouteLocationInput): Route {
         return new Route({
             options: this.parsedOptions,
             toType: RouteType.none,
-            totoInput,
+            toInput,
             from: this._currentRoute?.url ?? null
         });
     }
@@ -193,7 +193,7 @@ export class Router {
     }
 
     public async createLayer(
-        totoInput: RouteLocationInput,
+        toInput: RouteLocationInput,
         options?: RouterOptions
     ): Promise<{ promise: Promise<RouterLayerResult>; router: Router }> {
         const layer: Required<RouterLayerOptions> = {
@@ -245,18 +245,18 @@ export class Router {
             },
             layer
         });
-        await router.replace(totoInput);
+        await router.replace(toInput);
         return {
             promise,
             router
         };
     }
     public async pushLayer(
-        totoInput: RouteLocationInput,
+        toInput: RouteLocationInput,
         layer?: Partial<RouterLayerOptions>,
         options?: RouterOptions
     ): Promise<RouterLayerResult> {
-        const { promise } = await this.createLayer(totoInput, {
+        const { promise } = await this.createLayer(toInput, {
             ...options,
             layer: {
                 ...layer,

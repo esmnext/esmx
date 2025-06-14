@@ -18,19 +18,16 @@ export function normalizeURL(url: string | URL, base: URL): URL {
     return URL.parse(url) || new URL(url, base);
 }
 
-export function parseLocation(
-    totoInput: RouteLocationInput,
-    baseURL: URL
-): URL {
-    if (typeof totoInput === 'string') {
-        return normalizeURL(totoInput, baseURL);
+export function parseLocation(toInput: RouteLocationInput, baseURL: URL): URL {
+    if (typeof toInput === 'string') {
+        return normalizeURL(toInput, baseURL);
     }
-    const url = normalizeURL(totoInput.path ?? totoInput.url ?? '', baseURL);
+    const url = normalizeURL(toInput.path ?? toInput.url ?? '', baseURL);
     const searchParams = url.searchParams;
 
     // 优先级 queryArray > query > path中的query
     Object.entries<string | (string | undefined)[]>(
-        Object.assign({}, totoInput.query, totoInput.queryArray)
+        Object.assign({}, toInput.query, toInput.queryArray)
     ).forEach(([key, value]) => {
         searchParams.delete(key); // 清除之前的同名参数
         value = Array.isArray(value) ? value : [value];
@@ -40,8 +37,8 @@ export function parseLocation(
     });
 
     // 设置hash值（URL片段标识符）
-    if (totoInput.hash) {
-        url.hash = totoInput.hash;
+    if (toInput.hash) {
+        url.hash = toInput.hash;
     }
 
     return url;

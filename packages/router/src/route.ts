@@ -45,7 +45,7 @@ function createDefaultRouteOptions(): Required<RouteOptions> {
     return {
         options: parsedOptions(),
         toType: RouteType.none,
-        totoInput: '/',
+        toInput: '/',
         from: null
     };
 }
@@ -53,19 +53,19 @@ function createDefaultRouteOptions(): Required<RouteOptions> {
 /**
  * 将用户传入的参数拼接到URL路径中
  * @param match 路由匹配结果
- * @param totoInput 用户传入的路由位置对象
+ * @param toInput 用户传入的路由位置对象
  * @param base 基础URL
  * @param to 当前解析的URL对象
  */
 export function applyRouteParams(
     match: RouteMatchResult,
-    totoInput: RouteLocationInput,
+    toInput: RouteLocationInput,
     base: URL,
     to: URL
 ): void {
     if (
-        !isPlainObject(totoInput) ||
-        !isNonEmptyPlainObject(totoInput.params) ||
+        !isPlainObject(toInput) ||
+        !isNonEmptyPlainObject(toInput.params) ||
         !match.matches.length
     ) {
         return;
@@ -79,7 +79,7 @@ export function applyRouteParams(
 
     // 用用户参数编译新路径并分割
     const next = new URL(
-        lastMatch.compile(totoInput.params).substring(1),
+        lastMatch.compile(toInput.params).substring(1),
         base
     ).pathname.split('/');
 
@@ -92,7 +92,7 @@ export function applyRouteParams(
     to.pathname = current.join('/');
 
     // 合并参数到匹配结果中，用户参数优先
-    Object.assign(match.params, totoInput.params);
+    Object.assign(match.params, toInput.params);
 }
 
 /**
@@ -132,7 +132,7 @@ export class Route {
         const defaults = createDefaultRouteOptions();
         const finalOptions = { ...defaults, ...routeOptions };
 
-        const { options, toType, totoInput, from } = finalOptions;
+        const { options, toType, toInput, from } = finalOptions;
 
         // 保存原始选项用于克隆
         this._options = options;
@@ -143,7 +143,7 @@ export class Route {
         this.context = options.context;
 
         const base = options.base;
-        const to = options.normalizeURL(parseLocation(totoInput, base), from);
+        const to = options.normalizeURL(parseLocation(toInput, base), from);
         const isSameOrigin = to.origin === base.origin;
         const isSameBase = to.pathname.startsWith(base.pathname);
         const match =
@@ -157,8 +157,8 @@ export class Route {
             ? `${this.path}${to.search}${to.hash}`
             : to.pathname + to.search + to.hash;
         this.matched = match ? match.matches : Object.freeze([]);
-        this.keepScrollPosition = isPlainObject(totoInput)
-            ? Boolean(totoInput.keepScrollPosition)
+        this.keepScrollPosition = isPlainObject(toInput)
+            ? Boolean(toInput.keepScrollPosition)
             : false;
         this.config =
             this.matched.length > 0
@@ -168,8 +168,8 @@ export class Route {
 
         // 初始化状态对象 - 创建新的本地对象，合并外部传入的状态
         const state: RouteState = {};
-        if (isPlainObject(totoInput) && totoInput.state) {
-            Object.assign(state, totoInput.state);
+        if (isPlainObject(toInput) && toInput.state) {
+            Object.assign(state, toInput.state);
         }
         this.state = state;
 
@@ -187,19 +187,16 @@ export class Route {
 
         // 应用用户传入的路由参数（如果匹配成功）
         if (match) {
-            applyRouteParams(match, totoInput, base, to);
+            applyRouteParams(match, toInput, base, to);
             // 将匹配到的参数赋值给路由对象
             Object.assign(this.params, match.params);
         }
 
         // 设置状态码
         // 优先使用用户传入的statusCode
-        if (
-            isPlainObject(totoInput) &&
-            typeof totoInput.statusCode === 'number'
-        ) {
-            this.statusCode = totoInput.statusCode;
-        } else if (isPlainObject(totoInput) && totoInput.statusCode === null) {
+        if (isPlainObject(toInput) && typeof toInput.statusCode === 'number') {
+            this.statusCode = toInput.statusCode;
+        } else if (isPlainObject(toInput) && toInput.statusCode === null) {
             this.statusCode = null;
         }
         // 如果没有传入statusCode，保持默认的null值
@@ -307,7 +304,7 @@ export class Route {
      */
     clone(): Route {
         // 重新构造路由对象，传入当前的状态
-        const totoInput = {
+        const toInput = {
             path: this.fullPath,
             state: { ...this.state }
         };
@@ -318,7 +315,7 @@ export class Route {
         const clonedRoute = new Route({
             options,
             toType: this.type,
-            totoInput
+            toInput
         });
 
         // 手动复制statusCode，因为它可能被手动修改过

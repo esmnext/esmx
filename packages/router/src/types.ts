@@ -103,7 +103,7 @@ export interface RouteOptions {
     /** 路由类型 */
     toType?: RouteType;
     /** 目标路由位置 */
-    totoInput?: RouteLocationInput;
+    toInput?: RouteLocationInput;
     /** 来源 URL */
     from?: URL | null;
 }

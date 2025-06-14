@@ -330,7 +330,7 @@ export class RouteTransition {
     // 核心路由转换方法 - 完全按照原 Router 的 _transitionTo 逻辑
     public async to(
         toType: RouteType,
-        totoInput: RouteLocationInput
+        toInput: RouteLocationInput
     ): Promise<Route> {
         const { _tasks } = this;
         const from = this._route;
@@ -339,7 +339,7 @@ export class RouteTransition {
             new Route({
                 options: this.router.parsedOptions,
                 toType,
-                totoInput,
+                toInput,
                 from: from?.url ?? null
             }),
             from
