@@ -5,6 +5,8 @@ export {
     RouterMode,
     type RouterOptions,
     type RouterParsedOptions,
+    type RouterLayerOptions,
+    type RouterLayerResult,
     type RouterMicroApp,
     type RouterMicroAppCallback,
     type RouterMicroAppOptions,
