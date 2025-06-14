@@ -8,7 +8,7 @@ describe('Router.isRouteMatched 测试', () => {
 
     beforeEach(async () => {
         router = new Router({
-            mode: RouterMode.abstract,
+            mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
             routes: [
                 {
@@ -300,7 +300,7 @@ describe('Router.isRouteMatched 测试', () => {
         test('应该在当前路由为 null 时返回 false', () => {
             // 创建一个新的路由器，但不进行初始导航
             const newRouter = new Router({
-                mode: RouterMode.abstract,
+                mode: RouterMode.memory,
                 base: new URL('http://localhost:3000/'),
                 routes: [{ path: '/test', component: () => 'Test' }]
             });

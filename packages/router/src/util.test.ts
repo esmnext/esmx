@@ -1078,12 +1078,12 @@ describe('isRouteMatched', () => {
             const route1 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/user/123'
+                totoInput: '/user/123'
             });
             const route2 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/user/456'
+                totoInput: '/user/456'
             });
 
             expect(isRouteMatched(route1, route2, 'route')).toBe(true);
@@ -1094,12 +1094,12 @@ describe('isRouteMatched', () => {
             const route1 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/user/123'
+                totoInput: '/user/123'
             });
             const route2 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/settings'
+                totoInput: '/settings'
             });
 
             expect(isRouteMatched(route1, route2, 'route')).toBe(false);
@@ -1110,7 +1110,7 @@ describe('isRouteMatched', () => {
             const route1 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/user/123'
+                totoInput: '/user/123'
             });
 
             expect(isRouteMatched(route1, null, 'route')).toBe(false);
@@ -1123,12 +1123,12 @@ describe('isRouteMatched', () => {
             const route1 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/user/123?tab=profile'
+                totoInput: '/user/123?tab=profile'
             });
             const route2 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/user/123?tab=profile'
+                totoInput: '/user/123?tab=profile'
             });
 
             expect(isRouteMatched(route1, route2, 'exact')).toBe(true);
@@ -1139,12 +1139,12 @@ describe('isRouteMatched', () => {
             const route1 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/user/123?tab=profile'
+                totoInput: '/user/123?tab=profile'
             });
             const route2 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/user/123?tab=settings'
+                totoInput: '/user/123?tab=settings'
             });
 
             expect(isRouteMatched(route1, route2, 'exact')).toBe(false);
@@ -1155,12 +1155,12 @@ describe('isRouteMatched', () => {
             const route1 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/user/123'
+                totoInput: '/user/123'
             });
             const route2 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/user/123?tab=profile'
+                totoInput: '/user/123?tab=profile'
             });
 
             expect(isRouteMatched(route1, route2, 'exact')).toBe(false);
@@ -1173,12 +1173,12 @@ describe('isRouteMatched', () => {
             const route1 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/user/123/profile/settings'
+                totoInput: '/user/123/profile/settings'
             });
             const route2 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/user/123'
+                totoInput: '/user/123'
             });
 
             expect(isRouteMatched(route1, route2, 'include')).toBe(true);
@@ -1189,12 +1189,12 @@ describe('isRouteMatched', () => {
             const route1 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/user/123'
+                totoInput: '/user/123'
             });
             const route2 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/user/123'
+                totoInput: '/user/123'
             });
 
             expect(isRouteMatched(route1, route2, 'include')).toBe(true);
@@ -1205,12 +1205,12 @@ describe('isRouteMatched', () => {
             const route1 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/user/123'
+                totoInput: '/user/123'
             });
             const route2 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/user/456'
+                totoInput: '/user/456'
             });
 
             expect(isRouteMatched(route1, route2, 'include')).toBe(false);
@@ -1221,12 +1221,12 @@ describe('isRouteMatched', () => {
             const route1 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/user'
+                totoInput: '/user'
             });
             const route2 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/user/123'
+                totoInput: '/user/123'
             });
 
             expect(isRouteMatched(route1, route2, 'include')).toBe(false);
@@ -1249,12 +1249,12 @@ describe('isRouteMatched', () => {
             const route1 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/user/123#section1'
+                totoInput: '/user/123#section1'
             });
             const route2 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/user/123#section2'
+                totoInput: '/user/123#section2'
             });
 
             expect(isRouteMatched(route1, route2, 'route')).toBe(true);
@@ -1266,12 +1266,12 @@ describe('isRouteMatched', () => {
             const route1 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/user/123'
+                totoInput: '/user/123'
             });
             const route2 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/user/123'
+                totoInput: '/user/123'
             });
 
             // @ts-expect-error - testing invalid match type

@@ -1,4 +1,4 @@
-import type { RouteLocationRaw } from './types';
+import type { RouteLocationInput } from './types';
 import { isNotNullish } from './util';
 
 export function normalizeURL(url: string | URL, base: URL): URL {
@@ -18,16 +18,19 @@ export function normalizeURL(url: string | URL, base: URL): URL {
     return URL.parse(url) || new URL(url, base);
 }
 
-export function parseLocation(toRaw: RouteLocationRaw, baseURL: URL): URL {
-    if (typeof toRaw === 'string') {
-        return normalizeURL(toRaw, baseURL);
+export function parseLocation(
+    totoInput: RouteLocationInput,
+    baseURL: URL
+): URL {
+    if (typeof totoInput === 'string') {
+        return normalizeURL(totoInput, baseURL);
     }
-    const url = normalizeURL(toRaw.path ?? toRaw.url ?? '', baseURL);
+    const url = normalizeURL(totoInput.path ?? totoInput.url ?? '', baseURL);
     const searchParams = url.searchParams;
 
     // 优先级 queryArray > query > path中的query
     Object.entries<string | (string | undefined)[]>(
-        Object.assign({}, toRaw.query, toRaw.queryArray)
+        Object.assign({}, totoInput.query, totoInput.queryArray)
     ).forEach(([key, value]) => {
         searchParams.delete(key); // 清除之前的同名参数
         value = Array.isArray(value) ? value : [value];
@@ -37,8 +40,8 @@ export function parseLocation(toRaw: RouteLocationRaw, baseURL: URL): URL {
     });
 
     // 设置hash值（URL片段标识符）
-    if (toRaw.hash) {
-        url.hash = toRaw.hash;
+    if (totoInput.hash) {
+        url.hash = totoInput.hash;
     }
 
     return url;

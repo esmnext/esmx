@@ -11,7 +11,7 @@ describe('Router.back 测试', () => {
         executionLog = [];
 
         router = new Router({
-            mode: RouterMode.abstract,
+            mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
             location: (to, from) => {
                 executionLog.push(`location-handler-${to.path}`);
@@ -114,7 +114,7 @@ describe('Router.back 测试', () => {
             // 在 abstract 模式下，从根路径后退实际上会成功，因为 MemoryHistory 的实现
             // 这里我们需要创建一个真正超出边界的情况
             const testRouter = new Router({
-                mode: RouterMode.abstract,
+                mode: RouterMode.memory,
                 base: new URL('http://localhost:3000/'),
                 routes: [
                     { path: '/', component: 'Home' },
@@ -405,7 +405,7 @@ describe('Router.back 测试', () => {
             const onBackNoResponseSpy = vi.fn();
 
             const testRouter = new Router({
-                mode: RouterMode.abstract,
+                mode: RouterMode.memory,
                 base: new URL('http://localhost:3000/'),
                 routes: [
                     { path: '/', component: 'Home' },
@@ -427,7 +427,7 @@ describe('Router.back 测试', () => {
 
         test('没有 onBackNoResponse 回调时不应该报错', async () => {
             const testRouter = new Router({
-                mode: RouterMode.abstract,
+                mode: RouterMode.memory,
                 base: new URL('http://localhost:3000/'),
                 routes: [
                     { path: '/', component: 'Home' },
@@ -462,7 +462,7 @@ describe('Router.back 测试', () => {
         test('Navigation 返回 null 时应该直接返回 null', async () => {
             // 创建一个真正会返回 null 的情况
             const testRouter = new Router({
-                mode: RouterMode.abstract,
+                mode: RouterMode.memory,
                 base: new URL('http://localhost:3000/'),
                 routes: [
                     { path: '/', component: 'Home' },

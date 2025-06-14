@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { normalizeURL, parseLocation } from './location';
-import type { RouteLocationRaw } from './types';
+import type { RouteLocationInput } from './types';
 
 declare module 'vitest' {
     interface ToEqURLMatchers {
@@ -85,7 +85,7 @@ describe('normalizeURL', () => {
 
 describe('parseLocation', () => {
     const testCases: Array<{
-        input: RouteLocationRaw;
+        input: RouteLocationInput;
         base: string;
         expected: string;
         description: string;

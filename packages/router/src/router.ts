@@ -3,18 +3,11 @@ import { MicroApp } from './micro-app';
 import { Navigation } from './navigation';
 import { parsedOptions } from './options';
 import { Route } from './route';
-import {
-    type RouteTask,
-    RouteTaskController,
-    RouteTaskType,
-    createRouteTask
-} from './route-task';
-import { BEFORE_TASKS } from './route-task-config';
-import { RouteStatus, RouteType, RouterMode } from './types';
+import { RouteTransition } from './route-transition';
+import { RouteType, RouterMode } from './types';
 import type {
     RouteConfirmHook,
-    RouteHandleHook,
-    RouteLocationRaw,
+    RouteLocationInput,
     RouteMatchType,
     RouteNotifyHook,
     RouteState,
@@ -23,198 +16,29 @@ import type {
     RouterOptions,
     RouterParsedOptions
 } from './types';
-import {
-    isRouteMatched,
-    isUrlEqual,
-    isValidConfirmHookResult,
-    removeFromArray
-} from './util';
+import { isRouteMatched } from './util';
 
 export class Router {
     public readonly options: RouterOptions;
     public readonly parsedOptions: RouterParsedOptions;
     public readonly isLayer: boolean;
-    private _route: null | Route = null;
     public readonly navigation: Navigation;
     public readonly microApp: MicroApp = new MicroApp();
     private _destroys: Array<() => void> = [];
 
-    // 任务控制器
-    private _taskController: RouteTaskController | null = null;
-
-    private readonly _tasks: Record<RouteTaskType, RouteConfirmHook> = {
-        [RouteTaskType.location]: (to, from) => {
-            if (to.matched.length === 0) {
-                return this.parsedOptions.location;
-            }
-        },
-        [RouteTaskType.env]: async (to, from) => {
-            if (!to.config || !to.config.env) {
-                return;
-            }
-            let routeHandle: RouteHandleHook | null = null;
-            if (typeof to.config.env === 'function') {
-                routeHandle = to.config.env;
-            } else if (typeof to.config.env === 'object') {
-                const { require, handle } = to.config.env;
-                if (typeof require === 'function' && require(to, from)) {
-                    routeHandle = handle || null;
-                } else {
-                    routeHandle = handle || null;
-                }
-            }
-            if (routeHandle) {
-                return routeHandle;
-            }
-        },
-        [RouteTaskType.asyncComponent]: async (to, from) => {
-            await Promise.all(
-                to.matched.map(async (matched) => {
-                    const { asyncComponent, component } = matched;
-                    if (!component && typeof asyncComponent === 'function') {
-                        try {
-                            const result = await asyncComponent();
-                            matched.component = result;
-                        } catch {
-                            throw new Error(
-                                `Async component '${matched.compilePath}' is not a valid component.`
-                            );
-                        }
-                    }
-                })
-            );
-        },
-        [RouteTaskType.beforeEach]: async (to, from) => {
-            for (const guard of this._guards.beforeEach) {
-                const result = await guard(to, from);
-                if (isValidConfirmHookResult(result)) {
-                    return result;
-                }
-            }
-        },
-        [RouteTaskType.beforeLeave]: async (to, from) => {
-            if (!from?.matched.length) return;
-
-            // 找出需要离开的路由（在 from 中但不在 to 中的路由）
-            const leavingRoutes = from.matched.filter(
-                (fromRoute) =>
-                    !to.matched.some((toRoute) => toRoute === fromRoute)
-            );
-
-            // 按照从子路由到父路由的顺序执行 beforeLeave
-            for (let i = leavingRoutes.length - 1; i >= 0; i--) {
-                const route = leavingRoutes[i];
-                if (route.beforeLeave) {
-                    const result = await route.beforeLeave(to, from);
-                    if (isValidConfirmHookResult(result)) {
-                        return result;
-                    }
-                }
-            }
-        },
-        [RouteTaskType.beforeEnter]: async (to, from) => {
-            if (!to.matched.length) return;
-
-            // 找出需要进入的路由（在 to 中但不在 from 中的路由）
-            const enteringRoutes = to.matched.filter(
-                (toRoute) =>
-                    !from?.matched.some((fromRoute) => fromRoute === toRoute)
-            );
-
-            // 按照从父路由到子路由的顺序执行 beforeEnter
-            for (const route of enteringRoutes) {
-                if (route.beforeEnter) {
-                    const result = await route.beforeEnter(to, from);
-                    if (isValidConfirmHookResult(result)) {
-                        return result;
-                    }
-                }
-            }
-        },
-        [RouteTaskType.beforeUpdate]: async (to, from) => {
-            // beforeUpdate 只在完全相同的路由组合中的参数变化时执行
-            // 快速检查：如果连最终路由配置都不同，肯定不是相同组合
-            if (!isRouteMatched(to, from, 'route')) return;
-
-            // 详细检查：两个路由的 matched 数组必须完全相同
-            if (!from || to.matched.length !== from.matched.length) return;
-            const isSameRouteSet = to.matched.every(
-                (toRoute, index) => toRoute === from.matched[index]
-            );
-            if (!isSameRouteSet) return;
-
-            // 只有在路径参数或查询参数变化时才执行 beforeUpdate
-            if (!isRouteMatched(to, from, 'exact')) {
-                // 按照从父路由到子路由的顺序执行 beforeUpdate
-                for (const route of to.matched) {
-                    if (route.beforeUpdate) {
-                        const result = await route.beforeUpdate(to, from);
-                        if (isValidConfirmHookResult(result)) {
-                            return result;
-                        }
-                    }
-                }
-            }
-        },
-        [RouteTaskType.push]: async () => {
-            return async (to, from) => {
-                this._route = to;
-                this.microApp._update(this);
-                // 变化时执行 push，未变化执行 replace
-                if (!isUrlEqual(to.url, from?.url)) {
-                    const newState = this.navigation.push(to);
-                    to.mergeState(newState);
-                } else {
-                    const newState = this.navigation.replace(to);
-                    to.mergeState(newState);
-                }
-            };
-        },
-        [RouteTaskType.replace]: async () => {
-            return async (to, from) => {
-                this._route = to;
-                this.microApp._update(this);
-                // 始终执行替换
-                const newState = this.navigation.replace(to);
-                to.mergeState(newState);
-            };
-        },
-        [RouteTaskType.popstate]: async () => {
-            return async (to, from) => {
-                this._route = to;
-                this.microApp._update(this);
-                // 有变化时执行 replace
-                if (!isUrlEqual(to.url, from?.url)) {
-                    const newState = this.navigation.replace(to);
-                    to.mergeState(newState);
-                }
-            };
-        },
-        [RouteTaskType.restartApp]: async () => {
-            return async (to, from) => {
-                this._route = to;
-                this.microApp._update(this, true);
-                const newState = this.navigation.replace(to);
-                to.mergeState(newState);
-            };
-        },
-        [RouteTaskType.pushWindow]: async () => {
-            return this.parsedOptions.location;
-        },
-        [RouteTaskType.replaceWindow]: async (to) => {
-            return this.parsedOptions.location;
-        }
-    };
-
-    private readonly _guards = {
-        beforeEach: [] as RouteConfirmHook[],
-        afterEach: [] as RouteNotifyHook[]
-    };
+    // 路由转换器
+    public readonly transition = new RouteTransition(this);
     public get route() {
-        if (this._route === null) {
+        const route = this.transition.route;
+        if (route === null) {
             throw new Error(`Route is not ready.`);
         }
-        return this._route;
+        return route;
+    }
+
+    // 内部使用的route访问器，不会抛出异常
+    private get _currentRoute() {
+        return this.transition.route;
     }
     public get id() {
         return this.parsedOptions.id;
@@ -228,37 +52,39 @@ export class Router {
         this.navigation = new Navigation(
             this.parsedOptions,
             (url: string, state: RouteState) => {
-                this._transitionTo(RouteType.none, {
+                this.transition.to(RouteType.none, {
                     url,
                     state
                 });
             }
         );
     }
-    public push(toRaw: RouteLocationRaw): Promise<Route> {
-        return this._transitionTo(RouteType.push, toRaw);
+    public push(totoInput: RouteLocationInput): Promise<Route> {
+        return this.transition.to(RouteType.push, totoInput);
     }
-    public replace(toRaw: RouteLocationRaw): Promise<Route> {
-        return this._transitionTo(RouteType.replace, toRaw);
+    public replace(totoInput: RouteLocationInput): Promise<Route> {
+        return this.transition.to(RouteType.replace, totoInput);
     }
-    public pushWindow(toRaw?: RouteLocationRaw): Promise<Route> {
-        return this._transitionTo(
+    public pushWindow(totoInput?: RouteLocationInput): Promise<Route> {
+        return this.transition.to(
             RouteType.pushWindow,
-            toRaw ?? this.route.url.href
+            totoInput ?? this.route.url.href
         );
     }
-    public replaceWindow(toRaw?: RouteLocationRaw): Promise<Route> {
-        return this._transitionTo(
+    public replaceWindow(totoInput?: RouteLocationInput): Promise<Route> {
+        return this.transition.to(
             RouteType.replaceWindow,
-            toRaw ?? this.route.url.href
+            totoInput ?? this.route.url.href
         );
     }
     public restartApp(): Promise<Route>;
-    public restartApp(toRaw: RouteLocationRaw): Promise<Route>;
-    public restartApp(toRaw?: RouteLocationRaw | undefined): Promise<Route> {
-        return this._transitionTo(
+    public restartApp(totoInput: RouteLocationInput): Promise<Route>;
+    public restartApp(
+        totoInput?: RouteLocationInput | undefined
+    ): Promise<Route> {
+        return this.transition.to(
             RouteType.restartApp,
-            toRaw ?? this.route.url.href
+            totoInput ?? this.route.url.href
         );
     }
     public async back(): Promise<Route | null> {
@@ -270,7 +96,7 @@ export class Router {
             }
             return null;
         }
-        return this._transitionTo(RouteType.back, {
+        return this.transition.to(RouteType.back, {
             url: result.url,
             state: result.state
         });
@@ -289,7 +115,7 @@ export class Router {
             }
             return null;
         }
-        return this._transitionTo(RouteType.go, {
+        return this.transition.to(RouteType.go, {
             url: result.url,
             state: result.state
         });
@@ -299,7 +125,7 @@ export class Router {
         if (result === null) {
             return null;
         }
-        return this._transitionTo(RouteType.forward, {
+        return this.transition.to(RouteType.forward, {
             url: result.url,
             state: result.state
         });
@@ -314,7 +140,7 @@ export class Router {
      * - 获取路由参数、元信息等
      * - 测试路由配置的有效性
      *
-     * @param toRaw 目标路由位置，可以是字符串路径或路由配置对象
+     * @param totoInput 目标路由位置，可以是字符串路径或路由配置对象
      * @returns 解析后的路由对象，包含完整的路由信息
      *
      * @example
@@ -337,12 +163,12 @@ export class Router {
      * }
      * ```
      */
-    public resolve(toRaw: RouteLocationRaw): Route {
+    public resolve(totoInput: RouteLocationInput): Route {
         return new Route({
             options: this.parsedOptions,
             toType: RouteType.none,
-            toRaw,
-            from: this._route?.url ?? null
+            totoInput,
+            from: this._currentRoute?.url ?? null
         });
     }
 
@@ -360,14 +186,14 @@ export class Router {
         targetRoute: Route,
         matchType: RouteMatchType
     ): boolean {
-        const currentRoute = this._route;
+        const currentRoute = this._currentRoute;
         if (!currentRoute) return false;
 
         return isRouteMatched(targetRoute, currentRoute, matchType);
     }
 
     public async createLayer(
-        toRaw: RouteLocationRaw,
+        totoInput: RouteLocationInput,
         options?: RouterOptions
     ): Promise<{ promise: Promise<RouterLayerResult>; router: Router }> {
         const layer: Required<RouterLayerOptions> = {
@@ -395,7 +221,7 @@ export class Router {
             };
         });
         const router = new Router({
-            mode: RouterMode.abstract,
+            mode: RouterMode.memory,
             rootStyle: {
                 position: 'fixed',
                 top: '0',
@@ -419,18 +245,18 @@ export class Router {
             },
             layer
         });
-        await router.replace(toRaw);
+        await router.replace(totoInput);
         return {
             promise,
             router
         };
     }
     public async pushLayer(
-        toRaw: RouteLocationRaw,
+        totoInput: RouteLocationInput,
         layer?: Partial<RouterLayerOptions>,
         options?: RouterOptions
     ): Promise<RouterLayerResult> {
-        const { promise } = await this.createLayer(toRaw, {
+        const { promise } = await this.createLayer(totoInput, {
             ...options,
             layer: {
                 ...layer,
@@ -444,7 +270,7 @@ export class Router {
             this._destroys.push(() => {
                 this.parsedOptions.layer?.destroyed?.({
                     type: 'close',
-                    route: this._route
+                    route: this.route
                 });
             });
             this.destroy();
@@ -461,78 +287,20 @@ export class Router {
         }
     }
     public beforeEach(guard: RouteConfirmHook): () => void {
-        this._guards.beforeEach.push(guard);
-        // 返回清理函数
-        return () => {
-            removeFromArray(this._guards.beforeEach, guard);
-        };
+        return this.transition.beforeEach(guard);
     }
 
     public afterEach(guard: RouteNotifyHook): () => void {
-        this._guards.afterEach.push(guard);
-        // 返回清理函数
-        return () => {
-            removeFromArray(this._guards.afterEach, guard);
-        };
+        return this.transition.afterEach(guard);
     }
+
     public destroy() {
         // 终止当前任务
-        this._taskController?.abort();
-        this._taskController = null;
+        this.transition.destroy();
 
         this.navigation.destroy();
         this.microApp.destroy();
-        this._destroys.forEach((func) => func());
-        this._destroys.splice(0);
-    }
-    private async _transitionTo(
-        toType: RouteType,
-        toRaw: RouteLocationRaw
-    ): Promise<Route> {
-        const { _tasks, parsedOptions: options, _route: from } = this;
-        const to = await this._runTask(
-            BEFORE_TASKS,
-            new Route({ options, toType, toRaw, from: from?.url ?? null }),
-            from
-        );
-        if (typeof to.handle === 'function') {
-            to.handleResult = await to.handle(to, from);
-        }
-
-        // 导航完成后，只有在状态为 success 时才调用 afterEach 守卫
-        // 这确保了只有成功的导航才会触发 afterEach，被取消的导航不会触发
-        if (to.status === RouteStatus.success) {
-            for (const guard of this._guards.afterEach) {
-                guard(to, from);
-            }
-        }
-
-        return to;
-    }
-    private _runTask(
-        config: Record<RouteType, RouteTaskType[]>,
-        to: Route,
-        from: Route | null
-    ) {
-        // 终止之前的任务
-        this._taskController?.abort();
-
-        // 创建新的任务控制器
-        this._taskController = new RouteTaskController();
-
-        const names: RouteTaskType[] = to.type ? config[to.type] : [];
-        const { _tasks, parsedOptions: options } = this;
-        const tasks = names.map<RouteTask>((name) => ({
-            name,
-            task: _tasks[name]
-        }));
-
-        return createRouteTask({
-            options,
-            to,
-            from,
-            tasks,
-            controller: this._taskController
-        });
+        this._destroys.forEach((destroy) => destroy());
+        this._destroys.length = 0;
     }
 }

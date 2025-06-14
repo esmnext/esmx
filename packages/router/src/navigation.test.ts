@@ -438,7 +438,7 @@ describe('Navigation', () => {
             id: 'test-router',
             context: {},
             routes: [],
-            mode: RouterMode.abstract,
+            mode: RouterMode.memory,
             base: new URL('http://test.com'),
             env: 'test',
             req: null,
@@ -454,18 +454,18 @@ describe('Navigation', () => {
     };
 
     test('should push and replace state correctly', () => {
-        const nav = new Navigation({ mode: RouterMode.abstract } as any);
+        const nav = new Navigation({ mode: RouterMode.memory } as any);
         const route1 = new Route({
             options: createTestOptions(),
             toType: RouteType.push,
-            toRaw: { path: '/foo', state: { a: 1 } }
+            totoInput: { path: '/foo', state: { a: 1 } }
         });
         const state1 = nav.push(route1);
         assert.deepEqual(state1.a, 1);
         const route2 = new Route({
             options: createTestOptions(),
             toType: RouteType.push,
-            toRaw: { path: '/bar', state: { b: 2 } }
+            totoInput: { path: '/bar', state: { b: 2 } }
         });
         const state2 = nav.replace(route2);
         assert.deepEqual(state2.b, 2);
@@ -473,26 +473,26 @@ describe('Navigation', () => {
     });
 
     test('should resolve go/back/forward with correct url and state', async () => {
-        const nav = new Navigation({ mode: RouterMode.abstract } as any);
+        const nav = new Navigation({ mode: RouterMode.memory } as any);
         nav.push(
             new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                toRaw: { path: '/a', state: { a: 1 } }
+                totoInput: { path: '/a', state: { a: 1 } }
             })
         );
         nav.push(
             new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                toRaw: { path: '/b', state: { b: 2 } }
+                totoInput: { path: '/b', state: { b: 2 } }
             })
         );
         nav.push(
             new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                toRaw: { path: '/c', state: { c: 3 } }
+                totoInput: { path: '/c', state: { c: 3 } }
             })
         );
         // go(-2) 回到 /a
@@ -513,21 +513,21 @@ describe('Navigation', () => {
     test('should call onUpdated callback on navigation', async () => {
         const updates: Array<{ url: string; state: any }> = [];
         const nav = new Navigation(
-            { mode: RouterMode.abstract } as any,
+            { mode: RouterMode.memory } as any,
             (url, state) => updates.push({ url, state })
         );
         nav.push(
             new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                toRaw: { path: '/a', state: { a: 1 } }
+                totoInput: { path: '/a', state: { a: 1 } }
             })
         );
         nav.push(
             new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                toRaw: { path: '/b', state: { b: 2 } }
+                totoInput: { path: '/b', state: { b: 2 } }
             })
         );
         // await nav.go(-1);
@@ -540,19 +540,19 @@ describe('Navigation', () => {
     });
 
     test('should resolve null if go is called while pending', async () => {
-        const nav = new Navigation({ mode: RouterMode.abstract } as any);
+        const nav = new Navigation({ mode: RouterMode.memory } as any);
         nav.push(
             new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                toRaw: { path: '/a', state: { a: 1 } }
+                totoInput: { path: '/a', state: { a: 1 } }
             })
         );
         nav.push(
             new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                toRaw: { path: '/b', state: { b: 2 } }
+                totoInput: { path: '/b', state: { b: 2 } }
             })
         );
 
@@ -567,21 +567,21 @@ describe('Navigation', () => {
     test('should cleanup listeners on destroy', async () => {
         const updates: Array<{ url: string; state: any }> = [];
         const nav = new Navigation(
-            { mode: RouterMode.abstract } as any,
+            { mode: RouterMode.memory } as any,
             (url, state) => updates.push({ url, state })
         );
         nav.push(
             new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                toRaw: { path: '/a', state: { a: 1 } }
+                totoInput: { path: '/a', state: { a: 1 } }
             })
         );
         nav.push(
             new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                toRaw: { path: '/b', state: { b: 2 } }
+                totoInput: { path: '/b', state: { b: 2 } }
             })
         );
         nav.destroy();
@@ -651,7 +651,7 @@ describe('Navigation', () => {
             const route1 = new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                toRaw: { path: '/foo', state: { a: 1 } }
+                totoInput: { path: '/foo', state: { a: 1 } }
             });
             const state1 = nav.push(route1);
             // console.log('push /foo', (nav as any)._history._entries, (nav as any)._history._index);
@@ -664,7 +664,7 @@ describe('Navigation', () => {
             const route2 = new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                toRaw: { path: '/bar', state: { b: 2 } }
+                totoInput: { path: '/bar', state: { b: 2 } }
             });
             const state2 = nav.replace(route2);
             // console.log('replace /bar', (nav as any)._history._entries, (nav as any)._history._index);
@@ -688,13 +688,13 @@ describe('Navigation', () => {
     // 新增测试用例来覆盖未测试的分支
     describe('未覆盖分支测试', () => {
         test('should handle null/undefined route.state in push method (line 43)', () => {
-            const nav = new Navigation({ mode: RouterMode.abstract } as any);
+            const nav = new Navigation({ mode: RouterMode.memory } as any);
 
             // 测试 route.state 为 null 的情况
             const routeWithNullState = new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                toRaw: { path: '/test', state: null as any }
+                totoInput: { path: '/test', state: null as any }
             });
             const state1 = nav.push(routeWithNullState);
             assert.ok(state1);
@@ -704,7 +704,7 @@ describe('Navigation', () => {
             const routeWithUndefinedState = new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                toRaw: { path: '/test2', state: undefined }
+                totoInput: { path: '/test2', state: undefined }
             });
             const state2 = nav.push(routeWithUndefinedState);
             assert.ok(state2);
@@ -714,12 +714,12 @@ describe('Navigation', () => {
         });
 
         test('should handle null/undefined route.state in replace method (line 53)', () => {
-            const nav = new Navigation({ mode: RouterMode.abstract } as any);
+            const nav = new Navigation({ mode: RouterMode.memory } as any);
             nav.push(
                 new Route({
                     options: createTestOptions(),
                     toType: RouteType.push,
-                    toRaw: '/initial'
+                    totoInput: '/initial'
                 })
             );
 
@@ -727,7 +727,7 @@ describe('Navigation', () => {
             const routeWithNullState = new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                toRaw: { path: '/test', state: null as any }
+                totoInput: { path: '/test', state: null as any }
             });
             const state1 = nav.replace(routeWithNullState);
             assert.ok(state1);
@@ -737,7 +737,7 @@ describe('Navigation', () => {
             const routeWithUndefinedState = new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
-                toRaw: { path: '/test2', state: undefined }
+                totoInput: { path: '/test2', state: undefined }
             });
             const state2 = nav.replace(routeWithUndefinedState);
             assert.ok(state2);
@@ -747,19 +747,19 @@ describe('Navigation', () => {
         });
 
         test('should call _promiseResolve when destroying with pending promise (line 82)', async () => {
-            const nav = new Navigation({ mode: RouterMode.abstract } as any);
+            const nav = new Navigation({ mode: RouterMode.memory } as any);
             nav.push(
                 new Route({
                     options: createTestOptions(),
                     toType: RouteType.push,
-                    toRaw: '/test1'
+                    totoInput: '/test1'
                 })
             );
             nav.push(
                 new Route({
                     options: createTestOptions(),
                     toType: RouteType.push,
-                    toRaw: '/test2'
+                    totoInput: '/test2'
                 })
             );
 

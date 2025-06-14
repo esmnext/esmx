@@ -82,7 +82,7 @@ const createMockRouter = (
         id: overrides.id || 'test-router',
         context: {},
         routes: [],
-        mode: RouterMode.abstract,
+        mode: RouterMode.memory,
         base: new URL('http://test.com'),
         env: 'test',
         req: null,
@@ -117,7 +117,7 @@ const createMockRouter = (
     const mockRoute = new Route({
         options: mockParsedOptions,
         toType: RouteType.push,
-        toRaw: '/test'
+        totoInput: '/test'
     });
 
     return {

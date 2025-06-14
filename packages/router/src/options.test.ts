@@ -80,10 +80,10 @@ describe('parsedOptions', () => {
         const { parsedOptions } = await import('./options');
         const opts = parsedOptions({
             base: 'http://a.com',
-            mode: RouterMode.abstract,
+            mode: RouterMode.memory,
             routes: []
         } as any);
-        expect(opts.mode).toBe(RouterMode.abstract);
+        expect(opts.mode).toBe(RouterMode.memory);
         const opts2 = parsedOptions({
             base: 'http://a.com',
             routes: []

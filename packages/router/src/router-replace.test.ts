@@ -11,7 +11,7 @@ describe('Router.replace 测试', () => {
         executionLog = [];
 
         router = new Router({
-            mode: RouterMode.abstract,
+            mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
             location: (to, from) => {
                 executionLog.push(`location-handler-${to.path}`);
@@ -266,7 +266,7 @@ describe('Router.replace 测试', () => {
         test('异步组件加载失败时 replace 应该返回错误状态', async () => {
             // 添加异步组件失败路由到配置中
             router = new Router({
-                mode: RouterMode.abstract,
+                mode: RouterMode.memory,
                 base: new URL('http://localhost:3000/'),
                 location: (to, from) => {
                     executionLog.push(`location-handler-${to.path}`);

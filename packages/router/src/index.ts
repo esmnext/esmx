@@ -1,4 +1,5 @@
 export { Router } from './router';
+export { RouteTransition } from './route-transition';
 export {
     // 路由器相关
     RouterMode,
@@ -14,7 +15,7 @@ export {
     type RouteConfig,
     type RouteParsedConfig,
     type RouteLocation,
-    type RouteLocationRaw,
+    type RouteLocationInput as RouteLocationtoInput,
     type RouteMatchResult,
     type RouteMatchType,
     type RouteMeta,

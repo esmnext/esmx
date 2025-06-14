@@ -57,6 +57,11 @@ export interface RouteTaskOptions {
 export async function createRouteTask(opts: RouteTaskOptions) {
     const { to, from, tasks, controller } = opts;
 
+    // 开始执行任务时，将状态从 resolved 改为 pending
+    if (to.status === RouteStatus.resolved) {
+        to.status = RouteStatus.pending;
+    }
+
     for (const task of tasks) {
         // 任务执行前检查是否应该被取消
         if (controller?.shouldCancel(task.name)) {
@@ -97,13 +102,20 @@ export async function createRouteTask(opts: RouteTaskOptions) {
             to: new Route({
                 options: opts.options,
                 toType: to.type,
-                toRaw: result,
+                totoInput: result,
                 from: to.url
             }),
             from: to,
             controller
         });
     }
+
+    // 所有任务执行完成，但没有返回handle函数
+    // 如果状态仍为pending，说明任务链执行完成但没有获得处理函数，标识为失败
+    if (to.status === RouteStatus.pending) {
+        to.status = RouteStatus.error;
+    }
+
     return to;
 }
 

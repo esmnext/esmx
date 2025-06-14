@@ -11,7 +11,7 @@ export type { Route };
 // ============================================================================
 export enum RouterMode {
     history = 'history',
-    abstract = 'abstract'
+    memory = 'memory'
 }
 export interface RouterOptions {
     id?: string;
@@ -103,7 +103,7 @@ export interface RouteOptions {
     /** 路由类型 */
     toType?: RouteType;
     /** 目标路由位置 */
-    toRaw?: RouteLocationRaw;
+    totoInput?: RouteLocationInput;
     /** 来源 URL */
     from?: URL | null;
 }
@@ -135,14 +135,14 @@ export interface RouteLocation {
     keepScrollPosition?: boolean;
     statusCode?: number | null;
 }
-export type RouteLocationRaw = RouteLocation | string;
+export type RouteLocationInput = RouteLocation | string;
 
 export interface RouteConfig {
     /** 传递一个经过 URL 编码过后的路径 */
     path: string;
     component?: any;
     children?: RouteConfig[];
-    redirect?: RouteLocationRaw | RouteConfirmHook;
+    redirect?: RouteLocationInput | RouteConfirmHook;
     meta?: RouteMeta;
     env?: RouteEnv;
     app?: string | RouterMicroAppCallback;
@@ -159,10 +159,11 @@ export interface RouteParsedConfig extends RouteConfig {
 }
 
 export enum RouteStatus {
-    resolve = 'resolve',
-    aborted = 'aborted',
-    error = 'error',
-    success = 'success'
+    resolved = 'resolved', // 路由解析完成，Route对象创建完成
+    pending = 'pending', // 正在执行任务链（守卫、异步组件等）
+    success = 'success', // 任务执行成功
+    aborted = 'aborted', // 任务被取消
+    error = 'error' // 解析或执行失败
 }
 
 export interface RouteMatchResult {
@@ -187,7 +188,7 @@ export type RouteMatchType = 'route' | 'exact' | 'include';
  * @returns
  *   - true: 继续往后执行
  *   - false: 终止执行
- *   - RouteLocationRaw: 重定向到另外一个路由
+ *   - RouteLocationtoInput: 重定向到另外一个路由
  */
 export type RouteConfirmHook = (
     to: Route,
@@ -196,7 +197,7 @@ export type RouteConfirmHook = (
 export type RouteConfirmHookResult =
     | void
     | false
-    | RouteLocationRaw
+    | RouteLocationInput
     | RouteHandleHook;
 export type RouteVerifyHook = (
     to: Route,

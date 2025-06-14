@@ -11,7 +11,7 @@ describe('Router.forward 测试', () => {
         executionLog = [];
 
         router = new Router({
-            mode: RouterMode.abstract,
+            mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
             location: (to, from) => {
                 executionLog.push(`location-handler-${to.path}`);
@@ -424,7 +424,7 @@ describe('Router.forward 测试', () => {
             const onBackNoResponseSpy = vi.fn();
 
             const testRouter = new Router({
-                mode: RouterMode.abstract,
+                mode: RouterMode.memory,
                 base: new URL('http://localhost:3000/'),
                 routes: [
                     { path: '/', component: 'Home' },
@@ -447,7 +447,7 @@ describe('Router.forward 测试', () => {
 
         test('没有 onBackNoResponse 回调时不应该报错', async () => {
             const testRouter = new Router({
-                mode: RouterMode.abstract,
+                mode: RouterMode.memory,
                 base: new URL('http://localhost:3000/'),
                 routes: [
                     { path: '/', component: 'Home' },

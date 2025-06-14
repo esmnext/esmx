@@ -5,7 +5,7 @@ import { RouteStatus, RouteType, RouterMode } from './types';
 import type {
     RouteConfig,
     RouteHandleHook,
-    RouteLocationRaw,
+    RouteLocationInput,
     RouteMeta,
     RouterOptions,
     RouterParsedOptions
@@ -73,7 +73,7 @@ describe('Route 类完整测试套件', () => {
                 expect(route.type).toBe(RouteType.none);
                 expect(route.isPush).toBe(false);
                 expect(route.path).toBe('/');
-                expect(route.status).toBe(RouteStatus.resolve);
+                expect(route.status).toBe(RouteStatus.resolved);
                 expect(route.state).toEqual({});
                 expect(route.params).toEqual({});
                 expect(route.query).toEqual({});
@@ -85,7 +85,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123'
+                    totoInput: '/users/123'
                 });
 
                 expect(route.path).toBe('/users/123');
@@ -99,7 +99,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.replace,
-                    toRaw: {
+                    totoInput: {
                         path: '/users/456',
                         query: { tab: 'profile' },
                         state: { fromPage: 'dashboard' },
@@ -122,7 +122,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123?tab=profile&sort=name#section1'
+                    totoInput: '/users/123?tab=profile&sort=name#section1'
                 });
 
                 expect(route.path).toBe('/users/123');
@@ -139,7 +139,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123?tags=js&tags=react&tags=vue'
+                    totoInput: '/users/123?tags=js&tags=react&tags=vue'
                 });
 
                 expect(route.query.tags).toBe('js'); // 第一个值
@@ -151,7 +151,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/posts/456/comments/789'
+                    totoInput: '/posts/456/comments/789'
                 });
 
                 expect(route.params.postId).toBe('456');
@@ -164,7 +164,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/unknown/path'
+                    totoInput: '/unknown/path'
                 });
 
                 expect(route.matched).toHaveLength(0);
@@ -179,7 +179,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123'
+                    totoInput: '/users/123'
                 });
 
                 expect(route.meta.title).toBe('User Detail');
@@ -195,7 +195,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: { path: '/users/123', state: initialState }
+                    totoInput: { path: '/users/123', state: initialState }
                 });
 
                 expect(route.state).toEqual(initialState);
@@ -211,7 +211,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: 'https://external.com/api/data'
+                    totoInput: 'https://external.com/api/data'
                 });
 
                 // 跨域时不应该匹配路由
@@ -228,7 +228,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: 'http://localhost:3000/other/path'
+                    totoInput: 'http://localhost:3000/other/path'
                 });
 
                 // 同域但不同base路径时不应该匹配
@@ -244,7 +244,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: 'http://localhost:3000/app/users/123'
+                    totoInput: 'http://localhost:3000/app/users/123'
                 });
 
                 // 匹配时应该去掉base路径
@@ -257,7 +257,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: 'https://external.com/api/data?key=value#section'
+                    totoInput: 'https://external.com/api/data?key=value#section'
                 });
 
                 // 不匹配时使用原始路径+search+hash
@@ -282,7 +282,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/USERS/123'
+                    totoInput: '/USERS/123'
                 });
 
                 expect(customNormalizeURL).toHaveBeenCalled();
@@ -301,7 +301,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123',
+                    totoInput: '/users/123',
                     from: fromURL
                 });
 
@@ -318,7 +318,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123'
+                    totoInput: '/users/123'
                 });
 
                 NON_ENUMERABLE_PROPERTIES.forEach((prop) => {
@@ -335,7 +335,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123'
+                    totoInput: '/users/123'
                 });
 
                 const userProperties = [
@@ -364,7 +364,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123'
+                    totoInput: '/users/123'
                 });
 
                 // 验证属性存在
@@ -386,28 +386,28 @@ describe('Route 类完整测试套件', () => {
                 const pushRoute = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/test'
+                    totoInput: '/test'
                 });
                 expect(pushRoute.isPush).toBe(true);
 
                 const pushWindowRoute = new Route({
                     options,
                     toType: RouteType.pushWindow,
-                    toRaw: '/test'
+                    totoInput: '/test'
                 });
                 expect(pushWindowRoute.isPush).toBe(true);
 
                 const replaceRoute = new Route({
                     options,
                     toType: RouteType.replace,
-                    toRaw: '/test'
+                    totoInput: '/test'
                 });
                 expect(replaceRoute.isPush).toBe(false);
 
                 const goRoute = new Route({
                     options,
                     toType: RouteType.go,
-                    toRaw: '/test'
+                    totoInput: '/test'
                 });
                 expect(goRoute.isPush).toBe(false);
             });
@@ -417,7 +417,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123?tab=profile#section1'
+                    totoInput: '/users/123?tab=profile#section1'
                 });
 
                 expect(route.fullPath).toBe('/users/123?tab=profile#section1');
@@ -433,7 +433,7 @@ describe('Route 类完整测试套件', () => {
                     const route = new Route({
                         options,
                         toType: type,
-                        toRaw: '/test'
+                        totoInput: '/test'
                     });
                     expect(route.type).toBe(type);
                 });
@@ -448,7 +448,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123'
+                    totoInput: '/users/123'
                 });
                 const mockHandle: RouteHandleHook = vi.fn(() => ({
                     result: 'test'
@@ -464,7 +464,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123'
+                    totoInput: '/users/123'
                 });
 
                 route.handle = null;
@@ -476,7 +476,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123'
+                    totoInput: '/users/123'
                 });
 
                 route.handle = 'not a function' as any;
@@ -490,7 +490,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123'
+                    totoInput: '/users/123'
                 });
                 const mockHandle: RouteHandleHook = vi.fn(() => ({
                     result: 'success'
@@ -509,7 +509,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123'
+                    totoInput: '/users/123'
                 });
                 const mockHandle: RouteHandleHook = vi.fn();
 
@@ -528,7 +528,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123'
+                    totoInput: '/users/123'
                 });
                 const mockHandle: RouteHandleHook = vi.fn(() => ({
                     result: 'test'
@@ -555,7 +555,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123'
+                    totoInput: '/users/123'
                 });
                 const result = { data: 'test', status: 'ok' };
 
@@ -573,7 +573,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123'
+                    totoInput: '/users/123'
                 });
                 const mockHandle: RouteHandleHook = vi.fn(() => ({
                     result: 'test'
@@ -582,9 +582,9 @@ describe('Route 类完整测试套件', () => {
                 route.handle = mockHandle;
 
                 // 测试 resolve 状态
-                route.status = RouteStatus.resolve;
+                route.status = RouteStatus.resolved;
                 expect(() => route.handle!(route, null)).toThrow(
-                    'Cannot call route handle hook - current status is resolve'
+                    'Cannot call route handle hook - current status is resolved'
                 );
 
                 // 测试 aborted 状态
@@ -605,7 +605,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123'
+                    totoInput: '/users/123'
                 });
                 const mockHandle: RouteHandleHook = vi.fn(function (
                     this: Route,
@@ -622,7 +622,7 @@ describe('Route 类完整测试套件', () => {
                 const fromRoute = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/home'
+                    totoInput: '/home'
                 });
                 const result = route.handle!(route, fromRoute);
 
@@ -639,7 +639,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123'
+                    totoInput: '/users/123'
                 });
                 const errorHandle: RouteHandleHook = vi.fn(() => {
                     throw new Error('Handle execution failed');
@@ -659,7 +659,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123'
+                    totoInput: '/users/123'
                 });
 
                 // 测试各种非函数类型
@@ -688,7 +688,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: { path: '/users/123', state: { a: 1, b: 2 } }
+                    totoInput: { path: '/users/123', state: { a: 1, b: 2 } }
                 });
 
                 route.mergeState({ b: 3, c: 4 });
@@ -700,7 +700,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123'
+                    totoInput: '/users/123'
                 });
 
                 route.mergeState({ first: 'value' });
@@ -714,7 +714,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123'
+                    totoInput: '/users/123'
                 });
 
                 route.setState('userId', 123);
@@ -729,7 +729,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: { path: '/users/123', state: { count: 1 } }
+                    totoInput: { path: '/users/123', state: { count: 1 } }
                 });
 
                 route.setState('count', 2);
@@ -743,12 +743,12 @@ describe('Route 类完整测试套件', () => {
                 const route1 = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: { path: '/route1', state: { shared: 'value1' } }
+                    totoInput: { path: '/route1', state: { shared: 'value1' } }
                 });
                 const route2 = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: { path: '/route2', state: { shared: 'value2' } }
+                    totoInput: { path: '/route2', state: { shared: 'value2' } }
                 });
 
                 route1.setState('shared', 'modified1');
@@ -764,7 +764,7 @@ describe('Route 类完整测试套件', () => {
                 const routeWithoutCode = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123'
+                    totoInput: '/users/123'
                 });
                 expect(routeWithoutCode.statusCode).toBe(null);
 
@@ -772,7 +772,7 @@ describe('Route 类完整测试套件', () => {
                 const unmatchedRoute = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/completely/unknown/path/that/does/not/match'
+                    totoInput: '/completely/unknown/path/that/does/not/match'
                 });
                 expect(unmatchedRoute.statusCode).toBe(null);
             });
@@ -784,7 +784,7 @@ describe('Route 类完整测试套件', () => {
                 const routeWithCode = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: { path: '/users/123', statusCode: 201 }
+                    totoInput: { path: '/users/123', statusCode: 201 }
                 });
                 expect(routeWithCode.statusCode).toBe(201);
 
@@ -792,7 +792,7 @@ describe('Route 类完整测试套件', () => {
                 const routeWithNull = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: { path: '/users/123', statusCode: null }
+                    totoInput: { path: '/users/123', statusCode: null }
                 });
                 expect(routeWithNull.statusCode).toBe(null);
             });
@@ -802,7 +802,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123'
+                    totoInput: '/users/123'
                 });
 
                 const descriptor = Object.getOwnPropertyDescriptor(
@@ -821,7 +821,7 @@ describe('Route 类完整测试套件', () => {
                 const originalRoute = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: { path: '/users/123', statusCode: 500 }
+                    totoInput: { path: '/users/123', statusCode: 500 }
                 });
 
                 const clonedRoute = originalRoute.clone();
@@ -841,7 +841,7 @@ describe('Route 类完整测试套件', () => {
                 const original = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: { path: '/users/123', state: { test: 'value' } }
+                    totoInput: { path: '/users/123', state: { test: 'value' } }
                 });
 
                 const cloned = original.clone();
@@ -856,7 +856,7 @@ describe('Route 类完整测试套件', () => {
                 const original = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: {
+                    totoInput: {
                         path: '/users/123',
                         state: { userId: 123, preferences: { theme: 'dark' } }
                     }
@@ -877,7 +877,7 @@ describe('Route 类完整测试套件', () => {
                 const original = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: {
+                    totoInput: {
                         path: '/users/123',
                         state: {
                             user: { id: 123, name: 'John' },
@@ -900,7 +900,7 @@ describe('Route 类完整测试套件', () => {
                 const original = new Route({
                     options,
                     toType: RouteType.pushWindow,
-                    toRaw: '/users/123?tab=profile#section1'
+                    totoInput: '/users/123?tab=profile#section1'
                 });
 
                 const cloned = original.clone();
@@ -924,7 +924,7 @@ describe('Route 类完整测试套件', () => {
                     new Route({
                         options,
                         toType: 'invalid' as any,
-                        toRaw: '/test'
+                        totoInput: '/test'
                     });
                 }).not.toThrow();
             });
@@ -934,7 +934,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: ''
+                    totoInput: ''
                 });
 
                 expect(route.path).toBeDefined();
@@ -946,7 +946,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/测试用户/profile?name=张三'
+                    totoInput: '/users/测试用户/profile?name=张三'
                 });
 
                 // URL编码后的路径不会包含原始中文字符
@@ -965,7 +965,7 @@ describe('Route 类完整测试套件', () => {
                     new Route({
                         options,
                         toType: RouteType.push,
-                        toRaw: longPath
+                        totoInput: longPath
                     });
                 }).not.toThrow();
             });
@@ -981,7 +981,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: path
+                    totoInput: path
                 });
 
                 expect(Object.keys(route.query)).toHaveLength(100);
@@ -998,12 +998,12 @@ describe('Route 类完整测试套件', () => {
                 const options = createOptions({ base });
                 const to = new URL('http://localhost:3000/app/users/old-id');
                 const match = options.matcher(to, base);
-                const toRaw = {
+                const totoInput = {
                     path: '/users/old-id',
                     params: { id: 'new-id' }
                 };
 
-                applyRouteParams(match, toRaw, base, to);
+                applyRouteParams(match, totoInput, base, to);
 
                 expect(to.pathname).toBe('/app/users/new-id');
                 expect(match.params.id).toBe('new-id');
@@ -1019,12 +1019,12 @@ describe('Route 类完整测试套件', () => {
                     'http://localhost:3000/app/posts/123/comments/456'
                 );
                 const match = options.matcher(to, base);
-                const toRaw = {
+                const totoInput = {
                     path: '/posts/123/comments/456',
                     params: { postId: 'post-999', commentId: 'comment-888' }
                 };
 
-                applyRouteParams(match, toRaw, base, to);
+                applyRouteParams(match, totoInput, base, to);
 
                 expect(to.pathname).toBe(
                     '/app/posts/post-999/comments/comment-888'
@@ -1039,14 +1039,14 @@ describe('Route 类完整测试套件', () => {
                 const to = new URL('http://localhost:3000/app/unknown');
                 const originalPathname = to.pathname;
                 const match = options.matcher(to, base);
-                const toRaw = { path: '/unknown', params: { id: 'test' } };
+                const totoInput = { path: '/unknown', params: { id: 'test' } };
 
-                applyRouteParams(match, toRaw, base, to);
+                applyRouteParams(match, totoInput, base, to);
 
                 expect(to.pathname).toBe(originalPathname);
             });
 
-            it('应该处理非对象toRaw参数', () => {
+            it('应该处理非对象totoInput参数', () => {
                 const base = new URL('http://localhost:3000/app/');
                 const options = createOptions();
                 const to = new URL('http://localhost:3000/app/users/123');
@@ -1074,13 +1074,16 @@ describe('Route 类完整测试套件', () => {
                 const match = options.matcher(to, base);
 
                 // 测试空params
-                const toRaw = { path: '/users/123', params: {} };
-                applyRouteParams(match, toRaw, base, to);
+                const totoInput = { path: '/users/123', params: {} };
+                applyRouteParams(match, totoInput, base, to);
                 expect(to.pathname).toBe(originalPathname);
 
                 // 测试undefined params
-                const toRaw2 = { path: '/users/123', params: undefined as any };
-                applyRouteParams(match, toRaw2, base, to);
+                const totoInput2 = {
+                    path: '/users/123',
+                    params: undefined as any
+                };
+                applyRouteParams(match, totoInput2, base, to);
                 expect(to.pathname).toBe(originalPathname);
             });
 
@@ -1094,12 +1097,12 @@ describe('Route 类完整测试套件', () => {
                     'http://localhost:3000/app/users/123/posts/456'
                 );
                 const match = options.matcher(to, base);
-                const toRaw = {
+                const totoInput = {
                     path: '/users/123/posts/456',
                     params: { id: 'user-999', postId: 'post-888' }
                 };
 
-                applyRouteParams(match, toRaw, base, to);
+                applyRouteParams(match, totoInput, base, to);
 
                 expect(to.pathname).toBe('/app/users/user-999/posts/post-888');
                 expect(match.params.id).toBe('user-999');
@@ -1119,8 +1122,8 @@ describe('Route 类完整测试套件', () => {
                 const originalCompile = match.matches[0].compile;
                 match.matches[0].compile = vi.fn(() => '/users/'); // 返回空的id部分
 
-                const toRaw = { path: '/users/123', params: { id: '' } };
-                applyRouteParams(match, toRaw, base, to);
+                const totoInput = { path: '/users/123', params: { id: '' } };
+                applyRouteParams(match, totoInput, base, to);
 
                 // 应该保留原有路径片段
                 expect(to.pathname).toBe('/app/users/123');
@@ -1145,7 +1148,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/USERS/123'
+                    totoInput: '/USERS/123'
                 });
 
                 expect(customNormalizeURL).toHaveBeenCalled();
@@ -1160,7 +1163,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/users/123'
+                    totoInput: '/users/123'
                 });
 
                 expect(route.req).toBe(mockReq);
@@ -1187,7 +1190,7 @@ describe('Route 类完整测试套件', () => {
                 const route = new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: '/admin/users'
+                    totoInput: '/admin/users'
                 });
 
                 expect(route.matched.length).toBeGreaterThan(0);
@@ -1205,7 +1208,7 @@ describe('Route 类完整测试套件', () => {
                 new Route({
                     options,
                     toType: RouteType.push,
-                    toRaw: `/users/${i}`
+                    totoInput: `/users/${i}`
                 });
             }
 
@@ -1221,7 +1224,7 @@ describe('Route 类完整测试套件', () => {
             const route = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/test'
+                totoInput: '/test'
             });
 
             const startTime = performance.now();
@@ -1279,7 +1282,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
     };
 
     describe('🔧 applyRouteParams 边界条件测试', () => {
-        it('应该处理非对象toRaw参数', () => {
+        it('应该处理非对象totoInput参数', () => {
             const base = new URL('http://localhost:3000/app/');
             const options = createOptions();
             const to = new URL('http://localhost:3000/app/users/123');
@@ -1307,13 +1310,13 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const match = options.matcher(to, base);
 
             // 测试空params
-            const toRaw = { path: '/users/123', params: {} };
-            applyRouteParams(match, toRaw, base, to);
+            const totoInput = { path: '/users/123', params: {} };
+            applyRouteParams(match, totoInput, base, to);
             expect(to.pathname).toBe(originalPathname);
 
             // 测试undefined params
-            const toRaw2 = { path: '/users/123', params: undefined as any };
-            applyRouteParams(match, toRaw2, base, to);
+            const totoInput2 = { path: '/users/123', params: undefined as any };
+            applyRouteParams(match, totoInput2, base, to);
             expect(to.pathname).toBe(originalPathname);
         });
 
@@ -1330,8 +1333,8 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const originalCompile = match.matches[0].compile;
             match.matches[0].compile = vi.fn(() => '/users/'); // 返回空的id部分
 
-            const toRaw = { path: '/users/123', params: { id: '' } };
-            applyRouteParams(match, toRaw, base, to);
+            const totoInput = { path: '/users/123', params: { id: '' } };
+            applyRouteParams(match, totoInput, base, to);
 
             // 应该保留原有路径片段
             expect(to.pathname).toBe('/app/users/123');
@@ -1347,7 +1350,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const route = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/users/123?name=john&name=jane&age=25&name=bob'
+                totoInput: '/users/123?name=john&name=jane&age=25&name=bob'
             });
 
             // query应该只包含第一个值
@@ -1364,7 +1367,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const route = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/users/123?empty=&name=john&blank&value=test'
+                totoInput: '/users/123?empty=&name=john&blank&value=test'
             });
 
             expect(route.query.empty).toBe('');
@@ -1378,7 +1381,8 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const route = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/users/123?name=%E5%BC%A0%E4%B8%89&symbol=%26%3D%3F%23'
+                totoInput:
+                    '/users/123?name=%E5%BC%A0%E4%B8%89&symbol=%26%3D%3F%23'
             });
 
             expect(route.query.name).toBe('张三');
@@ -1398,7 +1402,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const original = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: { path: '/users/123', state: complexState }
+                totoInput: { path: '/users/123', state: complexState }
             });
 
             const cloned = original.clone();
@@ -1417,7 +1421,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const original = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/users/123'
+                totoInput: '/users/123'
             });
 
             const cloned = original.clone();
@@ -1431,7 +1435,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const original = new Route({
                 options,
                 toType: RouteType.pushWindow,
-                toRaw: '/users/123?tab=profile&sort=name#section1'
+                totoInput: '/users/123?tab=profile&sort=name#section1'
             });
 
             const cloned = original.clone();
@@ -1451,7 +1455,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const route1 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: { path: '/test', keepScrollPosition: true }
+                totoInput: { path: '/test', keepScrollPosition: true }
             });
             expect(route1.keepScrollPosition).toBe(true);
 
@@ -1459,7 +1463,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const route2 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: { path: '/test', keepScrollPosition: false }
+                totoInput: { path: '/test', keepScrollPosition: false }
             });
             expect(route2.keepScrollPosition).toBe(false);
 
@@ -1467,7 +1471,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const route3 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: { path: '/test', keepScrollPosition: 'yes' as any }
+                totoInput: { path: '/test', keepScrollPosition: 'yes' as any }
             });
             expect(route3.keepScrollPosition).toBe(true);
 
@@ -1475,7 +1479,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const route4 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: { path: '/test', keepScrollPosition: 0 as any }
+                totoInput: { path: '/test', keepScrollPosition: 0 as any }
             });
             expect(route4.keepScrollPosition).toBe(false);
 
@@ -1483,7 +1487,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const route5 = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/test'
+                totoInput: '/test'
             });
             expect(route5.keepScrollPosition).toBe(false);
         });
@@ -1495,7 +1499,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const matchedRoute = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/users/123'
+                totoInput: '/users/123'
             });
             expect(matchedRoute.config).not.toBeNull();
             expect(matchedRoute.meta.title).toBe('User Detail');
@@ -1504,7 +1508,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const unmatchedRoute = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/unknown'
+                totoInput: '/unknown'
             });
             expect(unmatchedRoute.config).toBeNull();
             expect(unmatchedRoute.meta).toEqual({});
@@ -1515,7 +1519,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const route = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/users/123'
+                totoInput: '/users/123'
             });
 
             // matched数组应该被冻结
@@ -1534,7 +1538,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const route = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/users/123'
+                totoInput: '/users/123'
             });
 
             // 验证属性存在且有正确的值
@@ -1555,7 +1559,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const route = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: {
+                totoInput: {
                     path: '/test',
                     state: {
                         normalKey: 'value',
@@ -1574,7 +1578,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const sourceRoute = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: {
+                totoInput: {
                     path: '/source',
                     state: {
                         normal: 'source',
@@ -1586,7 +1590,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const targetRoute = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: {
+                totoInput: {
                     path: '/target',
                     state: {
                         existing: 'target',
@@ -1610,7 +1614,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const sourceRoute = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: {
+                totoInput: {
                     path: '/users/456',
                     state: { userId: 456, name: 'Jane' }
                 }
@@ -1621,7 +1625,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const targetRoute = new Route({
                 options,
                 toType: RouteType.replace,
-                toRaw: {
+                totoInput: {
                     path: '/old/path',
                     state: { oldData: 'old' }
                 }
@@ -1651,13 +1655,13 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const sourceRoute = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/users/789'
+                totoInput: '/users/789'
             });
 
             const targetRoute = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/posts/123'
+                totoInput: '/posts/123'
             });
 
             sourceRoute.syncTo(targetRoute);
@@ -1673,13 +1677,13 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const sourceRoute = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/search?q=test&page=2'
+                totoInput: '/search?q=test&page=2'
             });
 
             const targetRoute = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/old?old=value'
+                totoInput: '/old?old=value'
             });
 
             sourceRoute.syncTo(targetRoute);
@@ -1696,7 +1700,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const sourceRoute = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/test'
+                totoInput: '/test'
             });
 
             const mockHandle = vi.fn();
@@ -1707,7 +1711,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const targetRoute = new Route({
                 options,
                 toType: RouteType.push,
-                toRaw: '/other'
+                totoInput: '/other'
             });
 
             sourceRoute.syncTo(targetRoute);

@@ -4,7 +4,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Router } from './router';
 import { RouteStatus, RouteType } from './types';
-import type { Route, RouteLocationRaw, RouterOptions } from './types';
+import type { Route, RouteLocationInput, RouterOptions } from './types';
 
 describe('Router.restartApp 专注测试', () => {
     let router: Router;
@@ -262,7 +262,7 @@ describe('Router.restartApp 专注测试', () => {
         });
 
         it('应该支持对象参数调用', async () => {
-            const routeLocation: RouteLocationRaw = {
+            const routeLocation: RouteLocationInput = {
                 path: '/user/456',
                 query: { tab: 'settings' }
             };

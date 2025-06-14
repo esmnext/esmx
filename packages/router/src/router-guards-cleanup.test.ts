@@ -9,7 +9,7 @@ describe('Router Guards Cleanup Tests', () => {
 
     beforeEach(async () => {
         router = new Router({
-            mode: RouterMode.abstract,
+            mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
             routes: [
                 {
@@ -509,15 +509,13 @@ describe('Router Guards Cleanup Tests', () => {
                 }
 
                 // 验证守卫数组长度
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                expect((router as any)._guards.beforeEach).toHaveLength(100);
+                expect(router.transition.guards.beforeEach).toHaveLength(100);
 
                 // 清理所有守卫
                 unregisters.forEach((unregister) => unregister());
 
                 // 验证内部数组被清空
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                expect((router as any)._guards.beforeEach).toHaveLength(0);
+                expect(router.transition.guards.beforeEach).toHaveLength(0);
             });
 
             test('混合注册和清理不应该造成内存泄漏', () => {
@@ -540,10 +538,8 @@ describe('Router Guards Cleanup Tests', () => {
                 // 清理剩余的守卫
                 unregisters.forEach((unregister) => unregister());
 
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                expect((router as any)._guards.beforeEach).toHaveLength(0);
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                expect((router as any)._guards.afterEach).toHaveLength(0);
+                expect(router.transition.guards.beforeEach).toHaveLength(0);
+                expect(router.transition.guards.afterEach).toHaveLength(0);
             });
         });
 
@@ -610,7 +606,7 @@ describe('Router Guards Cleanup Tests', () => {
 
             // 创建新的 router 来测试
             const newRouter = new Router({
-                mode: RouterMode.abstract,
+                mode: RouterMode.memory,
                 base: new URL('http://localhost:3000/'),
                 routes: [
                     { path: '/', component: () => 'Home' },

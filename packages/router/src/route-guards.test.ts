@@ -10,7 +10,7 @@ describe('Route-Level Navigation Guards', () => {
         executionLog = [];
 
         router = new Router({
-            mode: RouterMode.abstract,
+            mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
             routes: [
                 {
@@ -300,7 +300,7 @@ describe('Route-Level Navigation Guards', () => {
                 .mockImplementation(() => {});
 
             router = new Router({
-                mode: RouterMode.abstract,
+                mode: RouterMode.memory,
                 base: new URL('http://localhost:3000/'),
                 routes: [
                     {
@@ -349,7 +349,7 @@ describe('Route-Level Navigation Guards', () => {
         test('初次导航时应该按照 Vue Router 行为执行守卫', async () => {
             // 创建一个新的路由实例，模拟应用启动
             const newRouter = new Router({
-                mode: RouterMode.abstract,
+                mode: RouterMode.memory,
                 base: new URL('http://localhost:3000/'),
                 routes: [
                     {
@@ -408,7 +408,7 @@ describe('嵌套路由守卫行为测试', () => {
         executionLog = [];
 
         router = new Router({
-            mode: RouterMode.abstract,
+            mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
             routes: [
                 {
@@ -612,7 +612,7 @@ describe('嵌套路由守卫行为测试', () => {
     test('初次导航到嵌套路由的正确行为', async () => {
         // 创建新的路由实例来模拟初次导航
         const newRouter = new Router({
-            mode: RouterMode.abstract,
+            mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
             routes: [
                 {
@@ -712,7 +712,7 @@ describe('守卫链中断场景测试', () => {
         interruptLog = [];
 
         interruptRouter = new Router({
-            mode: RouterMode.abstract,
+            mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
             routes: [
                 {
@@ -971,7 +971,7 @@ describe('并发导航场景测试', () => {
         concurrentLog = [];
 
         concurrentRouter = new Router({
-            mode: RouterMode.abstract,
+            mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
             routes: [
                 {
@@ -1193,7 +1193,7 @@ describe('并发导航场景测试', () => {
     test('复杂嵌套路由的并发导航', async () => {
         // 添加嵌套路由配置
         const nestedRouter = new Router({
-            mode: RouterMode.abstract,
+            mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
             routes: [
                 {
@@ -1313,7 +1313,7 @@ describe('Vue Router 官方行为验证测试', () => {
         officialLog = [];
 
         officialRouter = new Router({
-            mode: RouterMode.abstract,
+            mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
             routes: [
                 {
@@ -1405,7 +1405,7 @@ describe('Vue Router 官方行为验证测试', () => {
     test('嵌套路由中父路由的 beforeEnter 行为', async () => {
         // 创建新的路由器用于嵌套测试
         const nestedRouter = new Router({
-            mode: RouterMode.abstract,
+            mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
             routes: [
                 {
@@ -1471,7 +1471,7 @@ describe('Vue Router 官方导航解析流程验证', () => {
         };
 
         flowRouter = new Router({
-            mode: RouterMode.abstract,
+            mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
             routes: [
                 {
@@ -1556,7 +1556,7 @@ describe('Vue Router 官方导航解析流程验证', () => {
     test('复杂嵌套路由的流程顺序', async () => {
         // 创建复杂嵌套路由场景
         const complexRouter = new Router({
-            mode: RouterMode.abstract,
+            mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
             routes: [
                 {

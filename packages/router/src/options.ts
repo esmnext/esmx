@@ -75,7 +75,7 @@ export function parsedOptions(
         base,
         mode: isBrowser
             ? (options.mode ?? RouterMode.history)
-            : RouterMode.abstract,
+            : RouterMode.memory,
         routes,
         apps:
             typeof options.apps === 'function'

@@ -5,7 +5,7 @@ import { RouteStatus } from './types';
 import {
     type RouteHandleHook,
     type RouteHandleResult,
-    type RouteLocationRaw,
+    type RouteLocationInput,
     type RouteMatchResult,
     type RouteMeta,
     type RouteOptions,
@@ -45,7 +45,7 @@ function createDefaultRouteOptions(): Required<RouteOptions> {
     return {
         options: parsedOptions(),
         toType: RouteType.none,
-        toRaw: '/',
+        totoInput: '/',
         from: null
     };
 }
@@ -53,19 +53,19 @@ function createDefaultRouteOptions(): Required<RouteOptions> {
 /**
  * 将用户传入的参数拼接到URL路径中
  * @param match 路由匹配结果
- * @param toRaw 用户传入的路由位置对象
+ * @param totoInput 用户传入的路由位置对象
  * @param base 基础URL
  * @param to 当前解析的URL对象
  */
 export function applyRouteParams(
     match: RouteMatchResult,
-    toRaw: RouteLocationRaw,
+    totoInput: RouteLocationInput,
     base: URL,
     to: URL
 ): void {
     if (
-        !isPlainObject(toRaw) ||
-        !isNonEmptyPlainObject(toRaw.params) ||
+        !isPlainObject(totoInput) ||
+        !isNonEmptyPlainObject(totoInput.params) ||
         !match.matches.length
     ) {
         return;
@@ -79,7 +79,7 @@ export function applyRouteParams(
 
     // 用用户参数编译新路径并分割
     const next = new URL(
-        lastMatch.compile(toRaw.params).substring(1),
+        lastMatch.compile(totoInput.params).substring(1),
         base
     ).pathname.split('/');
 
@@ -92,7 +92,7 @@ export function applyRouteParams(
     to.pathname = current.join('/');
 
     // 合并参数到匹配结果中，用户参数优先
-    Object.assign(match.params, toRaw.params);
+    Object.assign(match.params, totoInput.params);
 }
 
 /**
@@ -103,10 +103,10 @@ export class Route {
     private _handled = false;
     private _handle: RouteHandleHook | null = null;
     private _handleResult: RouteHandleResult | null = null;
-    private _options: RouterParsedOptions;
+    private readonly _options: RouterParsedOptions;
 
     // 公共属性
-    public status: RouteStatus = RouteStatus.resolve;
+    public status: RouteStatus = RouteStatus.resolved;
     public statusCode: number | null = null;
     public readonly state: RouteState;
     public readonly keepScrollPosition: boolean;
@@ -132,7 +132,7 @@ export class Route {
         const defaults = createDefaultRouteOptions();
         const finalOptions = { ...defaults, ...routeOptions };
 
-        const { options, toType, toRaw, from } = finalOptions;
+        const { options, toType, totoInput, from } = finalOptions;
 
         // 保存原始选项用于克隆
         this._options = options;
@@ -143,7 +143,7 @@ export class Route {
         this.context = options.context;
 
         const base = options.base;
-        const to = options.normalizeURL(parseLocation(toRaw, base), from);
+        const to = options.normalizeURL(parseLocation(totoInput, base), from);
         const isSameOrigin = to.origin === base.origin;
         const isSameBase = to.pathname.startsWith(base.pathname);
         const match =
@@ -157,8 +157,8 @@ export class Route {
             ? `${this.path}${to.search}${to.hash}`
             : to.pathname + to.search + to.hash;
         this.matched = match ? match.matches : Object.freeze([]);
-        this.keepScrollPosition = isPlainObject(toRaw)
-            ? Boolean(toRaw.keepScrollPosition)
+        this.keepScrollPosition = isPlainObject(totoInput)
+            ? Boolean(totoInput.keepScrollPosition)
             : false;
         this.config =
             this.matched.length > 0
@@ -168,8 +168,8 @@ export class Route {
 
         // 初始化状态对象 - 创建新的本地对象，合并外部传入的状态
         const state: RouteState = {};
-        if (isPlainObject(toRaw) && toRaw.state) {
-            Object.assign(state, toRaw.state);
+        if (isPlainObject(totoInput) && totoInput.state) {
+            Object.assign(state, totoInput.state);
         }
         this.state = state;
 
@@ -187,16 +187,19 @@ export class Route {
 
         // 应用用户传入的路由参数（如果匹配成功）
         if (match) {
-            applyRouteParams(match, toRaw, base, to);
+            applyRouteParams(match, totoInput, base, to);
             // 将匹配到的参数赋值给路由对象
             Object.assign(this.params, match.params);
         }
 
         // 设置状态码
         // 优先使用用户传入的statusCode
-        if (isPlainObject(toRaw) && typeof toRaw.statusCode === 'number') {
-            this.statusCode = toRaw.statusCode;
-        } else if (isPlainObject(toRaw) && toRaw.statusCode === null) {
+        if (
+            isPlainObject(totoInput) &&
+            typeof totoInput.statusCode === 'number'
+        ) {
+            this.statusCode = totoInput.statusCode;
+        } else if (isPlainObject(totoInput) && totoInput.statusCode === null) {
             this.statusCode = null;
         }
         // 如果没有传入statusCode，保持默认的null值
@@ -288,9 +291,13 @@ export class Route {
         // 复制可枚举属性
         Object.assign(targetRoute, this);
 
-        // 复制不可枚举属性
+        // 复制不可枚举属性 - 类型安全的属性复制
         for (const property of NON_ENUMERABLE_PROPERTIES) {
-            (targetRoute as any)[property] = (this as any)[property];
+            if (property in this && property in targetRoute) {
+                // 使用 Reflect.set 进行类型安全的属性设置
+                const value = Reflect.get(this, property);
+                Reflect.set(targetRoute, property, value);
+            }
         }
     }
 
@@ -300,7 +307,7 @@ export class Route {
      */
     clone(): Route {
         // 重新构造路由对象，传入当前的状态
-        const toRaw = {
+        const totoInput = {
             path: this.fullPath,
             state: { ...this.state }
         };
@@ -311,7 +318,7 @@ export class Route {
         const clonedRoute = new Route({
             options,
             toType: this.type,
-            toRaw
+            totoInput
         });
 
         // 手动复制statusCode，因为它可能被手动修改过

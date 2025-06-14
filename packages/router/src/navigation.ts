@@ -12,9 +12,9 @@ type NavigationGoResult = null | {
 const PAGE_ID_KEY = '__pageId__';
 
 export class Navigation {
-    public options: RouterParsedOptions;
-    private _history: History | MemoryHistory;
-    private _unSubscribePopState: () => void;
+    public readonly options: RouterParsedOptions;
+    private readonly _history: History | MemoryHistory;
+    private readonly _unSubscribePopState: () => void;
     private _promiseResolve:
         | ((url?: string | null, state?: RouteState) => void)
         | null = null;
@@ -92,7 +92,7 @@ export class MemoryHistory implements History {
         if (idx < 0 || idx >= this.length) return null;
         return this._entries[idx];
     }
-    private _popStateCbs = new Set<NavigationSubscribe>();
+    private readonly _popStateCbs = new Set<NavigationSubscribe>();
     public scrollRestoration: ScrollRestoration = 'auto';
     public get state() {
         return this._curEntry?.state ?? null;

@@ -8,7 +8,7 @@ describe('Router.resolve 测试', () => {
 
     beforeEach(async () => {
         router = new Router({
-            mode: RouterMode.abstract,
+            mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
             routes: [
                 {
@@ -76,7 +76,7 @@ describe('Router.resolve 测试', () => {
 
             expect(route).toBeInstanceOf(Object);
             expect(route.type).toBe(RouteType.none);
-            expect(route.status).toBe(RouteStatus.resolve);
+            expect(route.status).toBe(RouteStatus.resolved);
             expect(route.path).toBe('/about');
             expect(route.fullPath).toBe('/about');
             expect(route.url).toBeInstanceOf(URL);
@@ -232,7 +232,7 @@ describe('Router.resolve 测试', () => {
         test('应该在没有元信息时返回空对象', () => {
             // 创建一个没有 meta 的路由
             const testRouter = new Router({
-                mode: RouterMode.abstract,
+                mode: RouterMode.memory,
                 base: new URL('http://localhost:3000/'),
                 routes: [
                     {
@@ -384,7 +384,7 @@ describe('Router.resolve 测试', () => {
         test('解析的路由应该具有 resolve 状态', () => {
             const route = router.resolve('/about');
 
-            expect(route.status).toBe(RouteStatus.resolve);
+            expect(route.status).toBe(RouteStatus.resolved);
         });
 
         test('解析的路由应该具有正确的 URL 对象', () => {

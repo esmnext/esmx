@@ -30,12 +30,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/test'
+            totoInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/home'
+            totoInput: '/home'
         });
         const tasks: RouteTask[] = [];
 
@@ -47,7 +47,7 @@ describe('createRouteTask', () => {
         });
 
         expect(result).toBe(to);
-        expect(to.status).toBe(RouteStatus.resolve);
+        expect(to.status).toBe(RouteStatus.error); // 空任务数组，没有获得处理函数，标识为失败
     });
 
     it('should execute tasks in sequence', async () => {
@@ -55,12 +55,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/test'
+            totoInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/home'
+            totoInput: '/home'
         });
 
         // 使用真实的执行顺序跟踪
@@ -102,12 +102,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/test'
+            totoInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/home'
+            totoInput: '/home'
         });
 
         // 真实的处理函数
@@ -144,12 +144,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/test'
+            totoInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/home'
+            totoInput: '/home'
         });
 
         // 真实的阻止任务
@@ -182,12 +182,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/test'
+            totoInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/home'
+            totoInput: '/home'
         });
 
         // 真实的重定向任务函数
@@ -218,7 +218,7 @@ describe('createRouteTask', () => {
         expect(result).not.toBe(to);
         expect(result.path).toBe('/redirected');
         expect(result.type).toBe(RouteType.push);
-        expect(result.status).toBe(RouteStatus.resolve);
+        expect(result.status).toBe(RouteStatus.error); // 重定向后没有获得处理函数，标识为失败
     });
 
     it('should handle redirection when task returns a route location object', async () => {
@@ -226,12 +226,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/test'
+            totoInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/home'
+            totoInput: '/home'
         });
 
         // 真实的重定向任务函数，返回路由对象
@@ -263,7 +263,7 @@ describe('createRouteTask', () => {
         expect(result.path).toBe('/redirected');
         expect(result.query.source).toBe('test');
         expect(result.type).toBe(RouteType.push);
-        expect(result.status).toBe(RouteStatus.resolve);
+        expect(result.status).toBe(RouteStatus.error); // 重定向后没有获得处理函数，标识为失败
     });
 
     it('should handle conditional redirection based on route state', async () => {
@@ -271,12 +271,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/admin'
+            totoInput: '/admin'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/home'
+            totoInput: '/home'
         });
 
         // 模拟权限检查的真实逻辑
@@ -310,7 +310,7 @@ describe('createRouteTask', () => {
         // 验证未认证用户被重定向到登录页
         expect(result).not.toBe(to);
         expect(result.path).toBe('/login');
-        expect(result.status).toBe(RouteStatus.resolve);
+        expect(result.status).toBe(RouteStatus.error); // 重定向后没有获得处理函数，标识为失败
     });
 
     it('should set status to error and break on task error', async () => {
@@ -318,12 +318,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/test'
+            totoInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/home'
+            totoInput: '/home'
         });
 
         const consoleErrorSpy = vi
@@ -372,12 +372,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/test'
+            totoInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/home'
+            totoInput: '/home'
         });
 
         const executionOrder: string[] = [];
@@ -419,12 +419,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/test'
+            totoInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/home'
+            totoInput: '/home'
         });
 
         const executionOrder: string[] = [];
@@ -466,7 +466,7 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/test'
+            totoInput: '/test'
         });
         const from = null;
 
@@ -503,12 +503,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/test'
+            totoInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/home'
+            totoInput: '/home'
         });
 
         const executionOrder: string[] = [];
@@ -563,12 +563,12 @@ describe('createRouteTask', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/test'
+            totoInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/home'
+            totoInput: '/home'
         });
 
         const executionOrder: string[] = [];
@@ -631,12 +631,12 @@ describe('Task cancellation with RouteTaskController', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/test'
+            totoInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/home'
+            totoInput: '/home'
         });
 
         const executionOrder: string[] = [];
@@ -683,12 +683,12 @@ describe('Task cancellation with RouteTaskController', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/test'
+            totoInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/home'
+            totoInput: '/home'
         });
 
         const executionOrder: string[] = [];
@@ -736,12 +736,12 @@ describe('Task cancellation with RouteTaskController', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/test'
+            totoInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/home'
+            totoInput: '/home'
         });
 
         const executionOrder: string[] = [];
@@ -777,7 +777,7 @@ describe('Task cancellation with RouteTaskController', () => {
         });
 
         expect(result).toBe(to);
-        expect(to.status).toBe(RouteStatus.resolve);
+        expect(to.status).toBe(RouteStatus.error); // 任务执行完成但没有返回handle函数，标识为失败
         expect(executionOrder).toEqual(['task1', 'task2']); // 两个任务都应该执行
     });
 
@@ -786,12 +786,12 @@ describe('Task cancellation with RouteTaskController', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/test'
+            totoInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/home'
+            totoInput: '/home'
         });
 
         const executionOrder: string[] = [];
@@ -826,7 +826,7 @@ describe('Task cancellation with RouteTaskController', () => {
         });
 
         expect(result).toBe(to);
-        expect(to.status).toBe(RouteStatus.resolve);
+        expect(to.status).toBe(RouteStatus.error); // 任务执行完成但没有返回handle函数，标识为失败
         expect(executionOrder).toEqual(['task1', 'task2']); // 所有任务都应该正常执行
     });
 
@@ -835,12 +835,12 @@ describe('Task cancellation with RouteTaskController', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/test'
+            totoInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/home'
+            totoInput: '/home'
         });
 
         const controller = new RouteTaskController();
@@ -870,7 +870,7 @@ describe('Task cancellation with RouteTaskController', () => {
         // 应该返回重定向的路由，控制器传递给重定向的任务
         expect(result).not.toBe(to);
         expect(result.path).toBe('/redirected');
-        expect(result.status).toBe(RouteStatus.resolve); // 重定向后没有其他任务，所以状态保持 resolve
+        expect(result.status).toBe(RouteStatus.error); // 重定向后没有获得处理函数，标识为失败
     });
 });
 
@@ -880,12 +880,12 @@ describe('RouteTaskOptions interface', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/test'
+            totoInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/home'
+            totoInput: '/home'
         });
         const tasks: RouteTask[] = [];
 
@@ -907,12 +907,12 @@ describe('RouteTaskOptions interface', () => {
         const to = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/test'
+            totoInput: '/test'
         });
         const from = new Route({
             options,
             toType: RouteType.push,
-            toRaw: '/home'
+            totoInput: '/home'
         });
         const tasks: RouteTask[] = [];
         const controller = new RouteTaskController();
