@@ -112,11 +112,10 @@ const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
 export class RouteTransition {
     private readonly router: Router;
 
-    // 当前路由状态 - 从 Router 迁移过来
-    private _route: Route | null = null;
+    private route: Route | null = null;
 
     // 任务控制器
-    private _taskController: RouteTaskController | null = null;
+    private _controller: RouteTaskController | null = null;
 
     // 守卫数组（从 Router 移动，改为 guards）
     public readonly guards = {
@@ -242,7 +241,7 @@ export class RouteTransition {
         [RouteTaskType.push]: async () => {
             return async (to, from) => {
                 // 更新内部路由状态
-                this._route = to;
+                this.route = to;
                 this.router.microApp._update(this.router);
                 // 变化时执行 push，未变化执行 replace
                 if (!isUrlEqual(to.url, from?.url)) {
@@ -257,7 +256,7 @@ export class RouteTransition {
         [RouteTaskType.replace]: async () => {
             return async (to, from) => {
                 // 更新内部路由状态
-                this._route = to;
+                this.route = to;
                 this.router.microApp._update(this.router);
                 // 始终执行替换
                 const newState = this.router.navigation.replace(to);
@@ -267,7 +266,7 @@ export class RouteTransition {
         [RouteTaskType.popstate]: async () => {
             return async (to, from) => {
                 // 更新内部路由状态
-                this._route = to;
+                this.route = to;
                 this.router.microApp._update(this.router);
                 // 有变化时执行 replace
                 if (!isUrlEqual(to.url, from?.url)) {
@@ -279,7 +278,7 @@ export class RouteTransition {
         [RouteTaskType.restartApp]: async () => {
             return async (to, from) => {
                 // 更新内部路由状态
-                this._route = to;
+                this.route = to;
                 this.router.microApp._update(this.router, true);
                 const newState = this.router.navigation.replace(to);
                 to.mergeState(newState);
@@ -295,10 +294,6 @@ export class RouteTransition {
 
     constructor(router: Router) {
         this.router = router;
-    }
-
-    get route(): Route | null {
-        return this._route;
     }
 
     public beforeEach(guard: RouteConfirmHook): () => void {
@@ -318,13 +313,13 @@ export class RouteTransition {
     }
 
     public abort(): void {
-        this._taskController?.abort();
+        this._controller?.abort();
     }
 
     public destroy(): void {
         // 终止当前任务
-        this._taskController?.abort();
-        this._taskController = null;
+        this._controller?.abort();
+        this._controller = null;
     }
 
     // 核心路由转换方法 - 完全按照原 Router 的 _transitionTo 逻辑
@@ -333,7 +328,7 @@ export class RouteTransition {
         toInput: RouteLocationInput
     ): Promise<Route> {
         const { _tasks } = this;
-        const from = this._route;
+        const from = this.route;
         const to = await this._runTask(
             BEFORE_TASKS,
             new Route({
@@ -366,10 +361,10 @@ export class RouteTransition {
         from: Route | null
     ) {
         // 终止之前的任务
-        this._taskController?.abort();
+        this._controller?.abort();
 
         // 创建新的任务控制器
-        this._taskController = new RouteTaskController();
+        this._controller = new RouteTaskController();
 
         const names: RouteTaskType[] = to.type ? config[to.type] : [];
         const { _tasks } = this;
@@ -383,7 +378,7 @@ export class RouteTransition {
             to,
             from,
             tasks,
-            controller: this._taskController
+            controller: this._controller
         });
     }
 }
