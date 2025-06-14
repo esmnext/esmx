@@ -112,7 +112,7 @@ const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
 export class RouteTransition {
     private readonly router: Router;
 
-    private route: Route | null = null;
+    public route: Route | null = null;
 
     // 任务控制器
     private _controller: RouteTaskController | null = null;
