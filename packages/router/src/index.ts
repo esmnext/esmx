@@ -15,7 +15,7 @@ export {
     type RouteConfig,
     type RouteParsedConfig,
     type RouteLocation,
-    type RouteLocationInput as RouteLocationtoInput,
+    type RouteLocationInput,
     type RouteMatchResult,
     type RouteMatchType,
     type RouteMeta,

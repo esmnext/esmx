@@ -188,7 +188,7 @@ export type RouteMatchType = 'route' | 'exact' | 'include';
  * @returns
  *   - true: 继续往后执行
  *   - false: 终止执行
- *   - RouteLocationtoInput: 重定向到另外一个路由
+ *   - RouteLocationInput: 重定向到另外一个路由
  */
 export type RouteConfirmHook = (
     to: Route,
