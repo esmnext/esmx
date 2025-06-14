@@ -45,7 +45,7 @@ describe('Route 类完整测试套件', () => {
         ];
 
         const routerOptions: RouterOptions = {
-            id: 'test',
+            root: '#test',
             context: { version: '1.0.0' },
             routes: mockRoutes,
             mode: RouterMode.history,
@@ -1261,7 +1261,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
         ];
 
         const routerOptions: RouterOptions = {
-            id: 'test',
+            root: '#test',
             context: { version: '1.0.0' },
             routes: mockRoutes,
             mode: RouterMode.history,

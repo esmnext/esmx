@@ -15,13 +15,6 @@ export class RouteTaskController {
     private _aborted = false;
 
     /**
-     * 创建路由任务控制器
-     */
-    constructor() {
-        // 每次创建任务都是新实例，默认未中断
-    }
-
-    /**
      * 终止当前任务
      */
     abort(): void {

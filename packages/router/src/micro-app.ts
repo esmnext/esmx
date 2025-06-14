@@ -17,21 +17,19 @@ export class MicroApp {
         if (isBrowser && app) {
             let root: HTMLElement | null = this.root;
             if (root === null) {
-                root = document.getElementById(router.id);
-                if (root === null) {
-                    root = document.createElement('div');
-                    root.id = router.id;
-                }
+                root = this._resolveRootElement(router);
                 const { rootStyle } = router.parsedOptions;
-                if (isPlainObject(rootStyle)) {
+                if (root && isPlainObject(rootStyle)) {
                     Object.assign(root.style, router.parsedOptions.rootStyle);
                 }
             }
-            app.mount(root);
-            if (root.parentNode === null) {
-                document.body.appendChild(root);
+            if (root) {
+                app.mount(root);
+                if (root.parentNode === null) {
+                    document.body.appendChild(root);
+                }
+                this.root = root;
             }
-            this.root = root;
             if (oldApp) {
                 oldApp.unmount();
             }
@@ -40,6 +38,41 @@ export class MicroApp {
         this._factory = factory;
         // 销毁旧的应用
     }
+
+    /**
+     * 解析根容器元素
+     * 支持 DOM 选择器或直接传入的 DOM 元素
+     */
+    private _resolveRootElement(router: Router): HTMLElement | null {
+        const rootConfig = router.root;
+
+        // 直接传入的 DOM 元素（检查nodeType而不是instanceof HTMLElement）
+        if (
+            isBrowser &&
+            rootConfig &&
+            typeof rootConfig === 'object' &&
+            rootConfig.nodeType === 1
+        ) {
+            return rootConfig as HTMLElement;
+        }
+
+        // DOM 选择器字符串
+        if (typeof rootConfig === 'string') {
+            let root = document.querySelector
+                ? document.querySelector(rootConfig)
+                : null;
+            if (root === null) {
+                // 如果选择器找不到元素，创建新元素
+                root = document.createElement
+                    ? document.createElement('div')
+                    : null;
+            }
+            return root as HTMLElement | null;
+        }
+
+        return null;
+    }
+
     private _getNextFactory({
         route,
         options

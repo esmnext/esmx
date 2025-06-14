@@ -31,7 +31,7 @@ export default async (rc: RenderContext) => {
     ${rc.css()}
 </head>
 <body>
-    <div id="${router.id}">${html}</div>
+    <div id="root">${html}</div>
     ${rc.importmap()}
     ${rc.moduleEntry()}
     ${rc.modulePreload()}

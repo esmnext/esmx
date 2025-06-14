@@ -400,19 +400,19 @@ describe('parsedOptions', () => {
             expect(opts.base.href).toBe('https://custom.com/app/');
         });
 
-        it('should set default id to "app"', async () => {
+        it('should set default root to "#root"', async () => {
             const { parsedOptions } = await import('./options');
             const opts = parsedOptions({ base: 'http://a.com' } as any);
-            expect(opts.id).toBe('app');
+            expect(opts.root).toBe('#root');
         });
 
-        it('should use provided id', async () => {
+        it('should use provided root', async () => {
             const { parsedOptions } = await import('./options');
             const opts = parsedOptions({
                 base: 'http://a.com',
-                id: 'custom-app'
+                root: '#custom-app'
             } as any);
-            expect(opts.id).toBe('custom-app');
+            expect(opts.root).toBe('#custom-app');
         });
 
         it('should set default env to empty string', async () => {

@@ -14,7 +14,29 @@ export enum RouterMode {
     memory = 'memory'
 }
 export interface RouterOptions {
-    id?: string;
+    /**
+     * 应用挂载的根容器
+     * - 可以是 DOM 选择器字符串（如 '#app', '.container', '[data-mount]'）
+     * - 可以是 HTMLElement 对象
+     * - 默认为 '#root'
+     *
+     * @example
+     * ```typescript
+     * // 使用 ID 选择器
+     * new Router({ root: '#my-app' })
+     *
+     * // 使用类选择器
+     * new Router({ root: '.app-container' })
+     *
+     * // 使用属性选择器
+     * new Router({ root: '[data-router-mount]' })
+     *
+     * // 直接传入 DOM 元素
+     * const element = document.getElementById('app');
+     * new Router({ root: element })
+     * ```
+     */
+    root?: string | HTMLElement;
     context?: Record<string | symbol, any>;
     routes?: RouteConfig[];
     mode?: RouterMode;
@@ -37,6 +59,12 @@ export interface RouterLayerOptions {
      * 是否启用弹层模式
      */
     enable?: boolean;
+
+    /**
+     * 弹层的 zIndex 层级值
+     * 如果不设置，将自动使用递增的层级值 (1000 + 递增数)
+     */
+    zIndex?: number;
 
     /**
      * 路由层初始化参数，以键值对形式传递

@@ -1,3 +1,6 @@
+/**
+ * @vitest-environment happy-dom
+ */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MicroApp } from './micro-app';
 import { parsedOptions } from './options';
@@ -71,7 +74,7 @@ const createMockParsedConfig = (
 // 创建模拟的 Router 对象
 const createMockRouter = (
     overrides: {
-        id?: string;
+        root?: string | HTMLElement;
         matched?: Array<{ app?: string | RouterMicroAppCallback }>;
         options?: any;
         parsedOptions?: Partial<RouterParsedOptions>;
@@ -79,7 +82,7 @@ const createMockRouter = (
 ): Router => {
     // 创建基础的路由选项
     const baseOptions: RouterOptions = {
-        id: overrides.id || 'test-router',
+        root: overrides.root || '#test-router',
         context: {},
         routes: [],
         mode: RouterMode.memory,
@@ -121,7 +124,7 @@ const createMockRouter = (
     });
 
     return {
-        id: overrides.id || 'test-router',
+        root: overrides.root || '#test-router',
         route: mockRoute,
         options: overrides.options || {},
         parsedOptions: mockParsedOptions
@@ -232,7 +235,7 @@ describe('MicroApp', () => {
                 expect((microApp as any)._factory).toBe(mockFactory);
                 expect(mockFactory).toHaveBeenCalledWith(router);
                 expect(microApp.app).not.toBeNull();
-                expect(microApp.root).toBeNull(); // 非浏览器环境不操作 DOM
+                expect(microApp.root).not.toBeNull(); // happy-dom 环境提供了 DOM 支持
             });
 
             it('应该在 force=false 且工厂函数未变化时跳过更新', () => {
@@ -298,11 +301,11 @@ describe('MicroApp', () => {
                     remove: vi.fn()
                 };
 
-                document.getElementById = vi.fn().mockReturnValue(null);
+                document.querySelector = vi.fn().mockReturnValue(null);
                 document.createElement = vi.fn().mockReturnValue(mockElement);
 
                 const router = createMockRouter({
-                    id: 'test-router',
+                    root: '#test-router',
                     matched: [{ app: 'test-app' }],
                     options: { apps: { 'test-app': mockFactory } }
                 });
@@ -310,7 +313,6 @@ describe('MicroApp', () => {
                 microApp._update(router);
 
                 expect(document.createElement).toHaveBeenCalledWith('div');
-                expect(mockElement.id).toBe('test-router');
                 expect(mockApp.mount).toHaveBeenCalledWith(mockElement);
                 expect(document.body.appendChild).toHaveBeenCalledWith(
                     mockElement
@@ -325,26 +327,26 @@ describe('MicroApp', () => {
                 const mockApp = createMockApp();
                 const mockFactory = vi.fn().mockReturnValue(mockApp);
                 const existingElement = {
-                    id: 'test-router',
+                    root: '#test-router',
                     style: {},
                     parentNode: document.body,
                     remove: vi.fn()
                 };
 
-                document.getElementById = vi
+                document.querySelector = vi
                     .fn()
                     .mockReturnValue(existingElement);
 
                 const router = createMockRouter({
-                    id: 'test-router',
+                    root: '#test-router',
                     matched: [{ app: 'test-app' }],
                     options: { apps: { 'test-app': mockFactory } }
                 });
 
                 microApp._update(router);
 
-                expect(document.getElementById).toHaveBeenCalledWith(
-                    'test-router'
+                expect(document.querySelector).toHaveBeenCalledWith(
+                    '#test-router'
                 );
                 expect(document.createElement).not.toHaveBeenCalled();
                 expect(mockApp.mount).toHaveBeenCalledWith(existingElement);
@@ -371,9 +373,13 @@ describe('MicroApp', () => {
                     options: { apps: { 'test-app': mockFactory } }
                 });
 
+                // Mock document methods
+                document.querySelector = vi.fn();
+                document.createElement = vi.fn();
+
                 microApp._update(router);
 
-                expect(document.getElementById).not.toHaveBeenCalled();
+                expect(document.querySelector).not.toHaveBeenCalled();
                 expect(document.createElement).not.toHaveBeenCalled();
                 expect(mockApp.mount).toHaveBeenCalledWith(existingRoot);
                 expect(microApp.root).toBe(existingRoot);
@@ -392,7 +398,7 @@ describe('MicroApp', () => {
                     remove: vi.fn()
                 };
 
-                document.getElementById = vi.fn().mockReturnValue(null);
+                document.querySelector = vi.fn().mockReturnValue(null);
                 document.createElement = vi.fn().mockReturnValue(mockElement);
 
                 const router = createMockRouter({
@@ -427,7 +433,7 @@ describe('MicroApp', () => {
                     remove: vi.fn()
                 };
 
-                document.getElementById = vi.fn().mockReturnValue(null);
+                document.querySelector = vi.fn().mockReturnValue(null);
                 document.createElement = vi.fn().mockReturnValue(mockElement);
 
                 // 第一次更新
@@ -464,7 +470,7 @@ describe('MicroApp', () => {
                     remove: vi.fn()
                 };
 
-                document.getElementById = vi.fn().mockReturnValue(null);
+                document.querySelector = vi.fn().mockReturnValue(null);
                 document.createElement = vi.fn().mockReturnValue(mockElement);
 
                 const router = createMockRouter({
@@ -492,7 +498,7 @@ describe('MicroApp', () => {
                     remove: vi.fn()
                 };
 
-                document.getElementById = vi.fn().mockReturnValue(null);
+                document.querySelector = vi.fn().mockReturnValue(null);
                 document.createElement = vi.fn().mockReturnValue(mockElement);
 
                 const router = createMockRouter({
@@ -515,6 +521,11 @@ describe('MicroApp', () => {
                     options: { apps: {} } // 空的 apps 对象，没有对应的工厂函数
                 });
 
+                // Mock document methods
+                document.querySelector = vi.fn();
+                document.createElement = vi.fn();
+                document.body.appendChild = vi.fn();
+
                 microApp._update(router, true);
 
                 // 在浏览器环境下，当工厂函数为 null 时，app 应该被设置为 null
@@ -522,7 +533,7 @@ describe('MicroApp', () => {
                 expect((microApp as any)._factory).toBeNull();
 
                 // 同时验证没有进行任何 DOM 操作
-                expect(document.getElementById).not.toHaveBeenCalled();
+                expect(document.querySelector).not.toHaveBeenCalled();
                 expect(document.createElement).not.toHaveBeenCalled();
                 expect(document.body.appendChild).not.toHaveBeenCalled();
             });
@@ -588,12 +599,12 @@ describe('MicroApp', () => {
                 remove: vi.fn()
             };
 
-            document.getElementById = vi.fn().mockReturnValue(null);
+            document.querySelector = vi.fn().mockReturnValue(null);
             document.createElement = vi.fn().mockReturnValue(mockElement);
 
             // 挂载第一个应用
             const router1 = createMockRouter({
-                id: 'app1',
+                root: '#app1',
                 matched: [{ app: 'app1' }],
                 options: { apps: { app1: factory1 } }
             });
@@ -606,7 +617,7 @@ describe('MicroApp', () => {
 
             // 切换到第二个应用
             const router2 = createMockRouter({
-                id: 'app2',
+                root: '#app2',
                 matched: [{ app: 'app2' }],
                 options: { apps: { app2: factory2 } }
             });
@@ -643,7 +654,7 @@ describe('MicroApp', () => {
                 remove: vi.fn()
             };
 
-            document.getElementById = vi.fn().mockReturnValue(null);
+            document.querySelector = vi.fn().mockReturnValue(null);
             document.createElement = vi.fn().mockReturnValue(mockElement);
 
             // 测试动态应用工厂
@@ -672,7 +683,7 @@ describe('MicroApp', () => {
                 remove: vi.fn()
             };
 
-            document.getElementById = vi.fn().mockReturnValue(null);
+            document.querySelector = vi.fn().mockReturnValue(null);
             document.createElement = vi.fn().mockReturnValue(mockElement);
 
             // 为了避免其他地方的 Object.assign 调用影响测试，我们在调用前清除 mock

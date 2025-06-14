@@ -40,8 +40,8 @@ export class Router {
     private get _currentRoute() {
         return this.transition.route;
     }
-    public get id() {
-        return this.parsedOptions.id;
+    public get root() {
+        return this.parsedOptions.root;
     }
 
     public constructor(options: RouterOptions) {
@@ -198,6 +198,7 @@ export class Router {
     ): Promise<{ promise: Promise<RouterLayerResult>; router: Router }> {
         const layer: Required<RouterLayerOptions> = {
             enable: true,
+            zIndex: 1000 + LAYER_ID.next(),
             params: {},
             shouldClose: () => false,
             autoPush: true,
@@ -228,14 +229,13 @@ export class Router {
                 left: '0',
                 width: '100%',
                 height: '100%',
-                zIndex: '1000',
+                zIndex: `${layer.zIndex}`,
                 background: 'rgba(0, 0,0, 0.6)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
             },
             ...this.options,
-            id: `${this.id}__route_layer__${LAYER_ID.next()}`,
             ...options,
             onBackNoResponse: (router) => {
                 // 当返回操作无响应时，关闭弹层
