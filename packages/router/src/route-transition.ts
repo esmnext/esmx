@@ -312,10 +312,6 @@ export class RouteTransition {
         };
     }
 
-    public abort(): void {
-        this._controller?.abort();
-    }
-
     public destroy(): void {
         // 终止当前任务
         this._controller?.abort();

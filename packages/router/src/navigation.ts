@@ -40,7 +40,7 @@ export class Navigation {
 
     public push(route: Route): RouteState {
         const state: RouteState = Object.freeze({
-            ...(route.state || {}),
+            ...route.state,
             [PAGE_ID_KEY]: PAGE_ID.next()
         });
         this._history.pushState(state, '', route.fullPath);

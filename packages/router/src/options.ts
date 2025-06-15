@@ -17,7 +17,7 @@ function getBaseUrl(options: RouterOptions): URL {
         sourceUrl = options.base;
     } else if (isBrowser) {
         sourceUrl = location.origin;
-    } else if (!isBrowser && options.req) {
+    } else if (options.req) {
         // 服务端：尝试从 req 对象中获取
         const { req } = options;
         const protocol =

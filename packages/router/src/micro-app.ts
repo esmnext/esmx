@@ -2,10 +2,48 @@ import type { Router } from './router';
 import type { RouterMicroAppCallback, RouterMicroAppOptions } from './types';
 import { isBrowser, isPlainObject } from './util';
 
+/**
+ * 解析根容器元素
+ * 支持 DOM 选择器或直接传入的 DOM 元素
+ *
+ * @param rootConfig - 根容器配置，可以是选择器字符串或 HTMLElement
+ * @returns 解析后的 HTMLElement 或 null
+ */
+export function resolveRootElement(
+    rootConfig?: string | HTMLElement
+): HTMLElement | null {
+    if (!rootConfig) {
+        return null;
+    }
+
+    // 直接传入的 DOM 元素
+    if (rootConfig instanceof HTMLElement) {
+        return rootConfig;
+    }
+
+    // DOM 选择器字符串
+    if (typeof rootConfig === 'string') {
+        let root = document.querySelector(rootConfig);
+        if (root === null) {
+            // 如果选择器找不到元素，创建新元素
+            root = document.createElement('div');
+            // 为新创建的元素设置 id（如果选择器是 id 选择器）
+            if (rootConfig.startsWith('#')) {
+                const id = rootConfig.slice(1);
+                root.id = id;
+            }
+        }
+        return root instanceof HTMLElement ? root : null;
+    }
+
+    return null;
+}
+
 export class MicroApp {
     public app: RouterMicroAppOptions | null = null;
     public root: HTMLElement | null = null;
     private _factory: RouterMicroAppCallback | null = null;
+
     public _update(router: Router, force = false) {
         const factory = this._getNextFactory(router);
         if (!force && factory === this._factory) {
@@ -17,7 +55,7 @@ export class MicroApp {
         if (isBrowser && app) {
             let root: HTMLElement | null = this.root;
             if (root === null) {
-                root = this._resolveRootElement(router);
+                root = resolveRootElement(router.root);
                 const { rootStyle } = router.parsedOptions;
                 if (root && isPlainObject(rootStyle)) {
                     Object.assign(root.style, router.parsedOptions.rootStyle);
@@ -36,41 +74,6 @@ export class MicroApp {
         }
         this.app = app;
         this._factory = factory;
-        // 销毁旧的应用
-    }
-
-    /**
-     * 解析根容器元素
-     * 支持 DOM 选择器或直接传入的 DOM 元素
-     */
-    private _resolveRootElement(router: Router): HTMLElement | null {
-        const rootConfig = router.root;
-
-        // 直接传入的 DOM 元素（检查nodeType而不是instanceof HTMLElement）
-        if (
-            isBrowser &&
-            rootConfig &&
-            typeof rootConfig === 'object' &&
-            rootConfig.nodeType === 1
-        ) {
-            return rootConfig as HTMLElement;
-        }
-
-        // DOM 选择器字符串
-        if (typeof rootConfig === 'string') {
-            let root = document.querySelector
-                ? document.querySelector(rootConfig)
-                : null;
-            if (root === null) {
-                // 如果选择器找不到元素，创建新元素
-                root = document.createElement
-                    ? document.createElement('div')
-                    : null;
-            }
-            return root as HTMLElement | null;
-        }
-
-        return null;
     }
 
     private _getNextFactory({
@@ -96,6 +99,7 @@ export class MicroApp {
         }
         return null;
     }
+
     public destroy() {
         this.app?.unmount();
         this.app = null;
