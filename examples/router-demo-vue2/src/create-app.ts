@@ -30,7 +30,7 @@ export async function createApp({
                 setup() {
                     useProvideRouter(router);
                 },
-                render: (h) => h(RouterView)
+                render: (h) => h('router-view')
             });
             return {
                 mount(root) {
