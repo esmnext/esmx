@@ -1,0 +1,235 @@
+# Cursor 全局编程规则
+
+## 代码规范
+
+### TypeScript 和模块系统
+- 始终使用 TypeScript，严格类型检查
+- 使用 ESM 模块系统 (import/export)
+- 禁止使用 `any` 类型，使用具体类型或泛型
+- 使用严格的 TypeScript 配置：
+  - `strict: true`
+  - `noImplicitAny: true`
+  - `noImplicitReturns: true`
+  - `noUnusedLocals: true`
+  - `noUnusedParameters: true`
+
+### 导入导出规范
+- 使用命名导出而非默认导出
+- 导入语句按以下顺序排列：
+  1. Node.js 内置模块
+  2. 第三方库
+  3. 项目内部模块
+  4. 相对路径导入
+- 使用 `import type` 导入仅用于类型的声明
+
+### 代码质量
+- 函数和变量使用描述性命名
+- 使用 const 声明不变的引用，let 声明可变引用
+- 避免使用 var
+- 使用箭头函数和解构赋值
+- 适当使用泛型提高代码复用性
+- **代码注释必须使用英文**，包括单行注释和多行注释
+- **开发完成或执行检查时，必须识别并删除无用的日志**，包括 `console.log`、`console.warn` 等调试输出
+
+## 单元测试规范
+
+### 测试框架和工具
+- 使用 Vitest 作为测试框架
+- 测试文件命名：`*.test.ts` 或 `*.spec.ts`
+- 测试环境配置在文件头部：`@vitest-environment`
+
+### 测试编写原则
+- **严格禁止使用 `any` 类型**，包括在测试代码中
+- **严格禁止使用 mock 对象**，使用真实对象和依赖
+- 每个测试应该独立运行，不依赖其他测试
+- 使用描述性的测试名称，清楚表达测试意图
+- 遵循 AAA 模式：Arrange（准备）、Act（执行）、Assert（断言）
+
+### 测试结构
+```typescript
+describe('模块/功能名称', () => {
+    // 使用 beforeEach/afterEach 进行测试环境的设置和清理
+    beforeEach(() => {
+        // 测试前准备
+    });
+
+    afterEach(() => {
+        // 测试后清理
+    });
+
+    describe('具体功能分组', () => {
+        it('should 描述期望的行为', () => {
+            // Arrange: 准备测试数据和环境
+            
+            // Act: 执行被测试的代码
+            
+            // Assert: 验证结果
+            expect(actual).toBe(expected);
+        });
+    });
+});
+```
+
+### 测试替代方案
+- 使用真实的类实例而不是 mock
+- 使用内存数据库或文件系统进行集成测试
+- 使用 Test Doubles（测试替身）时，创建具体的测试实现类
+- 使用依赖注入来替换外部依赖
+
+### 断言规范
+- 使用具体的断言方法：`toBe()`, `toEqual()`, `toBeInstanceOf()` 等
+- 避免使用通用的 `toBeTruthy()` 或 `toBeFalsy()`，除非确实需要
+- 对异步代码使用 `await` 和相应的异步断言
+
+## 错误处理
+
+### 异常处理
+- 使用具体的 Error 类型而不是通用 Error
+- 提供有意义的错误消息
+- 在测试中验证错误处理逻辑
+
+### 类型安全
+- 使用类型守卫函数确保运行时类型安全
+- 利用 TypeScript 的联合类型和可选链操作符
+- 避免类型断言，除非绝对必要
+
+## 性能和最佳实践
+
+### 代码组织
+- 单一职责原则：每个函数/类只做一件事
+- 优先使用组合而非继承
+- 使用接口定义契约
+- 合理使用枚举和常量
+
+### 异步编程
+- 优先使用 async/await 而不是 Promise.then()
+- 正确处理异步错误
+- 在测试中正确等待异步操作完成
+
+## 示例代码风格
+
+```typescript
+// Good example
+import { readFile } from 'node:fs/promises';
+import type { Config } from '../types';
+
+interface UserData {
+    id: string;
+    name: string;
+    email: string;
+}
+
+export const fetchUserData = async (userId: string): Promise<UserData> => {
+    if (!userId) {
+        throw new Error('User ID is required');
+    }
+    
+    // Implementation logic with proper return
+    const userData: UserData = {
+        id: userId,
+        name: `User ${userId}`,
+        email: `${userId}@example.com`
+    };
+    
+    return userData;
+};
+
+// Test example
+describe('fetchUserData', () => {
+    it('should return user data when valid userId is provided', async () => {
+        // Arrange
+        const validUserId = 'user-123';
+        
+        // Act
+        const result = await fetchUserData(validUserId);
+        
+        // Assert
+        expect(result).toHaveProperty('id', validUserId);
+        expect(result).toHaveProperty('name');
+        expect(result).toHaveProperty('email');
+    });
+});
+```
+
+## 项目质量检查标准
+
+### 核心检查原则
+在执行任何项目检查、代码审查或功能验证时，必须始终考虑以下五个维度：
+
+1. **专业性 (Professionalism)**
+   - 代码结构合理，遵循最佳实践
+   - 接口设计清晰，符合业界标准
+   - 错误处理完整，边界情况考虑周全
+   - 性能优化合理，避免明显性能问题
+
+2. **真实性 (Authenticity)**
+   - 功能实现符合实际需求
+   - 测试用例覆盖真实场景
+   - 数据验证和业务逻辑正确
+   - 避免过度工程化和不必要的复杂性
+
+3. **简洁性 (Simplicity)**
+   - 代码清晰易读，逻辑简明
+   - 避免重复代码，保持 DRY 原则
+   - 接口简洁，职责单一
+   - 文档和注释简洁明了
+
+4. **必要性 (Necessity)**
+   - 每个功能和代码都应有明确的存在价值
+   - 避免为了测试覆盖率而编写无意义的测试
+   - 不追求不切实际的完美指标
+   - 专注于核心功能和关键路径的质量保证
+
+5. **完整性 (Completeness)**
+   - 功能实现应该覆盖所有必要的使用场景
+   - 错误处理和边界条件应该全面考虑
+   - 接口定义应该包含所有必需的参数和返回值
+   - 测试用例应该覆盖主要功能路径和异常情况
+   - 文档应该完整描述使用方法和注意事项
+
+### 检查执行要求
+- 每次代码审查都要从这五个维度进行评估
+- 重构建议必须兼顾专业性、简洁性、必要性和完整性
+- 新功能开发要确保真实性、实用性、必要性和完整性
+- 测试策略要体现专业标准、真实场景、合理的必要性判断和完整的功能覆盖
+- 避免盲目追求指标，重视实际价值和投入产出比
+
+### 检查报告格式要求
+- **检查报告必须使用表格格式输出**
+- **必须包含显目的检查结果标识（✅ PASS / ❌ FAIL / ⚠️ WARNING）**
+- 表格应包含：检查项、结果状态、详细说明、建议改进等列
+- 在报告开头提供总体检查结果汇总
+
+## Git 提交规范
+
+### 提交信息格式
+- **必须使用英文编写提交信息**
+- 遵循 Conventional Commits 规范：`<type>(<scope>): <description>`
+
+### 提交类型 (type)
+- `feat`: new feature
+- `fix`: bug fix
+- `docs`: documentation updates
+- `style`: code formatting (no functional changes)
+- `refactor`: code refactoring
+- `test`: add or modify tests
+- `chore`: build tools, dependency management, etc.
+- `perf`: performance optimization
+- `ci`: CI/CD related changes
+
+### 提交信息示例
+```
+feat(router): add navigation guards support
+fix(core): resolve module loading race condition
+docs: update installation guide
+test(router-vue): add component hierarchy tests
+chore: update dependencies to latest versions
+```
+
+### 提交要求
+- 标题行不超过 50 字符
+- 如需详细说明，标题行后空一行再写详细内容
+- 使用祈使语气（"add" 而不是 "added"）
+- 首字母小写，末尾不加句号
+
+遵循以上规则确保代码质量、类型安全和测试可靠性。 

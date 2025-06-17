@@ -13,7 +13,7 @@ import type {
     RouterOptions,
     RouterParsedOptions
 } from './types';
-import { RouteStatus, RouteType, RouterMode } from './types';
+import { RouteType, RouterMode } from './types';
 
 // 创建模拟的路由配置
 const createMockParsedConfig = (

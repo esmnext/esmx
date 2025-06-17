@@ -3,7 +3,9 @@ import {
     type Ref,
     computed,
     getCurrentInstance,
+    inject,
     onBeforeUnmount,
+    provide,
     ref
 } from 'vue';
 import { createSymbolProperty } from './util';
@@ -20,6 +22,7 @@ interface RouterContext {
 }
 
 const ROUTER_CONTEXT_KEY = Symbol('router-context');
+const ROUTER_INJECT_KEY = Symbol('router-inject');
 
 const ERROR_MESSAGES = {
     SETUP_ONLY: (fnName: string) =>
@@ -158,6 +161,13 @@ export function getRoute(instance: VueInstance): Route {
  * ```
  */
 export function useRouter(): Router {
+    // First try to get router from provide/inject (works in setup)
+    const injectedContext = inject<RouterContext>(ROUTER_INJECT_KEY);
+    if (injectedContext) {
+        return injectedContext.router;
+    }
+
+    // Fallback to component hierarchy traversal (works after mount)
     const proxy = getCurrentProxy('useRouter');
     return getRouter(proxy);
 }
@@ -195,6 +205,13 @@ export function useRouter(): Router {
  * ```
  */
 export function useRoute(): Route {
+    // First try to get route from provide/inject (works in setup)
+    const injectedContext = inject<RouterContext>(ROUTER_INJECT_KEY);
+    if (injectedContext) {
+        return injectedContext.route.value;
+    }
+
+    // Fallback to component hierarchy traversal (works after mount)
     const proxy = getCurrentProxy('useRoute');
     return getRoute(proxy);
 }
@@ -236,6 +253,10 @@ export function useProvideRouter(router: Router): void {
         route: ref(router.route) as Ref<Route>
     };
 
+    // Provide context via Vue 3's provide/inject (works in setup)
+    provide(ROUTER_INJECT_KEY, context);
+
+    // Also set on component instance for fallback (works after mount)
     routerContextProperty.set(proxy, context);
 
     const unwatch = router.afterEach((to: Route) => {
