@@ -25,7 +25,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { RouterLink } from '@esmx/router-vue2';
+import { RouterLink } from '@esmx/router-vue';
 
 function reportError() {
     alert('感谢您的反馈！我们已记录此问题。');

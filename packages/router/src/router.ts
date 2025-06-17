@@ -4,6 +4,7 @@ import { Navigation } from './navigation';
 import { parsedOptions } from './options';
 import { Route } from './route';
 import { RouteTransition } from './route-transition';
+import { createLinkResolver } from './router-link';
 import { RouteType, RouterMode } from './types';
 import type {
     RouteConfirmHook,
@@ -13,6 +14,8 @@ import type {
     RouteState,
     RouterLayerOptions,
     RouterLayerResult,
+    RouterLinkProps,
+    RouterLinkResolved,
     RouterOptions,
     RouterParsedOptions
 } from './types';
@@ -190,6 +193,45 @@ export class Router {
         if (!currentRoute) return false;
 
         return isRouteMatched(targetRoute, currentRoute, matchType);
+    }
+
+    /**
+     * Resolve router link configuration and return complete link data
+     *
+     * This method analyzes router link properties and returns a comprehensive
+     * link resolution result including route information, navigation functions,
+     * HTML attributes, and event handlers. It's primarily used for:
+     * - Framework-agnostic link component implementation
+     * - Generating link attributes and navigation handlers
+     * - Computing active states and CSS classes
+     * - Creating event handlers for different frameworks
+     *
+     * @param props Router link configuration properties
+     * @returns Complete link resolution result with all necessary data
+     *
+     * @example
+     * ```typescript
+     * // Basic link resolution
+     * const linkData = router.resolveLink({
+     *   to: '/user/123',
+     *   type: 'push'
+     * });
+     *
+     * // Access resolved data
+     * console.log(linkData.route.path); // '/user/123'
+     * console.log(linkData.attributes.href); // Full href URL
+     * console.log(linkData.isActive); // Active state
+     *
+     * // Use navigation function
+     * linkData.navigate(); // Programmatic navigation
+     *
+     * // Get event handlers for React
+     * const handlers = linkData.getEventHandlers(name => `on${name.charAt(0).toUpperCase() + name.slice(1)}`);
+     * // handlers.onClick for React
+     * ```
+     */
+    public resolveLink(props: RouterLinkProps): RouterLinkResolved {
+        return createLinkResolver(this, props);
     }
 
     public async createLayer(

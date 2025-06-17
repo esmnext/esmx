@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useRouter } from '@esmx/router-vue2';
+import { useRouter } from '@esmx/router-vue';
 
 const $router = useRouter();
 </script>

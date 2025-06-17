@@ -4,11 +4,13 @@
  */
 
 import { Router } from '@esmx/router';
-import { RouterView, RouterVuePlugin } from '@esmx/router-vue2';
+import { RouterPlugin, RouterView, useProvideRouter } from '@esmx/router-vue';
 import Vue from 'vue';
 import { routes } from './routes';
 
 const isBrowser = typeof window === 'object' && typeof document === 'object';
+
+Vue.use(RouterPlugin);
 
 export async function createApp({
     base,
@@ -19,14 +21,15 @@ export async function createApp({
     url: string;
     renderToString?: (app: any, context: any) => Promise<string>;
 }) {
-    Vue.use(RouterVuePlugin);
-
     const router = new Router({
         base: new URL(base),
         routes,
         apps(router) {
             const app = new Vue({
-                router,
+                setup() {
+                    useProvideRouter(router);
+                    return {};
+                },
                 render: (h) => h(RouterView)
             });
             return {

@@ -30,7 +30,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { RouterLink } from '@esmx/router-vue2';
+import { RouterLink } from '@esmx/router-vue';
 </script>
 <style scoped>
 .home-container {

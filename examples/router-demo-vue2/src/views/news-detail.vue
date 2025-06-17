@@ -66,7 +66,7 @@
 </template>
 
 <script setup>
-import { RouterLink, useRoute } from '@esmx/router-vue2';
+import { RouterLink, useRoute } from '@esmx/router-vue';
 import { ref } from 'vue';
 
 const route = useRoute();
