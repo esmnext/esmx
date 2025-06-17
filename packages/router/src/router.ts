@@ -263,7 +263,7 @@ export class Router {
                 resolve(result);
             };
         });
-        const router = new Router({
+        const nextOptions: RouterOptions = {
             mode: RouterMode.memory,
             rootStyle: {
                 position: 'fixed',
@@ -278,6 +278,7 @@ export class Router {
                 justifyContent: 'center'
             },
             ...this.options,
+            root: undefined,
             ...options,
             onBackNoResponse: (router) => {
                 // 当返回操作无响应时，关闭弹层
@@ -286,7 +287,8 @@ export class Router {
                 options?.onBackNoResponse?.(router);
             },
             layer
-        });
+        };
+        const router = new Router(nextOptions);
         await router.replace(toInput);
         return {
             promise,

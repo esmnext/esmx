@@ -22,6 +22,7 @@ export async function createApp({
     renderToString?: (app: any, context: any) => Promise<string>;
 }) {
     const router = new Router({
+        root: '#root',
         base: new URL(base),
         routes,
         apps(router) {

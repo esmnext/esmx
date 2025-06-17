@@ -12,31 +12,22 @@ import { isBrowser, isPlainObject } from './util';
 export function resolveRootElement(
     rootConfig?: string | HTMLElement
 ): HTMLElement | null {
-    if (!rootConfig) {
-        return null;
-    }
-
+    let el: HTMLElement | null = null;
     // 直接传入的 DOM 元素
     if (rootConfig instanceof HTMLElement) {
-        return rootConfig;
+        el = rootConfig;
     }
-
-    // DOM 选择器字符串
-    if (typeof rootConfig === 'string') {
-        let root = document.querySelector(rootConfig);
-        if (root === null) {
-            // 如果选择器找不到元素，创建新元素
-            root = document.createElement('div');
-            // 为新创建的元素设置 id（如果选择器是 id 选择器）
-            if (rootConfig.startsWith('#')) {
-                const id = rootConfig.slice(1);
-                root.id = id;
-            }
+    if (typeof rootConfig === 'string' && rootConfig) {
+        try {
+            el = document.querySelector(rootConfig);
+        } catch (error) {
+            console.error(`Failed to resolve root element: ${rootConfig}`);
         }
-        return root instanceof HTMLElement ? root : null;
     }
-
-    return null;
+    if (el === null) {
+        el = document.createElement('div');
+    }
+    return el;
 }
 
 export class MicroApp {

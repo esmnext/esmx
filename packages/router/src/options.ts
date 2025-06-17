@@ -66,7 +66,7 @@ export function parsedOptions(
     const routes = Array.from(options.routes ?? []);
     return Object.freeze<RouterParsedOptions>({
         rootStyle: options.rootStyle ? { ...options.rootStyle } : false,
-        root: options.root || '#root',
+        root: options.root || '',
         context: options.context ?? {},
         env: options.env || '',
         req: options.req || null,
