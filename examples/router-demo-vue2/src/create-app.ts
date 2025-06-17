@@ -29,7 +29,6 @@ export async function createApp({
             const app = new Vue({
                 setup() {
                     useProvideRouter(router);
-                    return {};
                 },
                 render: (h) => h(RouterView)
             });

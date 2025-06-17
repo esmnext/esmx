@@ -1,29 +1,29 @@
 # @esmx/router-vue
 
-Vue integration for [@esmx/router](https://github.com/esmnext/esmx/tree/main/packages/router) - A universal router that works seamlessly with both Vue 2.7+ and Vue 3.
+[@esmx/router](https://github.com/esmnext/esmx/tree/main/packages/router) 的 Vue 集成包 - 一个同时适用于 Vue 2.7+ 和 Vue 3 的通用路由器。
 
 [![npm version](https://img.shields.io/npm/v/@esmx/router-vue.svg)](https://www.npmjs.com/package/@esmx/router-vue) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Features
+## 特性
 
-✨ **Universal Vue Support** - Works with both Vue 2.7+ and Vue 3  
-🎯 **Composition API First** - Built for modern Vue development  
-🔗 **Seamless Integration** - Drop-in replacement for Vue Router  
-🚀 **TypeScript Ready** - Full TypeScript support with excellent DX  
-⚡ **High Performance** - Optimized for production use  
-🔄 **SSR Compatible** - Server-side rendering support  
+✨ **通用 Vue 支持** - 同时支持 Vue 2.7+ 和 Vue 3  
+🎯 **组合式 API 优先** - 为现代 Vue 开发而构建  
+🔗 **无缝集成** - Vue Router 的替代方案  
+🚀 **TypeScript 就绪** - 完整的 TypeScript 支持，出色的开发体验  
+⚡ **高性能** - 为生产环境优化  
+🔄 **SSR 兼容** - 支持服务端渲染  
 
-## Installation
+## 安装
 
 ```bash
 npm install @esmx/router @esmx/router-vue
-# or
+# 或
 yarn add @esmx/router @esmx/router-vue
-# or
+# 或
 pnpm add @esmx/router @esmx/router-vue
 ```
 
-## Quick Start
+## 快速开始
 
 ### Vue 3
 
@@ -41,10 +41,10 @@ const routes = [
 const router = createRouter({ routes });
 const app = createApp(App);
 
-// Install the plugin
+// 安装插件
 app.use(RouterPlugin);
 
-// Provide router context
+// 提供路由上下文
 app.setup = () => {
   useProvideRouter(router);
 };
@@ -67,7 +67,7 @@ const routes = [
 
 const router = createRouter({ routes });
 
-// Install the plugin
+// 安装插件
 Vue.use(RouterPlugin);
 
 new Vue({
@@ -78,26 +78,26 @@ new Vue({
 }).$mount('#app');
 ```
 
-## Basic Usage
+## 基础用法
 
-### Template Usage
+### 模板用法
 
 ```vue
 <template>
   <div id="app">
     <nav>
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/about">About</RouterLink>
-      <RouterLink to="/users/123">User Profile</RouterLink>
+      <RouterLink to="/">首页</RouterLink>
+      <RouterLink to="/about">关于</RouterLink>
+      <RouterLink to="/users/123">用户资料</RouterLink>
     </nav>
     
-    <!-- Route components will be rendered here -->
+    <!-- 路由组件将在这里渲染 -->
     <RouterView />
   </div>
 </template>
 ```
 
-### Composition API
+### 组合式 API
 
 ```vue
 <script setup lang="ts">
@@ -107,7 +107,7 @@ import { watch } from 'vue';
 const router = useRouter();
 const route = useRoute();
 
-// Navigate programmatically
+// 编程式导航
 const goToAbout = () => {
   router.push('/about');
 };
@@ -116,26 +116,26 @@ const goBack = () => {
   router.back();
 };
 
-// Watch route changes
+// 监听路由变化
 watch(() => route.path, (newPath) => {
-  console.log('Route changed to:', newPath);
+  console.log('路由变更至:', newPath);
 });
 </script>
 
 <template>
   <div>
-    <h1>{{ route.meta?.title || 'Page' }}</h1>
-    <p>Current path: {{ route.path }}</p>
-    <p>Route params: {{ JSON.stringify(route.params) }}</p>
-    <p>Query params: {{ JSON.stringify(route.query) }}</p>
+    <h1>{{ route.meta?.title || '页面' }}</h1>
+    <p>当前路径: {{ route.path }}</p>
+    <p>路由参数: {{ JSON.stringify(route.params) }}</p>
+    <p>查询参数: {{ JSON.stringify(route.query) }}</p>
     
-    <button @click="goToAbout">Go to About</button>
-    <button @click="goBack">Go Back</button>
+    <button @click="goToAbout">前往关于页</button>
+    <button @click="goBack">返回</button>
   </div>
 </template>
 ```
 
-### Options API (Vue 2)
+### 选项式 API (Vue 2)
 
 ```vue
 <script>
@@ -147,7 +147,7 @@ export default defineComponent({
     const router = getRouter(this);
     const route = getRoute(this);
     
-    console.log('Current route:', route.path);
+    console.log('当前路由:', route.path);
   },
   
   methods: {
@@ -160,81 +160,81 @@ export default defineComponent({
 </script>
 ```
 
-## API Reference
+## API 参考
 
-### Components
+### 组件
 
 #### RouterLink
 
-A component for creating navigation links.
+用于创建导航链接的组件。
 
-**Props:**
+**属性:**
 
-| Prop | Type | Default | Description |
+| 属性 | 类型 | 默认值 | 描述 |
 |------|------|---------|-------------|
-| `to` | `string` \| `RouteLocationInput` | - | Target route location |
-| `type` | `RouterLinkType` | `'push'` | Navigation type |
-| `exact` | `RouteMatchType` | `'include'` | Active state matching |
-| `activeClass` | `string` | - | CSS class for active state |
-| `event` | `string` \| `string[]` | `'click'` | Events that trigger navigation |
-| `tag` | `string` | `'a'` | HTML tag to render |
-| `layerOptions` | `RouterLayerOptions` | - | Layer navigation options |
+| `to` | `string` \| `RouteLocationInput` | - | 目标路由位置 |
+| `type` | `RouterLinkType` | `'push'` | 导航类型 |
+| `exact` | `RouteMatchType` | `'include'` | 激活状态匹配方式 |
+| `activeClass` | `string` | - | 激活状态的 CSS 类名 |
+| `event` | `string` \| `string[]` | `'click'` | 触发导航的事件 |
+| `tag` | `string` | `'a'` | 要渲染的 HTML 标签 |
+| `layerOptions` | `RouterLayerOptions` | - | 弹层导航选项 |
 
-**Usage:**
+**用法:**
 
 ```vue
 <template>
-  <!-- Basic link -->
-  <RouterLink to="/home">Home</RouterLink>
+  <!-- 基础链接 -->
+  <RouterLink to="/home">首页</RouterLink>
   
-  <!-- Replace navigation -->
-  <RouterLink to="/login" type="replace">Login</RouterLink>
+  <!-- 替换导航 -->
+  <RouterLink to="/login" type="replace">登录</RouterLink>
   
-  <!-- Custom styling -->
+  <!-- 自定义样式 -->
   <RouterLink 
     to="/dashboard" 
     active-class="nav-active"
     exact="exact"
   >
-    Dashboard
+    仪表板
   </RouterLink>
   
-  <!-- Custom tag -->
+  <!-- 自定义标签 -->
   <RouterLink to="/submit" tag="button" class="btn">
-    Submit
+    提交
   </RouterLink>
 </template>
 ```
 
 #### RouterView
 
-A component that renders the matched route component.
+渲染匹配路由组件的组件。
 
-**Usage:**
+**用法:**
 
 ```vue
 <template>
   <div>
-    <!-- Root level routes render here -->
+    <!-- 根级路由在这里渲染 -->
     <RouterView />
     
-    <!-- Named views (if supported) -->
+    <!-- 命名视图（如果支持） -->
     <RouterView name="sidebar" />
   </div>
 </template>
 ```
 
-### Composition API
+### 组合式 API
 
 #### useRouter()
 
-Get the router instance for navigation.
+获取用于导航的路由器实例。
 
 ```typescript
 function useRouter(): Router
 ```
 
-**Usage:**
+**用法:**
 
 ```vue
 <script setup>
@@ -250,13 +250,13 @@ const navigate = () => {
 
 #### useRoute()
 
-Get the current route information (reactive).
+获取当前路由信息（响应式）。
 
 ```typescript
 function useRoute(): Route
 ```
 
-**Usage:**
+**用法:**
 
 ```vue
 <script setup>
@@ -264,23 +264,23 @@ import { useRoute } from '@esmx/router-vue';
 
 const route = useRoute();
 
-// Access route properties
-console.log(route.path);     // Current path
-console.log(route.params);   // Route parameters
-console.log(route.query);    // Query parameters
-console.log(route.meta);     // Route metadata
+// 访问路由属性
+console.log(route.path);     // 当前路径
+console.log(route.params);   // 路由参数
+console.log(route.query);    // 查询参数
+console.log(route.meta);     // 路由元数据
 </script>
 ```
 
 #### useProvideRouter()
 
-Provide router context to child components.
+为子组件提供路由上下文。
 
 ```typescript
 function useProvideRouter(router: Router): void
 ```
 
-**Usage:**
+**用法:**
 
 ```typescript
 import { createRouter } from '@esmx/router';
@@ -288,7 +288,7 @@ import { useProvideRouter } from '@esmx/router-vue';
 
 const router = createRouter({ routes });
 
-// In your app's setup function
+// 在应用的 setup 函数中
 setup() {
   useProvideRouter(router);
 }
@@ -296,13 +296,13 @@ setup() {
 
 #### useLink()
 
-Create reactive link helpers for custom navigation components.
+为自定义导航组件创建响应式链接助手。
 
 ```typescript
 function useLink(props: RouterLinkProps): ComputedRef<RouterLinkResolved>
 ```
 
-**Usage:**
+**用法:**
 
 ```vue
 <script setup>
@@ -321,16 +321,16 @@ const link = useLink({
     v-on="link.getEventHandlers()"
     :class="{ active: link.isActive }"
   >
-    Custom Link
+    自定义链接
   </a>
 </template>
 ```
 
-### Options API
+### 选项式 API
 
 #### getRouter()
 
-Get router instance in Options API components.
+在选项式 API 组件中获取路由器实例。
 
 ```typescript
 function getRouter(instance: VueInstance): Router
@@ -338,17 +338,17 @@ function getRouter(instance: VueInstance): Router
 
 #### getRoute()
 
-Get current route in Options API components.
+在选项式 API 组件中获取当前路由。
 
 ```typescript
 function getRoute(instance: VueInstance): Route
 ```
 
-### Plugin
+### 插件
 
 #### RouterPlugin
 
-Vue plugin that registers RouterLink and RouterView components globally.
+全局注册 RouterLink 和 RouterView 组件的 Vue 插件。
 
 ```typescript
 const RouterPlugin = {
@@ -356,7 +356,7 @@ const RouterPlugin = {
 }
 ```
 
-**Usage:**
+**用法:**
 
 ```typescript
 // Vue 3
@@ -366,12 +366,12 @@ app.use(RouterPlugin);
 Vue.use(RouterPlugin);
 ```
 
-## TypeScript Support
+## TypeScript 支持
 
-This package provides full TypeScript support. For Vue 2 projects, the package automatically augments Vue component instances with `$router` and `$route` properties.
+此包提供完整的 TypeScript 支持。对于 Vue 2 项目，包会自动为 Vue 组件实例增强 `$router` 和 `$route` 属性。
 
 ```typescript
-// Vue 2 type augmentation (automatic)
+// Vue 2 类型增强（自动）
 declare module 'vue/types/vue' {
   interface Vue {
     readonly $router: Router;
@@ -380,9 +380,9 @@ declare module 'vue/types/vue' {
 }
 ```
 
-## Advanced Usage
+## 高级用法
 
-### Custom Link Component
+### 自定义链接组件
 
 ```vue
 <script setup lang="ts">
@@ -415,7 +415,7 @@ const link = useLink(props).value;
 </template>
 ```
 
-### Route Guards in Components
+### 组件中的路由守卫
 
 ```vue
 <script setup>
@@ -426,30 +426,30 @@ const router = useRouter();
 const route = useRoute();
 
 onMounted(() => {
-  // Add route guard
+  // 添加路由守卫
   const unregister = router.beforeEach((to, from) => {
     if (to.meta?.requiresAuth && !isAuthenticated()) {
       return '/login';
     }
   });
   
-  // Cleanup on unmount
+  // 组件卸载时清理
   onBeforeUnmount(unregister);
 });
 </script>
 ```
 
-## Migration from Vue Router
+## 从 Vue Router 迁移
 
-### Key Differences
+### 主要差异
 
-1. **Router Creation**: Use `createRouter` from `@esmx/router`
-2. **Context Provision**: Use `useProvideRouter()` instead of router installation
-3. **Component Registration**: Use `RouterPlugin` for global components
+1. **路由器创建**: 使用 `@esmx/router` 的 `createRouter`
+2. **上下文提供**: 使用 `useProvideRouter()` 而非路由器安装
+3. **组件注册**: 使用 `RouterPlugin` 进行全局组件注册
 
-### Migration Example
+### 迁移示例
 
-**Before (Vue Router):**
+**之前 (Vue Router):**
 
 ```typescript
 import { createRouter, createWebHistory } from 'vue-router';
@@ -462,7 +462,7 @@ const router = createRouter({
 app.use(router);
 ```
 
-**After (@esmx/router-vue):**
+**之后 (@esmx/router-vue):**
 
 ```typescript
 import { createRouter } from '@esmx/router';
@@ -476,20 +476,20 @@ app.setup = () => {
 };
 ```
 
-## Browser Support
+## 浏览器支持
 
-- **Vue 3**: All modern browsers
-- **Vue 2.7+**: All modern browsers + IE11 (with polyfills)
+- **Vue 3**: 所有现代浏览器
+- **Vue 2.7+**: 所有现代浏览器 + IE11（需要 polyfills）
 
-## Contributing
+## 贡献
 
-We welcome contributions! Please see our [Contributing Guide](../../CONTRIBUTING.md) for details.
+我们欢迎贡献！请查看我们的[贡献指南](../../CONTRIBUTING.md)了解详情。
 
-## License
+## 许可证
 
-MIT © [ESMX Team](https://github.com/esmnext/esmx)
+MIT © [ESMX 团队](https://github.com/esmnext/esmx)
 
-## Related Packages
+## 相关包
 
-- [@esmx/router](https://github.com/esmnext/esmx/tree/main/packages/router) - Core router package
-- [@esmx/core](https://github.com/esmnext/esmx/tree/main/packages/core) - ESMX core framework
+- [@esmx/router](https://github.com/esmnext/esmx/tree/main/packages/router) - 核心路由包
+- [@esmx/core](https://github.com/esmnext/esmx/tree/main/packages/core) - ESMX 核心框架
