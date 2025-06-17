@@ -28,10 +28,10 @@
         }
     ],
     "dependencies": {
-        "happy-dom": "^18.0.1",
         "path-to-regexp": "^6.2.2"
     },
     "devDependencies": {
+        "happy-dom": "^18.0.1",
         "@biomejs/biome": "1.9.4",
         "@esmx/lint": "3.0.0-rc.18",
         "@types/node": "22.15.18",
