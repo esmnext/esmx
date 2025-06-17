@@ -7,12 +7,9 @@ import http from 'node:http';
 import type { EsmxOptions } from '@esmx/core';
 
 export default {
-    /**
-     * 配置开发环境的应用创建器
-     * @description 创建并配置 Rspack 应用实例，用于开发环境的构建和热更新
-     * @param esmx Esmx 框架实例，提供核心功能和配置接口
-     * @returns 返回配置好的 Rspack 应用实例，支持 HMR 和实时预览
-     */
+    modules: {
+        exports: ['npm:vue', 'npm:@esmx/router', 'npm:@esmx/router-vue']
+    },
     async devApp(esmx) {
         return import('@esmx/rspack-vue').then((m) =>
             m.createRspackVue2App(esmx, {

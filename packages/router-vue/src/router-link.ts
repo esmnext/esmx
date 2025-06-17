@@ -15,7 +15,7 @@ import { isVue3 } from './util';
  * @param props - Component properties
  * @param props.to - Target route location to navigate to
  * @param props.type - Navigation type ('push' | 'replace' | 'pushWindow' | 'replaceWindow' | 'pushLayer')
- * @param props.replace - @deprecated Use type='replace' instead
+ * @param props.replace - Use type='replace' instead
  * @param props.exact - How to match the active state ('include' | 'exact' | 'route')
  * @param props.activeClass - CSS class to apply when link is active
  * @param props.event - Event(s) that trigger navigation

@@ -450,8 +450,6 @@ describe('use.ts - Vue Router Integration', () => {
             app.mount(testContainer);
             await nextTick();
 
-            console.log('=== Direct getRouter investigation ===');
-
             if (childInstance && parentInstance) {
                 console.log(
                     'Testing direct getRouter call on child instance...'
