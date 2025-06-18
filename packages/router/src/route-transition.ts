@@ -324,7 +324,6 @@ export class RouteTransition {
         toType: RouteType,
         toInput: RouteLocationInput
     ): Promise<Route> {
-        const { _tasks } = this;
         const from = this.route;
         const to = await this._runTask(
             BEFORE_TASKS,
