@@ -1,2 +1,17 @@
-// 这里是为了 index.ts 的覆盖率，没有实际作用
-export * from './index';
+import { describe, expect, it } from 'vitest';
+import {
+    RouteTransition as IndexRouteTransition,
+    Router as IndexRouter
+} from './index';
+import { RouteTransition } from './route-transition';
+import { Router } from './router';
+
+describe('index exports', () => {
+    it('should export Router correctly', () => {
+        expect(IndexRouter).toBe(Router);
+    });
+
+    it('should export RouteTransition correctly', () => {
+        expect(IndexRouteTransition).toBe(RouteTransition);
+    });
+});

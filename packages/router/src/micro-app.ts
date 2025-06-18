@@ -11,7 +11,7 @@ import { isBrowser, isPlainObject } from './util';
  */
 export function resolveRootElement(
     rootConfig?: string | HTMLElement
-): HTMLElement | null {
+): HTMLElement {
     let el: HTMLElement | null = null;
     // 直接传入的 DOM 元素
     if (rootConfig instanceof HTMLElement) {

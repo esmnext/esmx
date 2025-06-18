@@ -103,9 +103,14 @@ describe('resolveRootElement', () => {
     });
 
     describe('基础功能测试', () => {
-        it('应该在参数为空时返回 null', () => {
-            expect(resolveRootElement()).toBeNull();
-            expect(resolveRootElement(undefined)).toBeNull();
+        it('应该在参数为空时返回一个 div 元素', () => {
+            const result1 = resolveRootElement();
+            expect(result1).toBeInstanceOf(HTMLElement);
+            expect(result1.tagName).toBe('DIV');
+
+            const result2 = resolveRootElement(undefined);
+            expect(result2).toBeInstanceOf(HTMLElement);
+            expect(result2.tagName).toBe('DIV');
         });
 
         it('应该正确处理直接传入的 HTMLElement', () => {
@@ -134,16 +139,25 @@ describe('resolveRootElement', () => {
 
             expect(result).toBeInstanceOf(HTMLElement);
             expect(result!.tagName).toBe('DIV');
-            expect(result!.id).toBe('non-existent');
+            expect(result!.id).toBe('');
         });
     });
 
     describe('选择器类型测试', () => {
         it('应该处理 ID 选择器', () => {
+            // Test finding an existing element
+            const existingElement = document.createElement('div');
+            existingElement.id = 'app';
+            document.body.appendChild(existingElement);
             const result = resolveRootElement('#app');
-
             expect(result).toBeInstanceOf(HTMLElement);
             expect(result!.id).toBe('app');
+
+            // Test creating a new element when not found
+            const newResult = resolveRootElement('#new-app');
+            expect(newResult).toBeInstanceOf(HTMLElement);
+            expect(newResult.tagName).toBe('DIV');
+            expect(newResult.id).toBe('');
         });
 
         it('应该处理类选择器', () => {
@@ -212,18 +226,26 @@ describe('resolveRootElement', () => {
         });
 
         it('应该处理非字符串非HTMLElement的输入', () => {
-            // @ts-expect-error - 测试错误输入
-            expect(resolveRootElement(123)).toBeNull();
-            // @ts-expect-error - 测试错误输入
-            expect(resolveRootElement({})).toBeNull();
-            // @ts-expect-error - 测试错误输入
-            expect(resolveRootElement([])).toBeNull();
+            // @ts-expect-error - testing invalid input
+            const result1 = resolveRootElement(123);
+            expect(result1).toBeInstanceOf(HTMLElement);
+            expect(result1.tagName).toBe('DIV');
+
+            // @ts-expect-error - testing invalid input
+            const result2 = resolveRootElement({});
+            expect(result2).toBeInstanceOf(HTMLElement);
+            expect(result2.tagName).toBe('DIV');
+
+            // @ts-expect-error - testing invalid input
+            const result3 = resolveRootElement([]);
+            expect(result3).toBeInstanceOf(HTMLElement);
+            expect(result3.tagName).toBe('DIV');
         });
     });
 
     describe('类型安全测试', () => {
-        it('应该只返回 HTMLElement 类型的节点', () => {
-            // 创建 SVG 元素（不是 HTMLElement）
+        it('应该返回查询到的任何元素类型', () => {
+            // Create an SVG element (which is not an HTMLElement)
             const svg = document.createElementNS(
                 'http://www.w3.org/2000/svg',
                 'svg'
@@ -233,8 +255,9 @@ describe('resolveRootElement', () => {
 
             const result = resolveRootElement('#svg-element');
 
-            // SVG 元素不是 HTMLElement，应该返回 null
-            expect(result).toBeNull();
+            // The function returns the SVGElement it finds.
+            expect(result).toBe(svg);
+            expect(result).toBeInstanceOf(SVGElement);
         });
 
         it('应该处理文本节点等非元素节点', () => {
