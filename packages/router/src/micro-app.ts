@@ -21,7 +21,7 @@ export function resolveRootElement(
         try {
             el = document.querySelector(rootConfig);
         } catch (error) {
-            console.error(`Failed to resolve root element: ${rootConfig}`);
+            console.warn(`Failed to resolve root element: ${rootConfig}`);
         }
     }
     if (el === null) {
