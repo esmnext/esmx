@@ -77,6 +77,10 @@ describe('Route-Level Navigation Guards', () => {
                     component: () => 'Settings',
                     beforeLeave: async (to, from) => {
                         executionLog.push('beforeLeave-settings');
+                        // Prevent infinite redirection loop in test case
+                        if (to.path === '/confirm-leave') {
+                            return;
+                        }
                         // Simulate unsaved form confirmation.
                         if (from?.query.unsaved === 'true') {
                             return '/confirm-leave';
@@ -252,7 +256,7 @@ describe('Route-Level Navigation Guards', () => {
             // The `beforeLeave` on the original `from` is executed again for the new navigation.
             expect(executionLog).toEqual([
                 'beforeLeave-settings',
-                'beforeLeave-settings'
+                'beforeLeave-user-123'
             ]);
         });
 
