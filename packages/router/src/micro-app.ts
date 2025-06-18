@@ -3,17 +3,17 @@ import type { RouterMicroAppCallback, RouterMicroAppOptions } from './types';
 import { isBrowser, isPlainObject } from './util';
 
 /**
- * 解析根容器元素
- * 支持 DOM 选择器或直接传入的 DOM 元素
+ * Resolves the root container element.
+ * Supports a DOM selector string or a direct HTMLElement.
  *
- * @param rootConfig - 根容器配置，可以是选择器字符串或 HTMLElement
- * @returns 解析后的 HTMLElement 或 null
+ * @param rootConfig - The root container configuration, can be a selector string or an HTMLElement.
+ * @returns The resolved HTMLElement.
  */
 export function resolveRootElement(
     rootConfig?: string | HTMLElement
 ): HTMLElement {
     let el: HTMLElement | null = null;
-    // 直接传入的 DOM 元素
+    // Direct HTMLElement provided
     if (rootConfig instanceof HTMLElement) {
         el = rootConfig;
     }
@@ -41,7 +41,7 @@ export class MicroApp {
             return;
         }
         const oldApp = this.app;
-        // 创建新的应用
+        // Create the new application
         const app = factory ? factory(router) : null;
         if (isBrowser && app) {
             let root: HTMLElement | null = this.root;

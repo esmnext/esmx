@@ -15,7 +15,7 @@ import type {
 } from './types';
 import { RouteType, RouterMode } from './types';
 
-// 创建模拟的路由配置
+// Create a mock route configuration
 const createMockParsedConfig = (
     app?: string | RouterMicroAppCallback
 ): RouteParsedConfig => ({
@@ -28,7 +28,7 @@ const createMockParsedConfig = (
     app
 });
 
-// 创建模拟的 Router 对象
+// Create a mock Router object
 const createMockRouter = (
     overrides: {
         root?: string | HTMLElement;
@@ -37,7 +37,7 @@ const createMockRouter = (
         parsedOptions?: Partial<RouterParsedOptions>;
     } = {}
 ): Router => {
-    // 创建基础的路由选项
+    // Create base router options
     const baseOptions: RouterOptions = {
         root: overrides.root || '#test-router',
         context: {},
@@ -55,13 +55,13 @@ const createMockRouter = (
         onBackNoResponse: () => {}
     };
 
-    // 创建解析后的选项，如果需要自定义匹配结果，修改 matcher
+    // Create parsed options, modifying the matcher if custom results are needed
     const mockParsedOptions = {
         ...parsedOptions(baseOptions),
         ...overrides.parsedOptions
     };
 
-    // 如果需要自定义匹配结果，创建自定义 matcher
+    // If custom match results are needed, create a custom matcher
     if (overrides.matched) {
         const customMatched = overrides.matched.map((item) =>
             createMockParsedConfig(item.app || 'test-app')
@@ -73,7 +73,7 @@ const createMockRouter = (
         });
     }
 
-    // 使用真实的 Route 构造函数创建路由对象
+    // Create a route object using the real Route constructor
     const mockRoute = new Route({
         options: mockParsedOptions,
         toType: RouteType.push,
@@ -88,7 +88,7 @@ const createMockRouter = (
     } as Router;
 };
 
-// 创建模拟的微应用
+// Create a mock micro-application
 const createMockApp = (): RouterMicroAppOptions => ({
     mount: vi.fn(),
     unmount: vi.fn(),
@@ -98,12 +98,12 @@ const createMockApp = (): RouterMicroAppOptions => ({
 describe('resolveRootElement', () => {
     afterEach(() => {
         vi.clearAllMocks();
-        // 清理 DOM
+        // Clean up the DOM
         document.body.innerHTML = '';
     });
 
-    describe('基础功能测试', () => {
-        it('应该在参数为空时返回一个 div 元素', () => {
+    describe('Basic functionality tests', () => {
+        it('should return a div element when the parameter is empty', () => {
             const result1 = resolveRootElement();
             expect(result1).toBeInstanceOf(HTMLElement);
             expect(result1.tagName).toBe('DIV');
@@ -113,7 +113,7 @@ describe('resolveRootElement', () => {
             expect(result2.tagName).toBe('DIV');
         });
 
-        it('应该正确处理直接传入的 HTMLElement', () => {
+        it('should correctly handle a directly passed HTMLElement', () => {
             const element = document.createElement('div');
             element.id = 'test-element';
 
@@ -123,8 +123,8 @@ describe('resolveRootElement', () => {
             expect(result!.id).toBe('test-element');
         });
 
-        it('应该正确处理字符串选择器', () => {
-            // 创建一个现有元素
+        it('should correctly handle a string selector', () => {
+            // Create an existing element
             const existingElement = document.createElement('div');
             existingElement.id = 'existing-element';
             document.body.appendChild(existingElement);
@@ -134,7 +134,7 @@ describe('resolveRootElement', () => {
             expect(result).toBe(existingElement);
         });
 
-        it('应该在找不到元素时创建新元素', () => {
+        it('should create a new element when not found', () => {
             const result = resolveRootElement('#non-existent');
 
             expect(result).toBeInstanceOf(HTMLElement);
@@ -143,8 +143,8 @@ describe('resolveRootElement', () => {
         });
     });
 
-    describe('选择器类型测试', () => {
-        it('应该处理 ID 选择器', () => {
+    describe('Selector type tests', () => {
+        it('should handle ID selectors', () => {
             // Test finding an existing element
             const existingElement = document.createElement('div');
             existingElement.id = 'app';
@@ -160,8 +160,8 @@ describe('resolveRootElement', () => {
             expect(newResult.id).toBe('');
         });
 
-        it('应该处理类选择器', () => {
-            // 创建带类名的元素
+        it('should handle class selectors', () => {
+            // Create an element with a class name
             const element = document.createElement('div');
             element.className = 'app-container';
             document.body.appendChild(element);
@@ -171,8 +171,8 @@ describe('resolveRootElement', () => {
             expect(result).toBe(element);
         });
 
-        it('应该处理属性选择器', () => {
-            // 创建带属性的元素
+        it('should handle attribute selectors', () => {
+            // Create an element with an attribute
             const element = document.createElement('div');
             element.setAttribute('data-app', 'main');
             document.body.appendChild(element);
@@ -182,8 +182,8 @@ describe('resolveRootElement', () => {
             expect(result).toBe(element);
         });
 
-        it('应该处理标签选择器', () => {
-            // 创建一个 main 标签
+        it('should handle tag selectors', () => {
+            // Create a main tag
             const element = document.createElement('main');
             document.body.appendChild(element);
 
@@ -193,9 +193,9 @@ describe('resolveRootElement', () => {
         });
     });
 
-    describe('边界情况测试', () => {
-        it('应该处理复杂选择器', () => {
-            // 创建复杂结构
+    describe('Edge case tests', () => {
+        it('should handle complex selectors', () => {
+            // Create a complex structure
             const container = document.createElement('div');
             container.className = 'container';
             const app = document.createElement('div');
@@ -208,8 +208,8 @@ describe('resolveRootElement', () => {
             expect(result).toBe(app);
         });
 
-        it('应该返回第一个匹配的元素', () => {
-            // 创建多个相同类名的元素
+        it('should return the first matching element', () => {
+            // Create multiple elements with the same class name
             const element1 = document.createElement('div');
             element1.className = 'multiple';
             element1.textContent = 'first';
@@ -225,7 +225,7 @@ describe('resolveRootElement', () => {
             expect(result).toBe(element1);
         });
 
-        it('应该处理非字符串非HTMLElement的输入', () => {
+        it('should handle non-string, non-HTMLElement inputs', () => {
             // @ts-expect-error - testing invalid input
             const result1 = resolveRootElement(123);
             expect(result1).toBeInstanceOf(HTMLElement);
@@ -243,8 +243,8 @@ describe('resolveRootElement', () => {
         });
     });
 
-    describe('类型安全测试', () => {
-        it('应该返回查询到的任何元素类型', () => {
+    describe('Type safety tests', () => {
+        it('should return any type of element found', () => {
             // Create an SVG element (which is not an HTMLElement)
             const svg = document.createElementNS(
                 'http://www.w3.org/2000/svg',
@@ -260,8 +260,8 @@ describe('resolveRootElement', () => {
             expect(result).toBeInstanceOf(SVGElement);
         });
 
-        it('应该处理文本节点等非元素节点', () => {
-            // querySelector 不会返回文本节点，但这是类型安全的验证
+        it('should handle non-element nodes like text nodes', () => {
+            // querySelector will not return text nodes, but this is for type safety verification.
             const result = resolveRootElement('#non-existent-text');
 
             expect(result).toBeInstanceOf(HTMLElement);
@@ -278,12 +278,12 @@ describe('MicroApp', () => {
 
     afterEach(() => {
         vi.clearAllMocks();
-        // 清理 DOM
+        // Clean up the DOM
         document.body.innerHTML = '';
     });
 
-    describe('初始状态', () => {
-        it('应该初始化为空状态', () => {
+    describe('Initial state', () => {
+        it('should initialize with a null state', () => {
             expect(microApp.app).toBeNull();
             expect(microApp.root).toBeNull();
             expect((microApp as any)._factory).toBeNull();
@@ -291,7 +291,7 @@ describe('MicroApp', () => {
     });
 
     describe('_getNextFactory', () => {
-        it('应该从路由匹配结果中获取应用名称并返回对应的工厂函数', () => {
+        it('should get the app name from route match and return the corresponding factory', () => {
             const mockFactory = vi.fn();
             const router = createMockRouter({
                 matched: [{ app: 'vue-app' }],
@@ -302,7 +302,7 @@ describe('MicroApp', () => {
             expect(factory).toBe(mockFactory);
         });
 
-        it('应该在应用名称不存在时返回 null', () => {
+        it('should return null if the app name does not exist', () => {
             const router = createMockRouter({
                 matched: [{ app: 'non-existent-app' }],
                 options: { apps: { 'vue-app': vi.fn() } }
@@ -312,7 +312,7 @@ describe('MicroApp', () => {
             expect(factory).toBeNull();
         });
 
-        it('应该处理匹配结果中的函数类型应用', () => {
+        it('should handle function-type apps in the match result', () => {
             const mockFactory = vi.fn();
             const router = createMockRouter({
                 matched: [{ app: mockFactory }]
@@ -322,7 +322,7 @@ describe('MicroApp', () => {
             expect(factory).toBe(mockFactory);
         });
 
-        it('应该处理 options.apps 为函数的情况', () => {
+        it('should handle options.apps being a function', () => {
             const mockFactory = vi.fn();
             const router = createMockRouter({
                 matched: [{ app: 'any-app' }],
@@ -333,7 +333,7 @@ describe('MicroApp', () => {
             expect(factory).toBe(mockFactory);
         });
 
-        it('应该在没有匹配结果时返回 null', () => {
+        it('should return null when there are no match results', () => {
             const router = createMockRouter({
                 matched: []
             });
@@ -342,7 +342,7 @@ describe('MicroApp', () => {
             expect(factory).toBeNull();
         });
 
-        it('应该在 options.apps 为空对象时返回 null', () => {
+        it('should return null when options.apps is an empty object', () => {
             const router = createMockRouter({
                 matched: [{ app: 'test-app' }],
                 options: { apps: {} }
@@ -353,8 +353,8 @@ describe('MicroApp', () => {
         });
     });
 
-    describe('_update 方法', () => {
-        it('应该更新工厂函数并创建应用', () => {
+    describe('_update method', () => {
+        it('should update the factory and create the application', () => {
             const mockFactory = vi.fn().mockReturnValue(createMockApp());
             const router = createMockRouter({
                 matched: [{ app: 'test-app' }],
@@ -369,39 +369,39 @@ describe('MicroApp', () => {
             expect(microApp.root).not.toBeNull();
         });
 
-        it('应该在 force=false 且工厂函数未变化时跳过更新', () => {
+        it('should skip update if factory has not changed and force=false', () => {
             const mockFactory = vi.fn().mockReturnValue(createMockApp());
             const router = createMockRouter({
                 matched: [{ app: 'test-app' }],
                 options: { apps: { 'test-app': mockFactory } }
             });
 
-            // 第一次更新
+            // First update
             microApp._update(router);
             expect(mockFactory).toHaveBeenCalledTimes(1);
 
-            // 第二次更新，应该跳过
+            // Second update, should be skipped
             microApp._update(router);
             expect(mockFactory).toHaveBeenCalledTimes(1);
         });
 
-        it('应该在 force=true 时强制更新', () => {
+        it('should force update when force=true', () => {
             const mockFactory = vi.fn().mockReturnValue(createMockApp());
             const router = createMockRouter({
                 matched: [{ app: 'test-app' }],
                 options: { apps: { 'test-app': mockFactory } }
             });
 
-            // 第一次更新
+            // First update
             microApp._update(router);
             expect(mockFactory).toHaveBeenCalledTimes(1);
 
-            // 强制更新
+            // Force update
             microApp._update(router, true);
             expect(mockFactory).toHaveBeenCalledTimes(2);
         });
 
-        it('应该在没有工厂函数时设置应用为 null', () => {
+        it('should set the application to null if there is no factory', () => {
             const router = createMockRouter({
                 matched: [{ app: 'non-existent' }],
                 options: { apps: {} }
@@ -413,7 +413,7 @@ describe('MicroApp', () => {
             expect((microApp as any)._factory).toBeNull();
         });
 
-        it('应该创建新的根元素并挂载应用', () => {
+        it('should create a new root element and mount the application', () => {
             const mockApp = createMockApp();
             const mockFactory = vi.fn().mockReturnValue(mockApp);
 
@@ -425,16 +425,16 @@ describe('MicroApp', () => {
 
             microApp._update(router);
 
-            // 验证创建了新的 div 元素
+            // Verify a new div element was created
             expect(microApp.root).toBeInstanceOf(HTMLElement);
             expect(microApp.root!.tagName).toBe('DIV');
             expect(mockApp.mount).toHaveBeenCalledWith(microApp.root);
-            // 验证元素已添加到 body
+            // Verify the element was added to the body
             expect(document.body.contains(microApp.root!)).toBe(true);
         });
 
-        it('应该使用现有的根元素', () => {
-            // 创建一个现有元素
+        it('should use an existing root element', () => {
+            // Create an existing element
             const existingElement = document.createElement('div');
             existingElement.id = 'test-router';
             document.body.appendChild(existingElement);
@@ -454,7 +454,7 @@ describe('MicroApp', () => {
             expect(mockApp.mount).toHaveBeenCalledWith(existingElement);
         });
 
-        it('应该使用已设置的根元素', () => {
+        it('should use the already set root element', () => {
             const existingRoot = document.createElement('div');
             existingRoot.id = 'existing-root';
             document.body.appendChild(existingRoot);
@@ -475,7 +475,7 @@ describe('MicroApp', () => {
             expect(mockApp.mount).toHaveBeenCalledWith(existingRoot);
         });
 
-        it('应该应用 rootStyle 样式', () => {
+        it('should apply rootStyle styles', () => {
             const mockApp = createMockApp();
             const mockFactory = vi.fn().mockReturnValue(mockApp);
 
@@ -493,13 +493,13 @@ describe('MicroApp', () => {
             expect(microApp.root!.style.fontSize).toBe('16px');
         });
 
-        it('应该在旧应用存在时卸载它', () => {
+        it('should unmount the old application if it exists', () => {
             const oldApp = createMockApp();
             const newApp = createMockApp();
             const oldFactory = vi.fn().mockReturnValue(oldApp);
             const newFactory = vi.fn().mockReturnValue(newApp);
 
-            // 第一次更新
+            // First update
             const router1 = createMockRouter({
                 matched: [{ app: 'old-app' }],
                 options: { apps: { 'old-app': oldFactory } }
@@ -509,7 +509,7 @@ describe('MicroApp', () => {
             expect(microApp.app).toBe(oldApp);
             expect(oldApp.unmount).not.toHaveBeenCalled();
 
-            // 第二次更新，应该卸载旧应用
+            // Second update, should unmount the old app
             const router2 = createMockRouter({
                 matched: [{ app: 'new-app' }],
                 options: { apps: { 'new-app': newFactory } }
@@ -520,7 +520,7 @@ describe('MicroApp', () => {
             expect(microApp.app).toBe(newApp);
         });
 
-        it('应该将根元素添加到 body 中（如果不在 DOM 中）', () => {
+        it('should append the root element to the body if not in DOM', () => {
             const mockApp = createMockApp();
             const mockFactory = vi.fn().mockReturnValue(mockApp);
 
@@ -531,12 +531,12 @@ describe('MicroApp', () => {
 
             microApp._update(router);
 
-            // 验证元素已添加到 body
+            // Verify the element was added to the body
             expect(document.body.contains(microApp.root!)).toBe(true);
         });
 
-        it('应该不重复添加已在 DOM 中的元素', () => {
-            // 创建一个已在 body 中的元素
+        it('should not re-append an element already in the DOM', () => {
+            // Create an element already in the body
             const existingElement = document.createElement('div');
             existingElement.id = 'test-router';
             document.body.appendChild(existingElement);
@@ -550,18 +550,18 @@ describe('MicroApp', () => {
                 options: { apps: { 'test-app': mockFactory } }
             });
 
-            // 记录 body 中的子元素数量
+            // Record the number of children in the body
             const initialChildCount = document.body.children.length;
 
             microApp._update(router);
 
-            // 验证没有添加新元素
+            // Verify that no new element was added
             expect(document.body.children.length).toBe(initialChildCount);
             expect(microApp.root).toBe(existingElement);
         });
 
-        it('应该处理工厂函数为 null 的情况', () => {
-            // 创建一个没有工厂函数的路由
+        it('should handle the case where the factory function is null', () => {
+            // Create a route without a factory function
             const router = createMockRouter({
                 matched: [],
                 options: { apps: {} }
@@ -574,8 +574,8 @@ describe('MicroApp', () => {
         });
     });
 
-    describe('destroy 方法', () => {
-        it('应该销毁应用和清理状态', () => {
+    describe('destroy method', () => {
+        it('should destroy the application and clean up the state', () => {
             const mockApp = createMockApp();
             const mockRoot = document.createElement('div');
             document.body.appendChild(mockRoot);
@@ -593,17 +593,17 @@ describe('MicroApp', () => {
             expect((microApp as any)._factory).toBeNull();
         });
 
-        it('应该安全处理空状态', () => {
+        it('should safely handle empty state', () => {
             expect(() => microApp.destroy()).not.toThrow();
             expect(microApp.app).toBeNull();
             expect(microApp.root).toBeNull();
             expect((microApp as any)._factory).toBeNull();
         });
 
-        it('应该处理部分状态', () => {
+        it('should handle partial state', () => {
             const mockApp = createMockApp();
             microApp.app = mockApp;
-            // root 和 _factory 保持 null
+            // root and _factory remain null
 
             expect(() => microApp.destroy()).not.toThrow();
             expect(mockApp.unmount).toHaveBeenCalled();
@@ -611,14 +611,14 @@ describe('MicroApp', () => {
         });
     });
 
-    describe('集成测试', () => {
-        it('应该完整地处理应用生命周期', () => {
+    describe('integration tests', () => {
+        it('should fully handle the application lifecycle', () => {
             const mockApp1 = createMockApp();
             const mockApp2 = createMockApp();
             const factory1 = vi.fn().mockReturnValue(mockApp1);
             const factory2 = vi.fn().mockReturnValue(mockApp2);
 
-            // 挂载第一个应用
+            // Mount the first application
             const router1 = createMockRouter({
                 root: '#app1',
                 matched: [{ app: 'app1' }],
@@ -631,7 +631,7 @@ describe('MicroApp', () => {
             expect(mockApp1.mount).toHaveBeenCalledWith(microApp.root);
             expect(microApp.app).toBe(mockApp1);
 
-            // 切换到第二个应用
+            // Switch to the second application
             const router2 = createMockRouter({
                 root: '#app2',
                 matched: [{ app: 'app2' }],
@@ -645,7 +645,7 @@ describe('MicroApp', () => {
             expect(mockApp2.mount).toHaveBeenCalledWith(microApp.root);
             expect(microApp.app).toBe(mockApp2);
 
-            // 销毁
+            // Destroy
             microApp.destroy();
 
             expect(mockApp2.unmount).toHaveBeenCalled();
@@ -654,13 +654,13 @@ describe('MicroApp', () => {
             expect(microApp.root).toBeNull();
         });
 
-        it('应该处理复杂的路由应用配置', () => {
+        it('should handle complex route application configuration', () => {
             const mockApp = createMockApp();
             const dynamicFactory: RouterMicroAppCallback = vi
                 .fn()
                 .mockReturnValue(mockApp);
 
-            // 测试动态应用工厂
+            // Test dynamic application factory
             const router = createMockRouter({
                 matched: [{ app: dynamicFactory }],
                 options: { apps: {} }
@@ -673,7 +673,7 @@ describe('MicroApp', () => {
             expect(microApp.app).toBe(mockApp);
         });
 
-        it('应该正确处理 rootStyle 为 false 的情况', () => {
+        it('should correctly handle rootStyle being false', () => {
             const mockApp = createMockApp();
             const mockFactory = vi.fn().mockReturnValue(mockApp);
 
@@ -685,13 +685,13 @@ describe('MicroApp', () => {
 
             microApp._update(router);
 
-            // 当 rootStyle 为 false 时，不应该设置额外的样式
+            // When rootStyle is false, no additional styles should be set
             expect(microApp.root!.style.cssText).toBe('');
         });
     });
 
-    describe('边界情况测试', () => {
-        it('应该处理 route.matched 为空数组的情况', () => {
+    describe('boundary case tests', () => {
+        it('should handle the case where route.matched is an empty array', () => {
             const router = createMockRouter({
                 matched: []
             });
@@ -700,7 +700,7 @@ describe('MicroApp', () => {
             expect(microApp.app).toBeNull();
         });
 
-        it('应该处理 route.matched[0] 没有 app 属性的情况', () => {
+        it('should handle the case where route.matched[0] does not have an app attribute', () => {
             const router = createMockRouter({
                 matched: [{}]
             });
@@ -709,7 +709,7 @@ describe('MicroApp', () => {
             expect(microApp.app).toBeNull();
         });
 
-        it('应该处理工厂函数返回 null 的情况', () => {
+        it('should handle the case where the factory function returns null', () => {
             const mockFactory = vi.fn().mockReturnValue(null);
             const router = createMockRouter({
                 matched: [{ app: 'test-app' }],
@@ -722,7 +722,7 @@ describe('MicroApp', () => {
             expect(microApp.app).toBeNull();
         });
 
-        it('应该处理工厂函数抛出异常的情况', () => {
+        it('should handle the case where the factory function throws an exception', () => {
             const mockFactory = vi.fn().mockImplementation(() => {
                 throw new Error('Factory error');
             });
