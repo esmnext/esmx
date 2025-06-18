@@ -8,23 +8,22 @@ import type {
 import { isValidConfirmHookResult } from './util';
 
 /**
- * 路由任务控制器
- * 用于控制任务的执行和取消
+ * Controls the execution and cancellation of a route task.
  */
 export class RouteTaskController {
     private _aborted = false;
 
     /**
-     * 终止当前任务
+     * Aborts the current task.
      */
     abort(): void {
         this._aborted = true;
     }
 
     /**
-     * 检查任务是否被取消
-     * @param name 当前任务名称，用于日志
-     * @returns 如果任务应该被取消返回 true，否则返回 false
+     * Checks if the task has been cancelled.
+     * @param name - The name of the current task, for logging purposes.
+     * @returns True if the task should be cancelled, false otherwise.
      */
     shouldCancel(name: string): boolean {
         if (this._aborted) {
@@ -41,8 +40,8 @@ export interface RouteTaskOptions {
     tasks: RouteTask[];
     options: RouterParsedOptions;
     /**
-     * 路由任务控制器（可选）
-     * 用于控制任务的执行和取消
+     * Optional route task controller.
+     * Used to control the execution and cancellation of the task.
      */
     controller?: RouteTaskController;
 }
@@ -50,13 +49,13 @@ export interface RouteTaskOptions {
 export async function createRouteTask(opts: RouteTaskOptions) {
     const { to, from, tasks, controller } = opts;
 
-    // 开始执行任务时，将状态从 resolved 改为 pending
+    // When starting the task, change the status from resolved to pending.
     if (to.status === RouteStatus.resolved) {
         to.status = RouteStatus.pending;
     }
 
     for (const task of tasks) {
-        // 任务执行前检查是否应该被取消
+        // Check if the task should be cancelled before execution.
         if (controller?.shouldCancel(task.name)) {
             to.status = RouteStatus.aborted;
             break;
@@ -71,7 +70,7 @@ export async function createRouteTask(opts: RouteTaskOptions) {
             break;
         }
 
-        // 任务执行后检查是否应该被取消
+        // Check if the task should be cancelled after execution.
         if (controller?.shouldCancel(task.name)) {
             to.status = RouteStatus.aborted;
             break;
@@ -79,17 +78,17 @@ export async function createRouteTask(opts: RouteTaskOptions) {
 
         if (!isValidConfirmHookResult(result)) continue;
         if (typeof result === 'function') {
-            // 导航确认成功
+            // Navigation confirmed successfully.
             to.status = RouteStatus.success;
             to.handle = result;
             break;
         }
         if (result === false) {
-            // 导航被终止
+            // Navigation was aborted.
             to.status = RouteStatus.aborted;
             break;
         }
-        // 导航重定向，传递控制器
+        // Navigation is redirected, pass the controller.
         return createRouteTask({
             ...opts,
             to: new Route({
@@ -103,8 +102,8 @@ export async function createRouteTask(opts: RouteTaskOptions) {
         });
     }
 
-    // 所有任务执行完成，但没有返回handle函数
-    // 如果状态仍为pending，说明任务链执行完成但没有获得处理函数，标识为失败
+    // All tasks have been executed, but no handle function was returned.
+    // If the status is still pending, it means the task chain completed without a handler, marking it as an error.
     if (to.status === RouteStatus.pending) {
         to.status = RouteStatus.error;
     }

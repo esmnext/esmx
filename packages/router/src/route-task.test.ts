@@ -47,7 +47,7 @@ describe('createRouteTask', () => {
         });
 
         expect(result).toBe(to);
-        expect(to.status).toBe(RouteStatus.error); // 空任务数组，没有获得处理函数，标识为失败
+        expect(to.status).toBe(RouteStatus.error); // Empty task array, no handler function obtained, marked as failed.
     });
 
     it('should execute tasks in sequence', async () => {
@@ -63,17 +63,17 @@ describe('createRouteTask', () => {
             toInput: '/home'
         });
 
-        // 使用真实的执行顺序跟踪
+        // Use a real execution order tracker.
         const executionOrder: string[] = [];
 
         const firstTask = async (route: Route, fromRoute: Route | null) => {
             executionOrder.push('task1');
-            return; // 继续执行
+            return; // Continue execution.
         };
 
         const secondTask = async (route: Route, fromRoute: Route | null) => {
             executionOrder.push('task2');
-            return; // 继续执行
+            return; // Continue execution.
         };
 
         const tasks: RouteTask[] = [
@@ -110,13 +110,13 @@ describe('createRouteTask', () => {
             toInput: '/home'
         });
 
-        // 真实的处理函数
+        // Real handler function.
         const handleFunction = async () => {
             return { message: 'Route handled successfully' };
         };
 
         const successTask = async () => {
-            return handleFunction; // 返回处理函数
+            return handleFunction; // Return handler function.
         };
 
         const tasks: RouteTask[] = [
@@ -152,11 +152,11 @@ describe('createRouteTask', () => {
             toInput: '/home'
         });
 
-        // 真实的阻止任务
+        // Real blocking task.
         const blockingTask = async (route: Route, fromRoute: Route | null) => {
-            // 模拟某种条件检查失败
+            // Simulate a failed condition check.
             const shouldProceed = false;
-            return shouldProceed ? void 0 : false; // 返回 false 阻止导航
+            return shouldProceed ? void 0 : false; // Return false to prevent navigation.
         };
 
         const tasks: RouteTask[] = [
@@ -190,13 +190,13 @@ describe('createRouteTask', () => {
             toInput: '/home'
         });
 
-        // 真实的重定向任务函数
+        // Real redirection task function.
         const redirectTask = async (route: Route, fromRoute: Route | null) => {
-            // 只有从 /test 才重定向到 /redirected，避免死循环
+            // Only redirect to /redirected from /test to avoid infinite loops.
             if (route.path === '/test') {
                 return '/redirected';
             }
-            // 其他路径直接通过（返回void表示继续）
+            // Other paths pass through directly (returning void means continue).
             return;
         };
 
@@ -214,11 +214,11 @@ describe('createRouteTask', () => {
             options
         });
 
-        // 验证返回的是重定向后的路由对象
+        // Verify that the returned object is the redirected route.
         expect(result).not.toBe(to);
         expect(result.path).toBe('/redirected');
         expect(result.type).toBe(RouteType.push);
-        expect(result.status).toBe(RouteStatus.error); // 重定向后没有获得处理函数，标识为失败
+        expect(result.status).toBe(RouteStatus.error); // No handler function obtained after redirection, marked as failed.
     });
 
     it('should handle redirection when task returns a route location object', async () => {
@@ -234,7 +234,7 @@ describe('createRouteTask', () => {
             toInput: '/home'
         });
 
-        // 真实的重定向任务函数，返回路由对象
+        // Real redirection task function, returns a route object.
         const redirectTask = async (route: Route, fromRoute: Route | null) => {
             if (route.path === '/test') {
                 return {
@@ -258,12 +258,12 @@ describe('createRouteTask', () => {
             options
         });
 
-        // 验证返回的是重定向后的路由对象
+        // Verify that the returned object is the redirected route.
         expect(result).not.toBe(to);
         expect(result.path).toBe('/redirected');
         expect(result.query.source).toBe('test');
         expect(result.type).toBe(RouteType.push);
-        expect(result.status).toBe(RouteStatus.error); // 重定向后没有获得处理函数，标识为失败
+        expect(result.status).toBe(RouteStatus.error); // No handler function obtained after redirection, marked as failed.
     });
 
     it('should handle conditional redirection based on route state', async () => {
@@ -279,17 +279,17 @@ describe('createRouteTask', () => {
             toInput: '/home'
         });
 
-        // 模拟权限检查的真实逻辑
+        // Simulate real logic for permission checks.
         const authCheckTask = async (route: Route, fromRoute: Route | null) => {
-            // 模拟用户未登录的情况
+            // Simulate a user not being logged in.
             const isAuthenticated = false;
 
             if (route.path === '/admin' && !isAuthenticated) {
-                // 未认证用户重定向到登录页
+                // Unauthenticated users are redirected to the login page.
                 return '/login';
             }
 
-            // 认证用户或非受保护路由直接通过
+            // Authenticated users or non-protected routes pass through directly.
             return;
         };
 
@@ -307,10 +307,10 @@ describe('createRouteTask', () => {
             options
         });
 
-        // 验证未认证用户被重定向到登录页
+        // Verify that unauthenticated users are redirected to the login page.
         expect(result).not.toBe(to);
         expect(result.path).toBe('/login');
-        expect(result.status).toBe(RouteStatus.error); // 重定向后没有获得处理函数，标识为失败
+        expect(result.status).toBe(RouteStatus.error); // No handler function obtained after redirection, marked as failed.
     });
 
     it('should set status to error and break on task error', async () => {
@@ -330,12 +330,12 @@ describe('createRouteTask', () => {
             .spyOn(console, 'error')
             .mockImplementation(() => {});
 
-        // 真实的会抛出错误的任务
+        // A real task that throws an error.
         const errorTask = async (route: Route, fromRoute: Route | null) => {
             throw new Error('Task failed');
         };
 
-        // 这个任务不应该被执行
+        // This task should not be executed.
         const secondTask = async (route: Route, fromRoute: Route | null) => {
             return;
         };
@@ -384,12 +384,12 @@ describe('createRouteTask', () => {
 
         const firstTask = async (route: Route, fromRoute: Route | null) => {
             executionOrder.push('first');
-            return undefined; // 显式返回 undefined
+            return undefined; // Explicitly return undefined.
         };
 
         const secondTask = async (route: Route, fromRoute: Route | null) => {
             executionOrder.push('second');
-            return; // 隐式返回 undefined
+            return; // Implicitly return undefined.
         };
 
         const tasks: RouteTask[] = [
@@ -431,7 +431,7 @@ describe('createRouteTask', () => {
 
         const firstTask = async (route: Route, fromRoute: Route | null) => {
             executionOrder.push('first');
-            return; // 返回 void 而不是 null
+            return; // Return void instead of null.
         };
 
         const secondTask = async (route: Route, fromRoute: Route | null) => {
@@ -515,7 +515,7 @@ describe('createRouteTask', () => {
 
         const firstTask = async (route: Route, fromRoute: Route | null) => {
             executionOrder.push('first');
-            return; // 继续
+            return; // Continue.
         };
 
         const secondTask = async (
@@ -523,7 +523,7 @@ describe('createRouteTask', () => {
             fromRoute: Route | null
         ): Promise<false> => {
             executionOrder.push('second');
-            return false; // 阻止
+            return false; // Block.
         };
 
         const thirdTask = async (route: Route, fromRoute: Route | null) => {
@@ -555,7 +555,7 @@ describe('createRouteTask', () => {
 
         expect(result).toBe(to);
         expect(to.status).toBe(RouteStatus.aborted);
-        expect(executionOrder).toEqual(['first', 'second']); // 第三个任务没有执行
+        expect(executionOrder).toEqual(['first', 'second']); // The third task was not executed.
     });
 
     it('should break on first task that returns a function', async () => {
@@ -575,7 +575,7 @@ describe('createRouteTask', () => {
 
         const firstTask = async (route: Route, fromRoute: Route | null) => {
             executionOrder.push('first');
-            return; // 继续
+            return; // Continue.
         };
 
         const handleFunction = async (
@@ -587,7 +587,7 @@ describe('createRouteTask', () => {
 
         const secondTask = async (route: Route, fromRoute: Route | null) => {
             executionOrder.push('second');
-            return handleFunction; // 返回处理函数，应该设置成功状态并停止
+            return handleFunction; // Return handler function, should set success status and stop.
         };
 
         const thirdTask = async (route: Route, fromRoute: Route | null) => {
@@ -621,7 +621,7 @@ describe('createRouteTask', () => {
         expect(to.status).toBe(RouteStatus.success);
         expect(to.handle).toBeTypeOf('function');
         expect(to.handle).not.toBeNull();
-        expect(executionOrder).toEqual(['first', 'second']); // 第三个任务没有执行
+        expect(executionOrder).toEqual(['first', 'second']); // The third task was not executed.
     });
 });
 
@@ -644,7 +644,7 @@ describe('Task cancellation with RouteTaskController', () => {
 
         const firstTask = async (route: Route, fromRoute: Route | null) => {
             executionOrder.push('task1');
-            // 在第一个任务执行后中断任务
+            // Abort the task after the first task executes.
             controller.abort();
             return;
         };
@@ -675,7 +675,7 @@ describe('Task cancellation with RouteTaskController', () => {
 
         expect(result).toBe(to);
         expect(to.status).toBe(RouteStatus.aborted);
-        expect(executionOrder).toEqual(['task1']); // 第二个任务不应该执行
+        expect(executionOrder).toEqual(['task1']); // The second task should not be executed.
     });
 
     it('should cancel task when abort is called before task execution', async () => {
@@ -715,7 +715,7 @@ describe('Task cancellation with RouteTaskController', () => {
             }
         ];
 
-        // 在任务执行前就中断
+        // Abort before the task executes.
         controller.abort();
 
         const result = await createRouteTask({
@@ -728,7 +728,7 @@ describe('Task cancellation with RouteTaskController', () => {
 
         expect(result).toBe(to);
         expect(to.status).toBe(RouteStatus.aborted);
-        expect(executionOrder).toEqual([]); // 没有任务应该执行
+        expect(executionOrder).toEqual([]); // No tasks should be executed.
     });
 
     it('should continue execution when task is not aborted', async () => {
@@ -777,8 +777,8 @@ describe('Task cancellation with RouteTaskController', () => {
         });
 
         expect(result).toBe(to);
-        expect(to.status).toBe(RouteStatus.error); // 任务执行完成但没有返回handle函数，标识为失败
-        expect(executionOrder).toEqual(['task1', 'task2']); // 两个任务都应该执行
+        expect(to.status).toBe(RouteStatus.error); // Task completed but no handler function returned, marked as failed.
+        expect(executionOrder).toEqual(['task1', 'task2']); // Both tasks should be executed.
     });
 
     it('should work normally without controller parameter', async () => {
@@ -817,7 +817,7 @@ describe('Task cancellation with RouteTaskController', () => {
             }
         ];
 
-        // 不提供 controller 参数
+        // Do not provide a controller parameter.
         const result = await createRouteTask({
             to,
             from,
@@ -826,8 +826,8 @@ describe('Task cancellation with RouteTaskController', () => {
         });
 
         expect(result).toBe(to);
-        expect(to.status).toBe(RouteStatus.error); // 任务执行完成但没有返回handle函数，标识为失败
-        expect(executionOrder).toEqual(['task1', 'task2']); // 所有任务都应该正常执行
+        expect(to.status).toBe(RouteStatus.error); // Task completed but no handler function returned, marked as failed.
+        expect(executionOrder).toEqual(['task1', 'task2']); // All tasks should execute normally.
     });
 
     it('should pass controller to redirection', async () => {
@@ -867,10 +867,10 @@ describe('Task cancellation with RouteTaskController', () => {
             controller
         });
 
-        // 应该返回重定向的路由，控制器传递给重定向的任务
+        // Should return the redirected route, with the controller passed to the redirected task.
         expect(result).not.toBe(to);
         expect(result.path).toBe('/redirected');
-        expect(result.status).toBe(RouteStatus.error); // 重定向后没有获得处理函数，标识为失败
+        expect(result.status).toBe(RouteStatus.error); // No handler function obtained after redirection, marked as failed.
     });
 });
 
@@ -935,12 +935,12 @@ describe('RouteTaskOptions interface', () => {
 
 describe('RouteTask interface', () => {
     it('should create valid RouteTask object', () => {
-        // 真实的任务函数
+        // Real task function.
         const realTaskFunction = async (
             route: Route,
             fromRoute: Route | null
         ) => {
-            // 一些真实的逻辑
+            // Some real logic.
             if (route.path === '/special') {
                 return '/redirect';
             }
