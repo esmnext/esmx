@@ -11,7 +11,7 @@ export function createMatcher(routes: RouteConfig[]): RouteMatcher {
             routes: RouteParsedConfig[]
         ): boolean => {
             for (const item of routes) {
-                // 深度优先遍历
+                // Depth-first traversal
                 if (
                     item.children.length &&
                     collectMatchingRoutes(item.children)

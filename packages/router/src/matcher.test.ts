@@ -17,7 +17,7 @@ describe('joinPathname', () => {
     // biome-ignore format:
     const testCases: JoinPathnameTestCase[] = [
         {
-            description: '基本路径拼接',
+            description: 'Basic path joining',
             cases: [
                 { path: 'test', expected: '/test' },
                 { path: '/test', expected: '/test' },
@@ -26,7 +26,7 @@ describe('joinPathname', () => {
             ]
         },
         {
-            description: '带base的路径拼接',
+            description: 'Path joining with a base',
             cases: [
                 { path: 'test', base: '/api', expected: '/api/test' },
                 { path: '/test', base: '/api', expected: '/api/test' },
@@ -35,7 +35,7 @@ describe('joinPathname', () => {
             ]
         },
         {
-            description: '多层级路径拼接',
+            description: 'Multi-level path joining',
             cases: [
                 { path: 'test/path', expected: '/test/path' },
                 { path: '/test/path', expected: '/test/path' },
@@ -44,7 +44,7 @@ describe('joinPathname', () => {
             ]
         },
         {
-            description: '带base的多层级路径拼接',
+            description: 'Multi-level path joining with a base',
             cases: [
                 { path: 'test/path', base: '/api', expected: '/api/test/path' },
                 { path: '/test/path', base: '/api', expected: '/api/test/path' },
@@ -53,7 +53,7 @@ describe('joinPathname', () => {
             ]
         },
         {
-            description: '处理重复斜杠',
+            description: 'Handling duplicate slashes',
             cases: [
                 { path: '//test', expected: '/test' },
                 { path: 'test//path', expected: '/test/path' },
@@ -62,7 +62,7 @@ describe('joinPathname', () => {
             ]
         },
         {
-            description: '处理空值',
+            description: 'Handling empty values',
             cases: [
                 { path: '', expected: '/' },
                 { path: '', base: '', expected: '/' },
@@ -71,7 +71,7 @@ describe('joinPathname', () => {
             ]
         },
         {
-            description: '特殊字符路径',
+            description: 'Paths with special characters',
             cases: [
                 { path: 'test-path', expected: '/test-path' },
                 { path: 'test_path', expected: '/test_path' },
@@ -81,7 +81,7 @@ describe('joinPathname', () => {
             ]
         },
         {
-            description: '中文路径支持',
+            description: 'Support for Chinese characters in paths',
             cases: [
                 { path: '测试', expected: '/测试' },
                 { path: '测试/路径', expected: '/测试/路径' },
@@ -89,11 +89,11 @@ describe('joinPathname', () => {
             ]
         }
     ];
-    // 各种极端边界情况的测试用例
+    // Test cases for various extreme edge cases
     // biome-ignore format:
     const edgeCases: JoinPathnameTestCase[] = [
         {
-            description: '仅斜杠或空的路径',
+            description: 'Paths with only slashes or empty strings',
             cases: [
                 { path: '', expected: '/' },
                 { path: '/', expected: '/' },
@@ -105,18 +105,18 @@ describe('joinPathname', () => {
             ]
         },
         {
-            description: '极长路径拼接',
+            description: 'Extremely long path joining',
             cases: () => {
                 const longSegment =
                     'very-long-segment-name-that-could-cause-issues';
                 const base = Array(10).fill(longSegment).join('/');
                 const path = Array(10).fill(longSegment).join('/');
-                const expected = '/' + base + '/' + path;
+                const expected = `/${base}/${path}`;
                 return [{ path, base, expected }];
             }
         },
         {
-            description: '特殊字符路径拼接',
+            description: 'Joining paths with special characters',
             cases: [
                 { path: '测试路径', base: '基础', expected: '/基础/测试路径' },
                 { path: 'path with spaces', base: 'base', expected: '/base/path with spaces' },
@@ -124,14 +124,14 @@ describe('joinPathname', () => {
             ]
         },
         {
-            description: 'URL编码字符处理',
+            description: 'Handling URL-encoded characters',
             cases: [
                 { path: 'hello%20world', base: 'api', expected: '/api/hello%20world' },
                 { path: 'user%2Fprofile', base: 'v1', expected: '/v1/user%2Fprofile' },
             ]
         },
         {
-            description: '点号路径处理',
+            description: 'Handling dot segments in paths',
             cases: [
                 { path: '.', expected: '/.' },
                 { path: '..', expected: '/..' },
@@ -140,7 +140,7 @@ describe('joinPathname', () => {
             ]
         },
         {
-            description: '查询参数和hash不影响拼接',
+            description: 'Query parameters and hash do not affect joining',
             cases: [
                 { path: 'path?query=1', base: 'base', expected: '/base/path?query=1' },
                 { path: 'path#hash', base: 'base', expected: '/base/path#hash' },
@@ -148,14 +148,14 @@ describe('joinPathname', () => {
             ]
         },
         {
-            description: '冒号开头的路径（路由参数）',
+            description: 'Paths starting with a colon (route parameters)',
             cases: [
                 { path: ':id', base: 'users', expected: '/users/:id' },
                 { path: ':userId/profile', base: 'api', expected: '/api/:userId/profile' },
             ]
         },
         {
-            description: '星号通配符路径',
+            description: 'Paths with wildcard asterisks',
             cases: [
                 { path: ':rest*', base: 'files', expected: '/files/:rest*' },
                 { path: ':rest*', base: 'assets', expected: '/assets/:rest*' },
@@ -164,7 +164,7 @@ describe('joinPathname', () => {
             ]
         },
         {
-            description: '可选路径',
+            description: 'Optional paths',
             cases: [
                 { path: ':id?', base: 'posts', expected: '/posts/:id?' },
                 { path: 'comments/:commentId?', base: 'articles', expected: '/articles/comments/:commentId?' },
@@ -172,7 +172,7 @@ describe('joinPathname', () => {
             ]
         },
         {
-            description: '数字和特殊符号组合',
+            description: 'Combination of numbers and special symbols',
             cases: [
                 { path: 'v1.2.3', base: 'api', expected: '/api/v1.2.3' },
                 { path: 'user@domain', base: 'profile', expected: '/profile/user@domain' },
@@ -180,41 +180,41 @@ describe('joinPathname', () => {
             ]
         },
         {
-            description: '空白字符处理',
+            description: 'Whitespace character handling',
             cases: [
                 { path: '  path  ', base: '  base  ', expected: '/  base  /  path  ' },
                 { path: '\tpath\t', base: '\tbase\t', expected: '/\tbase\t/\tpath\t' },
             ]
         },
         {
-            description: '布尔值和数字路径（边界测试）',
+            description: 'Boolean and numeric paths (boundary test)',
             cases: [
-                // 这些在实际使用中可能不常见，但测试类型安全
+                // These may be uncommon in practice but test type safety
                 { path: 'true', base: 'false', expected: '/false/true' },
                 { path: '0', base: '1', expected: '/1/0' },
                 { path: 'NaN', base: 'undefined', expected: '/undefined/NaN' },
             ]
         },
         {
-            description: '路径标准化极端情况',
+            description: 'Extreme cases of path normalization',
             cases: [
-                // 测试多重斜杠标准化
+                // Test normalization of multiple slashes
                 { path: '///path///', base: '///base///', expected: '/base/path' },
                 { path: 'path////with////slashes', base: 'base////with////slashes', expected: '/base/with/slashes/path/with/slashes' },
             ]
         },
         {
-            description: '非ASCII字符路径处理',
+            description: 'Handling of non-ASCII character paths',
             cases: [
-                // 测试各种Unicode字符
-                { path: 'путь', base: 'база', expected: '/база/путь' }, // 俄文
-                { path: 'パス', base: 'ベース', expected: '/ベース/パス' }, // 日文
-                { path: '경로', base: '기본', expected: '/기본/경로' }, // 韩文
-                { path: 'مسار', base: 'قاعدة', expected: '/قاعدة/مسار' }, // 阿拉伯文
+                // Test various Unicode characters
+                { path: 'путь', base: 'база', expected: '/база/путь' }, // Russian
+                { path: 'パス', base: 'ベース', expected: '/ベース/パス' }, // Japanese
+                { path: '경로', base: '기본', expected: '/기본/경로' }, // Korean
+                { path: 'مسار', base: 'قاعدة', expected: '/قاعدة/مسار' }, // Arabic
             ]
         },
         {
-            description: '特殊符号和标点处理',
+            description: 'Handling of special symbols and punctuation',
             cases: [
                 { path: 'path!@#$%^&\\*()', base: 'base!@#$%^&\\*()', expected: '/base!@#$%^&\\*()/path!@#$%^&\\*()' },
                 { path: 'path\\[]{};:"\'<>\\?', base: 'base\\[]{};:"\'<>\\?', expected: '/base\\[]{};:"\'<>\\?/path\\[]{};:"\'<>\\?' },
@@ -222,7 +222,7 @@ describe('joinPathname', () => {
             ]
         },
         {
-            description: '数字和符号组合路径',
+            description: 'Paths with combinations of numbers and symbols',
             cases: [
                 { path: '123.456.789', base: 'v1.0.0', expected: '/v1.0.0/123.456.789' },
                 { path: 'item-123_abc', base: 'category-456_def', expected: '/category-456_def/item-123_abc' },
@@ -230,16 +230,16 @@ describe('joinPathname', () => {
             ]
         },
         {
-            description: '空白字符的各种形式',
+            description: 'Various forms of whitespace characters',
             cases: [
                 { path: ' ', base: ' ', expected: '/ / ' },
                 { path: '\n', base: '\t', expected: '/\t/\n' },
-                { path: '\r\n', base: '\t\r', expected: '/\t\r/\r\n' }, // 测试回车换行符
-                { path: '\u00A0', base: '\u2000', expected: '/\u2000/\u00A0' }, // 不间断空格和em空格
+                { path: '\r\n', base: '\t\r', expected: '/\t\r/\r\n' }, // Test carriage return and line feed
+                { path: '\u00A0', base: '\u2000', expected: '/\u2000/\u00A0' }, // Non-breaking space and em space
             ]
         },
         {
-            description: '超长路径处理',
+            description: 'Handling of very long paths',
             cases: () => {
                 const veryLongSegment = 'a'.repeat(1000);
                 const path = veryLongSegment + '/segment';
@@ -249,9 +249,9 @@ describe('joinPathname', () => {
             }
         },
         {
-            description: '路径分隔符边界情况',
+            description: 'Boundary cases for path separators',
             cases: [
-                // 测试各种路径分隔符组合
+                // Test various path separator combinations
                 { path: '/', base: '/', expected: '/' },
                 { path: '//', base: '//', expected: '/' },
                 { path: '///', base: '///', expected: '/' },
@@ -260,7 +260,7 @@ describe('joinPathname', () => {
             ]
         },
         {
-            description: 'URL编码路径片段',
+            description: 'URL-encoded path segments',
             cases: [
                 { path: '%20space%20', base: '%20base%20', expected: '/%20base%20/%20space%20' },
                 { path: '%2F%2F', base: '%2F', expected: '/%2F/%2F%2F' },
@@ -268,16 +268,16 @@ describe('joinPathname', () => {
             ]
         },
         {
-            description: '数值类型路径（类型边界）',
+            description: 'Numeric type paths (type boundary)',
             cases: [
-                // 虽然函数签名要求string，但测试潜在的类型强制转换
+                // Although the function signature requires a string, test potential type coercion
                 { path: '123', base: '456', expected: '/456/123' },
                 { path: '0', expected: '/0' },
                 { path: '', base: '0', expected: '/0' },
             ]
         },
         {
-            description: '路径包含点号的复杂情况',
+            description: 'Complex cases with dot notation in paths',
             cases: [
                 { path: '../../../path', base: '../../base', expected: '/../../base/../../../path' },
                 { path: './././path', base: './././base', expected: '/./././base/./././path' },
@@ -285,22 +285,22 @@ describe('joinPathname', () => {
             ]
         },
         {
-            description: '混合字符集路径',
+            description: 'Paths with mixed character sets',
             cases: [
                 { path: '中文/english/русский', base: '日本語/العربية', expected: '/日本語/العربية/中文/english/русский' },
                 { path: '测试-test-тест', base: '基础-base-база', expected: '/基础-base-база/测试-test-тест' },
             ]
         },
         {
-            description: '控制字符处理',
+            description: 'Handling of control characters',
             cases: [
-                // 测试控制字符（虽然在实际URL中不常见）
+                // Test control characters (though uncommon in actual URLs)
                 { path: '\u0001\u0002', base: '\u0003\u0004', expected: '/\u0003\u0004/\u0001\u0002' },
                 { path: 'path\u007F', base: 'base\u007F', expected: '/base\u007F/path\u007F' },
             ]
         },
         {
-            description: '路径末尾的各种字符',
+            description: 'Various characters at the end of a path',
             cases: [
                 { path: 'path.', base: 'base.', expected: '/base./path.' },
                 { path: 'path-', base: 'base-', expected: '/base-/path-' },
@@ -323,11 +323,11 @@ describe('joinPathname', () => {
         });
 
     runTests(testCases);
-    describe('边界情况', () => runTests(edgeCases));
+    describe('Edge Cases', () => runTests(edgeCases));
 });
 
 describe('createMatcher', () => {
-    test('基本路由匹配', () => {
+    test('Basic route matching', () => {
         const matcher = createMatcher([
             { path: '/news' },
             { path: '/news/:id' }
@@ -338,7 +338,7 @@ describe('createMatcher', () => {
         assert.equal(result.params.id, '123');
     });
 
-    test('精确路由匹配优先级', () => {
+    test('Exact route matching priority', () => {
         const matcher = createMatcher([
             { path: '/news/:id' },
             { path: '/news' }
@@ -349,7 +349,7 @@ describe('createMatcher', () => {
         assert.deepEqual(result.params, {});
     });
 
-    test('嵌套路由匹配', () => {
+    test('Nested route matching', () => {
         const matcher = createMatcher([
             {
                 path: '/news',
@@ -363,7 +363,7 @@ describe('createMatcher', () => {
         assert.equal(result.params.id, '123');
     });
 
-    test('深层嵌套路由匹配', () => {
+    test('Deeply nested route matching', () => {
         const matcher = createMatcher([
             {
                 path: '/user',
@@ -386,7 +386,7 @@ describe('createMatcher', () => {
         assert.equal(result.params.userId, '123');
     });
 
-    test('多参数路由匹配', () => {
+    test('Multiple parameter route matching', () => {
         const matcher = createMatcher([{ path: '/user/:userId/post/:postId' }]);
         const result = matcher(
             new URL('/user/123/post/456', BASE_URL),
@@ -398,10 +398,10 @@ describe('createMatcher', () => {
         assert.equal(result.params.postId, '456');
     });
 
-    test('可选参数路由匹配', () => {
+    test('Optional parameter route matching', () => {
         const matcher = createMatcher([{ path: '/posts/:id?' }]);
 
-        // 匹配有参数的情况
+        // Match with parameter
         const resultWithParam = matcher(
             new URL('/posts/123', BASE_URL),
             BASE_URL
@@ -409,7 +409,7 @@ describe('createMatcher', () => {
         assert.equal(resultWithParam.matches.length, 1);
         assert.equal(resultWithParam.params.id, '123');
 
-        // 匹配无参数的情况
+        // Match without parameter
         const resultWithoutParam = matcher(
             new URL('/posts', BASE_URL),
             BASE_URL
@@ -418,10 +418,10 @@ describe('createMatcher', () => {
         assert.equal(resultWithoutParam.params.id, undefined);
     });
 
-    test('数字参数路由匹配', () => {
+    test('Numeric parameter route matching', () => {
         const matcher = createMatcher([{ path: '/posts/:id(\\d+)' }]);
 
-        // 匹配数字参数的情况
+        // Match numeric parameter
         const resultWithParam = matcher(
             new URL('/posts/123', BASE_URL),
             BASE_URL
@@ -429,14 +429,14 @@ describe('createMatcher', () => {
         assert.equal(resultWithParam.matches.length, 1);
         assert.equal(resultWithParam.params.id, '123');
 
-        // 匹配参数不是数字的情况
+        // Match non-numeric parameter
         const resultWithoutParam = matcher(
             new URL('/posts/123a', BASE_URL),
             BASE_URL
         );
         assert.equal(resultWithoutParam.matches.length, 0);
 
-        // 匹配参数为NaN的情况
+        // Match NaN parameter
         const resultWithNaN = matcher(
             new URL('/posts/NaN', BASE_URL),
             BASE_URL
@@ -444,7 +444,7 @@ describe('createMatcher', () => {
         assert.equal(resultWithNaN.matches.length, 0);
     });
 
-    test('通配符路由匹配', () => {
+    test('Wildcard route matching', () => {
         const matcher = createMatcher([{ path: '/files/:rest*' }]);
         const result = matcher(
             new URL('/files/documents/readme.txt', BASE_URL),
@@ -455,28 +455,28 @@ describe('createMatcher', () => {
         assert.deepEqual(result.params.rest, ['documents', 'readme.txt']);
     });
 
-    test('正则表达式参数匹配', () => {
+    test('RegExp parameter matching', () => {
         const matcher = createMatcher([{ path: '/api/v:version(\\d+)' }]);
         const result = matcher(new URL('/api/v1', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.params.version, '1');
     });
 
-    test('无匹配路由情况', () => {
+    test('No matching route', () => {
         const matcher = createMatcher([{ path: '/news' }]);
         const result = matcher(new URL('/blog', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 0);
         assert.deepEqual(result.params, {});
     });
 
-    test('空路由配置', () => {
+    test('Empty route configuration', () => {
         const matcher = createMatcher([]);
         const result = matcher(new URL('/any', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 0);
         assert.deepEqual(result.params, {});
     });
 
-    test('路由元信息传递', () => {
+    test('Route meta information passing', () => {
         const matcher = createMatcher([
             {
                 path: '/protected',
@@ -488,7 +488,7 @@ describe('createMatcher', () => {
         assert.equal(result.matches[0]?.meta?.requiresAuth, true);
     });
 
-    test('复杂嵌套路由与参数组合', () => {
+    test('Complex nested routes with parameters', () => {
         const matcher = createMatcher([
             {
                 path: '/admin',
@@ -519,7 +519,7 @@ describe('createMatcher', () => {
         assert.equal(result.matches[0]?.meta?.role, 'admin');
     });
 
-    test('baseURL带目录', () => {
+    test('baseURL with directory', () => {
         const matcher = createMatcher([{ path: '/api' }]);
         const customBaseURL = new URL('https://www.esmx.dev/app/');
         const result = matcher(
@@ -530,7 +530,7 @@ describe('createMatcher', () => {
         assert.equal(result.matches[0].path, '/api');
     });
 
-    test('URL编码参数处理', () => {
+    test('URL-encoded parameter handling', () => {
         const matcher = createMatcher([{ path: '/search/:query' }]);
         const result = matcher(
             new URL('/search/hello world', BASE_URL),
@@ -541,7 +541,7 @@ describe('createMatcher', () => {
         assert.equal(result.params.query, 'hello%20world');
     });
 
-    test('中文路径参数', () => {
+    test('Chinese path parameters', () => {
         const matcher = createMatcher([
             { path: `/${encodeURIComponent('分类')}/:name` }
         ]);
@@ -550,7 +550,7 @@ describe('createMatcher', () => {
         assert.equal(result.params.name, encodeURIComponent('技术'));
     });
 
-    test('重复参数名处理', () => {
+    test('Duplicate parameter name handling', () => {
         const matcher = createMatcher([
             {
                 path: '/parent/:id',
@@ -566,7 +566,7 @@ describe('createMatcher', () => {
         assert.equal(result.params.childId, '456');
     });
 
-    test.todo('路由匹配顺序一致性', () => {
+    test.todo('Route matching order consistency', () => {
         const matcher = createMatcher([
             {
                 path: '/a/:id',
@@ -578,18 +578,18 @@ describe('createMatcher', () => {
             }
         ]);
 
-        // 参数路由应该匹配
+        // Parameter route should match
         const result1 = matcher(new URL('/a/123', BASE_URL), BASE_URL);
         assert.equal(result1.matches.length, 1);
         assert.equal(result1.matches[0]?.meta?.order, 1);
 
-        // 精确路由应该匹配
+        // Exact route should match
         const result2 = matcher(new URL('/a/special', BASE_URL), BASE_URL);
         assert.equal(result2.matches.length, 1);
         assert.equal(result2.matches[0]?.meta?.order, 2);
     });
 
-    test('特殊字符在路径中的处理', () => {
+    test('Special characters in path handling', () => {
         const routes = [
             { path: '/test-path' },
             { path: '/test_path' },
@@ -604,7 +604,7 @@ describe('createMatcher', () => {
         }
     });
 
-    test('空字符串路径处理', () => {
+    test('Empty string path handling', () => {
         const matcher = createMatcher([
             {
                 path: '',
@@ -617,9 +617,9 @@ describe('createMatcher', () => {
         assert.equal(result.matches[1].path, 'child');
     });
 
-    // 后面优化性能的时候再验证
-    test.todo('路由匹配性能验证', () => {
-        // 创建大量路由配置
+    // Verify performance later
+    test.todo('Route matching performance verification', () => {
+        // Create a large number of route configurations
         const routes = Array.from({ length: 1000 }, (_, i) => ({
             path: `/route${i}/:id`
         }));
@@ -632,11 +632,11 @@ describe('createMatcher', () => {
 
         assert.equal(result.matches.length, 1);
         assert.equal(result.params.id, '123');
-        // 验证匹配时间应该在合理范围内（小于10ms）
+        // Verify that the matching time is within a reasonable range (less than 10ms)
         assert.isTrue(endTime - startTime < 10);
     });
 
-    test('边界情况：超长路径', () => {
+    test('Edge case: extremely long path', () => {
         const longPath =
             '/very/long/path/with/many/segments/that/goes/on/and/on/and/on';
         const matcher = createMatcher([{ path: longPath }]);
@@ -645,7 +645,7 @@ describe('createMatcher', () => {
         assert.equal(result.matches[0].path, longPath);
     });
 
-    test('边界情况：大量参数', () => {
+    test('Edge case: large number of parameters', () => {
         const matcher = createMatcher([
             { path: '/:a/:b/:c/:d/:e/:f/:g/:h/:i/:j' }
         ]);
@@ -659,18 +659,18 @@ describe('createMatcher', () => {
         assert.equal(Object.keys(result.params).length, 10);
     });
 
-    test('路径重写和编码', () => {
+    test('Path rewriting and encoding', () => {
         const matcher = createMatcher([{ path: '/api/:resource' }]);
         const result = matcher(
             new URL('/api/user%2Fprofile', BASE_URL),
             BASE_URL
         );
         assert.equal(result.matches.length, 1);
-        // URL编码的斜杠不会被自动解码为路径分隔符
+        // URL-encoded slashes are not automatically decoded as path separators
         assert.equal(result.params.resource, 'user%2Fprofile');
     });
 
-    test('查询参数不影响路由匹配', () => {
+    test('Query parameters do not affect route matching', () => {
         const matcher = createMatcher([{ path: '/search' }]);
         const result = matcher(
             new URL('/search?q=test&page=1', BASE_URL),
@@ -680,14 +680,14 @@ describe('createMatcher', () => {
         assert.equal(result.matches[0].path, '/search');
     });
 
-    test('hash不影响路由匹配', () => {
+    test('Hash does not affect route matching', () => {
         const matcher = createMatcher([{ path: '/page' }]);
         const result = matcher(new URL('/page#section1', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].path, '/page');
     });
 
-    test.todo('大小写敏感匹配', () => {
+    test.todo('Case-sensitive matching', () => {
         const matcher = createMatcher([{ path: '/API' }, { path: '/api' }]);
         const result1 = matcher(new URL('/API', BASE_URL), BASE_URL);
         const result2 = matcher(new URL('/api', BASE_URL), BASE_URL);
@@ -699,7 +699,7 @@ describe('createMatcher', () => {
         assert.equal(result2.matches[0].path, '/api');
     });
 
-    test('应忽略baseURL中的用户名和密码', () => {
+    test('Username and password in baseURL should be ignored', () => {
         const customBase = new URL('https://uname@pwlocalhost:3000/app/');
         const matcher = createMatcher([{ path: '/test' }]);
         const result = matcher(
@@ -710,7 +710,7 @@ describe('createMatcher', () => {
         assert.equal(result.matches[0].path, '/test');
     });
 
-    test('嵌套路由中的空字符串处理', () => {
+    test('Empty string handling in nested routes', () => {
         const matcher = createMatcher([
             {
                 path: '/parent',
@@ -729,7 +729,7 @@ describe('createMatcher', () => {
         assert.equal(result2.matches[1].path, 'child');
     });
 
-    test('路由组件配置保持', () => {
+    test('Route component configuration persistence', () => {
         const TestComponent = () => 'test';
         const matcher = createMatcher([
             {
@@ -742,7 +742,7 @@ describe('createMatcher', () => {
         assert.equal(result.matches[0].component, TestComponent);
     });
 
-    test('路由重定向配置保持', () => {
+    test('Route redirect configuration persistence', () => {
         const redirectTarget = '/new-path';
         const matcher = createMatcher([
             {
@@ -755,19 +755,19 @@ describe('createMatcher', () => {
         assert.equal(result.matches[0].redirect, redirectTarget);
     });
 
-    test('数字参数正确解析', () => {
+    test('Numeric parameter parsing', () => {
         const matcher = createMatcher([{ path: '/user/:id(\\d+)' }]);
 
         const result1 = matcher(new URL('/user/123', BASE_URL), BASE_URL);
         assert.equal(result1.matches.length, 1);
         assert.equal(result1.params.id, '123');
 
-        // 非数字应该不匹配
+        // Non-numeric should not match
         const result2 = matcher(new URL('/user/abc', BASE_URL), BASE_URL);
         assert.equal(result2.matches.length, 0);
     });
 
-    test('路由匹配深度优先策略验证', () => {
+    test('Route matching depth-first strategy verification', () => {
         const matcher = createMatcher([
             {
                 path: '/level1',
@@ -791,13 +791,13 @@ describe('createMatcher', () => {
             BASE_URL
         );
         assert.equal(result.matches.length, 3);
-        // 验证深度优先：父路由在前
+        // Verify depth-first: parent routes first
         assert.equal(result.matches[0].meta?.level, 1);
         assert.equal(result.matches[1].meta?.level, 2);
         assert.equal(result.matches[2].meta?.level, 3);
     });
 
-    test('空meta对象默认处理', () => {
+    test('Empty meta object default handling', () => {
         const matcher = createMatcher([{ path: '/no-meta' }]);
         const result = matcher(new URL('/no-meta', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
@@ -805,7 +805,7 @@ describe('createMatcher', () => {
         assert.deepEqual(result.matches[0].meta, {});
     });
 
-    test('路径标准化处理', () => {
+    test('Path normalization handling', () => {
         const matcher = createMatcher([{ path: '/test//double//slash' }]);
         const result = matcher(
             new URL('/test/double/slash', BASE_URL),
@@ -814,29 +814,29 @@ describe('createMatcher', () => {
         assert.equal(result.matches.length, 1);
     });
 
-    test('错误路径配置处理', () => {
-        // 测试空字符串路径
+    test('Error path configuration handling', () => {
+        // Test empty string path
         const matcher1 = createMatcher([{ path: '' }]);
         const result1 = matcher1(new URL('/', BASE_URL), BASE_URL);
         assert.equal(result1.matches.length, 1);
 
-        // 测试只有斜杠的路径
+        // Test only slash path
         const matcher2 = createMatcher([{ path: '/' }]);
         const result2 = matcher2(new URL('/', BASE_URL), BASE_URL);
         assert.equal(result2.matches.length, 1);
     });
 
-    test('空参数处理', () => {
+    test('Empty parameter handling', () => {
         const matcher = createMatcher([{ path: '/user/:id' }]);
-        // 测试空参数值
+        // Test empty parameter value
         const result = matcher(new URL('/user/', BASE_URL), BASE_URL);
-        assert.equal(result.matches.length, 0); // 应该不匹配
+        assert.equal(result.matches.length, 0); // Should not match
     });
 
-    test('路由配置完整性验证', () => {
+    test('Route configuration completeness verification', () => {
         const TestComponent = () => 'test';
         const asyncComponent = async () => TestComponent;
-        const beforeEnter = async () => void 0; // 正确的RouteConfirmHookResult类型
+        const beforeEnter = async () => void 0; // Correct RouteConfirmHookResult type
 
         const matcher = createMatcher([
             {
@@ -872,7 +872,7 @@ describe('createMatcher', () => {
         assert.equal(result.matches[0].children.length, 1);
     });
 
-    test.todo('路由冲突和优先级处理', () => {
+    test.todo('Route conflict and priority handling', () => {
         const matcher = createMatcher([
             {
                 path: '/conflict/:id',
@@ -888,7 +888,7 @@ describe('createMatcher', () => {
             }
         ]);
 
-        // 测试精确匹配优先
+        // Test exact match priority
         const result1 = matcher(
             new URL('/conflict/special', BASE_URL),
             BASE_URL
@@ -896,14 +896,14 @@ describe('createMatcher', () => {
         assert.equal(result1.matches.length, 1);
         assert.equal(result1.matches[0]?.meta?.priority, 2);
 
-        // 测试参数匹配
+        // Test parameter matching
         const result2 = matcher(new URL('/conflict/123', BASE_URL), BASE_URL);
         assert.equal(result2.matches.length, 1);
         assert.equal(result2.matches[0]?.meta?.priority, 1);
         assert.equal(result2.params.id, '123');
     });
 
-    test('多级嵌套参数提取', () => {
+    test('Multi-level nested parameter extraction', () => {
         const matcher = createMatcher([
             {
                 path: '/api',
@@ -937,7 +937,7 @@ describe('createMatcher', () => {
         assert.equal(result.params.action, 'edit');
     });
 
-    test('路由环境配置处理', () => {
+    test('Route environment configuration handling', () => {
         const envHandler = () => ({ data: 'test' });
         const matcher = createMatcher([
             {
@@ -953,7 +953,7 @@ describe('createMatcher', () => {
         assert.equal(result.matches[0]?.meta?.env, 'production');
     });
 
-    test('应用配置处理', () => {
+    test('Application configuration handling', () => {
         const appConfig = 'test-app';
         const appCallback = () => ({ mount: () => {}, unmount: () => {} });
 
@@ -971,7 +971,7 @@ describe('createMatcher', () => {
         assert.equal(result2.matches[0].app, appCallback);
     });
 
-    test('复杂通配符和参数组合', () => {
+    test('Complex wildcard and parameter combinations', () => {
         const matcher = createMatcher([{ path: '/files/:category/:rest*' }]);
         const result = matcher(
             new URL('/files/documents/folder1/folder2/view', BASE_URL),
@@ -982,7 +982,7 @@ describe('createMatcher', () => {
         assert.deepEqual(result.params.rest, ['folder1', 'folder2', 'view']);
     });
 
-    test('路由重定向配置验证', () => {
+    test('Route redirect configuration verification', () => {
         const redirectTarget = '/new-location';
         const redirectFunction = () => '/dynamic-location';
 
@@ -1012,9 +1012,9 @@ describe('createMatcher', () => {
         assert.equal(result2.matches[0].redirect, redirectFunction);
     });
 
-    test('路由守卫配置验证', () => {
-        const beforeEnter = async () => void 0; // 正确的RouteConfirmHookResult类型
-        const beforeUpdate = async () => void 0; // 修正为void类型
+    test('Route guard configuration verification', () => {
+        const beforeEnter = async () => void 0; // Correct RouteConfirmHookResult type
+        const beforeUpdate = async () => void 0; // Correct void type
         const beforeLeave = async () => '/cancel';
 
         const matcher = createMatcher([
@@ -1035,9 +1035,9 @@ describe('createMatcher', () => {
         assert.equal(result.matches[0]?.meta?.protected, true);
     });
 
-    // 后面优化性能的时候再验证
-    test.todo('matcher性能边界测试', () => {
-        // 创建大量复杂路由配置
+    // Verify performance later
+    test.todo('matcher performance boundary test', () => {
+        // Create a large number of complex route configurations
         const routes: Parameters<typeof createMatcher>[0] = [];
         for (let i = 0; i < 500; i++) {
             routes.push({
@@ -1053,17 +1053,17 @@ describe('createMatcher', () => {
         const matcher = createMatcher(routes);
         const startTime = performance.now();
 
-        // 测试不匹配的情况
+        // Test non-matching cases
         const result = matcher(new URL('/nonexistent', BASE_URL), BASE_URL);
 
         const endTime = performance.now();
 
         assert.equal(result.matches.length, 0);
-        // 即使是不匹配的情况，性能也应该在合理范围内
+        // Even if there is no match, performance should be within a reasonable range
         assert.isTrue(endTime - startTime < 50);
     });
 
-    test('params参数类型和值验证', () => {
+    test('params type and value verification', () => {
         const matcher = createMatcher([
             { path: '/typed/:stringParam/:numberParam(\\d+)/:optionalParam?' }
         ]);
@@ -1080,10 +1080,10 @@ describe('createMatcher', () => {
         assert.equal(result.params.optionalParam, 'extra');
     });
 
-    test('特殊URL编码场景', () => {
+    test('Special URL encoding scenarios', () => {
         const matcher = createMatcher([{ path: '/encoded/:param' }]);
 
-        // 测试各种编码场景 - 根据path-to-regexp的实际行为调整
+        // Test various encoding scenarios - adjust according to path-to-regexp's actual behavior
         const testCases = [
             { input: '/encoded/hello%20world', expected: 'hello%20world' },
             {
@@ -1104,17 +1104,17 @@ describe('createMatcher', () => {
         });
     });
 
-    test('错误配置容错处理', () => {
-        // 测试空路由数组
+    test('Error configuration tolerance handling', () => {
+        // Test empty route array
         const emptyMatcher = createMatcher([]);
         const emptyResult = emptyMatcher(new URL('/any', BASE_URL), BASE_URL);
         assert.equal(emptyResult.matches.length, 0);
         assert.deepEqual(emptyResult.params, {});
 
-        // 测试含有undefined路径的配置
+        // Test configuration with undefined path
         const matcher = createMatcher([
             { path: '/valid' },
-            // 理论上不应该有这种配置，但测试容错性
+            // Theoretically, there should not be such a configuration, but test tolerance
             ...(process.env.NODE_ENV === 'test' ? [] : [])
         ]);
 
@@ -1122,7 +1122,7 @@ describe('createMatcher', () => {
         assert.equal(result.matches.length, 1);
     });
 
-    test('通配符路由匹配 - 可选通配符', () => {
+    test('Wildcard route matching - optional wildcard', () => {
         const routes = [
             { path: '/files/:path*', component: 'FilesPage' },
             { path: '/api/:section/data', component: 'ApiDataPage' },
@@ -1130,7 +1130,7 @@ describe('createMatcher', () => {
         ];
         const matcher = createMatcher(routes);
 
-        // 测试基本通配符匹配
+        // Test basic wildcard matching
         let result = matcher(
             new URL('/files/document.pdf', BASE_URL),
             BASE_URL
@@ -1168,7 +1168,7 @@ describe('createMatcher', () => {
         assert.deepEqual(result.params.rest, ['anything', 'else']);
     });
 
-    test('可重复参数路由匹配 - + 修饰符', () => {
+    test('Repeatable parameter route matching - + modifier', () => {
         const routes = [
             { path: '/chapters/:chapters+', component: 'ChaptersPage' },
             {
@@ -1179,13 +1179,13 @@ describe('createMatcher', () => {
         ];
         const matcher = createMatcher(routes);
 
-        // 测试单个参数
+        // Test single parameter
         let result = matcher(new URL('/chapters/intro', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'ChaptersPage');
         assert.deepEqual(result.params.chapters, ['intro']);
 
-        // 测试多个参数
+        // Test multiple parameters
         result = matcher(
             new URL('/chapters/intro/basics/advanced', BASE_URL),
             BASE_URL
@@ -1198,7 +1198,7 @@ describe('createMatcher', () => {
             'advanced'
         ]);
 
-        // 测试带后续路径的可重复参数
+        // Test repeatable parameters with subsequent paths
         result = matcher(
             new URL('/categories/tech/programming/items', BASE_URL),
             BASE_URL
@@ -1207,7 +1207,7 @@ describe('createMatcher', () => {
         assert.equal(result.matches[0].component, 'CategoriesItemsPage');
         assert.deepEqual(result.params.categories, ['tech', 'programming']);
 
-        // 测试复杂组合
+        // Test complex combinations
         result = matcher(
             new URL('/tags/react/typescript/hooks/posts/123', BASE_URL),
             BASE_URL
@@ -1218,44 +1218,44 @@ describe('createMatcher', () => {
         assert.equal(result.params.postId, '123');
     });
 
-    test('可重复参数路由匹配 - * 修饰符', () => {
+    test('Repeatable parameter route matching - * modifier', () => {
         const routes = [
             { path: '/path/:segments*', component: 'DynamicPathPage' },
             { path: '/files/:path*/download', component: 'DownloadPage' }
         ];
         const matcher = createMatcher(routes);
 
-        // 测试零个参数（空路径段）
+        // Test zero parameters (empty path segment)
         let result = matcher(new URL('/path', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'DynamicPathPage');
         assert.equal(result.params.segments, undefined);
 
-        // 测试一个参数
+        // Test one parameter
         result = matcher(new URL('/path/a', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'DynamicPathPage');
         assert.equal(result.params.segments, 'a');
 
-        // 测试多个参数
+        // Test multiple parameters
         result = matcher(new URL('/path/a/b/c/d', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'DynamicPathPage');
         assert.deepEqual(result.params.segments, ['a', 'b', 'c', 'd']);
 
-        // 测试带后续路径的可重复参数（零个）
+        // Test repeatable parameters with subsequent paths (zero)
         result = matcher(new URL('/files/download', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'DownloadPage');
         assert.equal(result.params.path, undefined);
 
-        // 测试带后续路径的可重复参数（一个）
+        // Test repeatable parameters with subsequent paths (one)
         result = matcher(new URL('/files/a/download', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'DownloadPage');
         assert.equal(result.params.path, 'a');
 
-        // 测试带后续路径的可重复参数（多个）
+        // Test repeatable parameters with subsequent paths (multiple)
         result = matcher(
             new URL('/files/docs/images/download', BASE_URL),
             BASE_URL
@@ -1265,7 +1265,7 @@ describe('createMatcher', () => {
         assert.deepEqual(result.params.path, ['docs', 'images']);
     });
 
-    test('自定义正则表达式路由匹配', () => {
+    test('Custom regular expression route matching', () => {
         const routes = [
             { path: '/order/:orderId(\\d+)', component: 'OrderPage' },
             { path: '/user/:username([a-zA-Z0-9_]+)', component: 'UserPage' },
@@ -1275,46 +1275,46 @@ describe('createMatcher', () => {
         ];
         const matcher = createMatcher(routes);
 
-        // 测试数字 ID
+        // Test numeric ID
         let result = matcher(new URL('/order/12345', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'OrderPage');
         assert.equal(result.params.orderId, '12345');
 
-        // 测试非数字 ID 应该不匹配 OrderPage
+        // Test non-numeric ID should not match OrderPage
         result = matcher(new URL('/order/abc123', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 0);
 
-        // 测试用户名格式
+        // Test username format
         result = matcher(new URL('/user/john_doe123', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'UserPage');
         assert.equal(result.params.username, 'john_doe123');
 
-        // 测试版本号
+        // Test version number
         result = matcher(new URL('/api/v2', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'ApiPage');
         assert.equal(result.params.version, '2');
 
-        // 测试十六进制颜色
+        // Test hexadecimal color
         result = matcher(new URL('/hex/FF0000', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'ColorPage');
         assert.equal(result.params.color, 'FF0000');
 
-        // 测试无效十六进制颜色
+        // Test invalid hexadecimal color
         result = matcher(new URL('/hex/GGGGGG', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 0);
 
-        // 测试 fallback 到更通用的路由
+        // Test fallback to more generic routes
         result = matcher(new URL('/product/laptop-pro', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'ProductPage');
         assert.equal(result.params.productName, 'laptop-pro');
     });
 
-    test('可重复参数与自定义正则结合路由匹配', () => {
+    test('Repeatable parameter and custom regular expression route matching', () => {
         const routes = [
             { path: '/numbers/:nums(\\d+)+', component: 'NumbersPage' },
             { path: '/codes/:codes([A-Z]{2,3})+', component: 'CodesPage' },
@@ -1326,37 +1326,37 @@ describe('createMatcher', () => {
         ];
         const matcher = createMatcher(routes);
 
-        // 测试必需的数字参数（单个）
+        // Test required numeric parameter (single)
         let result = matcher(new URL('/numbers/123', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'NumbersPage');
         assert.deepEqual(result.params.nums, ['123']);
 
-        // 测试必需的数字参数（多个）
+        // Test required numeric parameter (multiple)
         result = matcher(new URL('/numbers/123/456/789', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'NumbersPage');
         assert.deepEqual(result.params.nums, ['123', '456', '789']);
 
-        // 测试代码格式（必需）
+        // Test code format (required)
         result = matcher(new URL('/codes/US/UK/CA', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'CodesPage');
         assert.deepEqual(result.params.codes, ['US', 'UK', 'CA']);
 
-        // 测试可选数字参数（零个）
+        // Test optional numeric parameter (zero)
         result = matcher(new URL('/optional', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'OptionalItemsPage');
         assert.equal(result.params.items, undefined);
 
-        // 测试可选数字参数（多个）
+        // Test optional numeric parameter (multiple)
         result = matcher(new URL('/optional/100/200/300', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'OptionalItemsPage');
         assert.deepEqual(result.params.items, ['100', '200', '300']);
 
-        // 测试复杂混合模式
+        // Test complex mixed mode
         result = matcher(
             new URL('/mixed/111/222/info/ABC/DEF', BASE_URL),
             BASE_URL
@@ -1366,12 +1366,12 @@ describe('createMatcher', () => {
         assert.deepEqual(result.params.ids, ['111', '222']);
         assert.deepEqual(result.params.codes, ['ABC', 'DEF']);
 
-        // 测试无效格式应该不匹配
+        // Test invalid format should not match
         result = matcher(new URL('/numbers/abc/123', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 0);
     });
 
-    test('可选参数路由匹配 - 基本用法', () => {
+    test('Optional parameter route matching - basic usage', () => {
         const routes = [
             { path: '/users/:userId?', component: 'UsersPage' },
             { path: '/posts/:postId?/comments', component: 'CommentsPage' },
@@ -1383,19 +1383,19 @@ describe('createMatcher', () => {
         ];
         const matcher = createMatcher(routes);
 
-        // 测试无可选参数
+        // Test no optional parameters
         let result = matcher(new URL('/users', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'UsersPage');
         assert.equal(result.params.userId, undefined);
 
-        // 测试有可选参数
+        // Test with optional parameters
         result = matcher(new URL('/users/123', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'UsersPage');
         assert.equal(result.params.userId, '123');
 
-        // 测试中间可选参数
+        // Test intermediate optional parameters
         result = matcher(new URL('/posts/comments', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'CommentsPage');
@@ -1406,7 +1406,7 @@ describe('createMatcher', () => {
         assert.equal(result.matches[0].component, 'CommentsPage');
         assert.equal(result.params.postId, '456');
 
-        // 测试多个可选参数
+        // Test multiple optional parameters
         result = matcher(new URL('/search', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'SearchPage');
@@ -1426,7 +1426,7 @@ describe('createMatcher', () => {
         assert.equal(result.params.page, '2');
     });
 
-    test('可选参数与自定义正则结合路由匹配', () => {
+    test('Optional parameter and custom regular expression route matching', () => {
         const routes = [
             { path: '/users/:userId(\\d+)?', component: 'UsersPage' },
             {
@@ -1444,7 +1444,7 @@ describe('createMatcher', () => {
         ];
         const matcher = createMatcher(routes);
 
-        // 测试数字用户 ID（可选）
+        // Test numeric user ID (optional)
         let result = matcher(new URL('/users', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'UsersPage');
@@ -1455,11 +1455,11 @@ describe('createMatcher', () => {
         assert.equal(result.matches[0].component, 'UsersPage');
         assert.equal(result.params.userId, '123');
 
-        // 无效格式应该不匹配
+        // Test invalid format should not match
         result = matcher(new URL('/users/abc', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 0);
 
-        // 测试多个可选参数与正则
+        // Test multiple optional parameters with regular expression
         result = matcher(new URL('/products', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'ProductsPage');
@@ -1481,7 +1481,7 @@ describe('createMatcher', () => {
         assert.equal(result.params.category, 'electronics');
         assert.equal(result.params.productId, '456');
 
-        // 测试文章路径（年/月/标题）
+        // Test article path (year/month/title)
         result = matcher(new URL('/articles/2024', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'ArticlesPage');
@@ -1499,7 +1499,7 @@ describe('createMatcher', () => {
         assert.equal(result.params.month, '03');
         assert.equal(result.params.slug, 'my-post');
 
-        // 测试 API 版本化路由
+        // Test API versioned route
         result = matcher(new URL('/api/v2/users/789', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'ApiUsersPage');
@@ -1513,7 +1513,7 @@ describe('createMatcher', () => {
         assert.equal(result.params.userId, undefined);
     });
 
-    test('复杂路由模式组合匹配', () => {
+    test('Complex route pattern combination matching', () => {
         const routes = [
             {
                 path: '/api/v:version(\\d+)/users/:userId(\\d+)/posts/:postIds(\\d+)+',
@@ -1534,7 +1534,7 @@ describe('createMatcher', () => {
         ];
         const matcher = createMatcher(routes);
 
-        // 测试复杂 API 路由
+        // Test complex API route
         let result = matcher(
             new URL('/api/v1/users/123/posts/456/789', BASE_URL),
             BASE_URL
@@ -1545,7 +1545,7 @@ describe('createMatcher', () => {
         assert.equal(result.params.userId, '123');
         assert.deepEqual(result.params.postIds, ['456', '789']);
 
-        // 测试文件下载路由
+        // Test file download route
         result = matcher(
             new URL('/files/docs/images/download/photo.jpg', BASE_URL),
             BASE_URL
@@ -1555,7 +1555,7 @@ describe('createMatcher', () => {
         assert.deepEqual(result.params.folders, ['docs', 'images']);
         assert.deepEqual(result.params.filename, ['photo.jpg']);
 
-        // 测试无文件夹的下载
+        // Test download without folder
         result = matcher(
             new URL('/files/download/readme.txt', BASE_URL),
             BASE_URL
@@ -1565,7 +1565,7 @@ describe('createMatcher', () => {
         assert.equal(result.params.folders, undefined);
         assert.deepEqual(result.params.filename, ['readme.txt']);
 
-        // 测试商店评论路由
+        // Test store comment route
         result = matcher(
             new URL('/shop/electronics/computers/items/123/reviews/', BASE_URL),
             BASE_URL
@@ -1589,7 +1589,7 @@ describe('createMatcher', () => {
         assert.equal(result.params.itemId, undefined);
         assert.deepEqual(result.params.reviewIds, ['101', '102']);
 
-        // 测试管理员用户角色路由
+        // Test admin user role route
         result = matcher(
             new URL('/admin/users/100/200/300/roles/admin/moderator', BASE_URL),
             BASE_URL
@@ -1609,7 +1609,7 @@ describe('createMatcher', () => {
         assert.equal(result.params.roleNames, undefined);
     });
 
-    test('高级路由模式的边缘情况', () => {
+    test('Advanced route pattern edge cases', () => {
         const routes = [
             {
                 path: '/test/:param(\\d+)?/:param2(\\d+)+',
@@ -1620,7 +1620,7 @@ describe('createMatcher', () => {
         ];
         const matcher = createMatcher(routes);
 
-        // 测试可选参数后跟必需重复参数
+        // Test optional parameters followed by required repeatable parameters
         let result = matcher(new URL('/test/123/456', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'TestPage');
@@ -1633,19 +1633,19 @@ describe('createMatcher', () => {
         assert.equal(result.params.param, '123');
         assert.deepEqual(result.params.param2, ['456', '789']);
 
-        // 测试空通配符
+        // Test empty wildcard
         result = matcher(new URL('/empty/', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'EmptyPage');
         assert.equal(result.params.empty, undefined);
 
-        // 测试严格正则匹配（必须恰好3位数字）
+        // Test strict regular expression matching (must be exactly 3 digits)
         result = matcher(new URL('/strict/123', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'StrictPage');
         assert.equal(result.params.id, '123');
 
-        // 测试不符合严格正则的情况
+        // Test cases that do not match strict regular expression
         result = matcher(new URL('/strict/1234', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 0);
 
@@ -1653,7 +1653,7 @@ describe('createMatcher', () => {
         assert.equal(result.matches.length, 0);
     });
 
-    test('空路径通配', () => {
+    test('Empty path wildcard', () => {
         assert.throws(
             () => createMatcher([{ path: '*' }]),
             'Unexpected MODIFIER'
@@ -1674,7 +1674,7 @@ describe('createMatcher', () => {
         assert.equal(result.matches[0].path, '(.*)*');
     });
 
-    test.todo('通配符路由匹配 - 新版', () => {
+    test.todo('Wildcard route matching - new version', () => {
         const routes = [
             { path: '/files{/*path}/:file{.:ext}', component: 'FilesPage' }, // /files/:path*/:file.:ext?
             { path: '/api/*section/data', component: 'ApiDataPage' }, // /api/:section?/data
@@ -1682,7 +1682,7 @@ describe('createMatcher', () => {
         ];
         const matcher = createMatcher(routes);
 
-        // 测试基本通配符匹配
+        // Test basic wildcard matching
         let result = matcher(
             new URL('/files/document.pdf', BASE_URL),
             BASE_URL
