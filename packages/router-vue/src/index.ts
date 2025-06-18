@@ -1,4 +1,5 @@
 export type * from './vue2';
+export type * from './vue3';
 
 export {
     useRouter,

@@ -1,7 +1,14 @@
-import type { ComponentPublicInstance } from 'vue';
 import { RouterLink } from './router-link';
 import { RouterView } from './router-view';
 import { getRoute, getRouter } from './use';
+
+interface VueApp {
+    config?: {
+        globalProperties: Record<string, unknown>;
+    };
+    prototype?: Record<string, unknown>;
+    component(name: string, component: unknown): void;
+}
 
 /**
  * Vue plugin for @esmx/router integration.
@@ -56,8 +63,9 @@ export const RouterPlugin = {
      * Install the router plugin.
      * @param app Vue application instance (Vue 3) or Vue constructor (Vue 2)
      */
-    install(app: any): void {
-        const target = app.config?.globalProperties || app.prototype;
+    install(app: unknown): void {
+        const vueApp = app as VueApp;
+        const target = vueApp.config?.globalProperties || vueApp.prototype;
 
         if (!target) {
             throw new Error('[@esmx/router-vue] Invalid Vue app instance');
@@ -65,19 +73,19 @@ export const RouterPlugin = {
 
         Object.defineProperties(target, {
             $router: {
-                get(this: ComponentPublicInstance) {
-                    return getRouter(this);
+                get() {
+                    return getRouter();
                 }
             },
             $route: {
-                get(this: ComponentPublicInstance) {
-                    return getRoute(this);
+                get() {
+                    return getRoute();
                 }
             }
         });
 
         // Register global components
-        app.component('RouterLink', RouterLink);
-        app.component('RouterView', RouterView);
+        vueApp.component('RouterLink', RouterLink);
+        vueApp.component('RouterView', RouterView);
     }
 };

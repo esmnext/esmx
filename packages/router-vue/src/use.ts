@@ -10,7 +10,7 @@ import {
 } from 'vue';
 import { createSymbolProperty } from './util';
 
-interface VueInstance {
+export interface VueInstance {
     $parent?: VueInstance | null;
     $root?: VueInstance | null;
     $children?: VueInstance[] | null;
@@ -43,7 +43,12 @@ function getCurrentProxy(functionName: string): VueInstance {
     return instance.proxy;
 }
 
-function findRouterContext(vm: VueInstance): RouterContext {
+function findRouterContext(vm?: VueInstance): RouterContext {
+    // If no vm provided, try to get current instance
+    if (!vm) {
+        vm = getCurrentProxy('findRouterContext');
+    }
+
     let context = routerContextProperty.get(vm);
     if (context) {
         return context;
@@ -67,7 +72,7 @@ function findRouterContext(vm: VueInstance): RouterContext {
  * This is a lower-level function used internally by useRouter().
  * Use this in Options API, use useRouter() in Composition API.
  *
- * @param instance - Vue component instance
+ * @param instance - Vue component instance (optional, will use getCurrentInstance if not provided)
  * @returns Router instance
  * @throws {Error} If router context is not found
  *
@@ -89,9 +94,12 @@ function findRouterContext(vm: VueInstance): RouterContext {
  *     }
  *   }
  * });
+ *
+ * // Can also be called without instance (uses getCurrentInstance internally)
+ * const router = getRouter(); // Works in globalProperties getters
  * ```
  */
-export function getRouter(instance: VueInstance): Router {
+export function getRouter(instance?: VueInstance): Router {
     return findRouterContext(instance).router;
 }
 
@@ -100,7 +108,7 @@ export function getRouter(instance: VueInstance): Router {
  * This is a lower-level function used internally by useRoute().
  * Use this in Options API, use useRoute() in Composition API.
  *
- * @param instance - Vue component instance
+ * @param instance - Vue component instance (optional, will use getCurrentInstance if not provided)
  * @returns Current route object
  * @throws {Error} If router context is not found
  *
@@ -122,10 +130,29 @@ export function getRouter(instance: VueInstance): Router {
  *     }
  *   }
  * });
+ *
+ * // Can also be called without instance (uses getCurrentInstance internally)
+ * const route = getRoute(); // Works in globalProperties getters
  * ```
  */
-export function getRoute(instance: VueInstance): Route {
+export function getRoute(instance?: VueInstance): Route {
     return findRouterContext(instance).route.value;
+}
+
+/**
+ * Get router context using the optimal method available.
+ * First tries provide/inject (works in setup), then falls back to hierarchy traversal.
+ */
+function useRouterContext(functionName: string): RouterContext {
+    // First try to get context from provide/inject (works in setup)
+    const injectedContext = inject<RouterContext>(ROUTER_INJECT_KEY);
+    if (injectedContext) {
+        return injectedContext;
+    }
+
+    // Fallback to component hierarchy traversal (works after mount)
+    const proxy = getCurrentProxy(functionName);
+    return findRouterContext(proxy);
 }
 
 /**
@@ -161,15 +188,7 @@ export function getRoute(instance: VueInstance): Route {
  * ```
  */
 export function useRouter(): Router {
-    // First try to get router from provide/inject (works in setup)
-    const injectedContext = inject<RouterContext>(ROUTER_INJECT_KEY);
-    if (injectedContext) {
-        return injectedContext.router;
-    }
-
-    // Fallback to component hierarchy traversal (works after mount)
-    const proxy = getCurrentProxy('useRouter');
-    return getRouter(proxy);
+    return useRouterContext('useRouter').router;
 }
 
 /**
@@ -205,15 +224,7 @@ export function useRouter(): Router {
  * ```
  */
 export function useRoute(): Route {
-    // First try to get route from provide/inject (works in setup)
-    const injectedContext = inject<RouterContext>(ROUTER_INJECT_KEY);
-    if (injectedContext) {
-        return injectedContext.route.value;
-    }
-
-    // Fallback to component hierarchy traversal (works after mount)
-    const proxy = getCurrentProxy('useRoute');
-    return getRoute(proxy);
+    return useRouterContext('useRoute').route.value;
 }
 
 /**

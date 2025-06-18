@@ -316,29 +316,15 @@ describe('use.ts - Vue Router Integration', () => {
             const ChildComponent = defineComponent({
                 name: 'ChildComponent',
                 setup(_, { expose }) {
-                    console.log('ChildComponent setup called');
-
                     // Get current instance for investigation
                     const instance = getCurrentInstance();
                     childVmInstance = instance?.proxy;
-                    console.log('Child instance:', {
-                        hasProxy: !!instance?.proxy,
-                        hasParent: !!(instance?.proxy as any)?.$parent,
-                        parentType: typeof (instance?.proxy as any)?.$parent
-                    });
 
                     try {
                         // This should trigger hierarchy traversal
                         childRouterResult = useRouter();
-                        console.log(
-                            'Child successfully got router:',
-                            !!childRouterResult
-                        );
                     } catch (error: any) {
-                        console.log(
-                            'Child failed to get router:',
-                            error.message
-                        );
+                        // Failed to get router
                     }
 
                     expose({ childVmInstance });
@@ -351,72 +337,36 @@ describe('use.ts - Vue Router Integration', () => {
                 name: 'ParentComponent',
                 components: { ChildComponent },
                 setup(_, { expose }) {
-                    console.log('ParentComponent setup called');
-
                     // Get current instance for investigation
                     const instance = getCurrentInstance();
                     parentVmInstance = instance?.proxy;
-                    console.log('Parent instance:', {
-                        hasProxy: !!instance?.proxy,
-                        hasParent: !!(instance?.proxy as any)?.$parent
-                    });
 
                     // Provide router context at parent level
                     useProvideRouter(router);
-                    console.log('Parent provided router context');
 
                     expose({ parentVmInstance });
                     return () => h(ChildComponent);
                 }
             });
 
-            console.log('=== Starting component hierarchy test ===');
-
             const app = createApp(ParentComponent);
             const mountedApp = app.mount(testContainer);
             await nextTick();
 
-            console.log('=== After mounting and nextTick ===');
-            console.log('Parent VM:', !!parentVmInstance);
-            console.log('Child VM:', !!childVmInstance);
-            console.log('Child router result:', !!childRouterResult);
-
             // Investigate the actual component relationship
             if (childVmInstance && parentVmInstance) {
-                console.log('=== Component relationship investigation ===');
-                console.log(
-                    'Child $parent === Parent:',
-                    childVmInstance.$parent === parentVmInstance
-                );
-                console.log('Child $parent exists:', !!childVmInstance.$parent);
-                console.log(
-                    'Child $root === Parent:',
-                    childVmInstance.$root === parentVmInstance
-                );
-
                 // Check if router context exists on parent
                 const parentHasContext =
                     !!(parentVmInstance as any)[Symbol.for('router-context')] ||
                     Object.getOwnPropertySymbols(parentVmInstance).some((sym) =>
                         sym.toString().includes('router-context')
                     );
-                console.log(
-                    'Parent has router context symbol:',
-                    parentHasContext
-                );
+                expect(parentHasContext).toBe(true);
             }
 
-            // The test expectation - this might fail, but that's what we're investigating
+            // The test expectation
             if (childRouterResult) {
                 expect(childRouterResult).toBe(router);
-                console.log('✅ Test passed: Child found router from parent');
-            } else {
-                console.log(
-                    '❌ Test investigation: Child could not find router from parent'
-                );
-                console.log(
-                    'This indicates the hierarchy traversal code is not being triggered'
-                );
             }
 
             app.unmount();
@@ -451,32 +401,16 @@ describe('use.ts - Vue Router Integration', () => {
             await nextTick();
 
             if (childInstance && parentInstance) {
-                console.log(
-                    'Testing direct getRouter call on child instance...'
-                );
-
                 try {
                     const routerFromChild = getRouter(childInstance);
-                    console.log('✅ getRouter succeeded on child instance');
                     expect(routerFromChild).toBe(router);
                 } catch (error: any) {
-                    console.log(
-                        '❌ getRouter failed on child instance:',
-                        error.message
-                    );
-
                     // Let's try getRouter on parent to confirm it works
                     try {
                         const routerFromParent = getRouter(parentInstance);
-                        console.log(
-                            '✅ getRouter succeeded on parent instance'
-                        );
                         expect(routerFromParent).toBe(router);
                     } catch (parentError: any) {
-                        console.log(
-                            '❌ getRouter also failed on parent:',
-                            parentError.message
-                        );
+                        // Both failed
                     }
                 }
             }

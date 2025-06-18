@@ -3,23 +3,25 @@ import { version } from 'vue';
 export const isVue3 = version.startsWith('3.');
 
 export function createSymbolProperty<T>(symbol: symbol) {
-    type InstanceWithSymbol = Record<string | symbol, any>;
-
     return {
-        set(instance: InstanceWithSymbol, value: T): void {
+        set(instance: any, value: T): void {
             instance[symbol] = value;
         },
-        get(instance: InstanceWithSymbol): T | undefined {
+        get(instance: any): T | undefined {
             return instance[symbol];
         }
     } as const;
 }
 
-export function isESModule(obj: any): boolean {
-    return Boolean(obj?.__esModule) || obj?.[Symbol.toStringTag] === 'Module';
+export function isESModule(obj: unknown): obj is Record<string | symbol, any> {
+    if (!obj || typeof obj !== 'object') return false;
+    const module = obj as Record<string | symbol, any>;
+    return (
+        Boolean(module.__esModule) || module[Symbol.toStringTag] === 'Module'
+    );
 }
 
-export function resolveComponent(component: any): any {
+export function resolveComponent(component: unknown): unknown {
     if (!component) return null;
 
     if (isESModule(component)) {
