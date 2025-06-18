@@ -13,7 +13,8 @@
 ### TypeScript 和模块系统
 - 始终使用 TypeScript，严格类型检查
 - 使用 ESM 模块系统 (import/export)
-- 禁止使用 `any` 类型，使用具体类型或泛型
+- 谨慎使用 `any` 类型，优先使用具体类型或泛型
+- 当必须使用 `any` 类型时，必须添加详细注释说明使用原因和必要性
 - 使用严格的 TypeScript 配置：
   - `strict: true`
   - `noImplicitAny: true`
@@ -37,7 +38,8 @@
 - 使用箭头函数和解构赋值
 - 适当使用泛型提高代码复用性
 - **代码注释必须使用英文**，包括单行注释和多行注释
-- **开发完成或执行检查时，必须识别并删除无用的日志**，包括 `console.log`、`console.warn` 等调试输出
+- **开发完成或执行检查时，必须识别并删除无用的调试日志**，包括 `console.log`、`console.debug` 等调试输出
+- **允许保留错误和警告日志**：`console.error`、`console.warn` 用于错误处理和重要警告信息
 
 ## 单元测试规范
 
@@ -47,7 +49,7 @@
 - 必要时可在文件头部配置测试环境：`@vitest-environment`
 
 ### 测试编写原则
-- **严格禁止使用 `any` 类型**，包括在测试代码中
+- **谨慎使用 `any` 类型**，包括在测试代码中，必须添加注释说明必要性
 - **严格禁止使用 mock 对象**，使用真实对象和依赖
 - 每个测试应该独立运行，不依赖其他测试
 - 使用描述性的测试名称，清楚表达测试意图
@@ -100,6 +102,31 @@ describe('模块/功能名称', () => {
 - 使用类型守卫函数确保运行时类型安全
 - 利用 TypeScript 的联合类型和可选链操作符
 - 避免类型断言，除非绝对必要
+
+#### any 类型使用指导
+当必须使用 `any` 类型时，必须添加详细注释说明：
+
+**允许使用 any 的场景：**
+- 与第三方库集成时，库本身缺乏类型定义
+- 处理动态内容或运行时类型无法确定的情况
+- 与浏览器原生API对齐，API本身类型不明确
+- 临时解决复杂类型推导问题（需要标记TODO）
+
+**注释要求：**
+```typescript
+// Using any here because:
+// 1. Third-party library XYZ lacks proper type definitions
+// 2. The API returns dynamic content that varies at runtime
+// 3. Aligning with browser native API behavior (e.g., history.state)
+// TODO: Consider creating specific types when library updates
+const data: any = externalLibrary.getData();
+
+// Using any to match browser History API where state can be any serializable value
+// This maintains compatibility with standard DOM History interface
+interface HistoryLike {
+    state: any; // Matches native History.state type
+}
+```
 
 ## 性能和最佳实践
 
@@ -198,7 +225,7 @@ describe('fetchUserData', () => {
 ### 实施优先级和渐进指导
 
 #### 核心优先级（必须立即执行）
-- **类型安全**：禁用 `any` 类型，启用严格 TypeScript 配置
+- **类型安全**：谨慎使用 `any` 类型并添加充分注释，启用严格 TypeScript 配置
 - **测试覆盖**：关键业务逻辑必须有测试，遵循 AAA 模式
 - **错误处理**：使用具体 Error 类型，提供有意义错误信息
 - **代码审查**：每次 PR 都从五个维度评估质量

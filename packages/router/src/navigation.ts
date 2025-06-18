@@ -97,6 +97,8 @@ export class MemoryHistory implements History {
     }
     private readonly _popStateCbs = new Set<NavigationSubscribe>();
     public scrollRestoration: ScrollRestoration = 'auto';
+    // Return null when no current entry to align with browser history.state behavior
+    // Browser history.state can be null when no state was provided
     public get state() {
         return this._curEntry?.state ?? null;
     }
@@ -159,6 +161,8 @@ export class MemoryHistory implements History {
 }
 
 function subscribeHtmlHistory(cb: NavigationSubscribe) {
+    // Use history.state || {} to handle null state from browser history
+    // Browser history.state can be null, but we normalize it to empty object
     const wrapper = () => cb(location.href, history.state || {});
     window.addEventListener('popstate', wrapper);
     return () => window.removeEventListener('popstate', wrapper);
