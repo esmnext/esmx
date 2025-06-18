@@ -2,13 +2,13 @@
     "packages": [
         "packages/class-state",
         "packages/core",
+        "packages/fetch",
         "packages/import",
         "packages/lint",
+        "packages/router",
+        "packages/router-vue",
         "packages/rspack",
         "packages/rspack-module-link-plugin",
-        "packages/rspack-vue",
-        "packages/router",
-        "packages/router-vue2",
-        "packages/router-vue3"
+        "packages/rspack-vue"
     ]
 }
