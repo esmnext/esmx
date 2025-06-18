@@ -452,6 +452,41 @@ describe('Navigation', () => {
         return parsedOptions(baseOptions);
     };
 
+    test('should provide access to history length', () => {
+        const nav = new Navigation({ mode: RouterMode.memory } as any);
+
+        // Initial length should be 1 (root entry)
+        assert.equal(nav.length, 1);
+
+        // Push operations should increase length
+        const route1 = new Route({
+            options: createTestOptions(),
+            toType: RouteType.push,
+            toInput: { path: '/foo', state: { a: 1 } }
+        });
+        nav.push(route1);
+        assert.equal(nav.length, 2);
+
+        const route2 = new Route({
+            options: createTestOptions(),
+            toType: RouteType.push,
+            toInput: { path: '/bar', state: { b: 2 } }
+        });
+        nav.push(route2);
+        assert.equal(nav.length, 3);
+
+        // Replace operation should not change length
+        const route3 = new Route({
+            options: createTestOptions(),
+            toType: RouteType.push,
+            toInput: { path: '/baz', state: { c: 3 } }
+        });
+        nav.replace(route3);
+        assert.equal(nav.length, 3);
+
+        nav.destroy();
+    });
+
     test('should push and replace state correctly', () => {
         const nav = new Navigation({ mode: RouterMode.memory } as any);
         const route1 = new Route({

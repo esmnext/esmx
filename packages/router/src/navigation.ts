@@ -21,23 +21,26 @@ export class Navigation {
 
     public constructor(
         options: RouterParsedOptions,
-        onUpdated?: NavigationSubscribe
+        onUpdated: NavigationSubscribe
     ) {
-        this.options = options;
-        this._history =
+        const history: History =
             options.mode === RouterMode.history
                 ? window.history
                 : new MemoryHistory();
         const onPopStateChange: NavigationSubscribe = (url, state) => {
-            (this._promiseResolve || onUpdated)?.(url, state);
+            const dispatchEvent = this._promiseResolve || onUpdated;
+            dispatchEvent(url, state);
         };
+        this.options = options;
+        this._history = history;
         this._unSubscribePopState =
-            options.mode !== RouterMode.history &&
-            this._history instanceof MemoryHistory
-                ? this._history.onPopState(onPopStateChange)
+            history instanceof MemoryHistory
+                ? history.onPopState(onPopStateChange)
                 : subscribeHtmlHistory(onPopStateChange);
     }
-
+    public get length(): number {
+        return this._history.length;
+    }
     public push(route: Route): RouteState {
         const state: RouteState = Object.freeze({
             ...route.state,
@@ -64,8 +67,8 @@ export class Navigation {
         return new Promise<NavigationGoResult>((resolve) => {
             this._promiseResolve = (url, state) => {
                 this._promiseResolve = null;
-                if (url === void 0 || url === null) return resolve(null);
-                resolve({ type: 'success', url, state: state! });
+                if (typeof url !== 'string') return resolve(null);
+                resolve({ type: 'success', url, state: state || {} });
             };
             setTimeout(this._promiseResolve, 80);
             this._history.go(index);

@@ -3,15 +3,15 @@ import { Router } from './router';
 import { RouteStatus, RouteType } from './types';
 import type { Route, RouteLocationInput, RouterOptions } from './types';
 
-describe('Router Window Navigation 测试', () => {
+describe('Router Window Navigation Tests', () => {
     let router: Router;
     let mockApps: Record<string, any>;
 
     beforeEach(() => {
-        // 重置所有 mock
+        // Reset all mocks
         vi.clearAllMocks();
 
-        // 创建 mock 应用
+        // Create mock applications
         mockApps = {
             home: vi.fn(() => ({
                 mount: vi.fn(),
@@ -30,7 +30,7 @@ describe('Router Window Navigation 测试', () => {
             }))
         };
 
-        // 创建路由器实例
+        // Create router instance
         router = new Router({
             routes: [
                 { path: '/', app: 'home' },
@@ -42,16 +42,16 @@ describe('Router Window Navigation 测试', () => {
     });
 
     /**
-     * 通用的窗口导航测试函数
-     * @param methodName 方法名称 ('pushWindow' 或 'replaceWindow')
-     * @param expectedIsPush 期望的 isPush 值
+     * Generic window navigation test function
+     * @param methodName Method name ('pushWindow' or 'replaceWindow')
+     * @param expectedIsPush Expected isPush value
      */
     function createWindowNavigationTests(
         methodName: 'pushWindow' | 'replaceWindow',
         expectedIsPush: boolean
     ) {
-        describe(`🪟 ${methodName} 核心功能测试`, () => {
-            it(`应该支持无参数调用（使用当前路由）`, async () => {
+        describe(`🪟 ${methodName} Core Functionality Tests`, () => {
+            it(`should support parameterless calls (using current route)`, async () => {
                 await router.push('/about');
                 const result = await router[methodName]();
 
@@ -61,7 +61,7 @@ describe('Router Window Navigation 测试', () => {
                 expect(result.status).toBe(RouteStatus.success);
             });
 
-            it(`应该支持字符串路径参数`, async () => {
+            it(`should support string path parameters`, async () => {
                 const result = await router[methodName]('/user/123');
 
                 expect(result.type).toBe(RouteType[methodName]);
@@ -71,7 +71,7 @@ describe('Router Window Navigation 测试', () => {
                 expect(result.status).toBe(RouteStatus.success);
             });
 
-            it(`应该支持对象参数`, async () => {
+            it(`should support object parameters`, async () => {
                 const result = await router[methodName]({
                     path: '/user/456',
                     query: { tab: 'profile' },
@@ -87,7 +87,7 @@ describe('Router Window Navigation 测试', () => {
                 expect(result.status).toBe(RouteStatus.success);
             });
 
-            it(`应该正确处理完整 URL`, async () => {
+            it(`should correctly handle complete URLs`, async () => {
                 const result = await router[methodName](
                     'https://example.com/user/789?sort=name#top'
                 );
@@ -101,15 +101,15 @@ describe('Router Window Navigation 测试', () => {
             });
         });
 
-        describe(`🎯 ${methodName} 特有行为测试`, () => {
-            it(`应该设置正确的 isPush 标志`, async () => {
+        describe(`🎯 ${methodName} Specific Behavior Tests`, () => {
+            it(`should set correct isPush flag`, async () => {
                 const result = await router[methodName]('/about');
 
                 expect(result.isPush).toBe(expectedIsPush);
                 expect(result.type).toBe(RouteType[methodName]);
             });
 
-            it(`应该调用 location 处理器`, async () => {
+            it(`should call location handler`, async () => {
                 let locationCalled = false;
                 let receivedRoute: Route | null = null;
 
@@ -132,19 +132,19 @@ describe('Router Window Navigation 测试', () => {
                 windowRouter.destroy();
             });
 
-            it(`应该不更新当前路由状态`, async () => {
+            it(`should not update current route state`, async () => {
                 await router.push('/about');
                 const beforeRoute = router.route;
 
                 await router[methodName]('/user/123');
                 const afterRoute = router.route;
 
-                // 窗口导航不应该改变当前路由
+                // Window navigation should not change current route
                 expect(afterRoute.path).toBe(beforeRoute.path);
                 expect(afterRoute.url.href).toBe(beforeRoute.url.href);
             });
 
-            it(`应该不触发 MicroApp 更新`, async () => {
+            it(`should not trigger MicroApp update`, async () => {
                 const updateSpy = vi.spyOn(router.microApp, '_update');
 
                 await router[methodName]('/user/123');
@@ -153,8 +153,8 @@ describe('Router Window Navigation 测试', () => {
             });
         });
 
-        describe(`🛡️ ${methodName} 路由守卫测试`, () => {
-            it(`应该执行 beforeEach 守卫`, async () => {
+        describe(`🛡️ ${methodName} Route Guards Tests`, () => {
+            it(`should execute beforeEach guards`, async () => {
                 let guardCalled = false;
                 const unregister = router.beforeEach(async (to, from) => {
                     guardCalled = true;
@@ -167,7 +167,7 @@ describe('Router Window Navigation 测试', () => {
                 unregister();
             });
 
-            it(`应该在守卫返回 false 时中止导航`, async () => {
+            it(`should abort navigation when guard returns false`, async () => {
                 const unregister = router.beforeEach((to, from) => {
                     return false;
                 });
@@ -178,7 +178,7 @@ describe('Router Window Navigation 测试', () => {
                 unregister();
             });
 
-            it(`应该支持守卫重定向`, async () => {
+            it(`should support guard redirects`, async () => {
                 const unregister = router.beforeEach(async (to) => {
                     if (to.path === '/about') {
                         return '/user/redirect';
@@ -192,7 +192,7 @@ describe('Router Window Navigation 测试', () => {
                 unregister();
             });
 
-            it(`应该执行 afterEach 守卫`, async () => {
+            it(`should execute afterEach guards`, async () => {
                 let guardCalled = false;
                 const unregister = router.afterEach((to, from) => {
                     guardCalled = true;
@@ -206,8 +206,8 @@ describe('Router Window Navigation 测试', () => {
             });
         });
 
-        describe(`🎭 ${methodName} 边界情况测试`, () => {
-            it(`应该处理不存在的路由`, async () => {
+        describe(`🎭 ${methodName} Edge Cases Tests`, () => {
+            it(`should handle non-existent routes`, async () => {
                 const result = await router[methodName]('/nonexistent');
 
                 expect(result.status).toBe(RouteStatus.success);
@@ -215,29 +215,29 @@ describe('Router Window Navigation 测试', () => {
                 expect(result.isPush).toBe(expectedIsPush);
             });
 
-            it(`应该处理空字符串路径`, async () => {
+            it(`should handle empty string path`, async () => {
                 const result = await router[methodName]('');
 
                 expect(result.status).toBe(RouteStatus.success);
                 expect(result.isPush).toBe(expectedIsPush);
             });
 
-            it(`应该处理特殊字符`, async () => {
+            it(`should handle special characters`, async () => {
                 const result = await router[methodName](
                     '/user/测试用户?name=张三&age=25#个人信息'
                 );
 
                 expect(result.status).toBe(RouteStatus.success);
                 expect(result.isPush).toBe(expectedIsPush);
-                // URL 会被编码，所以检查编码后的字符串
+                // URL will be encoded, so check encoded string
                 expect(result.url.pathname).toContain(
                     '%E6%B5%8B%E8%AF%95%E7%94%A8%E6%88%B7'
                 );
             });
         });
 
-        describe(`⚡ ${methodName} 任务取消和并发控制`, () => {
-            it(`应该支持并发调用`, async () => {
+        describe(`⚡ ${methodName} Task Cancellation and Concurrency Control`, () => {
+            it(`should support concurrent calls`, async () => {
                 const promises = [
                     router[methodName]('/user/1'),
                     router[methodName]('/user/2'),
@@ -246,8 +246,8 @@ describe('Router Window Navigation 测试', () => {
 
                 const results = await Promise.all(promises);
 
-                // 窗口导航不会相互取消，所以所有结果都应该成功
-                // 但由于任务取消机制，可能有些会被中止，我们只检查至少有一个成功
+                // Window navigation won't cancel each other, so all results should succeed
+                // But due to task cancellation mechanism, some may be aborted, we only check at least one succeeds
                 const successResults = results.filter(
                     (r) => r.status === RouteStatus.success
                 );
@@ -258,7 +258,7 @@ describe('Router Window Navigation 测试', () => {
                 });
             });
 
-            it(`应该正确处理快速连续调用`, async () => {
+            it(`should correctly handle rapid consecutive calls`, async () => {
                 const results: Route[] = [];
 
                 for (let i = 0; i < 5; i++) {
@@ -273,8 +273,8 @@ describe('Router Window Navigation 测试', () => {
             });
         });
 
-        describe(`❌ ${methodName} 错误处理`, () => {
-            it(`应该处理守卫中的异常`, async () => {
+        describe(`❌ ${methodName} Error Handling`, () => {
+            it(`should handle exceptions in guards`, async () => {
                 const unregister = router.beforeEach(async () => {
                     throw new Error('Guard error');
                 });
@@ -285,7 +285,7 @@ describe('Router Window Navigation 测试', () => {
                 unregister();
             });
 
-            it(`应该处理 location 处理器异常`, async () => {
+            it(`should handle location handler exceptions`, async () => {
                 const windowRouter = new Router({
                     routes: [{ path: '/', app: 'home' }],
                     apps: mockApps,
@@ -296,7 +296,7 @@ describe('Router Window Navigation 测试', () => {
 
                 await windowRouter.push('/');
 
-                // location 处理器异常会导致整个路由处理失败
+                // Location handler exceptions will cause entire route handling to fail
                 await expect(
                     windowRouter[methodName]('/about')
                 ).rejects.toThrow('Location handler error');
@@ -305,8 +305,8 @@ describe('Router Window Navigation 测试', () => {
             });
         });
 
-        describe(`🧩 ${methodName} 异步组件处理`, () => {
-            it(`应该正确处理异步组件`, async () => {
+        describe(`🧩 ${methodName} Async Component Handling`, () => {
+            it(`should correctly handle async components`, async () => {
                 const asyncRouter = new Router({
                     routes: [
                         {
@@ -331,7 +331,7 @@ describe('Router Window Navigation 测试', () => {
                 asyncRouter.destroy();
             });
 
-            it(`应该处理异步组件加载失败`, async () => {
+            it(`should handle async component loading failures`, async () => {
                 const asyncRouter = new Router({
                     routes: [
                         {
@@ -352,25 +352,25 @@ describe('Router Window Navigation 测试', () => {
             });
         });
 
-        describe(`🔧 ${methodName} 与其他方法的区别`, () => {
-            it(`应该与 push/replace 方法行为不同`, async () => {
+        describe(`🔧 ${methodName} Differences from Other Methods`, () => {
+            it(`should behave differently from push/replace methods`, async () => {
                 await router.push('/about');
                 const pushResult = await router.push('/user/123');
                 const windowResult = await router[methodName]('/user/456');
 
-                // push 会更新当前路由
+                // push will update current route
                 expect(router.route.path).toBe('/user/123');
 
-                // 窗口导航不会更新当前路由
+                // Window navigation won't update current route
                 expect(windowResult.isPush).toBe(expectedIsPush);
                 expect(windowResult.type).toBe(RouteType[methodName]);
 
-                // 类型不同
+                // Types are different
                 expect(pushResult.type).toBe(RouteType.push);
                 expect(windowResult.type).toBe(RouteType[methodName]);
             });
 
-            it(`应该与 resolve 方法在 URL 解析上保持一致`, async () => {
+            it(`should maintain consistency with resolve method in URL parsing`, async () => {
                 const resolvedRoute = router.resolve('/user/789');
                 const windowRoute = await router[methodName]('/user/789');
 
@@ -378,7 +378,7 @@ describe('Router Window Navigation 测试', () => {
                 expect(windowRoute.params).toEqual(resolvedRoute.params);
                 expect(windowRoute.matched).toEqual(resolvedRoute.matched);
 
-                // 但类型应该不同
+                // But types should be different
                 expect(windowRoute.type).toBe(RouteType[methodName]);
                 expect(resolvedRoute.type).toBe(RouteType.none);
                 expect(windowRoute.isPush).toBe(expectedIsPush);
@@ -387,18 +387,18 @@ describe('Router Window Navigation 测试', () => {
         });
     }
 
-    // 为 pushWindow 创建测试（isPush = true）
+    // Create tests for pushWindow (isPush = true)
     createWindowNavigationTests('pushWindow', true);
 
-    // 为 replaceWindow 创建测试（isPush = false）
+    // Create tests for replaceWindow (isPush = false)
     createWindowNavigationTests('replaceWindow', false);
 
-    describe('🔄 pushWindow 和 replaceWindow 对比测试', () => {
-        it('两个方法的唯一区别应该是 isPush 标志', async () => {
+    describe('🔄 pushWindow and replaceWindow Comparison Tests', () => {
+        it('the only difference between the two methods should be the isPush flag', async () => {
             const pushResult = await router.pushWindow('/user/123');
             const replaceResult = await router.replaceWindow('/user/123');
 
-            // 除了 isPush 和 type，其他所有属性都应该相同
+            // All properties except isPush and type should be the same
             expect(pushResult.url.href).toBe(replaceResult.url.href);
             expect(pushResult.params).toEqual(replaceResult.params);
             expect(pushResult.query).toEqual(replaceResult.query);
@@ -406,14 +406,14 @@ describe('Router Window Navigation 测试', () => {
             expect(pushResult.matched).toEqual(replaceResult.matched);
             expect(pushResult.status).toBe(replaceResult.status);
 
-            // 只有这两个属性不同
+            // Only these two properties are different
             expect(pushResult.isPush).toBe(true);
             expect(replaceResult.isPush).toBe(false);
             expect(pushResult.type).toBe(RouteType.pushWindow);
             expect(replaceResult.type).toBe(RouteType.replaceWindow);
         });
 
-        it('两个方法都应该调用相同的 location 处理器', async () => {
+        it('both methods should call the same location handler', async () => {
             const locationCalls: Array<{
                 method: string;
                 isPush: boolean;
