@@ -107,7 +107,9 @@ export async function getManifestList(
         Object.values(moduleConfig.links).map(async (item) => {
             const filename = path.resolve(item[target], 'manifest.json');
             try {
-                const data: ManifestJson = await JSON.parse(await fsp.readFile(filename, 'utf-8'));
+                const data: ManifestJson = await JSON.parse(
+                    await fsp.readFile(filename, 'utf-8')
+                );
                 data.name = item.name;
                 return data;
             } catch (e) {

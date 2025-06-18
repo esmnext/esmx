@@ -70,7 +70,7 @@ export interface ModuleConfig {
 /**
  * 模块导出配置类型
  * 用于定义当前服务要暴露哪些模块供其他服务使用
- * 
+ *
  * @example
  * // 1. 数组形式 - 字符串简写
  * const exports1: ModuleConfigExportExports = [
@@ -79,7 +79,7 @@ export interface ModuleConfig {
  *   // 本地文件导出（必须指定具体文件名）
  *   'root:src/components/button.ts'
  * ];
- * 
+ *
  * // 2. 数组形式 - 对象配置
  * const exports2: ModuleConfigExportExports = [
  *   // 简单的键值对映射
@@ -95,17 +95,17 @@ export interface ModuleConfig {
  *     }
  *   }
  * ];
- * 
+ *
  * // 3. 对象形式
  * const exports3: ModuleConfigExportExports = {
  *   // 简单路径映射
  *   'utils': './src/utils.ts',
- *   
+ *
  *   // 完整配置对象
  *   'api': {
  *     input: './src/api/index.ts'
  *   },
- *   
+ *
  *   // 客户端/服务端分离
  *   'entry': {
  *     inputTarget: {

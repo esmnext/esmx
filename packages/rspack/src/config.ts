@@ -37,8 +37,8 @@ export function createRspackConfig(
         output: {
             clean: esmx.isProd,
             module: true,
-            chunkFormat: esmx.isProd ? 'module' : undefined,
-            chunkLoading: esmx.isProd ? 'import' : undefined,
+            chunkFormat: esmx.isProd ? 'module' : 'array-push',
+            chunkLoading: esmx.isProd ? 'import' : 'jsonp',
             chunkFilename: esmx.isProd
                 ? '[name].[contenthash:8].final.mjs'
                 : '[name].mjs',

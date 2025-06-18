@@ -44,7 +44,8 @@ export function getImportMap({
     pathWithoutIndex(imports);
     Object.values(manifests).forEach((manifest) => {
         Object.entries(manifest.imports).forEach(([name, identifier]) => {
-            scopes[getScope(manifest.name)][name] = imports[identifier] ?? identifier;
+            scopes[getScope(manifest.name)][name] =
+                imports[identifier] ?? identifier;
         });
     });
     return {

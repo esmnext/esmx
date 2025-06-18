@@ -1,521 +1,350 @@
-import URLParse from 'url-parse';
-
-import { createHistory } from './history';
-import { createRouterMatcher } from './matcher';
-import {
-    type HistoryState,
-    type NavigationGuard,
-    type NavigationGuardAfter,
-    type RegisteredConfig,
-    type RegisteredConfigMap,
-    type Route,
-    type RouteRecord,
-    type RouterBase,
-    type RouterHistory,
-    type RouterInitOptions,
-    type RouterInstance,
-    type RouterMatcher,
-    RouterMode,
-    type RouterOptions,
-    type RouterRawLocation,
-    type RouterScrollBehavior,
-    StateLayerConfigKey
+import { LAYER_ID } from './increment-id';
+import { MicroApp } from './micro-app';
+import { Navigation } from './navigation';
+import { parsedOptions } from './options';
+import { Route } from './route';
+import { RouteTransition } from './route-transition';
+import { createLinkResolver } from './router-link';
+import { RouteType, RouterMode } from './types';
+import type {
+    RouteConfirmHook,
+    RouteLocationInput,
+    RouteMatchType,
+    RouteNotifyHook,
+    RouteState,
+    RouterLayerOptions,
+    RouterLayerResult,
+    RouterLinkProps,
+    RouterLinkResolved,
+    RouterOptions,
+    RouterParsedOptions
 } from './types';
-import { inBrowser, normalizePath, regexDomain } from './utils';
+import { isRouteMatched } from './util';
 
-const baseValue = Number(Date.now());
-let layerIdOffset = 0;
+export class Router {
+    public readonly options: RouterOptions;
+    public readonly parsedOptions: RouterParsedOptions;
+    public readonly isLayer: boolean;
+    public readonly navigation: Navigation;
+    public readonly microApp: MicroApp = new MicroApp();
+    private _destroys: Array<() => void> = [];
 
-function getLatestLayerId() {
-    return baseValue + ++layerIdOffset;
-}
+    // 路由转换器
+    public readonly transition = new RouteTransition(this);
+    public get route() {
+        const route = this.transition.route;
+        if (route === null) {
+            throw new Error(`Route is not ready.`);
+        }
+        return route;
+    }
 
-/**
- * 路由类
- */
-export class Router implements RouterInstance {
-    /**
-     * 当前路由对象的上级路由对象
-     */
-    parent: RouterInstance | null = null;
+    // 内部使用的route访问器，不会抛出异常
+    private get _currentRoute() {
+        return this.transition.route;
+    }
+    public get root() {
+        return this.parsedOptions.root;
+    }
 
-    /* 路由配置 */
-    options: RouterOptions;
-
-    /**
-     * 路由固定前置路径
-     * 需要注意的是如果使用函数返回 base，需要尽量保证相同的路径返回相同base
-     */
-    base: RouterBase;
-
-    /* 路由模式 */
-    mode: RouterMode;
-
-    /* 路由匹配器 */
-    matcher: RouterMatcher;
-
-    /* 路由history类 */
-    history: RouterHistory;
-
-    /* 滚动行为 */
-    scrollBehavior: RouterScrollBehavior;
-
-    /* 当前路由信息 */
-    route: Route = {
-        href: '',
-        origin: '',
-        host: '',
-        protocol: '',
-        hostname: '',
-        port: '',
-        pathname: '',
-        search: '',
-        hash: '',
-
-        params: {},
-        query: {},
-        queryArray: {},
-        state: {},
-        meta: {},
-        base: '',
-        path: '',
-        fullPath: '',
-        matched: []
-    };
-
-    constructor(options: RouterOptions) {
+    public constructor(options: RouterOptions) {
         this.options = options;
-        this.matcher = createRouterMatcher(options.routes || []);
+        this.parsedOptions = parsedOptions(options);
+        this.isLayer = this.parsedOptions.layer?.enable === true;
 
-        this.mode =
-            options.mode ||
-            (inBrowser ? RouterMode.HISTORY : RouterMode.ABSTRACT);
-
-        this.base = options.base || '';
-
-        this.scrollBehavior =
-            options.scrollBehavior ||
-            ((to, from, savedPosition) => {
-                if (savedPosition) return savedPosition;
-                return {
-                    left: 0,
-                    top: 0
-                };
-            });
-
-        this.history = createHistory({
-            router: this,
-            mode: this.mode
-        });
-    }
-
-    /* 更新路由 */
-    updateRoute(route: RouteRecord) {
-        const curAppType = this.route?.matched[0]?.appType;
-        const appType = route.matched[0]?.appType;
-        this.applyRoute(route);
-
-        const curRegisterConfig =
-            curAppType && this.registeredConfigMap[curAppType];
-        const registerConfig = appType && this.registeredConfigMap[appType];
-
-        if (registerConfig) {
-            const { mounted, generator } = registerConfig;
-            if (!mounted) {
-                registerConfig.config = generator(this);
-                registerConfig.config?.mount();
-                registerConfig.mounted = true;
-
-                this.layerMap[this.layerId] = {
-                    router: this,
-                    config: registerConfig.config,
-                    destroyed: false
-                };
-                if (
-                    !this.layerConfigList.find(
-                        (item) => item.id === this.layerId
-                    )
-                ) {
-                    this.layerConfigList.push({
-                        id: this.layerId,
-                        depth: 0
-                    });
-                }
+        this.navigation = new Navigation(
+            this.parsedOptions,
+            (url: string, state: RouteState) => {
+                this.transition.to(RouteType.none, {
+                    url,
+                    state
+                });
             }
-            registerConfig.config?.updated();
-        }
-
-        if (curAppType !== appType && curRegisterConfig) {
-            curRegisterConfig.config?.destroy();
-            curRegisterConfig.mounted = false;
-        }
-    }
-
-    /* 应用路由 */
-    protected applyRoute(route: RouteRecord) {
-        let url = '';
-        const { fullPath } = route;
-        if (inBrowser && !regexDomain.test(fullPath)) {
-            url = normalizePath(fullPath, location.origin);
-        } else {
-            url = normalizePath(fullPath);
-        }
-
-        const {
-            hash,
-            host,
-            hostname,
-            href,
-            origin,
-            pathname,
-            port,
-            protocol,
-            query
-        } = new URLParse(url);
-        Object.assign(
-            this.route,
-            {
-                href,
-                origin,
-                host,
-                protocol,
-                hostname,
-                port,
-                pathname,
-                search: query,
-                hash
-            },
-            route
         );
     }
-
-    /* 解析路由 */
-    resolve(location: RouterRawLocation): RouteRecord {
-        return this.history.resolve(location);
+    public push(toInput: RouteLocationInput): Promise<Route> {
+        return this.transition.to(RouteType.push, toInput);
     }
-
-    /**
-     * 新增单个路由匹配规则
-     */
-    // addRoutes(routes: RouteConfig[]) {
-    //     this.matcher.addRoutes(routes);
-    // }
-
-    /**
-     * 新增多个路由匹配规则
-     */
-    // addRoute(route: RouteConfig): void {
-    //     this.matcher.addRoute(route);
-    // }
-
-    /* 初始化 */
-    async init(options: RouterInitOptions = {}) {
-        const { parent = null, route, replace = true } = options;
-
-        await this.history.init({
-            replace
+    public replace(toInput: RouteLocationInput): Promise<Route> {
+        return this.transition.to(RouteType.replace, toInput);
+    }
+    public pushWindow(toInput?: RouteLocationInput): Promise<Route> {
+        return this.transition.to(
+            RouteType.pushWindow,
+            toInput ?? this.route.url.href
+        );
+    }
+    public replaceWindow(toInput?: RouteLocationInput): Promise<Route> {
+        return this.transition.to(
+            RouteType.replaceWindow,
+            toInput ?? this.route.url.href
+        );
+    }
+    public restartApp(): Promise<Route>;
+    public restartApp(toInput: RouteLocationInput): Promise<Route>;
+    public restartApp(
+        toInput?: RouteLocationInput | undefined
+    ): Promise<Route> {
+        return this.transition.to(
+            RouteType.restartApp,
+            toInput ?? this.route.url.href
+        );
+    }
+    public async back(): Promise<Route | null> {
+        const result = await this.navigation.go(-1);
+        if (result === null) {
+            // 调用 onBackNoResponse 钩子
+            if (this.parsedOptions.onBackNoResponse) {
+                this.parsedOptions.onBackNoResponse(this);
+            }
+            return null;
+        }
+        return this.transition.to(RouteType.back, {
+            url: result.url,
+            state: result.state
         });
-
-        const layerId = getLatestLayerId();
-        this.layerId = layerId;
-        let layerMap: RouterInstance['layerMap'] = {};
-        let layerConfigList: RouterInstance['layerConfigList'] = [];
-        if (parent && route) {
-            const appType = route.matched[0]?.appType;
-            if (!appType) return;
-            const registerConfig = parent.registeredConfigMap[appType];
-            if (!registerConfig) return;
-
-            parent.freeze();
-            this.registeredConfigMap = parent.registeredConfigMap;
-            const { generator } = registerConfig;
-            const config = generator(this);
-            config.mount();
-            config.updated();
-            layerMap = parent.layerMap;
-
-            layerMap[layerId] = {
-                router: this,
-                config,
-                destroyed: false
-            };
-            layerConfigList = parent.layerConfigList;
+    }
+    public async go(index: number): Promise<Route | null> {
+        // go(0) 在浏览器中会刷新页面，但在路由库中我们直接返回 null
+        if (index === 0) {
+            return null;
         }
-        if (!layerConfigList.find((item) => item.id === layerId)) {
-            layerConfigList.push({
-                id: layerId,
-                depth: 0
-            });
+
+        const result = await this.navigation.go(index);
+        if (result === null) {
+            // 当向后导航无响应时调用 onBackNoResponse 钩子
+            if (index < 0 && this.parsedOptions.onBackNoResponse) {
+                this.parsedOptions.onBackNoResponse(this);
+            }
+            return null;
         }
-        this.parent = parent;
-        this.layerMap = layerMap;
-        this.layerConfigList = layerConfigList;
+        return this.transition.to(RouteType.go, {
+            url: result.url,
+            state: result.state
+        });
+    }
+    public async forward(): Promise<Route | null> {
+        const result = await this.navigation.go(1);
+        if (result === null) {
+            return null;
+        }
+        return this.transition.to(RouteType.forward, {
+            url: result.url,
+            state: result.state
+        });
+    }
+    /**
+     * 解析路由位置而不进行实际导航
+     *
+     * 此方法用于解析路由配置并返回对应的路由对象，但不会触发实际的页面导航。
+     * 主要用于以下场景：
+     * - 生成链接URL而不进行跳转
+     * - 预检查路由匹配情况
+     * - 获取路由参数、元信息等
+     * - 测试路由配置的有效性
+     *
+     * @param toInput 目标路由位置，可以是字符串路径或路由配置对象
+     * @returns 解析后的路由对象，包含完整的路由信息
+     *
+     * @example
+     * ```typescript
+     * // 解析字符串路径
+     * const route = router.resolve('/user/123');
+     * const url = route.url.href; // 获取完整URL
+     *
+     * // 解析命名路由
+     * const userRoute = router.resolve({
+     *   name: 'user',
+     *   params: { id: '123' }
+     * });
+     * console.log(userRoute.params.id); // '123'
+     *
+     * // 检查路由有效性
+     * const testRoute = router.resolve('/some/path');
+     * if (testRoute.matched.length > 0) {
+     *   // 路由匹配成功
+     * }
+     * ```
+     */
+    public resolve(toInput: RouteLocationInput): Route {
+        return new Route({
+            options: this.parsedOptions,
+            toType: RouteType.none,
+            toInput,
+            from: this._currentRoute?.url ?? null
+        });
     }
 
     /**
-     * 卸载方法
+     * 判断路由是否匹配当前路由
+     *
+     * @param targetRoute 要比较的目标路由对象
+     * @param matchType 匹配类型
+     * - 'route': 路由级匹配，比较路由配置是否相同
+     * - 'exact': 完全匹配，比较路径是否完全相同
+     * - 'include': 包含匹配，判断当前路径是否包含目标路径
+     * @returns 是否匹配
      */
-    async destroy() {
-        // this.history.destroy();
+    public isRouteMatched(
+        targetRoute: Route,
+        matchType: RouteMatchType
+    ): boolean {
+        const currentRoute = this._currentRoute;
+        if (!currentRoute) return false;
+
+        return isRouteMatched(targetRoute, currentRoute, matchType);
     }
 
-    /* 已注册的app配置 */
-    registeredConfigMap: RegisteredConfigMap = {};
+    /**
+     * Resolve router link configuration and return complete link data
+     *
+     * This method analyzes router link properties and returns a comprehensive
+     * link resolution result including route information, navigation functions,
+     * HTML attributes, and event handlers. It's primarily used for:
+     * - Framework-agnostic link component implementation
+     * - Generating link attributes and navigation handlers
+     * - Computing active states and CSS classes
+     * - Creating event handlers for different frameworks
+     *
+     * @param props Router link configuration properties
+     * @returns Complete link resolution result with all necessary data
+     *
+     * @example
+     * ```typescript
+     * // Basic link resolution
+     * const linkData = router.resolveLink({
+     *   to: '/user/123',
+     *   type: 'push'
+     * });
+     *
+     * // Access resolved data
+     * console.log(linkData.route.path); // '/user/123'
+     * console.log(linkData.attributes.href); // Full href URL
+     * console.log(linkData.isActive); // Active state
+     *
+     * // Use navigation function
+     * linkData.navigate(); // Programmatic navigation
+     *
+     * // Get event handlers for React
+     * const handlers = linkData.getEventHandlers(name => `on${name.charAt(0).toUpperCase() + name.slice(1)}`);
+     * // handlers.onClick for React
+     * ```
+     */
+    public resolveLink(props: RouterLinkProps): RouterLinkResolved {
+        return createLinkResolver(this, props);
+    }
 
-    /* app配置注册 */
-    register(
-        name: string,
-        config: (router: RouterInstance) => RegisteredConfig
-    ) {
-        this.registeredConfigMap[name] = {
-            generator: config,
-            mounted: false
+    public async createLayer(
+        toInput: RouteLocationInput,
+        options?: RouterOptions
+    ): Promise<{ promise: Promise<RouterLayerResult>; router: Router }> {
+        const layer: Required<RouterLayerOptions> = {
+            enable: true,
+            zIndex: 1000 + LAYER_ID.next(),
+            params: {},
+            shouldClose: () => false,
+            autoPush: true,
+            push: true,
+            destroyed: () => {},
+            ...options?.layer
         };
-    }
-
-    /* 全局路由守卫 */
-    readonly guards: {
-        beforeEach: NavigationGuard[];
-        afterEach: NavigationGuardAfter[];
-    } = {
-        beforeEach: [],
-        afterEach: []
-    };
-
-    /* 注册全局路由前置守卫 */
-    beforeEach(guard: NavigationGuard) {
-        this.guards.beforeEach.push(guard);
-    }
-
-    /* 卸载全局路由前置守卫 */
-    unBindBeforeEach(guard: NavigationGuard) {
-        const i = this.guards.beforeEach.findIndex((item) => item === guard);
-        this.guards.beforeEach.splice(i, 1);
-    }
-
-    /* 注册全局路由后置守卫 */
-    afterEach(guard: NavigationGuardAfter) {
-        this.guards.afterEach.push(guard);
-    }
-
-    /* 卸载全局路由后置守卫 */
-    unBindAfterEach(guard: NavigationGuardAfter) {
-        const i = this.guards.afterEach.findIndex((item) => item === guard);
-        this.guards.afterEach.splice(i, 1);
-    }
-
-    /* 路由跳转方法，会创建新的历史记录 */
-    async push(location: RouterRawLocation) {
-        await this.history.push(location);
-    }
-
-    /* 路由跳转方法，会替换当前的历史记录 */
-    async replace(location: RouterRawLocation) {
-        await this.history.replace(location);
-    }
-
-    /**
-     * 当前路由弹层id，用于区分不同的路由弹层
-     */
-    layerId = 0;
-
-    /**
-     * 路由弹层配置
-     * key为路由弹层id
-     */
-    layerConfigList: Array<{
-        /**
-         * 路由弹层id
-         */
-        id: number;
-        /**
-         * 路由弹层深度
-         */
-        depth: number;
-    }> = [];
-
-    /**
-     * 路由弹层id与路由实例的map
-     */
-    layerMap: Record<
-        number,
-        {
-            router: RouterInstance;
-            config: RegisteredConfig;
-            destroyed: boolean;
-        }
-    > = {};
-
-    /**
-     * 路由是否冻结
-     */
-    isFrozen = false;
-
-    /**
-     * 路由冻结方法
-     */
-    freeze() {
-        this.isFrozen = true;
-    }
-
-    /**
-     * 路由解冻方法
-     */
-    unfreeze() {
-        this.isFrozen = false;
-    }
-
-    /**
-     * 打开路由弹层方法，会创建新的路由实例并调用注册的 register 方法
-     * 服务端会使用 push 作为替代
-     */
-    async pushLayer(location: RouterRawLocation) {
-        if (this.isFrozen) return;
-        const route = this.resolve(location);
-        if (route.fullPath === this.route.fullPath) return;
-        if (!inBrowser) {
-            this.push(location);
-            return;
-        }
-        const router = createRouter({
-            ...this.options,
-            initUrl: route.fullPath
-        });
-        await router.init({ parent: this, route, replace: false });
-    }
-
-    /**
-     * 更新路由弹层方法
-     * @param state 参数为history.state
-     * @description 没有传入 state 时使用当前配置更新 history.state，传入了 state 时使用传入的 state 更新当前配置
-     */
-    checkLayerState(state: HistoryState) {
-        // state 中存放的 layerConfig 配置
-        const stateLayerConfigList =
-            (state[StateLayerConfigKey] as typeof this.layerConfigList) || [];
-
-        // 所有的 layerId 列表
-        const layerConfigList = Object.keys(this.layerMap).map(Number);
-        // state中存放的可用的 layerId 列表
-        const stateLayerIdList = stateLayerConfigList
-            .map(({ id }) => id)
-            .filter((id) => {
-                return layerConfigList.includes(id);
-            });
-        if (stateLayerIdList.length === 0) {
-            // 没有可用的 layerId 列表时跳出
-            return false;
-        }
-        if (
-            stateLayerIdList.length === 1 &&
-            stateLayerIdList[0] === this.layerId
-        ) {
-            // 只有一个可用的 layerId 并且就是当前的layerId时跳出
-            return false;
-        }
-
-        const createList: number[] = [];
-        const destroyList: number[] = [];
-        Object.entries(this.layerMap).forEach(([key, value]) => {
-            if (stateLayerIdList.includes(Number(key))) {
-                if (value.destroyed) {
-                    createList.push(Number(key));
+        const promise = new Promise<RouterLayerResult>((resolve) => {
+            const destroyed = layer.destroyed;
+            layer.destroyed = (result) => {
+                if (result.type === 'push' && layer.autoPush) {
+                    const href = result.route.url.href;
+                    if (layer.push) {
+                        this.push(href);
+                    } else {
+                        this.replace(href);
+                    }
                 }
-            } else {
-                destroyList.push(Number(key));
-            }
+                destroyed?.(result);
+                resolve(result);
+            };
         });
-        if (createList.length === 0 && destroyList.length === 0) {
-            // 没有需要创建的 layerId 列表 并且 没有需要销毁的 layerId 列表时跳出
-            return false;
-        }
-
-        const activeId = Math.max(...stateLayerIdList);
-
-        layerConfigList.forEach((id) => {
-            const { router } = this.layerMap[id];
-            if (activeId === id) {
-                router.unfreeze();
-            } else {
-                router.freeze();
-            }
-        });
-
-        destroyList.forEach((id) => {
-            const layer = this.layerMap[id];
-            if (!layer.destroyed) {
-                const { router, config } = layer;
-                config.destroy();
-                router.destroy();
-                router.freeze();
-                layer.destroyed = true;
-            }
-        });
-
-        createList.forEach((id) => {
-            const layer = this.layerMap[id];
-            if (layer.destroyed) {
-                const { router, config } = layer;
-                config.mount();
-                router.unfreeze();
-                layer.destroyed = false;
-            }
-        });
-        this.layerConfigList = stateLayerConfigList;
-
-        return true;
-    }
-
-    updateLayerState(route: RouteRecord) {
-        const layerConfig = this.layerConfigList.find((item) => {
-            return item.id === this.layerId;
-        });
-        if (layerConfig) layerConfig.depth++;
-        const stateConfigList = this.layerConfigList.filter(({ id }) => {
-            return !this.layerMap[id]?.destroyed;
-        });
-        const state = {
-            ...history.state,
-            [StateLayerConfigKey]: stateConfigList
+        const nextOptions: RouterOptions = {
+            mode: RouterMode.memory,
+            rootStyle: {
+                position: 'fixed',
+                top: '0',
+                left: '0',
+                width: '100%',
+                height: '100%',
+                zIndex: `${layer.zIndex}`,
+                background: 'rgba(0, 0,0, 0.6)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            },
+            ...this.options,
+            root: undefined,
+            ...options,
+            onBackNoResponse: (router) => {
+                // 当返回操作无响应时，关闭弹层
+                router.closeLayer();
+                // 如果原有 onBackNoResponse 存在，也调用它
+                options?.onBackNoResponse?.(router);
+            },
+            layer
         };
-        window.history.replaceState(state, '', route.fullPath);
+        const router = new Router(nextOptions);
+        await router.replace(toInput);
+        return {
+            promise,
+            router
+        };
+    }
+    public async pushLayer(
+        toInput: RouteLocationInput,
+        layer?: Partial<RouterLayerOptions>,
+        options?: RouterOptions
+    ): Promise<RouterLayerResult> {
+        const { promise } = await this.createLayer(toInput, {
+            ...options,
+            layer: {
+                ...layer,
+                ...options?.layer
+            }
+        });
+        return promise;
+    }
+    public closeLayer() {
+        if (this.isLayer) {
+            this._destroys.push(() => {
+                this.parsedOptions.layer?.destroyed?.({
+                    type: 'close',
+                    route: this.route
+                });
+            });
+            this.destroy();
+        }
+    }
+    public async renderToString(throwError = false): Promise<string | null> {
+        try {
+            const result = await this.microApp.app?.renderToString?.();
+            return result ?? null;
+        } catch (e) {
+            if (throwError) throw e;
+            else console.error(e);
+            return null;
+        }
+    }
+    public beforeEach(guard: RouteConfirmHook): () => void {
+        return this.transition.beforeEach(guard);
     }
 
-    /**
-     * 新开浏览器窗口的方法，在服务端会调用 push 作为替代
-     */
-    pushWindow(location: RouterRawLocation) {
-        this.history.pushWindow(location);
+    public afterEach(guard: RouteNotifyHook): () => void {
+        return this.transition.afterEach(guard);
     }
 
-    /**
-     * 替换当前浏览器窗口的方法，在服务端会调用 replace 作为替代
-     */
-    replaceWindow(location: RouterRawLocation) {
-        this.history.replaceWindow(location);
-    }
+    public destroy() {
+        // 终止当前任务
+        this.transition.destroy();
 
-    /* 前往特定路由历史记录的方法，可以在历史记录前后移动 */
-    go(delta = 0) {
-        this.history.go(delta);
+        this.navigation.destroy();
+        this.microApp.destroy();
+        this._destroys.forEach((destroy) => destroy());
+        this._destroys.length = 0;
     }
-
-    /* 路由历史记录前进方法 */
-    forward() {
-        this.history.forward();
-    }
-
-    /* 路由历史记录后退方法 */
-    back() {
-        this.history.back();
-    }
-
-    /* 根据获取当前所有活跃的路由Record对象 */
-    getRoutes() {
-        return this.matcher.getRoutes();
-    }
-}
-
-export function createRouter(options: RouterOptions): RouterInstance {
-    return new Router(options);
 }

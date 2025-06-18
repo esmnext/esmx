@@ -51,6 +51,7 @@
             "recommended": true,
             "suspicious": {
                 "noEmptyInterface": "off",
+                "noConfusingVoidType": "off",
                 "noExplicitAny": "off",
                 "noAssignInExpressions": "off",
                 "useGetterReturn": "warn",
@@ -70,7 +71,7 @@
                 "useOptionalChain": "warn",
                 "noUselessConstructor": "warn",
                 "noUselessSwitchCase": "warn",
-                "noStaticOnlyClass": "warn"
+                "noStaticOnlyClass": "off"
             },
             "style": {
                 "useFilenamingConvention": {

@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "isolatedModules": true,
+        "resolveJsonModule": true,
+        
+        "target": "ESNext",
+        "lib": ["ESNext", "DOM"],
+        
+        "strict": true,
+        "skipLibCheck": true,
+        "types": ["@types/node"],
+        
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        
+        "baseUrl": ".",
+        "paths": {
+            "router-demo-base/src/*": ["./src/*"],
+            "router-demo-base/*": ["./*"]
+        }
+    },
+    "include": ["src"],
+    "exclude": ["dist", "node_modules"]
+}

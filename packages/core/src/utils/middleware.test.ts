@@ -1,5 +1,5 @@
-import { assert, test } from 'vitest';
 import type { IncomingMessage, ServerResponse } from 'node:http';
+import { assert, test } from 'vitest';
 import { isImmutableFile, mergeMiddlewares } from './middleware';
 
 test('should identify immutable files with .final. extension', () => {
