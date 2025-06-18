@@ -23,7 +23,7 @@
         "@types/node": "^20.6.3",
         "less": "^4.2.0",
         "typescript": "^5.2.2",
-        "vue": "2.7.16",
+        "vue": "3.0.0",
         "vue-server-renderer": "2.7.16",
         "vue-tsc": "^2.1.6"
     }
