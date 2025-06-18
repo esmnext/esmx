@@ -38,25 +38,25 @@ describe('Router Guards Cleanup Tests', () => {
         router.destroy();
     });
 
-    describe('🔥 守卫清理效果验证', () => {
-        describe('beforeEach 清理效果', () => {
-            test('清理后守卫应该不再执行', async () => {
+    describe('🔥 Guard Cleanup Effect Verification', () => {
+        describe('beforeEach cleanup effects', () => {
+            test('guard should not execute after cleanup', async () => {
                 const spy = vi.fn();
                 const unregister = router.beforeEach(spy);
 
-                // 第一次导航，守卫应该执行
+                // First navigation, guard should execute
                 await router.push('/test1');
                 expect(spy).toHaveBeenCalledTimes(1);
 
-                // 清理守卫
+                // Cleanup guard
                 unregister();
 
-                // 第二次导航，守卫应该不再执行
+                // Second navigation, guard should not execute
                 await router.push('/test2');
-                expect(spy).toHaveBeenCalledTimes(1); // 仍然是1次，没有增加
+                expect(spy).toHaveBeenCalledTimes(1); // Still 1 time, no increase
             });
 
-            test('清理后多次导航守卫都不应该执行', async () => {
+            test('guard should not execute after cleanup for multiple navigations', async () => {
                 const spy = vi.fn();
                 const unregister = router.beforeEach(spy);
 
@@ -65,14 +65,14 @@ describe('Router Guards Cleanup Tests', () => {
 
                 unregister();
 
-                // 多次导航，守卫都不应该执行
+                // Multiple navigations, guard should not execute
                 await router.push('/test2');
                 await router.push('/test3');
                 await router.push('/');
                 expect(spy).toHaveBeenCalledTimes(1);
             });
 
-            test('清理异步守卫后应该不再执行', async () => {
+            test('async guard should not execute after cleanup', async () => {
                 const spy = vi.fn();
                 const asyncGuard = async (to: Route, from: Route | null) => {
                     await new Promise((resolve) => setTimeout(resolve, 10));
@@ -91,8 +91,8 @@ describe('Router Guards Cleanup Tests', () => {
             });
         });
 
-        describe('afterEach 清理效果', () => {
-            test('清理后守卫应该不再执行', async () => {
+        describe('afterEach cleanup effects', () => {
+            test('guard should not execute after cleanup', async () => {
                 const spy = vi.fn();
                 const unregister = router.afterEach(spy);
 
@@ -105,7 +105,7 @@ describe('Router Guards Cleanup Tests', () => {
                 expect(spy).toHaveBeenCalledTimes(1);
             });
 
-            test('清理后多次导航守卫都不应该执行', async () => {
+            test('guard should not execute after cleanup for multiple navigations', async () => {
                 const spy = vi.fn();
                 const unregister = router.afterEach(spy);
 
@@ -122,9 +122,9 @@ describe('Router Guards Cleanup Tests', () => {
         });
     });
 
-    describe('⚡ 多守卫独立清理', () => {
-        describe('beforeEach 多守卫清理', () => {
-            test('清理单个守卫不应该影响其他守卫', async () => {
+    describe('⚡ Multiple Guards Independent Cleanup', () => {
+        describe('beforeEach multiple guards cleanup', () => {
+            test('cleaning single guard should not affect other guards', async () => {
                 const spy1 = vi.fn();
                 const spy2 = vi.fn();
                 const spy3 = vi.fn();
@@ -133,27 +133,27 @@ describe('Router Guards Cleanup Tests', () => {
                 const unregister2 = router.beforeEach(spy2);
                 const unregister3 = router.beforeEach(spy3);
 
-                // 第一次导航，所有守卫都应该执行
+                // First navigation, all guards should execute
                 await router.push('/test1');
                 expect(spy1).toHaveBeenCalledTimes(1);
                 expect(spy2).toHaveBeenCalledTimes(1);
                 expect(spy3).toHaveBeenCalledTimes(1);
 
-                // 只清理第二个守卫
+                // Only cleanup second guard
                 unregister2();
 
-                // 第二次导航，只有第二个守卫不执行
+                // Second navigation, only second guard should not execute
                 await router.push('/test2');
                 expect(spy1).toHaveBeenCalledTimes(2);
-                expect(spy2).toHaveBeenCalledTimes(1); // 不再增加
+                expect(spy2).toHaveBeenCalledTimes(1); // No increase
                 expect(spy3).toHaveBeenCalledTimes(2);
 
-                // 清理剩余守卫
+                // Cleanup remaining guards
                 unregister1();
                 unregister3();
             });
 
-            test('清理多个守卫应该正确', async () => {
+            test('cleaning multiple guards should work correctly', async () => {
                 const spy1 = vi.fn();
                 const spy2 = vi.fn();
                 const spy3 = vi.fn();
@@ -165,34 +165,17 @@ describe('Router Guards Cleanup Tests', () => {
                 const unregister4 = router.beforeEach(spy4);
 
                 await router.push('/test1');
-                expect([spy1, spy2, spy3, spy4]).toEqual([
-                    expect.objectContaining({
-                        mock: expect.objectContaining({
-                            calls: expect.arrayContaining([expect.any(Array)])
-                        })
-                    }),
-                    expect.objectContaining({
-                        mock: expect.objectContaining({
-                            calls: expect.arrayContaining([expect.any(Array)])
-                        })
-                    }),
-                    expect.objectContaining({
-                        mock: expect.objectContaining({
-                            calls: expect.arrayContaining([expect.any(Array)])
-                        })
-                    }),
-                    expect.objectContaining({
-                        mock: expect.objectContaining({
-                            calls: expect.arrayContaining([expect.any(Array)])
-                        })
-                    })
-                ]);
+                // Verify all guards were called
+                expect(spy1).toHaveBeenCalledTimes(1);
+                expect(spy2).toHaveBeenCalledTimes(1);
+                expect(spy3).toHaveBeenCalledTimes(1);
+                expect(spy4).toHaveBeenCalledTimes(1);
 
-                // 清理第1和第3个守卫
+                // Cleanup 1st and 3rd guards
                 unregister1();
                 unregister3();
 
-                // 重置计数器
+                // Reset counters
                 spy1.mockClear();
                 spy2.mockClear();
                 spy3.mockClear();
@@ -204,12 +187,12 @@ describe('Router Guards Cleanup Tests', () => {
                 expect(spy3).not.toHaveBeenCalled();
                 expect(spy4).toHaveBeenCalledTimes(1);
 
-                // 清理剩余守卫
+                // Cleanup remaining guards
                 unregister2();
                 unregister4();
             });
 
-            test('守卫执行顺序在清理后应该保持正确', async () => {
+            test('guard execution order should remain correct after cleanup', async () => {
                 const executionOrder: string[] = [];
 
                 const guard1 = () => {
@@ -230,15 +213,15 @@ describe('Router Guards Cleanup Tests', () => {
                 expect(executionOrder).toEqual(['guard1', 'guard2', 'guard3']);
 
                 executionOrder.length = 0;
-                unregister2(); // 清理中间守卫
+                unregister2(); // Cleanup middle guard
 
                 await router.push('/test2');
                 expect(executionOrder).toEqual(['guard1', 'guard3']);
             });
         });
 
-        describe('afterEach 多守卫清理', () => {
-            test('清理单个 afterEach 守卫不应该影响其他守卫', async () => {
+        describe('afterEach multiple guards cleanup', () => {
+            test('cleaning single afterEach guard should not affect other guards', async () => {
                 const spy1 = vi.fn();
                 const spy2 = vi.fn();
                 const spy3 = vi.fn();
@@ -263,7 +246,7 @@ describe('Router Guards Cleanup Tests', () => {
                 unregister3();
             });
 
-            test('afterEach 守卫执行顺序在清理后应该保持正确', async () => {
+            test('afterEach guard execution order should remain correct after cleanup', async () => {
                 const executionOrder: string[] = [];
 
                 const guard1 = () => {
@@ -291,8 +274,8 @@ describe('Router Guards Cleanup Tests', () => {
             });
         });
 
-        describe('混合守卫清理', () => {
-            test('beforeEach 和 afterEach 守卫应该独立清理', async () => {
+        describe('mixed guards cleanup', () => {
+            test('beforeEach and afterEach guards should cleanup independently', async () => {
                 const beforeSpy = vi.fn();
                 const afterSpy = vi.fn();
 
@@ -303,30 +286,30 @@ describe('Router Guards Cleanup Tests', () => {
                 expect(beforeSpy).toHaveBeenCalledTimes(1);
                 expect(afterSpy).toHaveBeenCalledTimes(1);
 
-                // 只清理 beforeEach
+                // Only cleanup beforeEach
                 unregisterBefore();
 
                 await router.push('/test2');
-                expect(beforeSpy).toHaveBeenCalledTimes(1); // 不再增加
-                expect(afterSpy).toHaveBeenCalledTimes(2); // 继续增加
+                expect(beforeSpy).toHaveBeenCalledTimes(1); // No increase
+                expect(afterSpy).toHaveBeenCalledTimes(2); // Continue to increase
 
-                // 清理 afterEach
+                // Cleanup afterEach
                 unregisterAfter();
 
                 await router.push('/test3');
                 expect(beforeSpy).toHaveBeenCalledTimes(1);
-                expect(afterSpy).toHaveBeenCalledTimes(2); // 不再增加
+                expect(afterSpy).toHaveBeenCalledTimes(2); // No increase
             });
         });
     });
 
-    describe('🛡️ 边界情况测试', () => {
-        describe('重复清理安全性', () => {
-            test('重复调用清理函数应该安全', () => {
+    describe('🛡️ Edge Cases Testing', () => {
+        describe('repeated cleanup safety', () => {
+            test('repeated cleanup function calls should be safe', () => {
                 const spy = vi.fn();
                 const unregister = router.beforeEach(spy);
 
-                // 多次调用清理函数不应该抛出异常
+                // Multiple cleanup function calls should not throw exceptions
                 expect(() => {
                     unregister();
                     unregister();
@@ -334,14 +317,14 @@ describe('Router Guards Cleanup Tests', () => {
                 }).not.toThrow();
             });
 
-            test('重复清理后守卫仍然不执行', async () => {
+            test('guard should still not execute after repeated cleanup', async () => {
                 const spy = vi.fn();
                 const unregister = router.beforeEach(spy);
 
                 await router.push('/test1');
                 expect(spy).toHaveBeenCalledTimes(1);
 
-                // 多次清理
+                // Multiple cleanups
                 unregister();
                 unregister();
                 unregister();
@@ -351,8 +334,8 @@ describe('Router Guards Cleanup Tests', () => {
             });
         });
 
-        describe('清理后重新注册', () => {
-            test('清理后可以重新注册同一个守卫', async () => {
+        describe('cleanup and re-registration', () => {
+            test('can re-register same guard after cleanup', async () => {
                 const spy = vi.fn();
 
                 const unregister1 = router.beforeEach(spy);
@@ -361,7 +344,7 @@ describe('Router Guards Cleanup Tests', () => {
 
                 unregister1();
 
-                // 重新注册同一个守卫
+                // Re-register same guard
                 const unregister2 = router.beforeEach(spy);
                 await router.push('/test2');
                 expect(spy).toHaveBeenCalledTimes(2);
@@ -369,59 +352,59 @@ describe('Router Guards Cleanup Tests', () => {
                 unregister2();
             });
 
-            test('清理后重新注册应该正常工作', async () => {
+            test('re-registration after cleanup should work normally', async () => {
                 const spy = vi.fn();
 
-                // 第一次注册和导航
+                // First registration and navigation
                 let unregister = router.beforeEach(spy);
                 await router.push('/test1');
                 expect(spy).toHaveBeenCalledTimes(1);
 
-                // 清理
+                // Cleanup
                 unregister();
 
-                // 重新注册并导航
+                // Re-register and navigate
                 unregister = router.beforeEach(spy);
                 await router.push('/test2');
                 expect(spy).toHaveBeenCalledTimes(2);
 
-                // 再次清理和重新注册
+                // Cleanup and re-register again
                 unregister();
                 unregister = router.beforeEach(spy);
                 await router.push('/test3');
                 expect(spy).toHaveBeenCalledTimes(3);
 
-                // 最后清理
+                // Final cleanup
                 unregister();
             });
         });
 
-        describe('同一守卫多次注册', () => {
-            test('同一个守卫函数多次注册应该正确处理', async () => {
+        describe('same guard multiple registrations', () => {
+            test('same guard function registered multiple times should handle correctly', async () => {
                 const spy = vi.fn();
 
                 const unregister1 = router.beforeEach(spy);
-                const unregister2 = router.beforeEach(spy); // 同一个函数
+                const unregister2 = router.beforeEach(spy); // Same function
 
                 await router.push('/test1');
-                expect(spy).toHaveBeenCalledTimes(2); // 应该执行两次
+                expect(spy).toHaveBeenCalledTimes(2); // Should execute twice
 
-                // 清理第一个注册
+                // Cleanup first registration
                 unregister1();
 
                 await router.push('/test2');
-                expect(spy).toHaveBeenCalledTimes(3); // 应该只执行一次
+                expect(spy).toHaveBeenCalledTimes(3); // Should execute once more
 
                 unregister2();
 
                 await router.push('/test3');
-                expect(spy).toHaveBeenCalledTimes(3); // 不再执行
+                expect(spy).toHaveBeenCalledTimes(3); // No more execution
             });
 
-            test('同一守卫多次注册和清理的复杂场景', async () => {
+            test('complex scenario with same guard multiple registrations and cleanups', async () => {
                 const spy = vi.fn();
 
-                // 注册同一个守卫3次
+                // Register same guard 3 times
                 const unregister1 = router.beforeEach(spy);
                 const unregister2 = router.beforeEach(spy);
                 const unregister3 = router.beforeEach(spy);
@@ -429,23 +412,23 @@ describe('Router Guards Cleanup Tests', () => {
                 await router.push('/test1');
                 expect(spy).toHaveBeenCalledTimes(3);
 
-                // 清理中间的注册
+                // Cleanup middle registration
                 unregister2();
 
                 await router.push('/test2');
                 expect(spy).toHaveBeenCalledTimes(5); // 3 + 2
 
-                // 清理剩余的
+                // Cleanup remaining
                 unregister1();
                 unregister3();
 
                 await router.push('/test3');
-                expect(spy).toHaveBeenCalledTimes(5); // 不再增加
+                expect(spy).toHaveBeenCalledTimes(5); // No increase
             });
         });
 
-        describe('空数组和不存在元素处理', () => {
-            test('从空数组中移除元素应该安全', () => {
+        describe('empty array and non-existent element handling', () => {
+            test('removing element from empty array should be safe', () => {
                 const emptyArray: unknown[] = [];
                 const element = vi.fn();
 
@@ -456,7 +439,7 @@ describe('Router Guards Cleanup Tests', () => {
                 expect(emptyArray).toEqual([]);
             });
 
-            test('移除不存在的元素应该安全', () => {
+            test('removing non-existent element should be safe', () => {
                 const array = [vi.fn(), vi.fn(), vi.fn()];
                 const nonExistentElement = vi.fn();
                 const originalLength = array.length;
@@ -469,14 +452,14 @@ describe('Router Guards Cleanup Tests', () => {
             });
         });
 
-        describe('特殊值处理', () => {
-            test('removeFromArray 应该正确处理 NaN 值', () => {
+        describe('special value handling', () => {
+            test('removeFromArray should handle NaN values correctly', () => {
                 const arr = [1, Number.NaN, 3, Number.NaN, 5];
                 removeFromArray(arr, Number.NaN);
-                expect(arr).toEqual([1, 3, Number.NaN, 5]); // 只移除第一个 NaN
+                expect(arr).toEqual([1, 3, Number.NaN, 5]); // Only remove first NaN
             });
 
-            test('removeFromArray 应该正确处理函数引用', () => {
+            test('removeFromArray should handle function references correctly', () => {
                 const func1 = () => 'func1';
                 const func2 = () => 'func2';
                 const func3 = () => 'func3';
@@ -486,7 +469,7 @@ describe('Router Guards Cleanup Tests', () => {
                 expect(arr).toEqual([func1, func3]);
             });
 
-            test('removeFromArray 应该正确处理对象引用', () => {
+            test('removeFromArray should handle object references correctly', () => {
                 const obj1 = { id: 1 };
                 const obj2 = { id: 2 };
                 const obj3 = { id: 3 };
@@ -497,45 +480,45 @@ describe('Router Guards Cleanup Tests', () => {
             });
         });
 
-        describe('内存泄漏防护', () => {
-            test('大量守卫注册和清理不应该造成内存泄漏', () => {
+        describe('memory leak protection', () => {
+            test('large number of guard registrations and cleanups should not cause memory leaks', () => {
                 const unregisters: Array<() => void> = [];
 
-                // 注册大量守卫
+                // Register many guards
                 for (let i = 0; i < 100; i++) {
                     const guard = vi.fn();
                     const unregister = router.beforeEach(guard);
                     unregisters.push(unregister);
                 }
 
-                // 验证守卫数组长度
+                // Verify guard array length
                 expect(router.transition.guards.beforeEach).toHaveLength(100);
 
-                // 清理所有守卫
+                // Cleanup all guards
                 unregisters.forEach((unregister) => unregister());
 
-                // 验证内部数组被清空
+                // Verify internal array is cleared
                 expect(router.transition.guards.beforeEach).toHaveLength(0);
             });
 
-            test('混合注册和清理不应该造成内存泄漏', () => {
+            test('mixed registration and cleanup should not cause memory leaks', () => {
                 const guards: Array<() => void> = [];
                 const unregisters: Array<() => void> = [];
 
-                // 混合注册和清理
+                // Mixed registration and cleanup
                 for (let i = 0; i < 50; i++) {
                     const guard = vi.fn();
                     guards.push(guard);
                     const unregister = router.beforeEach(guard);
                     unregisters.push(unregister);
 
-                    // 每隔几个就清理一个
+                    // Cleanup every 5th guard
                     if (i % 5 === 0 && i > 0) {
                         unregisters[i - 5]();
                     }
                 }
 
-                // 清理剩余的守卫
+                // Cleanup remaining guards
                 unregisters.forEach((unregister) => unregister());
 
                 expect(router.transition.guards.beforeEach).toHaveLength(0);
@@ -543,31 +526,31 @@ describe('Router Guards Cleanup Tests', () => {
             });
         });
 
-        describe('并发清理安全性', () => {
-            test('导航过程中清理守卫应该安全', async () => {
+        describe('concurrent cleanup safety', () => {
+            test('cleaning guard during navigation should be safe', async () => {
                 let unregister: (() => void) | null = null;
                 let guardExecuted = false;
 
                 const guard = async () => {
                     guardExecuted = true;
-                    // 在守卫执行过程中清理自己
+                    // Cleanup self during guard execution
                     unregister?.();
                     await new Promise((resolve) => setTimeout(resolve, 10));
                 };
 
                 unregister = router.beforeEach(guard);
 
-                // 不应该抛出异常
+                // Should not throw exception
                 await expect(router.push('/test1')).resolves.toBeDefined();
                 expect(guardExecuted).toBe(true);
 
-                // 后续导航守卫不应该再执行
+                // Subsequent navigation guard should not execute
                 guardExecuted = false;
                 await router.push('/test2');
                 expect(guardExecuted).toBe(false);
             });
 
-            test('多个守卫同时清理应该安全', async () => {
+            test('cleaning multiple guards simultaneously should be safe', async () => {
                 const guards = Array.from({ length: 10 }, () => vi.fn());
                 const unregisters = guards.map((guard) =>
                     router.beforeEach(guard)
@@ -578,7 +561,7 @@ describe('Router Guards Cleanup Tests', () => {
                     expect(guard).toHaveBeenCalledTimes(1)
                 );
 
-                // 同时清理所有守卫
+                // Cleanup all guards simultaneously
                 unregisters.forEach((unregister) => unregister());
 
                 await router.push('/test2');
@@ -589,8 +572,8 @@ describe('Router Guards Cleanup Tests', () => {
         });
     });
 
-    describe('🔧 Router destroy 清理验证', () => {
-        test('Router destroy 应该清理所有守卫', async () => {
+    describe('🔧 Router destroy cleanup verification', () => {
+        test('Router destroy should cleanup all guards', async () => {
             const beforeSpy = vi.fn();
             const afterSpy = vi.fn();
 
@@ -601,10 +584,10 @@ describe('Router Guards Cleanup Tests', () => {
             expect(beforeSpy).toHaveBeenCalledTimes(1);
             expect(afterSpy).toHaveBeenCalledTimes(1);
 
-            // 销毁 router
+            // Destroy router
             router.destroy();
 
-            // 创建新的 router 来测试
+            // Create new router for testing
             const newRouter = new Router({
                 mode: RouterMode.memory,
                 base: new URL('http://localhost:3000/'),
@@ -617,7 +600,7 @@ describe('Router Guards Cleanup Tests', () => {
             await newRouter.replace('/');
             await newRouter.push('/test');
 
-            // 原来的守卫不应该被执行
+            // Original guards should not be executed
             expect(beforeSpy).toHaveBeenCalledTimes(1);
             expect(afterSpy).toHaveBeenCalledTimes(1);
 
