@@ -26,7 +26,7 @@ describe('Route-Level Navigation Guards', () => {
                     component: () => 'Protected',
                     beforeEnter: async (to, from) => {
                         executionLog.push('beforeEnter-protected');
-                        // 模拟权限检查
+                        // Simulate permission check.
                         if (to.query.token !== 'valid') {
                             return '/login';
                         }
@@ -37,7 +37,7 @@ describe('Route-Level Navigation Guards', () => {
                     component: () => 'Blocked',
                     beforeEnter: async (to, from) => {
                         executionLog.push('beforeEnter-blocked');
-                        // 总是阻止访问
+                        // Always block access.
                         return false as const;
                     }
                 },
@@ -46,29 +46,29 @@ describe('Route-Level Navigation Guards', () => {
                     component: () => 'User',
                     beforeEnter: async (to, from) => {
                         executionLog.push(`beforeEnter-user-${to.params.id}`);
-                        // 显式返回 void
+                        // Explicitly return void.
                         return;
                     },
                     beforeUpdate: async (to, from) => {
                         executionLog.push(
                             `beforeUpdate-user-${from?.params.id}-to-${to.params.id}`
                         );
-                        // 测试参数变化时的更新守卫
+                        // Test update guard on parameter change.
                         if (to.params.id === 'forbidden') {
                             return false;
                         }
-                        // 显式返回 void
+                        // Explicitly return void.
                         return;
                     },
                     beforeLeave: async (to, from) => {
                         executionLog.push(
                             `beforeLeave-user-${from?.params.id}`
                         );
-                        // 测试离开守卫
+                        // Test leave guard.
                         if (from?.query.prevent === 'true') {
                             return false;
                         }
-                        // 显式返回 void
+                        // Explicitly return void.
                         return;
                     }
                 },
@@ -77,11 +77,11 @@ describe('Route-Level Navigation Guards', () => {
                     component: () => 'Settings',
                     beforeLeave: async (to, from) => {
                         executionLog.push('beforeLeave-settings');
-                        // 模拟表单未保存的确认
+                        // Simulate unsaved form confirmation.
                         if (from?.query.unsaved === 'true') {
                             return '/confirm-leave';
                         }
-                        // 显式返回 void
+                        // Explicitly return void.
                         return;
                     }
                 },
@@ -99,15 +99,15 @@ describe('Route-Level Navigation Guards', () => {
         router.destroy();
     });
 
-    describe('beforeEnter 守卫', () => {
-        test('应该允许通过没有 beforeEnter 的路由', async () => {
+    describe('beforeEnter guard', () => {
+        test('should allow navigation through routes without beforeEnter', async () => {
             const route = await router.push('/login');
 
             expect(route.path).toBe('/login');
             expect(router.route.path).toBe('/login');
         });
 
-        test('应该执行 beforeEnter 守卫并允许通过', async () => {
+        test('should execute beforeEnter guard and allow navigation', async () => {
             const route = await router.push('/protected?token=valid');
 
             expect(route.path).toBe('/protected');
@@ -116,7 +116,7 @@ describe('Route-Level Navigation Guards', () => {
             expect(executionLog).toEqual(['beforeEnter-protected']);
         });
 
-        test('应该在 beforeEnter 返回重定向路径时进行重定向', async () => {
+        test('should redirect when beforeEnter returns a redirect path', async () => {
             const route = await router.push('/protected?token=invalid');
 
             expect(route.path).toBe('/login');
@@ -124,49 +124,49 @@ describe('Route-Level Navigation Guards', () => {
             expect(executionLog).toEqual(['beforeEnter-protected']);
         });
 
-        test('应该在 beforeEnter 返回 false 时终止导航', async () => {
+        test('should abort navigation when beforeEnter returns false', async () => {
             const initialPath = router.route.path;
             const route = await router.push('/blocked');
 
-            // 导航应该被阻止，当前路由不变
+            // Navigation should be blocked, current route remains unchanged.
             expect(router.route.path).toBe(initialPath);
             expect(route.status).toBe('aborted');
             expect(executionLog).toEqual(['beforeEnter-blocked']);
         });
     });
 
-    describe('beforeUpdate 守卫', () => {
-        test('应该在同一路由参数变化时执行 beforeUpdate', async () => {
-            // 先导航到用户页面
+    describe('beforeUpdate guard', () => {
+        test('should execute beforeUpdate when parameters change on the same route', async () => {
+            // First, navigate to the user page.
             await router.push('/user/123');
             expect(executionLog).toEqual(['beforeEnter-user-123']);
 
-            // 清空执行日志
+            // Clear execution log.
             executionLog.length = 0;
 
-            // 改变参数，应该触发 beforeUpdate
+            // Change parameter, should trigger beforeUpdate.
             const route = await router.push('/user/456');
 
             expect(route.path).toBe('/user/456');
             expect(route.params.id).toBe('456');
             expect(router.route.path).toBe('/user/456');
             expect(executionLog).toEqual(['beforeUpdate-user-123-to-456']);
-            // beforeUpdate 执行时不应该执行 beforeEnter
+            // beforeEnter should not be executed when beforeUpdate is.
             expect(executionLog).not.toContain('beforeEnter-user-456');
         });
 
-        test('应该在 beforeUpdate 返回 false 时终止导航', async () => {
-            // 先导航到用户页面
+        test('should abort navigation when beforeUpdate returns false', async () => {
+            // First, navigate to the user page.
             await router.push('/user/123');
             expect(router.route.params.id).toBe('123');
 
-            // 清空执行日志
+            // Clear execution log.
             executionLog.length = 0;
 
-            // 尝试导航到被禁止的参数
+            // Attempt to navigate to a forbidden parameter.
             const route = await router.push('/user/forbidden');
 
-            // 导航应该被阻止，当前路由不变
+            // Navigation should be blocked, current route remains unchanged.
             expect(router.route.params.id).toBe('123');
             expect(route.status).toBe('aborted');
             expect(executionLog).toEqual([
@@ -174,14 +174,14 @@ describe('Route-Level Navigation Guards', () => {
             ]);
         });
 
-        test('应该在查询参数变化时执行 beforeUpdate', async () => {
-            // 先导航到用户页面
+        test('should execute beforeUpdate when query parameters change', async () => {
+            // First, navigate to the user page.
             await router.push('/user/123');
 
-            // 清空执行日志
+            // Clear execution log.
             executionLog.length = 0;
 
-            // 只改变查询参数，应该触发 beforeUpdate
+            // Only change query parameter, should trigger beforeUpdate.
             const route = await router.push('/user/123?tab=profile');
 
             expect(route.params.id).toBe('123');
@@ -189,44 +189,44 @@ describe('Route-Level Navigation Guards', () => {
             expect(executionLog).toEqual(['beforeUpdate-user-123-to-123']);
         });
 
-        test('不应该在切换到不同路由时执行 beforeUpdate', async () => {
-            // 先导航到用户页面
+        test('should not execute beforeUpdate when switching to a different route', async () => {
+            // First, navigate to the user page.
             await router.push('/user/123');
 
-            // 清空执行日志
+            // Clear execution log.
             executionLog.length = 0;
 
-            // 切换到不同的路由
+            // Switch to a different route.
             await router.push('/settings');
 
-            // 切换到不同路由时会执行 beforeLeave 守卫
+            // Switching to a different route will execute the beforeLeave guard.
             expect(executionLog).not.toContain('beforeUpdate');
             expect(executionLog).toEqual(['beforeLeave-user-123']);
         });
     });
 
-    describe('beforeLeave 守卫', () => {
-        test('应该在离开路由时执行 beforeLeave 守卫', async () => {
-            // 先导航到用户页面
+    describe('beforeLeave guard', () => {
+        test('should execute beforeLeave guard when leaving a route', async () => {
+            // First, navigate to the user page.
             await router.push('/user/123');
 
-            // 清空执行日志
+            // Clear execution log.
             executionLog.length = 0;
 
-            // 离开用户页面
+            // Leave the user page.
             await router.push('/settings');
 
             expect(executionLog).toEqual(['beforeLeave-user-123']);
         });
 
-        test('应该在 beforeLeave 返回 false 时终止导航', async () => {
-            // 先导航到用户页面，并设置阻止离开的查询参数
+        test('should abort navigation when beforeLeave returns false', async () => {
+            // First, navigate to user page and set query parameter to prevent leaving.
             await router.push('/user/123?prevent=true');
 
-            // 清空执行日志
+            // Clear execution log.
             executionLog.length = 0;
 
-            // 尝试离开，应该被阻止
+            // Attempt to leave, should be blocked.
             const route = await router.push('/settings');
 
             expect(router.route.path).toBe('/user/123');
@@ -234,33 +234,36 @@ describe('Route-Level Navigation Guards', () => {
             expect(executionLog).toEqual(['beforeLeave-user-123']);
         });
 
-        test('应该在 beforeLeave 返回重定向路径时进行重定向', async () => {
-            // 先导航到设置页面，并设置未保存状态
+        test('should redirect when beforeLeave returns a redirect path', async () => {
+            // First, navigate to settings page and set unsaved state.
             await router.push('/settings?unsaved=true');
 
-            // 清空执行日志
+            // Clear execution log.
             executionLog.length = 0;
 
-            // 尝试离开，应该被重定向到确认页面
+            // Attempt to leave, should be redirected to confirmation page.
             const route = await router.push('/user/123');
 
             expect(route.path).toBe('/confirm-leave');
             expect(router.route.path).toBe('/confirm-leave');
-            // 重定向场景：先执行 beforeLeave-settings，重定向后再次导航时会执行 beforeLeave-user-123
+            // Redirect scenario: beforeLeave-settings is executed first, and the new navigation to /confirm-leave is triggered.
+            // The `from` for this new navigation is `/settings?unsaved=true` and `to` is `/confirm-leave`.
+            // The original navigation to `/user/123` is aborted and a new one started.
+            // The `beforeLeave` on the original `from` is executed again for the new navigation.
             expect(executionLog).toEqual([
                 'beforeLeave-settings',
-                'beforeLeave-user-123'
+                'beforeLeave-settings'
             ]);
         });
 
-        test('在同一路由参数更新时不应该执行 beforeLeave', async () => {
-            // 先导航到用户页面
+        test('should not execute beforeLeave when updating parameters on the same route', async () => {
+            // First, navigate to the user page.
             await router.push('/user/123');
 
-            // 清空执行日志
+            // Clear execution log.
             executionLog.length = 0;
 
-            // 在同一路由内改变参数，不应该触发 beforeLeave
+            // Change parameter within the same route, should not trigger beforeLeave.
             await router.push('/user/456');
 
             expect(executionLog).toEqual(['beforeUpdate-user-123-to-456']);
@@ -268,24 +271,24 @@ describe('Route-Level Navigation Guards', () => {
         });
     });
 
-    describe('守卫执行顺序和综合场景', () => {
-        test('应该按正确顺序执行所有相关守卫', async () => {
-            // 添加全局守卫来测试执行顺序
+    describe('Guard execution order and comprehensive scenarios', () => {
+        test('should execute all relevant guards in the correct order', async () => {
+            // Add a global guard to test execution order.
             router.beforeEach(async (to, from) => {
                 executionLog.push(`global-beforeEach-${to.path}`);
             });
 
-            // 先导航到用户页面
+            // First, navigate to the user page.
             await router.push('/user/123');
             expect(executionLog).toEqual([
                 'global-beforeEach-/user/123',
                 'beforeEnter-user-123'
             ]);
 
-            // 清空执行日志
+            // Clear execution log.
             executionLog.length = 0;
 
-            // 切换到另一个用户，测试完整的守卫链
+            // Switch to another user, test the complete guard chain.
             await router.push('/user/456');
 
             expect(executionLog).toEqual([
@@ -294,7 +297,7 @@ describe('Route-Level Navigation Guards', () => {
             ]);
         });
 
-        test('守卫异常处理', async () => {
+        test('Guard error handling', async () => {
             const consoleErrorSpy = vi
                 .spyOn(console, 'error')
                 .mockImplementation(() => {});
@@ -326,18 +329,18 @@ describe('Route-Level Navigation Guards', () => {
             consoleErrorSpy.mockRestore();
         });
 
-        test('复杂嵌套场景：从有守卫的路由切换到另一个有守卫的路由', async () => {
-            // 导航到用户页面
+        test('Complex nested scenario: switching from a guarded route to another guarded route', async () => {
+            // Navigate to the user page.
             await router.push('/user/123');
 
-            // 清空执行日志
+            // Clear execution log.
             executionLog.length = 0;
 
-            // 导航到受保护页面
+            // Navigate to the protected page.
             const route = await router.push('/protected?token=valid');
 
             expect(route.path).toBe('/protected');
-            // beforeLeave 应该在 beforeEnter 之前执行
+            // beforeLeave should execute before beforeEnter.
             expect(executionLog).toEqual([
                 'beforeLeave-user-123',
                 'beforeEnter-protected'
@@ -345,9 +348,9 @@ describe('Route-Level Navigation Guards', () => {
         });
     });
 
-    describe('初次导航场景', () => {
-        test('初次导航时应该按照 Vue Router 行为执行守卫', async () => {
-            // 创建一个新的路由实例，模拟应用启动
+    describe('Initial navigation scenario', () => {
+        test('should execute guards according to Vue Router behavior on initial navigation', async () => {
+            // Create a new router instance to simulate application startup.
             const newRouter = new Router({
                 mode: RouterMode.memory,
                 base: new URL('http://localhost:3000/'),
@@ -359,48 +362,48 @@ describe('Route-Level Navigation Guards', () => {
                             executionLog.push(
                                 `init-beforeEnter-user-${to.params.id}-from-${from === null ? 'null' : from.path}`
                             );
-                            // 显式返回 void
+                            // Explicitly return void.
                             return;
                         },
                         beforeUpdate: async (to, from) => {
                             executionLog.push(
                                 `init-beforeUpdate-user-${from?.params.id || 'null'}-to-${to.params.id}`
                             );
-                            // 显式返回 void
+                            // Explicitly return void.
                             return;
                         },
                         beforeLeave: async (to, from) => {
                             executionLog.push(
                                 `init-beforeLeave-user-${from?.params.id || 'null'}`
                             );
-                            // 显式返回 void
+                            // Explicitly return void.
                             return;
                         }
                     }
                 ]
             });
 
-            // 清空执行日志
+            // Clear execution log.
             executionLog.length = 0;
 
-            // 首次导航到用户页面（from 为 null）
+            // First navigation to user page (from is null).
             const route = await newRouter.replace('/user/123');
 
             expect(route.path).toBe('/user/123');
             expect(route.params.id).toBe('123');
 
-            // 验证守卫执行行为：应该只执行 beforeEnter，其他守卫都不执行
+            // Verify guard execution behavior: only beforeEnter should execute, no other guards.
             expect(executionLog).toEqual([
                 'init-beforeEnter-user-123-from-null'
             ]);
 
-            // 清理
+            // Cleanup.
             newRouter.destroy();
         });
     });
 });
 
-describe('嵌套路由守卫行为测试', () => {
+describe('Nested route guard behavior tests', () => {
     let router: Router;
     let executionLog: string[];
 
@@ -501,13 +504,13 @@ describe('嵌套路由守卫行为测试', () => {
         router.destroy();
     });
 
-    test('从根路由导航到嵌套路由时，按父到子顺序执行 beforeEnter', async () => {
-        executionLog = []; // 清空日志
+    test('should execute beforeEnter from parent to child when navigating from root to a nested route', async () => {
+        executionLog = []; // Clear log.
 
-        // 导航到深层嵌套路由
+        // Navigate to a deeply nested route.
         await router.push('/user/123/profile');
 
-        // 应该按照从父到子的顺序执行 beforeEnter
+        // Should execute beforeEnter in order from parent to child.
         expect(executionLog).toEqual([
             'parent-beforeEnter',
             'child-beforeEnter',
@@ -515,15 +518,15 @@ describe('嵌套路由守卫行为测试', () => {
         ]);
     });
 
-    test('离开嵌套路由时，按子到父顺序执行 beforeLeave', async () => {
-        // 先导航到深层嵌套路由
+    test('should execute beforeLeave from child to parent when leaving a nested route', async () => {
+        // First, navigate to a deeply nested route.
         await router.push('/user/123/profile');
-        executionLog = []; // 清空日志
+        executionLog = []; // Clear log.
 
-        // 离开到完全不同的路由
+        // Leave to a completely different route.
         await router.push('/home');
 
-        // 应该按照从子到父的顺序执行 beforeLeave
+        // Should execute beforeLeave in order from child to parent.
         expect(executionLog).toEqual([
             'grandchild-beforeLeave',
             'child-beforeLeave',
@@ -531,17 +534,17 @@ describe('嵌套路由守卫行为测试', () => {
         ]);
     });
 
-    test('在同一父路由的子路由间切换时，不执行父路由的守卫', async () => {
-        // 导航到第一个子路由
+    test('should not execute parent guards when switching between child routes of the same parent', async () => {
+        // Navigate to the first child route.
         await router.push('/user/123/profile');
-        executionLog = []; // 清空日志
+        executionLog = []; // Clear log.
 
-        // 在子路由间切换
+        // Switch between child routes.
         await router.push('/user/123/settings');
 
-        // 注意：'/user/123/profile' 匹配 /user + :id + profile 三层
-        // '/user/123/settings' 匹配 /user + :id/settings 两层
-        // 这不是同一路由组合，所以会有路由层级的变化
+        // Note: '/user/123/profile' matches /user + :id + profile (3 levels).
+        // '/user/123/settings' matches /user + :id/settings (2 levels).
+        // This is not the same route combination, so there will be changes in route levels.
         expect(executionLog).toEqual([
             'grandchild-beforeLeave',
             'child-beforeLeave',
@@ -549,43 +552,43 @@ describe('嵌套路由守卫行为测试', () => {
         ]);
     });
 
-    test('从父路由导航到子路由时，只执行新增路由的 beforeEnter', async () => {
-        // 先导航到父路由
+    test('should only execute beforeEnter for the new route when navigating from parent to child', async () => {
+        // First, navigate to the parent route.
         await router.push('/user');
-        executionLog = []; // 清空日志
+        executionLog = []; // Clear log.
 
-        // 导航到子路由
+        // Navigate to a child route.
         await router.push('/user/123');
 
-        // 只应该执行子路由的 beforeEnter，父路由的不应该重复执行
+        // Only the child route's beforeEnter should execute; the parent's should not be repeated.
         expect(executionLog).toEqual(['child-beforeEnter']);
     });
 
-    test('在嵌套路由中参数变化时，执行所有匹配路由的 beforeUpdate', async () => {
-        // 导航到嵌套路由
+    test('should execute beforeUpdate for all matched routes when parameters change in a nested route', async () => {
+        // Navigate to a nested route.
         await router.push('/user/123');
-        executionLog = []; // 清空日志
+        executionLog = []; // Clear log.
 
-        // 参数变化但路由配置相同
+        // Parameters change but route configuration is the same.
         await router.push('/user/456');
 
-        // 应该执行所有匹配路由的 beforeUpdate
+        // Should execute beforeUpdate for all matched routes.
         expect(executionLog).toEqual([
             'parent-beforeUpdate',
             'child-beforeUpdate'
         ]);
     });
 
-    test('复杂嵌套路由切换：从一个深层路由切换到另一个深层路由', async () => {
-        // 导航到第一个深层路由
+    test('Complex nested route switch: from one deep route to another', async () => {
+        // Navigate to the first deep route.
         await router.push('/user/123/profile');
-        executionLog = []; // 清空日志
+        executionLog = []; // Clear log.
 
-        // 切换到另一个完全不同的深层路由
+        // Switch to another completely different deep route.
         await router.push('/admin/users');
 
-        // 应该先执行离开的路由的 beforeLeave（从子到父），
-        // 然后执行进入的路由的 beforeEnter（从父到子）
+        // Should first execute beforeLeave for the leaving routes (child to parent),
+        // then execute beforeEnter for the entering routes (parent to child).
         expect(executionLog).toEqual([
             'grandchild-beforeLeave',
             'child-beforeLeave',
@@ -595,22 +598,22 @@ describe('嵌套路由守卫行为测试', () => {
         ]);
     });
 
-    test('从子路由导航到同父路由的另一个深层子路由', async () => {
-        // 导航到一个子路由
+    test('Navigating from a child route to another deeper child route under the same parent', async () => {
+        // Navigate to a child route.
         await router.push('/user/123');
-        executionLog = []; // 清空日志
+        executionLog = []; // Clear log.
 
-        // 导航到同父路由的深层子路由
+        // Navigate to a deeper child route under the same parent.
         await router.push('/user/456/profile');
 
-        // '/user/123' 匹配 /user + :id 两层
-        // '/user/456/profile' 匹配 /user + :id + profile 三层
-        // :id 参数变化且增加了profile层级，所以只新增 grandchild-beforeEnter
+        // '/user/123' matches /user + :id (2 levels).
+        // '/user/456/profile' matches /user + :id + profile (3 levels).
+        // The :id parameter changes and the 'profile' level is added, so only grandchild-beforeEnter is new.
         expect(executionLog).toEqual(['grandchild-beforeEnter']);
     });
 
-    test('初次导航到嵌套路由的正确行为', async () => {
-        // 创建新的路由实例来模拟初次导航
+    test('Correct behavior for initial navigation to a nested route', async () => {
+        // Create a new router instance to simulate initial navigation.
         const newRouter = new Router({
             mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
@@ -644,12 +647,12 @@ describe('嵌套路由守卫行为测试', () => {
             ]
         });
 
-        executionLog = []; // 清空日志
+        executionLog = []; // Clear log.
 
-        // 首次导航到嵌套路由（from 为 null）
+        // First navigation to a nested route (from is null).
         await newRouter.replace('/user/123');
 
-        // 应该执行所有路由的 beforeEnter，但不执行 beforeLeave
+        // Should execute beforeEnter for all routes, but not beforeLeave.
         expect(executionLog).toEqual([
             'parent-beforeEnter-from-null',
             'child-beforeEnter-from-null'
@@ -658,45 +661,45 @@ describe('嵌套路由守卫行为测试', () => {
         newRouter.destroy();
     });
 
-    test('Hash 变化场景：仅 hash 变化时应触发 beforeUpdate', async () => {
-        // 导航到带参数的路由
+    test('Hash change scenario: should trigger beforeUpdate when only the hash changes', async () => {
+        // Navigate to a route with parameters.
         await router.push('/user/123');
-        executionLog = []; // 清空日志
+        executionLog = []; // Clear log.
 
-        // 仅改变 hash，路径和参数保持不变
+        // Only change the hash, path and parameters remain the same.
         await router.push('/user/123#section1');
 
-        // hash 变化应该触发 beforeUpdate，因为 fullPath 发生了变化
+        // A hash change should trigger beforeUpdate because the fullPath has changed.
         expect(executionLog).toEqual([
             'parent-beforeUpdate',
             'child-beforeUpdate'
         ]);
     });
 
-    test('Hash 变化场景：从有 hash 到无 hash 也应触发 beforeUpdate', async () => {
-        // 导航到带 hash 的路由
+    test('Hash change scenario: from with hash to without hash should also trigger beforeUpdate', async () => {
+        // Navigate to a route with a hash.
         await router.push('/user/123#section1');
-        executionLog = []; // 清空日志
+        executionLog = []; // Clear log.
 
-        // 移除 hash
+        // Remove the hash.
         await router.push('/user/123');
 
-        // hash 的移除也应该触发 beforeUpdate
+        // Removing the hash should also trigger beforeUpdate.
         expect(executionLog).toEqual([
             'parent-beforeUpdate',
             'child-beforeUpdate'
         ]);
     });
 
-    test('Hash 变化场景：hash 变化配合参数变化', async () => {
-        // 导航到带 hash 的路由
+    test('Hash change scenario: hash change combined with parameter change', async () => {
+        // Navigate to a route with a hash.
         await router.push('/user/123#section1');
-        executionLog = []; // 清空日志
+        executionLog = []; // Clear log.
 
-        // 同时改变参数和 hash
+        // Change both parameter and hash.
         await router.push('/user/456#section2');
 
-        // 参数和 hash 都变化，应该触发 beforeUpdate
+        // Changing both parameter and hash should trigger beforeUpdate.
         expect(executionLog).toEqual([
             'parent-beforeUpdate',
             'child-beforeUpdate'
@@ -704,7 +707,7 @@ describe('嵌套路由守卫行为测试', () => {
     });
 });
 
-describe('守卫链中断场景测试', () => {
+describe('Guard chain interruption scenarios', () => {
     let interruptRouter: Router;
     let interruptLog: string[];
 
@@ -727,7 +730,7 @@ describe('守卫链中断场景测试', () => {
                     },
                     beforeLeave: (to, from) => {
                         interruptLog.push('parent-beforeLeave');
-                        // 父路由守卫中断
+                        // Parent guard interrupts.
                         if (to.path.includes('interrupt-parent')) {
                             return false;
                         }
@@ -741,7 +744,7 @@ describe('守卫链中断场景测试', () => {
                             component: () => 'Child',
                             beforeEnter: (to, from) => {
                                 interruptLog.push('child-beforeEnter');
-                                // 子路由 beforeEnter 中断
+                                // Child beforeEnter interrupts.
                                 if (to.query.blockEnter === 'true') {
                                     return false;
                                 }
@@ -751,7 +754,7 @@ describe('守卫链中断场景测试', () => {
                             },
                             beforeUpdate: (to, from) => {
                                 interruptLog.push('child-beforeUpdate');
-                                // 子路由 beforeUpdate 中断
+                                // Child beforeUpdate interrupts.
                                 if (to.query.blockUpdate === 'true') {
                                     return false;
                                 }
@@ -788,7 +791,7 @@ describe('守卫链中断场景测试', () => {
                             component: () => 'Level2',
                             beforeEnter: (to, from) => {
                                 interruptLog.push('level2-beforeEnter');
-                                // 第二层中断，第三层不应执行
+                                // Second level interrupts, third level should not execute.
                                 if (to.query.interrupt === 'true') {
                                     return false;
                                 }
@@ -821,101 +824,101 @@ describe('守卫链中断场景测试', () => {
         interruptRouter.destroy();
     });
 
-    test('beforeLeave 中断应阻止后续守卫执行', async () => {
-        // 导航到嵌套路由
+    test('beforeLeave interruption should prevent subsequent guards from executing', async () => {
+        // Navigate to the nested route.
         await interruptRouter.push('/parent/child');
-        interruptLog = []; // 清空日志
+        interruptLog = []; // Clear log.
 
-        // 尝试导航到会触发父路由 beforeLeave 中断的路径
+        // Attempt to navigate to a path that triggers the parent's beforeLeave interruption.
         const result = await interruptRouter.push('/interrupt-parent');
 
-        // 导航应该被父路由的 beforeLeave 中断
+        // Navigation should be aborted by the parent's beforeLeave guard.
         expect(result.status).toBe('aborted');
         expect(interruptRouter.route.path).toBe('/parent/child');
 
-        // 应该按子到父顺序执行 beforeLeave，但父路由中断后停止
+        // Should execute beforeLeave in child-to-parent order, but stop after parent's interruption.
         expect(interruptLog).toEqual([
             'child-beforeLeave',
             'parent-beforeLeave'
-            // 没有目标路由的 beforeEnter，因为被父路由的 beforeLeave 中断了
+            // No beforeEnter for the target route because it was interrupted by the parent's beforeLeave.
         ]);
     });
 
-    test('beforeEnter 中断应阻止后续同级和子级守卫执行', async () => {
+    test('beforeEnter interruption should prevent subsequent sibling and child guards from executing', async () => {
         await interruptRouter.push('/parent');
-        interruptLog = []; // 清空日志
+        interruptLog = []; // Clear log.
 
-        // 尝试导航到会被子路由 beforeEnter 中断的路径
+        // Attempt to navigate to a path that will be interrupted by the child's beforeEnter.
         const result = await interruptRouter.push(
             '/parent/child?blockEnter=true'
         );
 
-        // 导航应该被子路由的 beforeEnter 中断
+        // Navigation should be aborted by the child's beforeEnter.
         expect(result.status).toBe('aborted');
         expect(interruptRouter.route.path).toBe('/parent');
 
-        // beforeEnter 按父到子执行，子路由中断
+        // beforeEnter executes from parent to child, interrupted at the child.
         expect(interruptLog).toEqual([
             'child-beforeEnter'
-            // 子路由 beforeEnter 中断，没有进一步的守卫执行
+            // Child's beforeEnter interrupts, no further guards execute.
         ]);
     });
 
-    test('beforeUpdate 中断应阻止后续同级守卫执行', async () => {
-        // 导航到嵌套路由
+    test('beforeUpdate interruption should prevent subsequent sibling guards from executing', async () => {
+        // Navigate to the nested route.
         await interruptRouter.push('/parent/child');
-        interruptLog = []; // 清空日志
+        interruptLog = []; // Clear log.
 
-        // 尝试参数更新但被 beforeUpdate 中断
+        // Attempt a parameter update that is interrupted by beforeUpdate.
         const result = await interruptRouter.push(
             '/parent/child?blockUpdate=true'
         );
 
-        // 导航应该被子路由的 beforeUpdate 中断
+        // Navigation should be aborted by the child's beforeUpdate.
         expect(result.status).toBe('aborted');
         expect(interruptRouter.route.fullPath).toBe('/parent/child');
 
-        // beforeUpdate 按父到子执行，子路由中断，但父路由已经执行
+        // beforeUpdate executes from parent to child, interrupted at the child, but parent has already executed.
         expect(interruptLog).toEqual([
             'parent-beforeUpdate',
             'child-beforeUpdate'
-            // 子路由 beforeUpdate 中断，没有进一步的守卫执行
+            // Child's beforeUpdate interrupts, no further guards execute.
         ]);
     });
 
-    test('多层嵌套中间层中断应阻止更深层守卫执行', async () => {
+    test('Interruption in a middle layer of a multi-level nesting should prevent deeper guards from executing', async () => {
         await interruptRouter.push('/home');
-        interruptLog = []; // 清空日志
+        interruptLog = []; // Clear log.
 
-        // 尝试导航到三层嵌套，但在第二层被中断
+        // Attempt to navigate to a three-level nested route, but get interrupted at the second level.
         const result = await interruptRouter.push(
             '/multi-level/level2/level3?interrupt=true'
         );
 
-        // 导航应该被第二层的 beforeEnter 中断
+        // Navigation should be aborted by the second level's beforeEnter.
         expect(result.status).toBe('aborted');
         expect(interruptRouter.route.path).toBe('/home');
 
-        // beforeEnter 按父到子执行，第二层中断，第三层不执行
+        // beforeEnter executes from parent to child, second level interrupts, third level does not execute.
         expect(interruptLog).toEqual([
             'level1-beforeEnter',
             'level2-beforeEnter'
-            // level2 中断，level3-beforeEnter 不应该执行
+            // level2 interrupts, level3-beforeEnter should not execute.
         ]);
     });
 
-    test('正常情况下守卫链应完整执行', async () => {
+    test('Guard chain should execute completely under normal conditions', async () => {
         await interruptRouter.push('/home');
-        interruptLog = []; // 清空日志
+        interruptLog = []; // Clear log.
 
-        // 正常导航到三层嵌套路由
+        // Normal navigation to a three-level nested route.
         const result = await interruptRouter.push('/multi-level/level2/level3');
 
-        // 导航应该成功
+        // Navigation should succeed.
         expect(result.status).toBe('success');
         expect(interruptRouter.route.path).toBe('/multi-level/level2/level3');
 
-        // 所有 beforeEnter 都应该执行
+        // All beforeEnter guards should execute.
         expect(interruptLog).toEqual([
             'level1-beforeEnter',
             'level2-beforeEnter',
@@ -923,19 +926,19 @@ describe('守卫链中断场景测试', () => {
         ]);
     });
 
-    test('从嵌套路由离开时的正常守卫执行顺序', async () => {
-        // 先导航到三层嵌套路由
+    test('Normal guard execution order when leaving a nested route', async () => {
+        // First navigate to a three-level nested route.
         await interruptRouter.push('/multi-level/level2/level3');
-        interruptLog = []; // 清空日志
+        interruptLog = []; // Clear log.
 
-        // 离开到首页
+        // Leave to the home page.
         const result = await interruptRouter.push('/home');
 
-        // 导航应该成功
+        // Navigation should succeed.
         expect(result.status).toBe('success');
         expect(interruptRouter.route.path).toBe('/home');
 
-        // 所有 beforeLeave 都应该按子到父顺序执行
+        // All beforeLeave guards should execute in child-to-parent order.
         expect(interruptLog).toEqual([
             'level3-beforeLeave',
             'level2-beforeLeave',
@@ -943,19 +946,19 @@ describe('守卫链中断场景测试', () => {
         ]);
     });
 
-    test('嵌套路由间切换的守卫执行和中断', async () => {
-        // 导航到子路由
+    test('Guard execution and interruption when switching between nested routes', async () => {
+        // Navigate to a child route.
         await interruptRouter.push('/parent/child');
-        interruptLog = []; // 清空日志
+        interruptLog = []; // Clear log.
 
-        // 切换到同级的兄弟路由
+        // Switch to a sibling route at the same level.
         const result = await interruptRouter.push('/parent/sibling');
 
-        // 导航应该成功
+        // Navigation should succeed.
         expect(result.status).toBe('success');
         expect(interruptRouter.route.path).toBe('/parent/sibling');
 
-        // 只有离开子路由和进入兄弟路由的守卫应该执行
+        // Only the leaving child's and entering sibling's guards should execute.
         expect(interruptLog).toEqual([
             'child-beforeLeave',
             'sibling-beforeEnter'
@@ -963,7 +966,7 @@ describe('守卫链中断场景测试', () => {
     });
 });
 
-describe('并发导航场景测试', () => {
+describe('Concurrent navigation scenarios', () => {
     let concurrentRouter: Router;
     let concurrentLog: string[];
 
@@ -983,7 +986,7 @@ describe('并发导航场景测试', () => {
                     component: () => 'Slow',
                     beforeEnter: async (to, from) => {
                         concurrentLog.push('slow-beforeEnter-start');
-                        // 模拟慢速异步操作
+                        // Simulate a slow async operation.
                         await new Promise((resolve) => setTimeout(resolve, 50));
                         concurrentLog.push('slow-beforeEnter-end');
                     }
@@ -1002,7 +1005,7 @@ describe('并发导航场景测试', () => {
                         concurrentLog.push(
                             `user-beforeEnter-${to.params.id}-start`
                         );
-                        // 异步操作
+                        // Async operation.
                         await new Promise((resolve) => setTimeout(resolve, 30));
                         concurrentLog.push(
                             `user-beforeEnter-${to.params.id}-end`
@@ -1027,7 +1030,7 @@ describe('并发导航场景测试', () => {
                             setTimeout(resolve, 100)
                         );
                         concurrentLog.push('blocking-beforeEnter-end');
-                        // 阻止导航
+                        // Block navigation.
                         return false;
                     }
                 },
@@ -1058,41 +1061,41 @@ describe('并发导航场景测试', () => {
         concurrentRouter.destroy();
     });
 
-    test('快速连续导航应取消前一个导航', async () => {
-        concurrentLog = []; // 清空日志
+    test('Rapid consecutive navigations should cancel the previous one', async () => {
+        concurrentLog = []; // Clear log.
 
-        // 快速连续发起两个导航
+        // Trigger two navigations in quick succession.
         const slowPromise = concurrentRouter.push('/slow');
         const fastPromise = concurrentRouter.push('/fast');
 
-        // 等待两个导航完成
+        // Wait for both navigations to complete.
         const [slowResult, fastResult] = await Promise.all([
             slowPromise,
             fastPromise
         ]);
 
-        // 第一个导航应该被取消
+        // The first navigation should be aborted.
         expect(slowResult.status).toBe('aborted');
-        // 第二个导航应该成功
+        // The second navigation should succeed.
         expect(fastResult.status).toBe('success');
         expect(concurrentRouter.route.path).toBe('/fast');
 
-        // 第二个导航的守卫应该正常执行
+        // The guard for the second navigation should execute normally.
         expect(concurrentLog).toContain('fast-beforeEnter');
-        // 第一个导航可能根本没开始，或者开始了但被中断
-        // 由于时机问题，我们只验证最终状态正确即可
+        // The first navigation might not have started, or it started but was interrupted.
+        // Due to timing issues, we only verify the final state is correct.
     });
 
-    test('异步守卫执行期间发起新导航应取消当前守卫', async () => {
-        concurrentLog = []; // 清空日志
+    test('A new navigation started during an async guard should cancel the current guard', async () => {
+        concurrentLog = []; // Clear log.
 
-        // 开始慢速导航
+        // Start a slow navigation.
         const slowPromise = concurrentRouter.push('/user/123');
 
-        // 等待一小段时间确保第一个导航开始
+        // Wait a short time to ensure the first navigation has started.
         await new Promise((resolve) => setTimeout(resolve, 10));
 
-        // 在第一个导航的守卫执行期间发起新导航
+        // Start a new navigation while the first one's guard is running.
         const fastPromise = concurrentRouter.push('/fast');
 
         const [slowResult, fastResult] = await Promise.all([
@@ -1100,20 +1103,20 @@ describe('并发导航场景测试', () => {
             fastPromise
         ]);
 
-        // 第一个导航应该被取消
+        // The first navigation should be aborted.
         expect(slowResult.status).toBe('aborted');
         expect(fastResult.status).toBe('success');
         expect(concurrentRouter.route.path).toBe('/fast');
 
-        // 检查日志，第一个导航应该开始但被中断
+        // Check the log, the first navigation should have started but been interrupted.
         expect(concurrentLog).toContain('user-beforeEnter-123-start');
         expect(concurrentLog).toContain('fast-beforeEnter');
     });
 
-    test('三个并发导航，最后一个应该胜出', async () => {
-        concurrentLog = []; // 清空日志
+    test('With three concurrent navigations, the last one should win', async () => {
+        concurrentLog = []; // Clear log.
 
-        // 快速连续发起三个导航
+        // Trigger three navigations in quick succession.
         const promise1 = concurrentRouter.push('/user/1');
         const promise2 = concurrentRouter.push('/user/2');
         const promise3 = concurrentRouter.push('/user/3');
@@ -1124,25 +1127,25 @@ describe('并发导航场景测试', () => {
             promise3
         ]);
 
-        // 前两个导航应该被取消
+        // The first two navigations should be aborted.
         expect(result1.status).toBe('aborted');
         expect(result2.status).toBe('aborted');
-        // 最后一个导航应该成功
+        // The last navigation should succeed.
         expect(result3.status).toBe('success');
         expect(concurrentRouter.route.path).toBe('/user/3');
         expect(concurrentRouter.route.params.id).toBe('3');
     });
 
-    test('阻塞导航被并发导航取消', async () => {
-        concurrentLog = []; // 清空日志
+    test('A blocking navigation is cancelled by a concurrent navigation', async () => {
+        concurrentLog = []; // Clear log.
 
-        // 开始一个会被阻塞的导航
+        // Start a navigation that will be blocked.
         const blockingPromise = concurrentRouter.push('/blocking');
 
-        // 等待阻塞导航开始执行
+        // Wait for the blocking navigation to start executing.
         await new Promise((resolve) => setTimeout(resolve, 20));
 
-        // 发起另一个导航
+        // Start another navigation.
         const fastPromise = concurrentRouter.push('/fast');
 
         const [blockingResult, fastResult] = await Promise.all([
@@ -1150,28 +1153,28 @@ describe('并发导航场景测试', () => {
             fastPromise
         ]);
 
-        // 阻塞导航应该被取消（不是被自己的 return false 阻塞）
+        // The blocking navigation should be aborted (not blocked by its own `return false`).
         expect(blockingResult.status).toBe('aborted');
-        // 快速导航应该成功
+        // The fast navigation should succeed.
         expect(fastResult.status).toBe('success');
         expect(concurrentRouter.route.path).toBe('/fast');
 
-        // 阻塞导航应该开始执行
+        // The blocking navigation should have started.
         expect(concurrentLog).toContain('blocking-beforeEnter-start');
-        // 由于异步守卫可能在任务取消检查之前完成，所以可能会看到 end
-        // 但重要的是导航最终被取消而不是被 return false 阻塞
+        // Due to the async guard, 'end' might be seen before the task cancellation check.
+        // The important thing is that the navigation is ultimately aborted, not blocked by `return false`.
     });
 
-    test('重定向导航被并发导航取消', async () => {
-        concurrentLog = []; // 清空日志
+    test('A redirecting navigation is cancelled by a concurrent navigation', async () => {
+        concurrentLog = []; // Clear log.
 
-        // 开始重定向导航
+        // Start a redirecting navigation.
         const redirectPromise = concurrentRouter.push('/redirect-source');
 
-        // 等待重定向开始
+        // Wait for the redirect to start.
         await new Promise((resolve) => setTimeout(resolve, 10));
 
-        // 发起另一个导航
+        // Start another navigation.
         const fastPromise = concurrentRouter.push('/fast');
 
         const [redirectResult, fastResult] = await Promise.all([
@@ -1179,19 +1182,19 @@ describe('并发导航场景测试', () => {
             fastPromise
         ]);
 
-        // 重定向导航应该被取消
+        // The redirecting navigation should be aborted.
         expect(redirectResult.status).toBe('aborted');
-        // 快速导航应该成功
+        // The fast navigation should succeed.
         expect(fastResult.status).toBe('success');
         expect(concurrentRouter.route.path).toBe('/fast');
 
-        // 重定向守卫应该开始但被中断
+        // The redirect guard should have started but been interrupted.
         expect(concurrentLog).toContain('redirect-source-beforeEnter-start');
         expect(concurrentLog).not.toContain('redirect-target-beforeEnter');
     });
 
-    test('复杂嵌套路由的并发导航', async () => {
-        // 添加嵌套路由配置
+    test('Concurrent navigation with complex nested routes', async () => {
+        // Add a nested route configuration.
         const nestedRouter = new Router({
             mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
@@ -1230,82 +1233,82 @@ describe('并发导航场景测试', () => {
         });
 
         await nestedRouter.replace('/home');
-        concurrentLog = []; // 清空日志
+        concurrentLog = []; // Clear log.
 
-        // 快速连续导航到嵌套路由
+        // Trigger consecutive navigations to a nested route.
         const promise1 = nestedRouter.push('/parent/child/1');
         const promise2 = nestedRouter.push('/parent/child/2');
 
         const [result1, result2] = await Promise.all([promise1, promise2]);
 
-        // 第一个导航应该被取消
+        // The first navigation should be aborted.
         expect(result1.status).toBe('aborted');
-        // 第二个导航应该成功
+        // The second navigation should succeed.
         expect(result2.status).toBe('success');
         expect(nestedRouter.route.path).toBe('/parent/child/2');
 
-        // 父路由守卫应该至少开始一次
+        // The parent route's guard should have started at least once.
         expect(concurrentLog).toContain('parent-beforeEnter-start');
 
         nestedRouter.destroy();
     });
 
-    test('并发导航不影响路由状态一致性', async () => {
-        concurrentLog = []; // 清空日志
+    test('Concurrent navigations should not affect route state consistency', async () => {
+        concurrentLog = []; // Clear log.
 
-        // 发起多个并发导航到同一目标
+        // Trigger multiple concurrent navigations to the same target pattern.
         const promises = Array.from({ length: 5 }, (_, i) =>
             concurrentRouter.push(`/user/${i + 1}`)
         );
 
         const results = await Promise.all(promises);
 
-        // 只有最后一个应该成功，前面的都应该被取消
+        // Only the last one should succeed; the others should be aborted.
         const successResults = results.filter((r) => r.status === 'success');
         const abortedResults = results.filter((r) => r.status === 'aborted');
 
         expect(successResults).toHaveLength(1);
         expect(abortedResults).toHaveLength(4);
 
-        // 路由状态应该是最后一个成功的导航
+        // The route state should be that of the last successful navigation.
         const successResult = successResults[0];
         expect(concurrentRouter.route.path).toBe(successResult.path);
         expect(concurrentRouter.route.params.id).toBe(successResult.params.id);
     });
 
-    test('从异步守卫路由离开到另一个异步守卫路由', async () => {
-        // 先导航到有异步守卫的路由
+    test('Leaving a route with an async guard to another route with an async guard', async () => {
+        // First navigate to a route with an async guard.
         await concurrentRouter.push('/user/initial');
-        concurrentLog = []; // 清空日志
+        concurrentLog = []; // Clear log.
 
-        // 发起导航到不同的路由配置，这样会触发 beforeLeave
+        // Start a navigation to a different route configuration to trigger beforeLeave.
         const promise1 = concurrentRouter.push('/slow');
 
-        // 在第一个导航执行期间发起第二个导航
+        // Start a second navigation while the first one is running.
         await new Promise((resolve) => setTimeout(resolve, 5));
         const promise2 = concurrentRouter.push('/fast');
 
         const [result1, result2] = await Promise.all([promise1, promise2]);
 
-        // 检查最终状态
+        // Check the final state.
         expect(concurrentRouter.route.path).toBe('/fast');
 
-        // 由于时机问题，第一个导航可能成功或被取消，我们主要验证最终状态正确
+        // Due to timing, the first navigation might succeed or be aborted. We mainly verify the final state is correct.
         if (result1.status === 'aborted') {
-            // 第一个导航被取消，第二个成功
+            // First navigation aborted, second succeeded.
             expect(result2.status).toBe('success');
         } else {
-            // 第一个导航成功完成，第二个可能被取消或重定向
-            // 但最终路由状态应该正确
+            // First navigation completed successfully. The second might have been aborted or redirected.
+            // But the final route state should be correct.
             expect(concurrentRouter.route.path).toBe('/fast');
         }
 
-        // beforeLeave 应该至少开始执行（从 /user/initial 离开）
+        // The beforeLeave guard (from /user/initial) should have at least started.
         expect(concurrentLog).toContain('user-beforeLeave-initial-start');
     });
 });
 
-describe('Vue Router 官方行为验证测试', () => {
+describe('Validation tests against official Vue Router behavior', () => {
     let officialRouter: Router;
     let officialLog: string[];
 
@@ -1348,62 +1351,62 @@ describe('Vue Router 官方行为验证测试', () => {
         officialRouter.destroy();
     });
 
-    test('beforeEnter 只在进入不同路由时触发，参数变化时不触发', async () => {
-        officialLog = []; // 清空日志
+    test('beforeEnter only triggers when entering a different route, not on parameter change', async () => {
+        officialLog = []; // Clear log.
 
-        // 首次进入 /users/:id 路由 - 应该触发 beforeEnter
+        // First entry into /users/:id route - should trigger beforeEnter.
         await officialRouter.push('/users/1');
         expect(officialLog).toEqual(['beforeEnter-triggered-for-1']);
 
-        officialLog = []; // 清空日志
+        officialLog = []; // Clear log.
 
-        // 在相同路由内参数变化 - 不应该触发 beforeEnter
+        // Parameter change within the same route - should not trigger beforeEnter.
         await officialRouter.push('/users/2');
         expect(officialLog).toEqual([]);
 
-        officialLog = []; // 清空日志
+        officialLog = []; // Clear log.
 
-        // 导航到不同路由 - 应该触发新路由的 beforeEnter
+        // Navigate to a different route - should trigger the new route's beforeEnter.
         await officialRouter.push('/posts/123');
         expect(officialLog).toEqual(['posts-beforeEnter-triggered-for-123']);
 
-        officialLog = []; // 清空日志
+        officialLog = []; // Clear log.
 
-        // 回到之前的路由 - 应该触发 beforeEnter
+        // Return to the previous route - should trigger beforeEnter again.
         await officialRouter.push('/users/3');
         expect(officialLog).toEqual(['beforeEnter-triggered-for-3']);
     });
 
-    test('beforeEnter 在查询参数变化时不触发', async () => {
-        // 首次进入
+    test('beforeEnter does not trigger on query parameter change', async () => {
+        // First entry.
         await officialRouter.push('/users/1');
-        officialLog = []; // 清空日志
+        officialLog = []; // Clear log.
 
-        // 查询参数变化 - 不应该触发 beforeEnter
+        // Query parameter change - should not trigger beforeEnter.
         await officialRouter.push('/users/1?tab=profile');
         expect(officialLog).toEqual([]);
 
-        // 再次查询参数变化 - 不应该触发 beforeEnter
+        // Another query parameter change - should not trigger beforeEnter.
         await officialRouter.push('/users/1?tab=settings');
         expect(officialLog).toEqual([]);
     });
 
-    test('beforeEnter 在 hash 变化时不触发', async () => {
-        // 首次进入
+    test('beforeEnter does not trigger on hash change', async () => {
+        // First entry.
         await officialRouter.push('/users/1');
-        officialLog = []; // 清空日志
+        officialLog = []; // Clear log.
 
-        // Hash 变化 - 不应该触发 beforeEnter
+        // Hash change - should not trigger beforeEnter.
         await officialRouter.push('/users/1#profile');
         expect(officialLog).toEqual([]);
 
-        // 再次 hash 变化 - 不应该触发 beforeEnter
+        // Another hash change - should not trigger beforeEnter.
         await officialRouter.push('/users/1#settings');
         expect(officialLog).toEqual([]);
     });
 
-    test('嵌套路由中父路由的 beforeEnter 行为', async () => {
-        // 创建新的路由器用于嵌套测试
+    test('beforeEnter behavior for parent routes in nested routing', async () => {
+        // Create a new router for nested testing.
         const nestedRouter = new Router({
             mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
@@ -1433,21 +1436,21 @@ describe('Vue Router 官方行为验证测试', () => {
         });
 
         await nestedRouter.replace('/home');
-        officialLog = []; // 清空日志
+        officialLog = []; // Clear log.
 
-        // 首次进入嵌套路由 - 应该触发父路由的 beforeEnter
+        // First entry into nested route - should trigger parent's beforeEnter.
         await nestedRouter.push('/dashboard/profile');
         expect(officialLog).toEqual(['dashboard-beforeEnter']);
 
-        officialLog = []; // 清空日志
+        officialLog = []; // Clear log.
 
-        // 在同一父路由的子路由间切换 - 不应该触发父路由的 beforeEnter
+        // Switching between child routes of the same parent - should not trigger parent's beforeEnter.
         await nestedRouter.push('/dashboard/settings');
         expect(officialLog).toEqual([]);
 
-        officialLog = []; // 清空日志
+        officialLog = []; // Clear log.
 
-        // 离开后再次进入 - 应该触发父路由的 beforeEnter
+        // Leave and re-enter - should trigger parent's beforeEnter again.
         await nestedRouter.push('/home');
         await nestedRouter.push('/dashboard/profile');
         expect(officialLog).toEqual(['dashboard-beforeEnter']);
@@ -1456,7 +1459,7 @@ describe('Vue Router 官方行为验证测试', () => {
     });
 });
 
-describe('Vue Router 官方导航解析流程验证', () => {
+describe('Validation of official Vue Router navigation resolution flow', () => {
     let flowRouter: Router;
     let flowLog: string[];
     let stepCounter: number;
@@ -1494,7 +1497,7 @@ describe('Vue Router 官方导航解析流程验证', () => {
             ]
         });
 
-        // 注册全局守卫
+        // Register global guards.
         flowRouter.beforeEach((to, from) => {
             logStep('global beforeEach');
         });
@@ -1504,7 +1507,7 @@ describe('Vue Router 官方导航解析流程验证', () => {
         });
 
         await flowRouter.replace('/from');
-        flowLog = []; // 清空初始导航的日志
+        flowLog = []; // Clear log from initial navigation.
         stepCounter = 0;
     });
 
@@ -1512,21 +1515,21 @@ describe('Vue Router 官方导航解析流程验证', () => {
         flowRouter.destroy();
     });
 
-    test('导航到新路由的完整流程顺序', async () => {
-        // 从 /from 导航到 /to/123 (完全不同的路由)
+    test('Full flow order when navigating to a new route', async () => {
+        // Navigate from /from to /to/123 (completely different routes).
         await flowRouter.push('/to/123');
 
-        // 根据 Vue Router 官方文档，执行顺序应该是：
-        // 1. Navigation triggered
-        // 2. Call beforeRouteLeave guards in deactivated components
-        // 3. Call global beforeEach guards
-        // 4. Call beforeRouteUpdate guards in reused components (此处不适用)
-        // 5. Call beforeEnter in route configs
-        // 6. Resolve async route components (在我们的实现中已处理)
-        // 7. Call beforeRouteEnter in activated components (我们使用 beforeEnter)
-        // 8. Call global beforeResolve guards (暂时不支持)
-        // 9. Navigation confirmed
-        // 10. Call global afterEach hooks
+        // According to Vue Router official docs, the execution order should be:
+        // 1. Navigation triggered.
+        // 2. Call beforeRouteLeave guards in deactivated components.
+        // 3. Call global beforeEach guards.
+        // 4. Call beforeRouteUpdate guards in reused components (not applicable here).
+        // 5. Call beforeEnter in route configs.
+        // 6. Resolve async route components (handled in our implementation).
+        // 7. Call beforeRouteEnter in activated components (we use beforeEnter).
+        // 8. Call global beforeResolve guards (not currently supported).
+        // 9. Navigation confirmed.
+        // 10. Call global afterEach hooks.
 
         expect(flowLog).toEqual([
             '1. beforeRouteLeave in deactivated component',
@@ -1536,16 +1539,16 @@ describe('Vue Router 官方导航解析流程验证', () => {
         ]);
     });
 
-    test('同一路由参数变化的流程顺序', async () => {
-        // 先导航到目标路由
+    test('Flow order on parameter change within the same route', async () => {
+        // First, navigate to the target route.
         await flowRouter.push('/to/123');
-        flowLog = []; // 清空日志
+        flowLog = []; // Clear log.
         stepCounter = 0;
 
-        // 然后在同一路由内参数变化
+        // Then, change parameter within the same route.
         await flowRouter.push('/to/456');
 
-        // 参数变化应该触发 beforeUpdate 而不是 beforeEnter
+        // Parameter change should trigger beforeUpdate, not beforeEnter.
         expect(flowLog).toEqual([
             '1. global beforeEach',
             '2. beforeRouteUpdate in reused component',
@@ -1553,8 +1556,8 @@ describe('Vue Router 官方导航解析流程验证', () => {
         ]);
     });
 
-    test('复杂嵌套路由的流程顺序', async () => {
-        // 创建复杂嵌套路由场景
+    test('Flow order in complex nested routes', async () => {
+        // Create a complex nested route scenario.
         const complexRouter = new Router({
             mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
@@ -1618,13 +1621,13 @@ describe('Vue Router 官方导航解析流程验证', () => {
         });
 
         await complexRouter.replace('/home');
-        flowLog = []; // 清空日志
+        flowLog = []; // Clear log.
         stepCounter = 0;
 
-        // 从 /home 导航到嵌套路由 /app/dashboard
+        // Navigate from /home to nested route /app/dashboard.
         await complexRouter.push('/app/dashboard');
 
-        // 应该按父到子顺序执行 beforeEnter
+        // Should execute beforeEnter in parent-to-child order.
         expect(flowLog).toEqual([
             '1. global beforeEach',
             '2. App beforeEnter',
@@ -1632,13 +1635,13 @@ describe('Vue Router 官方导航解析流程验证', () => {
             '4. global afterEach'
         ]);
 
-        flowLog = []; // 清空日志
+        flowLog = []; // Clear log.
         stepCounter = 0;
 
-        // 从 /app/dashboard 导航到 /app/profile/123
+        // Navigate from /app/dashboard to /app/profile/123.
         await complexRouter.push('/app/profile/123');
 
-        // Dashboard 离开，Profile 进入，App 保持不变
+        // Dashboard leaves, Profile enters, App remains.
         expect(flowLog).toEqual([
             '1. Dashboard beforeLeave',
             '2. global beforeEach',
@@ -1646,13 +1649,13 @@ describe('Vue Router 官方导航解析流程验证', () => {
             '4. global afterEach'
         ]);
 
-        flowLog = []; // 清空日志
+        flowLog = []; // Clear log.
         stepCounter = 0;
 
-        // 从 /app/profile/123 导航到 /home（完全离开嵌套结构）
+        // Navigate from /app/profile/123 to /home (completely leave nested structure).
         await complexRouter.push('/home');
 
-        // 应该按子到父顺序执行 beforeLeave
+        // Should execute beforeLeave in child-to-parent order.
         expect(flowLog).toEqual([
             '1. Profile beforeLeave',
             '2. App beforeLeave',

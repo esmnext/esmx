@@ -20,7 +20,7 @@ import {
     removeFromArray
 } from './util';
 
-// 任务配置 - 从 route-task-config.ts 合并过来
+// Task configuration - This structure defines the sequence of tasks for each route type.
 const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
     [RouteType.push]: [
         RouteTaskType.location,
@@ -106,24 +106,25 @@ const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
 };
 
 /**
- * 路由转换器
- * 负责管理所有路由转换逻辑，包括守卫执行、任务处理、状态更新等
+ * Route Transition Manager
+ * Responsible for managing all route transition logic, including guard execution,
+ * task processing, and status updates.
  */
 export class RouteTransition {
     private readonly router: Router;
 
     public route: Route | null = null;
 
-    // 任务控制器
+    // Task controller for the current transition.
     private _controller: RouteTaskController | null = null;
 
-    // 守卫数组（从 Router 移动，改为 guards）
+    // Guard arrays, responsible for storing navigation guards.
     public readonly guards = {
         beforeEach: [] as RouteConfirmHook[],
         afterEach: [] as RouteNotifyHook[]
     };
 
-    // 任务定义 - 完全按照原 Router 的逻辑
+    // Task definitions - follows the original Router logic for each task type.
     private readonly _tasks: Record<RouteTaskType, RouteConfirmHook> = {
         [RouteTaskType.location]: (to, from) => {
             if (to.matched.length === 0) {
@@ -177,13 +178,13 @@ export class RouteTransition {
         [RouteTaskType.beforeLeave]: async (to, from) => {
             if (!from?.matched.length) return;
 
-            // 找出需要离开的路由（在 from 中但不在 to 中的路由）
+            // Find routes that need to be left (routes in 'from' but not in 'to').
             const leavingRoutes = from.matched.filter(
                 (fromRoute) =>
                     !to.matched.some((toRoute) => toRoute === fromRoute)
             );
 
-            // 按照从子路由到父路由的顺序执行 beforeLeave
+            // Execute beforeLeave guards in order from child to parent.
             for (let i = leavingRoutes.length - 1; i >= 0; i--) {
                 const route = leavingRoutes[i];
                 if (route.beforeLeave) {
@@ -197,13 +198,13 @@ export class RouteTransition {
         [RouteTaskType.beforeEnter]: async (to, from) => {
             if (!to.matched.length) return;
 
-            // 找出需要进入的路由（在 to 中但不在 from 中的路由）
+            // Find routes that need to be entered (routes in 'to' but not in 'from').
             const enteringRoutes = to.matched.filter(
                 (toRoute) =>
                     !from?.matched.some((fromRoute) => fromRoute === toRoute)
             );
 
-            // 按照从父路由到子路由的顺序执行 beforeEnter
+            // Execute beforeEnter guards in order from parent to child.
             for (const route of enteringRoutes) {
                 if (route.beforeEnter) {
                     const result = await route.beforeEnter(to, from);
@@ -214,20 +215,20 @@ export class RouteTransition {
             }
         },
         [RouteTaskType.beforeUpdate]: async (to, from) => {
-            // beforeUpdate 只在完全相同的路由组合中的参数变化时执行
-            // 快速检查：如果连最终路由配置都不同，肯定不是相同组合
+            // beforeUpdate is only executed when parameters change within the exact same route combination.
+            // Quick check: if the final route configs are different, it's definitely not the same combination.
             if (!isRouteMatched(to, from, 'route')) return;
 
-            // 详细检查：两个路由的 matched 数组必须完全相同
+            // Detailed check: the 'matched' arrays of both routes must be identical.
             if (!from || to.matched.length !== from.matched.length) return;
             const isSameRouteSet = to.matched.every(
                 (toRoute, index) => toRoute === from.matched[index]
             );
             if (!isSameRouteSet) return;
 
-            // 只有在路径参数或查询参数变化时才执行 beforeUpdate
+            // Only execute beforeUpdate when path parameters or query parameters change.
             if (!isRouteMatched(to, from, 'exact')) {
-                // 按照从父路由到子路由的顺序执行 beforeUpdate
+                // Execute beforeUpdate guards in order from parent to child.
                 for (const route of to.matched) {
                     if (route.beforeUpdate) {
                         const result = await route.beforeUpdate(to, from);
@@ -240,10 +241,10 @@ export class RouteTransition {
         },
         [RouteTaskType.push]: async () => {
             return async (to, from) => {
-                // 更新内部路由状态
+                // Update internal route state.
                 this.route = to;
                 this.router.microApp._update(this.router);
-                // 变化时执行 push，未变化执行 replace
+                // Execute push on change, replace if unchanged.
                 if (!isUrlEqual(to.url, from?.url)) {
                     const newState = this.router.navigation.push(to);
                     to.mergeState(newState);
@@ -255,20 +256,20 @@ export class RouteTransition {
         },
         [RouteTaskType.replace]: async () => {
             return async (to, from) => {
-                // 更新内部路由状态
+                // Update internal route state.
                 this.route = to;
                 this.router.microApp._update(this.router);
-                // 始终执行替换
+                // Always execute replace.
                 const newState = this.router.navigation.replace(to);
                 to.mergeState(newState);
             };
         },
         [RouteTaskType.popstate]: async () => {
             return async (to, from) => {
-                // 更新内部路由状态
+                // Update internal route state.
                 this.route = to;
                 this.router.microApp._update(this.router);
-                // 有变化时执行 replace
+                // Execute replace on change.
                 if (!isUrlEqual(to.url, from?.url)) {
                     const newState = this.router.navigation.replace(to);
                     to.mergeState(newState);
@@ -277,7 +278,7 @@ export class RouteTransition {
         },
         [RouteTaskType.restartApp]: async () => {
             return async (to, from) => {
-                // 更新内部路由状态
+                // Update internal route state.
                 this.route = to;
                 this.router.microApp._update(this.router, true);
                 const newState = this.router.navigation.replace(to);
@@ -298,7 +299,7 @@ export class RouteTransition {
 
     public beforeEach(guard: RouteConfirmHook): () => void {
         this.guards.beforeEach.push(guard);
-        // 返回清理函数
+        // Return a cleanup function.
         return () => {
             removeFromArray(this.guards.beforeEach, guard);
         };
@@ -306,19 +307,19 @@ export class RouteTransition {
 
     public afterEach(guard: RouteNotifyHook): () => void {
         this.guards.afterEach.push(guard);
-        // 返回清理函数
+        // Return a cleanup function.
         return () => {
             removeFromArray(this.guards.afterEach, guard);
         };
     }
 
     public destroy(): void {
-        // 终止当前任务
+        // Abort the current task.
         this._controller?.abort();
         this._controller = null;
     }
 
-    // 核心路由转换方法 - 完全按照原 Router 的 _transitionTo 逻辑
+    // Core route transition method - follows the original Router's _transitionTo logic.
     public async to(
         toType: RouteType,
         toInput: RouteLocationInput
@@ -339,8 +340,8 @@ export class RouteTransition {
             to.handleResult = await to.handle(to, from);
         }
 
-        // 导航完成后，只有在状态为 success 时才调用 afterEach 守卫
-        // 这确保了只有成功的导航才会触发 afterEach，被取消的导航不会触发
+        // After navigation is complete, only call afterEach guards if the status is 'success'.
+        // This ensures that only successful navigations trigger afterEach, while cancelled ones do not.
         if (to.status === RouteStatus.success) {
             for (const guard of this.guards.afterEach) {
                 guard(to, from);
@@ -350,16 +351,16 @@ export class RouteTransition {
         return to;
     }
 
-    // 运行任务 - 完全按照原 Router 的 _runTask 逻辑
+    // Run task - follows the original Router's _runTask logic.
     private _runTask(
         config: Record<RouteType, RouteTaskType[]>,
         to: Route,
         from: Route | null
     ) {
-        // 终止之前的任务
+        // Abort previous tasks.
         this._controller?.abort();
 
-        // 创建新的任务控制器
+        // Create a new task controller.
         this._controller = new RouteTaskController();
 
         const names: RouteTaskType[] = to.type ? config[to.type] : [];
