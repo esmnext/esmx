@@ -29,20 +29,18 @@ export class Router {
     public readonly microApp: MicroApp = new MicroApp();
     private _destroys: Array<() => void> = [];
 
-    // 路由转换器
+    // Route transition manager
     public readonly transition = new RouteTransition(this);
     public get route() {
         const route = this.transition.route;
         if (route === null) {
-            throw new Error(`Route is not ready.`);
+            throw new Error(
+                'No active route found. Please navigate to a route first using router.push() or router.replace().'
+            );
         }
         return route;
     }
 
-    // 内部使用的route访问器，不会抛出异常
-    private get _currentRoute() {
-        return this.transition.route;
-    }
     public get root() {
         return this.parsedOptions.root;
     }
@@ -93,7 +91,7 @@ export class Router {
     public async back(): Promise<Route | null> {
         const result = await this.navigation.go(-1);
         if (result === null) {
-            // 调用 onBackNoResponse 钩子
+            // Call onBackNoResponse hook
             if (this.parsedOptions.onBackNoResponse) {
                 this.parsedOptions.onBackNoResponse(this);
             }
@@ -105,14 +103,14 @@ export class Router {
         });
     }
     public async go(index: number): Promise<Route | null> {
-        // go(0) 在浏览器中会刷新页面，但在路由库中我们直接返回 null
+        // go(0) refreshes the page in browser, but we return null directly in router
         if (index === 0) {
             return null;
         }
 
         const result = await this.navigation.go(index);
         if (result === null) {
-            // 当向后导航无响应时调用 onBackNoResponse 钩子
+            // Call onBackNoResponse hook when backward navigation has no response
             if (index < 0 && this.parsedOptions.onBackNoResponse) {
                 this.parsedOptions.onBackNoResponse(this);
             }
@@ -134,35 +132,35 @@ export class Router {
         });
     }
     /**
-     * 解析路由位置而不进行实际导航
+     * Parse route location without performing actual navigation
      *
-     * 此方法用于解析路由配置并返回对应的路由对象，但不会触发实际的页面导航。
-     * 主要用于以下场景：
-     * - 生成链接URL而不进行跳转
-     * - 预检查路由匹配情况
-     * - 获取路由参数、元信息等
-     * - 测试路由配置的有效性
+     * This method is used to parse route configuration and return the corresponding route object,
+     * but does not trigger actual page navigation. It is mainly used for the following scenarios:
+     * - Generate link URLs without jumping
+     * - Pre-check route matching
+     * - Get route parameters, meta information, etc.
+     * - Test the validity of route configuration
      *
-     * @param toInput 目标路由位置，可以是字符串路径或路由配置对象
-     * @returns 解析后的路由对象，包含完整的路由信息
+     * @param toInput Target route location, can be a string path or route configuration object
+     * @returns Parsed route object containing complete route information
      *
      * @example
      * ```typescript
-     * // 解析字符串路径
+     * // Parse string path
      * const route = router.resolve('/user/123');
-     * const url = route.url.href; // 获取完整URL
+     * const url = route.url.href; // Get complete URL
      *
-     * // 解析命名路由
+     * // Parse named route
      * const userRoute = router.resolve({
      *   name: 'user',
      *   params: { id: '123' }
      * });
      * console.log(userRoute.params.id); // '123'
      *
-     * // 检查路由有效性
+     * // Check route validity
      * const testRoute = router.resolve('/some/path');
      * if (testRoute.matched.length > 0) {
-     *   // 路由匹配成功
+     *   // Route matched successfully
      * }
      * ```
      */
@@ -171,25 +169,25 @@ export class Router {
             options: this.parsedOptions,
             toType: RouteType.none,
             toInput,
-            from: this._currentRoute?.url ?? null
+            from: this.transition.route?.url ?? null
         });
     }
 
     /**
-     * 判断路由是否匹配当前路由
+     * Check if the route matches the current route
      *
-     * @param targetRoute 要比较的目标路由对象
-     * @param matchType 匹配类型
-     * - 'route': 路由级匹配，比较路由配置是否相同
-     * - 'exact': 完全匹配，比较路径是否完全相同
-     * - 'include': 包含匹配，判断当前路径是否包含目标路径
-     * @returns 是否匹配
+     * @param targetRoute Target route object to compare
+     * @param matchType Match type
+     * - 'route': Route-level matching, compare if route configurations are the same
+     * - 'exact': Exact matching, compare if paths are completely the same
+     * - 'include': Include matching, check if current path contains target path
+     * @returns Whether it matches
      */
     public isRouteMatched(
         targetRoute: Route,
         matchType: RouteMatchType
     ): boolean {
-        const currentRoute = this._currentRoute;
+        const currentRoute = this.transition.route;
         if (!currentRoute) return false;
 
         return isRouteMatched(targetRoute, currentRoute, matchType);
@@ -281,9 +279,9 @@ export class Router {
             root: undefined,
             ...options,
             onBackNoResponse: (router) => {
-                // 当返回操作无响应时，关闭弹层
+                // Close layer when back operation has no response
                 router.closeLayer();
-                // 如果原有 onBackNoResponse 存在，也调用它
+                // Call original onBackNoResponse if it exists
                 options?.onBackNoResponse?.(router);
             },
             layer
@@ -339,7 +337,7 @@ export class Router {
     }
 
     public destroy() {
-        // 终止当前任务
+        // Terminate current tasks
         this.transition.destroy();
 
         this.navigation.destroy();

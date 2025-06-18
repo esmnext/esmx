@@ -7,7 +7,7 @@ export function isNotNullish(value: unknown): boolean {
         value !== null &&
         !Number.isNaN(
             value instanceof Number
-                ? value.valueOf() // 对于 new Number() 的情况
+                ? value.valueOf() // For new Number() cases
                 : value
         )
     );
@@ -21,10 +21,10 @@ export function isPlainObject(o: unknown): o is Record<string, any> {
 }
 
 /**
- * 检查值是否是一个有效的非空普通对象
- * 只检查可枚举的字符串键，确保是真正的普通对象
- * @param value 要检查的值
- * @returns 如果是有效的非空普通对象则返回 true
+ * Check if value is a valid non-empty plain object
+ * Only check enumerable string keys to ensure it's a proper plain object
+ * @param value Value to check
+ * @returns true if it's a valid non-empty plain object
  */
 export function isNonEmptyPlainObject(
     value: unknown
@@ -32,14 +32,14 @@ export function isNonEmptyPlainObject(
     if (!isPlainObject(value)) {
         return false;
     }
-    // 只检查可枚举的字符串键，确保是普通对象的有效属性
+    // Only check enumerable string keys to ensure valid properties of plain object
     return Object.keys(value as Record<string, any>).length > 0;
 }
 
 export const removeFromArray = <T>(arr: T[], ele: T) => {
     if (!Array.isArray(arr) || arr.length === 0) return;
     const i = Number.isNaN(ele)
-        ? // 如果 ele 是 NaN，使用 findIndex 查找 NaN，因为 NaN !== NaN，所以不能直接用 indexOf
+        ? // If ele is NaN, use findIndex to search for NaN, because NaN !== NaN, so we can't use indexOf directly
           arr.findIndex((item) => Number.isNaN(item))
         : arr.indexOf(ele);
     if (i === -1) return;
@@ -58,20 +58,20 @@ export function isValidConfirmHookResult(
 }
 
 export function isUrlEqual(url1: URL, url2?: URL | null): boolean {
-    // 如果 url2 不存在，返回 false
+    // If url2 doesn't exist, return false
     if (!url2) {
         return false;
     }
 
-    // 如果是同一个对象引用，直接返回 true
+    // If it's the same object reference, return true directly
     if (url1 === url2) {
         return true;
     }
 
-    // 拷贝一份并排序 query
+    // Copy and sort query parameters
     (url1 = new URL(url1)).searchParams.sort();
     (url2 = new URL(url2)).searchParams.sort();
-    // 避免空 hash 带来的尾随井号影响
+    // Avoid trailing hash symbol impact from empty hash
     // biome-ignore lint/correctness/noSelfAssign:
     url1.hash = url1.hash;
     // biome-ignore lint/correctness/noSelfAssign:
@@ -80,15 +80,15 @@ export function isUrlEqual(url1: URL, url2?: URL | null): boolean {
 }
 
 /**
- * 比较两个路由是否匹配
+ * Compare if two routes match
  *
- * @param route1 第一个路由对象
- * @param route2 第二个路由对象，可能为 null
- * @param matchType 匹配类型
- * - 'route': 路由级匹配，比较路由配置是否相同
- * - 'exact': 完全匹配，比较完整路径是否相同
- * - 'include': 包含匹配，判断 route1 路径是否以 route2 路径开头
- * @returns 是否匹配
+ * @param route1 First route object
+ * @param route2 Second route object, may be null
+ * @param matchType Match type
+ * - 'route': Route-level matching, compare if route configurations are the same
+ * - 'exact': Exact matching, compare if full paths are the same
+ * - 'include': Include matching, check if route1 path starts with route2 path
+ * @returns Whether they match
  */
 export function isRouteMatched(
     route1: Route,
@@ -99,15 +99,15 @@ export function isRouteMatched(
 
     switch (matchType) {
         case 'route':
-            // 路由级匹配 - 比较路由配置
+            // Route-level matching - compare route configurations
             return route1.config === route2.config;
 
         case 'exact':
-            // 完全匹配 - 完整路径相同
+            // Exact matching - full paths are identical
             return route1.fullPath === route2.fullPath;
 
         case 'include':
-            // 包含匹配 - route1 路径包含 route2 路径
+            // Include matching - route1 path contains route2 path
             return route1.fullPath.startsWith(route2.fullPath);
 
         default:

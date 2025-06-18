@@ -21,7 +21,7 @@ export class Navigation {
 
     public constructor(
         options: RouterParsedOptions,
-        onUpdated: NavigationSubscribe
+        onUpdated?: NavigationSubscribe
     ) {
         const history: History =
             options.mode === RouterMode.history
@@ -29,7 +29,7 @@ export class Navigation {
                 : new MemoryHistory();
         const onPopStateChange: NavigationSubscribe = (url, state) => {
             const dispatchEvent = this._promiseResolve || onUpdated;
-            dispatchEvent(url, state);
+            dispatchEvent?.(url, state);
         };
         this.options = options;
         this._history = history;

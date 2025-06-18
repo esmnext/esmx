@@ -3,11 +3,11 @@ import type { MatchFunction } from 'path-to-regexp';
 import type { Route } from './route';
 import type { Router } from './router';
 
-// 重新导出 Route 类型，保持向后兼容
+// Re-export Route type for backward compatibility
 export type { Route };
 
 // ============================================================================
-// 路由器相关
+// Router related types
 // ============================================================================
 export enum RouterMode {
     history = 'history',
@@ -15,32 +15,32 @@ export enum RouterMode {
 }
 export interface RouterOptions {
     /**
-     * 应用挂载的根容器
-     * - 可以是 DOM 选择器字符串（如 '#app', '.container', '[data-mount]'）
-     * - 可以是 HTMLElement 对象
-     * - 默认为 '#root'
+     * Application mounting container
+     * - Can be a DOM selector string (e.g., '#app', '.container', '[data-mount]')
+     * - Can be an HTMLElement object
+     * - Defaults to '#root'
      *
      * @example
      * ```typescript
-     * // 使用 ID 选择器
+     * // Using ID selector
      * new Router({ root: '#my-app' })
      *
-     * // 使用类选择器
+     * // Using class selector
      * new Router({ root: '.app-container' })
      *
-     * // 使用属性选择器
+     * // Using attribute selector
      * new Router({ root: '[data-router-mount]' })
      *
-     * // 直接传入 DOM 元素
+     * // Passing DOM element directly
      * const element = document.getElementById('app');
      * new Router({ root: element })
      * ```
      */
     root?: string | HTMLElement;
-    context?: Record<string | symbol, any>;
+    context?: Record<string | symbol, unknown>;
     routes?: RouteConfig[];
     mode?: RouterMode;
-    /** 浏览器中是可选的，但服务端是必须的。 */
+    /** Optional in browser, but required on server side */
     base?: URL;
     env?: string;
     req?: IncomingMessage | null;
@@ -50,47 +50,47 @@ export interface RouterOptions {
     location?: RouteHandleHook;
     rootStyle?: Partial<CSSStyleDeclaration> | false;
     layer?: RouterLayerOptions | null;
-    /** 当 router.back() 或 router.go(负数) 无响应时的钩子函数 */
+    /** Hook function called when router.back() or router.go(negative) is unresponsive */
     onBackNoResponse?: RouteBackNoResponseHook;
 }
 
 export interface RouterLayerOptions {
     /**
-     * 是否启用弹层模式
+     * Whether to enable layer mode
      */
     enable?: boolean;
 
     /**
-     * 弹层的 zIndex 层级值
-     * 如果不设置，将自动使用递增的层级值 (1000 + 递增数)
+     * Layer zIndex value
+     * If not set, will automatically use incremental layer value (1000 + increment)
      */
     zIndex?: number;
 
     /**
-     * 路由层初始化参数，以键值对形式传递
+     * Route layer initialization parameters, passed as key-value pairs
      */
-    params?: Record<string, any>;
+    params?: Record<string, unknown>;
     /**
-     * 路由关闭前的验证钩子函数
-     * @returns 返回true允许关闭，false阻止关闭
+     * Verification hook function before route closure
+     * @returns Return true to allow closure, false to prevent closure
      */
     shouldClose?: RouteVerifyHook;
     /**
-     * 是否自动记录路由历史
+     * Whether to automatically record route history
      * @default true
      */
     autoPush?: boolean;
     /**
-     * 路由跳转方式控制
-     * - 当autoPush为true时：
-     *   - true: 使用push方式(添加新历史记录)
-     *   - false: 使用replace方式(替换当前历史记录)
+     * Route navigation mode control
+     * - When autoPush is true:
+     *   - true: Use push mode (add new history record)
+     *   - false: Use replace mode (replace current history record)
      * @default true
      */
     push?: boolean;
     /**
-     * 路由层销毁完成后的回调
-     * @param result - 包含路由层返回结果的对象
+     * Callback after route layer destruction
+     * @param result - Object containing route layer return result
      */
     destroyed?: (result: RouterLayerResult) => void;
 }
@@ -100,9 +100,9 @@ export type RouterLayerResult =
     | { type: 'success'; route: Route };
 
 export interface RouterParsedOptions extends Readonly<Required<RouterOptions>> {
-    /** 解析好的，不包含 query 和 hash 的，pathname 只含有目录的 URL */
+    /** Parsed URL containing only directory pathname, without query and hash */
     readonly base: URL;
-    /** 路由匹配器实例 */
+    /** Route matcher instance */
     readonly matcher: RouteMatcher;
 }
 
@@ -119,20 +119,20 @@ export type RouterMicroApp =
     | RouterMicroAppCallback;
 
 // ============================================================================
-// 路由相关
+// Route related types
 // ============================================================================
 
 /**
- * Route 构造函数的选项接口
+ * Route constructor options interface
  */
 export interface RouteOptions {
-    /** 路由器解析选项 */
+    /** Router parsed options */
     options?: RouterParsedOptions;
-    /** 路由类型 */
+    /** Route type */
     toType?: RouteType;
-    /** 目标路由位置 */
+    /** Target route location */
     toInput?: RouteLocationInput;
-    /** 来源 URL */
+    /** Source URL */
     from?: URL | null;
 }
 
@@ -147,7 +147,7 @@ export enum RouteType {
     pushWindow = 'pushWindow',
     replaceWindow = 'replaceWindow'
 }
-export type RouteMeta = Record<string | symbol, any>;
+export type RouteMeta = Record<string | symbol, unknown>;
 
 export type RouteState = Record<string, unknown>;
 export type RouteHandleResult = unknown | null | void;
@@ -166,15 +166,15 @@ export interface RouteLocation {
 export type RouteLocationInput = RouteLocation | string;
 
 export interface RouteConfig {
-    /** 传递一个经过 URL 编码过后的路径 */
+    /** Pass a URL-encoded path */
     path: string;
-    component?: any;
+    component?: unknown;
     children?: RouteConfig[];
     redirect?: RouteLocationInput | RouteConfirmHook;
     meta?: RouteMeta;
     env?: RouteEnv;
     app?: string | RouterMicroAppCallback;
-    asyncComponent?: () => Promise<any>;
+    asyncComponent?: () => Promise<unknown>;
     beforeEnter?: RouteConfirmHook;
     beforeUpdate?: RouteConfirmHook;
     beforeLeave?: RouteConfirmHook;
@@ -187,11 +187,11 @@ export interface RouteParsedConfig extends RouteConfig {
 }
 
 export enum RouteStatus {
-    resolved = 'resolved', // 路由解析完成，Route对象创建完成
-    pending = 'pending', // 正在执行任务链（守卫、异步组件等）
-    success = 'success', // 任务执行成功
-    aborted = 'aborted', // 任务被取消
-    error = 'error' // 解析或执行失败
+    resolved = 'resolved', // Route resolution completed, Route object created
+    pending = 'pending', // Executing task chain (guards, async components, etc.)
+    success = 'success', // Task execution successful
+    aborted = 'aborted', // Task was cancelled
+    error = 'error' // Resolution or execution failed
 }
 
 export interface RouteMatchResult {
@@ -202,21 +202,21 @@ export interface RouteMatchResult {
 export type RouteMatcher = (targetURL: URL, baseURL: URL) => RouteMatchResult;
 
 /**
- * 路由匹配类型
- * - 'route': 路由级匹配，比较路由配置是否相同
- * - 'exact': 完全匹配，比较路径是否完全相同
- * - 'include': 包含匹配，判断当前路径是否包含目标路径
+ * Route matching type
+ * - 'route': Route-level matching, compare if route configurations are the same
+ * - 'exact': Exact matching, compare if paths are exactly the same
+ * - 'include': Include matching, check if current path contains target path
  */
 export type RouteMatchType = 'route' | 'exact' | 'include';
 
 /**
- * 路由钩子函数类型
- * @param to 目标路由
- * @param from 来源路由，首次导航时可能为 null
+ * Route hook function type
+ * @param to Target route
+ * @param from Source route, may be null on first navigation
  * @returns
- *   - true: 继续往后执行
- *   - false: 终止执行
- *   - RouteLocationInput: 重定向到另外一个路由
+ *   - true: Continue execution
+ *   - false: Terminate execution
+ *   - RouteLocationInput: Redirect to another route
  */
 export type RouteConfirmHook = (
     to: Route,
@@ -238,8 +238,8 @@ export type RouteHandleHook = (
 export type RouteNotifyHook = (to: Route, from: Route | null) => void;
 
 /**
- * 当 router.back() 或 router.go(负数) 无响应时的钩子函数类型
- * @param router 路由器实例
+ * Hook function type called when router.back() or router.go(negative) is unresponsive
+ * @param router Router instance
  */
 export type RouteBackNoResponseHook = (router: Router) => void;
 
@@ -251,7 +251,7 @@ export interface RouteEnvOptions {
 export type RouteEnv = RouteHandleHook | RouteEnvOptions;
 
 // ============================================================================
-// RouterLink 相关
+// RouterLink related types
 // ============================================================================
 
 /**
@@ -319,6 +319,6 @@ export interface RouterLinkResolved {
 }
 
 // ============================================================================
-// 工具函数
+// Utility functions
 // ============================================================================
 export type Awaitable<T> = T | Promise<T>;

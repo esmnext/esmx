@@ -2,6 +2,11 @@
 
 ## AI 交互规则
 - **回复语言**: 始终使用中文进行回复。
+- **禁止修改文件**: AI 严格禁止修改以下配置文件：
+  - `.stylelintignore`
+  - `.stylelintrc.js`
+  - `build.config.ts`
+  - `biome.json`
 
 ## 代码规范
 
