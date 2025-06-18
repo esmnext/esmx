@@ -4,12 +4,12 @@ import type { Route, RouterOptions, RouterParsedOptions } from './types';
 import { isBrowser } from './util';
 
 /**
- * 获取路由器的基础 URL 对象
- * @param options 路由器选项
- * @returns 处理后的 URL 对象
+ * Gets the base URL object for the router.
+ * @param options - Router options.
+ * @returns The processed URL object.
  */
 function getBaseUrl(options: RouterOptions): URL {
-    // 确定 URL 源
+    // Determine the URL source
     let sourceUrl: string | URL;
     let context = '';
 
@@ -18,7 +18,7 @@ function getBaseUrl(options: RouterOptions): URL {
     } else if (isBrowser) {
         sourceUrl = location.origin;
     } else if (options.req) {
-        // 服务端：尝试从 req 对象中获取
+        // Server-side: try to get it from the req object
         const { req } = options;
         const protocol =
             req.headers['x-forwarded-proto'] ||
@@ -37,24 +37,26 @@ function getBaseUrl(options: RouterOptions): URL {
         sourceUrl = `${protocol}://${host}${port ? `:${port}` : ''}${path}`;
         context = 'from request headers';
     } else {
-        // 服务端环境且没有 req，或者其他未知情况
+        // Server environment without req, or other unknown cases
         sourceUrl = 'https://www.esmnext.com/';
         context = !isBrowser
             ? 'server environment without request context'
             : 'unknown context';
     }
 
-    // 解析 URL（失败时回退到默认值）
-    const base =
-        URL.parse('.', sourceUrl) ??
-        (() => {
-            console.warn(
-                `Failed to parse base URL ${context ? context + ' ' : ''}'${sourceUrl}', using default: https://www.esmnext.com/`
-            );
-            return new URL('https://www.esmnext.com/');
-        })();
+    // Parse the URL, falling back to a default on failure.
+    // Use a try-catch block with the standard URL constructor for robustness.
+    let base: URL;
+    try {
+        base = new URL('.', sourceUrl);
+    } catch (e) {
+        console.warn(
+            `Failed to parse base URL ${context ? `(${context})` : ''}'${sourceUrl}', using default: https://www.esmnext.com/`
+        );
+        base = new URL('https://www.esmnext.com/');
+    }
 
-    // 清理并返回
+    // Clean up and return
     base.search = base.hash = '';
     return base;
 }
@@ -95,12 +97,12 @@ export function DEFAULT_LOCATION(
 ) {
     const href = to.url.href;
 
-    // 服务端环境：处理应用层重定向和状态码
+    // Server-side environment: handle application-level redirects and status codes
     if (!isBrowser && context?.res) {
-        // 确定状态码：优先使用路由指定的状态码，默认使用 302 临时重定向
+        // Determine status code: prioritize route-specified code, default to 302 temporary redirect
         let statusCode = 302;
 
-        // 验证重定向状态码有效性（3xx 系列）
+        // Validate redirect status code (3xx series)
         const validRedirectCodes = [300, 301, 302, 303, 304, 307, 308];
         if (to.statusCode && validRedirectCodes.includes(to.statusCode)) {
             statusCode = to.statusCode;
@@ -110,14 +112,14 @@ export function DEFAULT_LOCATION(
             );
         }
 
-        // 设置重定向响应
+        // Set redirect response
         context.res.statusCode = statusCode;
         context.res.setHeader('Location', href);
         context.res.end();
         return;
     }
 
-    // 客户端环境：处理浏览器导航
+    // Client-side environment: handle browser navigation
     if (isBrowser) {
         if (to.isPush) {
             try {
@@ -125,7 +127,7 @@ export function DEFAULT_LOCATION(
                 if (!newWindow) {
                     location.href = href;
                 } else {
-                    newWindow.opener = null; // 解除新窗口与当前窗口的关系
+                    newWindow.opener = null; // Sever the relationship between the new window and the current one
                 }
                 return newWindow;
             } catch {}
@@ -133,5 +135,5 @@ export function DEFAULT_LOCATION(
         location.href = href;
     }
 
-    // 服务端环境且没有 res 上下文时，不做任何操作
+    // Do nothing in a server environment without a res context
 }

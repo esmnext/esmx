@@ -11,7 +11,7 @@ import {
     type RouterOptions
 } from './types';
 
-// 创建真实的 IncomingMessage 模拟对象
+// Create a real mock IncomingMessage object
 const createMockReq = (
     headers: Record<string, string> = {},
     url = '/',
@@ -25,7 +25,7 @@ const createMockReq = (
     return req;
 };
 
-// 创建真实的 ServerResponse 模拟对象
+// Create a real mock ServerResponse object
 const createMockRes = (): Partial<ServerResponse> => {
     const res: Partial<ServerResponse> = {
         statusCode: 200,
@@ -35,7 +35,7 @@ const createMockRes = (): Partial<ServerResponse> => {
     return res;
 };
 
-// 创建真实的 Route 对象
+// Create a real Route object
 const createRoute = (
     options: {
         url?: string;
@@ -73,8 +73,8 @@ describe('parsedOptions', () => {
             .spyOn(console, 'warn')
             .mockImplementation(() => {});
 
-        // 这里我们需要测试无效的 base，但 RouterOptions 要求 URL 类型
-        // 我们通过类型断言来测试错误处理逻辑
+        // Here we need to test an invalid base, but RouterOptions requires a URL type.
+        // We use a type assertion to test the error handling logic.
         const invalidOptions = {
             base: 'not-a-url'
         } as unknown as RouterOptions;
@@ -124,7 +124,7 @@ describe('parsedOptions', () => {
             routes: []
         };
         const opts2 = parsedOptions(options2);
-        expect(opts2.apps).not.toBe(appsObj); // 应该是新对象
+        expect(opts2.apps).not.toBe(appsObj); // Should be a new object
         expect(opts2.apps).toEqual(appsObj);
     });
 
@@ -193,7 +193,7 @@ describe('parsedOptions', () => {
         };
         const opts = parsedOptions(options);
         expect(typeof opts.onBackNoResponse).toBe('function');
-        // 默认函数应可调用且无异常
+        // The default function should be callable without throwing an error
         expect(() => opts.onBackNoResponse({} as any)).not.toThrow();
     });
 
@@ -292,7 +292,7 @@ describe('parsedOptions', () => {
             };
             const opts = parsedOptions(options);
             expect(opts.routes).toEqual(routes);
-            expect(opts.routes).not.toBe(routes); // 应该是新数组
+            expect(opts.routes).not.toBe(routes); // Should be a new array
         });
 
         it('should handle normalizeURL function', async () => {
@@ -337,13 +337,13 @@ describe('DEFAULT_LOCATION', () => {
 
             DEFAULT_LOCATION(route, null, { res });
 
-            // 在浏览器环境中，不会设置 res.statusCode，而是设置 location.href
-            expect(res.statusCode).toBe(200); // 保持初始值
+            // In a browser environment, res.statusCode should not be set; location.href should be.
+            expect(res.statusCode).toBe(200); // Remains initial value
             expect(res.setHeader).not.toHaveBeenCalled();
             expect(res.end).not.toHaveBeenCalled();
             expect(location.href).toBe(route.url.href);
 
-            // 恢复原始 href
+            // Restore original href
             location.href = originalHref;
         });
 
@@ -353,20 +353,20 @@ describe('DEFAULT_LOCATION', () => {
             const res = createMockRes();
             const mockWindow = { opener: 'original' } as Window;
 
-            // 为这个测试设置 window.open spy
+            // Set up a spy for window.open for this test
             const openSpy = vi
                 .spyOn(window, 'open')
                 .mockReturnValue(mockWindow);
 
             const result = DEFAULT_LOCATION(route, null, { res });
 
-            // 在浏览器环境中，即使传入 res 也会使用 window.open
+            // In a browser environment, window.open is used even if res is passed
             expect(window.open).toHaveBeenCalledWith(route.url.href);
             expect(mockWindow.opener).toBe(null);
             expect(result).toBe(mockWindow);
-            expect(res.statusCode).toBe(200); // res 参数被忽略
+            expect(res.statusCode).toBe(200); // res parameter is ignored
 
-            // 清理 spy
+            // Clean up the spy
             openSpy.mockRestore();
         });
 
@@ -374,15 +374,15 @@ describe('DEFAULT_LOCATION', () => {
             const { DEFAULT_LOCATION } = await import('./options');
             const route = createRoute();
 
-            // 在浏览器环境中，没有 res 参数时正常工作
+            // Should work normally in a browser environment without a res parameter
             expect(() => DEFAULT_LOCATION(route, null)).not.toThrow();
         });
     });
 
     describe('client-side behavior', () => {
         beforeEach(() => {
-            // 在 happy-dom 环境中，window 和 location 已经存在
-            // 我们只需要模拟 window.open 方法
+            // In the happy-dom environment, window and location already exist.
+            // We just need to mock the window.open method.
             vi.spyOn(window, 'open').mockImplementation(vi.fn());
             vi.resetModules();
         });
@@ -443,13 +443,13 @@ describe('DEFAULT_LOCATION', () => {
             const res = createMockRes();
             const originalHref = location.href;
 
-            // 在浏览器环境中，statusCode 被忽略，直接设置 location.href
+            // In a browser environment, statusCode is ignored, and location.href is set directly.
             DEFAULT_LOCATION(route, null, { res });
 
-            expect(res.statusCode).toBe(200); // 保持初始值
+            expect(res.statusCode).toBe(200); // Remains initial value
             expect(location.href).toBe(route.url.href);
 
-            // 恢复原始 href
+            // Restore original href
             location.href = originalHref;
         });
 
@@ -459,13 +459,13 @@ describe('DEFAULT_LOCATION', () => {
             const res = createMockRes();
             const originalHref = location.href;
 
-            // 在浏览器环境中，statusCode 被忽略，直接设置 location.href
+            // In a browser environment, statusCode is ignored, and location.href is set directly.
             DEFAULT_LOCATION(route, null, { res });
 
-            expect(res.statusCode).toBe(200); // 保持初始值
+            expect(res.statusCode).toBe(200); // Remains initial value
             expect(location.href).toBe(route.url.href);
 
-            // 恢复原始 href
+            // Restore original href
             location.href = originalHref;
         });
 
@@ -473,7 +473,7 @@ describe('DEFAULT_LOCATION', () => {
             const { DEFAULT_LOCATION } = await import('./options');
             const route = createRoute();
 
-            // 在浏览器环境中，没有 context 参数时正常工作
+            // Should work normally in a browser environment without a context parameter.
             expect(() =>
                 DEFAULT_LOCATION(route, null, undefined)
             ).not.toThrow();
@@ -483,16 +483,16 @@ describe('DEFAULT_LOCATION', () => {
             const { DEFAULT_LOCATION } = await import('./options');
             const route = createRoute();
 
-            // 在浏览器环境中，context 对象不包含 res 时正常工作
+            // Should work normally in a browser environment when the context object does not contain res.
             expect(() => DEFAULT_LOCATION(route, null, {})).not.toThrow();
         });
     });
 });
 
-// 专门测试服务端逻辑的测试组
+// Test suite specifically for server-side logic
 describe('Server-side logic (mocked environment)', () => {
     beforeEach(() => {
-        // 模拟服务端环境
+        // Mock server environment
         vi.doMock('./util', () => ({
             isBrowser: false
         }));
@@ -500,7 +500,7 @@ describe('Server-side logic (mocked environment)', () => {
     });
 
     afterEach(() => {
-        // 恢复模拟
+        // Restore mocks
         vi.doUnmock('./util');
         vi.resetModules();
     });
@@ -660,7 +660,7 @@ describe('Server-side logic (mocked environment)', () => {
 
         it('should warn and use default for invalid status code', async () => {
             const { DEFAULT_LOCATION } = await import('./options');
-            const route = createRoute({ statusCode: 200 }); // 200 不是有效的重定向状态码
+            const route = createRoute({ statusCode: 200 }); // 200 is not a valid redirect status code
             const res = createMockRes();
             const consoleSpy = vi
                 .spyOn(console, 'warn')
@@ -716,7 +716,7 @@ describe('Server-side logic (mocked environment)', () => {
 
             DEFAULT_LOCATION(route, null, { res });
 
-            // statusCode 为 0 时，由于是 falsy 值，不会触发警告，直接使用默认值 302
+            // When statusCode is 0 (falsy), it won't trigger a warning, and the default 302 will be used.
             expect(res.statusCode).toBe(302);
             expect(consoleSpy).not.toHaveBeenCalled();
             consoleSpy.mockRestore();
@@ -726,7 +726,7 @@ describe('Server-side logic (mocked environment)', () => {
             const { DEFAULT_LOCATION } = await import('./options');
             const route = createRoute();
 
-            // 在服务端环境中，没有 res 上下文时不做任何操作
+            // Should do nothing and not throw in a server environment without res context
             expect(() => DEFAULT_LOCATION(route, null)).not.toThrow();
             expect(() => DEFAULT_LOCATION(route, null, {})).not.toThrow();
         });
