@@ -1,6 +1,6 @@
 # @esmx/router-vue
 
-Vue integration for [@esmx/router](https://github.com/esmnext/esmx/tree/main/packages/router) - A universal router that works seamlessly with both Vue 2.7+ and Vue 3.
+Vue integration for [@esmx/router](https://github.com/esmnext/esmx/tree/master/packages/router) - A universal router that works seamlessly with both Vue 2.7+ and Vue 3.
 
 [![npm version](https://img.shields.io/npm/v/@esmx/router-vue.svg)](https://www.npmjs.com/package/@esmx/router-vue) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -28,8 +28,8 @@ pnpm add @esmx/router @esmx/router-vue
 ### Vue 3
 
 ```typescript
-import { createApp } from 'vue';
-import { createRouter } from '@esmx/router';
+import { createApp, h } from 'vue';
+import { Router, RouterMode } from '@esmx/router';
 import { RouterPlugin, useProvideRouter } from '@esmx/router-vue';
 import App from './App.vue';
 
@@ -38,16 +38,22 @@ const routes = [
   { path: '/about', component: () => import('./views/About.vue') }
 ];
 
-const router = createRouter({ routes });
-const app = createApp(App);
+const router = new Router({ 
+  routes,
+  mode: RouterMode.history,
+  base: new URL('http://localhost:3000/')
+});
+
+const app = createApp({
+  setup() {
+    useProvideRouter(router);
+    return {};
+  },
+  render: () => h(App)
+});
 
 // Install the plugin
 app.use(RouterPlugin);
-
-// Provide router context
-app.setup = () => {
-  useProvideRouter(router);
-};
 
 app.mount('#app');
 ```
@@ -56,7 +62,7 @@ app.mount('#app');
 
 ```typescript
 import Vue from 'vue';
-import { createRouter } from '@esmx/router';
+import { Router, RouterMode } from '@esmx/router';
 import { RouterPlugin, useProvideRouter } from '@esmx/router-vue';
 import App from './App.vue';
 
@@ -65,7 +71,11 @@ const routes = [
   { path: '/about', component: () => import('./views/About.vue') }
 ];
 
-const router = createRouter({ routes });
+const router = new Router({ 
+  routes,
+  mode: RouterMode.history,
+  base: new URL('http://localhost:3000/')
+});
 
 // Install the plugin
 Vue.use(RouterPlugin);
@@ -107,7 +117,7 @@ import { watch } from 'vue';
 const router = useRouter();
 const route = useRoute();
 
-// Navigate programmatically
+// Programmatic navigation
 const goToAbout = () => {
   router.push('/about');
 };
@@ -129,13 +139,13 @@ watch(() => route.path, (newPath) => {
     <p>Route params: {{ JSON.stringify(route.params) }}</p>
     <p>Query params: {{ JSON.stringify(route.query) }}</p>
     
-    <button @click="goToAbout">Go to About</button>
+    <button @click="goToAbout">Go to About Page</button>
     <button @click="goBack">Go Back</button>
   </div>
 </template>
 ```
 
-### Options API (Vue 2)
+### Options API
 
 ```vue
 <script>
@@ -173,12 +183,12 @@ A component for creating navigation links.
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `to` | `string` \| `RouteLocationInput` | - | Target route location |
-| `type` | `RouterLinkType` | `'push'` | Navigation type |
-| `exact` | `RouteMatchType` | `'include'` | Active state matching |
+| `type` | `RouterLinkType` | `'push'` | Navigation type (`'push'` \| `'replace'` \| `'pushWindow'` \| `'replaceWindow'` \| `'pushLayer'`) |
+| `exact` | `RouteMatchType` | `'include'` | Active state matching (`'include'` \| `'exact'` \| `'route'`) |
 | `activeClass` | `string` | - | CSS class for active state |
 | `event` | `string` \| `string[]` | `'click'` | Events that trigger navigation |
 | `tag` | `string` | `'a'` | HTML tag to render |
-| `layerOptions` | `RouterLayerOptions` | - | Layer navigation options |
+| `layerOptions` | `RouterLayerOptions` | - | Layer navigation options (used with `type="pushLayer"`) |
 
 **Usage:**
 
@@ -218,8 +228,8 @@ A component that renders the matched route component.
     <!-- Root level routes render here -->
     <RouterView />
     
-    <!-- Named views (if supported) -->
-    <RouterView name="sidebar" />
+    <!-- Nested routes will render in child RouterView components -->
+    <!-- Each RouterView automatically handles the correct depth -->
   </div>
 </template>
 ```
@@ -283,10 +293,14 @@ function useProvideRouter(router: Router): void
 **Usage:**
 
 ```typescript
-import { createRouter } from '@esmx/router';
+import { Router, RouterMode } from '@esmx/router';
 import { useProvideRouter } from '@esmx/router-vue';
 
-const router = createRouter({ routes });
+const router = new Router({ 
+  routes,
+  mode: RouterMode.history,
+  base: new URL('http://localhost:3000/')
+});
 
 // In your app's setup function
 setup() {
@@ -368,16 +382,42 @@ Vue.use(RouterPlugin);
 
 ## TypeScript Support
 
-This package provides full TypeScript support. For Vue 2 projects, the package automatically augments Vue component instances with `$router` and `$route` properties.
+This package provides full TypeScript support for both Vue 2.7+ and Vue 3. For Options API usage, the package automatically augments Vue component instances with `$router` and `$route` properties, allowing you to access them directly in templates and component methods.
 
 ```typescript
-// Vue 2 type augmentation (automatic)
+// Options API type augmentation (automatic)
 declare module 'vue/types/vue' {
   interface Vue {
     readonly $router: Router;
     readonly $route: Route;
   }
 }
+```
+
+**Options API Usage:**
+
+```vue
+<template>
+  <div>
+    <!-- Direct access without 'this.' -->
+    <p>Current path: {{ $route.path }}</p>
+    <button @click="navigate">Navigate to About Page</button>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  methods: {
+    navigate() {
+      // TypeScript knows about $router and $route
+      this.$router.push('/about');
+      console.log('Current route:', this.$route.path);
+    }
+  }
+});
+</script>
 ```
 
 ## Advanced Usage
@@ -420,7 +460,7 @@ const link = useLink(props).value;
 ```vue
 <script setup>
 import { useRouter, useRoute } from '@esmx/router-vue';
-import { onMounted } from 'vue';
+import { onMounted, onBeforeUnmount } from 'vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -428,6 +468,7 @@ const route = useRoute();
 onMounted(() => {
   // Add route guard
   const unregister = router.beforeEach((to, from) => {
+    // Check if route requires authentication (isAuthenticated is your auth function)
     if (to.meta?.requiresAuth && !isAuthenticated()) {
       return '/login';
     }
@@ -443,7 +484,7 @@ onMounted(() => {
 
 ### Key Differences
 
-1. **Router Creation**: Use `createRouter` from `@esmx/router`
+1. **Router Creation**: Use `new Router()` constructor from `@esmx/router`
 2. **Context Provision**: Use `useProvideRouter()` instead of router installation
 3. **Component Registration**: Use `RouterPlugin` for global components
 
@@ -465,25 +506,35 @@ app.use(router);
 **After (@esmx/router-vue):**
 
 ```typescript
-import { createRouter } from '@esmx/router';
+import { Router, RouterMode } from '@esmx/router';
 import { RouterPlugin, useProvideRouter } from '@esmx/router-vue';
+import { createApp, h } from 'vue';
+import App from './App.vue';
 
-const router = createRouter({ routes });
+const router = new Router({ 
+  routes,
+  mode: RouterMode.history,
+  base: new URL('http://localhost:3000/')
+});
+
+const app = createApp({
+  setup() {
+    useProvideRouter(router);
+    return {};
+  },
+  render: () => h(App)
+});
 
 app.use(RouterPlugin);
-app.setup = () => {
-  useProvideRouter(router);
-};
 ```
 
 ## Browser Support
 
-- **Vue 3**: All modern browsers
-- **Vue 2.7+**: All modern browsers + IE11 (with polyfills)
+- **Modern browsers** that support ES modules (`import`/`export`) and dynamic imports (`import()`)
 
 ## Contributing
 
-We welcome contributions! Please see our [Contributing Guide](../../CONTRIBUTING.md) for details.
+We welcome contributions! Please feel free to submit issues and pull requests.
 
 ## License
 
@@ -491,5 +542,5 @@ MIT © [ESMX Team](https://github.com/esmnext/esmx)
 
 ## Related Packages
 
-- [@esmx/router](https://github.com/esmnext/esmx/tree/main/packages/router) - Core router package
-- [@esmx/core](https://github.com/esmnext/esmx/tree/main/packages/core) - ESMX core framework
+- [@esmx/router](https://github.com/esmnext/esmx/tree/master/packages/router) - Core router package
+- [@esmx/core](https://github.com/esmnext/esmx/tree/master/packages/core) - ESMX core framework 

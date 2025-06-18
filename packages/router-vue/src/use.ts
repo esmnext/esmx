@@ -239,7 +239,7 @@ export function useRoute(): Route {
  * ```typescript
  * // Vue 3 usage
  * import { createApp } from 'vue';
- * import { createRouter } from '@esmx/router';
+ * import { Router } from '@esmx/router';
  * import { useProvideRouter } from '@esmx/router-vue';
  *
  * const routes = [
@@ -247,7 +247,7 @@ export function useRoute(): Route {
  *   { path: '/about', component: () => import('./About.vue') }
  * ];
  *
- * const router = createRouter({ routes });
+ * const router = new Router({ routes });
  * const app = createApp({
  *   setup() {
  *     useProvideRouter(router);

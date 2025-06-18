@@ -1,5 +1,24 @@
 {
     "name": "@esmx/router-vue",
+    "description": "Vue integration for @esmx/router - A universal router that works seamlessly with both Vue 2.7+ and Vue 3",
+    "keywords": [
+        "vue",
+        "router",
+        "routing",
+        "vue-router",
+        "composition-api",
+        "typescript",
+        "universal",
+        "vue2",
+        "vue3",
+        "navigation",
+        "esmx",
+        "esm",
+        "single-page-application",
+        "spa",
+        "framework",
+        "frontend"
+    ],
     "template": "library",
     "scripts": {
         "lint:js": "biome check --write --no-errors-on-unmatched",

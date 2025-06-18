@@ -1,6 +1,6 @@
 # @esmx/router-vue
 
-[@esmx/router](https://github.com/esmnext/esmx/tree/main/packages/router) 的 Vue 集成包 - 一个同时适用于 Vue 2.7+ 和 Vue 3 的通用路由器。
+[@esmx/router](https://github.com/esmnext/esmx/tree/master/packages/router) 的 Vue 集成包 - 一个同时适用于 Vue 2.7+ 和 Vue 3 的通用路由器。
 
 [![npm version](https://img.shields.io/npm/v/@esmx/router-vue.svg)](https://www.npmjs.com/package/@esmx/router-vue) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -28,8 +28,8 @@ pnpm add @esmx/router @esmx/router-vue
 ### Vue 3
 
 ```typescript
-import { createApp } from 'vue';
-import { createRouter } from '@esmx/router';
+import { createApp, h } from 'vue';
+import { Router, RouterMode } from '@esmx/router';
 import { RouterPlugin, useProvideRouter } from '@esmx/router-vue';
 import App from './App.vue';
 
@@ -38,16 +38,22 @@ const routes = [
   { path: '/about', component: () => import('./views/About.vue') }
 ];
 
-const router = createRouter({ routes });
-const app = createApp(App);
+const router = new Router({ 
+  routes,
+  mode: RouterMode.history,
+  base: new URL('http://localhost:3000/')
+});
+
+const app = createApp({
+  setup() {
+    useProvideRouter(router);
+    return {};
+  },
+  render: () => h(App)
+});
 
 // 安装插件
 app.use(RouterPlugin);
-
-// 提供路由上下文
-app.setup = () => {
-  useProvideRouter(router);
-};
 
 app.mount('#app');
 ```
@@ -56,7 +62,7 @@ app.mount('#app');
 
 ```typescript
 import Vue from 'vue';
-import { createRouter } from '@esmx/router';
+import { Router, RouterMode } from '@esmx/router';
 import { RouterPlugin, useProvideRouter } from '@esmx/router-vue';
 import App from './App.vue';
 
@@ -65,7 +71,11 @@ const routes = [
   { path: '/about', component: () => import('./views/About.vue') }
 ];
 
-const router = createRouter({ routes });
+const router = new Router({ 
+  routes,
+  mode: RouterMode.history,
+  base: new URL('http://localhost:3000/')
+});
 
 // 安装插件
 Vue.use(RouterPlugin);
@@ -135,7 +145,7 @@ watch(() => route.path, (newPath) => {
 </template>
 ```
 
-### 选项式 API (Vue 2)
+### 选项式 API
 
 ```vue
 <script>
@@ -173,12 +183,12 @@ export default defineComponent({
 | 属性 | 类型 | 默认值 | 描述 |
 |------|------|---------|-------------|
 | `to` | `string` \| `RouteLocationInput` | - | 目标路由位置 |
-| `type` | `RouterLinkType` | `'push'` | 导航类型 |
-| `exact` | `RouteMatchType` | `'include'` | 激活状态匹配方式 |
+| `type` | `RouterLinkType` | `'push'` | 导航类型 (`'push'` \| `'replace'` \| `'pushWindow'` \| `'replaceWindow'` \| `'pushLayer'`) |
+| `exact` | `RouteMatchType` | `'include'` | 激活状态匹配方式 (`'include'` \| `'exact'` \| `'route'`) |
 | `activeClass` | `string` | - | 激活状态的 CSS 类名 |
 | `event` | `string` \| `string[]` | `'click'` | 触发导航的事件 |
 | `tag` | `string` | `'a'` | 要渲染的 HTML 标签 |
-| `layerOptions` | `RouterLayerOptions` | - | 弹层导航选项 |
+| `layerOptions` | `RouterLayerOptions` | - | 弹层导航选项 (与 `type="pushLayer"` 一起使用) |
 
 **用法:**
 
@@ -218,8 +228,8 @@ export default defineComponent({
     <!-- 根级路由在这里渲染 -->
     <RouterView />
     
-    <!-- 命名视图（如果支持） -->
-    <RouterView name="sidebar" />
+    <!-- 嵌套路由会在子 RouterView 组件中渲染 -->
+    <!-- 每个 RouterView 会自动处理正确的深度 -->
   </div>
 </template>
 ```
@@ -283,10 +293,14 @@ function useProvideRouter(router: Router): void
 **用法:**
 
 ```typescript
-import { createRouter } from '@esmx/router';
+import { Router, RouterMode } from '@esmx/router';
 import { useProvideRouter } from '@esmx/router-vue';
 
-const router = createRouter({ routes });
+const router = new Router({ 
+  routes,
+  mode: RouterMode.history,
+  base: new URL('http://localhost:3000/')
+});
 
 // 在应用的 setup 函数中
 setup() {
@@ -368,16 +382,42 @@ Vue.use(RouterPlugin);
 
 ## TypeScript 支持
 
-此包提供完整的 TypeScript 支持。对于 Vue 2 项目，包会自动为 Vue 组件实例增强 `$router` 和 `$route` 属性。
+此包为 Vue 2.7+ 和 Vue 3 提供完整的 TypeScript 支持。对于选项式 API 用法，包会自动为 Vue 组件实例增强 `$router` 和 `$route` 属性，允许您在模板和组件方法中直接访问它们。
 
 ```typescript
-// Vue 2 类型增强（自动）
+// 选项式 API 类型增强（自动）
 declare module 'vue/types/vue' {
   interface Vue {
     readonly $router: Router;
     readonly $route: Route;
   }
 }
+```
+
+**选项式 API 用法:**
+
+```vue
+<template>
+  <div>
+    <!-- 直接访问，无需 'this.' -->
+    <p>当前路径: {{ $route.path }}</p>
+    <button @click="navigate">跳转到关于页面</button>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  methods: {
+    navigate() {
+      // TypeScript 能够识别 $router 和 $route
+      this.$router.push('/about');
+      console.log('当前路由:', this.$route.path);
+    }
+  }
+});
+</script>
 ```
 
 ## 高级用法
@@ -420,7 +460,7 @@ const link = useLink(props).value;
 ```vue
 <script setup>
 import { useRouter, useRoute } from '@esmx/router-vue';
-import { onMounted } from 'vue';
+import { onMounted, onBeforeUnmount } from 'vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -428,6 +468,7 @@ const route = useRoute();
 onMounted(() => {
   // 添加路由守卫
   const unregister = router.beforeEach((to, from) => {
+    // 检查路由是否需要认证（isAuthenticated 是你的认证函数）
     if (to.meta?.requiresAuth && !isAuthenticated()) {
       return '/login';
     }
@@ -443,7 +484,7 @@ onMounted(() => {
 
 ### 主要差异
 
-1. **路由器创建**: 使用 `@esmx/router` 的 `createRouter`
+1. **路由器创建**: 使用 `@esmx/router` 的 `new Router()` 构造函数
 2. **上下文提供**: 使用 `useProvideRouter()` 而非路由器安装
 3. **组件注册**: 使用 `RouterPlugin` 进行全局组件注册
 
@@ -465,25 +506,35 @@ app.use(router);
 **之后 (@esmx/router-vue):**
 
 ```typescript
-import { createRouter } from '@esmx/router';
+import { Router, RouterMode } from '@esmx/router';
 import { RouterPlugin, useProvideRouter } from '@esmx/router-vue';
+import { createApp, h } from 'vue';
+import App from './App.vue';
 
-const router = createRouter({ routes });
+const router = new Router({ 
+  routes,
+  mode: RouterMode.history,
+  base: new URL('http://localhost:3000/')
+});
+
+const app = createApp({
+  setup() {
+    useProvideRouter(router);
+    return {};
+  },
+  render: () => h(App)
+});
 
 app.use(RouterPlugin);
-app.setup = () => {
-  useProvideRouter(router);
-};
 ```
 
 ## 浏览器支持
 
-- **Vue 3**: 所有现代浏览器
-- **Vue 2.7+**: 所有现代浏览器 + IE11（需要 polyfills）
+- **现代浏览器**：支持 ES 模块 (`import`/`export`) 和动态导入 (`import()`) 的浏览器
 
 ## 贡献
 
-我们欢迎贡献！请查看我们的[贡献指南](../../CONTRIBUTING.md)了解详情。
+我们欢迎贡献！请随时提交 issues 和 pull requests。
 
 ## 许可证
 
@@ -491,5 +542,5 @@ MIT © [ESMX 团队](https://github.com/esmnext/esmx)
 
 ## 相关包
 
-- [@esmx/router](https://github.com/esmnext/esmx/tree/main/packages/router) - 核心路由包
-- [@esmx/core](https://github.com/esmnext/esmx/tree/main/packages/core) - ESMX 核心框架
+- [@esmx/router](https://github.com/esmnext/esmx/tree/master/packages/router) - 核心路由包
+- [@esmx/core](https://github.com/esmnext/esmx/tree/master/packages/core) - ESMX 核心框架

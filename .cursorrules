@@ -236,13 +236,37 @@ describe('fetchUserData', () => {
 - `perf`: performance optimization
 - `ci`: CI/CD related changes
 
+### 作用域 (scope) 规范
+- **包级别**: 使用包名 (如 `router-vue`, `router`, `core`)
+- **功能级别**: 使用功能模块 (如 `navigation`, `guards`, `types`)
+- **选择原则**: 
+  - 跨多个模块的改动 → 使用包名
+  - 集中在某个功能模块 → 使用功能名
+  - 文档和配置类 → 优先使用包名
+
+### 类型选择指导
+- **docs vs chore 边界**:
+  - package.json 的 description/keywords → `docs`
+  - package.json 的 dependencies/scripts → `chore`
+  - README/注释更新 → `docs`
+  - API 文档/类型注释 → `docs`
+  
+- **混合改动的优先级判断**:
+  1. 主要目的是什么？(文档完善 vs 功能添加)
+  2. 影响面最大的是什么？(用户感知度)
+  3. 用户最关心的是什么？(可见性和实用性)
+
 ### 提交信息示例
 ```
 feat(router): add navigation guards support
 fix(core): resolve module loading race condition
-docs: update installation guide
+docs(router-vue): update README translation
+docs(router-vue): add package metadata and keywords
+docs: add API documentation for navigation guards
 test(router-vue): add component hierarchy tests
-chore: update dependencies to latest versions
+chore(router-vue): update build dependencies
+chore: update TypeScript configuration
+perf(router): optimize route matching algorithm
 ```
 
 ### 提交要求

@@ -18,7 +18,7 @@ interface VueApp {
  * @example Vue 3 installation
  * ```typescript
  * import { createApp } from 'vue';
- * import { createRouter } from '@esmx/router';
+ * import { Router } from '@esmx/router';
  * import { RouterPlugin, useProvideRouter } from '@esmx/router-vue';
  *
  * const routes = [
@@ -26,7 +26,7 @@ interface VueApp {
  *   { path: '/about', component: About }
  * ];
  *
- * const router = createRouter({ routes });
+ * const router = new Router({ routes });
  * const app = createApp({
  *   setup() {
  *     useProvideRouter(router);
@@ -40,7 +40,7 @@ interface VueApp {
  * @example Vue 2 installation
  * ```typescript
  * import Vue from 'vue';
- * import { createRouter } from '@esmx/router';
+ * import { Router } from '@esmx/router';
  * import { RouterPlugin, useProvideRouter } from '@esmx/router-vue';
  *
  * const routes = [
@@ -48,7 +48,7 @@ interface VueApp {
  *   { path: '/about', component: About }
  * ];
  *
- * const router = createRouter({ routes });
+ * const router = new Router({ routes });
  * Vue.use(RouterPlugin);
  *
  * new Vue({
