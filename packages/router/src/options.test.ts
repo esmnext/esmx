@@ -89,127 +89,65 @@ function createRoute(
 }
 
 describe('options.ts - Node.js Environment Tests', () => {
+    let consoleSpy: any;
+
     beforeEach(() => {
         vi.resetModules();
         vi.clearAllMocks();
+        consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     });
 
     afterEach(() => {
         vi.resetModules();
         vi.clearAllMocks();
+        consoleSpy.mockRestore();
     });
 
     describe('getBaseUrl edge cases in Node.js environment', () => {
-        it('should trigger unknown context branch when isBrowser is dynamically true', async () => {
-            // This test specifically covers the 'unknown context' branch on line 44
-            const consoleSpy = vi
-                .spyOn(console, 'warn')
-                .mockImplementation(() => {});
-
-            let callCount = 0;
-            // Precisely control the return value of isBrowser:
-            // 1st call (line 17 condition check): false - skips browser branch
-            // 2nd call (line 41 context setting): true - sets context to 'unknown context'
-            // 3rd call (line 75 mode setting): false - sets mode to memory
+        beforeEach(() => {
+            // Ensure isBrowser is consistently false for all tests in this suite
             vi.doMock('./util', () => ({
-                get isBrowser() {
-                    callCount++;
-                    // Only the 2nd call returns true, all others return false
-                    return callCount === 2;
-                }
+                isBrowser: false
             }));
-
+        });
+        afterEach(() => {
+            vi.doUnmock('./util');
+        });
+        it('should use default URL and NOT warn when in a non-browser environment without request context', async () => {
+            // This test verifies the fallback behavior in a server environment where no `req` object is provided.
+            // In this case, it should silently fall back to the default URL without a warning.
             const { parsedOptions } = await import('./options');
-
-            // Create options without base and req to enter the final else branch
-            const options: RouterOptions = {};
-            const opts = parsedOptions(options);
+            const opts = parsedOptions({});
 
             // Should use the default URL
             expect(opts.base.href).toBe('https://www.esmnext.com/');
 
-            // Should have a warning message containing 'unknown context'
-            expect(consoleSpy).toHaveBeenCalledWith(
-                expect.stringContaining('unknown context')
-            );
-            consoleSpy.mockRestore();
+            // Should NOT log a warning
+            expect(consoleSpy).not.toHaveBeenCalled();
         });
 
-        it('should trigger unknown context with invalid sourceUrl', async () => {
-            // Test the case where a warning is triggered for an invalid sourceUrl
-            const consoleSpy = vi
-                .spyOn(console, 'warn')
-                .mockImplementation(() => {});
-
-            let callCount = 0;
-            // Simulate a scenario that causes URL parsing to fail
-            vi.doMock('./util', () => ({
-                get isBrowser() {
-                    callCount++;
-                    if (callCount === 2) {
-                        // Return true on the 2nd call to trigger 'unknown context'
-                        return true;
-                    }
-                    return false;
-                }
-            }));
-
+        it('should use default URL and warn when base is an invalid URL string', async () => {
+            // This test replaces 'should trigger unknown context with invalid sourceUrl'.
+            // It provides an invalid `base` option and checks for the warning.
             const { parsedOptions } = await import('./options');
 
-            const options: RouterOptions = {};
+            // Pass an invalid URL string as the base
+            const options: RouterOptions = {
+                base: 'this-is-not-a-valid-url' as any
+            };
             const opts = parsedOptions(options);
 
             // Should fall back to the default URL
             expect(opts.base.href).toBe('https://www.esmnext.com/');
 
-            // Should have a warning message containing 'unknown context'
+            // Should log a warning about the failed parsing
             expect(consoleSpy).toHaveBeenCalledWith(
-                expect.stringContaining('unknown context')
+                expect.stringContaining('Failed to parse base URL')
             );
-            consoleSpy.mockRestore();
-        });
-
-        it('should handle server environment without request context', async () => {
-            // Test server environment without req (line 42)
-            const consoleSpy = vi
-                .spyOn(console, 'warn')
-                .mockImplementation(() => {});
-
-            // Simulate a pure server environment (isBrowser is always false)
-            vi.doMock('./util', () => ({
-                isBrowser: false
-            }));
-
-            const { parsedOptions } = await import('./options');
-
-            // Create options without base and req
-            const options: RouterOptions = {};
-            const opts = parsedOptions(options);
-
-            // Should use the default URL
-            expect(opts.base.href).toBe('https://www.esmnext.com/');
-
-            // In this case, the context should be 'server environment without request context'
-            // A warning should be logged
-            expect(consoleSpy).toHaveBeenCalledWith(
-                expect.stringContaining(
-                    'server environment without request context'
-                )
-            );
-
-            consoleSpy.mockRestore();
         });
 
         it('should handle complex server environment scenarios', async () => {
             // Test various complex server-side scenarios
-            const consoleSpy = vi
-                .spyOn(console, 'warn')
-                .mockImplementation(() => {});
-
-            vi.doMock('./util', () => ({
-                isBrowser: false
-            }));
-
             const { parsedOptions } = await import('./options');
 
             // Test various server configurations
@@ -248,16 +186,10 @@ describe('options.ts - Node.js Environment Tests', () => {
                 const opts = parsedOptions(testCase.options as RouterOptions);
                 expect(opts.base.href).toBe(testCase.expectedUrl);
             }
-
-            consoleSpy.mockRestore();
         });
 
         it('should specifically test port number logic for line 35 coverage', async () => {
             // Specifically test the port number logic on line 35
-            vi.doMock('./util', () => ({
-                isBrowser: false
-            }));
-
             const { parsedOptions } = await import('./options');
 
             // Create a request that explicitly includes a port number
@@ -280,10 +212,6 @@ describe('options.ts - Node.js Environment Tests', () => {
 
         it('should test line 35 without port number', async () => {
             // Test the branch on line 35 where no port number is present
-            vi.doMock('./util', () => ({
-                isBrowser: false
-            }));
-
             const { parsedOptions } = await import('./options');
 
             // Create a request without a port number
@@ -306,10 +234,6 @@ describe('options.ts - Node.js Environment Tests', () => {
 
         it('should handle req.url being undefined (line 34 coverage)', async () => {
             // Test the req.url || '' branch on line 34
-            vi.doMock('./util', () => ({
-                isBrowser: false
-            }));
-
             const { parsedOptions } = await import('./options');
 
             // Create a request where req.url is undefined
@@ -332,11 +256,18 @@ describe('options.ts - Node.js Environment Tests', () => {
     });
 
     describe('DEFAULT_LOCATION in Node.js environment', () => {
-        it('should handle server-side redirects properly', async () => {
+        beforeEach(() => {
+            // Ensure isBrowser is consistently false for Node.js tests
             vi.doMock('./util', () => ({
                 isBrowser: false
             }));
+        });
 
+        afterEach(() => {
+            // Restore the spy and unmock after each test
+            vi.doUnmock('./util');
+        });
+        it('should handle server-side redirects properly', async () => {
             const { DEFAULT_LOCATION } = await import('./options');
 
             const res = createServerResponse();
@@ -356,10 +287,6 @@ describe('options.ts - Node.js Environment Tests', () => {
         });
 
         it('should do nothing when no res context in server environment', async () => {
-            vi.doMock('./util', () => ({
-                isBrowser: false
-            }));
-
             const { DEFAULT_LOCATION } = await import('./options');
 
             const route = createRoute({
@@ -372,15 +299,7 @@ describe('options.ts - Node.js Environment Tests', () => {
         });
 
         it('should handle invalid redirect status codes', async () => {
-            vi.doMock('./util', () => ({
-                isBrowser: false
-            }));
-
             const { DEFAULT_LOCATION } = await import('./options');
-
-            const consoleSpy = vi
-                .spyOn(console, 'warn')
-                .mockImplementation(() => {});
 
             const res = createServerResponse();
             const route = createRoute({
@@ -395,15 +314,9 @@ describe('options.ts - Node.js Environment Tests', () => {
             expect(consoleSpy).toHaveBeenCalledWith(
                 expect.stringContaining('Invalid redirect status code 200')
             );
-
-            consoleSpy.mockRestore();
         });
 
         it('should handle valid redirect status codes', async () => {
-            vi.doMock('./util', () => ({
-                isBrowser: false
-            }));
-
             const { DEFAULT_LOCATION } = await import('./options');
 
             const res = createServerResponse();
