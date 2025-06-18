@@ -120,6 +120,7 @@ export class Route {
     public readonly url: URL;
     public readonly path: string;
     public readonly fullPath: string;
+    public readonly hash: string;
     public readonly params: Record<string, string> = {};
     public readonly query: Record<string, string | undefined>;
     public readonly queryArray: Record<string, string[] | undefined>;
@@ -184,6 +185,7 @@ export class Route {
         }
         this.query = query;
         this.queryArray = queryArray;
+        this.hash = to.hash;
 
         // 应用用户传入的路由参数（如果匹配成功）
         if (match) {

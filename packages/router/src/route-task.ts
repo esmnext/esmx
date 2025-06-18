@@ -5,7 +5,7 @@ import type {
     RouteConfirmHookResult,
     RouterParsedOptions
 } from './types';
-import { isValidConfirmHookResult } from './util';
+import { isUrlEqual, isValidConfirmHookResult } from './util';
 
 /**
  * Controls the execution and cancellation of a route task.
@@ -89,14 +89,22 @@ export async function createRouteTask(opts: RouteTaskOptions) {
             break;
         }
         // Navigation is redirected, pass the controller.
+        const nextTo = new Route({
+            options: opts.options,
+            toType: to.type,
+            toInput: result,
+            from: to.url
+        });
+        if (isUrlEqual(nextTo.url, to.url)) {
+            console.error(
+                `[@esmx/router] Detected a self-redirection to "${to.fullPath}". Aborting navigation.`
+            );
+            to.status = RouteStatus.error;
+            break;
+        }
         return createRouteTask({
             ...opts,
-            to: new Route({
-                options: opts.options,
-                toType: to.type,
-                toInput: result,
-                from: to.url
-            }),
+            to: nextTo,
             from: to,
             controller
         });
