@@ -12,19 +12,19 @@ import type {
 } from './types';
 
 /**
- * Route 类完整单元测试方案
+ * Route class complete unit test suite
  *
- * 测试覆盖范围：
- * 1. 构造函数测试 - 各种初始化场景
- * 2. 属性测试 - 只读属性、计算属性、类型验证
- * 3. Handle 机制测试 - 设置、执行、验证、错误处理
- * 4. 状态管理测试 - 合并、设置、同步、隔离
- * 5. 克隆功能测试 - 独立性、深拷贝、完整性
- * 6. 边界条件测试 - 异常输入、极端值
- * 7. 集成测试 - 与其他组件的交互
+ * Test coverage:
+ * 1. Constructor tests - various initialization scenarios
+ * 2. Property tests - read-only properties, computed properties, type validation
+ * 3. Handle mechanism tests - setting, execution, validation, error handling
+ * 4. State management tests - merging, setting, syncing, isolation
+ * 5. Clone function tests - independence, deep copy, completeness
+ * 6. Edge case tests - exception inputs, extreme values
+ * 7. Integration tests - interaction with other components
  */
 
-describe('Route 类完整测试套件', () => {
+describe('Route Class Complete Test Suite', () => {
     const createOptions = (
         overrides: Partial<RouterOptions> = {}
     ): RouterParsedOptions => {
@@ -65,9 +65,9 @@ describe('Route 类完整测试套件', () => {
         return parsedOptions(routerOptions);
     };
 
-    describe('🏗️ 构造函数测试', () => {
-        describe('基础构造', () => {
-            it('应该使用默认选项创建路由', () => {
+    describe('🏗️ Constructor Tests', () => {
+        describe('Basic Construction', () => {
+            it('should create route with default options', () => {
                 const route = new Route();
 
                 expect(route.type).toBe(RouteType.none);
@@ -80,7 +80,7 @@ describe('Route 类完整测试套件', () => {
                 expect(route.queryArray).toEqual({});
             });
 
-            it('应该正确处理字符串路径', () => {
+            it('should correctly handle string path', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -94,7 +94,7 @@ describe('Route 类完整测试套件', () => {
                 expect(route.isPush).toBe(true);
             });
 
-            it('应该正确处理对象形式的路由位置', () => {
+            it('should correctly handle object-form route location', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -116,8 +116,8 @@ describe('Route 类完整测试套件', () => {
             });
         });
 
-        describe('URL 解析和匹配', () => {
-            it('应该正确解析复杂的 URL', () => {
+        describe('URL Parsing and Matching', () => {
+            it('should correctly parse complex URL', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -134,7 +134,7 @@ describe('Route 类完整测试套件', () => {
                 expect(route.url.hash).toBe('#section1');
             });
 
-            it('应该处理多值查询参数', () => {
+            it('should handle multi-value query parameters', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -142,11 +142,11 @@ describe('Route 类完整测试套件', () => {
                     toInput: '/users/123?tags=js&tags=react&tags=vue'
                 });
 
-                expect(route.query.tags).toBe('js'); // 第一个值
+                expect(route.query.tags).toBe('js'); // First value
                 expect(route.queryArray.tags).toEqual(['js', 'react', 'vue']);
             });
 
-            it('应该正确匹配嵌套路由参数', () => {
+            it('should correctly match nested route parameters', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -159,7 +159,7 @@ describe('Route 类完整测试套件', () => {
                 expect(route.matched.length).toBeGreaterThan(0);
             });
 
-            it('应该处理不匹配的路由', () => {
+            it('should handle unmatched routes', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -173,8 +173,8 @@ describe('Route 类完整测试套件', () => {
             });
         });
 
-        describe('状态和元数据处理', () => {
-            it('应该正确设置路由元数据', () => {
+        describe('State and Metadata Handling', () => {
+            it('should correctly set route metadata', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -186,7 +186,7 @@ describe('Route 类完整测试套件', () => {
                 expect(route.meta.requireAuth).toBe(true);
             });
 
-            it('应该正确初始化状态对象', () => {
+            it('should correctly initialize state object', () => {
                 const options = createOptions();
                 const initialState = {
                     userId: 123,
@@ -199,12 +199,12 @@ describe('Route 类完整测试套件', () => {
                 });
 
                 expect(route.state).toEqual(initialState);
-                expect(route.state).not.toBe(initialState); // 应该是新对象
+                expect(route.state).not.toBe(initialState); // Should be new object
             });
         });
 
-        describe('🔍 跨域和路径计算测试', () => {
-            it('应该处理跨域URL（不同origin）', () => {
+        describe('🔍 Cross-domain and Path Calculation Tests', () => {
+            it('should handle cross-domain URLs (different origin)', () => {
                 const options = createOptions({
                     base: new URL('http://localhost:3000/app/')
                 });
@@ -214,14 +214,14 @@ describe('Route 类完整测试套件', () => {
                     toInput: 'https://external.com/api/data'
                 });
 
-                // 跨域时不应该匹配路由
+                // Cross-domain should not match routes
                 expect(route.matched).toHaveLength(0);
                 expect(route.config).toBeNull();
-                expect(route.path).toBe('/api/data'); // 使用原始pathname
-                expect(route.fullPath).toBe('/api/data'); // 使用原始路径计算
+                expect(route.path).toBe('/api/data'); // Use original pathname
+                expect(route.fullPath).toBe('/api/data'); // Use original path calculation
             });
 
-            it('应该处理不同base路径的URL', () => {
+            it('should handle URLs with different base paths', () => {
                 const options = createOptions({
                     base: new URL('http://localhost:3000/app/')
                 });
@@ -231,13 +231,13 @@ describe('Route 类完整测试套件', () => {
                     toInput: 'http://localhost:3000/other/path'
                 });
 
-                // 同域但不同base路径时不应该匹配
+                // Same domain but different base path should not match
                 expect(route.matched).toHaveLength(0);
                 expect(route.config).toBeNull();
-                expect(route.path).toBe('/other/path'); // 使用原始pathname
+                expect(route.path).toBe('/other/path'); // Use original pathname
             });
 
-            it('应该正确计算匹配时的path', () => {
+            it('should correctly calculate path when matched', () => {
                 const options = createOptions({
                     base: new URL('http://localhost:3000/app/')
                 });
@@ -247,12 +247,12 @@ describe('Route 类完整测试套件', () => {
                     toInput: 'http://localhost:3000/app/users/123'
                 });
 
-                // 匹配时应该去掉base路径
+                // When matched, should remove base path
                 expect(route.path).toBe('/users/123');
                 expect(route.matched.length).toBeGreaterThan(0);
             });
 
-            it('应该正确计算不匹配时的fullPath', () => {
+            it('should correctly calculate fullPath when unmatched', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -260,17 +260,17 @@ describe('Route 类完整测试套件', () => {
                     toInput: 'https://external.com/api/data?key=value#section'
                 });
 
-                // 不匹配时使用原始路径+search+hash
+                // When unmatched, use original path+search+hash
                 expect(route.fullPath).toBe('/api/data?key=value#section');
                 expect(route.path).toBe('/api/data');
             });
         });
 
-        describe('🔧 normalizeURL 集成测试', () => {
-            it('应该使用自定义normalizeURL函数', () => {
+        describe('🔧 normalizeURL Integration Tests', () => {
+            it('should use custom normalizeURL function', () => {
                 const customNormalizeURL = vi.fn(
                     (url: URL, from: URL | null) => {
-                        // 自定义逻辑：将路径转为小写
+                        // Custom logic: convert path to lowercase
                         url.pathname = url.pathname.toLowerCase();
                         return url;
                     }
@@ -289,7 +289,7 @@ describe('Route 类完整测试套件', () => {
                 expect(route.path).toBe('/users/123');
             });
 
-            it('应该传递from参数给normalizeURL', () => {
+            it('should pass from parameter to normalizeURL', () => {
                 const customNormalizeURL = vi.fn(
                     (url: URL, from: URL | null) => url
                 );
@@ -312,8 +312,8 @@ describe('Route 类完整测试套件', () => {
             });
         });
 
-        describe('属性可枚举性', () => {
-            it('应该正确设置不可枚举属性', () => {
+        describe('Property Enumerability', () => {
+            it('should correctly set non-enumerable properties', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -330,7 +330,7 @@ describe('Route 类完整测试套件', () => {
                 });
             });
 
-            it('应该保持用户属性可枚举', () => {
+            it('should keep user properties enumerable', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -357,9 +357,9 @@ describe('Route 类完整测试套件', () => {
         });
     });
 
-    describe('🔧 属性测试', () => {
-        describe('只读属性验证', () => {
-            it('应该验证属性的存在性', () => {
+    describe('🔧 Property Tests', () => {
+        describe('Read-only Property Validation', () => {
+            it('should validate property existence', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -367,7 +367,7 @@ describe('Route 类完整测试套件', () => {
                     toInput: '/users/123'
                 });
 
-                // 验证属性存在
+                // Validate property existence
                 expect(route.path).toBeDefined();
                 expect(route.fullPath).toBeDefined();
                 expect(route.url).toBeDefined();
@@ -379,8 +379,8 @@ describe('Route 类完整测试套件', () => {
             });
         });
 
-        describe('计算属性正确性', () => {
-            it('应该正确计算 isPush 属性', () => {
+        describe('Computed Property Correctness', () => {
+            it('should correctly calculate isPush property', () => {
                 const options = createOptions();
 
                 const pushRoute = new Route({
@@ -412,7 +412,7 @@ describe('Route 类完整测试套件', () => {
                 expect(goRoute.isPush).toBe(false);
             });
 
-            it('应该正确计算 fullPath', () => {
+            it('should correctly calculate fullPath', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -425,8 +425,8 @@ describe('Route 类完整测试套件', () => {
             });
         });
 
-        describe('类型验证', () => {
-            it('应该正确设置所有 RouteType', () => {
+        describe('Type Validation', () => {
+            it('should correctly set all RouteType', () => {
                 const options = createOptions();
 
                 Object.values(RouteType).forEach((type) => {
@@ -441,9 +441,9 @@ describe('Route 类完整测试套件', () => {
         });
     });
 
-    describe('🎯 Handle 机制测试', () => {
-        describe('Handle 设置和获取', () => {
-            it('应该正确设置和获取 handle 函数', () => {
+    describe('🎯 Handle mechanism tests', () => {
+        describe('Handle setting and getting', () => {
+            it('should correctly set and get handle function', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -459,7 +459,7 @@ describe('Route 类完整测试套件', () => {
                 expect(typeof route.handle).toBe('function');
             });
 
-            it('应该处理 null handle', () => {
+            it('should handle null handle', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -471,7 +471,7 @@ describe('Route 类完整测试套件', () => {
                 expect(route.handle).toBeNull();
             });
 
-            it('应该处理非函数类型的 handle', () => {
+            it('should handle non-function type handle', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -484,8 +484,8 @@ describe('Route 类完整测试套件', () => {
             });
         });
 
-        describe('Handle 执行验证', () => {
-            it('应该在正确状态下执行 handle', () => {
+        describe('Handle execution validation', () => {
+            it('should execute handle in correct state', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -504,7 +504,7 @@ describe('Route 类完整测试套件', () => {
                 expect(mockHandle).toHaveBeenCalledWith(route, null);
             });
 
-            it('应该在错误状态下抛出异常', () => {
+            it('should throw exception in error state', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -523,7 +523,7 @@ describe('Route 类完整测试套件', () => {
                 );
             });
 
-            it('应该防止重复调用 handle', () => {
+            it('should prevent repeated handle calls', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -537,10 +537,10 @@ describe('Route 类完整测试套件', () => {
                 route.handle = mockHandle;
                 route.status = RouteStatus.success;
 
-                // 第一次调用应该成功
+                // First call should succeed
                 route.handle!(route, null);
 
-                // 第二次调用应该抛出异常
+                // Second call should throw exception
                 expect(() => {
                     route.handle!(route, null);
                 }).toThrow(
@@ -549,8 +549,8 @@ describe('Route 类完整测试套件', () => {
             });
         });
 
-        describe('HandleResult 管理', () => {
-            it('应该正确设置和获取 handleResult', () => {
+        describe('HandleResult management', () => {
+            it('should correctly set and get handleResult', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -567,8 +567,8 @@ describe('Route 类完整测试套件', () => {
             });
         });
 
-        describe('Handle 包装函数测试', () => {
-            it('应该在所有RouteStatus状态下测试handle调用', () => {
+        describe('Handle wrapper function tests', () => {
+            it('should test handle calls in all RouteStatus states', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -581,26 +581,26 @@ describe('Route 类完整测试套件', () => {
 
                 route.handle = mockHandle;
 
-                // 测试 resolve 状态
+                // Test resolve state
                 route.status = RouteStatus.resolved;
                 expect(() => route.handle!(route, null)).toThrow(
                     'Cannot call route handle hook - current status is resolved'
                 );
 
-                // 测试 aborted 状态
+                // Test aborted state
                 route.status = RouteStatus.aborted;
                 expect(() => route.handle!(route, null)).toThrow(
                     'Cannot call route handle hook - current status is aborted'
                 );
 
-                // 测试 error 状态
+                // Test error state
                 route.status = RouteStatus.error;
                 expect(() => route.handle!(route, null)).toThrow(
                     'Cannot call route handle hook - current status is error'
                 );
             });
 
-            it('应该正确传递this上下文和参数', () => {
+            it('should correctly pass this context and parameters', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -634,7 +634,7 @@ describe('Route 类完整测试套件', () => {
                 });
             });
 
-            it('应该处理handle函数抛出的异常', () => {
+            it('should handle handle function exceptions', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -654,7 +654,7 @@ describe('Route 类完整测试套件', () => {
                 expect(errorHandle).toHaveBeenCalledOnce();
             });
 
-            it('应该处理setHandle的边界情况', () => {
+            it('should handle setHandle boundary cases', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -662,7 +662,7 @@ describe('Route 类完整测试套件', () => {
                     toInput: '/users/123'
                 });
 
-                // 测试各种非函数类型
+                // Test various non-function types
                 route.setHandle(undefined as any);
                 expect(route.handle).toBeNull();
 
@@ -681,9 +681,9 @@ describe('Route 类完整测试套件', () => {
         });
     });
 
-    describe('📊 状态管理测试', () => {
-        describe('状态合并', () => {
-            it('应该正确合并新状态', () => {
+    describe('📊 State management tests', () => {
+        describe('State merging', () => {
+            it('should correctly merge new state', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -695,7 +695,7 @@ describe('Route 类完整测试套件', () => {
                 expect(route.state).toEqual({ a: 1, b: 3, c: 4 });
             });
 
-            it('应该处理空状态合并', () => {
+            it('should handle empty state merging', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -708,8 +708,8 @@ describe('Route 类完整测试套件', () => {
             });
         });
 
-        describe('单个状态设置', () => {
-            it('应该正确设置单个状态值', () => {
+        describe('Single state setting', () => {
+            it('should correctly set single state value', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -724,7 +724,7 @@ describe('Route 类完整测试套件', () => {
                 expect(route.state.userName).toBe('john');
             });
 
-            it('应该覆盖已存在的状态值', () => {
+            it('should overwrite existing state value', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -737,8 +737,8 @@ describe('Route 类完整测试套件', () => {
             });
         });
 
-        describe('状态隔离', () => {
-            it('应该确保不同路由的状态独立', () => {
+        describe('State isolation', () => {
+            it("should ensure different routes' states are independent", () => {
                 const options = createOptions();
                 const route1 = new Route({
                     options,
@@ -756,11 +756,11 @@ describe('Route 类完整测试套件', () => {
             });
         });
 
-        describe('状态码测试', () => {
-            it('应该正确设置默认状态码', () => {
+        describe('StatusCode tests', () => {
+            it('should correctly set default statusCode', () => {
                 const options = createOptions();
 
-                // 没有传入statusCode时应该默认为null
+                // No statusCode input should default to null
                 const routeWithoutCode = new Route({
                     options,
                     toType: RouteType.push,
@@ -768,7 +768,7 @@ describe('Route 类完整测试套件', () => {
                 });
                 expect(routeWithoutCode.statusCode).toBe(null);
 
-                // 不匹配的路由也应该默认为null
+                // Unmatched routes should also default to null
                 const unmatchedRoute = new Route({
                     options,
                     toType: RouteType.push,
@@ -777,10 +777,10 @@ describe('Route 类完整测试套件', () => {
                 expect(unmatchedRoute.statusCode).toBe(null);
             });
 
-            it('应该支持从RouteLocation传入statusCode', () => {
+            it('should support statusCode input from RouteLocation', () => {
                 const options = createOptions();
 
-                // 传入数字状态码
+                // Pass number statusCode
                 const routeWithCode = new Route({
                     options,
                     toType: RouteType.push,
@@ -788,7 +788,7 @@ describe('Route 类完整测试套件', () => {
                 });
                 expect(routeWithCode.statusCode).toBe(201);
 
-                // 传入null状态码
+                // Pass null statusCode
                 const routeWithNull = new Route({
                     options,
                     toType: RouteType.push,
@@ -797,7 +797,7 @@ describe('Route 类完整测试套件', () => {
                 expect(routeWithNull.statusCode).toBe(null);
             });
 
-            it('应该将statusCode设为不可枚举', () => {
+            it('should set statusCode as non-enumerable', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -811,12 +811,12 @@ describe('Route 类完整测试套件', () => {
                 );
                 expect(descriptor?.enumerable).toBe(false);
 
-                // 验证在对象枚举中不出现
+                // Verify not appearing in object enumeration
                 const keys = Object.keys(route);
                 expect(keys).not.toContain('statusCode');
             });
 
-            it('应该在克隆时正确复制statusCode', () => {
+            it('should correctly copy statusCode in clone', () => {
                 const options = createOptions();
                 const originalRoute = new Route({
                     options,
@@ -827,16 +827,16 @@ describe('Route 类完整测试套件', () => {
                 const clonedRoute = originalRoute.clone();
                 expect(clonedRoute.statusCode).toBe(500);
 
-                // 修改原路由的statusCode不应该影响克隆的路由
+                // Modify original route's statusCode should not affect cloned route
                 originalRoute.statusCode = 200;
                 expect(clonedRoute.statusCode).toBe(500);
             });
         });
     });
 
-    describe('🔄 克隆功能测试', () => {
-        describe('对象独立性', () => {
-            it('应该创建完全独立的克隆对象', () => {
+    describe('🔄 Clone function tests', () => {
+        describe('Object independence', () => {
+            it('should create completely independent cloned object', () => {
                 const options = createOptions();
                 const original = new Route({
                     options,
@@ -851,7 +851,7 @@ describe('Route 类完整测试套件', () => {
                 expect(cloned.params).not.toBe(original.params);
             });
 
-            it('应该保持属性值相等', () => {
+            it('should keep attribute values equal', () => {
                 const options = createOptions();
                 const original = new Route({
                     options,
@@ -871,8 +871,8 @@ describe('Route 类完整测试套件', () => {
             });
         });
 
-        describe('状态深拷贝', () => {
-            it('应该深拷贝状态对象', () => {
+        describe('State deep copy', () => {
+            it('should deep copy state object', () => {
                 const options = createOptions();
                 const original = new Route({
                     options,
@@ -888,14 +888,14 @@ describe('Route 类完整测试套件', () => {
 
                 const cloned = original.clone();
 
-                // 修改克隆对象的状态不应影响原对象
+                // Modify cloned object's state should not affect original
                 cloned.setState('newProp', 'newValue');
                 expect(original.state.newProp).toBeUndefined();
             });
         });
 
-        describe('属性完整性', () => {
-            it('应该保持所有重要属性', () => {
+        describe('Attribute completeness', () => {
+            it('should keep all important attributes', () => {
                 const options = createOptions();
                 const original = new Route({
                     options,
@@ -916,9 +916,9 @@ describe('Route 类完整测试套件', () => {
         });
     });
 
-    describe('⚠️ 边界条件测试', () => {
-        describe('异常输入处理', () => {
-            it('应该处理无效的路由类型', () => {
+    describe('⚠️ Edge case tests', () => {
+        describe('Exception input handling', () => {
+            it('should handle invalid route type', () => {
                 const options = createOptions();
                 expect(() => {
                     new Route({
@@ -929,7 +929,7 @@ describe('Route 类完整测试套件', () => {
                 }).not.toThrow();
             });
 
-            it('应该处理空字符串路径', () => {
+            it('should handle empty string path', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -941,7 +941,7 @@ describe('Route 类完整测试套件', () => {
                 expect(route.fullPath).toBeDefined();
             });
 
-            it('应该处理特殊字符路径', () => {
+            it('should handle special character path', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -949,15 +949,15 @@ describe('Route 类完整测试套件', () => {
                     toInput: '/users/测试用户/profile?name=张三'
                 });
 
-                // URL编码后的路径不会包含原始中文字符
+                // URL-encoded path should not contain original Chinese characters
                 expect(route.path).toContain('users');
                 expect(route.path).toContain('profile');
                 expect(route.query.name).toBe('张三');
             });
         });
 
-        describe('极端值测试', () => {
-            it('应该处理非常长的路径', () => {
+        describe('Extreme value tests', () => {
+            it('should handle very long path', () => {
                 const options = createOptions();
                 const longPath = '/users/' + 'a'.repeat(1000);
 
@@ -970,7 +970,7 @@ describe('Route 类完整测试套件', () => {
                 }).not.toThrow();
             });
 
-            it('应该处理大量查询参数', () => {
+            it('should handle large number of query parameters', () => {
                 const options = createOptions();
                 const queryParams = Array.from(
                     { length: 100 },
@@ -991,9 +991,9 @@ describe('Route 类完整测试套件', () => {
         });
     });
 
-    describe('🔧 工具函数测试', () => {
-        describe('applyRouteParams 函数', () => {
-            it('应该正确应用路由参数', () => {
+    describe('🔧 Tool function tests', () => {
+        describe('applyRouteParams function', () => {
+            it('should correctly apply route parameters', () => {
                 const base = new URL('http://localhost:3000/app/');
                 const options = createOptions({ base });
                 const to = new URL('http://localhost:3000/app/users/old-id');
@@ -1009,7 +1009,7 @@ describe('Route 类完整测试套件', () => {
                 expect(match.params.id).toBe('new-id');
             });
 
-            it('应该处理多个参数', () => {
+            it('should handle multiple parameters', () => {
                 const base = new URL('http://localhost:3000/app/');
                 const options = createOptions({
                     base,
@@ -1033,7 +1033,7 @@ describe('Route 类完整测试套件', () => {
                 expect(match.params.commentId).toBe('comment-888');
             });
 
-            it('应该在无匹配时直接返回', () => {
+            it('should return directly when unmatched', () => {
                 const base = new URL('http://localhost:3000/app/');
                 const options = createOptions({ routes: [] });
                 const to = new URL('http://localhost:3000/app/unknown');
@@ -1046,39 +1046,39 @@ describe('Route 类完整测试套件', () => {
                 expect(to.pathname).toBe(originalPathname);
             });
 
-            it('应该处理非对象toInput参数', () => {
+            it('should handle non-object toInput parameters', () => {
                 const base = new URL('http://localhost:3000/app/');
                 const options = createOptions();
                 const to = new URL('http://localhost:3000/app/users/123');
                 const originalPathname = to.pathname;
                 const match = options.matcher(to, base);
 
-                // 测试字符串类型
+                // Test string type
                 applyRouteParams(match, '/users/123', base, to);
                 expect(to.pathname).toBe(originalPathname);
 
-                // 测试null
+                // Test null
                 applyRouteParams(match, null as any, base, to);
                 expect(to.pathname).toBe(originalPathname);
 
-                // 测试undefined
+                // Test undefined
                 applyRouteParams(match, undefined as any, base, to);
                 expect(to.pathname).toBe(originalPathname);
             });
 
-            it('应该处理空params对象', () => {
+            it('should handle empty params object', () => {
                 const base = new URL('http://localhost:3000/app/');
                 const options = createOptions();
                 const to = new URL('http://localhost:3000/app/users/123');
                 const originalPathname = to.pathname;
                 const match = options.matcher(to, base);
 
-                // 测试空params
+                // Test empty params
                 const toInput = { path: '/users/123', params: {} };
                 applyRouteParams(match, toInput, base, to);
                 expect(to.pathname).toBe(originalPathname);
 
-                // 测试undefined params
+                // Test undefined params
                 const toInput2 = {
                     path: '/users/123',
                     params: undefined as any
@@ -1087,7 +1087,7 @@ describe('Route 类完整测试套件', () => {
                 expect(to.pathname).toBe(originalPathname);
             });
 
-            it('应该处理复杂的路径替换逻辑', () => {
+            it('should handle complex path replacement logic', () => {
                 const base = new URL('http://localhost:3000/app/');
                 const options = createOptions({
                     base,
@@ -1109,7 +1109,7 @@ describe('Route 类完整测试套件', () => {
                 expect(match.params.postId).toBe('post-888');
             });
 
-            it('应该处理路径片段为空的情况', () => {
+            it('should handle path segment empty cases', () => {
                 const base = new URL('http://localhost:3000/app/');
                 const options = createOptions({
                     base,
@@ -1118,25 +1118,25 @@ describe('Route 类完整测试套件', () => {
                 const to = new URL('http://localhost:3000/app/users/123');
                 const match = options.matcher(to, base);
 
-                // 模拟compile返回空片段的情况
+                // Simulate compile return empty fragment cases
                 const originalCompile = match.matches[0].compile;
-                match.matches[0].compile = vi.fn(() => '/users/'); // 返回空的id部分
+                match.matches[0].compile = vi.fn(() => '/users/'); // Return empty id part
 
                 const toInput = { path: '/users/123', params: { id: '' } };
                 applyRouteParams(match, toInput, base, to);
 
-                // 应该保留原有路径片段
+                // Should keep original path fragment
                 expect(to.pathname).toBe('/app/users/123');
 
-                // 恢复原始compile函数
+                // Restore original compile function
                 match.matches[0].compile = originalCompile;
             });
         });
     });
 
-    describe('🔗 集成测试', () => {
-        describe('与路由器选项的集成', () => {
-            it('应该正确使用自定义 normalizeURL', () => {
+    describe('🔗 Integration tests', () => {
+        describe('With router options integration', () => {
+            it('should correctly use custom normalizeURL', () => {
                 const customNormalizeURL = vi.fn((url: URL) => {
                     url.pathname = url.pathname.toLowerCase();
                     return url;
@@ -1155,7 +1155,7 @@ describe('Route 类完整测试套件', () => {
                 expect(route.path).toBe('/users/123');
             });
 
-            it('应该正确处理 SSR 相关属性', () => {
+            it('should correctly handle SSR related attributes', () => {
                 const mockReq = {} as any;
                 const mockRes = {} as any;
                 const options = createOptions({ req: mockReq, res: mockRes });
@@ -1171,8 +1171,8 @@ describe('Route 类完整测试套件', () => {
             });
         });
 
-        describe('与路由配置的集成', () => {
-            it('应该正确处理嵌套路由配置', () => {
+        describe('With route configuration integration', () => {
+            it('should correctly handle nested route configuration', () => {
                 const nestedRoutes: RouteConfig[] = [
                     {
                         path: '/admin',
@@ -1199,8 +1199,8 @@ describe('Route 类完整测试套件', () => {
         });
     });
 
-    describe('🎭 性能测试', () => {
-        it('应该在合理时间内创建大量路由实例', () => {
+    describe('🎭 Performance tests', () => {
+        it('should create a large number of route instances within reasonable time', () => {
             const options = createOptions();
             const startTime = performance.now();
 
@@ -1215,11 +1215,11 @@ describe('Route 类完整测试套件', () => {
             const endTime = performance.now();
             const duration = endTime - startTime;
 
-            // 1000个实例应该在100ms内创建完成
+            // 1000 instances should be created within 100ms
             expect(duration).toBeLessThan(100);
         });
 
-        it('应该高效处理状态操作', () => {
+        it('should efficiently handle state operations', () => {
             const options = createOptions();
             const route = new Route({
                 options,
@@ -1236,15 +1236,15 @@ describe('Route 类完整测试套件', () => {
             const endTime = performance.now();
             const duration = endTime - startTime;
 
-            // 1000次状态设置应该在50ms内完成
+            // 1000 state setting should be completed within 50ms
             expect(duration).toBeLessThan(50);
             expect(Object.keys(route.state)).toHaveLength(1000);
         });
     });
 });
 
-// 补充遗漏的测试用例
-describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
+// Supplement missing test cases
+describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
     const createOptions = (
         overrides: Partial<RouterOptions> = {}
     ): RouterParsedOptions => {
@@ -1281,46 +1281,46 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
         return parsedOptions(routerOptions);
     };
 
-    describe('🔧 applyRouteParams 边界条件测试', () => {
-        it('应该处理非对象toInput参数', () => {
+    describe('🔧 applyRouteParams Boundary Condition Tests', () => {
+        it('should handle non-object toInput parameters', () => {
             const base = new URL('http://localhost:3000/app/');
             const options = createOptions();
             const to = new URL('http://localhost:3000/app/users/123');
             const originalPathname = to.pathname;
             const match = options.matcher(to, base);
 
-            // 测试字符串类型
+            // Test string type
             applyRouteParams(match, '/users/123', base, to);
             expect(to.pathname).toBe(originalPathname);
 
-            // 测试null
+            // Test null
             applyRouteParams(match, null as any, base, to);
             expect(to.pathname).toBe(originalPathname);
 
-            // 测试undefined
+            // Test undefined
             applyRouteParams(match, undefined as any, base, to);
             expect(to.pathname).toBe(originalPathname);
         });
 
-        it('应该处理空params对象', () => {
+        it('should handle empty params object', () => {
             const base = new URL('http://localhost:3000/app/');
             const options = createOptions();
             const to = new URL('http://localhost:3000/app/users/123');
             const originalPathname = to.pathname;
             const match = options.matcher(to, base);
 
-            // 测试空params
+            // Test empty params
             const toInput = { path: '/users/123', params: {} };
             applyRouteParams(match, toInput, base, to);
             expect(to.pathname).toBe(originalPathname);
 
-            // 测试undefined params
+            // Test undefined params
             const toInput2 = { path: '/users/123', params: undefined as any };
             applyRouteParams(match, toInput2, base, to);
             expect(to.pathname).toBe(originalPathname);
         });
 
-        it('应该处理路径片段为空的情况', () => {
+        it('should handle path segment empty cases', () => {
             const base = new URL('http://localhost:3000/app/');
             const options = createOptions({
                 base,
@@ -1329,23 +1329,23 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             const to = new URL('http://localhost:3000/app/users/123');
             const match = options.matcher(to, base);
 
-            // 模拟compile返回空片段的情况
+            // Simulate compile return empty fragment cases
             const originalCompile = match.matches[0].compile;
-            match.matches[0].compile = vi.fn(() => '/users/'); // 返回空的id部分
+            match.matches[0].compile = vi.fn(() => '/users/'); // Return empty id part
 
             const toInput = { path: '/users/123', params: { id: '' } };
             applyRouteParams(match, toInput, base, to);
 
-            // 应该保留原有路径片段
+            // Should keep original path fragment
             expect(to.pathname).toBe('/app/users/123');
 
-            // 恢复原始compile函数
+            // Restore original compile function
             match.matches[0].compile = originalCompile;
         });
     });
 
-    describe('🎯 查询参数处理深度测试', () => {
-        it('应该处理查询参数的去重逻辑', () => {
+    describe('🎯 Query Parameter Processing Depth Test', () => {
+        it('should handle query parameter de-duplication logic', () => {
             const options = createOptions();
             const route = new Route({
                 options,
@@ -1353,16 +1353,16 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
                 toInput: '/users/123?name=john&name=jane&age=25&name=bob'
             });
 
-            // query应该只包含第一个值
+            // query should only contain the first value
             expect(route.query.name).toBe('john');
             expect(route.query.age).toBe('25');
 
-            // queryArray应该包含所有值
+            // queryArray should contain all values
             expect(route.queryArray.name).toEqual(['john', 'jane', 'bob']);
             expect(route.queryArray.age).toEqual(['25']);
         });
 
-        it('应该处理空查询参数值', () => {
+        it('should handle empty query parameter values', () => {
             const options = createOptions();
             const route = new Route({
                 options,
@@ -1376,7 +1376,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             expect(route.query.value).toBe('test');
         });
 
-        it('应该处理特殊字符的查询参数', () => {
+        it('should handle special character query parameters', () => {
             const options = createOptions();
             const route = new Route({
                 options,
@@ -1390,8 +1390,8 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
         });
     });
 
-    describe('🔄 克隆功能深度测试', () => {
-        it('应该正确克隆复杂状态对象', () => {
+    describe('🔄 Clone Function Depth Test', () => {
+        it('should correctly clone complex state object', () => {
             const options = createOptions();
             const complexState = {
                 user: { id: 123, name: 'John', roles: ['admin', 'user'] },
@@ -1407,16 +1407,16 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
 
             const cloned = original.clone();
 
-            // 验证状态深拷贝
+            // Verify state deep copy
             expect(cloned.state).toEqual(original.state);
             expect(cloned.state).not.toBe(original.state);
 
-            // 修改克隆对象不应影响原对象
+            // Modify cloned object should not affect original
             cloned.setState('newProp', 'newValue');
             expect(original.state.newProp).toBeUndefined();
         });
 
-        it('应该保持克隆对象的_options引用', () => {
+        it('should keep cloned object _options reference', () => {
             const options = createOptions();
             const original = new Route({
                 options,
@@ -1426,11 +1426,11 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
 
             const cloned = original.clone();
 
-            // _options应该是同一个引用
+            // _options should be the same reference
             expect((cloned as any)._options).toBe((original as any)._options);
         });
 
-        it('应该正确克隆带有查询参数和hash的路由', () => {
+        it('should correctly clone routes with query parameters and hash', () => {
             const options = createOptions();
             const original = new Route({
                 options,
@@ -1447,11 +1447,11 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
         });
     });
 
-    describe('🏗️ 构造函数边界条件测试', () => {
-        it('应该处理keepScrollPosition的各种值', () => {
+    describe('��️ Constructor Boundary Condition Tests', () => {
+        it('should handle keepScrollPosition various values', () => {
             const options = createOptions();
 
-            // 测试true值
+            // Test true value
             const route1 = new Route({
                 options,
                 toType: RouteType.push,
@@ -1459,7 +1459,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             });
             expect(route1.keepScrollPosition).toBe(true);
 
-            // 测试false值
+            // Test false value
             const route2 = new Route({
                 options,
                 toType: RouteType.push,
@@ -1467,7 +1467,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             });
             expect(route2.keepScrollPosition).toBe(false);
 
-            // 测试truthy值
+            // Test truthy value
             const route3 = new Route({
                 options,
                 toType: RouteType.push,
@@ -1475,7 +1475,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             });
             expect(route3.keepScrollPosition).toBe(true);
 
-            // 测试falsy值
+            // Test falsy value
             const route4 = new Route({
                 options,
                 toType: RouteType.push,
@@ -1483,7 +1483,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             });
             expect(route4.keepScrollPosition).toBe(false);
 
-            // 测试字符串路径（应该为false）
+            // Test string path (should be false)
             const route5 = new Route({
                 options,
                 toType: RouteType.push,
@@ -1492,10 +1492,10 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             expect(route5.keepScrollPosition).toBe(false);
         });
 
-        it('应该正确处理config和meta的计算', () => {
+        it('should correctly handle config and meta calculation', () => {
             const options = createOptions();
 
-            // 有匹配的路由
+            // Matched route
             const matchedRoute = new Route({
                 options,
                 toType: RouteType.push,
@@ -1504,7 +1504,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             expect(matchedRoute.config).not.toBeNull();
             expect(matchedRoute.meta.title).toBe('User Detail');
 
-            // 无匹配的路由
+            // Unmatched route
             const unmatchedRoute = new Route({
                 options,
                 toType: RouteType.push,
@@ -1514,7 +1514,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             expect(unmatchedRoute.meta).toEqual({});
         });
 
-        it('应该正确处理matched数组的冻结', () => {
+        it('should correctly handle matched array freezing', () => {
             const options = createOptions();
             const route = new Route({
                 options,
@@ -1522,18 +1522,18 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
                 toInput: '/users/123'
             });
 
-            // matched数组应该被冻结
+            // matched array should be frozen
             expect(Object.isFrozen(route.matched)).toBe(true);
 
-            // 尝试修改应该失败
+            // Try to modify should fail
             expect(() => {
                 (route.matched as any).push({});
             }).toThrow();
         });
     });
 
-    describe('🔒 属性不可变性测试', () => {
-        it('应该验证只读属性的行为', () => {
+    describe('🔒 Property Immutable Test', () => {
+        it('should verify read-only property behavior', () => {
             const options = createOptions();
             const route = new Route({
                 options,
@@ -1541,20 +1541,20 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
                 toInput: '/users/123'
             });
 
-            // 验证属性存在且有正确的值
+            // Verify property existence and correct values
             expect(route.params).toBeDefined();
             expect(route.query).toBeDefined();
             expect(route.url).toBeDefined();
 
-            // 验证这些属性的基本特性
+            // Verify basic characteristics of these properties
             expect(typeof route.params).toBe('object');
             expect(typeof route.query).toBe('object');
             expect(route.url instanceof URL).toBe(true);
         });
     });
 
-    describe('🎨 状态管理特殊情况', () => {
-        it('应该处理状态对象的特殊键', () => {
+    describe('🎨 State Management Special Cases', () => {
+        it('should handle state object special keys', () => {
             const options = createOptions();
             const route = new Route({
                 options,
@@ -1572,7 +1572,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
             expect(route.state.specialKey).toBe('specialValue');
         });
 
-        it('应该处理状态同步时的特殊键', () => {
+        it('should handle state synchronization special keys', () => {
             const options = createOptions();
 
             const sourceRoute = new Route({
@@ -1607,8 +1607,8 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
         });
     });
 
-    describe('🔄 syncTo 方法测试', () => {
-        it('应该完全同步所有路由属性', () => {
+    describe('🔄 syncTo Method Tests', () => {
+        it('should fully synchronize all route attributes', () => {
             const options = createOptions();
 
             const sourceRoute = new Route({
@@ -1633,23 +1633,23 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
 
             sourceRoute.syncTo(targetRoute);
 
-            // 验证可变属性同步
+            // Verify mutable attributes synchronization
             expect(targetRoute.status).toBe(RouteStatus.success);
             expect(targetRoute.statusCode).toBe(200);
 
-            // 验证状态同步
+            // Verify state synchronization
             expect(targetRoute.state.userId).toBe(456);
             expect(targetRoute.state.name).toBe('Jane');
             expect(targetRoute.state.oldData).toBeUndefined();
 
-            // 验证只读属性同步
+            // Verify read-only attributes synchronization
             expect(targetRoute.type).toBe(RouteType.push);
             expect(targetRoute.path).toBe('/users/456');
             expect(targetRoute.fullPath).toBe('/users/456');
             expect(targetRoute.params.id).toBe('456');
         });
 
-        it('应该同步 params 对象', () => {
+        it('should synchronize params object', () => {
             const options = createOptions();
 
             const sourceRoute = new Route({
@@ -1666,12 +1666,12 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
 
             sourceRoute.syncTo(targetRoute);
 
-            // 验证 params 被正确同步
+            // Verify params are correctly synchronized
             expect(targetRoute.params.id).toBe('789');
             expect(targetRoute.params.postId).toBeUndefined();
         });
 
-        it('应该同步查询参数', () => {
+        it('should synchronize query parameters', () => {
             const options = createOptions();
 
             const sourceRoute = new Route({
@@ -1688,13 +1688,13 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
 
             sourceRoute.syncTo(targetRoute);
 
-            // 验证查询参数被正确同步
+            // Verify query parameters are correctly synchronized
             expect(targetRoute.query.q).toBe('test');
             expect(targetRoute.query.page).toBe('2');
             expect(targetRoute.query.old).toBeUndefined();
         });
 
-        it('应该同步 handle 相关属性', () => {
+        it('should synchronize handle related attributes', () => {
             const options = createOptions();
 
             const sourceRoute = new Route({
@@ -1716,7 +1716,7 @@ describe('🔍 Route 类深度测试 - 遗漏场景补充', () => {
 
             sourceRoute.syncTo(targetRoute);
 
-            // 验证 handle 相关属性被同步
+            // Verify handle related attributes are synchronized
             expect((targetRoute as any)._handle).toBe(
                 (sourceRoute as any)._handle
             );

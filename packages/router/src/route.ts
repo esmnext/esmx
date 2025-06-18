@@ -17,29 +17,29 @@ import {
 import { isNonEmptyPlainObject, isPlainObject } from './util';
 
 /**
- * Route 类中不可枚举属性的配置
- * 这些属性在对象遍历、序列化等操作中会被隐藏
+ * Configuration for non-enumerable properties in Route class
+ * These properties will be hidden during object traversal and serialization
  */
 export const NON_ENUMERABLE_PROPERTIES = [
-    // 私有字段 - 内部实现细节
+    // Private fields - internal implementation details
     '_handled',
     '_handle',
     '_handleResult',
     '_options',
 
-    // SSR 专用属性 - 在客户端环境中无意义
+    // SSR-specific properties - meaningless in client environment
     'req',
     'res',
 
-    // 内部上下文 - 框架内部使用
+    // Internal context - used by framework internally
     'context',
 
-    // 状态码 - 内部状态信息
+    // Status code - internal status information
     'statusCode'
 ] satisfies string[];
 
 /**
- * 创建默认的路由选项
+ * Create default route options
  */
 function createDefaultRouteOptions(): Required<RouteOptions> {
     return {
@@ -51,11 +51,11 @@ function createDefaultRouteOptions(): Required<RouteOptions> {
 }
 
 /**
- * 将用户传入的参数拼接到URL路径中
- * @param match 路由匹配结果
- * @param toInput 用户传入的路由位置对象
- * @param base 基础URL
- * @param to 当前解析的URL对象
+ * Append user-provided parameters to URL path
+ * @param match Route matching result
+ * @param toInput User-provided route location object
+ * @param base Base URL
+ * @param to Current parsed URL object
  */
 export function applyRouteParams(
     match: RouteMatchResult,
@@ -71,47 +71,47 @@ export function applyRouteParams(
         return;
     }
 
-    // 获取最后匹配的路由配置
+    // Get the last matched route configuration
     const lastMatch = match.matches[match.matches.length - 1];
 
-    // 分割当前路径
+    // Split current path
     const current = to.pathname.split('/');
 
-    // 用用户参数编译新路径并分割
+    // Compile new path with user parameters and split
     const next = new URL(
         lastMatch.compile(toInput.params).substring(1),
         base
     ).pathname.split('/');
 
-    // 用新路径片段替换当前路径片段
+    // Replace current path segments with new path segments
     next.forEach((item, index) => {
         current[index] = item || current[index];
     });
 
-    // 更新URL路径
+    // Update URL path
     to.pathname = current.join('/');
 
-    // 合并参数到匹配结果中，用户参数优先
+    // Merge parameters to match result, user parameters take precedence
     Object.assign(match.params, toInput.params);
 }
 
 /**
- * Route 类提供完整的路由对象功能
+ * Route class provides complete route object functionality
  */
 export class Route {
-    // 私有字段用于 handle 验证
+    // Private fields for handle validation
     private _handled = false;
     private _handle: RouteHandleHook | null = null;
     private _handleResult: RouteHandleResult | null = null;
     private readonly _options: RouterParsedOptions;
 
-    // 公共属性
+    // Public properties
     public status: RouteStatus = RouteStatus.resolved;
     public statusCode: number | null = null;
     public readonly state: RouteState;
     public readonly keepScrollPosition: boolean;
 
-    // 只读属性
+    // Read-only properties
     public readonly type: RouteType;
     public readonly isPush: boolean;
     public readonly req: IncomingMessage | null;
@@ -129,13 +129,13 @@ export class Route {
     public readonly config: RouteParsedConfig | null;
 
     constructor(routeOptions: Partial<RouteOptions> = {}) {
-        // 合并默认选项
+        // Merge default options
         const defaults = createDefaultRouteOptions();
         const finalOptions = { ...defaults, ...routeOptions };
 
         const { options, toType, toInput, from } = finalOptions;
 
-        // 保存原始选项用于克隆
+        // Save original options for cloning
         this._options = options;
         this.type = toType;
         this.isPush = toType.startsWith('push');
@@ -167,18 +167,18 @@ export class Route {
                 : null;
         this.meta = this.config?.meta || {};
 
-        // 初始化状态对象 - 创建新的本地对象，合并外部传入的状态
+        // Initialize state object - create new local object, merge externally passed state
         const state: RouteState = {};
         if (isPlainObject(toInput) && toInput.state) {
             Object.assign(state, toInput.state);
         }
         this.state = state;
 
-        // 初始化查询参数对象
+        // Initialize query parameter objects
         const query: Record<string, string | undefined> = {};
         const queryArray: Record<string, string[] | undefined> = {};
 
-        // 处理查询参数
+        // Process query parameters
         for (const key of new Set(to.searchParams.keys())) {
             query[key] = to.searchParams.get(key)!;
             queryArray[key] = to.searchParams.getAll(key);
@@ -187,27 +187,27 @@ export class Route {
         this.queryArray = queryArray;
         this.hash = to.hash;
 
-        // 应用用户传入的路由参数（如果匹配成功）
+        // Apply user-provided route parameters (if match is successful)
         if (match) {
             applyRouteParams(match, toInput, base, to);
-            // 将匹配到的参数赋值给路由对象
+            // Assign matched parameters to route object
             Object.assign(this.params, match.params);
         }
 
-        // 设置状态码
-        // 优先使用用户传入的statusCode
+        // Set status code
+        // Prioritize user-provided statusCode
         if (isPlainObject(toInput) && typeof toInput.statusCode === 'number') {
             this.statusCode = toInput.statusCode;
         } else if (isPlainObject(toInput) && toInput.statusCode === null) {
             this.statusCode = null;
         }
-        // 如果没有传入statusCode，保持默认的null值
+        // If statusCode is not provided, keep default null value
 
-        // 设置属性的可枚举性
+        // Configure property enumerability
         this._configureEnumerability();
     }
 
-    // handle 相关的 getter/setter
+    // handle related getter/setter
     get handle(): RouteHandleHook | null {
         return this._handle;
     }
@@ -225,18 +225,18 @@ export class Route {
     }
 
     /**
-     * 配置属性的可枚举性
-     * 将内部实现细节设为不可枚举，保持用户常用属性可枚举
+     * Configure property enumerability
+     * Set internal implementation details as non-enumerable, keep user-common properties enumerable
      */
     private _configureEnumerability(): void {
-        // 根据配置将指定属性设为不可枚举
+        // Set specified properties as non-enumerable according to configuration
         for (const property of NON_ENUMERABLE_PROPERTIES) {
             Object.defineProperty(this, property, { enumerable: false });
         }
     }
 
     /**
-     * 设置 handle 函数，包装验证逻辑
+     * Set handle function with validation logic wrapper
      */
     setHandle(val: RouteHandleHook | null): void {
         if (typeof val !== 'function') {
@@ -264,36 +264,36 @@ export class Route {
     }
 
     /**
-     * 合并新的状态到当前路由的 state 中
-     * @param newState 要合并的新状态
+     * Merge new state into current route's state
+     * @param newState New state to merge
      */
     mergeState(newState: Partial<RouteState>): void {
-        // 直接合并新的状态，不清空现有状态
+        // Directly merge new state without clearing existing state
         Object.assign(this.state, newState);
     }
 
     /**
-     * 设置单个状态值
-     * @param name 状态名称
-     * @param value 状态值
+     * Set single state value
+     * @param name State name
+     * @param value State value
      */
     setState(name: string, value: any): void {
         this.state[name] = value;
     }
 
     /**
-     * 将当前路由的所有属性同步到目标路由对象中
-     * 用于响应式系统中的路由对象更新
-     * @param targetRoute 目标路由对象
+     * Sync all properties of current route to target route object
+     * Used for route object updates in reactive systems
+     * @param targetRoute Target route object
      */
     syncTo(targetRoute: Route): void {
-        // 复制可枚举属性
+        // Copy enumerable properties
         Object.assign(targetRoute, this);
 
-        // 复制不可枚举属性 - 类型安全的属性复制
+        // Copy non-enumerable properties - type-safe property copying
         for (const property of NON_ENUMERABLE_PROPERTIES) {
             if (property in this && property in targetRoute) {
-                // 使用 Reflect.set 进行类型安全的属性设置
+                // Use Reflect.set for type-safe property setting
                 const value = Reflect.get(this, property);
                 Reflect.set(targetRoute, property, value);
             }
@@ -301,17 +301,17 @@ export class Route {
     }
 
     /**
-     * 克隆当前路由实例
-     * 返回一个新的 Route 实例，包含相同的配置和状态
+     * Clone current route instance
+     * Returns a new Route instance with same configuration and state
      */
     clone(): Route {
-        // 重新构造路由对象，传入当前的状态
+        // Reconstruct route object, passing current state
         const toInput = {
             path: this.fullPath,
             state: { ...this.state }
         };
 
-        // 从构造函数的 finalOptions 中获取原始的 options
+        // Get original options from constructor's finalOptions
         const options = this._options;
 
         const clonedRoute = new Route({
@@ -320,7 +320,7 @@ export class Route {
             toInput
         });
 
-        // 手动复制statusCode，因为它可能被手动修改过
+        // Manually copy statusCode as it might have been manually modified
         clonedRoute.statusCode = this.statusCode;
 
         return clonedRoute;
