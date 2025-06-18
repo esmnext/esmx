@@ -401,9 +401,9 @@ describe('router-view.ts - RouterView Component', () => {
         it('should handle null components gracefully', async () => {
             const routesWithNull: RouteConfig[] = [
                 {
-                    path: '/null',
-                    component: null as any,
-                    meta: { title: 'Null' }
+                    path: '/null-component',
+                    component: null as RouteConfig['component'],
+                    meta: { title: 'Null Component' }
                 }
             ];
 
@@ -415,7 +415,7 @@ describe('router-view.ts - RouterView Component', () => {
             });
 
             // Initialize the router and wait for it to be ready
-            await nullRouter.replace('/null');
+            await nullRouter.replace('/null-component');
             await new Promise((resolve) => setTimeout(resolve, 10));
 
             const TestApp = defineComponent({
@@ -463,7 +463,7 @@ describe('router-view.ts - RouterView Component', () => {
             const malformedRoutes: RouteConfig[] = [
                 {
                     path: '/malformed',
-                    component: MalformedModule as any,
+                    component: MalformedModule as RouteConfig['component'],
                     meta: { title: 'Malformed' }
                 }
             ];

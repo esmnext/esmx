@@ -12,6 +12,7 @@ import {
     ref
 } from 'vue';
 import {
+    type VueInstance,
     getRoute,
     getRouter,
     useLink,
@@ -228,18 +229,18 @@ describe('use.ts - Vue Router Integration', () => {
 
     describe('Setup() Support - useRouter in setup()', () => {
         it('should allow useRouter to work in setup() via provide/inject', async () => {
-            let childRouter: Router | null = null;
-            let childRoute: any = null;
+            let routerInstance: Router | null = null;
+            let childRoute: Route | null = null;
 
             // Child component that uses router in setup()
             const ChildComponent = defineComponent({
                 name: 'ChildComponent',
                 setup() {
                     // This should now work in setup() thanks to provide/inject
-                    childRouter = useRouter();
+                    routerInstance = useRouter();
                     childRoute = useRoute();
 
-                    expect(childRouter).toBe(router);
+                    expect(routerInstance).toBe(router);
                     expect(childRoute.path).toBe('/');
 
                     return () => h('div', 'Child Component');
@@ -261,8 +262,9 @@ describe('use.ts - Vue Router Integration', () => {
             await nextTick();
 
             // Verify that setup() calls succeeded
-            expect(childRouter).toBe(router);
-            expect(childRoute.path).toBe('/');
+            expect(routerInstance).toBe(router);
+            expect(childRoute).toBeTruthy();
+            expect(childRoute!.path).toBe('/');
 
             app.unmount();
         });
@@ -309,8 +311,8 @@ describe('use.ts - Vue Router Integration', () => {
     describe('Component Hierarchy Context Finding - Investigation', () => {
         it('should investigate component hierarchy traversal with logging', async () => {
             let childRouterResult: Router | null = null;
-            let parentVmInstance: any = null;
-            let childVmInstance: any = null;
+            let parentVmInstance: VueInstance | null = null;
+            let childVmInstance: VueInstance | null = null;
 
             // Create a child component that doesn't have direct router context
             const ChildComponent = defineComponent({
@@ -318,13 +320,15 @@ describe('use.ts - Vue Router Integration', () => {
                 setup(_, { expose }) {
                     // Get current instance for investigation
                     const instance = getCurrentInstance();
-                    childVmInstance = instance?.proxy;
+                    childVmInstance = instance?.proxy || null;
 
                     try {
                         // This should trigger hierarchy traversal
                         childRouterResult = useRouter();
-                    } catch (error: any) {
-                        // Failed to get router
+                    } catch (error: unknown) {
+                        expect((error as Error).message).toContain(
+                            'Router context not found'
+                        );
                     }
 
                     expose({ childVmInstance });
@@ -339,7 +343,7 @@ describe('use.ts - Vue Router Integration', () => {
                 setup(_, { expose }) {
                     // Get current instance for investigation
                     const instance = getCurrentInstance();
-                    parentVmInstance = instance?.proxy;
+                    parentVmInstance = instance?.proxy || null;
 
                     // Provide router context at parent level
                     useProvideRouter(router);
@@ -357,7 +361,9 @@ describe('use.ts - Vue Router Integration', () => {
             if (childVmInstance && parentVmInstance) {
                 // Check if router context exists on parent
                 const parentHasContext =
-                    !!(parentVmInstance as any)[Symbol.for('router-context')] ||
+                    !!(parentVmInstance as Record<symbol, unknown>)[
+                        Symbol.for('router-context')
+                    ] ||
                     Object.getOwnPropertySymbols(parentVmInstance).some((sym) =>
                         sym.toString().includes('router-context')
                     );
@@ -373,14 +379,14 @@ describe('use.ts - Vue Router Integration', () => {
         });
 
         it('should investigate direct getRouter call with component instances', async () => {
-            let parentInstance: any = null;
-            let childInstance: any = null;
+            let parentInstance: VueInstance | null = null;
+            let childInstance: VueInstance | null = null;
 
             const ChildComponent = defineComponent({
                 name: 'ChildComponent',
                 setup() {
                     const instance = getCurrentInstance();
-                    childInstance = instance?.proxy;
+                    childInstance = instance?.proxy || null;
                     return () => '<div>Child</div>';
                 }
             });
@@ -390,7 +396,7 @@ describe('use.ts - Vue Router Integration', () => {
                 components: { ChildComponent },
                 setup() {
                     const instance = getCurrentInstance();
-                    parentInstance = instance?.proxy;
+                    parentInstance = instance?.proxy || null;
                     useProvideRouter(router);
                     return () => h(ChildComponent);
                 }
@@ -404,14 +410,10 @@ describe('use.ts - Vue Router Integration', () => {
                 try {
                     const routerFromChild = getRouter(childInstance);
                     expect(routerFromChild).toBe(router);
-                } catch (error: any) {
-                    // Let's try getRouter on parent to confirm it works
-                    try {
-                        const routerFromParent = getRouter(parentInstance);
-                        expect(routerFromParent).toBe(router);
-                    } catch (parentError: any) {
-                        // Both failed
-                    }
+                } catch (error: unknown) {
+                    expect((error as Error).message).toContain(
+                        'Router context not found'
+                    );
                 }
             }
 
@@ -573,7 +575,7 @@ describe('use.ts - Vue Router Integration', () => {
 
             // This call will traverse: Child -> Parent (no context) -> GrandParent (has context)
             // This should hit lines 59-60 (current = current.$parent; })
-            childRouterResult = getRouter(mockDeepChild as any);
+            childRouterResult = getRouter(mockDeepChild as VueInstance);
 
             expect(childRouterResult).toBe(router);
             expect(childRouterResult).toBeInstanceOf(Router);
@@ -603,7 +605,7 @@ describe('use.ts - Vue Router Integration', () => {
             };
 
             // This should traverse the parent chain and find the router in the root
-            const foundRouter = getRouter(leafInstance as any);
+            const foundRouter = getRouter(leafInstance as VueInstance);
 
             expect(foundRouter).toBe(router);
             expect(foundRouter).toBeInstanceOf(Router);

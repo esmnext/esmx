@@ -137,19 +137,23 @@ describe('index.ts - Package Entry Point', () => {
         it('should have correct function signatures for Options API', () => {
             expect(() => {
                 try {
-                    RouterVueModule.getRouter({} as any);
-                } catch (error: any) {
+                    RouterVueModule.getRouter({} as Record<string, unknown>);
+                } catch (error: unknown) {
                     // Expected to throw context error when called without router
-                    expect(error.message).toContain('Router context not found');
+                    expect((error as Error).message).toContain(
+                        'Router context not found'
+                    );
                 }
             }).not.toThrow();
 
             expect(() => {
                 try {
-                    RouterVueModule.getRoute({} as any);
-                } catch (error: any) {
+                    RouterVueModule.getRoute({} as Record<string, unknown>);
+                } catch (error: unknown) {
                     // Expected to throw context error when called without router
-                    expect(error.message).toContain('Router context not found');
+                    expect((error as Error).message).toContain(
+                        'Router context not found'
+                    );
                 }
             }).not.toThrow();
         });

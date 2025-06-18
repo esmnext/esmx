@@ -199,12 +199,12 @@ describe('plugin.ts - RouterPlugin', () => {
         });
 
         it('should actually call $router getter when accessed in component', async () => {
-            let routerResult: any = null;
+            let routerResult: Router | null = null;
 
             const TestComponent = defineComponent({
                 mounted() {
                     // This will trigger the $router getter defined in the plugin
-                    routerResult = (this as any).$router;
+                    routerResult = this.$router;
                 },
                 render() {
                     return h('div', 'Test Component');
@@ -228,12 +228,11 @@ describe('plugin.ts - RouterPlugin', () => {
         });
 
         it('should actually call $route getter when accessed in component', async () => {
-            let routeResult: any = null;
+            let routeResult: Route | null = null;
 
             const TestComponent = defineComponent({
                 mounted() {
-                    // This will trigger the $route getter defined in the plugin
-                    routeResult = (this as any).$route;
+                    routeResult = this.$route;
                 },
                 render() {
                     return h('div', 'Test Component');
@@ -257,8 +256,8 @@ describe('plugin.ts - RouterPlugin', () => {
 
             // Verify the getter was called and returned correct value
             expect(routeResult).toBeTruthy();
-            expect(routeResult.path).toBe('/about');
-            expect(routeResult.meta.title).toBe('About');
+            expect(routeResult).toHaveProperty('path', '/about');
+            expect(routeResult).toHaveProperty('meta.title', 'About');
         });
     });
 

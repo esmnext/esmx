@@ -28,7 +28,7 @@ describe('util.ts - Utility Functions', () => {
     describe('createSymbolProperty', () => {
         let testSymbol: symbol;
         let symbolProperty: ReturnType<typeof createSymbolProperty>;
-        let testInstance: Record<string | symbol, any>;
+        let testInstance: Record<string | symbol, unknown>;
 
         beforeEach(() => {
             testSymbol = Symbol('test-symbol');
@@ -370,7 +370,7 @@ describe('util.ts - Utility Functions', () => {
 
         describe('edge cases', () => {
             it('should handle circular references in modules', () => {
-                const esModule: any = {
+                const esModule: Record<string, unknown> = {
                     __esModule: true
                 };
                 esModule.default = esModule; // Circular reference
