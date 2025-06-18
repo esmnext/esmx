@@ -113,7 +113,7 @@ export class MemoryHistory implements History {
         unused: string,
         url?: string | URL | null
     ): void {
-        // 移除当前位置之后的所有记录
+        // Remove all entries after the current position
         this._entries.splice(this._index + 1);
         this._entries.push({ state: data, url: url?.toString() ?? this.url });
         this._index = this._entries.length - 1;
@@ -142,7 +142,7 @@ export class MemoryHistory implements History {
         if (newIdx < 0 || newIdx >= this.length) return;
         this._index = newIdx;
         const entry = this._curEntry!;
-        // 尽可能的模拟 html history 的 go（异步触发 popstate 事件）
+        // Simulate the async popstate event of html history as closely as possible
         setTimeout(() => {
             this._popStateCbs.forEach((cb) => cb(entry.url, entry.state));
         });

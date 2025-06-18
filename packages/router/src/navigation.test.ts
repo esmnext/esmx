@@ -18,7 +18,7 @@ const sleep = (ms?: number) => new Promise((s) => setTimeout(s, ms));
 const awaitGo = (history: MemoryHistory, delta: number) => {
     const p = Promise.withResolvers<void>();
     const un = history.onPopState(() => {
-        un(); // 清理订阅
+        un(); // Cleanup subscription
         p.resolve();
     });
     history.go(delta);
@@ -102,10 +102,10 @@ describe('MemoryHistory', () => {
             history.pushState({ id: 1 }, '', '/page1');
 
             const originalState = history.state;
-            history.go(-2); // 尝试超出下限
+            history.go(-2); // Try to go below lower bound
             assert.deepEqual(history.state, originalState);
 
-            history.go(2); // 尝试超出上限
+            history.go(2); // Try to go above upper bound
             assert.deepEqual(history.state, originalState);
         });
 
@@ -124,7 +124,7 @@ describe('MemoryHistory', () => {
 });
 
 describe.concurrent('subscribeMemory', () => {
-    // 保持原始功能测试 - 订阅后原始的功能应正常工作
+    // Keep original functionality test - original features should work after subscription
     test('should preserve original go functionality after subscription', async () => {
         const history = new MemoryHistory();
         history.pushState({ id: 1 }, '', '/page1');
@@ -132,19 +132,19 @@ describe.concurrent('subscribeMemory', () => {
 
         void history.onPopState(() => {});
 
-        // 验证原始功能仍然正常工作
+        // Verify that original functionality still works
         history.go(-1);
-        await sleep(); // 等待回调执行
+        await sleep(); // Wait for callback execution
         assert.equal(history.url, '/page1');
         assert.deepEqual(history.state, { id: 1 });
 
         history.go(1);
-        await sleep(); // 等待回调执行
+        await sleep(); // Wait for callback execution
         assert.equal(history.url, '/page2');
         assert.deepEqual(history.state, { id: 2 });
     });
 
-    // 基本回调功能测试 - 在订阅后，回调应在导航时触发
+    // Basic callback functionality test - callback should trigger on navigation
     test('should trigger callback only on actual navigation (like popstate)', async () => {
         const history = new MemoryHistory();
         history.pushState({ id: 1 }, '', '/page1');
@@ -155,7 +155,7 @@ describe.concurrent('subscribeMemory', () => {
             callbacks.push({ url, state });
         });
 
-        // 导航到前一页 - 应该触发回调
+        // Navigate to the previous page - should trigger callback
         await awaitGo(history, -1);
 
         assert.equal(callbacks.length, 1);
@@ -163,7 +163,7 @@ describe.concurrent('subscribeMemory', () => {
         assert.deepEqual(callbacks[0].state, { id: 1 });
     });
 
-    // 多次导航测试 - 测试多次导航时回调是否都被正确触发
+    // Multiple navigations test - check if callbacks are correctly triggered for multiple navigations
     test('should call callback multiple times for multiple navigation', async () => {
         const history = new MemoryHistory();
         history.pushState({ id: 1 }, '', '/page1');
@@ -175,11 +175,11 @@ describe.concurrent('subscribeMemory', () => {
             callbacks.push({ url, state });
         });
 
-        // 多次导航
-        history.go(-1); // 到 page2
-        history.go(-1); // 到 page1
-        history.go(2); // 到 page3
-        await sleep(); // 等待回调执行
+        // Multiple navigations
+        history.go(-1); // to page2
+        history.go(-1); // to page1
+        history.go(2); // to page3
+        await sleep(); // Wait for callback execution
 
         assert.equal(callbacks.length, 3);
         assert.deepEqual(callbacks, [
@@ -189,7 +189,7 @@ describe.concurrent('subscribeMemory', () => {
         ]);
     });
 
-    // 测试 pushState 和 replaceState - 这些操作不应触发回调
+    // Test pushState and replaceState - these operations should not trigger callbacks
     test('should NOT trigger callback on pushState/replaceState (like real popstate)', async () => {
         const history = new MemoryHistory();
 
@@ -198,15 +198,15 @@ describe.concurrent('subscribeMemory', () => {
             callbacks.push({ url, state });
         });
 
-        // pushState 和 replaceState 不应该触发 popstate 事件
+        // pushState and replaceState should not trigger popstate events
         history.pushState({ id: 1 }, '', '/page1');
         history.replaceState({ id: 2 }, '', '/page1-updated');
-        await sleep(); // 等待回调执行
+        await sleep(); // Wait for callback execution
 
         assert.equal(callbacks.length, 0);
     });
 
-    // 边界情况测试 - 测试 go(0) 和 go(undefined) - 这些操作不应触发回调
+    // Edge case test - test go(0) and go(undefined) - these should not trigger callbacks
     test('should NOT trigger callback when go() with delta 0 (no actual navigation)', async () => {
         const history = new MemoryHistory();
         history.pushState({ id: 1 }, '', '/page1');
@@ -216,15 +216,15 @@ describe.concurrent('subscribeMemory', () => {
             callbacks.push({ url, state });
         });
 
-        // go(0) 和 go(undefined) 不会改变历史状态，不应该触发回调
+        // go(0) and go(undefined) do not change history state and should not trigger callbacks
         history.go(0);
         history.go();
-        await sleep(); // 等待回调执行
+        await sleep(); // Wait for callback execution
 
         assert.equal(callbacks.length, 0);
     });
 
-    // 超出边界导航测试 - 测试超出历史记录边界的导航操作不应触发回调
+    // Out-of-bounds navigation test - navigation beyond history bounds should not trigger callbacks
     test('should NOT trigger callback when navigation is out of bounds', async () => {
         const history = new MemoryHistory();
         history.pushState({ id: 1 }, '', '/page1');
@@ -234,16 +234,16 @@ describe.concurrent('subscribeMemory', () => {
             callbacks.push({ url, state });
         });
 
-        // 尝试超出边界的导航
-        history.go(-10); // 超出下限
-        await sleep(); // 等待回调执行
-        history.go(10); // 超出上限
-        await sleep(); // 等待回调执行
+        // Attempting out-of-bounds navigation
+        history.go(-10); // Below lower bound
+        await sleep(); // Wait for callback execution
+        history.go(10); // Above upper bound
+        await sleep(); // Wait for callback execution
 
         assert.equal(callbacks.length, 0);
     });
 
-    // 合法的导航回调测试 - 合法的 back/forward/go 导航都应该触发回调
+    // Legal navigation callback test - valid back/forward/go navigations should all trigger callbacks
     test('should trigger callback for valid back/forward navigation', async () => {
         const history = new MemoryHistory();
         history.pushState({ id: 1 }, '', '/page1');
@@ -255,12 +255,12 @@ describe.concurrent('subscribeMemory', () => {
             callbacks.push({ url, state });
         });
 
-        // 这些都应该触发回调，因为会改变历史状态
-        history.back(); // 到 page2
-        history.back(); // 到 page1
-        history.forward(); // 到 page2
-        history.go(1); // 到 page3
-        await sleep(); // 等待回调执行
+        // These should all trigger callbacks as they change the history state
+        history.back(); // to page2
+        history.back(); // to page1
+        history.forward(); // to page2
+        history.go(1); // to page3
+        await sleep(); // Wait for callback execution
 
         assert.equal(callbacks.length, 4);
         assert.deepEqual(callbacks, [
@@ -271,7 +271,7 @@ describe.concurrent('subscribeMemory', () => {
         ]);
     });
 
-    // 测试回调中提供的状态和 URL - 确保回调中提供的状态和 URL 正确
+    // Test state and URL provided in callback - ensure they are correct
     test('should provide correct state and url in callback (like popstate event)', async () => {
         const history = new MemoryHistory();
         history.pushState({ userId: 123, page: 'profile' }, '', '/user/123');
@@ -297,7 +297,7 @@ describe.concurrent('subscribeMemory', () => {
         });
     });
 
-    // 测试多个订阅者 - 确保多个订阅者都能接收到相同的回调
+    // Test multiple subscribers - ensure all subscribers receive the same callback
     test('should support multiple subscribers like multiple event listeners', async () => {
         const history = new MemoryHistory();
         history.pushState({ id: 1 }, '', '/page1');
@@ -306,7 +306,7 @@ describe.concurrent('subscribeMemory', () => {
         const callbacks1: Array<{ url: string; state: any }> = [];
         const callbacks2: Array<{ url: string; state: any }> = [];
 
-        // 模拟多个组件都监听 popstate 事件
+        // Simulate multiple components listening to the popstate event
         void history.onPopState((url, state) => {
             callbacks1.push({ url, state });
         });
@@ -322,7 +322,7 @@ describe.concurrent('subscribeMemory', () => {
         assert.deepEqual(callbacks2, [{ url: '/page1', state: { id: 1 } }]);
     });
 
-    // 返回清理函数测试 - 测试是否返回清理函数
+    // Test returning cleanup function - check if it returns a function to unsubscribe
     test('should return cleanup function to unsubscribe', () => {
         const history = new MemoryHistory();
         const unsubscribe = history.onPopState(() => {});
@@ -330,7 +330,7 @@ describe.concurrent('subscribeMemory', () => {
         assert.equal(typeof unsubscribe, 'function');
     });
 
-    // 测试清理功能 - 确保可以正确取消订阅
+    // Test cleanup functionality - ensure subscription can be cancelled correctly
     test('cleanup function should stop triggering callbacks', async () => {
         const history = new MemoryHistory();
         history.pushState({ id: 1 }, '', '/page1');
@@ -341,20 +341,20 @@ describe.concurrent('subscribeMemory', () => {
             callbacks.push({ url, state });
         });
 
-        // 导航一次，应该触发回调
+        // Navigate once, should trigger callback
         await awaitGo(history, -1);
         assert.equal(callbacks.length, 1);
 
-        // 清理订阅
+        // Cleanup subscription
         unsubscribe();
 
-        // 再次导航，不应该触发回调
+        // Navigate again, should not trigger callback
         await awaitGo(history, 1);
 
         assert.equal(callbacks.length, 1);
     });
 
-    // 清理多个订阅者 - 确保清理函数只取消当前订阅
+    // Cleanup multiple subscribers - ensure cleanup function only cancels the current subscription
     test('should allow multiple subscriptions and cleanup only the current one', async () => {
         const history = new MemoryHistory();
         history.pushState({ id: 1 }, '', '/page1');
@@ -374,7 +374,7 @@ describe.concurrent('subscribeMemory', () => {
             callbacks3.push({ url, state });
         });
 
-        // 导航一次，所有订阅者都应该触发回调
+        // Navigate once, all subscribers should be triggered
         await awaitGo(history, -1);
         assert.equal(callbacks1.length, 1);
         assert.deepEqual(callbacks1, [{ url: '/page1', state: { id: 1 } }]);
@@ -383,17 +383,17 @@ describe.concurrent('subscribeMemory', () => {
         assert.equal(callbacks3.length, 1);
         assert.deepEqual(callbacks3, [{ url: '/page1', state: { id: 1 } }]);
 
-        // 清理订阅者2
+        // Cleanup subscriber 2
         unsubscribe2();
 
-        // 再次导航，剩下的订阅者应该触发回调，被清理的订阅者不应该触发
+        // Navigate again, remaining subscribers should be triggered, but the cleaned one should not
         await awaitGo(history, 1);
-        assert.equal(callbacks1.length, 2); // 订阅者1应被触发
-        assert.equal(callbacks2.length, 1); // 订阅者2应不再被触发
-        assert.equal(callbacks3.length, 2); // 订阅者3应被触发
+        assert.equal(callbacks1.length, 2); // Subscriber 1 should be triggered
+        assert.equal(callbacks2.length, 1); // Subscriber 2 should NOT be triggered
+        assert.equal(callbacks3.length, 2); // Subscriber 3 should be triggered
     });
 
-    // 相同的回调只订阅一次，且清理函数可以正确取消订阅
+    // Same callback subscribed only once, and cleanup function works correctly
     test('should not subscribe the same callback multiple times', async () => {
         const history = new MemoryHistory();
         history.pushState({ id: 1 }, '', '/page1');
@@ -404,38 +404,37 @@ describe.concurrent('subscribeMemory', () => {
             callbacks.push({ url, state });
         };
 
-        // 第一次订阅
+        // First subscription
         const unSub1 = history.onPopState(callback);
-        // 第二次订阅同一个回调
+        // Second subscription of the same callback
         const unSub2 = history.onPopState(callback);
 
-        // 导航一次，应该只触发一次回调
+        // Navigate once, should trigger callback only once
         await awaitGo(history, -1);
         assert.equal(callbacks.length, 1);
         assert.deepEqual(callbacks[0], { url: '/page1', state: { id: 1 } });
 
-        // 清理订阅
+        // Cleanup subscription
         unSub1();
-        unSub2(); // 第二次订阅的清理函数不应该有任何效果
+        unSub2(); // Cleanup for the second subscription should have no effect
 
-        // 再次导航，不应该触发回调
+        // Navigate again, should not trigger callback
         await awaitGo(history, 1);
-        assert.equal(callbacks.length, 1); // 回调仍然只有一次
+        assert.equal(callbacks.length, 1); // Callback count is still one
 
         void history.onPopState(callback);
-        unSub1(); // 可以重复执行解绑函数来解绑同一个监听器
+        unSub1(); // It should be possible to call the unsubscribe function multiple times for the same listener
 
-        // 再次导航，仍然不应该触发回调
+        // Navigate again, still should not trigger callback
         await awaitGo(history, -1);
-        assert.equal(callbacks.length, 1); // 回调仍然只有一次
+        assert.equal(callbacks.length, 1); // Callback count is still one
     });
 });
 
 describe('Navigation', () => {
-    // 创建测试用的路由选项
+    // Create router options for testing
     const createTestOptions = () => {
         const baseOptions: RouterOptions = {
-            id: 'test-router',
             context: {},
             routes: [],
             mode: RouterMode.memory,
@@ -531,9 +530,9 @@ describe('Navigation', () => {
             })
         );
         // await nav.go(-1);
-        // 模拟浏览器的后退操作
+        // Simulate browser back operation
         ((nav as any)._history as MemoryHistory).back();
-        await sleep(100); // 等待回调执行
+        await sleep(100); // Wait for callback execution
         assert.ok(updates.length > 0);
         assert.equal(updates[0].url, '/a');
         nav.destroy();
@@ -557,7 +556,7 @@ describe('Navigation', () => {
         );
 
         const p1 = nav.go(-1);
-        const p2 = nav.go(1); // 第二次 go 应直接返回 null
+        const p2 = nav.go(1); // Second `go` should resolve with null immediately
         const r2 = await p2;
         assert.equal(r2, null);
         await p1;
@@ -585,21 +584,21 @@ describe('Navigation', () => {
             })
         );
         nav.destroy();
-        // destroy 后再次 go 不应抛错
+        // `go` after destroy should not throw an error
         nav.go(-1);
-        // 也不应该有任何回调被触发
+        // And no callbacks should be triggered
         const res = await nav.go(1);
         assert.equal(res, null);
         assert.equal(updates.length, 0);
     });
 
-    // history 模式下的 Navigation 测试
+    // Navigation tests in history mode
     describe('in history mode', () => {
         let mockHistory: any;
         let popstateHandler: any;
 
         beforeEach(() => {
-            // 模拟的 window.history
+            // Mock window.history
             mockHistory = new MemoryHistory();
             mockHistory.replaceState({ startPoint: true }, '', '/startPoint');
             mockHistory.pushState = vi.fn(
@@ -610,13 +609,13 @@ describe('Navigation', () => {
             );
             mockHistory.go = vi.fn(mockHistory.go.bind(mockHistory));
             mockHistory.onPopState(() => popstateHandler?.());
-            // 模拟 location
+            // Mock location
             const mockLocation = {
                 get href() {
                     return mockHistory.url;
                 }
             };
-            // 模拟 window.addEventListener
+            // Mock window.addEventListener
             const mockAddEventListener = vi.fn((type, handler) => {
                 if (type === 'popstate') popstateHandler = handler;
             });
@@ -685,12 +684,12 @@ describe('Navigation', () => {
         });
     });
 
-    // 新增测试用例来覆盖未测试的分支
-    describe('未覆盖分支测试', () => {
+    // New test cases to cover untested branches
+    describe('Uncovered branches tests', () => {
         test('should handle null/undefined route.state in push method (line 43)', () => {
             const nav = new Navigation({ mode: RouterMode.memory } as any);
 
-            // 测试 route.state 为 null 的情况
+            // Test with route.state as null
             const routeWithNullState = new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
@@ -700,7 +699,7 @@ describe('Navigation', () => {
             assert.ok(state1);
             assert.ok('__pageId__' in state1);
 
-            // 测试 route.state 为 undefined 的情况
+            // Test with route.state as undefined
             const routeWithUndefinedState = new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
@@ -723,7 +722,7 @@ describe('Navigation', () => {
                 })
             );
 
-            // 测试 route.state 为 null 的情况
+            // Test with route.state as null
             const routeWithNullState = new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
@@ -733,7 +732,7 @@ describe('Navigation', () => {
             assert.ok(state1);
             assert.ok('__pageId__' in state1);
 
-            // 测试 route.state 为 undefined 的情况
+            // Test with route.state as undefined
             const routeWithUndefinedState = new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
@@ -763,13 +762,13 @@ describe('Navigation', () => {
                 })
             );
 
-            // 启动一个 go 操作但不等待它完成
+            // Start a 'go' operation without awaiting it
             const goPromise = nav.go(-1);
 
-            // 立即销毁，应该调用 _promiseResolve?.()
+            // Destroy immediately, which should call _promiseResolve?.()
             nav.destroy();
 
-            // go 操作应该返回 null
+            // The 'go' operation should resolve to null
             const result = await goPromise;
             assert.equal(result, null);
         });
@@ -777,18 +776,18 @@ describe('Navigation', () => {
         test('should return null when _curEntry index is out of bounds (line 92)', () => {
             const history = new MemoryHistory();
 
-            // 通过直接修改内部状态来模拟索引越界
+            // Simulate out-of-bounds index by directly modifying internal state
             (history as any)._index = -1;
             assert.equal((history as any)._curEntry, null);
 
-            (history as any)._index = 999; // 超出长度
+            (history as any)._index = 999; // Exceeds length
             assert.equal((history as any)._curEntry, null);
         });
 
         test('should return empty string when _curEntry.url is null/undefined (line 101)', () => {
             const history = new MemoryHistory();
 
-            // 模拟 _curEntry.url 为 undefined 的情况
+            // Simulate _curEntry.url as undefined
             const mockEntry = { state: {}, url: undefined };
             (history as any)._entries = [mockEntry];
             (history as any)._index = 0;
@@ -798,13 +797,13 @@ describe('Navigation', () => {
 
         test('should use this.url when pushState url parameter is null/undefined (line 108)', () => {
             const history = new MemoryHistory();
-            const currentUrl = history.url; // 获取当前 URL
+            const currentUrl = history.url; // Get current URL
 
-            // 测试 url 为 null
+            // Test with url as null
             history.pushState({ test: 1 }, '', null);
             assert.equal(history.url, currentUrl);
 
-            // 测试 url 为 undefined
+            // Test with url as undefined
             history.pushState({ test: 2 }, '', undefined);
             assert.equal(history.url, currentUrl);
         });
@@ -812,21 +811,21 @@ describe('Navigation', () => {
         test('should return early when curEntry is null in replaceState (line 128)', () => {
             const history = new MemoryHistory();
 
-            // 模拟 _curEntry 为 null 的情况
-            (history as any)._index = -1; // 设置为无效索引
+            // Simulate _curEntry as null
+            (history as any)._index = -1; // Set to an invalid index
 
-            // 调用 replaceState 应该直接返回而不执行任何操作
+            // Calling replaceState should return early without doing anything
             const originalEntries = [...(history as any)._entries];
             history.replaceState({ test: 1 }, '', '/test');
 
-            // entries 应该没有变化
+            // entries should remain unchanged
             assert.deepEqual((history as any)._entries, originalEntries);
         });
 
         test('should return empty function when cb is not a function in onPopState (line 152)', () => {
             const history = new MemoryHistory();
 
-            // 测试传入非函数类型
+            // Test with non-function types
             const unsubscribe1 = history.onPopState(null as any);
             const unsubscribe2 = history.onPopState(undefined as any);
             const unsubscribe3 = history.onPopState('not a function' as any);
@@ -837,7 +836,7 @@ describe('Navigation', () => {
             assert.equal(typeof unsubscribe3, 'function');
             assert.equal(typeof unsubscribe4, 'function');
 
-            // 这些函数应该是空函数，调用时不会出错
+            // These should be empty functions that don't throw when called
             assert.doesNotThrow(() => {
                 unsubscribe1();
                 unsubscribe2();
@@ -847,9 +846,9 @@ describe('Navigation', () => {
         });
 
         test('should handle null history.state in subscribeHtmlHistory (line 159)', () => {
-            // 模拟浏览器环境
+            // Simulate browser environment
             const mockHistory = {
-                state: null // 模拟 history.state 为 null
+                state: null // Simulate history.state being null
             };
             const mockLocation = {
                 href: 'http://test.com/page'
@@ -869,14 +868,14 @@ describe('Navigation', () => {
                 }
             );
 
-            // 使用 vi.stubGlobal 设置模拟对象
+            // Use vi.stubGlobal to set up mock objects
             vi.stubGlobal('window', mockWindow);
             vi.stubGlobal('history', mockHistory);
             vi.stubGlobal('location', mockLocation);
 
             const callbackData: Array<{ url: string; state: any }> = [];
 
-            // 创建一个新的 Navigation 实例来测试 history 模式
+            // Create a new Navigation instance to test history mode
             const nav = new Navigation(
                 { mode: RouterMode.history } as any,
                 (url: string, state: any) => {
@@ -884,21 +883,21 @@ describe('Navigation', () => {
                 }
             );
 
-            // 验证 addEventListener 被调用
+            // Verify addEventListener was called
             expect(mockWindow.addEventListener).toHaveBeenCalledWith(
                 'popstate',
                 expect.any(Function)
             );
 
-            // 模拟 popstate 事件触发
+            // Simulate popstate event trigger
             if (capturedCallback) {
-                capturedCallback(); // 这里会触发 line 160: history.state || {}
+                capturedCallback(); // This will trigger line 160: history.state || {}
             }
 
-            // 验证回调被正确调用，且 null state 被转换为 {}
+            // Verify the callback was called correctly, and null state was converted to {}
             expect(callbackData.length).toBe(1);
             expect(callbackData[0].url).toBe('http://test.com/page');
-            expect(callbackData[0].state).toEqual({}); // history.state 为 null 时应该使用 {}
+            expect(callbackData[0].state).toEqual({}); // Should be {} when history.state is null
 
             nav.destroy();
             vi.unstubAllGlobals();
