@@ -24,7 +24,7 @@ expect.extend({
         // biome-ignore lint/correctness/noSelfAssign:
         expected.hash = expected.hash;
         return {
-            message: () => `输出 ${received.href} 应该为 ${expected.href}`,
+            message: () => `expected ${received.href} to be ${expected.href}`,
             pass: received.href === expected.href
         };
     }
@@ -41,37 +41,39 @@ describe('normalizeURL', () => {
             input: '//example.com/path',
             base: 'https://github.com',
             expected: 'http://example.com/path',
-            description: '应该处理协议相对路径(以//开头)'
+            description:
+                'should handle protocol-relative URLs (starting with //)'
         },
         {
             input: 'http://github.com/path?a#h',
             base: 'http://example.com',
             expected: 'http://github.com/path?a#h',
-            description: '应该处理绝对URL'
+            description: 'should handle absolute URLs'
         },
         {
             input: '/path',
             base: 'http://example.com/en/',
             expected: 'http://example.com/en/path',
-            description: '应该处理带基URL的相对路径'
+            description: 'should handle relative paths with a base URL'
         },
         {
             input: 'github.com',
             base: 'http://example.com',
             expected: 'http://example.com/github.com',
-            description: '裸域名应该当做相对路径处理'
+            description: 'should treat bare domains as relative paths'
         },
         {
             input: new URL('http://example.com/path'),
             base: 'http://example.com',
             expected: 'http://example.com/path',
-            description: '应该处理URL对象'
+            description: 'should handle URL objects'
         },
         {
             input: '-a://example.com',
             base: 'http://example.com',
             expected: 'http://example.com/-a://example.com',
-            description: '协议开头但解析失败后应该当做相对路径'
+            description:
+                'should treat strings that fail to parse as a protocol as relative paths'
         }
     ];
 
@@ -94,19 +96,19 @@ describe('parseLocation', () => {
             input: '/products',
             base: 'http://example.com',
             expected: 'http://example.com/products',
-            description: '应该处理字符串路径'
+            description: 'should handle string paths'
         },
         {
             input: { path: '/products' },
             base: 'http://example.com',
             expected: 'http://example.com/products',
-            description: '应该处理带path属性的对象'
+            description: 'should handle objects with a path property'
         },
         {
             input: { url: '/products' },
             base: 'http://example.com',
             expected: 'http://example.com/products',
-            description: '应该处理带url属性的对象'
+            description: 'should handle objects with a url property'
         },
         {
             input: {
@@ -115,19 +117,19 @@ describe('parseLocation', () => {
             },
             base: 'http://example.com',
             expected: 'http://example.com/products?id=123&category=electronics',
-            description: '应该处理带query参数的对象'
+            description: 'should handle objects with query parameters'
         },
         {
             input: { path: '/products', query: { id: '123' }, hash: 'details' },
             base: 'http://example.com',
             expected: 'http://example.com/products?id=123#details',
-            description: '应该处理带hash的对象'
+            description: 'should handle objects with a hash'
         },
         {
             input: { path: '/products', queryArray: { tag: ['new', 'sale'] } },
             base: 'http://example.com',
             expected: 'http://example.com/products?tag=new&tag=sale',
-            description: '应该处理带queryArray的对象'
+            description: 'should handle objects with queryArray'
         },
         {
             input: {
@@ -139,7 +141,7 @@ describe('parseLocation', () => {
             base: 'http://example.com',
             expected:
                 'http://example.com/products?id=123&category=electronics&tag=new&tag=sale#details',
-            description: '应该处理带所有属性的复杂对象'
+            description: 'should handle complex objects with all properties'
         },
         {
             input: {
@@ -148,7 +150,7 @@ describe('parseLocation', () => {
             },
             base: 'http://example.com',
             expected: 'http://example.com/products#a?a',
-            description: '特殊 hash 字符应该被正确处理'
+            description: 'should handle special hash characters correctly'
         },
         {
             input: {
@@ -157,7 +159,7 @@ describe('parseLocation', () => {
             },
             base: 'http://example.com',
             expected: 'http://example.com/products#a?a#b',
-            description: '特殊 hash 字符应该被正确处理'
+            description: 'should handle special hash characters correctly'
         },
         {
             input: {
@@ -180,13 +182,14 @@ describe('parseLocation', () => {
             expected: `http://example.com/products?symbol=Symbol()&fn=${String(
                 async () => ''
             )}&obj=${String({})}&big=12345678901234567891234567890123456789&b&c=0&d=0&e=1`,
-            description: '应该忽略null、undefined和NaN的query参数'
+            description:
+                'should ignore null, undefined, and NaN query parameters'
         },
         {
             input: { path: '/products', queryArray: { tag: [] } },
             base: 'http://example.com',
             expected: 'http://example.com/products',
-            description: '应该处理空queryArray'
+            description: 'should handle empty queryArray'
         },
         {
             input: {
@@ -195,7 +198,7 @@ describe('parseLocation', () => {
             },
             base: 'http://example.com',
             expected: 'http://example.com/products?id=query&a',
-            description: 'query的值应覆盖path中的query参数'
+            description: 'query value should override query parameter in path'
         },
         {
             input: {
@@ -205,7 +208,8 @@ describe('parseLocation', () => {
             },
             base: 'http://example.com',
             expected: 'http://example.com/products?id=queryArray&a',
-            description: 'queryArray的值应覆盖query和path中的query参数'
+            description:
+                'queryArray value should override query and path parameters'
         },
         {
             input: {
@@ -214,7 +218,8 @@ describe('parseLocation', () => {
             },
             base: 'http://example.com',
             expected: 'http://example.com/products?id=queryArray&a',
-            description: 'queryArray的值应覆盖path中的query参数'
+            description:
+                'queryArray value should override query parameter in path'
         },
         {
             input: {
@@ -224,7 +229,8 @@ describe('parseLocation', () => {
             },
             base: 'http://example.com',
             expected: 'http://example.com?a&a',
-            description: '应正确处理空字符串和重复的query参数'
+            description:
+                'should handle empty strings and duplicate query parameters correctly'
         },
         {
             input: { path: '/products?id=123', url: '/products?id=456' },

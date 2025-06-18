@@ -1,23 +1,54 @@
 import type { RouteLocationInput } from './types';
 import { isNotNullish } from './util';
 
+/**
+ * Normalizes a URL input into a URL object.
+ * @param url - The URL or string to normalize.
+ * @param base - The base URL to resolve against if the input is relative.
+ * @returns A URL object.
+ */
 export function normalizeURL(url: string | URL, base: URL): URL {
-    if (typeof url === 'string') {
-        // 处理协议相对路径（以//开头）
-        if (url.startsWith('//')) {
-            return new URL(`http:${url}`);
-        }
-        // 相对于根的路径（根为 base）
-        if (url.startsWith('/')) {
-            base = new URL('.', base);
-            const parsed = new URL(url, base);
-            parsed.pathname = base.pathname.slice(0, -1) + parsed.pathname; // 确保路径正确
-            return parsed;
-        }
+    if (url instanceof URL) {
+        return url;
     }
-    return URL.parse(url) || new URL(url, base);
+
+    // Handle protocol-relative URLs (e.g., //example.com)
+    if (url.startsWith('//')) {
+        // Using http: as a default protocol for protocol-relative URLs.
+        return new URL(`http:${url}`);
+    }
+
+    // Handle root-relative paths
+    if (url.startsWith('/')) {
+        const newBase = new URL('.', base);
+        const parsed = new URL(url, newBase);
+        // This ensures that the path is resolved relative to the base's path directory.
+        parsed.pathname = newBase.pathname.slice(0, -1) + parsed.pathname;
+        return parsed;
+    }
+
+    try {
+        // Try to parse as an absolute URL.
+        // This is the WHATWG standard approach (new URL()) and works consistently across all modern browsers and Node.js.
+        // We use a try-catch block because the standard URL constructor throws an error for invalid URLs.
+        //
+        // NOTE: While `URL.parse()` might be observed in Chromium-based browsers (e.g., Chrome, Edge),
+        // it is a non-standard, legacy feature implemented by the V8 engine for Node.js compatibility.
+        // It is not part of the WHATWG URL Standard and is not supported by other browsers like Firefox or Safari.
+        // Therefore, relying on it would compromise cross-browser compatibility.
+        return new URL(url);
+    } catch (e) {
+        // Otherwise, parse as a relative URL
+        return new URL(url, base);
+    }
 }
 
+/**
+ * Parses a RouteLocationInput object into a full URL.
+ * @param toInput - The route location input.
+ * @param baseURL - The base URL to resolve against.
+ * @returns The parsed URL object.
+ */
 export function parseLocation(toInput: RouteLocationInput, baseURL: URL): URL {
     if (typeof toInput === 'string') {
         return normalizeURL(toInput, baseURL);
@@ -25,18 +56,20 @@ export function parseLocation(toInput: RouteLocationInput, baseURL: URL): URL {
     const url = normalizeURL(toInput.path ?? toInput.url ?? '', baseURL);
     const searchParams = url.searchParams;
 
-    // 优先级 queryArray > query > path中的query
+    // Priority: queryArray > query > query in path
     Object.entries<string | (string | undefined)[]>(
         Object.assign({}, toInput.query, toInput.queryArray)
     ).forEach(([key, value]) => {
-        searchParams.delete(key); // 清除之前的同名参数
+        searchParams.delete(key); // Clear previous params with the same name
         value = Array.isArray(value) ? value : [value];
-        value.filter(isNotNullish).forEach((v) => {
-            searchParams.append(key, String(v));
-        });
+        value
+            .filter((v) => isNotNullish(v) && !Number.isNaN(v))
+            .forEach((v) => {
+                searchParams.append(key, String(v));
+            });
     });
 
-    // 设置hash值（URL片段标识符）
+    // Set the hash (URL fragment identifier)
     if (toInput.hash) {
         url.hash = toInput.hash;
     }
