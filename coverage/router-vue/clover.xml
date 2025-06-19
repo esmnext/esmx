@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1750316846110" clover="3.2.0">
+  <project timestamp="1750316846110" name="All files">
+    <metrics statements="191" coveredstatements="190" conditionals="59" coveredconditionals="57" methods="22" coveredmethods="22" elements="272" coveredelements="269" complexity="0" loc="191" ncloc="191" packages="1" files="8" classes="8"/>
+    <file name="index.ts" path="/home/runner/work/esmx/esmx/packages/router-vue/src/index.ts">
+      <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <line num="4" count="1" type="stmt"/>
+      <line num="13" count="1" type="stmt"/>
+      <line num="14" count="1" type="stmt"/>
+      <line num="16" count="1" type="stmt"/>
+    </file>
+    <file name="plugin.ts" path="/home/runner/work/esmx/esmx/packages/router-vue/src/plugin.ts">
+      <metrics statements="26" coveredstatements="26" conditionals="8" coveredconditionals="8" methods="3" coveredmethods="3"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="2" count="1" type="stmt"/>
+      <line num="3" count="1" type="stmt"/>
+      <line num="61" count="1" type="stmt"/>
+      <line num="66" count="1" type="cond" truecount="1" falsecount="0"/>
+      <line num="67" count="19" type="stmt"/>
+      <line num="68" count="19" type="cond" truecount="2" falsecount="0"/>
+      <line num="70" count="19" type="cond" truecount="2" falsecount="0"/>
+      <line num="71" count="1" type="stmt"/>
+      <line num="72" count="1" type="cond" truecount="1" falsecount="0"/>
+      <line num="74" count="15" type="stmt"/>
+      <line num="75" count="15" type="stmt"/>
+      <line num="76" count="15" type="cond" truecount="1" falsecount="0"/>
+      <line num="77" count="1" type="stmt"/>
+      <line num="78" count="1" type="stmt"/>
+      <line num="79" count="15" type="stmt"/>
+      <line num="80" count="15" type="stmt"/>
+      <line num="81" count="15" type="cond" truecount="1" falsecount="0"/>
+      <line num="82" count="1" type="stmt"/>
+      <line num="83" count="1" type="stmt"/>
+      <line num="84" count="15" type="stmt"/>
+      <line num="85" count="15" type="stmt"/>
+      <line num="88" count="15" type="stmt"/>
+      <line num="89" count="15" type="stmt"/>
+      <line num="90" count="19" type="stmt"/>
+      <line num="91" count="1" type="stmt"/>
+    </file>
+    <file name="router-link.ts" path="/home/runner/work/esmx/esmx/packages/router-vue/src/router-link.ts">
+      <metrics statements="42" coveredstatements="41" conditionals="5" coveredconditionals="3" methods="1" coveredmethods="1"/>
+      <line num="7" count="1" type="stmt"/>
+      <line num="8" count="1" type="stmt"/>
+      <line num="9" count="1" type="stmt"/>
+      <line num="60" count="1" type="stmt"/>
+      <line num="61" count="1" type="stmt"/>
+      <line num="62" count="1" type="stmt"/>
+      <line num="68" count="1" type="stmt"/>
+      <line num="69" count="1" type="stmt"/>
+      <line num="70" count="1" type="stmt"/>
+      <line num="71" count="1" type="stmt"/>
+      <line num="77" count="1" type="stmt"/>
+      <line num="82" count="1" type="stmt"/>
+      <line num="90" count="1" type="stmt"/>
+      <line num="95" count="1" type="stmt"/>
+      <line num="101" count="1" type="stmt"/>
+      <line num="102" count="1" type="stmt"/>
+      <line num="103" count="1" type="stmt"/>
+      <line num="104" count="1" type="stmt"/>
+      <line num="110" count="1" type="stmt"/>
+      <line num="116" count="1" type="stmt"/>
+      <line num="117" count="1" type="stmt"/>
+      <line num="119" count="1" type="cond" truecount="1" falsecount="0"/>
+      <line num="120" count="17" type="stmt"/>
+      <line num="122" count="17" type="cond" truecount="1" falsecount="0"/>
+      <line num="123" count="16" type="stmt"/>
+      <line num="126" count="16" type="stmt"/>
+      <line num="127" count="16" type="stmt"/>
+      <line num="128" count="16" type="cond" truecount="1" falsecount="0"/>
+      <line num="129" count="17" type="cond" truecount="0" falsecount="1"/>
+      <line num="130" count="0" type="stmt"/>
+      <line num="131" count="16" type="stmt"/>
+      <line num="133" count="16" type="stmt"/>
+      <line num="134" count="16" type="stmt"/>
+      <line num="135" count="16" type="stmt"/>
+      <line num="136" count="16" type="stmt"/>
+      <line num="137" count="16" type="cond" truecount="0" falsecount="1"/>
+      <line num="138" count="16" type="stmt"/>
+      <line num="139" count="16" type="stmt"/>
+      <line num="140" count="16" type="stmt"/>
+      <line num="141" count="16" type="stmt"/>
+      <line num="142" count="17" type="stmt"/>
+      <line num="143" count="1" type="stmt"/>
+    </file>
+    <file name="router-view.ts" path="/home/runner/work/esmx/esmx/packages/router-vue/src/router-view.ts">
+      <metrics statements="19" coveredstatements="19" conditionals="6" coveredconditionals="6" methods="1" coveredmethods="1"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="2" count="1" type="stmt"/>
+      <line num="3" count="1" type="stmt"/>
+      <line num="5" count="1" type="stmt"/>
+      <line num="34" count="1" type="stmt"/>
+      <line num="35" count="1" type="stmt"/>
+      <line num="36" count="1" type="cond" truecount="1" falsecount="0"/>
+      <line num="37" count="15" type="stmt"/>
+      <line num="41" count="15" type="stmt"/>
+      <line num="45" count="15" type="stmt"/>
+      <line num="47" count="15" type="cond" truecount="1" falsecount="0"/>
+      <line num="50" count="24" type="stmt"/>
+      <line num="53" count="24" type="cond" truecount="1" falsecount="0"/>
+      <line num="54" count="23" type="cond" truecount="1" falsecount="0"/>
+      <line num="55" count="1" type="stmt"/>
+      <line num="58" count="24" type="cond" truecount="2" falsecount="0"/>
+      <line num="59" count="24" type="stmt"/>
+      <line num="60" count="15" type="stmt"/>
+      <line num="61" count="1" type="stmt"/>
+    </file>
+    <file name="use.ts" path="/home/runner/work/esmx/esmx/packages/router-vue/src/use.ts">
+      <metrics statements="75" coveredstatements="75" conditionals="24" coveredconditionals="24" methods="10" coveredmethods="10"/>
+      <line num="2" count="1" type="stmt"/>
+      <line num="11" count="1" type="stmt"/>
+      <line num="24" count="1" type="stmt"/>
+      <line num="25" count="1" type="stmt"/>
+      <line num="27" count="1" type="stmt"/>
+      <line num="28" count="1" type="cond" truecount="1" falsecount="0"/>
+      <line num="29" count="7" type="stmt"/>
+      <line num="30" count="1" type="stmt"/>
+      <line num="31" count="1" type="stmt"/>
+      <line num="33" count="1" type="stmt"/>
+      <line num="35" count="1" type="stmt"/>
+      <line num="36" count="1" type="stmt"/>
+      <line num="38" count="66" type="cond" truecount="1" falsecount="0"/>
+      <line num="39" count="66" type="stmt"/>
+      <line num="40" count="66" type="cond" truecount="2" falsecount="0"/>
+      <line num="41" count="7" type="stmt"/>
+      <line num="42" count="7" type="cond" truecount="1" falsecount="0"/>
+      <line num="43" count="59" type="stmt"/>
+      <line num="44" count="59" type="stmt"/>
+      <line num="46" count="19" type="cond" truecount="1" falsecount="0"/>
+      <line num="48" count="19" type="cond" truecount="1" falsecount="0"/>
+      <line num="49" count="2" type="stmt"/>
+      <line num="50" count="2" type="stmt"/>
+      <line num="52" count="19" type="stmt"/>
+      <line num="53" count="19" type="cond" truecount="1" falsecount="0"/>
+      <line num="54" count="6" type="stmt"/>
+      <line num="55" count="6" type="cond" truecount="1" falsecount="0"/>
+      <line num="57" count="13" type="stmt"/>
+      <line num="58" count="19" type="cond" truecount="1" falsecount="0"/>
+      <line num="59" count="8" type="stmt"/>
+      <line num="60" count="8" type="cond" truecount="2" falsecount="0"/>
+      <line num="61" count="5" type="stmt"/>
+      <line num="62" count="5" type="stmt"/>
+      <line num="63" count="5" type="cond" truecount="1" falsecount="0"/>
+      <line num="64" count="3" type="stmt"/>
+      <line num="65" count="3" type="stmt"/>
+      <line num="67" count="8" type="stmt"/>
+      <line num="68" count="8" type="stmt"/>
+      <line num="102" count="1" type="cond" truecount="1" falsecount="0"/>
+      <line num="103" count="7" type="stmt"/>
+      <line num="104" count="7" type="stmt"/>
+      <line num="138" count="1" type="cond" truecount="1" falsecount="0"/>
+      <line num="139" count="4" type="stmt"/>
+      <line num="140" count="4" type="stmt"/>
+      <line num="146" count="49" type="cond" truecount="1" falsecount="0"/>
+      <line num="148" count="49" type="stmt"/>
+      <line num="149" count="49" type="cond" truecount="1" falsecount="0"/>
+      <line num="150" count="35" type="stmt"/>
+      <line num="151" count="35" type="cond" truecount="1" falsecount="0"/>
+      <line num="154" count="14" type="stmt"/>
+      <line num="155" count="14" type="stmt"/>
+      <line num="156" count="14" type="stmt"/>
+      <line num="190" count="1" type="cond" truecount="1" falsecount="0"/>
+      <line num="191" count="28" type="stmt"/>
+      <line num="192" count="28" type="stmt"/>
+      <line num="226" count="1" type="cond" truecount="1" falsecount="0"/>
+      <line num="227" count="21" type="stmt"/>
+      <line num="228" count="21" type="stmt"/>
+      <line num="259" count="1" type="cond" truecount="1" falsecount="0"/>
+      <line num="260" count="50" type="stmt"/>
+      <line num="262" count="50" type="stmt"/>
+      <line num="263" count="50" type="stmt"/>
+      <line num="264" count="50" type="stmt"/>
+      <line num="265" count="50" type="stmt"/>
+      <line num="268" count="50" type="stmt"/>
+      <line num="271" count="50" type="stmt"/>
+      <line num="273" count="50" type="cond" truecount="1" falsecount="0"/>
+      <line num="274" count="19" type="stmt"/>
+      <line num="275" count="50" type="stmt"/>
+      <line num="277" count="50" type="stmt"/>
+      <line num="278" count="50" type="stmt"/>
+      <line num="310" count="1" type="cond" truecount="1" falsecount="0"/>
+      <line num="311" count="21" type="stmt"/>
+      <line num="313" count="21" type="cond" truecount="1" falsecount="0"/>
+      <line num="314" count="21" type="stmt"/>
+    </file>
+    <file name="util.ts" path="/home/runner/work/esmx/esmx/packages/router-vue/src/util.ts">
+      <metrics statements="25" coveredstatements="25" conditionals="14" coveredconditionals="14" methods="5" coveredmethods="5"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="3" count="1" type="stmt"/>
+      <line num="5" count="1" type="cond" truecount="1" falsecount="0"/>
+      <line num="6" count="21" type="stmt"/>
+      <line num="7" count="21" type="cond" truecount="1" falsecount="0"/>
+      <line num="8" count="68" type="stmt"/>
+      <line num="9" count="68" type="stmt"/>
+      <line num="10" count="21" type="cond" truecount="1" falsecount="0"/>
+      <line num="11" count="43" type="stmt"/>
+      <line num="12" count="43" type="stmt"/>
+      <line num="13" count="21" type="stmt"/>
+      <line num="14" count="21" type="stmt"/>
+      <line num="16" count="1" type="cond" truecount="1" falsecount="0"/>
+      <line num="17" count="63" type="cond" truecount="3" falsecount="0"/>
+      <line num="18" count="53" type="stmt"/>
+      <line num="19" count="53" type="stmt"/>
+      <line num="20" count="63" type="cond" truecount="1" falsecount="0"/>
+      <line num="22" count="63" type="stmt"/>
+      <line num="24" count="1" type="cond" truecount="1" falsecount="0"/>
+      <line num="25" count="44" type="cond" truecount="2" falsecount="0"/>
+      <line num="27" count="44" type="cond" truecount="1" falsecount="0"/>
+      <line num="28" count="14" type="cond" truecount="1" falsecount="0"/>
+      <line num="29" count="14" type="cond" truecount="1" falsecount="0"/>
+      <line num="31" count="23" type="stmt"/>
+      <line num="32" count="23" type="stmt"/>
+    </file>
+    <file name="vue2.ts" path="/home/runner/work/esmx/esmx/packages/router-vue/src/vue2.ts">
+      <metrics statements="0" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
+    </file>
+    <file name="vue3.ts" path="/home/runner/work/esmx/esmx/packages/router-vue/src/vue3.ts">
+      <metrics statements="0" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
+    </file>
+  </project>
+</coverage>
