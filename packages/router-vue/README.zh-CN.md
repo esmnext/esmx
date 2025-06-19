@@ -1,8 +1,22 @@
-# @esmx/router-vue
+<div align="center">
+  <img src="https://www.esmnext.com/logo.svg?t=2025" width="120" alt="Esmx Logo" />
+  <h1>@esmx/router-vue</h1>
+  
+  <div>
+    <a href="https://www.npmjs.com/package/@esmx/router-vue"><img src="https://img.shields.io/npm/v/@esmx/router-vue.svg" alt="npm version" /></a>
+    <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a>
+    <a href="https://www.npmjs.com/package/@esmx/router-vue"><img src="https://img.shields.io/npm/dm/@esmx/router-vue.svg" alt="downloads monthly" /></a>
+    <a href="https://bundlephobia.com/package/@esmx/router-vue"><img src="https://img.shields.io/bundlephobia/minzip/@esmx/router-vue" alt="size" /></a>
+  </div>
+  
+  <p><a href="https://github.com/esmnext/esmx/tree/master/packages/router">@esmx/router</a> 的 Vue 集成包 - 一个同时适用于 Vue 2.7+ 和 Vue 3 的通用路由器。</p>
+  
+  <p>
+    <a href="https://github.com/esmnext/esmx/blob/master/packages/router-vue/README.md">English</a> | 中文
+  </p>
+</div>
 
-[@esmx/router](https://github.com/esmnext/esmx/tree/master/packages/router) 的 Vue 集成包 - 一个同时适用于 Vue 2.7+ 和 Vue 3 的通用路由器。
 
-[![npm version](https://img.shields.io/npm/v/@esmx/router-vue.svg)](https://www.npmjs.com/package/@esmx/router-vue) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## 特性
 

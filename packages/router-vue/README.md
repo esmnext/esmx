@@ -1,8 +1,22 @@
-# @esmx/router-vue
+<div align="center">
+  <img src="https://www.esmnext.com/logo.svg?t=2025" width="120" alt="Esmx Logo" />
+  <h1>@esmx/router-vue</h1>
+  
+  <div>
+    <a href="https://www.npmjs.com/package/@esmx/router-vue"><img src="https://img.shields.io/npm/v/@esmx/router-vue.svg" alt="npm version" /></a>
+    <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a>
+    <a href="https://www.npmjs.com/package/@esmx/router-vue"><img src="https://img.shields.io/npm/dm/@esmx/router-vue.svg" alt="downloads monthly" /></a>
+    <a href="https://bundlephobia.com/package/@esmx/router-vue"><img src="https://img.shields.io/bundlephobia/minzip/@esmx/router-vue" alt="size" /></a>
+  </div>
+  
+  <p>Vue integration for <a href="https://github.com/esmnext/esmx/tree/master/packages/router">@esmx/router</a> - A universal router that works seamlessly with both Vue 2.7+ and Vue 3.</p>
+  
+  <p>
+    English | <a href="https://github.com/esmnext/esmx/blob/master/packages/router-vue/README.zh-CN.md">中文</a>
+  </p>
+</div>
 
-Vue integration for [@esmx/router](https://github.com/esmnext/esmx/tree/master/packages/router) - A universal router that works seamlessly with both Vue 2.7+ and Vue 3.
 
-[![npm version](https://img.shields.io/npm/v/@esmx/router-vue.svg)](https://www.npmjs.com/package/@esmx/router-vue) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Features
 
