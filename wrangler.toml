@@ -7,7 +7,7 @@ cwd = "."
 
 [build.environment_variables]
 NODE_VERSION = "22.16.0"
-SKIP_DEPENDENCY_INSTALL = "true"
+CF_PAGES = "1"
 
 [assets]
 directory = "./dist" 
