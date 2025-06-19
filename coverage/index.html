@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esmx - Test Coverage Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2196F3 0%, #21CBF3 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 40px;
+            background: #f8f9fa;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .packages-section {
+            padding: 40px;
+        }
+        
+        .packages-title {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: #333;
+            text-align: center;
+        }
+        
+        .packages-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .packages-table th {
+            background: #f1f3f4;
+            color: #333;
+            font-weight: 600;
+            padding: 16px;
+            text-align: left;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .packages-table td {
+            padding: 16px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .packages-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .package-name {
+            font-weight: 600;
+            color: #2196F3;
+        }
+        
+        .package-name a {
+            color: inherit;
+            text-decoration: none;
+        }
+        
+        .package-name a:hover {
+            text-decoration: underline;
+        }
+        
+        .coverage-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .coverage-high { background: #28a745; }
+        .coverage-medium { background: #ffc107; }
+        .coverage-low { background: #dc3545; }
+        
+        .coverage-text {
+            font-weight: 600;
+            min-width: 50px;
+            text-align: right;
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-warning { background: #fff3cd; color: #856404; }
+        .badge-danger { background: #f8d7da; color: #721c24; }
+        
+        @media (max-width: 768px) {
+            .packages-table {
+                font-size: 0.9rem;
+            }
+            
+            .packages-table th,
+            .packages-table td {
+                padding: 12px 8px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🚀 Esmx Test Coverage Report</h1>
+            <p>Complete overview of test coverage across all packages</p>
+        </header>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">5</div>
+                <div class="stat-label">Packages</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">65.45%</div>
+                <div class="stat-label">Avg Statements</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">85.34%</div>
+                <div class="stat-label">Avg Branches</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">64.77%</div>
+                <div class="stat-label">Avg Functions</div>
+            </div>
+        </div>
+        
+        <section class="packages-section">
+            <h2 class="packages-title">📦 Package Coverage Details</h2>
+            <table class="packages-table">
+                <thead>
+                    <tr>
+                        <th>Package</th>
+                        <th>Statements</th>
+                        <th>Branches</th>
+                        <th>Functions</th>
+                        <th>Lines</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td class="package-name">
+                                <a href="./class-state/index.html">📁 class-state</a>
+                            </td>
+                            <td>
+                                <div class="coverage-bar">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill coverage-high" 
+                                             style="width: 88.62%"></div>
+                                    </div>
+                                    <span class="coverage-text">88.62%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="coverage-bar">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill coverage-high" 
+                                             style="width: 88.89%"></div>
+                                    </div>
+                                    <span class="coverage-text">88.89%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="coverage-bar">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill coverage-high" 
+                                             style="width: 90.00%"></div>
+                                    </div>
+                                    <span class="coverage-text">90.00%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="coverage-bar">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill coverage-high" 
+                                             style="width: 88.62%"></div>
+                                    </div>
+                                    <span class="coverage-text">88.62%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-success">
+                                    Good
+                                </span>
+                            </td>
+                        </tr>
+                    
+                        <tr>
+                            <td class="package-name">
+                                <a href="./core/index.html">📁 core</a>
+                            </td>
+                            <td>
+                                <div class="coverage-bar">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill coverage-low" 
+                                             style="width: 21.31%"></div>
+                                    </div>
+                                    <span class="coverage-text">21.31%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="coverage-bar">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill coverage-high" 
+                                             style="width: 93.62%"></div>
+                                    </div>
+                                    <span class="coverage-text">93.62%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="coverage-bar">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill coverage-low" 
+                                             style="width: 24.14%"></div>
+                                    </div>
+                                    <span class="coverage-text">24.14%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="coverage-bar">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill coverage-low" 
+                                             style="width: 21.31%"></div>
+                                    </div>
+                                    <span class="coverage-text">21.31%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-danger">
+                                    Poor
+                                </span>
+                            </td>
+                        </tr>
+                    
+                        <tr>
+                            <td class="package-name">
+                                <a href="./fetch/index.html">📁 fetch</a>
+                            </td>
+                            <td>
+                                <div class="coverage-bar">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill coverage-low" 
+                                             style="width: 21.35%"></div>
+                                    </div>
+                                    <span class="coverage-text">21.35%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="coverage-bar">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill coverage-low" 
+                                             style="width: 50.00%"></div>
+                                    </div>
+                                    <span class="coverage-text">50.00%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="coverage-bar">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill coverage-low" 
+                                             style="width: 15.38%"></div>
+                                    </div>
+                                    <span class="coverage-text">15.38%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="coverage-bar">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill coverage-low" 
+                                             style="width: 21.35%"></div>
+                                    </div>
+                                    <span class="coverage-text">21.35%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-danger">
+                                    Poor
+                                </span>
+                            </td>
+                        </tr>
+                    
+                        <tr>
+                            <td class="package-name">
+                                <a href="./router/index.html">📁 router</a>
+                            </td>
+                            <td>
+                                <div class="coverage-bar">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill coverage-high" 
+                                             style="width: 96.51%"></div>
+                                    </div>
+                                    <span class="coverage-text">96.51%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="coverage-bar">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill coverage-high" 
+                                             style="width: 97.66%"></div>
+                                    </div>
+                                    <span class="coverage-text">97.66%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="coverage-bar">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill coverage-high" 
+                                             style="width: 94.35%"></div>
+                                    </div>
+                                    <span class="coverage-text">94.35%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="coverage-bar">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill coverage-high" 
+                                             style="width: 96.51%"></div>
+                                    </div>
+                                    <span class="coverage-text">96.51%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-success">
+                                    Good
+                                </span>
+                            </td>
+                        </tr>
+                    
+                        <tr>
+                            <td class="package-name">
+                                <a href="./router-vue/index.html">📁 router-vue</a>
+                            </td>
+                            <td>
+                                <div class="coverage-bar">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill coverage-high" 
+                                             style="width: 99.48%"></div>
+                                    </div>
+                                    <span class="coverage-text">99.48%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="coverage-bar">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill coverage-high" 
+                                             style="width: 96.55%"></div>
+                                    </div>
+                                    <span class="coverage-text">96.55%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="coverage-bar">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill coverage-high" 
+                                             style="width: 100.00%"></div>
+                                    </div>
+                                    <span class="coverage-text">100.00%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="coverage-bar">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill coverage-high" 
+                                             style="width: 99.48%"></div>
+                                    </div>
+                                    <span class="coverage-text">99.48%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-success">
+                                    Good
+                                </span>
+                            </td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        </section>
+        
+        <footer class="footer">
+            <p>Generated on 6/19/2025, 7:13:44 AM | <strong>Esmx Framework</strong> - ESM Next Generation</p>
+        </footer>
+    </div>
+    
+    <script>
+        function function getCoverageClass(coverage) {
+    if (coverage === 'N/A') return 'coverage-low';
+    const num = Number.parseFloat(coverage);
+    if (num >= 80) return 'coverage-high';
+    if (num >= 60) return 'coverage-medium';
+    return 'coverage-low';
+}
+        
+        function function getStatusBadgeClass(coverage) {
+    if (coverage === 'N/A') return 'badge-danger';
+    const num = Number.parseFloat(coverage);
+    if (num >= 80) return 'badge-success';
+    if (num >= 60) return 'badge-warning';
+    return 'badge-danger';
+}
+        
+        function function getStatusText(coverage) {
+    if (coverage === 'N/A') return 'Error';
+    const num = Number.parseFloat(coverage);
+    if (num >= 80) return 'Good';
+    if (num >= 60) return 'Fair';
+    return 'Poor';
+}
+    </script>
+</body>
+</html>
