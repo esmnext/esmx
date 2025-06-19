@@ -121,7 +121,7 @@ export async function createRouteTask(opts: RouteTaskOptions) {
 
 export enum RouteTaskType {
     location = 'location',
-    env = 'env',
+    override = 'override',
     asyncComponent = 'asyncComponent',
     beforeEach = 'beforeEach',
     beforeEnter = 'beforeEnter',

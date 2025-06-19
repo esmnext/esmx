@@ -70,7 +70,6 @@ export function parsedOptions(
         rootStyle: options.rootStyle ? { ...options.rootStyle } : false,
         root: options.root || '',
         context: options.context ?? {},
-        env: options.env || '',
         req: options.req || null,
         res: options.res || null,
         layer: options.layer ? { ...options.layer } : null,

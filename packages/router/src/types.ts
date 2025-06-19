@@ -42,7 +42,6 @@ export interface RouterOptions {
     mode?: RouterMode;
     /** Optional in browser, but required on server side */
     base?: URL;
-    env?: string;
     req?: IncomingMessage | null;
     res?: ServerResponse | null;
     apps?: RouterMicroApp;
@@ -172,12 +171,31 @@ export interface RouteConfig {
     children?: RouteConfig[];
     redirect?: RouteLocationInput | RouteConfirmHook;
     meta?: RouteMeta;
-    env?: RouteEnv;
     app?: string | RouterMicroAppCallback;
     asyncComponent?: () => Promise<unknown>;
     beforeEnter?: RouteConfirmHook;
     beforeUpdate?: RouteConfirmHook;
     beforeLeave?: RouteConfirmHook;
+
+    /**
+     * Route override function for hybrid app development
+     *
+     * Note: Override is not executed during initial route loading
+     *
+     * @param to Target route
+     * @param from Source route
+     * @returns Function to execute instead of default routing, or void for default
+     *
+     * @example
+     * ```typescript
+     * override: (to, from) => {
+     *   if (isInApp()) {
+     *     return () => JSBridge.openNative();
+     *   }
+     * }
+     * ```
+     */
+    override?: RouteConfirmHook;
 }
 export interface RouteParsedConfig extends RouteConfig {
     compilePath: string;
@@ -242,13 +260,6 @@ export type RouteNotifyHook = (to: Route, from: Route | null) => void;
  * @param router Router instance
  */
 export type RouteBackNoResponseHook = (router: Router) => void;
-
-export interface RouteEnvOptions {
-    handle?: RouteHandleHook;
-    require?: RouteVerifyHook;
-}
-
-export type RouteEnv = RouteHandleHook | RouteEnvOptions;
 
 // ============================================================================
 // RouterLink related types

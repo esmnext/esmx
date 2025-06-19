@@ -45,7 +45,6 @@ describe('RouterLink Complete Tests', () => {
             routes,
             mode: RouterMode.history,
             base,
-            env: 'test',
             req: null,
             res: null,
             apps: {},

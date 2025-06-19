@@ -1,5 +1,6 @@
 import { assert, describe, test } from 'vitest';
 import { createMatcher, joinPathname } from './matcher';
+import type { RouteConfirmHook } from './types';
 
 const BASE_URL = new URL('https://www.esmx.dev');
 
@@ -937,20 +938,24 @@ describe('createMatcher', () => {
         assert.equal(result.params.action, 'edit');
     });
 
-    test('Route environment configuration handling', () => {
-        const envHandler = () => ({ data: 'test' });
+    test('Route override configuration handling', () => {
+        // Using proper types instead of any
+        // The override function returns RouteHandleHook when conditions are met
+        const overrideHandler: RouteConfirmHook = (to, from) => {
+            return async (toRoute, fromRoute) => ({ data: 'test' });
+        };
         const matcher = createMatcher([
             {
-                path: '/env-test',
-                env: envHandler,
-                meta: { env: 'production' }
+                path: '/override-test',
+                override: overrideHandler,
+                meta: { type: 'hybrid' }
             }
         ]);
 
-        const result = matcher(new URL('/env-test', BASE_URL), BASE_URL);
+        const result = matcher(new URL('/override-test', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
-        assert.equal(result.matches[0].env, envHandler);
-        assert.equal(result.matches[0]?.meta?.env, 'production');
+        assert.equal(result.matches[0].override, overrideHandler);
+        assert.equal(result.matches[0]?.meta?.type, 'hybrid');
     });
 
     test('Application configuration handling', () => {

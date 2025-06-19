@@ -24,7 +24,7 @@ import {
 const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
     [RouteType.push]: [
         RouteTaskType.location,
-        RouteTaskType.env,
+        RouteTaskType.override,
         RouteTaskType.beforeLeave,
         RouteTaskType.beforeEach,
         RouteTaskType.beforeUpdate,
@@ -34,7 +34,7 @@ const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
     ],
     [RouteType.replace]: [
         RouteTaskType.location,
-        RouteTaskType.env,
+        RouteTaskType.override,
         RouteTaskType.beforeLeave,
         RouteTaskType.beforeEach,
         RouteTaskType.beforeUpdate,
@@ -44,7 +44,7 @@ const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
     ],
     [RouteType.pushWindow]: [
         RouteTaskType.location,
-        RouteTaskType.env,
+        RouteTaskType.override,
         RouteTaskType.beforeLeave,
         RouteTaskType.beforeEach,
         RouteTaskType.beforeUpdate,
@@ -54,7 +54,7 @@ const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
     ],
     [RouteType.replaceWindow]: [
         RouteTaskType.location,
-        RouteTaskType.env,
+        RouteTaskType.override,
         RouteTaskType.beforeLeave,
         RouteTaskType.beforeEach,
         RouteTaskType.beforeUpdate,
@@ -64,7 +64,7 @@ const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
     ],
     [RouteType.restartApp]: [
         RouteTaskType.location,
-        RouteTaskType.env,
+        RouteTaskType.override,
         RouteTaskType.beforeLeave,
         RouteTaskType.beforeEach,
         RouteTaskType.beforeUpdate,
@@ -74,7 +74,7 @@ const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
     ],
     [RouteType.back]: [
         RouteTaskType.location,
-        RouteTaskType.env,
+        RouteTaskType.override,
         RouteTaskType.beforeLeave,
         RouteTaskType.beforeEach,
         RouteTaskType.beforeUpdate,
@@ -84,7 +84,7 @@ const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
     ],
     [RouteType.go]: [
         RouteTaskType.location,
-        RouteTaskType.env,
+        RouteTaskType.override,
         RouteTaskType.beforeLeave,
         RouteTaskType.beforeEach,
         RouteTaskType.beforeUpdate,
@@ -94,7 +94,7 @@ const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
     ],
     [RouteType.forward]: [
         RouteTaskType.location,
-        RouteTaskType.env,
+        RouteTaskType.override,
         RouteTaskType.beforeLeave,
         RouteTaskType.beforeEach,
         RouteTaskType.beforeUpdate,
@@ -131,23 +131,17 @@ export class RouteTransition {
                 return this.router.parsedOptions.location;
             }
         },
-        [RouteTaskType.env]: async (to, from) => {
-            if (!to.config || !to.config.env) {
+        [RouteTaskType.override]: async (to, from) => {
+            if (!to.config || !to.config.override) {
                 return;
             }
-            let routeHandle: RouteHandleHook | null = null;
-            if (typeof to.config.env === 'function') {
-                routeHandle = to.config.env;
-            } else if (typeof to.config.env === 'object') {
-                const { require, handle } = to.config.env;
-                if (typeof require === 'function' && require(to, from)) {
-                    routeHandle = handle || null;
-                } else {
-                    routeHandle = handle || null;
-                }
+            // Skip override during initial route loading
+            if (!from) {
+                return;
             }
-            if (routeHandle) {
-                return routeHandle;
+            const overrideHandler = await to.config.override(to, from);
+            if (typeof overrideHandler === 'function') {
+                return overrideHandler;
             }
         },
         [RouteTaskType.asyncComponent]: async (to, from) => {

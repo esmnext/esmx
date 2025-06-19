@@ -28,8 +28,6 @@ export {
     type RouteMeta,
     type RouteState,
     type RouteHandleResult,
-    type RouteEnv,
-    type RouteEnvOptions,
     // Route Hooks
     type RouteConfirmHook,
     type RouteConfirmHookResult,

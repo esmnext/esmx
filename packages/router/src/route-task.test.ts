@@ -82,7 +82,7 @@ describe('createRouteTask', () => {
                 task: firstTask
             },
             {
-                name: RouteTaskType.env,
+                name: RouteTaskType.override,
                 task: secondTask
             }
         ];
@@ -346,7 +346,7 @@ describe('createRouteTask', () => {
                 task: errorTask
             },
             {
-                name: RouteTaskType.env,
+                name: RouteTaskType.override,
                 task: secondTask
             }
         ];
@@ -398,7 +398,7 @@ describe('createRouteTask', () => {
                 task: firstTask
             },
             {
-                name: RouteTaskType.env,
+                name: RouteTaskType.override,
                 task: secondTask
             }
         ];
@@ -445,7 +445,7 @@ describe('createRouteTask', () => {
                 task: firstTask
             },
             {
-                name: RouteTaskType.env,
+                name: RouteTaskType.override,
                 task: secondTask
             }
         ];
@@ -537,7 +537,7 @@ describe('createRouteTask', () => {
                 task: firstTask
             },
             {
-                name: RouteTaskType.env,
+                name: RouteTaskType.override,
                 task: secondTask
             },
             {
@@ -601,7 +601,7 @@ describe('createRouteTask', () => {
                 task: firstTask
             },
             {
-                name: RouteTaskType.env,
+                name: RouteTaskType.override,
                 task: secondTask
             },
             {
@@ -660,7 +660,7 @@ describe('Task cancellation with RouteTaskController', () => {
                 task: firstTask
             },
             {
-                name: RouteTaskType.env,
+                name: RouteTaskType.override,
                 task: secondTask
             }
         ];
@@ -710,7 +710,7 @@ describe('Task cancellation with RouteTaskController', () => {
                 task: firstTask
             },
             {
-                name: RouteTaskType.env,
+                name: RouteTaskType.override,
                 task: secondTask
             }
         ];
@@ -763,7 +763,7 @@ describe('Task cancellation with RouteTaskController', () => {
                 task: firstTask
             },
             {
-                name: RouteTaskType.env,
+                name: RouteTaskType.override,
                 task: secondTask
             }
         ];
@@ -812,7 +812,7 @@ describe('Task cancellation with RouteTaskController', () => {
                 task: firstTask
             },
             {
-                name: RouteTaskType.env,
+                name: RouteTaskType.override,
                 task: secondTask
             }
         ];

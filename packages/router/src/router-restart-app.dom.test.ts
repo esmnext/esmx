@@ -490,11 +490,11 @@ describe('Router.restartApp Focused Tests', () => {
         });
     });
 
-    describe('🌍 Environment Configuration Tests', () => {
-        let envRouter: Router;
+    describe('🌍 Route Override Tests', () => {
+        let overrideRouter: Router;
 
         beforeEach(async () => {
-            const envOptions: RouterOptions = {
+            const overrideOptions: RouterOptions = {
                 routes: [
                     {
                         path: '/',
@@ -502,62 +502,73 @@ describe('Router.restartApp Focused Tests', () => {
                         component: () => 'HomeComponent'
                     },
                     {
-                        path: '/env-test',
-                        app: 'env',
-                        component: () => 'EnvComponent',
-                        env: {
-                            require: (to, from) =>
-                                to.query.env === 'production',
-                            handle: async (to, from) => {
-                                return { environment: 'production' };
+                        path: '/override-test',
+                        app: 'override',
+                        component: () => 'OverrideComponent',
+                        override: (to, from) => {
+                            if (to.query.native === 'true') {
+                                return async () => {
+                                    return { native: true, path: to.path };
+                                };
                             }
                         }
                     },
                     {
-                        path: '/env-function',
-                        app: 'env-func',
-                        component: () => 'EnvFuncComponent',
-                        env: async (to, from) => {
-                            return { environment: 'development' };
+                        path: '/hybrid-page',
+                        app: 'hybrid',
+                        component: () => 'HybridComponent',
+                        override: (to, from) => {
+                            // Always override for this test
+                            return async () => {
+                                return {
+                                    hybrid: 'native',
+                                    component: 'NativeComponent'
+                                };
+                            };
                         }
                     }
                 ],
                 apps: mockApps
             };
 
-            envRouter = new Router(envOptions);
-            await envRouter.push('/');
+            overrideRouter = new Router(overrideOptions);
+            await overrideRouter.push('/');
         });
 
         afterEach(() => {
-            envRouter.destroy();
+            overrideRouter.destroy();
         });
 
-        it('should correctly handle environment configuration objects', async () => {
-            const result = await envRouter.restartApp(
-                '/env-test?env=production'
+        it('should use override when condition is met', async () => {
+            const result = await overrideRouter.restartApp(
+                '/override-test?native=true'
             );
 
             expect(result.status).toBe(RouteStatus.success);
-            expect(result.handleResult).toEqual({ environment: 'production' });
+            expect(result.handleResult).toEqual({
+                native: true,
+                path: '/override-test'
+            });
         });
 
-        it('should correctly handle environment configuration functions', async () => {
-            const result = await envRouter.restartApp('/env-function');
-
-            expect(result.status).toBe(RouteStatus.success);
-            expect(result.handleResult).toEqual({ environment: 'development' });
-        });
-
-        it('should skip handling when environment requirements are not met', async () => {
-            const result = await envRouter.restartApp(
-                '/env-test?env=development'
+        it('should use default behavior when override returns nothing', async () => {
+            const result = await overrideRouter.restartApp(
+                '/override-test?native=false'
             );
 
             expect(result.status).toBe(RouteStatus.success);
-            // In environment config objects, even if require returns false, handle will still be executed
-            // This is the current implementation behavior, test needs adjustment based on actual logic
-            expect(result.handleResult).toEqual({ environment: 'production' });
+            // Should use default behavior (no override handler)
+            expect(result.handle).not.toBeNull();
+        });
+
+        it('should always use override when function always returns handler', async () => {
+            const result = await overrideRouter.restartApp('/hybrid-page');
+
+            expect(result.status).toBe(RouteStatus.success);
+            expect(result.handleResult).toEqual({
+                hybrid: 'native',
+                component: 'NativeComponent'
+            });
         });
     });
 

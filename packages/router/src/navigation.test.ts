@@ -439,7 +439,6 @@ describe('Navigation', () => {
             routes: [],
             mode: RouterMode.memory,
             base: new URL('http://test.com'),
-            env: 'test',
             req: null,
             res: null,
             apps: {},
