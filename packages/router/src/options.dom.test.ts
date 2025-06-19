@@ -314,10 +314,10 @@ describe('parsedOptions', () => {
             const customLocation = vi.fn();
             const options: RouterOptions = {
                 base: new URL('http://a.com'),
-                location: customLocation
+                fallback: customLocation
             };
             const opts = parsedOptions(options);
-            expect(opts.location).toBe(customLocation);
+            expect(opts.fallback).toBe(customLocation);
         });
     });
 });

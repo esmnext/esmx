@@ -13,7 +13,7 @@ describe('Router.forward Tests', () => {
         router = new Router({
             mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
-            location: (to, from) => {
+            fallback: (to, from) => {
                 executionLog.push(`location-handler-${to.path}`);
             },
             routes: [

@@ -48,7 +48,7 @@ const createMockRouter = (
         res: null,
         apps: overrides.options?.apps || {},
         normalizeURL: (url: URL) => url,
-        location: () => {},
+        fallback: () => {},
         rootStyle: false,
         layer: null,
         onBackNoResponse: () => {}

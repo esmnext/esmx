@@ -23,7 +23,7 @@ import {
 // Task configuration - This structure defines the sequence of tasks for each route type.
 const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
     [RouteType.push]: [
-        RouteTaskType.location,
+        RouteTaskType.fallback,
         RouteTaskType.override,
         RouteTaskType.beforeLeave,
         RouteTaskType.beforeEach,
@@ -33,7 +33,7 @@ const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
         RouteTaskType.push
     ],
     [RouteType.replace]: [
-        RouteTaskType.location,
+        RouteTaskType.fallback,
         RouteTaskType.override,
         RouteTaskType.beforeLeave,
         RouteTaskType.beforeEach,
@@ -43,7 +43,7 @@ const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
         RouteTaskType.replace
     ],
     [RouteType.pushWindow]: [
-        RouteTaskType.location,
+        RouteTaskType.fallback,
         RouteTaskType.override,
         RouteTaskType.beforeLeave,
         RouteTaskType.beforeEach,
@@ -53,7 +53,7 @@ const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
         RouteTaskType.pushWindow
     ],
     [RouteType.replaceWindow]: [
-        RouteTaskType.location,
+        RouteTaskType.fallback,
         RouteTaskType.override,
         RouteTaskType.beforeLeave,
         RouteTaskType.beforeEach,
@@ -63,7 +63,7 @@ const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
         RouteTaskType.replaceWindow
     ],
     [RouteType.restartApp]: [
-        RouteTaskType.location,
+        RouteTaskType.fallback,
         RouteTaskType.override,
         RouteTaskType.beforeLeave,
         RouteTaskType.beforeEach,
@@ -73,7 +73,7 @@ const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
         RouteTaskType.restartApp
     ],
     [RouteType.back]: [
-        RouteTaskType.location,
+        RouteTaskType.fallback,
         RouteTaskType.override,
         RouteTaskType.beforeLeave,
         RouteTaskType.beforeEach,
@@ -83,7 +83,7 @@ const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
         RouteTaskType.popstate
     ],
     [RouteType.go]: [
-        RouteTaskType.location,
+        RouteTaskType.fallback,
         RouteTaskType.override,
         RouteTaskType.beforeLeave,
         RouteTaskType.beforeEach,
@@ -93,7 +93,7 @@ const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
         RouteTaskType.popstate
     ],
     [RouteType.forward]: [
-        RouteTaskType.location,
+        RouteTaskType.fallback,
         RouteTaskType.override,
         RouteTaskType.beforeLeave,
         RouteTaskType.beforeEach,
@@ -126,9 +126,9 @@ export class RouteTransition {
 
     // Task definitions - follows the original Router logic for each task type.
     private readonly _tasks: Record<RouteTaskType, RouteConfirmHook> = {
-        [RouteTaskType.location]: (to, from) => {
+        [RouteTaskType.fallback]: (to, from) => {
             if (to.matched.length === 0) {
-                return this.router.parsedOptions.location;
+                return this.router.parsedOptions.fallback;
             }
         },
         [RouteTaskType.override]: async (to, from) => {
@@ -280,10 +280,10 @@ export class RouteTransition {
             };
         },
         [RouteTaskType.pushWindow]: async () => {
-            return this.router.parsedOptions.location;
+            return this.router.parsedOptions.fallback;
         },
         [RouteTaskType.replaceWindow]: async (to) => {
-            return this.router.parsedOptions.location;
+            return this.router.parsedOptions.fallback;
         }
     };
 

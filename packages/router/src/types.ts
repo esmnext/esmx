@@ -46,7 +46,34 @@ export interface RouterOptions {
     res?: ServerResponse | null;
     apps?: RouterMicroApp;
     normalizeURL?: (to: URL, from: URL | null) => URL;
-    location?: RouteHandleHook;
+
+    /**
+     * Fallback handler for unresolvable routes
+     *
+     * Handles routes that cannot be processed within the current application:
+     * - 404 errors (route not found)
+     * - Cross-origin navigation
+     * - External links
+     * - Window navigation (pushWindow/replaceWindow)
+     *
+     * @param to Target route that cannot be resolved
+     * @param from Source route
+     * @returns Handler function to execute instead of default routing
+     *
+     * @example
+     * ```typescript
+     * fallback: (to, from) => {
+     *   if (to.url.origin !== location.origin) {
+     *     // Handle cross-origin navigation
+     *     return () => window.open(to.url.href);
+     *   }
+     *   // Handle 404 error
+     *   return () => showNotFoundPage();
+     * }
+     * ```
+     */
+    fallback?: RouteHandleHook;
+
     rootStyle?: Partial<CSSStyleDeclaration> | false;
     layer?: RouterLayerOptions | null;
     /** Hook function called when router.back() or router.go(negative) is unresponsive */

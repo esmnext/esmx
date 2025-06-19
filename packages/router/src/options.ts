@@ -84,7 +84,7 @@ export function parsedOptions(
                 : Object.assign({}, options.apps),
         matcher: createMatcher(routes),
         normalizeURL: options.normalizeURL ?? ((url) => url),
-        location: options.location ?? DEFAULT_LOCATION,
+        fallback: options.fallback ?? DEFAULT_LOCATION,
         onBackNoResponse: options.onBackNoResponse ?? (() => {})
     });
 }

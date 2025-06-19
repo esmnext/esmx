@@ -116,7 +116,7 @@ describe('Router Window Navigation Tests', () => {
                 const windowRouter = new Router({
                     routes: [{ path: '/', app: 'home' }],
                     apps: mockApps,
-                    location: (to, from) => {
+                    fallback: (to, from) => {
                         locationCalled = true;
                         receivedRoute = to;
                         return { windowNavigation: true };
@@ -289,7 +289,7 @@ describe('Router Window Navigation Tests', () => {
                 const windowRouter = new Router({
                     routes: [{ path: '/', app: 'home' }],
                     apps: mockApps,
-                    location: () => {
+                    fallback: () => {
                         throw new Error('Location handler error');
                     }
                 });
@@ -423,7 +423,7 @@ describe('Router Window Navigation Tests', () => {
             const windowRouter = new Router({
                 routes: [{ path: '/', app: 'home' }],
                 apps: mockApps,
-                location: (to, from) => {
+                fallback: (to, from) => {
                     locationCalls.push({
                         method: to.type,
                         isPush: to.isPush,

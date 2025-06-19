@@ -703,7 +703,7 @@ describe('Router.restartApp Focused Tests', () => {
             const customLocationRouter = new Router({
                 routes: [{ path: '/', app: 'home' }],
                 apps: mockApps,
-                location: (to, from) => {
+                fallback: (to, from) => {
                     locationCalled = true;
                     // Simulate custom location handler behavior
                     return { customLocation: true, path: to.path };
