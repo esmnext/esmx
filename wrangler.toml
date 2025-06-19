@@ -1,0 +1,13 @@
+name = "esmx"
+compatibility_date = "2024-01-01"
+
+[build]
+command = "node ./build.mjs"
+cwd = "."
+
+[build.environment_variables]
+NODE_VERSION = "22.16.0"
+PNPM_VERSION = "10.11.1"
+
+[pages]
+build_output_dir = "dist" 
