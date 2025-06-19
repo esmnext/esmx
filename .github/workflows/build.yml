@@ -7,7 +7,11 @@ permissions:
   contents: write
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: ['>=22.11.0', 24]
+    runs-on: ${{ matrix.os }}
     env:
       RUST_BACKTRACE: full
 
@@ -17,7 +21,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '22.11'
+        node-version: ${{ matrix.node }}
 
     - name: Setup pnpm
       uses: pnpm/action-setup@v2
@@ -37,11 +41,11 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-pnpm-store-
 
-    - name: Build
-      run: ./build.sh
+    - name: Build (Cross-platform Node.js)
+      run: node ./build.mjs
 
     - name: Deploy
-      if: github.ref == 'refs/heads/master'
+      if: github.ref == 'refs/heads/master' && matrix.os == 'ubuntu-latest' && matrix.node == '>=22.11.0'
       uses: JamesIves/github-pages-deploy-action@4.1.1
       with:
         branch: docs
