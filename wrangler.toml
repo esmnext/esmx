@@ -2,7 +2,7 @@ name = "esmx"
 compatibility_date = "2024-01-01"
 
 [build]
-command = "npm install -g pnpm@10 && pnpm install --frozen-lockfile --ignore-engines && node ./build.mjs"
+command = "node ./build.mjs"
 cwd = "."
 
 [build.environment_variables]
