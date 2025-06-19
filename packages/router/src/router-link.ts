@@ -14,7 +14,6 @@ const CSS_CLASSES = {
     ACTIVE: 'router-link-active',
     EXACT_ACTIVE: 'router-link-exact-active'
 } as const;
-
 /**
  * Normalize navigation type with backward compatibility for deprecated replace property
  */
