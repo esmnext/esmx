@@ -142,7 +142,7 @@ const goBack = () => {
 
 // Watch route changes
 watch(() => route.path, (newPath) => {
-  console.log('Route changed to:', newPath);
+  // Handle route change logic here
 });
 </script>
 
@@ -171,7 +171,7 @@ export default defineComponent({
     const router = getRouter(this);
     const route = getRoute(this);
     
-    console.log('Current route:', route.path);
+    // Access current route information
   },
   
   methods: {
@@ -289,10 +289,10 @@ import { useRoute } from '@esmx/router-vue';
 const route = useRoute();
 
 // Access route properties
-console.log(route.path);     // Current path
-console.log(route.params);   // Route parameters
-console.log(route.query);    // Query parameters
-console.log(route.meta);     // Route metadata
+// route.path     - Current path
+// route.params   - Route parameters  
+// route.query    - Query parameters
+// route.meta     - Route metadata
 </script>
 ```
 
@@ -427,7 +427,7 @@ export default defineComponent({
     navigate() {
       // TypeScript knows about $router and $route
       this.$router.push('/about');
-      console.log('Current route:', this.$route.path);
+      // Access current route: this.$route.path
     }
   }
 });
@@ -552,9 +552,9 @@ We welcome contributions! Please feel free to submit issues and pull requests.
 
 ## License
 
-MIT © [ESMX Team](https://github.com/esmnext/esmx)
+MIT © [Esmx Team](https://github.com/esmnext/esmx)
 
 ## Related Packages
 
 - [@esmx/router](https://github.com/esmnext/esmx/tree/master/packages/router) - Core router package
-- [@esmx/core](https://github.com/esmnext/esmx/tree/master/packages/core) - ESMX core framework 
+- [@esmx/core](https://github.com/esmnext/esmx/tree/master/packages/core) - Esmx core framework 

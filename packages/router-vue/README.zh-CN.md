@@ -142,7 +142,7 @@ const goBack = () => {
 
 // 监听路由变化
 watch(() => route.path, (newPath) => {
-  console.log('路由变更至:', newPath);
+  // 处理路由变化逻辑
 });
 </script>
 
@@ -171,7 +171,7 @@ export default defineComponent({
     const router = getRouter(this);
     const route = getRoute(this);
     
-    console.log('当前路由:', route.path);
+    // 访问当前路由信息
   },
   
   methods: {
@@ -289,10 +289,10 @@ import { useRoute } from '@esmx/router-vue';
 const route = useRoute();
 
 // 访问路由属性
-console.log(route.path);     // 当前路径
-console.log(route.params);   // 路由参数
-console.log(route.query);    // 查询参数
-console.log(route.meta);     // 路由元数据
+// route.path     - 当前路径
+// route.params   - 路由参数  
+// route.query    - 查询参数
+// route.meta     - 路由元数据
 </script>
 ```
 
@@ -427,7 +427,7 @@ export default defineComponent({
     navigate() {
       // TypeScript 能够识别 $router 和 $route
       this.$router.push('/about');
-      console.log('当前路由:', this.$route.path);
+      // Access current route: this.$route.path
     }
   }
 });
@@ -552,9 +552,9 @@ app.use(RouterPlugin);
 
 ## 许可证
 
-MIT © [ESMX 团队](https://github.com/esmnext/esmx)
+MIT © [Esmx 团队](https://github.com/esmnext/esmx)
 
 ## 相关包
 
 - [@esmx/router](https://github.com/esmnext/esmx/tree/master/packages/router) - 核心路由包
-- [@esmx/core](https://github.com/esmnext/esmx/tree/master/packages/core) - ESMX 核心框架
+- [@esmx/core](https://github.com/esmnext/esmx/tree/master/packages/core) - Esmx 核心框架
