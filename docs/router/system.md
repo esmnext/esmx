@@ -195,8 +195,8 @@ class RouteTaskController {
 ### 4.1 任务类型定义
 ```typescript
 enum RouteTaskType {
-    location = 'location',           // 位置处理
-    env = 'env',                    // 环境处理
+    fallback = 'fallback',           // 兜底处理（404、跨域、窗口导航）
+    override = 'override',          // 路由覆盖（混合APP开发）
     asyncComponent = 'asyncComponent', // 异步组件加载
     beforeEach = 'beforeEach',      // 全局前置守卫
     beforeLeave = 'beforeLeave',    // 离开守卫
@@ -215,8 +215,8 @@ enum RouteTaskType {
 ```typescript
 const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
     [RouteType.push]: [
-        RouteTaskType.location,
-        RouteTaskType.env,
+        RouteTaskType.fallback,
+        RouteTaskType.override,
         RouteTaskType.beforeLeave,
         RouteTaskType.beforeEach,
         RouteTaskType.beforeUpdate,
@@ -257,7 +257,7 @@ interface RouterLayerOptions {
 - **pushWindow/replaceWindow**：不更新当前路由状态
 - **不触发微应用更新**：保持当前应用状态
 - **支持并发调用**：无任务取消机制
-- **外部链接处理**：通过 `location` 钩子
+- **外部链接处理**：通过 `fallback` 钩子
 
 ### 5.3 SSR 支持架构
 ```typescript
