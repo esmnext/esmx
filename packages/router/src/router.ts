@@ -185,7 +185,7 @@ export class Router {
      */
     public isRouteMatched(
         targetRoute: Route,
-        matchType: RouteMatchType
+        matchType: RouteMatchType = 'include'
     ): boolean {
         const currentRoute = this.transition.route;
         if (!currentRoute) return false;

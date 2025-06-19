@@ -1,8 +1,6 @@
 import type { Router } from './router';
 import type {
-    Route,
     RouteLocationInput,
-    RouteMatchType,
     RouterLayerOptions,
     RouterLinkAttributes,
     RouterLinkProps,
@@ -26,7 +24,10 @@ const EXTERNAL_LINK_PATTERN = /\b_blank\b/i;
 function normalizeNavigationType(props: RouterLinkProps): RouterLinkType {
     if (props.replace) {
         console.warn(
-            '[RouterLink] `replace` property is deprecated, use `type="replace"` instead'
+            '[RouterLink] The `replace` property is deprecated and will be removed in a future version.\n' +
+                'Please use `type="replace"` instead.\n' +
+                'Before: <RouterLink replace={true} />\n' +
+                'After:  <RouterLink type="replace" />'
         );
         return 'replace';
     }
@@ -34,20 +35,25 @@ function normalizeNavigationType(props: RouterLinkProps): RouterLinkType {
 }
 
 /**
- * Get event type list
+ * Get event type list - normalize and validate event types
  */
 function getEventTypeList(eventType: string | string[]): string[] {
-    if (Array.isArray(eventType)) {
-        const validEvents = eventType.filter(
-            (type) => type && typeof type === 'string'
-        );
-        return validEvents.length > 0 ? validEvents : ['click'];
-    }
-    return [eventType || 'click'];
+    const events = Array.isArray(eventType) ? eventType : [eventType];
+    const validEvents = events
+        .filter((type): type is string => typeof type === 'string')
+        .map((type) => type.trim())
+        .filter(Boolean);
+    return validEvents.length ? validEvents : ['click'];
 }
 
 /**
- * Event guard check
+ * Event guard check - determines if the router should handle the navigation
+ *
+ * Returns false: Let browser handle default behavior (normal link navigation)
+ * Returns true: Router takes over navigation, prevents default browser behavior
+ *
+ * This function intelligently decides when to let the browser handle clicks
+ * (like Ctrl+click for new tabs) vs when to use SPA routing
  */
 function guardEvent(e: MouseEvent): boolean {
     // don't redirect with control keys
@@ -62,7 +68,10 @@ function guardEvent(e: MouseEvent): boolean {
         const targetAttr = target.getAttribute('target');
         if (EXTERNAL_LINK_PATTERN.test(targetAttr || '')) return false;
     }
-    // this may be a Weex event which doesn't have this method
+    // Prevent default browser navigation behavior to enable SPA routing
+    // Without preventDefault(), the browser would perform a full page reload/navigation
+    // instead of letting the router handle the navigation programmatically
+    // Note: this may be a Weex event which doesn't have this method
     if (e.preventDefault) e.preventDefault();
 
     return true;
@@ -99,23 +108,6 @@ function executeNavigation(
 }
 
 /**
- * Build rel attribute value
- */
-function buildRelAttribute(isPushWindow: boolean, isExternal: boolean): string {
-    const relParts: string[] = [];
-
-    if (isExternal) {
-        relParts.push('external', 'nofollow');
-    }
-
-    if (isPushWindow) {
-        relParts.push('noopener', 'noreferrer');
-    }
-
-    return relParts.join(' ');
-}
-
-/**
  * Create navigation function
  */
 function createNavigateFunction(
@@ -135,48 +127,48 @@ function createNavigateFunction(
 }
 
 /**
- * Compute CSS classes
- */
-function computeClasses(
-    isActive: boolean,
-    isExactActive: boolean,
-    activeClass?: string
-): string[] {
-    const classes: string[] = [CSS_CLASSES.BASE];
-
-    if (isActive) {
-        classes.push(activeClass || CSS_CLASSES.ACTIVE);
-    }
-
-    if (isExactActive) {
-        classes.push(CSS_CLASSES.EXACT_ACTIVE);
-    }
-
-    return classes;
-}
-
-/**
  * Compute HTML attributes
  */
 function computeAttributes(
     href: string,
     navigationType: RouterLinkType,
     isExternal: boolean,
-    classes: string[]
+    isActive: boolean,
+    isExactActive: boolean,
+    activeClass?: string
 ): RouterLinkAttributes {
-    const isPushWindow = navigationType === 'pushWindow';
+    // Only pushWindow opens in a new window, replaceWindow replaces current window
+    const isNewWindow = navigationType === 'pushWindow';
+
+    // Build CSS classes
+    const classes: string[] = [CSS_CLASSES.BASE];
+    if (isActive) {
+        classes.push(activeClass || CSS_CLASSES.ACTIVE);
+    }
+    if (isExactActive) {
+        classes.push(CSS_CLASSES.EXACT_ACTIVE);
+    }
 
     const attributes: RouterLinkAttributes = {
         href,
         class: classes.join(' ')
     };
 
-    if (isPushWindow) {
+    // Set target for new window
+    if (isNewWindow) {
         attributes.target = '_blank';
     }
 
-    if (isPushWindow || isExternal) {
-        attributes.rel = buildRelAttribute(isPushWindow, isExternal);
+    // Build rel attribute
+    const relParts: string[] = [];
+    if (isNewWindow) {
+        relParts.push('noopener', 'noreferrer');
+    }
+    if (isExternal) {
+        relParts.push('external', 'nofollow');
+    }
+    if (relParts.length > 0) {
+        attributes.rel = relParts.join(' ');
     }
 
     return attributes;
@@ -242,8 +234,14 @@ export function createLinkResolver(
     );
 
     // Compute UI attributes
-    const classes = computeClasses(isActive, isExactActive, props.activeClass);
-    const attributes = computeAttributes(href, type, isExternal, classes);
+    const attributes = computeAttributes(
+        href,
+        type,
+        isExternal,
+        isActive,
+        isExactActive,
+        props.activeClass
+    );
 
     // Create event handlers
     const eventTypes = getEventTypeList(props.event || 'click');
