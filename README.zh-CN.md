@@ -60,7 +60,7 @@ import Button from 'remote/src/Button.vue';
 
 ## 🚀 开始使用
 
-📖 [完整指南](https://www.esmnext.com/guide/start/getting-started.html)
+📖 [文档](https://www.esmnext.com/guide/start/getting-started.html)
 
 ## 📦 核心软件包
 
