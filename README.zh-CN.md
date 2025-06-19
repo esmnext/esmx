@@ -37,7 +37,7 @@
 | **学习成本** | 框架API | **标准语法** |
 | **模块隔离** | 沙箱模拟 | **浏览器原生** |
 
-## ⚡ 快速上手
+## ⚡ 快速入门
 
 ```typescript
 // Remote App - 导出模块
@@ -66,7 +66,7 @@ import Button from 'remote/src/Button.vue';
 
 | 包名 | 版本 | 状态 | 说明 |
 |------|------|------|------|
-| [**@esmx/core**](https://github.com/esmnext/esmx/tree/master/packages/core) | <a href="https://www.npmjs.com/package/@esmx/core"><img src="https://img.shields.io/npm/v/@esmx/core.svg" alt="npm version" /></a> | 🟡 **开发中** | 微前端框架，提供原生ESM模块链接能力 |
+| [**@esmx/core**](https://github.com/esmnext/esmx/tree/master/packages/core) | <a href="https://www.npmjs.com/package/@esmx/core"><img src="https://img.shields.io/npm/v/@esmx/core.svg" alt="npm version" /></a> | 🔵 **预览** | 微前端框架，提供原生ESM模块链接能力 |
 | [**@esmx/router**](https://github.com/esmnext/esmx/tree/master/packages/router) | <a href="https://www.npmjs.com/package/@esmx/router"><img src="https://img.shields.io/npm/v/@esmx/router.svg" alt="npm version" /></a> | 🟢 **稳定** | 与框架无关的路由库 |
 | [**@esmx/router-vue**](https://github.com/esmnext/esmx/tree/master/packages/router-vue) | <a href="https://www.npmjs.com/package/@esmx/router-vue"><img src="https://img.shields.io/npm/v/@esmx/router-vue.svg" alt="npm version" /></a> | 🟢 **稳定** | @esmx/router 的 Vue 集成包，支持Vue 2.7+和Vue 3 |
 | [**@esmx/rspack**](https://github.com/esmnext/esmx/tree/master/packages/rspack) | <a href="https://www.npmjs.com/package/@esmx/rspack"><img src="https://img.shields.io/npm/v/@esmx/rspack.svg" alt="npm version" /></a> | 🔵 **预览** | 与框架无关的 Rspack 打包工具 |
