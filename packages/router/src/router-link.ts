@@ -15,11 +15,8 @@ const CSS_CLASSES = {
     EXACT_ACTIVE: 'router-link-exact-active'
 } as const;
 
-const EXTERNAL_LINK_PATTERN = /\b_blank\b/i;
-
 /**
- * Normalize navigation type
- * replace property has higher priority than type property (replace is deprecated for backward compatibility)
+ * Normalize navigation type with backward compatibility for deprecated replace property
  */
 function normalizeNavigationType(props: RouterLinkProps): RouterLinkType {
     if (props.replace) {
@@ -62,15 +59,7 @@ function guardEvent(e: MouseEvent): boolean {
     if (e.defaultPrevented) return false;
     // don't redirect on right click
     if (e.button !== undefined && e.button !== 0) return false;
-    // don't redirect if `target="_blank"`
-    const target = e.currentTarget;
-    if (target instanceof HTMLElement) {
-        const targetAttr = target.getAttribute('target');
-        if (EXTERNAL_LINK_PATTERN.test(targetAttr || '')) return false;
-    }
-    // Prevent default browser navigation behavior to enable SPA routing
-    // Without preventDefault(), the browser would perform a full page reload/navigation
-    // instead of letting the router handle the navigation programmatically
+    // Prevent default browser navigation to enable SPA routing
     // Note: this may be a Weex event which doesn't have this method
     if (e.preventDefault) e.preventDefault();
 
@@ -117,7 +106,6 @@ function createNavigateFunction(
     layerOptions?: Partial<RouterLayerOptions>
 ): (e?: MouseEvent) => void {
     return (e?: MouseEvent): void => {
-        // If there's an event, perform guard check
         if (e && !guardEvent(e)) {
             return;
         }
@@ -191,7 +179,6 @@ function createEventHandlersGenerator(
         };
 
         eventTypes.forEach((eventType) => {
-            // Use native lowercase event name by default, use transformed name if transform function provided
             const eventName = nameTransform
                 ? nameTransform(eventType)
                 : eventType.toLowerCase();
@@ -213,19 +200,14 @@ export function createLinkResolver(
     router: Router,
     props: RouterLinkProps
 ): RouterLinkResolved {
-    // Resolve route
     const route = router.resolve(props.to);
     const type = normalizeNavigationType(props);
     const href = route.fullPath;
 
-    // Route matching status
     const isActive = router.isRouteMatched(route, props.exact || 'include');
     const isExactActive = router.isRouteMatched(route, 'exact');
-
-    // Check if external link
     const isExternal = route.url.origin !== router.route.url.origin;
 
-    // Create navigation function
     const navigate = createNavigateFunction(
         router,
         props.to,
@@ -233,7 +215,6 @@ export function createLinkResolver(
         props.layerOptions
     );
 
-    // Compute UI attributes
     const attributes = computeAttributes(
         href,
         type,
@@ -243,7 +224,6 @@ export function createLinkResolver(
         props.activeClass
     );
 
-    // Create event handlers
     const eventTypes = getEventTypeList(props.event || 'click');
     const getEventHandlers = createEventHandlersGenerator(navigate, eventTypes);
 
