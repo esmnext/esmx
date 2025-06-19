@@ -10,7 +10,7 @@
     <a href="https://bundlephobia.com/package/@esmx/core"><img src="https://img.shields.io/bundlephobia/minzip/@esmx/core" alt="size" /></a>
   </div>
   
-  <h3>Next-generation micro-frontend framework based on ESM, sandbox-free with zero runtime overhead, supporting multi-framework hybrid development</h3>
+  <h3>Next-generation micro-frontend framework based on ESM with zero runtime overhead, supporting sandbox-free multi-framework hybrid development</h3>
   
   <p>⚡️ <strong>Ultimate Performance</strong> · 🛠️ <strong>Developer Friendly</strong> · 🔧 <strong>Standard Syntax</strong></p>
   
@@ -26,7 +26,7 @@
 - **Complete SSR Support** - High-performance server-side rendering, SEO-friendly
 - **Standard ESM Syntax** - No framework-specific APIs, minimal learning curve
 - **Comprehensive Testing** - [Complete test coverage](https://www.esmnext.com/coverage/), continuous integration verification
-- **Multi-Framework Support** - Vue, React, Preact, Solid, etc.
+- **Multi-Framework Support** - Vue, React, Preact, Solid, and more
 
 ## 📊 vs Traditional Micro-frontends
 
@@ -66,7 +66,7 @@ import Button from 'remote/src/Button.vue';
 
 | Package | Version | Status | Description |
 |---------|---------|--------|-------------|
-| [**@esmx/core**](https://github.com/esmnext/esmx/tree/master/packages/core) | <a href="https://www.npmjs.com/package/@esmx/core"><img src="https://img.shields.io/npm/v/@esmx/core.svg" alt="npm version" /></a> | 🟡 **In Development** | Micro-frontend framework with native ESM module linking |
+| [**@esmx/core**](https://github.com/esmnext/esmx/tree/master/packages/core) | <a href="https://www.npmjs.com/package/@esmx/core"><img src="https://img.shields.io/npm/v/@esmx/core.svg" alt="npm version" /></a> | 🟡 **Dev** | Micro-frontend framework with native ESM module linking |
 | [**@esmx/router**](https://github.com/esmnext/esmx/tree/master/packages/router) | <a href="https://www.npmjs.com/package/@esmx/router"><img src="https://img.shields.io/npm/v/@esmx/router.svg" alt="npm version" /></a> | 🟢 **Stable** | Framework-agnostic router library |
 | [**@esmx/router-vue**](https://github.com/esmnext/esmx/tree/master/packages/router-vue) | <a href="https://www.npmjs.com/package/@esmx/router-vue"><img src="https://img.shields.io/npm/v/@esmx/router-vue.svg" alt="npm version" /></a> | 🟢 **Stable** | Vue integration for @esmx/router, supports Vue 2.7+ and Vue 3 |
 | [**@esmx/rspack**](https://github.com/esmnext/esmx/tree/master/packages/rspack) | <a href="https://www.npmjs.com/package/@esmx/rspack"><img src="https://img.shields.io/npm/v/@esmx/rspack.svg" alt="npm version" /></a> | 🔵 **Preview** | Framework-agnostic Rspack build tool |
