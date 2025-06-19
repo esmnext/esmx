@@ -1,5 +1,32 @@
 # Cursor 全局编程规则
 
+## 🚀 快速参考
+
+### 核心开发准则
+- **语言**: 中文回复，英文注释和提交信息
+- **类型**: 严格 TypeScript，谨慎使用 `any` 并注释说明
+- **模块**: ESM 标准，命名导出，按顺序导入
+- **测试**: Vitest + happy-dom，AAA 模式，禁用 mock
+- **提交**: Conventional Commits，英文描述
+
+### 禁止修改文件
+`.stylelintignore` | `.stylelintrc.js` | `build.config.ts` | `biome.json`
+
+### Esmx 特定包名
+`core` | `router` | `router-vue` | `rspack` | `rspack-vue` | `import` | `fetch` | `class-state` | `lint`
+
+---
+
+## 框架介绍
+- **框架名称**: Esmx (ESM next)
+- **框架理念**: Esmx 是基于原生 ESM 的下一代微前端框架，无沙盒无运行时，支持多框架混合开发，并提供高性能服务端渲染能力
+- **核心目标**: 推进 ESM 标准的应用和发展，构建面向未来的 JavaScript/TypeScript 开发生态
+- **技术特色**: 
+  - 基于原生 ESM 和 importmap，零运行时开销
+  - 支持 Vue、React、Preact、Solid、Svelte 等多框架
+  - 高性能 SSR 与模块联邦能力
+  - Monorepo 架构，使用 pnpm workspace + lerna 管理
+
 ## AI 交互规则
 - **回复语言**: 始终使用中文进行回复。
 - **禁止修改文件**: AI 严格禁止修改以下配置文件：
@@ -46,7 +73,9 @@
 ### 测试框架和工具
 - 使用 Vitest 作为测试框架
 - 测试文件命名：`*.test.ts` 或 `*.spec.ts`
+- DOM 相关测试使用：`*.dom.test.ts`
 - 必要时可在文件头部配置测试环境：`@vitest-environment`
+- 使用 `happy-dom` 作为浏览器环境模拟
 
 ### 测试编写原则
 - **谨慎使用 `any` 类型**，包括在测试代码中，必须添加注释说明必要性
@@ -104,28 +133,15 @@ describe('模块/功能名称', () => {
 - 避免类型断言，除非绝对必要
 
 #### any 类型使用指导
-当必须使用 `any` 类型时，必须添加详细注释说明：
+当必须使用 `any` 类型时，必须添加详细注释说明使用原因：
 
-**允许使用 any 的场景：**
-- 与第三方库集成时，库本身缺乏类型定义
-- 处理动态内容或运行时类型无法确定的情况
-- 与浏览器原生API对齐，API本身类型不明确
-- 临时解决复杂类型推导问题（需要标记TODO）
+**允许场景**: 第三方库缺乏类型定义 | 动态内容运行时类型不确定 | 浏览器原生API对齐 | 临时解决复杂类型推导
 
-**注释要求：**
+**注释格式**:
 ```typescript
-// Using any here because:
-// 1. Third-party library XYZ lacks proper type definitions
-// 2. The API returns dynamic content that varies at runtime
-// 3. Aligning with browser native API behavior (e.g., history.state)
-// TODO: Consider creating specific types when library updates
+// Using any here because: [具体原因]
+// TODO: [改进计划，如果适用]
 const data: any = externalLibrary.getData();
-
-// Using any to match browser History API where state can be any serializable value
-// This maintains compatibility with standard DOM History interface
-interface HistoryLike {
-    state: any; // Matches native History.state type
-}
 ```
 
 ## 性能和最佳实践
@@ -141,49 +157,115 @@ interface HistoryLike {
 - 正确处理异步错误
 - 在测试中正确等待异步操作完成
 
+### Esmx 特定最佳实践
+- **模块导出**: 遵循 ESM 标准，使用命名导出而非默认导出
+- **微前端架构**: 确保模块间松耦合，避免直接依赖
+- **SSR 优化**: 考虑服务端渲染的性能影响，避免客户端特定 API
+- **路由设计**: 使用路径参数和查询参数时考虑类型安全
+- **CLI 工具**: 提供清晰的错误信息和使用帮助
+- **配置管理**: 使用 TypeScript 接口定义配置结构
+
 ## 示例代码风格
 
 ```typescript
-// Good example
+// Good example - Esmx 风格
 import { readFile } from 'node:fs/promises';
-import type { Config } from '../types';
+import type { RouteConfig, ModuleConfig } from '../types';
 
-interface UserData {
-    id: string;
-    name: string;
-    email: string;
+interface RouteData {
+    path: string;
+    component: string;
+    meta?: Record<string, unknown>;
 }
 
-export const fetchUserData = async (userId: string): Promise<UserData> => {
-    if (!userId) {
-        throw new Error('User ID is required');
+interface RouteConfig {
+    routes: RouteData[];
+    mode: 'history' | 'hash';
+    base: string;
+}
+
+export const createRouteConfig = async (routes: RouteData[]): Promise<RouteConfig> => {
+    if (!routes || routes.length === 0) {
+        throw new Error('Routes array is required and cannot be empty');
     }
     
-    // Implementation logic with proper return
-    const userData: UserData = {
-        id: userId,
-        name: `User ${userId}`,
-        email: `${userId}@example.com`
-    };
+    // Validate route paths follow ESM module conventions
+    const validatedRoutes = routes.map(route => ({
+        ...route,
+        path: route.path.startsWith('/') ? route.path : `/${route.path}`
+    }));
     
-    return userData;
+    return {
+        routes: validatedRoutes,
+        mode: 'history',
+        base: '/'
+    };
 };
 
-// Test example
-describe('fetchUserData', () => {
-    it('should return user data when valid userId is provided', async () => {
+// Test example - Esmx 风格
+describe('createRouteConfig', () => {
+    it('should create valid route configuration with proper ESM structure', async () => {
         // Arrange
-        const validUserId = 'user-123';
+        const routes: RouteData[] = [
+            { path: 'home', component: './components/Home.vue' },
+            { path: 'about', component: './components/About.vue' }
+        ];
         
         // Act
-        const result = await fetchUserData(validUserId);
+        const result = await createRouteConfig(routes);
         
         // Assert
-        expect(result).toHaveProperty('id', validUserId);
-        expect(result).toHaveProperty('name');
-        expect(result).toHaveProperty('email');
+        expect(result.routes).toHaveLength(2);
+        expect(result.routes[0].path).toBe('/home');
+        expect(result.routes[1].path).toBe('/about');
+        expect(result.mode).toBe('history');
+        expect(result.base).toBe('/');
+    });
+    
+    it('should throw error when routes array is empty', async () => {
+        // Arrange
+        const emptyRoutes: RouteData[] = [];
+        
+        // Act & Assert
+        await expect(createRouteConfig(emptyRoutes))
+            .rejects
+            .toThrow('Routes array is required and cannot be empty');
+    });
+    
+    it('should handle route paths without leading slash', async () => {
+        // Arrange
+        const routes: RouteData[] = [
+            { path: 'products', component: './components/Products.vue' }
+        ];
+        
+        // Act
+        const result = await createRouteConfig(routes);
+        
+        // Assert
+        expect(result.routes[0].path).toBe('/products');
     });
 });
+
+// Error handling example - Esmx 风格
+export class RouteValidationError extends Error {
+    constructor(message: string, public readonly invalidRoute: string) {
+        super(message);
+        this.name = 'RouteValidationError';
+    }
+}
+
+export const validateRoute = (route: RouteData): void => {
+    if (!route.path) {
+        throw new RouteValidationError('Route path is required', route.path);
+    }
+    
+    if (!route.component || !route.component.includes('./')) {
+        throw new RouteValidationError(
+            'Component must be a relative ESM import path',
+            route.path
+        );
+    }
+};
 ```
 
 ## 核心开发原则
@@ -224,35 +306,34 @@ describe('fetchUserData', () => {
 
 ### 实施优先级和渐进指导
 
-#### 核心优先级（必须立即执行）
-- **类型安全**：谨慎使用 `any` 类型并添加充分注释，启用严格 TypeScript 配置
+#### 核心优先级（立即执行）
+- **类型安全**：严格 TypeScript 配置，谨慎使用 `any` 类型并注释
 - **测试覆盖**：关键业务逻辑必须有测试，遵循 AAA 模式
 - **错误处理**：使用具体 Error 类型，提供有意义错误信息
-- **代码审查**：每次 PR 都从五个维度评估质量
 
-#### 高优先级（2周内完成）
+#### 高优先级（根据团队规模：小团队 1-2 周，大团队 2-4 周）
 - **导入规范**：统一导入顺序，使用命名导出
 - **异步编程**：统一使用 async/await，正确处理异步错误
 - **Git 提交**：遵循 Conventional Commits 规范
 
-#### 中优先级（1个月内优化）
+#### 中优先级（根据团队规模：小团队 1 个月，大团队 2-3 个月）
 - **代码结构**：重构违反单一职责原则的代码
 - **性能优化**：识别和解决明显性能问题
 - **文档完善**：补充关键模块的使用文档
 
-#### 低优先级（持续改进）
+#### 低优先级（持续改进，无固定时间要求）
 - **代码风格**：统一箭头函数、解构赋值等风格
 - **开发环境**：统一编辑器配置和代码格式化
 
 ### 应用指导原则
-- **日常开发**：快速过一遍五个维度（专业性、真实性、简洁性、必要性、完整性）
+- **日常开发**：快速评估五个维度（专业性、真实性、简洁性、必要性、完整性）
 - **技术决策**：优先考虑实际价值和投入产出比
-- **质量平衡**：避免盲目追求完美指标，专注核心质量
+- **质量平衡**：专注核心质量，避免过度工程化
 
-### 质量检查和反馈要求
-- **检查报告格式**：使用表格格式，包含 ✅ PASS / ❌ FAIL / ⚠️ WARNING 标识
-- **报告内容**：检查项、结果状态、详细说明、建议改进
-- **总体汇总**：在报告开头提供检查结果概览
+### 质量检查格式
+**检查报告**: 表格格式，使用 ✅ PASS / ❌ FAIL / ⚠️ WARNING 标识
+**报告内容**: 检查项 | 状态 | 详细说明 | 改进建议
+**总体汇总**: 开头提供检查结果概览和评分
 
 ## Git 提交规范
 
@@ -272,12 +353,13 @@ describe('fetchUserData', () => {
 - `ci`: CI/CD related changes
 
 ### 作用域 (scope) 规范
-- **包级别**: 使用包名 (如 `router-vue`, `router`, `core`)
-- **功能级别**: 使用功能模块 (如 `navigation`, `guards`, `types`)
+- **包级别**: 使用包名 (如 `core`, `router`, `router-vue`, `rspack`, `import`, `fetch`)
+- **功能级别**: 使用功能模块 (如 `navigation`, `guards`, `types`, `manifest`, `cli`)
 - **选择原则**: 
   - 跨多个模块的改动 → 使用包名
   - 集中在某个功能模块 → 使用功能名
   - 文档和配置类 → 优先使用包名
+- **Esmx 特定包**: `core`, `router`, `router-vue`, `rspack`, `rspack-vue`, `import`, `fetch`, `class-state`, `lint`
 
 ### 类型选择指导
 - **docs vs chore 边界**:
@@ -294,14 +376,19 @@ describe('fetchUserData', () => {
 ### 提交信息示例
 ```
 feat(router): add navigation guards support
+feat(core): add SSR manifest generation
+feat(rspack): implement module federation support
 fix(core): resolve module loading race condition
+fix(router): handle route transition edge cases
 docs(router-vue): update README translation
-docs(router-vue): add package metadata and keywords
+docs(core): add package metadata and keywords
 docs: add API documentation for navigation guards
-test(router-vue): add component hierarchy tests
+test(router): add route transition tests
+test(core): add manifest generation tests
 chore(router-vue): update build dependencies
 chore: update TypeScript configuration
 perf(router): optimize route matching algorithm
+perf(core): improve module loading performance
 ```
 
 ### 提交要求
@@ -319,15 +406,20 @@ perf(router): optimize route matching algorithm
 - **渐进迁移**：新规则实施给予合理过渡期
 
 ### 冲突解决原则
-1. **五维哲学优先**：当规则冲突时，优先考虑五个维度的平衡
-2. **实用性第一**：选择对项目实际价值更大的方案
+1. **五维哲学优先**：规则冲突时，优先考虑五个维度的平衡
+2. **实用性第一**：选择对项目实际价值更大的方案  
 3. **团队协商**：复杂冲突通过团队讨论决定
-4. **文档记录**：决策过程和理由需要记录备查
+4. **文档记录**：决策过程和理由需要记录
 
 ### 例外情况处理
-- **遗留代码**：可以渐进式改进，不要求一次性完全合规
-- **第三方依赖**：外部库不符合规范时，在接口层做适配
-- **紧急修复**：紧急 bug 修复可以临时放宽规则，但需要后续补充
+- **遗留代码**：渐进式改进，无需一次性完全合规
+- **第三方依赖**：外部库不符合规范时，在接口层适配
+- **紧急修复**：可临时放宽规则，需后续补充完善
+
+### 常见冲突解决案例
+- **性能 vs 可读性**：关键路径优先性能，一般代码优先可读性
+- **严格类型 vs 开发效率**：核心模块严格类型，辅助工具可适当放宽
+- **测试覆盖 vs 开发进度**：核心业务逻辑必须有测试，边缘功能可后补
 
 ---
 
