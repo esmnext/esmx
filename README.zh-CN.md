@@ -58,7 +58,7 @@ import { createApp } from 'vue';
 import Button from 'remote/src/Button.vue';
 ```
 
-## 🚀 开始使用
+## 🚀 快速开始
 
 📖 [文档](https://www.esmnext.com/guide/start/getting-started.html)
 
@@ -83,4 +83,4 @@ import Button from 'remote/src/Button.vue';
 
 ---
 
-> 💡 **提示**: 所有示例都支持一键启动，运行 `pnpm install && pnpm dev` 即可本地预览
+> 💡 **开发流程**: 首先执行 `node build.mjs` 构建所有包和示例，然后 `cd` 到具体项目目录开始开发

@@ -83,4 +83,4 @@ import Button from 'remote/src/Button.vue';
 
 ---
 
-> 💡 **Tip**: All examples support one-click startup, run `pnpm install && pnpm dev` for local preview
+> 💡 **Development**: First run `node build.mjs` to build all packages and examples, then `cd` to specific project directory to start development
