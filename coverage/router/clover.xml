@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1750336105112" clover="3.2.0">
-  <project timestamp="1750336105112" name="All files">
+<coverage generated="1750336127934" clover="3.2.0">
+  <project timestamp="1750336127934" name="All files">
     <metrics statements="1510" coveredstatements="1455" conditionals="508" coveredconditionals="497" methods="124" coveredmethods="117" elements="2142" coveredelements="2069" complexity="0" loc="1510" ncloc="1510" packages="1" files="14" classes="14"/>
     <file name="increment-id.ts" path="/home/runner/work/esmx/esmx/packages/router/src/increment-id.ts">
       <metrics statements="11" coveredstatements="11" conditionals="3" coveredconditionals="3" methods="3" coveredmethods="3"/>
