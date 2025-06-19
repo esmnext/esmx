@@ -46,7 +46,7 @@ jobs:
 
     - name: Deploy
       if: github.ref == 'refs/heads/master' && matrix.os == 'ubuntu-latest' && matrix.node == '>=22.11.0'
-      uses: JamesIves/github-pages-deploy-action@4.1.1
+      uses: JamesIves/github-pages-deploy-action@v4.6.8
       with:
         branch: docs
         folder: dist

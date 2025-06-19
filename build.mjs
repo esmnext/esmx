@@ -182,11 +182,11 @@ async function main() {
         log.info('Starting cross-platform build process...');
         log.info(`Running on: ${process.platform} ${process.arch}`);
 
-        // await checkPrerequisites();
-        // cleanEnvironment();
-        // await buildPackages();
-        // await buildExamples();
-        // await copyArtifacts();
+        await checkPrerequisites();
+        cleanEnvironment();
+        await buildPackages();
+        await buildExamples();
+        await copyArtifacts();
 
         // EPIC SUCCESS MESSAGE WITH PERFECT ALIGNMENT!
         console.log('');
