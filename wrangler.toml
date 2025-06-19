@@ -2,11 +2,12 @@ name = "esmx"
 compatibility_date = "2024-01-01"
 
 [build]
-command = "corepack enable && corepack prepare pnpm@10 --activate && node ./build.mjs"
+command = "corepack enable && corepack prepare pnpm@10 --activate && pnpm install --frozen-lockfile && node ./build.mjs"
 cwd = "."
 
 [build.environment_variables]
 NODE_VERSION = "22.16.0"
+SKIP_DEPENDENCY_INSTALL = "true"
 
 [assets]
 directory = "./dist" 
