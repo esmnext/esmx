@@ -227,7 +227,10 @@ async function runTestsWithCoverage() {
             `${colors.cyan}Coverage reports available in: ./dist/coverage/${colors.reset}`
         );
         console.log(
-            `${colors.cyan}View main coverage report: ./dist/coverage/index.html${colors.reset}`
+            `${colors.cyan}View main coverage report: https://www.esmnext.com/coverage/${colors.reset}`
+        );
+        console.log(
+            `${colors.cyan}Local coverage reports: ./dist/coverage/index.html${colors.reset}`
         );
         console.log(
             `${colors.cyan}View detailed HTML reports by opening: ./dist/coverage/[package]/index.html${colors.reset}`
@@ -370,8 +373,39 @@ function generateCoverageHTML(packageCoverageData) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Esmx - Test Coverage Report</title>
+    <title>Esmx - Test Coverage Report | ESM Next Generation Framework</title>
+    <meta name="description" content="Comprehensive test coverage report for Esmx framework packages. Real-time coverage statistics for statements, branches, functions, and lines across all Esmx modules including core, router, router-vue, fetch, and class-state.">
+    <meta name="keywords" content="Esmx, ESM, test coverage, code coverage, JavaScript, TypeScript, framework, module federation, micro frontend, coverage report, vitest, testing, quality assurance, CI/CD">
+    <meta name="author" content="Esmx Framework Team">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Esmx Test Coverage Report - ESM Next Generation Framework">
+    <meta property="og:description" content="Live test coverage statistics for Esmx framework - the next generation ESM-based micro frontend framework with zero runtime overhead.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.esmnext.com/coverage/">
+    <meta property="og:image" content="https://www.esmnext.com/logo.svg">
+    <meta property="og:site_name" content="Esmx Framework">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Esmx Test Coverage Report">
+    <meta name="twitter:description" content="Real-time test coverage report for Esmx - ESM Next Generation Framework">
+    <meta name="twitter:image" content="https://www.esmnext.com/logo.svg">
+    <link rel="canonical" href="https://www.esmnext.com/coverage/">
+    <link rel="icon" type="image/svg+xml" href="https://www.esmnext.com/logo.svg">
     <style>
+        :root {
+            --esmx-primary: #FFA726;
+            --esmx-primary-light: #FFE55C;
+            --esmx-primary-dark: #FF7043;
+            --esmx-secondary: #E65100;
+            --esmx-bg-primary: #FFF8F0;
+            --esmx-bg-secondary: #FFF3E8;
+            --esmx-bg-tertiary: #FFEDE0;
+            --esmx-text-primary: #3E2723;
+            --esmx-text-secondary: #5D4037;
+            --esmx-border: #FFCC80;
+            --esmx-shadow: 0 4px 20px rgba(255, 167, 38, 0.15);
+            --esmx-shadow-hover: 0 8px 32px rgba(255, 167, 38, 0.25);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -379,10 +413,10 @@ function generateCoverageHTML(packageCoverageData) {
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
             line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--esmx-text-primary);
+            background: linear-gradient(135deg, var(--esmx-bg-primary) 0%, var(--esmx-bg-secondary) 50%, var(--esmx-bg-tertiary) 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -390,105 +424,191 @@ function generateCoverageHTML(packageCoverageData) {
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: var(--esmx-shadow);
             overflow: hidden;
+            border: 1px solid var(--esmx-border);
+            backdrop-filter: blur(10px);
         }
         
         .header {
-            background: linear-gradient(135deg, #2196F3 0%, #21CBF3 100%);
-            color: white;
+            background: linear-gradient(135deg, #FFFACD 0%, #FFE55C 20%, #FFA726 50%, #FF7043 80%, #E65100 100%);
+            color: #2C1810;
             padding: 40px;
-            text-align: center;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            min-height: 120px;
         }
+        
+        .logo-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 60px;
+            height: 60px;
+            z-index: 10;
+        }
+        
+        .logo {
+            width: 100%;
+            height: 100%;
+            background: url('https://www.esmnext.com/logo.svg') no-repeat center;
+            background-size: contain;
+        }
+        
+        .header-content {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 5;
+        }
+        
+
         
         .header h1 {
             font-size: 2.5rem;
             margin-bottom: 10px;
-            font-weight: 700;
+            font-weight: 800;
+            text-shadow: 0 2px 4px rgba(139, 69, 19, 0.3), 0 1px 2px rgba(255, 140, 0, 0.2);
+            letter-spacing: -0.02em;
+            position: relative;
+            z-index: 2;
         }
         
         .header p {
             font-size: 1.1rem;
-            opacity: 0.9;
+            opacity: 0.95;
+            position: relative;
+            z-index: 2;
+            font-weight: 500;
         }
         
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            gap: 24px;
             padding: 40px;
-            background: #f8f9fa;
+            background: linear-gradient(135deg, var(--esmx-bg-secondary) 0%, var(--esmx-bg-tertiary) 100%);
         }
         
         .stat-card {
-            background: white;
-            padding: 24px;
-            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 28px 24px;
+            border-radius: 12px;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
+            box-shadow: var(--esmx-shadow);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--esmx-border);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--esmx-primary) 0%, var(--esmx-secondary) 100%);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
         }
         
         .stat-card:hover {
-            transform: translateY(-2px);
+            transform: translateY(-4px);
+            box-shadow: var(--esmx-shadow-hover);
+        }
+        
+        .stat-card:hover::before {
+            transform: scaleX(1);
         }
         
         .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
+            font-size: 2.2rem;
+            font-weight: 800;
             margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--esmx-primary) 0%, var(--esmx-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         .stat-label {
-            color: #666;
+            color: var(--esmx-text-secondary);
             font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 1px;
+            font-weight: 600;
         }
         
         .packages-section {
             padding: 40px;
+            background: rgba(255, 255, 255, 0.8);
         }
         
         .packages-title {
             font-size: 1.8rem;
             margin-bottom: 30px;
-            color: #333;
+            color: var(--esmx-text-primary);
             text-align: center;
+            font-weight: 700;
+            position: relative;
+        }
+        
+        .packages-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--esmx-primary) 0%, var(--esmx-secondary) 100%);
+            border-radius: 2px;
         }
         
         .packages-table {
             width: 100%;
             border-collapse: collapse;
-            background: white;
-            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: var(--esmx-shadow);
+            border: 1px solid var(--esmx-border);
         }
         
         .packages-table th {
-            background: #f1f3f4;
-            color: #333;
-            font-weight: 600;
-            padding: 16px;
+            background: linear-gradient(135deg, var(--esmx-bg-secondary) 0%, var(--esmx-bg-tertiary) 100%);
+            color: var(--esmx-text-primary);
+            font-weight: 700;
+            padding: 18px 16px;
             text-align: left;
-            border-bottom: 2px solid #dee2e6;
+            border-bottom: 2px solid var(--esmx-border);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .packages-table td {
-            padding: 16px;
-            border-bottom: 1px solid #dee2e6;
+            padding: 18px 16px;
+            border-bottom: 1px solid var(--esmx-border);
+            background: rgba(255, 255, 255, 0.9);
         }
         
-        .packages-table tr:hover {
-            background: #f8f9fa;
+        .packages-table tr:hover td {
+            background: var(--esmx-bg-secondary);
+            transform: scale(1.005);
+            transition: all 0.2s ease;
         }
         
         .package-name {
-            font-weight: 600;
-            color: #2196F3;
+            font-weight: 700;
+            color: var(--esmx-primary-dark);
         }
         
         .package-name a {
@@ -508,48 +628,88 @@ function generateCoverageHTML(packageCoverageData) {
         
         .progress-bar {
             flex: 1;
-            height: 8px;
-            background: #e9ecef;
-            border-radius: 4px;
+            height: 10px;
+            background: rgba(255, 193, 7, 0.1);
+            border-radius: 6px;
             overflow: hidden;
+            border: 1px solid var(--esmx-border);
         }
         
         .progress-fill {
             height: 100%;
-            border-radius: 4px;
-            transition: width 0.3s ease;
+            border-radius: 6px;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
         }
         
-        .coverage-high { background: #28a745; }
-        .coverage-medium { background: #ffc107; }
-        .coverage-low { background: #dc3545; }
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.3) 0%, transparent 50%, rgba(255, 255, 255, 0.3) 100%);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .coverage-high { 
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        }
+        .coverage-medium { 
+            background: linear-gradient(135deg, var(--esmx-primary) 0%, var(--esmx-primary-dark) 100%);
+        }
+        .coverage-low { 
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+        }
         
         .coverage-text {
-            font-weight: 600;
-            min-width: 50px;
+            font-weight: 700;
+            min-width: 60px;
             text-align: right;
+            color: var(--esmx-text-primary);
+            font-size: 0.9rem;
         }
         
         .footer {
-            background: #f8f9fa;
-            padding: 20px;
+            background: linear-gradient(135deg, var(--esmx-bg-secondary) 0%, var(--esmx-bg-tertiary) 100%);
+            padding: 24px;
             text-align: center;
-            color: #666;
-            border-top: 1px solid #dee2e6;
+            color: var(--esmx-text-secondary);
+            border-top: 1px solid var(--esmx-border);
         }
         
         .badge {
             display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 6px 12px;
+            border-radius: 8px;
             font-size: 0.75rem;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid;
         }
         
-        .badge-success { background: #d4edda; color: #155724; }
-        .badge-warning { background: #fff3cd; color: #856404; }
-        .badge-danger { background: #f8d7da; color: #721c24; }
+        .badge-success { 
+            background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+            color: #065F46;
+            border-color: #10B981;
+        }
+        .badge-warning { 
+            background: linear-gradient(135deg, var(--esmx-bg-secondary) 0%, var(--esmx-bg-tertiary) 100%);
+            color: var(--esmx-secondary);
+            border-color: var(--esmx-primary);
+        }
+        .badge-danger { 
+            background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+            color: #991B1B;
+            border-color: #EF4444;
+        }
         
         @media (max-width: 768px) {
             .packages-table {
@@ -570,8 +730,19 @@ function generateCoverageHTML(packageCoverageData) {
 <body>
     <div class="container">
         <header class="header">
-            <h1>🚀 Esmx Test Coverage Report</h1>
-            <p>Complete overview of test coverage across all packages</p>
+            <div class="logo-container">
+                <div class="logo"></div>
+            </div>
+            <div class="header-content">
+                <h1>🚀 Esmx Test Coverage Report</h1>
+                <p>Complete overview of test coverage across all packages</p>
+            <div style="margin-top: 20px; padding: 16px 24px; background: rgba(255,255,255,0.9); border-radius: 12px; font-size: 0.95rem; border: 1px solid rgba(139, 69, 19, 0.2); backdrop-filter: blur(10px); position: relative; z-index: 3;">
+                📍 <strong>Live Coverage Reports:</strong> <a href="https://www.esmnext.com/coverage/" style="color: #8B4513; text-decoration: none; border-bottom: 2px solid #FFA726; font-weight: 600;">https://www.esmnext.com/coverage/</a>
+            </div>
+            <div style="margin-top: 12px; padding: 12px 24px; background: rgba(255,255,255,0.7); border-radius: 10px; font-size: 0.9rem; border: 1px solid rgba(139, 69, 19, 0.15); backdrop-filter: blur(5px); position: relative; z-index: 3;">
+                🔧 <strong>Generated by:</strong> <a href="https://github.com/esmnext/esmx/actions" style="color: #8B4513; text-decoration: none; border-bottom: 2px solid #FF7043; font-weight: 600;">GitHub Actions CI/CD</a>
+            </div>
+            </div>
         </header>
         
         <div class="stats-grid">
@@ -664,17 +835,10 @@ function generateCoverageHTML(packageCoverageData) {
         </section>
         
         <footer class="footer">
-            <p>Generated on ${currentDate} | <strong>Esmx Framework</strong> - ESM Next Generation</p>
+            <p>Generated on ${currentDate} by <a href="https://github.com/esmnext/esmx/actions" target="_blank" style="color: #007bff; text-decoration: none;">GitHub Actions</a></p>
+            <p style="margin-top: 8px; font-size: 0.9rem;"><strong>Esmx Framework</strong> - ESM Next Generation | <a href="https://github.com/esmnext/esmx" target="_blank" style="color: #007bff; text-decoration: none;">View Source</a></p>
         </footer>
     </div>
-    
-    <script>
-        function ${getCoverageClass.toString()}
-        
-        function ${getStatusBadgeClass.toString()}
-        
-        function ${getStatusText.toString()}
-    </script>
 </body>
 </html>`;
 }
@@ -916,7 +1080,7 @@ async function main() {
             '█   🎯 ARTIFACTS: COPIED TO ./dist                                         █'
         );
         console.log(
-            '█   📊 COVERAGE: REPORTS IN ./dist/coverage                               █'
+            '█   📊 COVERAGE: REPORTS AT https://www.esmnext.com/coverage/             █'
         );
         console.log(
             '█   🔥 STATUS: READY TO DOMINATE THE ESM UNIVERSE!                         █'
