@@ -3,8 +3,9 @@ pages_build_output_dir = "./dist"
 compatibility_date = "2024-01-01"
 
 [build]
-command = "node ./build.mjs"
+command = "corepack enable && pnpm install --frozen-lockfile && node ./build.mjs"
 cwd = "."
 
 [build.environment_variables]
-NODE_VERSION = "22.16.0" 
+NODE_VERSION = "22.16.0"
+SKIP_DEPENDENCY_INSTALL = "true" 

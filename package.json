@@ -31,7 +31,7 @@
     "engines": {
         "lerna": ">=8",
         "node": ">=22",
-        "pnpm": ">=9.10.0"
+        "pnpm": ">=10"
     },
     "pnpm": {
         "onlyBuiltDependencies": [
