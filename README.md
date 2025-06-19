@@ -7,11 +7,10 @@
     <a href="https://github.com/esmnext/esmx/actions/workflows/build.yml"><img src="https://github.com/esmnext/esmx/actions/workflows/build.yml/badge.svg" alt="Build" /></a>
     <a href="https://www.esmnext.com/coverage/"><img src="https://img.shields.io/badge/coverage-live%20report-brightgreen" alt="Coverage Report" /></a>
     <a href="https://nodejs.org/"><img src="https://img.shields.io/node/v/@esmx/core.svg" alt="node version" /></a>
-    <a href="https://www.npmjs.com/package/@esmx/core"><img src="https://img.shields.io/npm/dm/@esmx/core.svg" alt="downloads monthly" /></a>
     <a href="https://bundlephobia.com/package/@esmx/core"><img src="https://img.shields.io/bundlephobia/minzip/@esmx/core" alt="size" /></a>
   </div>
   
-  <h3>Next-generation micro-frontend framework based on ESM, with no sandbox and zero runtime overhead, supporting multi-framework hybrid development</h3>
+  <h3>Next-generation micro-frontend framework based on ESM, sandbox-free with zero runtime overhead, supporting multi-framework hybrid development</h3>
   
   <p>⚡️ <strong>Ultimate Performance</strong> · 🛠️ <strong>Developer Friendly</strong> · 🔧 <strong>Standard Syntax</strong></p>
   
@@ -22,11 +21,11 @@
 
 ## 🚀 Core Features
 
-- **Zero Runtime Overhead** - Based on native ESM + ImportMap, no sandbox proxy
-- **High-Performance Build** - Powered by Rspack, significantly improved build speed
+- **Zero Runtime Overhead** - Based on native ESM + ImportMap, no sandbox or proxy
+- **High-Performance Build** - Powered by Rspack, significantly faster builds
 - **Complete SSR Support** - High-performance server-side rendering, SEO-friendly
-- **Standard ESM Syntax** - No framework-specific APIs, extremely low learning curve
-- **Strict Testing Guarantee** - [Complete test coverage](https://www.esmnext.com/coverage/), continuous integration verification
+- **Standard ESM Syntax** - No framework-specific APIs, minimal learning curve
+- **Comprehensive Testing** - [Complete test coverage](https://www.esmnext.com/coverage/), continuous integration verification
 - **Multi-Framework Support** - Vue, React, Preact, Solid, etc.
 
 ## 📊 vs Traditional Micro-frontends
@@ -36,7 +35,6 @@
 | **Architecture** | Manual sandbox + proxy | Native ESM |
 | **Runtime** | Has overhead | **Zero overhead** |
 | **Learning Curve** | Framework APIs | **Standard syntax** |
-| **Build Speed** | Average | **Fast** |
 | **Module Isolation** | Sandbox simulation | **Browser native** |
 
 ## ⚡ Quick Start
@@ -55,33 +53,33 @@ export default {
   }
 }
 
-// Use with standard ESM syntax
+// Using standard ESM syntax
 import { createApp } from 'vue';
 import Button from 'remote/src/Button.vue';
 ```
 
 ## 🚀 Getting Started
 
-📖 [Complete Guide](https://www.esmnext.com/guide/start/getting-started.html)
+📖 [Full Guide](https://www.esmnext.com/guide/start/getting-started.html)
 
 ## 📦 Core Packages
 
 | Package | Version | Status | Description |
 |---------|---------|--------|-------------|
-| [**@esmx/core**](https://github.com/esmnext/esmx/tree/master/packages/core) | <a href="https://www.npmjs.com/package/@esmx/core"><img src="https://img.shields.io/npm/v/@esmx/core.svg" alt="npm version" /></a> | 🟡 **In Development** | Core framework, application configuration and lifecycle management |
-| [**@esmx/router**](https://github.com/esmnext/esmx/tree/master/packages/router) | <a href="https://www.npmjs.com/package/@esmx/router"><img src="https://img.shields.io/npm/v/@esmx/router.svg" alt="npm version" /></a> | 🟢 **Stable** | Routing system with nested routes and guards support |
-| [**@esmx/router-vue**](https://github.com/esmnext/esmx/tree/master/packages/router-vue) | <a href="https://www.npmjs.com/package/@esmx/router-vue"><img src="https://img.shields.io/npm/v/@esmx/router-vue.svg" alt="npm version" /></a> | 🟢 **Stable** | Vue integration, supports Vue 2.7+ and Vue 3 |
-| [**@esmx/rspack**](https://github.com/esmnext/esmx/tree/master/packages/rspack) | <a href="https://www.npmjs.com/package/@esmx/rspack"><img src="https://img.shields.io/npm/v/@esmx/rspack.svg" alt="npm version" /></a> | 🔵 **Preview** | Rspack build tool with SSR support |
-| [**@esmx/rspack-vue**](https://github.com/esmnext/esmx/tree/master/packages/rspack-vue) | <a href="https://www.npmjs.com/package/@esmx/rspack-vue"><img src="https://img.shields.io/npm/v/@esmx/rspack-vue.svg" alt="npm version" /></a> | 🔵 **Preview** | Rspack build optimization for Vue framework |
+| [**@esmx/core**](https://github.com/esmnext/esmx/tree/master/packages/core) | <a href="https://www.npmjs.com/package/@esmx/core"><img src="https://img.shields.io/npm/v/@esmx/core.svg" alt="npm version" /></a> | 🟡 **In Development** | Micro-frontend framework with native ESM module linking |
+| [**@esmx/router**](https://github.com/esmnext/esmx/tree/master/packages/router) | <a href="https://www.npmjs.com/package/@esmx/router"><img src="https://img.shields.io/npm/v/@esmx/router.svg" alt="npm version" /></a> | 🟢 **Stable** | Framework-agnostic router library |
+| [**@esmx/router-vue**](https://github.com/esmnext/esmx/tree/master/packages/router-vue) | <a href="https://www.npmjs.com/package/@esmx/router-vue"><img src="https://img.shields.io/npm/v/@esmx/router-vue.svg" alt="npm version" /></a> | 🟢 **Stable** | Vue integration for @esmx/router, supports Vue 2.7+ and Vue 3 |
+| [**@esmx/rspack**](https://github.com/esmnext/esmx/tree/master/packages/rspack) | <a href="https://www.npmjs.com/package/@esmx/rspack"><img src="https://img.shields.io/npm/v/@esmx/rspack.svg" alt="npm version" /></a> | 🔵 **Preview** | Framework-agnostic Rspack build tool |
+| [**@esmx/rspack-vue**](https://github.com/esmnext/esmx/tree/master/packages/rspack-vue) | <a href="https://www.npmjs.com/package/@esmx/rspack-vue"><img src="https://img.shields.io/npm/v/@esmx/rspack-vue.svg" alt="npm version" /></a> | 🔵 **Preview** | Rspack build tool for Vue framework |
 
 ## 🎯 Demo Projects
 
-| Project Name | Tech Stack | Features | Live Preview |
-|-------------|------------|----------|--------------|
-| [**ssr-html**](https://github.com/esmnext/esmx/tree/master/examples/ssr-html) | Native HTML + TypeScript | 🚀 Rspack build 💡 Complete routing 📱 Responsive design | [Preview](https://www.esmnext.com/ssr-html/) |
-| [**ssr-vue2-host**](https://github.com/esmnext/esmx/tree/master/examples/ssr-vue2-host) | Vue 2.7 + SSR | 🔗 Module Link 📦 Independent deployment 🌐 Unified dependency management | [Preview](https://www.esmnext.com/ssr-vue2-host/) |
-| [**ssr-vue2-remote**](https://github.com/esmnext/esmx/tree/master/examples/ssr-vue2-remote) | Vue 2.7 | 📤 Module export 🔄 Hot reload ⚡ Independent development | [Preview](https://www.esmnext.com/ssr-vue2-remote/) |
-| [**ssr-preact-htm**](https://github.com/esmnext/esmx/tree/master/examples/ssr-preact-htm) | Preact + HTM | ⚡ Ultra-lightweight 🛠 Zero configuration 🎯 High-performance SSR | [Preview](https://www.esmnext.com/ssr-preact-htm/) |
+| Project Name | Tech Stack | Live Preview |
+|-------------|------------|--------------|
+| [**ssr-html**](https://github.com/esmnext/esmx/tree/master/examples/ssr-html) | Native HTML + TypeScript | [Preview](https://www.esmnext.com/ssr-html/) |
+| [**ssr-vue2-host**](https://github.com/esmnext/esmx/tree/master/examples/ssr-vue2-host) | Vue 2.7 + SSR | [Preview](https://www.esmnext.com/ssr-vue2-host/) |
+| [**ssr-vue2-remote**](https://github.com/esmnext/esmx/tree/master/examples/ssr-vue2-remote) | Vue 2.7 | [Preview](https://www.esmnext.com/ssr-vue2-remote/) |
+| [**ssr-preact-htm**](https://github.com/esmnext/esmx/tree/master/examples/ssr-preact-htm) | Preact + HTM | [Preview](https://www.esmnext.com/ssr-preact-htm/) |
 
 ---
 
