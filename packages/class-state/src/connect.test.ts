@@ -250,6 +250,8 @@ test('Multiple instances', () => {
     }
 
     const user = _connectStore(User, 'user');
+    // Create blog instance first before accessing it from user
+    const blog = _connectStore(Blog, 'blog');
 
     user.$setName('jack');
     user.blog.$setText('hello world.');

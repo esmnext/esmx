@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { Router } from './router';
 import { RouteStatus, RouteType, RouterMode } from './types';
-import type { Route } from './types';
 
 describe('Router.back Tests', () => {
     let router: Router;

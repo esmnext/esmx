@@ -13,7 +13,7 @@ const CSS_CLASSES = {
     BASE: 'router-link',
     ACTIVE: 'router-link-active',
     EXACT_ACTIVE: 'router-link-exact-active'
-} as const;
+} satisfies Record<string, string>;
 /**
  * Normalize navigation type with backward compatibility for deprecated replace property
  */
@@ -33,7 +33,7 @@ function normalizeNavigationType(props: RouterLinkProps): RouterLinkType {
 /**
  * Get event type list - normalize and validate event types
  */
-function getEventTypeList(eventType: string | string[]): string[] {
+function getEventTypeList(eventType: unknown | unknown[]): string[] {
     const events = Array.isArray(eventType) ? eventType : [eventType];
     const validEvents = events
         .filter((type): type is string => typeof type === 'string')
@@ -173,15 +173,11 @@ function createEventHandlersGenerator(
     return (nameTransform?: (eventType: string) => string) => {
         const handlers: Record<string, (e: MouseEvent) => void> = {};
 
-        const handler = (e: MouseEvent) => {
-            navigate(e);
-        };
-
         eventTypes.forEach((eventType) => {
             const eventName = nameTransform
                 ? nameTransform(eventType)
                 : eventType.toLowerCase();
-            handlers[eventName] = handler;
+            handlers[eventName] = navigate;
         });
 
         return handlers;
