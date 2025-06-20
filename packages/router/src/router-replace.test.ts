@@ -257,6 +257,7 @@ describe('Router.replace Tests', () => {
             const endTime = Date.now();
 
             expect(route.status).toBe(RouteStatus.success);
+            // Verify async component loading takes time (consistent with other tests)
             expect(endTime - startTime).toBeGreaterThanOrEqual(10);
 
             const matchedRoute = route.matched[0];

@@ -320,14 +320,22 @@ describe('Router Window Navigation Tests', () => {
                             }
                         }
                     ],
-                    apps: mockApps
+                    apps: mockApps,
+                    fallback: (to, from) => {
+                        // For window navigation, fallback directly returns the result
+                        return { windowNavigation: true };
+                    }
                 });
 
                 const result = await asyncRouter[methodName]('/async');
 
                 expect(result.status).toBe(RouteStatus.success);
                 expect(result.isPush).toBe(expectedIsPush);
-                expect(result.matched[0].component).toBeDefined();
+                // Window navigation doesn't load async components automatically
+                // But async components are not loaded in window navigation context
+                // The component should remain undefined since asyncComponent task is not executed
+                expect(result.matched[0].component).toBeUndefined();
+                expect(result.matched[0].asyncComponent).toBeDefined();
                 asyncRouter.destroy();
             });
 
@@ -345,9 +353,14 @@ describe('Router Window Navigation Tests', () => {
                     apps: mockApps
                 });
 
+                // Window navigation doesn't execute asyncComponent task, so it won't fail
+                // The route should succeed since asyncComponent is not loaded
                 const result = await asyncRouter[methodName]('/async-error');
 
-                expect(result.status).toBe(RouteStatus.error);
+                expect(result.status).toBe(RouteStatus.success);
+                // Component should remain undefined since asyncComponent task is not executed
+                expect(result.matched[0].component).toBeUndefined();
+                expect(result.matched[0].asyncComponent).toBeDefined();
                 asyncRouter.destroy();
             });
         });

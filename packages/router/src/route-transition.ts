@@ -20,89 +20,108 @@ import {
     removeFromArray
 } from './util';
 
-// Task configuration - This structure defines the sequence of tasks for each route type.
+// Task configuration - Optimized structure with differentiated logic for each route type
+// Following Vue Router's standard navigation resolution flow with performance optimizations
 const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
+    // ========== STANDARD INTERNAL NAVIGATION - Complete guard chain ==========
+
     [RouteType.push]: [
-        RouteTaskType.fallback,
-        RouteTaskType.override,
-        RouteTaskType.beforeLeave,
-        RouteTaskType.beforeEach,
-        RouteTaskType.beforeUpdate,
-        RouteTaskType.beforeEnter,
-        RouteTaskType.asyncComponent,
-        RouteTaskType.push
+        RouteTaskType.fallback, // Keep - Active navigation needs to handle 404 and unmatched routes
+        RouteTaskType.override, // Keep - Active navigation may need to rewrite jump logic
+        RouteTaskType.beforeLeave, // Keep - User may need to prevent leaving current page
+        RouteTaskType.beforeEach, // Keep - Global guards must execute
+        RouteTaskType.beforeUpdate, // Keep - May involve route parameter updates
+        RouteTaskType.beforeEnter, // Keep - Need to check enter permissions
+        RouteTaskType.asyncComponent, // Keep - Need to load target page components
+        RouteTaskType.push // Keep - Execute actual page navigation
     ],
+
     [RouteType.replace]: [
-        RouteTaskType.fallback,
-        RouteTaskType.override,
-        RouteTaskType.beforeLeave,
-        RouteTaskType.beforeEach,
-        RouteTaskType.beforeUpdate,
-        RouteTaskType.beforeEnter,
-        RouteTaskType.asyncComponent,
-        RouteTaskType.replace
+        RouteTaskType.fallback, // Keep - Active navigation needs to handle 404 and unmatched routes
+        RouteTaskType.override, // Keep - Active navigation may need to rewrite replace logic
+        RouteTaskType.beforeLeave, // Keep - User may need to prevent leaving current page
+        RouteTaskType.beforeEach, // Keep - Global guards must execute
+        RouteTaskType.beforeUpdate, // Keep - May involve route parameter updates
+        RouteTaskType.beforeEnter, // Keep - Need to check enter permissions
+        RouteTaskType.asyncComponent, // Keep - Need to load target page components
+        RouteTaskType.replace // Keep - Execute actual page replacement
     ],
-    [RouteType.pushWindow]: [
-        RouteTaskType.fallback,
-        RouteTaskType.override,
-        RouteTaskType.beforeLeave,
-        RouteTaskType.beforeEach,
-        RouteTaskType.beforeUpdate,
-        RouteTaskType.beforeEnter,
-        RouteTaskType.asyncComponent,
-        RouteTaskType.pushWindow
-    ],
-    [RouteType.replaceWindow]: [
-        RouteTaskType.fallback,
-        RouteTaskType.override,
-        RouteTaskType.beforeLeave,
-        RouteTaskType.beforeEach,
-        RouteTaskType.beforeUpdate,
-        RouteTaskType.beforeEnter,
-        RouteTaskType.asyncComponent,
-        RouteTaskType.replaceWindow
-    ],
-    [RouteType.restartApp]: [
-        RouteTaskType.fallback,
-        RouteTaskType.override,
-        RouteTaskType.beforeLeave,
-        RouteTaskType.beforeEach,
-        RouteTaskType.beforeUpdate,
-        RouteTaskType.beforeEnter,
-        RouteTaskType.asyncComponent,
-        RouteTaskType.restartApp
-    ],
+
+    // ========== PASSIVE NAVIGATION - Simplified application layer control ==========
+
     [RouteType.back]: [
-        RouteTaskType.fallback,
-        RouteTaskType.override,
-        RouteTaskType.beforeLeave,
-        RouteTaskType.beforeEach,
-        RouteTaskType.beforeUpdate,
-        RouteTaskType.beforeEnter,
-        RouteTaskType.asyncComponent,
-        RouteTaskType.popstate
+        // RouteTaskType.fallback,     // Remove - Passive navigation handled by browser, no app-layer fallback needed
+        // RouteTaskType.override,     // Remove - Passive navigation doesn't need app-layer rewriting
+        RouteTaskType.beforeLeave, // Keep - User may need to prevent back operation
+        RouteTaskType.beforeEach, // Keep - Global guards should cover all navigation
+        RouteTaskType.beforeUpdate, // Keep - Back navigation may involve parameter changes
+        RouteTaskType.beforeEnter, // Keep - Target page still needs permission check
+        RouteTaskType.asyncComponent, // Keep - Target page may need component loading
+        RouteTaskType.popstate // Keep - Handle browser back event
     ],
+
     [RouteType.go]: [
-        RouteTaskType.fallback,
-        RouteTaskType.override,
-        RouteTaskType.beforeLeave,
-        RouteTaskType.beforeEach,
-        RouteTaskType.beforeUpdate,
-        RouteTaskType.beforeEnter,
-        RouteTaskType.asyncComponent,
-        RouteTaskType.popstate
+        // RouteTaskType.fallback,     // Remove - Passive navigation handled by browser, no app-layer fallback needed
+        // RouteTaskType.override,     // Remove - Passive navigation doesn't need app-layer rewriting
+        RouteTaskType.beforeLeave, // Keep - User may need to prevent go operation
+        RouteTaskType.beforeEach, // Keep - Global guards should cover all navigation
+        RouteTaskType.beforeUpdate, // Keep - History navigation may involve parameter changes
+        RouteTaskType.beforeEnter, // Keep - Target page still needs permission check
+        RouteTaskType.asyncComponent, // Keep - Target page may need component loading
+        RouteTaskType.popstate // Keep - Handle browser history navigation event
     ],
+
     [RouteType.forward]: [
-        RouteTaskType.fallback,
-        RouteTaskType.override,
-        RouteTaskType.beforeLeave,
-        RouteTaskType.beforeEach,
-        RouteTaskType.beforeUpdate,
-        RouteTaskType.beforeEnter,
-        RouteTaskType.asyncComponent,
-        RouteTaskType.popstate
+        // RouteTaskType.fallback,     // Remove - Passive navigation handled by browser, no app-layer fallback needed
+        // RouteTaskType.override,     // Remove - Passive navigation doesn't need app-layer rewriting
+        RouteTaskType.beforeLeave, // Keep - User may need to prevent forward operation
+        RouteTaskType.beforeEach, // Keep - Global guards should cover all navigation
+        RouteTaskType.beforeUpdate, // Keep - Forward navigation may involve parameter changes
+        RouteTaskType.beforeEnter, // Keep - Target page still needs permission check
+        RouteTaskType.asyncComponent, // Keep - Target page may need component loading
+        RouteTaskType.popstate // Keep - Handle browser forward event
     ],
-    [RouteType.none]: []
+
+    // ========== EXTERNAL NAVIGATION - Streamlined internal guards ==========
+
+    [RouteType.pushWindow]: [
+        RouteTaskType.fallback, // Keep - Active navigation needs final fallback to handle external jump
+        RouteTaskType.override, // Keep - Active navigation may need to rewrite external jump logic
+        // RouteTaskType.beforeLeave,  // Remove - pushWindow only opens new window, doesn't truly leave current app
+        RouteTaskType.beforeEach, // Keep - Global guards still needed (auth verification, logging)
+        // RouteTaskType.beforeUpdate, // Remove - Opening new window, no internal route update
+        // RouteTaskType.beforeEnter,  // Remove - Opening new window, no internal route enter
+        // RouteTaskType.asyncComponent, // Remove - Opening new window, no internal component loading
+        RouteTaskType.pushWindow // Keep - Execute actual new window opening
+    ],
+
+    [RouteType.replaceWindow]: [
+        RouteTaskType.fallback, // Keep - Active navigation needs final fallback to handle external jump
+        RouteTaskType.override, // Keep - Active navigation may need to rewrite external jump logic
+        RouteTaskType.beforeLeave, // Keep - replaceWindow refreshes current page, user loses current state, needs confirmation
+        RouteTaskType.beforeEach, // Keep - Global guards still needed (auth verification, logging)
+        // RouteTaskType.beforeUpdate, // Remove - Page refresh replacement, no internal route update concept
+        // RouteTaskType.beforeEnter,  // Remove - Page refresh replacement, no internal route enter concept
+        // RouteTaskType.asyncComponent, // Remove - Page refresh replacement, no internal component loading concept
+        RouteTaskType.replaceWindow // Keep - Execute actual page refresh/replacement
+    ],
+
+    // ========== SPECIAL OPERATION - Application restart ==========
+
+    [RouteType.restartApp]: [
+        RouteTaskType.fallback, // Keep - Restart target address may return 404
+        // RouteTaskType.override,     // Remove - App restart is pure operation, doesn't need rewrite logic
+        RouteTaskType.beforeLeave, // Keep - Need to leave current page and jump to target address
+        RouteTaskType.beforeEach, // Keep - Global guards should cover all navigation
+        RouteTaskType.beforeUpdate, // Keep - Target address may involve parameter changes
+        RouteTaskType.beforeEnter, // Keep - Need to check target address enter permissions
+        RouteTaskType.asyncComponent, // Keep - Target address may need component loading
+        RouteTaskType.restartApp // Keep - Execute restart + navigation operation
+    ],
+
+    // ========== NO OPERATION ==========
+
+    [RouteType.none]: [] // No operation requires no tasks
 };
 
 /**
