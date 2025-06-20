@@ -392,7 +392,7 @@ describe('Router.back Tests', () => {
 
     describe('🔧 onBackNoResponse Callback Tests', () => {
         test('should trigger onBackNoResponse when Navigation returns null', async () => {
-            const onBackNoResponseSpy = vi.fn();
+            const onCloseSpy = vi.fn();
 
             const testRouter = new Router({
                 mode: RouterMode.memory,
@@ -401,7 +401,7 @@ describe('Router.back Tests', () => {
                     { path: '/', component: 'Home' },
                     { path: '/about', component: 'About' }
                 ],
-                onBackNoResponse: onBackNoResponseSpy
+                onClose: onCloseSpy
             });
 
             await testRouter.replace('/about');
@@ -410,7 +410,7 @@ describe('Router.back Tests', () => {
             const route = await testRouter.back();
 
             expect(route).toBe(null);
-            expect(onBackNoResponseSpy).toHaveBeenCalledWith(testRouter);
+            expect(onCloseSpy).toHaveBeenCalledWith(testRouter);
 
             testRouter.destroy();
         });

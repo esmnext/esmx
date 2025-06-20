@@ -538,7 +538,7 @@ describe('Router.go Tests', () => {
 
     describe('🔧 onBackNoResponse Callback Tests', () => {
         test('should trigger onBackNoResponse when negative index and Navigation returns null', async () => {
-            const onBackNoResponseSpy = vi.fn();
+            const onCloseSpy = vi.fn();
 
             const testRouter = new Router({
                 mode: RouterMode.memory,
@@ -547,7 +547,7 @@ describe('Router.go Tests', () => {
                     { path: '/', component: 'Home' },
                     { path: '/about', component: 'About' }
                 ],
-                onBackNoResponse: onBackNoResponseSpy
+                onClose: onCloseSpy
             });
 
             await testRouter.replace('/about');
@@ -556,13 +556,13 @@ describe('Router.go Tests', () => {
             const route = await testRouter.go(-10);
 
             expect(route).toBe(null);
-            expect(onBackNoResponseSpy).toHaveBeenCalledWith(testRouter);
+            expect(onCloseSpy).toHaveBeenCalledWith(testRouter);
 
             testRouter.destroy();
         });
 
         test('should not trigger onBackNoResponse when positive index and Navigation returns null', async () => {
-            const onBackNoResponseSpy = vi.fn();
+            const onCloseSpy = vi.fn();
 
             const testRouter = new Router({
                 mode: RouterMode.memory,
@@ -571,7 +571,7 @@ describe('Router.go Tests', () => {
                     { path: '/', component: 'Home' },
                     { path: '/about', component: 'About' }
                 ],
-                onBackNoResponse: onBackNoResponseSpy
+                onClose: onCloseSpy
             });
 
             await testRouter.replace('/about');
@@ -580,13 +580,13 @@ describe('Router.go Tests', () => {
             const route = await testRouter.go(10);
 
             expect(route).toBe(null);
-            expect(onBackNoResponseSpy).not.toHaveBeenCalled();
+            expect(onCloseSpy).not.toHaveBeenCalled();
 
             testRouter.destroy();
         });
 
         test('zero index should not trigger onBackNoResponse', async () => {
-            const onBackNoResponseSpy = vi.fn();
+            const onCloseSpy = vi.fn();
 
             const testRouter = new Router({
                 mode: RouterMode.memory,
@@ -595,7 +595,7 @@ describe('Router.go Tests', () => {
                     { path: '/', component: 'Home' },
                     { path: '/about', component: 'About' }
                 ],
-                onBackNoResponse: onBackNoResponseSpy
+                onClose: onCloseSpy
             });
 
             await testRouter.replace('/about');
@@ -603,7 +603,7 @@ describe('Router.go Tests', () => {
             const route = await testRouter.go(0);
 
             expect(route).toBe(null);
-            expect(onBackNoResponseSpy).not.toHaveBeenCalled();
+            expect(onCloseSpy).not.toHaveBeenCalled();
 
             testRouter.destroy();
         });

@@ -421,7 +421,7 @@ describe('Router.forward Tests', () => {
 
     describe('🔧 onBackNoResponse Callback Tests', () => {
         test('forward beyond boundaries should not trigger onBackNoResponse', async () => {
-            const onBackNoResponseSpy = vi.fn();
+            const onCloseSpy = vi.fn();
 
             const testRouter = new Router({
                 mode: RouterMode.memory,
@@ -430,7 +430,7 @@ describe('Router.forward Tests', () => {
                     { path: '/', component: 'Home' },
                     { path: '/about', component: 'About' }
                 ],
-                onBackNoResponse: onBackNoResponseSpy
+                onClose: onCloseSpy
             });
 
             await testRouter.replace('/about');
@@ -440,7 +440,7 @@ describe('Router.forward Tests', () => {
 
             expect(route).toBe(null);
             // forward operation should not trigger onBackNoResponse
-            expect(onBackNoResponseSpy).not.toHaveBeenCalled();
+            expect(onCloseSpy).not.toHaveBeenCalled();
 
             testRouter.destroy();
         });

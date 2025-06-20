@@ -1,7 +1,6 @@
 import type { Router } from './router';
 import type {
     RouteLocationInput,
-    RouterLayerOptions,
     RouterLinkAttributes,
     RouterLinkProps,
     RouterLinkResolved,
@@ -70,11 +69,12 @@ function guardEvent(e: MouseEvent): boolean {
  */
 function executeNavigation(
     router: Router,
-    to: RouteLocationInput,
-    navigationType: RouterLinkType,
-    layerOptions?: Partial<RouterLayerOptions>
+    props: RouterLinkProps,
+    linkType: RouterLinkType
 ): void {
-    switch (navigationType) {
+    const { to, layerOptions } = props;
+
+    switch (linkType) {
         case 'push':
             router.push(to);
             break;
@@ -88,7 +88,13 @@ function executeNavigation(
             router.replaceWindow(to);
             break;
         case 'pushLayer':
-            router.pushLayer(to, layerOptions);
+            router.pushLayer(
+                layerOptions
+                    ? typeof to === 'string'
+                        ? { path: to, layer: layerOptions }
+                        : { ...to, layer: layerOptions }
+                    : to
+            );
             break;
         default:
             router.push(to);
@@ -100,16 +106,15 @@ function executeNavigation(
  */
 function createNavigateFunction(
     router: Router,
-    to: RouteLocationInput,
-    navigationType: RouterLinkType,
-    layerOptions?: Partial<RouterLayerOptions>
+    props: RouterLinkProps,
+    navigationType: RouterLinkType
 ): (e?: MouseEvent) => void {
     return (e?: MouseEvent): void => {
         if (e && !guardEvent(e)) {
             return;
         }
 
-        executeNavigation(router, to, navigationType, layerOptions);
+        executeNavigation(router, props, navigationType);
     };
 }
 
@@ -203,12 +208,7 @@ export function createLinkResolver(
     const isExactActive = router.isRouteMatched(route, 'exact');
     const isExternal = route.url.origin !== router.route.url.origin;
 
-    const navigate = createNavigateFunction(
-        router,
-        props.to,
-        type,
-        props.layerOptions
-    );
+    const navigate = createNavigateFunction(router, props, type);
 
     const attributes = computeAttributes(
         href,

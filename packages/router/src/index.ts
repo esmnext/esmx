@@ -1,41 +1,48 @@
 export { Router } from './router';
 export { RouteTransition } from './route-transition';
+export { Navigation } from './navigation';
+export { MicroApp } from './micro-app';
+
 export {
-    // Router Core
+    // Utility types
+    type Awaitable,
+    // Core enums
     RouterMode,
-    type RouterOptions,
-    type RouterParsedOptions,
-    type RouterMicroApp,
-    type RouterMicroAppCallback,
-    type RouterMicroAppOptions,
-    // Router Layer
-    type RouterLayerOptions,
-    type RouterLayerResult,
-    // Route Core
-    RouteStatus,
     RouteType,
-    type Route,
-    type RouteConfig,
-    type RouteParsedConfig,
-    type RouteOptions,
-    // Route Location
-    type RouteLocation,
-    type RouteLocationInput,
-    type RouteMatchResult,
-    type RouteMatchType,
-    type RouteMatcher,
-    // Route State & Meta
-    type RouteMeta,
-    type RouteState,
-    type RouteHandleResult,
-    // Route Hooks
+    RouteStatus,
+    // Hook function types
     type RouteConfirmHook,
     type RouteConfirmHookResult,
     type RouteVerifyHook,
     type RouteHandleHook,
     type RouteNotifyHook,
-    type RouteBackNoResponseHook,
-    // Router Link
+    type RouteCloseHook,
+    // Basic data types
+    type RouteMeta,
+    type RouteState,
+    type RouteHandleResult,
+    type RouteMatchType,
+    // Route location and config types
+    type RouteLocation,
+    type RouteLocationInput,
+    type RouteConfig,
+    type RouteParsedConfig,
+    type RouteMatchResult,
+    type RouteMatcher,
+    type RouteOptions,
+    type Route,
+    // Router Layer types
+    type RouteLayerOptions,
+    type RouteLayerResult,
+    type RouterLayerOptions,
+    // Router MicroApp types
+    type RouterMicroApp,
+    type RouterMicroAppCallback,
+    type RouterMicroAppOptions,
+    // Router core types
+    type RouterOptions,
+    type RouterParsedOptions,
+    // RouterLink types
     type RouterLinkType,
     type RouterLinkAttributes,
     type RouterLinkProps,

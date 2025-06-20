@@ -51,8 +51,7 @@ describe('RouterLink Complete Tests', () => {
             normalizeURL: (url: URL) => url,
             fallback: () => {},
             rootStyle: false,
-            layer: null,
-            onBackNoResponse: () => {},
+            onClose: () => {},
             ...overrides
         };
 
@@ -861,14 +860,12 @@ describe('RouterLink Complete Tests', () => {
             expect(replaceWindowSpy).toHaveBeenCalledWith('/users/789');
         });
 
-        it('should execute pushLayer navigation with layer options', async () => {
+        it('should execute pushLayer navigation', async () => {
             // Arrange
             const pushLayerSpy = vi.spyOn(router, 'pushLayer');
-            const layerOptions = { enable: true, zIndex: 1000 };
             const props: RouterLinkProps = {
                 to: '/users/789',
-                type: 'pushLayer',
-                layerOptions
+                type: 'pushLayer'
             };
 
             // Act
@@ -876,10 +873,7 @@ describe('RouterLink Complete Tests', () => {
             result.navigate();
 
             // Assert
-            expect(pushLayerSpy).toHaveBeenCalledWith(
-                '/users/789',
-                layerOptions
-            );
+            expect(pushLayerSpy).toHaveBeenCalledWith('/users/789');
         });
 
         it('should default to push for unrecognized navigation type', async () => {

@@ -179,9 +179,11 @@ export class Route {
         const queryArray: Record<string, string[] | undefined> = {};
 
         // Process query parameters
-        for (const key of new Set(to.searchParams.keys())) {
-            query[key] = to.searchParams.get(key)!;
-            queryArray[key] = to.searchParams.getAll(key);
+        for (const key of to.searchParams.keys()) {
+            if (typeof query[key] === 'undefined') {
+                query[key] = to.searchParams.get(key)!;
+                queryArray[key] = to.searchParams.getAll(key);
+            }
         }
         this.query = query;
         this.queryArray = queryArray;

@@ -56,8 +56,7 @@ describe('Route Class Complete Test Suite', () => {
             normalizeURL: (url: URL) => url,
             fallback: () => {},
             rootStyle: false,
-            layer: null,
-            onBackNoResponse: () => {},
+            onClose: () => {},
             ...overrides
         };
 
@@ -1271,8 +1270,7 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
             normalizeURL: (url: URL) => url,
             fallback: () => {},
             rootStyle: false,
-            layer: null,
-            onBackNoResponse: () => {},
+            onClose: () => {},
             ...overrides
         };
 
@@ -1445,7 +1443,7 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
         });
     });
 
-    describe('��️ Constructor Boundary Condition Tests', () => {
+    describe('🏗️ Constructor Boundary Condition Tests', () => {
         it('should handle keepScrollPosition various values', () => {
             const options = createOptions();
 

@@ -43,15 +43,14 @@ const createMockRouter = (
         context: {},
         routes: [],
         mode: RouterMode.memory,
-        base: new URL('http://test.com'),
+        base: new URL('https://example.com/'),
         req: null,
         res: null,
         apps: overrides.options?.apps || {},
         normalizeURL: (url: URL) => url,
         fallback: () => {},
         rootStyle: false,
-        layer: null,
-        onBackNoResponse: () => {}
+        onClose: () => {}
     };
 
     // Create parsed options, modifying the matcher if custom results are needed

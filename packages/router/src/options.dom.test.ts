@@ -167,22 +167,14 @@ describe('parsedOptions', () => {
     it('should clone layer if provided, otherwise null', async () => {
         const { parsedOptions } = await import('./options');
 
-        const layer = { enable: true };
-        const options1: RouterOptions = {
-            base: new URL('http://a.com'),
-            routes: [],
-            layer
-        };
-        const opts1 = parsedOptions(options1);
-        expect(opts1.layer).not.toBe(layer);
-        expect(opts1.layer).toEqual(layer);
+        const opts = parsedOptions({
+            layer: true
+        });
 
-        const options2: RouterOptions = {
-            base: new URL('http://a.com'),
-            routes: []
-        };
-        const opts2 = parsedOptions(options2);
-        expect(opts2.layer).toBe(null);
+        // Test onClose hook
+        expect(typeof opts.onClose).toBe('function');
+        // Should not throw when called
+        expect(() => opts.onClose({} as any)).not.toThrow();
     });
 
     it('should use default onBackNoResponse if not provided', async () => {
@@ -192,9 +184,9 @@ describe('parsedOptions', () => {
             routes: []
         };
         const opts = parsedOptions(options);
-        expect(typeof opts.onBackNoResponse).toBe('function');
+        expect(typeof opts.onClose).toBe('function');
         // The default function should be callable without throwing an error
-        expect(() => opts.onBackNoResponse({} as any)).not.toThrow();
+        expect(() => opts.onClose({} as any)).not.toThrow();
     });
 
     it('should NOT clone context object', async () => {

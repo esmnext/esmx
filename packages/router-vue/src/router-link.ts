@@ -1,7 +1,7 @@
 import type {
+    RouteLayerOptions,
     RouteLocationInput,
     RouteMatchType,
-    RouterLayerOptions,
     RouterLinkType
 } from '@esmx/router';
 import { type PropType, defineComponent, h } from 'vue';
@@ -111,9 +111,9 @@ export const RouterLink = defineComponent({
         /**
          * Layer options for layer-based navigation.
          * Only used when type='pushLayer'.
-         * @example { zIndex: 1000, autoPush: false }
+         * @example { zIndex: 1000, autoPush: false, routerOptions: { mode: 'memory' } }
          */
-        layerOptions: { type: Object as PropType<Partial<RouterLayerOptions>> }
+        layerOptions: { type: Object as PropType<RouteLayerOptions> }
     },
 
     setup(props, { slots }) {

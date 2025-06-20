@@ -445,8 +445,7 @@ describe('Navigation', () => {
             normalizeURL: (url: URL) => url,
             fallback: () => {},
             rootStyle: false,
-            layer: null,
-            onBackNoResponse: () => {}
+            onClose: () => {}
         };
         return parsedOptions(baseOptions);
     };

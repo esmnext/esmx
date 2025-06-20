@@ -72,7 +72,7 @@ export function parsedOptions(
         context: options.context ?? {},
         req: options.req || null,
         res: options.res || null,
-        layer: options.layer ? { ...options.layer } : null,
+        layer: options.layer ?? false,
         base,
         mode: isBrowser
             ? (options.mode ?? RouterMode.history)
@@ -85,7 +85,7 @@ export function parsedOptions(
         matcher: createMatcher(routes),
         normalizeURL: options.normalizeURL ?? ((url) => url),
         fallback: options.fallback ?? DEFAULT_LOCATION,
-        onBackNoResponse: options.onBackNoResponse ?? (() => {})
+        onClose: options.onClose ?? (() => {})
     });
 }
 

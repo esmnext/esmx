@@ -3,10 +3,7 @@ import type {
     ExternalItem,
     ExternalItemFunctionData
 } from '@rspack/core';
-import type {
-    ManifestJsonExport,
-    ParsedModuleLinkPluginOptions
-} from './types';
+import type { ParsedModuleLinkPluginOptions } from './types';
 
 export function initExternal(
     compiler: Compiler,

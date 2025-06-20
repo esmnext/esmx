@@ -8,18 +8,19 @@ import { createLinkResolver } from './router-link';
 import { RouteType, RouterMode } from './types';
 import type {
     RouteConfirmHook,
+    RouteLayerOptions,
+    RouteLayerResult,
     RouteLocationInput,
     RouteMatchType,
     RouteNotifyHook,
     RouteState,
     RouterLayerOptions,
-    RouterLayerResult,
     RouterLinkProps,
     RouterLinkResolved,
     RouterOptions,
     RouterParsedOptions
 } from './types';
-import { isRouteMatched } from './util';
+import { isPlainObject, isRouteMatched } from './util';
 
 export class Router {
     public readonly options: RouterOptions;
@@ -48,7 +49,7 @@ export class Router {
     public constructor(options: RouterOptions) {
         this.options = options;
         this.parsedOptions = parsedOptions(options);
-        this.isLayer = this.parsedOptions.layer?.enable === true;
+        this.isLayer = this.parsedOptions.layer;
 
         this.navigation = new Navigation(
             this.parsedOptions,
@@ -91,9 +92,9 @@ export class Router {
     public async back(): Promise<Route | null> {
         const result = await this.navigation.go(-1);
         if (result === null) {
-            // Call onBackNoResponse hook
-            if (this.parsedOptions.onBackNoResponse) {
-                this.parsedOptions.onBackNoResponse(this);
+            // Call onClose hook
+            if (this.parsedOptions.onClose) {
+                this.parsedOptions.onClose(this);
             }
             return null;
         }
@@ -110,9 +111,9 @@ export class Router {
 
         const result = await this.navigation.go(index);
         if (result === null) {
-            // Call onBackNoResponse hook when backward navigation has no response
-            if (index < 0 && this.parsedOptions.onBackNoResponse) {
-                this.parsedOptions.onBackNoResponse(this);
+            // Call onClose hook when backward navigation has no response
+            if (index < 0 && this.parsedOptions.onClose) {
+                this.parsedOptions.onClose(this);
             }
             return null;
         }
@@ -234,34 +235,29 @@ export class Router {
 
     public async createLayer(
         toInput: RouteLocationInput,
-        options?: RouterOptions
-    ): Promise<{ promise: Promise<RouterLayerResult>; router: Router }> {
-        const layer: Required<RouterLayerOptions> = {
-            enable: true,
+        options?: RouterLayerOptions
+    ): Promise<{ promise: Promise<RouteLayerResult>; router: Router }> {
+        const layerConfig = isPlainObject(toInput) ? toInput.layer : undefined;
+
+        // Extract routerOptions from layer config and merge with options
+        const { routerOptions, ...pureLayerConfig } = layerConfig || {};
+
+        const layer: Required<Omit<RouteLayerOptions, 'routerOptions'>> = {
             zIndex: 1000 + LAYER_ID.next(),
             params: {},
             shouldClose: () => false,
             autoPush: true,
             push: true,
-            destroyed: () => {},
-            ...options?.layer
+            ...pureLayerConfig
         };
-        const promise = new Promise<RouterLayerResult>((resolve) => {
-            const destroyed = layer.destroyed;
-            layer.destroyed = (result) => {
-                if (result.type === 'push' && layer.autoPush) {
-                    const href = result.route.url.href;
-                    if (layer.push) {
-                        this.push(href);
-                    } else {
-                        this.replace(href);
-                    }
-                }
-                destroyed?.(result);
-                resolve(result);
-            };
+
+        let promiseResolve: (result: RouteLayerResult) => void;
+        const promise = new Promise<RouteLayerResult>((resolve) => {
+            promiseResolve = resolve;
         });
+
         const nextOptions: RouterOptions = {
+            ...this.options,
             mode: RouterMode.memory,
             rootStyle: {
                 position: 'fixed',
@@ -275,16 +271,16 @@ export class Router {
                 alignItems: 'center',
                 justifyContent: 'center'
             },
-            ...this.options,
             root: undefined,
+            ...routerOptions,
             ...options,
-            onBackNoResponse: (router) => {
-                // Close layer when back operation has no response
-                router.closeLayer();
-                // Call original onBackNoResponse if it exists
-                options?.onBackNoResponse?.(router);
+            onClose: (router: Router) => {
+                promiseResolve({
+                    type: 'close',
+                    route: router.route
+                });
             },
-            layer
+            layer: true
         };
         const router = new Router(nextOptions);
         await router.replace(toInput);
@@ -295,27 +291,14 @@ export class Router {
     }
     public async pushLayer(
         toInput: RouteLocationInput,
-        layer?: Partial<RouterLayerOptions>,
-        options?: RouterOptions
-    ): Promise<RouterLayerResult> {
-        const { promise } = await this.createLayer(toInput, {
-            ...options,
-            layer: {
-                ...layer,
-                ...options?.layer
-            }
-        });
+        options?: RouterLayerOptions
+    ): Promise<RouteLayerResult> {
+        const { promise } = await this.createLayer(toInput, options);
         return promise;
     }
     public closeLayer() {
         if (this.isLayer) {
-            this._destroys.push(() => {
-                this.parsedOptions.layer?.destroyed?.({
-                    type: 'close',
-                    route: this.route
-                });
-            });
-            this.destroy();
+            this.parsedOptions.onClose(this);
         }
     }
     public async renderToString(throwError = false): Promise<string | null> {
