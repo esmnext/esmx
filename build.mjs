@@ -572,14 +572,20 @@ function generateCoverageHTML(packageCoverageData) {
             border-radius: 2px;
         }
         
-        .packages-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: rgba(255, 255, 255, 0.95);
+        .table-container {
+            overflow-x: auto;
             border-radius: 12px;
-            overflow: hidden;
             box-shadow: var(--esmx-shadow);
             border: 1px solid var(--esmx-border);
+            background: rgba(255, 255, 255, 0.95);
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .packages-table {
+            width: calc(100% - 2px);
+            border-collapse: collapse;
+            background: transparent;
+            box-sizing: border-box;
         }
         
         .packages-table th {
@@ -712,17 +718,82 @@ function generateCoverageHTML(packageCoverageData) {
         }
         
         @media (max-width: 768px) {
+            .packages-section {
+                padding: 20px 16px;
+            }
+            
             .packages-table {
-                font-size: 0.9rem;
+                font-size: 0.85rem;
+                min-width: 800px;
             }
             
             .packages-table th,
             .packages-table td {
                 padding: 12px 8px;
+                white-space: nowrap;
+            }
+            
+            .header {
+                padding: 30px 20px;
             }
             
             .header h1 {
                 font-size: 2rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .stats-grid {
+                padding: 20px;
+                gap: 16px;
+            }
+            
+            .package-name {
+                min-width: 120px;
+            }
+            
+            .coverage-bar {
+                min-width: 140px;
+            }
+            
+            .progress-bar {
+                min-width: 80px;
+            }
+            
+            .coverage-text {
+                min-width: 50px;
+                font-size: 0.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .packages-section {
+                padding: 16px 8px;
+            }
+            
+            .header {
+                padding: 20px 16px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .stats-grid {
+                padding: 16px;
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .packages-table {
+                font-size: 0.8rem;
+                min-width: 1000px;
+            }
+            
+            .packages-table th,
+            .packages-table td {
+                padding: 10px 6px;
             }
         }
     </style>
@@ -766,7 +837,8 @@ function generateCoverageHTML(packageCoverageData) {
         
         <section class="packages-section">
             <h2 class="packages-title">📦 Package Coverage Details</h2>
-            <table class="packages-table">
+            <div class="table-container">
+                <table class="packages-table">
                 <thead>
                     <tr>
                         <th>Package</th>
@@ -832,6 +904,7 @@ function generateCoverageHTML(packageCoverageData) {
                         .join('')}
                 </tbody>
             </table>
+            </div>
         </section>
         
         <footer class="footer">
