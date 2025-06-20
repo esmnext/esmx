@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1750388434871" clover="3.2.0">
-  <project timestamp="1750388434871" name="All files">
-    <metrics statements="191" coveredstatements="190" conditionals="59" coveredconditionals="57" methods="22" coveredmethods="22" elements="272" coveredelements="269" complexity="0" loc="191" ncloc="191" packages="1" files="8" classes="8"/>
+<coverage generated="1750392725277" clover="3.2.0">
+  <project timestamp="1750392725277" name="All files">
+    <metrics statements="191" coveredstatements="190" conditionals="58" coveredconditionals="56" methods="22" coveredmethods="22" elements="271" coveredelements="268" complexity="0" loc="191" ncloc="191" packages="1" files="8" classes="8"/>
     <file name="index.ts" path="/home/runner/work/esmx/esmx/packages/router-vue/src/index.ts">
       <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       <line num="4" count="1" type="stmt"/>
@@ -106,7 +106,7 @@
       <line num="61" count="1" type="stmt"/>
     </file>
     <file name="use.ts" path="/home/runner/work/esmx/esmx/packages/router-vue/src/use.ts">
-      <metrics statements="75" coveredstatements="75" conditionals="24" coveredconditionals="24" methods="10" coveredmethods="10"/>
+      <metrics statements="75" coveredstatements="75" conditionals="23" coveredconditionals="23" methods="10" coveredmethods="10"/>
       <line num="2" count="1" type="stmt"/>
       <line num="11" count="1" type="stmt"/>
       <line num="24" count="1" type="stmt"/>
@@ -137,7 +137,7 @@
       <line num="57" count="13" type="stmt"/>
       <line num="58" count="19" type="cond" truecount="1" falsecount="0"/>
       <line num="59" count="8" type="stmt"/>
-      <line num="60" count="8" type="cond" truecount="2" falsecount="0"/>
+      <line num="60" count="8" type="cond" truecount="1" falsecount="0"/>
       <line num="61" count="5" type="stmt"/>
       <line num="62" count="5" type="stmt"/>
       <line num="63" count="5" type="cond" truecount="1" falsecount="0"/>
