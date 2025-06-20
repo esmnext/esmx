@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1750392722028" clover="3.2.0">
-  <project timestamp="1750392722028" name="All files">
+<coverage generated="1750407911625" clover="3.2.0">
+  <project timestamp="1750407911625" name="All files">
     <metrics statements="1476" coveredstatements="1428" conditionals="503" coveredconditionals="491" methods="122" coveredmethods="117" elements="2101" coveredelements="2036" complexity="0" loc="1476" ncloc="1476" packages="1" files="14" classes="14"/>
     <file name="increment-id.ts" path="/home/runner/work/esmx/esmx/packages/router/src/increment-id.ts">
       <metrics statements="11" coveredstatements="11" conditionals="3" coveredconditionals="3" methods="3" coveredmethods="3"/>
@@ -430,12 +430,12 @@
       <line num="89" count="3339" type="stmt"/>
       <line num="90" count="3339" type="stmt"/>
       <line num="92" count="2" type="cond" truecount="1" falsecount="0"/>
-      <line num="93" count="86" type="stmt"/>
-      <line num="94" count="86" type="stmt"/>
-      <line num="95" count="86" type="stmt"/>
-      <line num="96" count="86" type="stmt"/>
-      <line num="97" count="86" type="stmt"/>
-      <line num="100" count="86" type="cond" truecount="3" falsecount="0"/>
+      <line num="93" count="84" type="stmt"/>
+      <line num="94" count="84" type="stmt"/>
+      <line num="95" count="84" type="stmt"/>
+      <line num="96" count="84" type="stmt"/>
+      <line num="97" count="84" type="stmt"/>
+      <line num="100" count="84" type="cond" truecount="3" falsecount="0"/>
       <line num="102" count="21" type="stmt"/>
       <line num="105" count="21" type="stmt"/>
       <line num="106" count="21" type="cond" truecount="2" falsecount="0"/>
@@ -450,7 +450,7 @@
       <line num="117" count="21" type="stmt"/>
       <line num="118" count="21" type="stmt"/>
       <line num="119" count="21" type="cond" truecount="1" falsecount="0"/>
-      <line num="122" count="86" type="cond" truecount="1" falsecount="0"/>
+      <line num="122" count="84" type="cond" truecount="1" falsecount="0"/>
       <line num="123" count="14" type="cond" truecount="1" falsecount="0"/>
       <line num="124" count="4" type="stmt"/>
       <line num="125" count="4" type="stmt"/>
@@ -464,7 +464,7 @@
       <line num="133" count="4" type="cond" truecount="1" falsecount="0"/>
       <line num="134" count="11" type="stmt"/>
       <line num="135" count="11" type="stmt"/>
-      <line num="138" count="86" type="stmt"/>
+      <line num="138" count="84" type="stmt"/>
     </file>
     <file name="route-task.ts" path="/home/runner/work/esmx/esmx/packages/router/src/route-task.ts">
       <metrics statements="87" coveredstatements="81" conditionals="32" coveredconditionals="31" methods="4" coveredmethods="4"/>
@@ -984,8 +984,8 @@
       <line num="218" count="1107" type="stmt"/>
       <line num="219" count="1107" type="stmt"/>
       <line num="221" count="2589" type="cond" truecount="1" falsecount="0"/>
-      <line num="222" count="7" type="stmt"/>
-      <line num="223" count="7" type="stmt"/>
+      <line num="222" count="11" type="stmt"/>
+      <line num="223" count="11" type="stmt"/>
       <line num="225" count="2589" type="cond" truecount="1" falsecount="0"/>
       <line num="226" count="1094" type="stmt"/>
       <line num="227" count="1094" type="stmt"/>
