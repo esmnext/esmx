@@ -202,14 +202,20 @@
             border-radius: 2px;
         }
         
-        .packages-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: rgba(255, 255, 255, 0.95);
+        .table-container {
+            overflow-x: auto;
             border-radius: 12px;
-            overflow: hidden;
             box-shadow: var(--esmx-shadow);
             border: 1px solid var(--esmx-border);
+            background: rgba(255, 255, 255, 0.95);
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .packages-table {
+            width: calc(100% - 2px);
+            border-collapse: collapse;
+            background: transparent;
+            box-sizing: border-box;
         }
         
         .packages-table th {
@@ -342,17 +348,82 @@
         }
         
         @media (max-width: 768px) {
+            .packages-section {
+                padding: 20px 16px;
+            }
+            
             .packages-table {
-                font-size: 0.9rem;
+                font-size: 0.85rem;
+                min-width: 800px;
             }
             
             .packages-table th,
             .packages-table td {
                 padding: 12px 8px;
+                white-space: nowrap;
+            }
+            
+            .header {
+                padding: 30px 20px;
             }
             
             .header h1 {
                 font-size: 2rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .stats-grid {
+                padding: 20px;
+                gap: 16px;
+            }
+            
+            .package-name {
+                min-width: 120px;
+            }
+            
+            .coverage-bar {
+                min-width: 140px;
+            }
+            
+            .progress-bar {
+                min-width: 80px;
+            }
+            
+            .coverage-text {
+                min-width: 50px;
+                font-size: 0.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .packages-section {
+                padding: 16px 8px;
+            }
+            
+            .header {
+                padding: 20px 16px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .stats-grid {
+                padding: 16px;
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .packages-table {
+                font-size: 0.8rem;
+                min-width: 1000px;
+            }
+            
+            .packages-table th,
+            .packages-table td {
+                padding: 10px 6px;
             }
         }
     </style>
@@ -381,11 +452,11 @@
                 <div class="stat-label">Packages</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">65.58%</div>
+                <div class="stat-number">65.57%</div>
                 <div class="stat-label">Avg Statements</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">85.34%</div>
+                <div class="stat-number">85.35%</div>
                 <div class="stat-label">Avg Branches</div>
             </div>
             <div class="stat-card">
@@ -396,7 +467,8 @@
         
         <section class="packages-section">
             <h2 class="packages-title">📦 Package Coverage Details</h2>
-            <table class="packages-table">
+            <div class="table-container">
+                <table class="packages-table">
                 <thead>
                     <tr>
                         <th>Package</th>
@@ -558,9 +630,9 @@
                                 <div class="coverage-bar">
                                     <div class="progress-bar">
                                         <div class="progress-fill coverage-high" 
-                                             style="width: 97.12%"></div>
+                                             style="width: 97.11%"></div>
                                     </div>
-                                    <span class="coverage-text">97.12%</span>
+                                    <span class="coverage-text">97.11%</span>
                                 </div>
                             </td>
                             <td>
@@ -585,9 +657,9 @@
                                 <div class="coverage-bar">
                                     <div class="progress-bar">
                                         <div class="progress-fill coverage-high" 
-                                             style="width: 97.12%"></div>
+                                             style="width: 97.11%"></div>
                                     </div>
-                                    <span class="coverage-text">97.12%</span>
+                                    <span class="coverage-text">97.11%</span>
                                 </div>
                             </td>
                             <td>
@@ -614,9 +686,9 @@
                                 <div class="coverage-bar">
                                     <div class="progress-bar">
                                         <div class="progress-fill coverage-high" 
-                                             style="width: 96.55%"></div>
+                                             style="width: 96.61%"></div>
                                     </div>
-                                    <span class="coverage-text">96.55%</span>
+                                    <span class="coverage-text">96.61%</span>
                                 </div>
                             </td>
                             <td>
@@ -646,10 +718,11 @@
                     
                 </tbody>
             </table>
+            </div>
         </section>
         
         <footer class="footer">
-            <p>Generated on 6/20/2025, 2:34:31 AM by <a href="https://github.com/esmnext/esmx/actions" target="_blank" style="color: #007bff; text-decoration: none;">GitHub Actions</a></p>
+            <p>Generated on 6/20/2025, 3:00:34 AM by <a href="https://github.com/esmnext/esmx/actions" target="_blank" style="color: #007bff; text-decoration: none;">GitHub Actions</a></p>
             <p style="margin-top: 8px; font-size: 0.9rem;"><strong>Esmx Framework</strong> - ESM Next Generation | <a href="https://github.com/esmnext/esmx" target="_blank" style="color: #007bff; text-decoration: none;">View Source</a></p>
         </footer>
     </div>

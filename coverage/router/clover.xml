@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1750386868242" clover="3.2.0">
-  <project timestamp="1750386868242" name="All files">
-    <metrics statements="1493" coveredstatements="1450" conditionals="508" coveredconditionals="496" methods="122" coveredmethods="117" elements="2123" coveredelements="2063" complexity="0" loc="1493" ncloc="1493" packages="1" files="14" classes="14"/>
+<coverage generated="1750388431562" clover="3.2.0">
+  <project timestamp="1750388431562" name="All files">
+    <metrics statements="1490" coveredstatements="1447" conditionals="508" coveredconditionals="496" methods="122" coveredmethods="117" elements="2120" coveredelements="2060" complexity="0" loc="1490" ncloc="1490" packages="1" files="14" classes="14"/>
     <file name="increment-id.ts" path="/home/runner/work/esmx/esmx/packages/router/src/increment-id.ts">
       <metrics statements="11" coveredstatements="11" conditionals="3" coveredconditionals="3" methods="3" coveredmethods="3"/>
       <line num="1" count="2" type="cond" truecount="1" falsecount="0"/>
@@ -17,12 +17,9 @@
       <line num="12" count="2" type="stmt"/>
     </file>
     <file name="index.ts" path="/home/runner/work/esmx/esmx/packages/router/src/index.ts">
-      <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       <line num="1" count="1" type="stmt"/>
-      <line num="2" count="1" type="stmt"/>
       <line num="3" count="1" type="stmt"/>
-      <line num="4" count="1" type="stmt"/>
-      <line num="6" count="1" type="stmt"/>
     </file>
     <file name="location.ts" path="/home/runner/work/esmx/esmx/packages/router/src/location.ts">
       <metrics statements="42" coveredstatements="42" conditionals="24" coveredconditionals="24" methods="2" coveredmethods="2"/>
