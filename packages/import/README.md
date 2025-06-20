@@ -6,14 +6,17 @@
     <a href="https://www.npmjs.com/package/@esmx/import">
       <img src="https://img.shields.io/npm/v/@esmx/import.svg" alt="npm version" />
     </a>
-    <a href="https://opensource.org/licenses/MIT">
-      <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" />
+    <a href="https://github.com/esmnext/esmx/actions/workflows/build.yml">
+      <img src="https://github.com/esmnext/esmx/actions/workflows/build.yml/badge.svg" alt="Build" />
     </a>
-    <a href="https://www.npmjs.com/package/@esmx/import">
-      <img src="https://img.shields.io/npm/dm/@esmx/import.svg" alt="npm downloads" />
+    <a href="https://www.esmnext.com/coverage/">
+      <img src="https://img.shields.io/badge/coverage-live%20report-brightgreen" alt="Coverage Report" />
+    </a>
+    <a href="https://nodejs.org/">
+      <img src="https://img.shields.io/node/v/@esmx/import.svg" alt="node version" />
     </a>
     <a href="https://bundlephobia.com/package/@esmx/import">
-      <img src="https://img.shields.io/bundlephobia/minzip/@esmx/import.svg" alt="bundle size" />
+      <img src="https://img.shields.io/bundlephobia/minzip/@esmx/import" alt="size" />
     </a>
   </div>
   
@@ -24,11 +27,22 @@
   </p>
 </div>
 
-## 🚀 Quick Start
+## 🚀 Features
+
+- **Dual Implementation** - VM mode for development and Loader mode for production
+- **Hot Reload Support** - VM mode supports multiple creation for development flexibility
+- **High Performance** - Loader mode optimized for production deployment
+- **Node.js Focused** - Specifically designed for Node.js server-side environments
+- **TypeScript Ready** - Full TypeScript support with excellent type safety
+- **ESM Standards** - Fully compliant with Import Maps specification
+
+## 📦 Installation
 
 ```bash
 npm install @esmx/import
 ```
+
+## 🚀 Quick Start
 
 ```typescript
 import { createVmImport } from '@esmx/import';
