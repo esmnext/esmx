@@ -138,21 +138,17 @@ describe('Router.replace Tests', () => {
         });
 
         test('returned Route type should always be replace regardless of URL similarity', async () => {
-            // First replace to new URL - should return replace type
             const route1 = await router.replace('/about');
             expect(route1.type).toBe(RouteType.replace);
             expect(route1.isPush).toBe(false);
 
-            // Second replace to same URL - type should still be replace
             const route2 = await router.replace('/about');
             expect(route2.type).toBe(RouteType.replace);
             expect(route2.isPush).toBe(false);
 
-            // Verify internal operation actually used replace
             const pushSpy = vi.spyOn(router.navigation, 'push');
             const replaceSpy = vi.spyOn(router.navigation, 'replace');
 
-            // URL change - should use replace, return replace type
             const route3 = await router.replace('/user/123');
             expect(route3.type).toBe(RouteType.replace);
             expect(route3.isPush).toBe(false);
@@ -162,7 +158,6 @@ describe('Router.replace Tests', () => {
             pushSpy.mockClear();
             replaceSpy.mockClear();
 
-            // Same URL - should use replace, return replace type
             const route4 = await router.replace('/user/123');
             expect(route4.type).toBe(RouteType.replace);
             expect(route4.isPush).toBe(false);
@@ -182,7 +177,6 @@ describe('Router.replace Tests', () => {
                 router.replace('/user/3')
             ]);
 
-            // Only the last navigation should succeed, previous ones should be cancelled
             expect(results[0].status).toBe(RouteStatus.aborted);
             expect(results[1].status).toBe(RouteStatus.aborted);
             expect(results[2].status).toBe(RouteStatus.success);
@@ -238,7 +232,6 @@ describe('Router.replace Tests', () => {
                 .spyOn(router.microApp, '_update')
                 .mockImplementation(() => {
                     callOrder.push('microApp._update');
-                    // Route should be updated at this point
                     expect(router.route.path).toBe('/about');
                 });
 
@@ -257,7 +250,6 @@ describe('Router.replace Tests', () => {
             const endTime = Date.now();
 
             expect(route.status).toBe(RouteStatus.success);
-            // Verify async component loading takes time (consistent with other tests)
             expect(endTime - startTime).toBeGreaterThanOrEqual(10);
 
             const matchedRoute = route.matched[0];
@@ -323,7 +315,6 @@ describe('Router.replace Tests', () => {
 
     describe('💾 History Management', () => {
         test('replace should be navigable with back/forward', async () => {
-            // First create history with push
             await router.push('/about');
             await router.push('/user/123');
 
@@ -331,17 +322,14 @@ describe('Router.replace Tests', () => {
             await router.replace('/user/456');
             expect(router.route.path).toBe('/user/456');
 
-            // Back should return to /about (because /user/123 was replaced)
             const backRoute = await router.back();
             expect(backRoute?.path).toBe('/about');
 
-            // Forward should return to the replaced route
             const forwardRoute = await router.forward();
             expect(forwardRoute?.path).toBe('/user/456');
         });
 
         test('repeated replace to same URL should not create new history entries', async () => {
-            // First create some history with push
             await router.push('/about');
             await router.push('/user/123');
 
@@ -349,7 +337,6 @@ describe('Router.replace Tests', () => {
             await router.replace('/user/123');
             await router.replace('/user/123'); // Same URL, still use replace
 
-            // Back should return to /about, not intermediate states
             const backRoute = await router.back();
             expect(backRoute?.path).toBe('/about');
         });

@@ -132,7 +132,6 @@ describe.concurrent('subscribeMemory', () => {
 
         void history.onPopState(() => {});
 
-        // Verify that original functionality still works
         history.go(-1);
         await sleep(); // Wait for callback execution
         assert.equal(history.url, '/page1');
@@ -163,7 +162,6 @@ describe.concurrent('subscribeMemory', () => {
         assert.deepEqual(callbacks[0].state, { id: 1 });
     });
 
-    // Multiple navigations test - check if callbacks are correctly triggered for multiple navigations
     test('should call callback multiple times for multiple navigation', async () => {
         const history = new MemoryHistory();
         history.pushState({ id: 1 }, '', '/page1');
@@ -175,7 +173,6 @@ describe.concurrent('subscribeMemory', () => {
             callbacks.push({ url, state });
         });
 
-        // Multiple navigations
         history.go(-1); // to page2
         history.go(-1); // to page1
         history.go(2); // to page3
@@ -297,7 +294,6 @@ describe.concurrent('subscribeMemory', () => {
         });
     });
 
-    // Test multiple subscribers - ensure all subscribers receive the same callback
     test('should support multiple subscribers like multiple event listeners', async () => {
         const history = new MemoryHistory();
         history.pushState({ id: 1 }, '', '/page1');
@@ -306,7 +302,6 @@ describe.concurrent('subscribeMemory', () => {
         const callbacks1: Array<{ url: string; state: any }> = [];
         const callbacks2: Array<{ url: string; state: any }> = [];
 
-        // Simulate multiple components listening to the popstate event
         void history.onPopState((url, state) => {
             callbacks1.push({ url, state });
         });
@@ -393,7 +388,6 @@ describe.concurrent('subscribeMemory', () => {
         assert.equal(callbacks3.length, 2); // Subscriber 3 should be triggered
     });
 
-    // Same callback subscribed only once, and cleanup function works correctly
     test('should not subscribe the same callback multiple times', async () => {
         const history = new MemoryHistory();
         history.pushState({ id: 1 }, '', '/page1');
@@ -404,9 +398,7 @@ describe.concurrent('subscribeMemory', () => {
             callbacks.push({ url, state });
         };
 
-        // First subscription
         const unSub1 = history.onPopState(callback);
-        // Second subscription of the same callback
         const unSub2 = history.onPopState(callback);
 
         // Navigate once, should trigger callback only once
@@ -432,7 +424,6 @@ describe.concurrent('subscribeMemory', () => {
 });
 
 describe('Navigation', () => {
-    // Create router options for testing
     const createTestOptions = () => {
         const baseOptions: RouterOptions = {
             context: {},
@@ -563,7 +554,6 @@ describe('Navigation', () => {
             })
         );
         // await nav.go(-1);
-        // Simulate browser back operation
         ((nav as any)._history as MemoryHistory).back();
         await sleep(100); // Wait for callback execution
         assert.ok(updates.length > 0);
@@ -619,13 +609,11 @@ describe('Navigation', () => {
         nav.destroy();
         // `go` after destroy should not throw an error
         nav.go(-1);
-        // And no callbacks should be triggered
         const res = await nav.go(1);
         assert.equal(res, null);
         assert.equal(updates.length, 0);
     });
 
-    // Navigation tests in history mode
     describe('in history mode', () => {
         let mockHistory: any;
         let popstateHandler: any;
@@ -722,7 +710,6 @@ describe('Navigation', () => {
         test('should handle null/undefined route.state in push method (line 43)', () => {
             const nav = new Navigation({ mode: RouterMode.memory } as any);
 
-            // Test with route.state as null
             const routeWithNullState = new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
@@ -732,7 +719,6 @@ describe('Navigation', () => {
             assert.ok(state1);
             assert.ok('__pageId__' in state1);
 
-            // Test with route.state as undefined
             const routeWithUndefinedState = new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
@@ -755,7 +741,6 @@ describe('Navigation', () => {
                 })
             );
 
-            // Test with route.state as null
             const routeWithNullState = new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
@@ -765,7 +750,6 @@ describe('Navigation', () => {
             assert.ok(state1);
             assert.ok('__pageId__' in state1);
 
-            // Test with route.state as undefined
             const routeWithUndefinedState = new Route({
                 options: createTestOptions(),
                 toType: RouteType.push,
@@ -801,7 +785,6 @@ describe('Navigation', () => {
             // Destroy immediately, which should call _promiseResolve?.()
             nav.destroy();
 
-            // The 'go' operation should resolve to null
             const result = await goPromise;
             assert.equal(result, null);
         });
@@ -809,7 +792,6 @@ describe('Navigation', () => {
         test('should return null when _curEntry index is out of bounds (line 92)', () => {
             const history = new MemoryHistory();
 
-            // Simulate out-of-bounds index by directly modifying internal state
             (history as any)._index = -1;
             assert.equal((history as any)._curEntry, null);
 
@@ -820,7 +802,6 @@ describe('Navigation', () => {
         test('should return empty string when _curEntry.url is null/undefined (line 101)', () => {
             const history = new MemoryHistory();
 
-            // Simulate _curEntry.url as undefined
             const mockEntry = { state: {}, url: undefined };
             (history as any)._entries = [mockEntry];
             (history as any)._index = 0;
@@ -832,11 +813,9 @@ describe('Navigation', () => {
             const history = new MemoryHistory();
             const currentUrl = history.url; // Get current URL
 
-            // Test with url as null
             history.pushState({ test: 1 }, '', null);
             assert.equal(history.url, currentUrl);
 
-            // Test with url as undefined
             history.pushState({ test: 2 }, '', undefined);
             assert.equal(history.url, currentUrl);
         });
@@ -844,7 +823,6 @@ describe('Navigation', () => {
         test('should return early when curEntry is null in replaceState (line 128)', () => {
             const history = new MemoryHistory();
 
-            // Simulate _curEntry as null
             (history as any)._index = -1; // Set to an invalid index
 
             // Calling replaceState should return early without doing anything
@@ -858,7 +836,6 @@ describe('Navigation', () => {
         test('should return empty function when cb is not a function in onPopState (line 152)', () => {
             const history = new MemoryHistory();
 
-            // Test with non-function types
             const unsubscribe1 = history.onPopState(null as any);
             const unsubscribe2 = history.onPopState(undefined as any);
             const unsubscribe3 = history.onPopState('not a function' as any);
@@ -879,7 +856,6 @@ describe('Navigation', () => {
         });
 
         test('should handle null history.state in subscribeHtmlHistory (line 159)', () => {
-            // Simulate browser environment
             const mockHistory = {
                 state: null // Simulate history.state being null
             };
@@ -901,14 +877,12 @@ describe('Navigation', () => {
                 }
             );
 
-            // Use vi.stubGlobal to set up mock objects
             vi.stubGlobal('window', mockWindow);
             vi.stubGlobal('history', mockHistory);
             vi.stubGlobal('location', mockLocation);
 
             const callbackData: Array<{ url: string; state: any }> = [];
 
-            // Create a new Navigation instance to test history mode
             const nav = new Navigation(
                 { mode: RouterMode.history } as any,
                 (url: string, state: any) => {
@@ -916,18 +890,15 @@ describe('Navigation', () => {
                 }
             );
 
-            // Verify addEventListener was called
             expect(mockWindow.addEventListener).toHaveBeenCalledWith(
                 'popstate',
                 expect.any(Function)
             );
 
-            // Simulate popstate event trigger
             if (capturedCallback) {
                 capturedCallback(); // This will trigger line 160: history.state || {}
             }
 
-            // Verify the callback was called correctly, and null state was converted to {}
             expect(callbackData.length).toBe(1);
             expect(callbackData[0].url).toBe('http://test.com/page');
             expect(callbackData[0].state).toEqual({}); // Should be {} when history.state is null

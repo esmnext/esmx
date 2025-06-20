@@ -94,7 +94,6 @@ describe('Router.push Tests', () => {
             // Navigate to different URL
             await router.push('/about');
 
-            // Should add new entry to history
             expect(router.navigation.length).toBe(initialLength + 1);
             expect(router.route.path).toBe('/about');
         });
@@ -118,7 +117,6 @@ describe('Router.push Tests', () => {
             // Navigate with query parameters (should create new entry)
             await router.push('/about?newParam=value');
 
-            // Should add new entry because URL changed
             expect(router.navigation.length).toBe(lengthAfterFirstPush + 1);
             expect(router.route.fullPath).toContain('newParam=value');
         });
@@ -130,18 +128,15 @@ describe('Router.push Tests', () => {
             // Navigate with hash (should create new entry)
             await router.push('/about#section');
 
-            // Should add new entry because URL changed
             expect(router.navigation.length).toBe(lengthAfterFirstPush + 1);
             expect(router.route.fullPath).toContain('#section');
         });
 
         test('should always return push type regardless of internal operation', async () => {
-            // First push to new URL - should return push type
             const route1 = await router.push('/about');
             expect(route1.type).toBe(RouteType.push);
             expect(route1.isPush).toBe(true);
 
-            // Second push to same URL - should still return push type
             const route2 = await router.push('/about');
             expect(route2.type).toBe(RouteType.push);
             expect(route2.isPush).toBe(true);
@@ -166,7 +161,6 @@ describe('Router.push Tests', () => {
                 router.push('/user/3')
             ]);
 
-            // Only the last navigation should succeed, previous ones should be cancelled
             expect(results[0].status).toBe(RouteStatus.aborted);
             expect(results[1].status).toBe(RouteStatus.aborted);
             expect(results[2].status).toBe(RouteStatus.success);

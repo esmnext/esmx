@@ -80,7 +80,6 @@ describe('Router.forward Tests', () => {
             await router.push('/user/123');
             await router.back(); // Back to /about
 
-            // Forward to /user/123
             const forwardRoute = await router.forward();
             expect(forwardRoute?.path).toBe('/user/123');
             expect(router.route.path).toBe('/user/123');
@@ -104,12 +103,10 @@ describe('Router.forward Tests', () => {
             await router.back(); // Back to /about
             await router.back(); // Back to root path
 
-            // Forward to /about
             const route1 = await router.forward();
             expect(route1?.path).toBe('/about');
             expect(router.route.path).toBe('/about');
 
-            // Forward again to /user/123
             const route2 = await router.forward();
             expect(route2?.path).toBe('/user/123');
             expect(router.route.path).toBe('/user/123');
@@ -117,7 +114,6 @@ describe('Router.forward Tests', () => {
 
         test('forward beyond history boundaries should return null', async () => {
             await router.push('/about');
-            // Already at the latest history position, try to forward
             const route = await router.forward();
             expect(route).toBe(null);
             expect(router.route.path).toBe('/about'); // Route state unchanged
@@ -153,7 +149,6 @@ describe('Router.forward Tests', () => {
                 router.forward() // Second operation, returns null due to first one in progress
             ]);
 
-            // First operation succeeds, second returns null (due to first in progress)
             expect(firstResult?.status).toBe(RouteStatus.success);
             expect(secondResult).toBe(null);
             expect(router.route.path).toBe('/about'); // First operation result
@@ -167,7 +162,6 @@ describe('Router.forward Tests', () => {
             await router.back(); // Back to /about
             await router.back(); // Back to root path
 
-            // Reset spy count, focus only on forward operation updates
             updateSpy.mockClear();
 
             // forward operations have no cancellation logic, second operation returns null directly
@@ -176,7 +170,6 @@ describe('Router.forward Tests', () => {
                 router.forward() // Second operation returns null
             ]);
 
-            // Verify first succeeds, second returns null
             expect(firstResult?.status).toBe(RouteStatus.success);
             expect(secondResult).toBe(null);
 
@@ -213,7 +206,6 @@ describe('Router.forward Tests', () => {
 
     describe('⚡ Async Components & Forward', () => {
         test('forward to async component route should wait for component loading', async () => {
-            // First visit async route to establish history
             await router.push('/async');
             await router.push('/about');
             await router.back(); // Back to /async
@@ -233,9 +225,7 @@ describe('Router.forward Tests', () => {
 
         test('forward to failed async component route should return error status', async () => {
             // forward operations to historical routes usually dont re-execute async component loading
-            // but use cached state, so this test expectation might be incorrect
 
-            // First visit failing async route
             const errorRoute = await router.push('/async-error');
             expect(errorRoute.status).toBe(RouteStatus.error);
 
@@ -251,7 +241,6 @@ describe('Router.forward Tests', () => {
 
     describe('🛡️ Forward Guard Behavior', () => {
         test('forward to guard-blocked route should return aborted status', async () => {
-            // First establish history, but blocked routes actually dont enter history
             const blockedRoute = await router.push('/user/blocked');
             expect(blockedRoute.status).toBe(RouteStatus.aborted);
 
@@ -315,12 +304,10 @@ describe('Router.forward Tests', () => {
             await router.back(); // Back to /about
             await router.back(); // Back to root path
 
-            // Forward to /about
             const route1 = await router.forward();
             expect(route1?.path).toBe('/about');
             expect(router.route.path).toBe('/about');
 
-            // Forward again to /user/123
             const route2 = await router.forward();
             expect(route2?.path).toBe('/user/123');
             expect(router.route.path).toBe('/user/123');
@@ -331,8 +318,6 @@ describe('Router.forward Tests', () => {
             await router.push('/user/123');
             await router.back(); // Back to /about
 
-            // Verify forward operation doesnt create new history entries:
-            // 1. back after forward should be able to return to original position
             await router.forward(); // Forward to /user/123
             expect(router.route.path).toBe('/user/123');
 
@@ -344,7 +329,6 @@ describe('Router.forward Tests', () => {
 
     describe('❌ Error Handling', () => {
         test('forward to non-existent route should trigger location handling', async () => {
-            // First visit non-existent route to establish history
             const nonExistentRoute = await router.push('/non-existent');
             expect(nonExistentRoute.path).toBe('/non-existent');
             expect(nonExistentRoute.matched).toHaveLength(0);
@@ -359,7 +343,6 @@ describe('Router.forward Tests', () => {
             // but should ensure location handler was called
             expect(executionLog).toContain('location-handler-/non-existent');
 
-            // Route status should be successful even if path might be different
             expect(route?.status).toBe(RouteStatus.success);
         });
 
@@ -435,7 +418,6 @@ describe('Router.forward Tests', () => {
 
             await testRouter.replace('/about');
 
-            // Try out-of-bounds forward operation (already at latest position)
             const route = await testRouter.forward();
 
             expect(route).toBe(null);
@@ -481,7 +463,6 @@ describe('Router.forward Tests', () => {
         });
 
         test('should return null directly when Navigation returns null', async () => {
-            // Try out-of-bounds navigation (already at latest position)
             const route = await router.forward();
 
             expect(route).toBe(null);

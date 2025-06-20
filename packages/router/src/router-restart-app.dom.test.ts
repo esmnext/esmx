@@ -11,7 +11,6 @@ describe('Router.restartApp Focused Tests', () => {
     let mockApps: Record<string, ReturnType<typeof vi.fn>>;
 
     beforeEach(async () => {
-        // Create simple mock applications
         mockApps = {
             home: vi.fn(() => ({ mount: vi.fn(), unmount: vi.fn() })),
             about: vi.fn(() => ({ mount: vi.fn(), unmount: vi.fn() })),
@@ -40,7 +39,6 @@ describe('Router.restartApp Focused Tests', () => {
 
     describe('🎯 Core Functionality Tests', () => {
         it('should support parameterless restart (restart to current path)', async () => {
-            // First navigate to /user/123
             await router.push('/user/123');
             expect(router.route.url.pathname).toBe('/user/123');
 
@@ -117,7 +115,6 @@ describe('Router.restartApp Focused Tests', () => {
 
     describe('🔄 restartApp-Specific Behavior Tests', () => {
         it('should force update MicroApp (even with same application)', async () => {
-            // First navigate to /about
             await router.push('/about');
             const firstCallCount = mockApps.about.mock.calls.length;
 
@@ -125,7 +122,6 @@ describe('Router.restartApp Focused Tests', () => {
             await router.restartApp('/about');
             const secondCallCount = mockApps.about.mock.calls.length;
 
-            // Verify application was recreated (this is restartApp's specific behavior)
             expect(secondCallCount).toBeGreaterThan(firstCallCount);
         });
 
@@ -201,7 +197,6 @@ describe('Router.restartApp Focused Tests', () => {
         it('should handle special character paths', async () => {
             const result = await router.restartApp('/user/测试用户');
 
-            // URL will automatically encode special characters
             expect(result.url.pathname).toContain('/user/');
             // Parameters may be URL encoded, need to decode
             expect(decodeURIComponent(result.params.id)).toBe('测试用户');
@@ -210,7 +205,6 @@ describe('Router.restartApp Focused Tests', () => {
 
     describe('🔗 URL Parsing Tests', () => {
         it('should correctly parse absolute paths', async () => {
-            // First navigate to deep path
             await router.push('/user/123');
 
             // Restart to absolute path
@@ -227,7 +221,6 @@ describe('Router.restartApp Focused Tests', () => {
 
             // Relative path handling depends on current base URL implementation
             expect(result.url.pathname).toContain('456');
-            // If matched to user route, should have id parameter
             if (
                 result.matched.length > 0 &&
                 result.matched[0].path === '/user/:id'
@@ -297,7 +290,6 @@ describe('Router.restartApp Focused Tests', () => {
             await router.restartApp('/about');
             const thirdCallCount = mockApps.about.mock.calls.length;
 
-            // Each restart should create new application instances
             expect(secondCallCount).toBeGreaterThan(firstCallCount);
             expect(thirdCallCount).toBeGreaterThan(secondCallCount);
         });
@@ -328,7 +320,6 @@ describe('Router.restartApp Focused Tests', () => {
             expect(restartedRoute.url.href).toBe(resolvedRoute.url.href);
             expect(restartedRoute.params).toEqual(resolvedRoute.params);
             expect(restartedRoute.matched).toEqual(resolvedRoute.matched);
-            // But types should be different
             expect(restartedRoute.type).toBe(RouteType.restartApp);
             expect(resolvedRoute.type).toBe(RouteType.none);
         });
@@ -412,7 +403,6 @@ describe('Router.restartApp Focused Tests', () => {
                         path: '/async',
                         app: 'async',
                         asyncComponent: async () => {
-                            // Simulate async component loading
                             await new Promise((resolve) =>
                                 setTimeout(resolve, 10)
                             );
@@ -455,7 +445,6 @@ describe('Router.restartApp Focused Tests', () => {
 
     describe('⚡ Task Cancellation and Concurrency Control Tests', () => {
         it('should cancel tasks interrupted by new restartApp calls', async () => {
-            // Create a guard that will delay
             const unregister = router.beforeEach(async (to, from) => {
                 if (to.path === '/user/slow') {
                     await new Promise((resolve) => setTimeout(resolve, 50));
@@ -468,7 +457,6 @@ describe('Router.restartApp Focused Tests', () => {
                 router.restartApp('/about')
             ]);
 
-            // First call should be cancelled, second should succeed
             expect(results[0].status).toBe(RouteStatus.aborted);
             expect(results[1].status).toBe(RouteStatus.success);
             expect(router.route.path).toBe('/about');
@@ -482,7 +470,6 @@ describe('Router.restartApp Focused Tests', () => {
                 paths.map((path) => router.restartApp(path))
             );
 
-            // Only the last one should succeed
             expect(results[0].status).toBe(RouteStatus.aborted);
             expect(results[1].status).toBe(RouteStatus.aborted);
             expect(results[2].status).toBe(RouteStatus.success);
@@ -547,7 +534,6 @@ describe('Router.restartApp Focused Tests', () => {
             expect(result.status).toBe(RouteStatus.success);
             // restartApp doesn't execute override tasks, so handleResult should be undefined
             expect(result.handleResult).toBeUndefined();
-            // The override configuration should still exist in the route config
             expect(result.config?.override).toBeDefined();
         });
 
@@ -557,7 +543,6 @@ describe('Router.restartApp Focused Tests', () => {
             );
 
             expect(result.status).toBe(RouteStatus.success);
-            // Should use default behavior (no override handler)
             expect(result.handle).not.toBeNull();
         });
 
@@ -567,7 +552,6 @@ describe('Router.restartApp Focused Tests', () => {
             expect(result.status).toBe(RouteStatus.success);
             // restartApp doesn't execute override tasks, so handleResult should be undefined
             expect(result.handleResult).toBeUndefined();
-            // The override configuration should still exist in the route config
             expect(result.config?.override).toBeDefined();
         });
     });
@@ -597,7 +581,6 @@ describe('Router.restartApp Focused Tests', () => {
                 'MicroApp update failed'
             );
 
-            // Restore original method
             router.microApp._update = originalUpdate;
         });
 
@@ -612,7 +595,6 @@ describe('Router.restartApp Focused Tests', () => {
                 'Navigation replace failed'
             );
 
-            // Restore original method
             router.navigation.replace = originalReplace;
         });
     });
@@ -671,7 +653,6 @@ describe('Router.restartApp Focused Tests', () => {
 
             await lifecycleRouter.restartApp('/lifecycle');
 
-            // Verify execution order: beforeLeave -> beforeEach -> beforeEnter -> afterEach
             expect(lifecycleLog).toEqual([
                 'home-beforeLeave',
                 'global-beforeEach-/lifecycle',
@@ -684,14 +665,12 @@ describe('Router.restartApp Focused Tests', () => {
         });
 
         it('should execute beforeUpdate when restarting same route', async () => {
-            // First navigate to target route
             await lifecycleRouter.push('/lifecycle');
             lifecycleLog = []; // Clear log
 
             // Restart to same route with different parameters
             await lifecycleRouter.restartApp('/lifecycle?version=2');
 
-            // Should execute beforeUpdate instead of beforeEnter
             expect(lifecycleLog).toContain('lifecycle-beforeUpdate');
             expect(lifecycleLog).not.toContain('lifecycle-beforeEnter');
         });
@@ -705,7 +684,6 @@ describe('Router.restartApp Focused Tests', () => {
                 apps: mockApps,
                 fallback: (to, from) => {
                     locationCalled = true;
-                    // Simulate custom location handler behavior
                     return { customLocation: true, path: to.path };
                 }
             });
@@ -777,10 +755,8 @@ describe('Router.restartApp Focused Tests', () => {
                 0
             );
 
-            // Verify applications were correctly created and destroyed
             expect(finalAppsCallCount).toBeGreaterThan(initialAppsCallCount);
 
-            // Verify final state is correct
             expect(router.route.params.id).toBe('49');
         });
 
@@ -795,14 +771,12 @@ describe('Router.restartApp Focused Tests', () => {
             const results = await Promise.all(promises);
             const endTime = Date.now();
 
-            // Only the last one should succeed
             const successfulResults = results.filter(
                 (r) => r.status === RouteStatus.success
             );
             expect(successfulResults).toHaveLength(1);
             expect(successfulResults[0].params.id).toBe('9');
 
-            // Performance check: should complete within reasonable time
             expect(endTime - startTime).toBeLessThan(1000);
         });
     });

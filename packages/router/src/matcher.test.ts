@@ -190,7 +190,6 @@ describe('joinPathname', () => {
         {
             description: 'Boolean and numeric paths (boundary test)',
             cases: [
-                // These may be uncommon in practice but test type safety
                 { path: 'true', base: 'false', expected: '/false/true' },
                 { path: '0', base: '1', expected: '/1/0' },
                 { path: 'NaN', base: 'undefined', expected: '/undefined/NaN' },
@@ -207,7 +206,6 @@ describe('joinPathname', () => {
         {
             description: 'Handling of non-ASCII character paths',
             cases: [
-                // Test various Unicode characters
                 { path: 'путь', base: 'база', expected: '/база/путь' }, // Russian
                 { path: 'パス', base: 'ベース', expected: '/ベース/パス' }, // Japanese
                 { path: '경로', base: '기본', expected: '/기본/경로' }, // Korean
@@ -252,7 +250,6 @@ describe('joinPathname', () => {
         {
             description: 'Boundary cases for path separators',
             cases: [
-                // Test various path separator combinations
                 { path: '/', base: '/', expected: '/' },
                 { path: '//', base: '//', expected: '/' },
                 { path: '///', base: '///', expected: '/' },
@@ -271,7 +268,6 @@ describe('joinPathname', () => {
         {
             description: 'Numeric type paths (type boundary)',
             cases: [
-                // Although the function signature requires a string, test potential type coercion
                 { path: '123', base: '456', expected: '/456/123' },
                 { path: '0', expected: '/0' },
                 { path: '', base: '0', expected: '/0' },
@@ -579,7 +575,6 @@ describe('createMatcher', () => {
             }
         ]);
 
-        // Parameter route should match
         const result1 = matcher(new URL('/a/123', BASE_URL), BASE_URL);
         assert.equal(result1.matches.length, 1);
         assert.equal(result1.matches[0]?.meta?.order, 1);
@@ -618,9 +613,7 @@ describe('createMatcher', () => {
         assert.equal(result.matches[1].path, 'child');
     });
 
-    // Verify performance later
     test.todo('Route matching performance verification', () => {
-        // Create a large number of route configurations
         const routes = Array.from({ length: 1000 }, (_, i) => ({
             path: `/route${i}/:id`
         }));
@@ -633,7 +626,6 @@ describe('createMatcher', () => {
 
         assert.equal(result.matches.length, 1);
         assert.equal(result.params.id, '123');
-        // Verify that the matching time is within a reasonable range (less than 10ms)
         assert.isTrue(endTime - startTime < 10);
     });
 
@@ -792,7 +784,6 @@ describe('createMatcher', () => {
             BASE_URL
         );
         assert.equal(result.matches.length, 3);
-        // Verify depth-first: parent routes first
         assert.equal(result.matches[0].meta?.level, 1);
         assert.equal(result.matches[1].meta?.level, 2);
         assert.equal(result.matches[2].meta?.level, 3);
@@ -816,12 +807,10 @@ describe('createMatcher', () => {
     });
 
     test('Error path configuration handling', () => {
-        // Test empty string path
         const matcher1 = createMatcher([{ path: '' }]);
         const result1 = matcher1(new URL('/', BASE_URL), BASE_URL);
         assert.equal(result1.matches.length, 1);
 
-        // Test only slash path
         const matcher2 = createMatcher([{ path: '/' }]);
         const result2 = matcher2(new URL('/', BASE_URL), BASE_URL);
         assert.equal(result2.matches.length, 1);
@@ -829,7 +818,6 @@ describe('createMatcher', () => {
 
     test('Empty parameter handling', () => {
         const matcher = createMatcher([{ path: '/user/:id' }]);
-        // Test empty parameter value
         const result = matcher(new URL('/user/', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 0); // Should not match
     });
@@ -889,7 +877,6 @@ describe('createMatcher', () => {
             }
         ]);
 
-        // Test exact match priority
         const result1 = matcher(
             new URL('/conflict/special', BASE_URL),
             BASE_URL
@@ -897,7 +884,6 @@ describe('createMatcher', () => {
         assert.equal(result1.matches.length, 1);
         assert.equal(result1.matches[0]?.meta?.priority, 2);
 
-        // Test parameter matching
         const result2 = matcher(new URL('/conflict/123', BASE_URL), BASE_URL);
         assert.equal(result2.matches.length, 1);
         assert.equal(result2.matches[0]?.meta?.priority, 1);
@@ -940,7 +926,6 @@ describe('createMatcher', () => {
 
     test('Route override configuration handling', () => {
         // Using proper types instead of any
-        // The override function returns RouteHandleHook when conditions are met
         const overrideHandler: RouteConfirmHook = (to, from) => {
             return async (toRoute, fromRoute) => ({ data: 'test' });
         };
@@ -1040,9 +1025,7 @@ describe('createMatcher', () => {
         assert.equal(result.matches[0]?.meta?.protected, true);
     });
 
-    // Verify performance later
     test.todo('matcher performance boundary test', () => {
-        // Create a large number of complex route configurations
         const routes: Parameters<typeof createMatcher>[0] = [];
         for (let i = 0; i < 500; i++) {
             routes.push({
@@ -1058,7 +1041,6 @@ describe('createMatcher', () => {
         const matcher = createMatcher(routes);
         const startTime = performance.now();
 
-        // Test non-matching cases
         const result = matcher(new URL('/nonexistent', BASE_URL), BASE_URL);
 
         const endTime = performance.now();
@@ -1088,7 +1070,6 @@ describe('createMatcher', () => {
     test('Special URL encoding scenarios', () => {
         const matcher = createMatcher([{ path: '/encoded/:param' }]);
 
-        // Test various encoding scenarios - adjust according to path-to-regexp's actual behavior
         const testCases = [
             { input: '/encoded/hello%20world', expected: 'hello%20world' },
             {
@@ -1110,7 +1091,6 @@ describe('createMatcher', () => {
     });
 
     test('Error configuration tolerance handling', () => {
-        // Test empty route array
         const emptyMatcher = createMatcher([]);
         const emptyResult = emptyMatcher(new URL('/any', BASE_URL), BASE_URL);
         assert.equal(emptyResult.matches.length, 0);
@@ -1119,7 +1099,6 @@ describe('createMatcher', () => {
         // Test configuration with undefined path
         const matcher = createMatcher([
             { path: '/valid' },
-            // Theoretically, there should not be such a configuration, but test tolerance
             ...(process.env.NODE_ENV === 'test' ? [] : [])
         ]);
 
@@ -1135,7 +1114,6 @@ describe('createMatcher', () => {
         ];
         const matcher = createMatcher(routes);
 
-        // Test basic wildcard matching
         let result = matcher(
             new URL('/files/document.pdf', BASE_URL),
             BASE_URL
@@ -1184,13 +1162,11 @@ describe('createMatcher', () => {
         ];
         const matcher = createMatcher(routes);
 
-        // Test single parameter
         let result = matcher(new URL('/chapters/intro', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'ChaptersPage');
         assert.deepEqual(result.params.chapters, ['intro']);
 
-        // Test multiple parameters
         result = matcher(
             new URL('/chapters/intro/basics/advanced', BASE_URL),
             BASE_URL
@@ -1203,7 +1179,6 @@ describe('createMatcher', () => {
             'advanced'
         ]);
 
-        // Test repeatable parameters with subsequent paths
         result = matcher(
             new URL('/categories/tech/programming/items', BASE_URL),
             BASE_URL
@@ -1212,7 +1187,6 @@ describe('createMatcher', () => {
         assert.equal(result.matches[0].component, 'CategoriesItemsPage');
         assert.deepEqual(result.params.categories, ['tech', 'programming']);
 
-        // Test complex combinations
         result = matcher(
             new URL('/tags/react/typescript/hooks/posts/123', BASE_URL),
             BASE_URL
@@ -1230,37 +1204,31 @@ describe('createMatcher', () => {
         ];
         const matcher = createMatcher(routes);
 
-        // Test zero parameters (empty path segment)
         let result = matcher(new URL('/path', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'DynamicPathPage');
         assert.equal(result.params.segments, undefined);
 
-        // Test one parameter
         result = matcher(new URL('/path/a', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'DynamicPathPage');
         assert.equal(result.params.segments, 'a');
 
-        // Test multiple parameters
         result = matcher(new URL('/path/a/b/c/d', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'DynamicPathPage');
         assert.deepEqual(result.params.segments, ['a', 'b', 'c', 'd']);
 
-        // Test repeatable parameters with subsequent paths (zero)
         result = matcher(new URL('/files/download', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'DownloadPage');
         assert.equal(result.params.path, undefined);
 
-        // Test repeatable parameters with subsequent paths (one)
         result = matcher(new URL('/files/a/download', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'DownloadPage');
         assert.equal(result.params.path, 'a');
 
-        // Test repeatable parameters with subsequent paths (multiple)
         result = matcher(
             new URL('/files/docs/images/download', BASE_URL),
             BASE_URL
@@ -1280,39 +1248,32 @@ describe('createMatcher', () => {
         ];
         const matcher = createMatcher(routes);
 
-        // Test numeric ID
         let result = matcher(new URL('/order/12345', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'OrderPage');
         assert.equal(result.params.orderId, '12345');
 
-        // Test non-numeric ID should not match OrderPage
         result = matcher(new URL('/order/abc123', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 0);
 
-        // Test username format
         result = matcher(new URL('/user/john_doe123', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'UserPage');
         assert.equal(result.params.username, 'john_doe123');
 
-        // Test version number
         result = matcher(new URL('/api/v2', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'ApiPage');
         assert.equal(result.params.version, '2');
 
-        // Test hexadecimal color
         result = matcher(new URL('/hex/FF0000', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'ColorPage');
         assert.equal(result.params.color, 'FF0000');
 
-        // Test invalid hexadecimal color
         result = matcher(new URL('/hex/GGGGGG', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 0);
 
-        // Test fallback to more generic routes
         result = matcher(new URL('/product/laptop-pro', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'ProductPage');
@@ -1331,37 +1292,31 @@ describe('createMatcher', () => {
         ];
         const matcher = createMatcher(routes);
 
-        // Test required numeric parameter (single)
         let result = matcher(new URL('/numbers/123', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'NumbersPage');
         assert.deepEqual(result.params.nums, ['123']);
 
-        // Test required numeric parameter (multiple)
         result = matcher(new URL('/numbers/123/456/789', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'NumbersPage');
         assert.deepEqual(result.params.nums, ['123', '456', '789']);
 
-        // Test code format (required)
         result = matcher(new URL('/codes/US/UK/CA', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'CodesPage');
         assert.deepEqual(result.params.codes, ['US', 'UK', 'CA']);
 
-        // Test optional numeric parameter (zero)
         result = matcher(new URL('/optional', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'OptionalItemsPage');
         assert.equal(result.params.items, undefined);
 
-        // Test optional numeric parameter (multiple)
         result = matcher(new URL('/optional/100/200/300', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'OptionalItemsPage');
         assert.deepEqual(result.params.items, ['100', '200', '300']);
 
-        // Test complex mixed mode
         result = matcher(
             new URL('/mixed/111/222/info/ABC/DEF', BASE_URL),
             BASE_URL
@@ -1371,7 +1326,6 @@ describe('createMatcher', () => {
         assert.deepEqual(result.params.ids, ['111', '222']);
         assert.deepEqual(result.params.codes, ['ABC', 'DEF']);
 
-        // Test invalid format should not match
         result = matcher(new URL('/numbers/abc/123', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 0);
     });
@@ -1394,7 +1348,6 @@ describe('createMatcher', () => {
         assert.equal(result.matches[0].component, 'UsersPage');
         assert.equal(result.params.userId, undefined);
 
-        // Test with optional parameters
         result = matcher(new URL('/users/123', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'UsersPage');
@@ -1411,7 +1364,6 @@ describe('createMatcher', () => {
         assert.equal(result.matches[0].component, 'CommentsPage');
         assert.equal(result.params.postId, '456');
 
-        // Test multiple optional parameters
         result = matcher(new URL('/search', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'SearchPage');
@@ -1449,7 +1401,6 @@ describe('createMatcher', () => {
         ];
         const matcher = createMatcher(routes);
 
-        // Test numeric user ID (optional)
         let result = matcher(new URL('/users', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'UsersPage');
@@ -1460,11 +1411,9 @@ describe('createMatcher', () => {
         assert.equal(result.matches[0].component, 'UsersPage');
         assert.equal(result.params.userId, '123');
 
-        // Test invalid format should not match
         result = matcher(new URL('/users/abc', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 0);
 
-        // Test multiple optional parameters with regular expression
         result = matcher(new URL('/products', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'ProductsPage');
@@ -1539,7 +1488,6 @@ describe('createMatcher', () => {
         ];
         const matcher = createMatcher(routes);
 
-        // Test complex API route
         let result = matcher(
             new URL('/api/v1/users/123/posts/456/789', BASE_URL),
             BASE_URL
@@ -1625,7 +1573,6 @@ describe('createMatcher', () => {
         ];
         const matcher = createMatcher(routes);
 
-        // Test optional parameters followed by required repeatable parameters
         let result = matcher(new URL('/test/123/456', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'TestPage');
@@ -1638,13 +1585,11 @@ describe('createMatcher', () => {
         assert.equal(result.params.param, '123');
         assert.deepEqual(result.params.param2, ['456', '789']);
 
-        // Test empty wildcard
         result = matcher(new URL('/empty/', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'EmptyPage');
         assert.equal(result.params.empty, undefined);
 
-        // Test strict regular expression matching (must be exactly 3 digits)
         result = matcher(new URL('/strict/123', BASE_URL), BASE_URL);
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'StrictPage');
@@ -1687,7 +1632,6 @@ describe('createMatcher', () => {
         ];
         const matcher = createMatcher(routes);
 
-        // Test basic wildcard matching
         let result = matcher(
             new URL('/files/document.pdf', BASE_URL),
             BASE_URL

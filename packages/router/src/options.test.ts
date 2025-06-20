@@ -9,7 +9,6 @@ import { Route } from './route';
 import { RouteType } from './types';
 import type { RouterOptions } from './types';
 
-// Create a real IncomingMessage object
 function createIncomingMessage(options: {
     headers?: Record<string, string | string[]>;
     url?: string;
@@ -34,12 +33,10 @@ function createIncomingMessage(options: {
     return req;
 }
 
-// Create a real ServerResponse object
 function createServerResponse(): ServerResponse {
     const socket = new Socket();
     const res = new ServerResponse(new IncomingMessage(socket));
 
-    // Add methods needed for testing
     const headers: Record<string, string> = {};
     const originalSetHeader = res.setHeader.bind(res);
     res.setHeader = vi.fn(
@@ -54,7 +51,6 @@ function createServerResponse(): ServerResponse {
     return res;
 }
 
-// Create a real Route object
 function createRoute(
     options: {
         path?: string;
@@ -64,7 +60,6 @@ function createRoute(
         isPush?: boolean;
     } = {}
 ): Route {
-    // Create basic RouterParsedOptions
     const routerOptions = parsedOptions({
         base: new URL('http://localhost/'),
         routes: [{ path: '/test', component: 'TestComponent' }]
@@ -105,7 +100,6 @@ describe('options.ts - Node.js Environment Tests', () => {
 
     describe('getBaseUrl edge cases in Node.js environment', () => {
         beforeEach(() => {
-            // Ensure isBrowser is consistently false for all tests in this suite
             vi.doMock('./util', () => ({
                 isBrowser: false
             }));
@@ -114,12 +108,10 @@ describe('options.ts - Node.js Environment Tests', () => {
             vi.doUnmock('./util');
         });
         it('should use default URL and NOT warn when in a non-browser environment without request context', async () => {
-            // This test verifies the fallback behavior in a server environment where no `req` object is provided.
             // In this case, it should silently fall back to the default URL without a warning.
             const { parsedOptions } = await import('./options');
             const opts = parsedOptions({});
 
-            // Should use the default URL
             expect(opts.base.href).toBe('https://www.esmnext.com/');
 
             // Should NOT log a warning
@@ -127,7 +119,6 @@ describe('options.ts - Node.js Environment Tests', () => {
         });
 
         it('should use default URL and warn when base is an invalid URL string', async () => {
-            // This test replaces 'should trigger unknown context with invalid sourceUrl'.
             // It provides an invalid `base` option and checks for the warning.
             const { parsedOptions } = await import('./options');
 
@@ -147,10 +138,8 @@ describe('options.ts - Node.js Environment Tests', () => {
         });
 
         it('should handle complex server environment scenarios', async () => {
-            // Test various complex server-side scenarios
             const { parsedOptions } = await import('./options');
 
-            // Test various server configurations
             const testCases = [
                 { options: {}, expectedUrl: 'https://www.esmnext.com/' },
                 {
@@ -164,11 +153,9 @@ describe('options.ts - Node.js Environment Tests', () => {
                             url: '/test'
                         })
                     },
-                    // The path is cleaned up, so the final result is http://example.com/
                     expectedUrl: 'http://example.com/'
                 },
                 {
-                    // Test with port number (covers line 35)
                     options: {
                         req: createIncomingMessage({
                             headers: {
@@ -189,10 +176,8 @@ describe('options.ts - Node.js Environment Tests', () => {
         });
 
         it('should specifically test port number logic for line 35 coverage', async () => {
-            // Specifically test the port number logic on line 35
             const { parsedOptions } = await import('./options');
 
-            // Create a request that explicitly includes a port number
             const options: RouterOptions = {
                 req: createIncomingMessage({
                     headers: {
@@ -205,7 +190,6 @@ describe('options.ts - Node.js Environment Tests', () => {
 
             const opts = parsedOptions(options);
 
-            // Verify that the port number is correctly included in the URL
             expect(opts.base.href).toBe('http://localhost:3000/');
             expect(opts.base.port).toBe('3000');
         });
@@ -214,12 +198,10 @@ describe('options.ts - Node.js Environment Tests', () => {
             // Test the branch on line 35 where no port number is present
             const { parsedOptions } = await import('./options');
 
-            // Create a request without a port number
             const options: RouterOptions = {
                 req: createIncomingMessage({
                     headers: {
                         host: 'localhost'
-                        // Note: no 'x-forwarded-port'
                     },
                     url: '/'
                 })
@@ -227,7 +209,6 @@ describe('options.ts - Node.js Environment Tests', () => {
 
             const opts = parsedOptions(options);
 
-            // Verify the URL does not contain a port number
             expect(opts.base.href).toBe('http://localhost/');
             expect(opts.base.port).toBe('');
         });
@@ -236,12 +217,10 @@ describe('options.ts - Node.js Environment Tests', () => {
             // Test the req.url || '' branch on line 34
             const { parsedOptions } = await import('./options');
 
-            // Create a request where req.url is undefined
             const req = createIncomingMessage({
                 headers: {
                     host: 'example.com'
                 }
-                // Note: no url property, so req.url will be undefined
             });
 
             // Manually set url to undefined
@@ -250,21 +229,18 @@ describe('options.ts - Node.js Environment Tests', () => {
             const options: RouterOptions = { req };
             const opts = parsedOptions(options);
 
-            // Verify the URL is constructed correctly, with an empty path
             expect(opts.base.href).toBe('http://example.com/');
         });
     });
 
     describe('DEFAULT_LOCATION in Node.js environment', () => {
         beforeEach(() => {
-            // Ensure isBrowser is consistently false for Node.js tests
             vi.doMock('./util', () => ({
                 isBrowser: false
             }));
         });
 
         afterEach(() => {
-            // Restore the spy and unmock after each test
             vi.doUnmock('./util');
         });
         it('should handle server-side redirects properly', async () => {
@@ -309,7 +285,6 @@ describe('options.ts - Node.js Environment Tests', () => {
 
             DEFAULT_LOCATION(route, null, { res });
 
-            // Should use the default 302 status code
             expect(res.statusCode).toBe(302);
             expect(consoleSpy).toHaveBeenCalledWith(
                 expect.stringContaining('Invalid redirect status code 200')
@@ -321,7 +296,6 @@ describe('options.ts - Node.js Environment Tests', () => {
 
             const res = createServerResponse();
 
-            // Test all valid redirect status codes
             const validCodes = [300, 301, 302, 303, 304, 307, 308];
 
             for (const statusCode of validCodes) {

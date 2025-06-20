@@ -8,10 +8,8 @@ describe('Router Window Navigation Tests', () => {
     let mockApps: Record<string, any>;
 
     beforeEach(() => {
-        // Reset all mocks
         vi.clearAllMocks();
 
-        // Create mock applications
         mockApps = {
             home: vi.fn(() => ({
                 mount: vi.fn(),
@@ -30,7 +28,6 @@ describe('Router Window Navigation Tests', () => {
             }))
         };
 
-        // Create router instance
         router = new Router({
             routes: [
                 { path: '/', app: 'home' },
@@ -139,7 +136,6 @@ describe('Router Window Navigation Tests', () => {
                 await router[methodName]('/user/123');
                 const afterRoute = router.route;
 
-                // Window navigation should not change current route
                 expect(afterRoute.path).toBe(beforeRoute.path);
                 expect(afterRoute.url.href).toBe(beforeRoute.url.href);
             });
@@ -229,7 +225,6 @@ describe('Router Window Navigation Tests', () => {
 
                 expect(result.status).toBe(RouteStatus.success);
                 expect(result.isPush).toBe(expectedIsPush);
-                // URL will be encoded, so check encoded string
                 expect(result.url.pathname).toContain(
                     '%E6%B5%8B%E8%AF%95%E7%94%A8%E6%88%B7'
                 );
@@ -246,8 +241,6 @@ describe('Router Window Navigation Tests', () => {
 
                 const results = await Promise.all(promises);
 
-                // Window navigation won't cancel each other, so all results should succeed
-                // But due to task cancellation mechanism, some may be aborted, we only check at least one succeeds
                 const successResults = results.filter(
                     (r) => r.status === RouteStatus.success
                 );
@@ -331,11 +324,10 @@ describe('Router Window Navigation Tests', () => {
 
                 expect(result.status).toBe(RouteStatus.success);
                 expect(result.isPush).toBe(expectedIsPush);
-                // Window navigation doesn't load async components automatically
-                // But async components are not loaded in window navigation context
-                // The component should remain undefined since asyncComponent task is not executed
+                // so the component remains undefined, only asyncComponent config exists
                 expect(result.matched[0].component).toBeUndefined();
                 expect(result.matched[0].asyncComponent).toBeDefined();
+                expect(result.handleResult).toEqual({ windowNavigation: true });
                 asyncRouter.destroy();
             });
 
@@ -350,17 +342,19 @@ describe('Router Window Navigation Tests', () => {
                             }
                         }
                     ],
-                    apps: mockApps
+                    apps: mockApps,
+                    fallback: (to, from) => {
+                        return { fallbackHandled: true };
+                    }
                 });
 
-                // Window navigation doesn't execute asyncComponent task, so it won't fail
-                // The route should succeed since asyncComponent is not loaded
                 const result = await asyncRouter[methodName]('/async-error');
 
                 expect(result.status).toBe(RouteStatus.success);
                 // Component should remain undefined since asyncComponent task is not executed
                 expect(result.matched[0].component).toBeUndefined();
                 expect(result.matched[0].asyncComponent).toBeDefined();
+                expect(result.handleResult).toEqual({ fallbackHandled: true });
                 asyncRouter.destroy();
             });
         });
@@ -374,7 +368,6 @@ describe('Router Window Navigation Tests', () => {
                 // push will update current route
                 expect(router.route.path).toBe('/user/123');
 
-                // Window navigation won't update current route
                 expect(windowResult.isPush).toBe(expectedIsPush);
                 expect(windowResult.type).toBe(RouteType[methodName]);
 
@@ -391,7 +384,6 @@ describe('Router Window Navigation Tests', () => {
                 expect(windowRoute.params).toEqual(resolvedRoute.params);
                 expect(windowRoute.matched).toEqual(resolvedRoute.matched);
 
-                // But types should be different
                 expect(windowRoute.type).toBe(RouteType[methodName]);
                 expect(resolvedRoute.type).toBe(RouteType.none);
                 expect(windowRoute.isPush).toBe(expectedIsPush);
@@ -400,10 +392,8 @@ describe('Router Window Navigation Tests', () => {
         });
     }
 
-    // Create tests for pushWindow (isPush = true)
     createWindowNavigationTests('pushWindow', true);
 
-    // Create tests for replaceWindow (isPush = false)
     createWindowNavigationTests('replaceWindow', false);
 
     describe('🔄 pushWindow and replaceWindow Comparison Tests', () => {
@@ -411,7 +401,6 @@ describe('Router Window Navigation Tests', () => {
             const pushResult = await router.pushWindow('/user/123');
             const replaceResult = await router.replaceWindow('/user/123');
 
-            // All properties except isPush and type should be the same
             expect(pushResult.url.href).toBe(replaceResult.url.href);
             expect(pushResult.params).toEqual(replaceResult.params);
             expect(pushResult.query).toEqual(replaceResult.query);
@@ -419,7 +408,6 @@ describe('Router Window Navigation Tests', () => {
             expect(pushResult.matched).toEqual(replaceResult.matched);
             expect(pushResult.status).toBe(replaceResult.status);
 
-            // Only these two properties are different
             expect(pushResult.isPush).toBe(true);
             expect(replaceResult.isPush).toBe(false);
             expect(pushResult.type).toBe(RouteType.pushWindow);

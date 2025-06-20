@@ -229,7 +229,6 @@ describe('Route Class Complete Test Suite', () => {
                     toInput: 'http://localhost:3000/other/path'
                 });
 
-                // Same domain but different base path should not match
                 expect(route.matched).toHaveLength(0);
                 expect(route.config).toBeNull();
                 expect(route.path).toBe('/other/path'); // Use original pathname
@@ -245,7 +244,6 @@ describe('Route Class Complete Test Suite', () => {
                     toInput: 'http://localhost:3000/app/users/123'
                 });
 
-                // When matched, should remove base path
                 expect(route.path).toBe('/users/123');
                 expect(route.matched.length).toBeGreaterThan(0);
             });
@@ -258,7 +256,6 @@ describe('Route Class Complete Test Suite', () => {
                     toInput: 'https://external.com/api/data?key=value#section'
                 });
 
-                // When unmatched, use original path+search+hash
                 expect(route.fullPath).toBe('/api/data?key=value#section');
                 expect(route.path).toBe('/api/data');
             });
@@ -535,10 +532,8 @@ describe('Route Class Complete Test Suite', () => {
                 route.handle = mockHandle;
                 route.status = RouteStatus.success;
 
-                // First call should succeed
                 route.handle!(route, null);
 
-                // Second call should throw exception
                 expect(() => {
                     route.handle!(route, null);
                 }).toThrow(
@@ -660,7 +655,6 @@ describe('Route Class Complete Test Suite', () => {
                     toInput: '/users/123'
                 });
 
-                // Test various non-function types
                 route.setHandle(undefined as any);
                 expect(route.handle).toBeNull();
 
@@ -809,7 +803,6 @@ describe('Route Class Complete Test Suite', () => {
                 );
                 expect(descriptor?.enumerable).toBe(false);
 
-                // Verify not appearing in object enumeration
                 const keys = Object.keys(route);
                 expect(keys).not.toContain('statusCode');
             });
@@ -1071,7 +1064,6 @@ describe('Route Class Complete Test Suite', () => {
                 const originalPathname = to.pathname;
                 const match = options.matcher(to, base);
 
-                // Test empty params
                 const toInput = { path: '/users/123', params: {} };
                 applyRouteParams(match, toInput, base, to);
                 expect(to.pathname).toBe(originalPathname);
@@ -1116,7 +1108,6 @@ describe('Route Class Complete Test Suite', () => {
                 const to = new URL('http://localhost:3000/app/users/123');
                 const match = options.matcher(to, base);
 
-                // Simulate compile return empty fragment cases
                 const originalCompile = match.matches[0].compile;
                 match.matches[0].compile = vi.fn(() => '/users/'); // Return empty id part
 
@@ -1126,7 +1117,6 @@ describe('Route Class Complete Test Suite', () => {
                 // Should keep original path fragment
                 expect(to.pathname).toBe('/app/users/123');
 
-                // Restore original compile function
                 match.matches[0].compile = originalCompile;
             });
         });
@@ -1305,7 +1295,6 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
             const originalPathname = to.pathname;
             const match = options.matcher(to, base);
 
-            // Test empty params
             const toInput = { path: '/users/123', params: {} };
             applyRouteParams(match, toInput, base, to);
             expect(to.pathname).toBe(originalPathname);
@@ -1325,7 +1314,6 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
             const to = new URL('http://localhost:3000/app/users/123');
             const match = options.matcher(to, base);
 
-            // Simulate compile return empty fragment cases
             const originalCompile = match.matches[0].compile;
             match.matches[0].compile = vi.fn(() => '/users/'); // Return empty id part
 
@@ -1335,7 +1323,6 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
             // Should keep original path fragment
             expect(to.pathname).toBe('/app/users/123');
 
-            // Restore original compile function
             match.matches[0].compile = originalCompile;
         });
     });
@@ -1403,7 +1390,6 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
 
             const cloned = original.clone();
 
-            // Verify state deep copy
             expect(cloned.state).toEqual(original.state);
             expect(cloned.state).not.toBe(original.state);
 
@@ -1521,7 +1507,6 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
             // matched array should be frozen
             expect(Object.isFrozen(route.matched)).toBe(true);
 
-            // Try to modify should fail
             expect(() => {
                 (route.matched as any).push({});
             }).toThrow();
@@ -1537,12 +1522,10 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
                 toInput: '/users/123'
             });
 
-            // Verify property existence and correct values
             expect(route.params).toBeDefined();
             expect(route.query).toBeDefined();
             expect(route.url).toBeDefined();
 
-            // Verify basic characteristics of these properties
             expect(typeof route.params).toBe('object');
             expect(typeof route.query).toBe('object');
             expect(route.url instanceof URL).toBe(true);
@@ -1629,16 +1612,13 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
 
             sourceRoute.syncTo(targetRoute);
 
-            // Verify mutable attributes synchronization
             expect(targetRoute.status).toBe(RouteStatus.success);
             expect(targetRoute.statusCode).toBe(200);
 
-            // Verify state synchronization
             expect(targetRoute.state.userId).toBe(456);
             expect(targetRoute.state.name).toBe('Jane');
             expect(targetRoute.state.oldData).toBeUndefined();
 
-            // Verify read-only attributes synchronization
             expect(targetRoute.type).toBe(RouteType.push);
             expect(targetRoute.path).toBe('/users/456');
             expect(targetRoute.fullPath).toBe('/users/456');
@@ -1662,7 +1642,6 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
 
             sourceRoute.syncTo(targetRoute);
 
-            // Verify params are correctly synchronized
             expect(targetRoute.params.id).toBe('789');
             expect(targetRoute.params.postId).toBeUndefined();
         });
@@ -1684,7 +1663,6 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
 
             sourceRoute.syncTo(targetRoute);
 
-            // Verify query parameters are correctly synchronized
             expect(targetRoute.query.q).toBe('test');
             expect(targetRoute.query.page).toBe('2');
             expect(targetRoute.query.old).toBeUndefined();
@@ -1712,7 +1690,6 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
 
             sourceRoute.syncTo(targetRoute);
 
-            // Verify handle related attributes are synchronized
             expect((targetRoute as any)._handle).toBe(
                 (sourceRoute as any)._handle
             );

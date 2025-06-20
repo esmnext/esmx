@@ -122,7 +122,6 @@ describe('Router.back Tests', () => {
 
             await testRouter.replace('/about');
 
-            // Try to go back beyond boundaries
             const route = await testRouter.back();
             expect(route).toBe(null);
             expect(testRouter.route.path).toBe('/about'); // Route state unchanged
@@ -150,13 +149,11 @@ describe('Router.back Tests', () => {
             await router.push('/about');
             await router.push('/user/123');
 
-            // Back operations with concurrency: if one operation is in progress, subsequent operations return null
             const [firstResult, secondResult] = await Promise.all([
                 router.back(), // First operation, should succeed
                 router.back() // Second operation, returns null due to first one in progress
             ]);
 
-            // First operation succeeds, second returns null (due to first in progress)
             expect(firstResult?.status).toBe(RouteStatus.success);
             expect(secondResult).toBe(null);
             expect(router.route.path).toBe('/about'); // First operation result
@@ -168,16 +165,13 @@ describe('Router.back Tests', () => {
             await router.push('/about');
             await router.push('/user/123');
 
-            // Reset spy count, focus only on back operation updates
             updateSpy.mockClear();
 
-            // Back operations with concurrency: second operation returns null directly
             const [firstResult, secondResult] = await Promise.all([
                 router.back(), // First operation succeeds
                 router.back() // Second operation returns null
             ]);
 
-            // Verify first succeeds, second returns null
             expect(firstResult?.status).toBe(RouteStatus.success);
             expect(secondResult).toBe(null);
 
@@ -212,7 +206,6 @@ describe('Router.back Tests', () => {
 
     describe('⚡ Async Components & Back', () => {
         test('back to async component route should wait for component loading', async () => {
-            // First visit async route to establish history
             await router.push('/async');
             await router.push('/about');
 
@@ -225,21 +218,18 @@ describe('Router.back Tests', () => {
         });
 
         test('back to failed async component route should handle error correctly', async () => {
-            // First visit failing async route
             const errorRoute = await router.push('/async-error');
             expect(errorRoute.status).toBe(RouteStatus.error);
 
             await router.push('/about');
 
             const route = await router.back(); // Back to /async-error
-            // Back operations typically return the cached route state
             expect(route?.status).toBe(RouteStatus.success);
         });
     });
 
     describe('🛡️ Back Guard Behavior', () => {
         test('back to guard-blocked route should return aborted status', async () => {
-            // First establish history, but blocked routes don't enter history
             const blockedRoute = await router.push('/user/blocked');
             expect(blockedRoute.status).toBe(RouteStatus.aborted);
 
@@ -310,7 +300,6 @@ describe('Router.back Tests', () => {
             await router.push('/about');
             await router.push('/user/123');
 
-            // Verify back operation doesn't create new history entries:
             // forward after back should be able to return to original position
             await router.back(); // Back to /about
             expect(router.route.path).toBe('/about');
@@ -323,7 +312,6 @@ describe('Router.back Tests', () => {
 
     describe('❌ Error Handling', () => {
         test('back to non-existent route should trigger location handling', async () => {
-            // First visit non-existent route to establish history
             const nonExistentRoute = await router.push('/non-existent');
             expect(nonExistentRoute.path).toBe('/non-existent');
             expect(nonExistentRoute.matched).toHaveLength(0);
@@ -332,10 +320,8 @@ describe('Router.back Tests', () => {
 
             const route = await router.back();
 
-            // Back operation should trigger location handler for the non-existent route
             expect(executionLog).toContain('location-handler-/non-existent');
 
-            // Route status should be successful
             expect(route?.status).toBe(RouteStatus.success);
         });
 
@@ -406,7 +392,6 @@ describe('Router.back Tests', () => {
 
             await testRouter.replace('/about');
 
-            // Try out-of-bounds back operation
             const route = await testRouter.back();
 
             expect(route).toBe(null);
@@ -450,7 +435,6 @@ describe('Router.back Tests', () => {
         });
 
         test('should return null directly when Navigation returns null', async () => {
-            // Create a situation that returns null
             const testRouter = new Router({
                 mode: RouterMode.memory,
                 base: new URL('http://localhost:3000/'),
@@ -462,7 +446,6 @@ describe('Router.back Tests', () => {
 
             await testRouter.replace('/about');
 
-            // Try out-of-bounds navigation
             const route = await testRouter.back();
 
             expect(route).toBe(null);

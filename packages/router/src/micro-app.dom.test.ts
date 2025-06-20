@@ -15,7 +15,6 @@ import type {
 } from './types';
 import { RouteType, RouterMode } from './types';
 
-// Create a mock route configuration
 const createMockParsedConfig = (
     app?: string | RouterMicroAppCallback
 ): RouteParsedConfig => ({
@@ -28,7 +27,6 @@ const createMockParsedConfig = (
     app
 });
 
-// Create a mock Router object
 const createMockRouter = (
     overrides: {
         root?: string | HTMLElement;
@@ -37,7 +35,6 @@ const createMockRouter = (
         parsedOptions?: Partial<RouterParsedOptions>;
     } = {}
 ): Router => {
-    // Create base router options
     const baseOptions: RouterOptions = {
         root: overrides.root || '#test-router',
         context: {},
@@ -53,13 +50,11 @@ const createMockRouter = (
         onClose: () => {}
     };
 
-    // Create parsed options, modifying the matcher if custom results are needed
     const mockParsedOptions = {
         ...parsedOptions(baseOptions),
         ...overrides.parsedOptions
     };
 
-    // If custom match results are needed, create a custom matcher
     if (overrides.matched) {
         const customMatched = overrides.matched.map((item) =>
             createMockParsedConfig(item.app || 'test-app')
@@ -71,7 +66,6 @@ const createMockRouter = (
         });
     }
 
-    // Create a route object using the real Route constructor
     const mockRoute = new Route({
         options: mockParsedOptions,
         toType: RouteType.push,
@@ -86,7 +80,6 @@ const createMockRouter = (
     } as Router;
 };
 
-// Create a mock micro-application
 const createMockApp = (): RouterMicroAppOptions => ({
     mount: vi.fn(),
     unmount: vi.fn(),
@@ -122,7 +115,6 @@ describe('resolveRootElement', () => {
         });
 
         it('should correctly handle a string selector', () => {
-            // Create an existing element
             const existingElement = document.createElement('div');
             existingElement.id = 'existing-element';
             document.body.appendChild(existingElement);
@@ -159,7 +151,6 @@ describe('resolveRootElement', () => {
         });
 
         it('should handle class selectors', () => {
-            // Create an element with a class name
             const element = document.createElement('div');
             element.className = 'app-container';
             document.body.appendChild(element);
@@ -170,7 +161,6 @@ describe('resolveRootElement', () => {
         });
 
         it('should handle attribute selectors', () => {
-            // Create an element with an attribute
             const element = document.createElement('div');
             element.setAttribute('data-app', 'main');
             document.body.appendChild(element);
@@ -181,7 +171,6 @@ describe('resolveRootElement', () => {
         });
 
         it('should handle tag selectors', () => {
-            // Create a main tag
             const element = document.createElement('main');
             document.body.appendChild(element);
 
@@ -193,7 +182,6 @@ describe('resolveRootElement', () => {
 
     describe('Edge case tests', () => {
         it('should handle complex selectors', () => {
-            // Create a complex structure
             const container = document.createElement('div');
             container.className = 'container';
             const app = document.createElement('div');
@@ -207,7 +195,6 @@ describe('resolveRootElement', () => {
         });
 
         it('should return the first matching element', () => {
-            // Create multiple elements with the same class name
             const element1 = document.createElement('div');
             element1.className = 'multiple';
             element1.textContent = 'first';
@@ -243,7 +230,6 @@ describe('resolveRootElement', () => {
 
     describe('Type safety tests', () => {
         it('should return any type of element found', () => {
-            // Create an SVG element (which is not an HTMLElement)
             const svg = document.createElementNS(
                 'http://www.w3.org/2000/svg',
                 'svg'
@@ -253,7 +239,6 @@ describe('resolveRootElement', () => {
 
             const result = resolveRootElement('#svg-element');
 
-            // The function returns the SVGElement it finds.
             expect(result).toBe(svg);
             expect(result).toBeInstanceOf(SVGElement);
         });
@@ -374,11 +359,9 @@ describe('MicroApp', () => {
                 options: { apps: { 'test-app': mockFactory } }
             });
 
-            // First update
             microApp._update(router);
             expect(mockFactory).toHaveBeenCalledTimes(1);
 
-            // Second update, should be skipped
             microApp._update(router);
             expect(mockFactory).toHaveBeenCalledTimes(1);
         });
@@ -390,7 +373,6 @@ describe('MicroApp', () => {
                 options: { apps: { 'test-app': mockFactory } }
             });
 
-            // First update
             microApp._update(router);
             expect(mockFactory).toHaveBeenCalledTimes(1);
 
@@ -423,16 +405,13 @@ describe('MicroApp', () => {
 
             microApp._update(router);
 
-            // Verify a new div element was created
             expect(microApp.root).toBeInstanceOf(HTMLElement);
             expect(microApp.root!.tagName).toBe('DIV');
             expect(mockApp.mount).toHaveBeenCalledWith(microApp.root);
-            // Verify the element was added to the body
             expect(document.body.contains(microApp.root!)).toBe(true);
         });
 
         it('should use an existing root element', () => {
-            // Create an existing element
             const existingElement = document.createElement('div');
             existingElement.id = 'test-router';
             document.body.appendChild(existingElement);
@@ -497,7 +476,6 @@ describe('MicroApp', () => {
             const oldFactory = vi.fn().mockReturnValue(oldApp);
             const newFactory = vi.fn().mockReturnValue(newApp);
 
-            // First update
             const router1 = createMockRouter({
                 matched: [{ app: 'old-app' }],
                 options: { apps: { 'old-app': oldFactory } }
@@ -507,7 +485,6 @@ describe('MicroApp', () => {
             expect(microApp.app).toBe(oldApp);
             expect(oldApp.unmount).not.toHaveBeenCalled();
 
-            // Second update, should unmount the old app
             const router2 = createMockRouter({
                 matched: [{ app: 'new-app' }],
                 options: { apps: { 'new-app': newFactory } }
@@ -529,12 +506,10 @@ describe('MicroApp', () => {
 
             microApp._update(router);
 
-            // Verify the element was added to the body
             expect(document.body.contains(microApp.root!)).toBe(true);
         });
 
         it('should not re-append an element already in the DOM', () => {
-            // Create an element already in the body
             const existingElement = document.createElement('div');
             existingElement.id = 'test-router';
             document.body.appendChild(existingElement);
@@ -553,13 +528,11 @@ describe('MicroApp', () => {
 
             microApp._update(router);
 
-            // Verify that no new element was added
             expect(document.body.children.length).toBe(initialChildCount);
             expect(microApp.root).toBe(existingElement);
         });
 
         it('should handle the case where the factory function is null', () => {
-            // Create a route without a factory function
             const router = createMockRouter({
                 matched: [],
                 options: { apps: {} }
@@ -683,7 +656,6 @@ describe('MicroApp', () => {
 
             microApp._update(router);
 
-            // When rootStyle is false, no additional styles should be set
             expect(microApp.root!.style.cssText).toBe('');
         });
     });

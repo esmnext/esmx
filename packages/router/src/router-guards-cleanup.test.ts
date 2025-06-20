@@ -44,14 +44,12 @@ describe('Router Guards Cleanup Tests', () => {
                 const spy = vi.fn();
                 const unregister = router.beforeEach(spy);
 
-                // First navigation, guard should execute
                 await router.push('/test1');
                 expect(spy).toHaveBeenCalledTimes(1);
 
                 // Cleanup guard
                 unregister();
 
-                // Second navigation, guard should not execute
                 await router.push('/test2');
                 expect(spy).toHaveBeenCalledTimes(1); // Still 1 time, no increase
             });
@@ -65,7 +63,6 @@ describe('Router Guards Cleanup Tests', () => {
 
                 unregister();
 
-                // Multiple navigations, guard should not execute
                 await router.push('/test2');
                 await router.push('/test3');
                 await router.push('/');
@@ -133,16 +130,13 @@ describe('Router Guards Cleanup Tests', () => {
                 const unregister2 = router.beforeEach(spy2);
                 const unregister3 = router.beforeEach(spy3);
 
-                // First navigation, all guards should execute
                 await router.push('/test1');
                 expect(spy1).toHaveBeenCalledTimes(1);
                 expect(spy2).toHaveBeenCalledTimes(1);
                 expect(spy3).toHaveBeenCalledTimes(1);
 
-                // Only cleanup second guard
                 unregister2();
 
-                // Second navigation, only second guard should not execute
                 await router.push('/test2');
                 expect(spy1).toHaveBeenCalledTimes(2);
                 expect(spy2).toHaveBeenCalledTimes(1); // No increase
@@ -165,7 +159,6 @@ describe('Router Guards Cleanup Tests', () => {
                 const unregister4 = router.beforeEach(spy4);
 
                 await router.push('/test1');
-                // Verify all guards were called
                 expect(spy1).toHaveBeenCalledTimes(1);
                 expect(spy2).toHaveBeenCalledTimes(1);
                 expect(spy3).toHaveBeenCalledTimes(1);
@@ -175,7 +168,6 @@ describe('Router Guards Cleanup Tests', () => {
                 unregister1();
                 unregister3();
 
-                // Reset counters
                 spy1.mockClear();
                 spy2.mockClear();
                 spy3.mockClear();
@@ -286,7 +278,6 @@ describe('Router Guards Cleanup Tests', () => {
                 expect(beforeSpy).toHaveBeenCalledTimes(1);
                 expect(afterSpy).toHaveBeenCalledTimes(1);
 
-                // Only cleanup beforeEach
                 unregisterBefore();
 
                 await router.push('/test2');
@@ -309,7 +300,6 @@ describe('Router Guards Cleanup Tests', () => {
                 const spy = vi.fn();
                 const unregister = router.beforeEach(spy);
 
-                // Multiple cleanup function calls should not throw exceptions
                 expect(() => {
                     unregister();
                     unregister();
@@ -324,7 +314,6 @@ describe('Router Guards Cleanup Tests', () => {
                 await router.push('/test1');
                 expect(spy).toHaveBeenCalledTimes(1);
 
-                // Multiple cleanups
                 unregister();
                 unregister();
                 unregister();
@@ -355,7 +344,6 @@ describe('Router Guards Cleanup Tests', () => {
             test('re-registration after cleanup should work normally', async () => {
                 const spy = vi.fn();
 
-                // First registration and navigation
                 let unregister = router.beforeEach(spy);
                 await router.push('/test1');
                 expect(spy).toHaveBeenCalledTimes(1);
@@ -491,13 +479,11 @@ describe('Router Guards Cleanup Tests', () => {
                     unregisters.push(unregister);
                 }
 
-                // Verify guard array length
                 expect(router.transition.guards.beforeEach).toHaveLength(100);
 
                 // Cleanup all guards
                 unregisters.forEach((unregister) => unregister());
 
-                // Verify internal array is cleared
                 expect(router.transition.guards.beforeEach).toHaveLength(0);
             });
 
@@ -587,7 +573,6 @@ describe('Router Guards Cleanup Tests', () => {
             // Destroy router
             router.destroy();
 
-            // Create new router for testing
             const newRouter = new Router({
                 mode: RouterMode.memory,
                 base: new URL('http://localhost:3000/'),

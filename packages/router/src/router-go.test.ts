@@ -3,8 +3,6 @@ import { Router } from './router';
 import { RouteStatus, RouteType, RouterMode } from './types';
 import type { Route } from './types';
 
-// Create type-safe interfaces for testing
-
 describe('Router.go Tests', () => {
     let router: Router;
     let executionLog: string[];
@@ -113,12 +111,10 @@ describe('Router.go Tests', () => {
         test('should return null when going beyond history boundaries', async () => {
             await router.push('/about');
 
-            // Try to go back beyond boundary
             const route1 = await router.go(-10);
             expect(route1).toBe(null);
             expect(router.route.path).toBe('/about'); // Router state unchanged
 
-            // Try to go forward beyond boundary
             const route2 = await router.go(10);
             expect(route2).toBe(null);
             expect(router.route.path).toBe('/about'); // Router state unchanged
@@ -158,7 +154,6 @@ describe('Router.go Tests', () => {
                 router.go(-2) // Second operation, should return null due to first one in progress
             ]);
 
-            // First operation succeeds, second operation returns null (because first one is in progress)
             expect(firstResult?.status).toBe(RouteStatus.success);
             expect(secondResult).toBe(null);
             expect(router.route.path).toBe('/about'); // Result of first operation
@@ -169,7 +164,6 @@ describe('Router.go Tests', () => {
 
             await router.push('/about');
 
-            // Reset spy count, only focus on go operation updates
             updateSpy.mockClear();
 
             // Go operations don't have cancellation logic, second operation will return null directly
@@ -178,7 +172,6 @@ describe('Router.go Tests', () => {
                 router.go(-1) // Second operation returns null
             ]);
 
-            // Verify first succeeds, second returns null
             expect(firstResult?.status).toBe(RouteStatus.success);
             expect(secondResult).toBe(null);
 
@@ -213,7 +206,6 @@ describe('Router.go Tests', () => {
 
     describe('⚡ Async Components with Go', () => {
         test('go to async component route should wait for component loading', async () => {
-            // First visit async route to build history
             await router.push('/async');
             await router.push('/about');
 
@@ -231,9 +223,7 @@ describe('Router.go Tests', () => {
 
         test('go to failed async component route should return error status', async () => {
             // Go operation back to routes in history usually doesn't re-execute async component loading
-            // but uses cached state, so this test expectation might be incorrect
 
-            // First visit failing async route
             const errorRoute = await router.push('/async-error');
             expect(errorRoute.status).toBe(RouteStatus.error);
 
@@ -247,7 +237,6 @@ describe('Router.go Tests', () => {
 
     describe('🛡️ Go Guard Behavior', () => {
         test('go to route blocked by guard should return aborted status', async () => {
-            // First build history, but blocked routes actually don't enter history
             const blockedRoute = await router.push('/user/blocked');
             expect(blockedRoute.status).toBe(RouteStatus.aborted);
 
@@ -303,12 +292,10 @@ describe('Router.go Tests', () => {
             await router.push('/about');
             await router.push('/user/123');
 
-            // Back to /about
             const route1 = await router.go(-1);
             expect(route1?.path).toBe('/about');
             expect(router.route.path).toBe('/about');
 
-            // Forward to /user/123
             const route2 = await router.go(1);
             expect(route2?.path).toBe('/user/123');
             expect(router.route.path).toBe('/user/123');
@@ -318,8 +305,6 @@ describe('Router.go Tests', () => {
             await router.push('/about');
             await router.push('/user/123');
 
-            // Verify that go operations don't create new history entries:
-            // 1. After go(-1) then go(1) should return to original position
             await router.go(-1); // Back to /about
             expect(router.route.path).toBe('/about');
 
@@ -331,7 +316,6 @@ describe('Router.go Tests', () => {
 
     describe('❌ Error Handling', () => {
         test('go to non-existent route should trigger location handling', async () => {
-            // First visit non-existent route to build history
             const nonExistentRoute = await router.push('/non-existent');
             expect(nonExistentRoute.path).toBe('/non-existent');
             expect(nonExistentRoute.matched).toHaveLength(0);
@@ -344,7 +328,6 @@ describe('Router.go Tests', () => {
             // but should ensure location handler was called
             expect(executionLog).toContain('location-handler-/non-existent');
 
-            // Route status should be successful, even if path might be different
             expect(route?.status).toBe(RouteStatus.success);
         });
 
@@ -552,7 +535,6 @@ describe('Router.go Tests', () => {
 
             await testRouter.replace('/about');
 
-            // Try to go back beyond boundary
             const route = await testRouter.go(-10);
 
             expect(route).toBe(null);
@@ -576,7 +558,6 @@ describe('Router.go Tests', () => {
 
             await testRouter.replace('/about');
 
-            // Try to go forward beyond boundary
             const route = await testRouter.go(10);
 
             expect(route).toBe(null);
@@ -645,7 +626,6 @@ describe('Router.go Tests', () => {
         test('should return null directly when Navigation returns null', async () => {
             await router.push('/about');
 
-            // Try navigation beyond boundary
             const route = await router.go(-10);
 
             expect(route).toBe(null);

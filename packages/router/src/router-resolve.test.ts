@@ -3,7 +3,6 @@ import { Router } from './router';
 import { RouteStatus, RouteType, RouterMode } from './types';
 import type { Route, RouteConfig } from './types';
 
-// Test data factory functions
 const createTestRouter = (): Router => {
     return new Router({
         mode: RouterMode.memory,
@@ -116,7 +115,6 @@ describe('Router.resolve method tests', () => {
             router.resolve('/user/123');
             router.resolve('/admin/users');
 
-            // Current route should remain unchanged
             expect(router.route.path).toBe(originalPath);
         });
 
@@ -232,7 +230,6 @@ describe('Router.resolve method tests', () => {
 
             expect(route.config?.meta?.section).toBe('settings');
             expect(route.meta.section).toBe('settings');
-            // Should be child route meta, not parent route meta
             expect(route.meta.title).toBeUndefined();
         });
     });
@@ -249,13 +246,11 @@ describe('Router.resolve method tests', () => {
             const route: Route = router.resolve('/user/123/profile');
 
             expect(route.meta.section).toBe('profile');
-            // Should be child route meta, not including parent route meta
             expect(route.meta.title).toBeUndefined();
             expect(route.meta.requiresAuth).toBeUndefined();
         });
 
         test('should return empty object when no meta information exists', () => {
-            // Create router with route that has no meta
             const testRouter: Router = new Router({
                 mode: RouterMode.memory,
                 base: new URL('http://localhost:3000/'),
@@ -387,7 +382,6 @@ describe('Router.resolve method tests', () => {
         test('should correctly handle different domain URL', () => {
             const route: Route = router.resolve('https://example.com/external');
 
-            // External URL should not match routes
             expect(route.matched).toEqual([]);
             expect(route.config).toBeNull();
         });
@@ -395,7 +389,6 @@ describe('Router.resolve method tests', () => {
         test('should correctly handle URL with different port', () => {
             const route: Route = router.resolve('http://localhost:8080/about');
 
-            // Different port should be treated as external URL
             expect(route.matched).toEqual([]);
             expect(route.config).toBeNull();
         });

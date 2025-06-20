@@ -63,7 +63,6 @@ describe('createRouteTask', () => {
             toInput: '/home'
         });
 
-        // Use a real execution order tracker.
         const executionOrder: string[] = [];
 
         const firstTask = async (route: Route, fromRoute: Route | null) => {
@@ -154,7 +153,6 @@ describe('createRouteTask', () => {
 
         // Real blocking task.
         const blockingTask = async (route: Route, fromRoute: Route | null) => {
-            // Simulate a failed condition check.
             const shouldProceed = false;
             return shouldProceed ? void 0 : false; // Return false to prevent navigation.
         };
@@ -192,7 +190,6 @@ describe('createRouteTask', () => {
 
         // Real redirection task function.
         const redirectTask = async (route: Route, fromRoute: Route | null) => {
-            // Only redirect to /redirected from /test to avoid infinite loops.
             if (route.path === '/test') {
                 return '/redirected';
             }
@@ -214,7 +211,6 @@ describe('createRouteTask', () => {
             options
         });
 
-        // Verify that the returned object is the redirected route.
         expect(result).not.toBe(to);
         expect(result.path).toBe('/redirected');
         expect(result.type).toBe(RouteType.push);
@@ -258,7 +254,6 @@ describe('createRouteTask', () => {
             options
         });
 
-        // Verify that the returned object is the redirected route.
         expect(result).not.toBe(to);
         expect(result.path).toBe('/redirected');
         expect(result.query.source).toBe('test');
@@ -279,9 +274,7 @@ describe('createRouteTask', () => {
             toInput: '/home'
         });
 
-        // Simulate real logic for permission checks.
         const authCheckTask = async (route: Route, fromRoute: Route | null) => {
-            // Simulate a user not being logged in.
             const isAuthenticated = false;
 
             if (route.path === '/admin' && !isAuthenticated) {
@@ -307,7 +300,6 @@ describe('createRouteTask', () => {
             options
         });
 
-        // Verify that unauthenticated users are redirected to the login page.
         expect(result).not.toBe(to);
         expect(result.path).toBe('/login');
         expect(result.status).toBe(RouteStatus.error); // No handler function obtained after redirection, marked as failed.
@@ -335,7 +327,6 @@ describe('createRouteTask', () => {
             throw new Error('Task failed');
         };
 
-        // This task should not be executed.
         const secondTask = async (route: Route, fromRoute: Route | null) => {
             return;
         };
@@ -867,7 +858,6 @@ describe('Task cancellation with RouteTaskController', () => {
             controller
         });
 
-        // Should return the redirected route, with the controller passed to the redirected task.
         expect(result).not.toBe(to);
         expect(result.path).toBe('/redirected');
         expect(result.status).toBe(RouteStatus.error); // No handler function obtained after redirection, marked as failed.

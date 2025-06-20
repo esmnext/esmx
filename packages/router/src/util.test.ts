@@ -229,7 +229,6 @@ describe('isPlainObject', () => {
     });
 
     test('should distinguish between objects and boxed primitives', () => {
-        // Ensure boxed objects are correctly identified as non-objects
         expect(isPlainObject(Object(42))).toBe(false); // Equivalent to new Number(42)
         expect(isPlainObject(Object('str'))).toBe(false); // Equivalent to new String('str')
         expect(isPlainObject(Object(true))).toBe(false); // Equivalent to new Boolean(true)
@@ -246,7 +245,6 @@ describe('isNonEmptyPlainObject', () => {
             isNonEmptyPlainObject({ toString: () => '[object CustomObject]' })
         ).toBe(true);
 
-        // Different ways of creating objects
         const obj = new Object() as any;
         obj.prop = 'value';
         expect(isNonEmptyPlainObject(obj)).toBe(true);
@@ -325,7 +323,6 @@ describe('isNonEmptyPlainObject', () => {
         const childObj = Object.create(parentObj);
         expect(isNonEmptyPlainObject(childObj)).toBe(false);
 
-        // Should return true after adding own properties
         childObj.ownProp = 'own';
         expect(isNonEmptyPlainObject(childObj)).toBe(true);
     });
@@ -407,17 +404,14 @@ describe('removeFromArray', () => {
         removeFromArray(emptyArr, 1);
         expect(emptyArr).toEqual([]);
 
-        // Single-element array - remove existing element
         const singleArr = [42];
         removeFromArray(singleArr, 42);
         expect(singleArr).toEqual([]);
 
-        // Single-element array - remove non-existing element
         const singleArr2 = [42];
         removeFromArray(singleArr2, 99);
         expect(singleArr2).toEqual([42]);
 
-        // All elements are the same
         const sameArr = [5, 5, 5, 5];
         removeFromArray(sameArr, 5);
         expect(sameArr).toEqual([5, 5, 5]);
@@ -474,7 +468,6 @@ describe('removeFromArray', () => {
         removeFromArray(mixedArr, 1);
         expect(mixedArr).toEqual(['1', true, 1n, expect.any(Symbol)]);
 
-        // Reset array
         mixedArr = [1, '1', true, 1n, Symbol('test')];
 
         // Remove string '1'
@@ -499,7 +492,6 @@ describe('removeFromArray', () => {
 
         const originalLength = mixedArray.length;
 
-        // Try to delete non-existing element
         removeFromArray(mixedArray, 'nonexistent');
         expect(mixedArray).toHaveLength(originalLength);
 
@@ -510,18 +502,15 @@ describe('removeFromArray', () => {
     });
 
     test('should preserve array structure', () => {
-        // Ensure other array properties remain unchanged
         const arr: any[] = [1, 2, 3];
         (arr as any).customProperty = 'test';
 
         removeFromArray(arr, 2);
 
-        // Check array elements
         expect(arr.length).toBe(2);
         expect(arr[0]).toBe(1);
         expect(arr[1]).toBe(3);
 
-        // Check if custom properties are preserved
         expect(arr).toHaveProperty('customProperty', 'test');
         expect((arr as any).customProperty).toBe('test');
     });
@@ -551,7 +540,6 @@ describe('removeFromArray', () => {
         const obj2 = { id: 1 }; // Same content but different reference
         const arr = [obj1, obj2];
 
-        // Only delete objects with same reference
         removeFromArray(arr, obj1);
         expect(arr).toHaveLength(1);
         expect(arr[0]).toBe(obj2);
@@ -659,8 +647,6 @@ describe('isValidConfirmHookResult', () => {
     });
 
     test('should handle edge cases for confirmation hook results', () => {
-        // Test various boundary cases
-
         // Promise related - should return false
         expect(isValidConfirmHookResult(Promise.resolve(true))).toBe(false);
 
@@ -751,7 +737,6 @@ describe('isValidConfirmHookResult', () => {
     });
 });
 
-// Performance and stress tests
 describe('Performance Tests', () => {
     test('should handle large arrays efficiently in removeFromArray', () => {
         const largeArray = Array.from({ length: 10000 }, (_, i) => i);
@@ -826,7 +811,6 @@ describe('isUrlEqual', () => {
         // Test omitting second parameter (automatically undefined)
         expect(isUrlEqual(url1)).toBe(false);
 
-        // Test various URL comparisons with null/undefined
         const urlWithQuery = new URL('https://example.com/path?a=1&b=2');
         expect(isUrlEqual(urlWithQuery, null)).toBe(false);
         expect(isUrlEqual(urlWithQuery, undefined)).toBe(false);
@@ -914,7 +898,6 @@ describe('isUrlEqual', () => {
     });
 
     test('should handle complex query parameter scenarios', () => {
-        // Multiple duplicate parameters, different order
         const url1 = new URL(
             'https://example.com/path?tag=red&tag=blue&category=tech&tag=green'
         );
@@ -924,7 +907,6 @@ describe('isUrlEqual', () => {
         // query `tag` one is green and one is red, so they are different
         expect(isUrlEqual(url1, url2)).toBe(false);
 
-        // Parameter values contain special characters
         const url3 = new URL(
             'https://example.com/path?search=hello%20world&filter=a%26b'
         );
@@ -1038,7 +1020,6 @@ describe('isUrlEqual', () => {
     });
 
     test('should handle complex real-world scenarios', () => {
-        // Simulate real-world URL comparison scenarios
         const baseUrl = 'https://api.example.com/v1/users';
 
         // Pagination and filter parameters

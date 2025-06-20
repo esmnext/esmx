@@ -26,7 +26,6 @@ describe('Route-Level Navigation Guards', () => {
                     component: () => 'Protected',
                     beforeEnter: async (to, from) => {
                         executionLog.push('beforeEnter-protected');
-                        // Simulate permission check.
                         if (to.query.token !== 'valid') {
                             return '/login';
                         }
@@ -81,7 +80,6 @@ describe('Route-Level Navigation Guards', () => {
                         if (to.path === '/confirm-leave') {
                             return;
                         }
-                        // Simulate unsaved form confirmation.
                         if (from?.query.unsaved === 'true') {
                             return '/confirm-leave';
                         }
@@ -132,7 +130,6 @@ describe('Route-Level Navigation Guards', () => {
             const initialPath = router.route.path;
             const route = await router.push('/blocked');
 
-            // Navigation should be blocked, current route remains unchanged.
             expect(router.route.path).toBe(initialPath);
             expect(route.status).toBe('aborted');
             expect(executionLog).toEqual(['beforeEnter-blocked']);
@@ -141,36 +138,28 @@ describe('Route-Level Navigation Guards', () => {
 
     describe('beforeUpdate guard', () => {
         test('should execute beforeUpdate when parameters change on the same route', async () => {
-            // First, navigate to the user page.
             await router.push('/user/123');
             expect(executionLog).toEqual(['beforeEnter-user-123']);
 
-            // Clear execution log.
             executionLog.length = 0;
 
-            // Change parameter, should trigger beforeUpdate.
             const route = await router.push('/user/456');
 
             expect(route.path).toBe('/user/456');
             expect(route.params.id).toBe('456');
             expect(router.route.path).toBe('/user/456');
             expect(executionLog).toEqual(['beforeUpdate-user-123-to-456']);
-            // beforeEnter should not be executed when beforeUpdate is.
             expect(executionLog).not.toContain('beforeEnter-user-456');
         });
 
         test('should abort navigation when beforeUpdate returns false', async () => {
-            // First, navigate to the user page.
             await router.push('/user/123');
             expect(router.route.params.id).toBe('123');
 
-            // Clear execution log.
             executionLog.length = 0;
 
-            // Attempt to navigate to a forbidden parameter.
             const route = await router.push('/user/forbidden');
 
-            // Navigation should be blocked, current route remains unchanged.
             expect(router.route.params.id).toBe('123');
             expect(route.status).toBe('aborted');
             expect(executionLog).toEqual([
@@ -179,13 +168,10 @@ describe('Route-Level Navigation Guards', () => {
         });
 
         test('should execute beforeUpdate when query parameters change', async () => {
-            // First, navigate to the user page.
             await router.push('/user/123');
 
-            // Clear execution log.
             executionLog.length = 0;
 
-            // Only change query parameter, should trigger beforeUpdate.
             const route = await router.push('/user/123?tab=profile');
 
             expect(route.params.id).toBe('123');
@@ -194,10 +180,8 @@ describe('Route-Level Navigation Guards', () => {
         });
 
         test('should not execute beforeUpdate when switching to a different route', async () => {
-            // First, navigate to the user page.
             await router.push('/user/123');
 
-            // Clear execution log.
             executionLog.length = 0;
 
             // Switch to a different route.
@@ -211,10 +195,8 @@ describe('Route-Level Navigation Guards', () => {
 
     describe('beforeLeave guard', () => {
         test('should execute beforeLeave guard when leaving a route', async () => {
-            // First, navigate to the user page.
             await router.push('/user/123');
 
-            // Clear execution log.
             executionLog.length = 0;
 
             // Leave the user page.
@@ -224,13 +206,10 @@ describe('Route-Level Navigation Guards', () => {
         });
 
         test('should abort navigation when beforeLeave returns false', async () => {
-            // First, navigate to user page and set query parameter to prevent leaving.
             await router.push('/user/123?prevent=true');
 
-            // Clear execution log.
             executionLog.length = 0;
 
-            // Attempt to leave, should be blocked.
             const route = await router.push('/settings');
 
             expect(router.route.path).toBe('/user/123');
@@ -239,21 +218,15 @@ describe('Route-Level Navigation Guards', () => {
         });
 
         test('should redirect when beforeLeave returns a redirect path', async () => {
-            // First, navigate to settings page and set unsaved state.
             await router.push('/settings?unsaved=true');
 
-            // Clear execution log.
             executionLog.length = 0;
 
-            // Attempt to leave, should be redirected to confirmation page.
             const route = await router.push('/user/123');
 
             expect(route.path).toBe('/confirm-leave');
             expect(router.route.path).toBe('/confirm-leave');
             // Redirect scenario: beforeLeave-settings is executed first, and the new navigation to /confirm-leave is triggered.
-            // The `from` for this new navigation is `/settings?unsaved=true` and `to` is `/confirm-leave`.
-            // The original navigation to `/user/123` is aborted and a new one started.
-            // The `beforeLeave` on the original `from` is executed again for the new navigation.
             expect(executionLog).toEqual([
                 'beforeLeave-settings',
                 'beforeLeave-user-123'
@@ -261,13 +234,10 @@ describe('Route-Level Navigation Guards', () => {
         });
 
         test('should not execute beforeLeave when updating parameters on the same route', async () => {
-            // First, navigate to the user page.
             await router.push('/user/123');
 
-            // Clear execution log.
             executionLog.length = 0;
 
-            // Change parameter within the same route, should not trigger beforeLeave.
             await router.push('/user/456');
 
             expect(executionLog).toEqual(['beforeUpdate-user-123-to-456']);
@@ -277,22 +247,18 @@ describe('Route-Level Navigation Guards', () => {
 
     describe('Guard execution order and comprehensive scenarios', () => {
         test('should execute all relevant guards in the correct order', async () => {
-            // Add a global guard to test execution order.
             router.beforeEach(async (to, from) => {
                 executionLog.push(`global-beforeEach-${to.path}`);
             });
 
-            // First, navigate to the user page.
             await router.push('/user/123');
             expect(executionLog).toEqual([
                 'global-beforeEach-/user/123',
                 'beforeEnter-user-123'
             ]);
 
-            // Clear execution log.
             executionLog.length = 0;
 
-            // Switch to another user, test the complete guard chain.
             await router.push('/user/456');
 
             expect(executionLog).toEqual([
@@ -337,14 +303,12 @@ describe('Route-Level Navigation Guards', () => {
             // Navigate to the user page.
             await router.push('/user/123');
 
-            // Clear execution log.
             executionLog.length = 0;
 
             // Navigate to the protected page.
             const route = await router.push('/protected?token=valid');
 
             expect(route.path).toBe('/protected');
-            // beforeLeave should execute before beforeEnter.
             expect(executionLog).toEqual([
                 'beforeLeave-user-123',
                 'beforeEnter-protected'
@@ -354,7 +318,6 @@ describe('Route-Level Navigation Guards', () => {
 
     describe('Initial navigation scenario', () => {
         test('should execute guards according to Vue Router behavior on initial navigation', async () => {
-            // Create a new router instance to simulate application startup.
             const newRouter = new Router({
                 mode: RouterMode.memory,
                 base: new URL('http://localhost:3000/'),
@@ -387,16 +350,13 @@ describe('Route-Level Navigation Guards', () => {
                 ]
             });
 
-            // Clear execution log.
             executionLog.length = 0;
 
-            // First navigation to user page (from is null).
             const route = await newRouter.replace('/user/123');
 
             expect(route.path).toBe('/user/123');
             expect(route.params.id).toBe('123');
 
-            // Verify guard execution behavior: only beforeEnter should execute, no other guards.
             expect(executionLog).toEqual([
                 'init-beforeEnter-user-123-from-null'
             ]);
@@ -514,7 +474,6 @@ describe('Nested route guard behavior tests', () => {
         // Navigate to a deeply nested route.
         await router.push('/user/123/profile');
 
-        // Should execute beforeEnter in order from parent to child.
         expect(executionLog).toEqual([
             'parent-beforeEnter',
             'child-beforeEnter',
@@ -523,14 +482,12 @@ describe('Nested route guard behavior tests', () => {
     });
 
     test('should execute beforeLeave from child to parent when leaving a nested route', async () => {
-        // First, navigate to a deeply nested route.
         await router.push('/user/123/profile');
         executionLog = []; // Clear log.
 
         // Leave to a completely different route.
         await router.push('/home');
 
-        // Should execute beforeLeave in order from child to parent.
         expect(executionLog).toEqual([
             'grandchild-beforeLeave',
             'child-beforeLeave',
@@ -546,7 +503,6 @@ describe('Nested route guard behavior tests', () => {
         // Switch between child routes.
         await router.push('/user/123/settings');
 
-        // Note: '/user/123/profile' matches /user + :id + profile (3 levels).
         // '/user/123/settings' matches /user + :id/settings (2 levels).
         // This is not the same route combination, so there will be changes in route levels.
         expect(executionLog).toEqual([
@@ -557,14 +513,12 @@ describe('Nested route guard behavior tests', () => {
     });
 
     test('should only execute beforeEnter for the new route when navigating from parent to child', async () => {
-        // First, navigate to the parent route.
         await router.push('/user');
         executionLog = []; // Clear log.
 
         // Navigate to a child route.
         await router.push('/user/123');
 
-        // Only the child route's beforeEnter should execute; the parent's should not be repeated.
         expect(executionLog).toEqual(['child-beforeEnter']);
     });
 
@@ -576,7 +530,6 @@ describe('Nested route guard behavior tests', () => {
         // Parameters change but route configuration is the same.
         await router.push('/user/456');
 
-        // Should execute beforeUpdate for all matched routes.
         expect(executionLog).toEqual([
             'parent-beforeUpdate',
             'child-beforeUpdate'
@@ -588,7 +541,6 @@ describe('Nested route guard behavior tests', () => {
         await router.push('/user/123/profile');
         executionLog = []; // Clear log.
 
-        // Switch to another completely different deep route.
         await router.push('/admin/users');
 
         // Should first execute beforeLeave for the leaving routes (child to parent),
@@ -612,12 +564,10 @@ describe('Nested route guard behavior tests', () => {
 
         // '/user/123' matches /user + :id (2 levels).
         // '/user/456/profile' matches /user + :id + profile (3 levels).
-        // The :id parameter changes and the 'profile' level is added, so only grandchild-beforeEnter is new.
         expect(executionLog).toEqual(['grandchild-beforeEnter']);
     });
 
     test('Correct behavior for initial navigation to a nested route', async () => {
-        // Create a new router instance to simulate initial navigation.
         const newRouter = new Router({
             mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
@@ -653,10 +603,8 @@ describe('Nested route guard behavior tests', () => {
 
         executionLog = []; // Clear log.
 
-        // First navigation to a nested route (from is null).
         await newRouter.replace('/user/123');
 
-        // Should execute beforeEnter for all routes, but not beforeLeave.
         expect(executionLog).toEqual([
             'parent-beforeEnter-from-null',
             'child-beforeEnter-from-null'
@@ -670,7 +618,6 @@ describe('Nested route guard behavior tests', () => {
         await router.push('/user/123');
         executionLog = []; // Clear log.
 
-        // Only change the hash, path and parameters remain the same.
         await router.push('/user/123#section1');
 
         // A hash change should trigger beforeUpdate because the fullPath has changed.
@@ -795,7 +742,6 @@ describe('Guard chain interruption scenarios', () => {
                             component: () => 'Level2',
                             beforeEnter: (to, from) => {
                                 interruptLog.push('level2-beforeEnter');
-                                // Second level interrupts, third level should not execute.
                                 if (to.query.interrupt === 'true') {
                                     return false;
                                 }
@@ -833,14 +779,11 @@ describe('Guard chain interruption scenarios', () => {
         await interruptRouter.push('/parent/child');
         interruptLog = []; // Clear log.
 
-        // Attempt to navigate to a path that triggers the parent's beforeLeave interruption.
         const result = await interruptRouter.push('/interrupt-parent');
 
-        // Navigation should be aborted by the parent's beforeLeave guard.
         expect(result.status).toBe('aborted');
         expect(interruptRouter.route.path).toBe('/parent/child');
 
-        // Should execute beforeLeave in child-to-parent order, but stop after parent's interruption.
         expect(interruptLog).toEqual([
             'child-beforeLeave',
             'parent-beforeLeave'
@@ -852,12 +795,10 @@ describe('Guard chain interruption scenarios', () => {
         await interruptRouter.push('/parent');
         interruptLog = []; // Clear log.
 
-        // Attempt to navigate to a path that will be interrupted by the child's beforeEnter.
         const result = await interruptRouter.push(
             '/parent/child?blockEnter=true'
         );
 
-        // Navigation should be aborted by the child's beforeEnter.
         expect(result.status).toBe('aborted');
         expect(interruptRouter.route.path).toBe('/parent');
 
@@ -873,12 +814,10 @@ describe('Guard chain interruption scenarios', () => {
         await interruptRouter.push('/parent/child');
         interruptLog = []; // Clear log.
 
-        // Attempt a parameter update that is interrupted by beforeUpdate.
         const result = await interruptRouter.push(
             '/parent/child?blockUpdate=true'
         );
 
-        // Navigation should be aborted by the child's beforeUpdate.
         expect(result.status).toBe('aborted');
         expect(interruptRouter.route.fullPath).toBe('/parent/child');
 
@@ -894,12 +833,10 @@ describe('Guard chain interruption scenarios', () => {
         await interruptRouter.push('/home');
         interruptLog = []; // Clear log.
 
-        // Attempt to navigate to a three-level nested route, but get interrupted at the second level.
         const result = await interruptRouter.push(
             '/multi-level/level2/level3?interrupt=true'
         );
 
-        // Navigation should be aborted by the second level's beforeEnter.
         expect(result.status).toBe('aborted');
         expect(interruptRouter.route.path).toBe('/home');
 
@@ -918,11 +855,9 @@ describe('Guard chain interruption scenarios', () => {
         // Normal navigation to a three-level nested route.
         const result = await interruptRouter.push('/multi-level/level2/level3');
 
-        // Navigation should succeed.
         expect(result.status).toBe('success');
         expect(interruptRouter.route.path).toBe('/multi-level/level2/level3');
 
-        // All beforeEnter guards should execute.
         expect(interruptLog).toEqual([
             'level1-beforeEnter',
             'level2-beforeEnter',
@@ -931,18 +866,15 @@ describe('Guard chain interruption scenarios', () => {
     });
 
     test('Normal guard execution order when leaving a nested route', async () => {
-        // First navigate to a three-level nested route.
         await interruptRouter.push('/multi-level/level2/level3');
         interruptLog = []; // Clear log.
 
         // Leave to the home page.
         const result = await interruptRouter.push('/home');
 
-        // Navigation should succeed.
         expect(result.status).toBe('success');
         expect(interruptRouter.route.path).toBe('/home');
 
-        // All beforeLeave guards should execute in child-to-parent order.
         expect(interruptLog).toEqual([
             'level3-beforeLeave',
             'level2-beforeLeave',
@@ -958,11 +890,9 @@ describe('Guard chain interruption scenarios', () => {
         // Switch to a sibling route at the same level.
         const result = await interruptRouter.push('/parent/sibling');
 
-        // Navigation should succeed.
         expect(result.status).toBe('success');
         expect(interruptRouter.route.path).toBe('/parent/sibling');
 
-        // Only the leaving child's and entering sibling's guards should execute.
         expect(interruptLog).toEqual([
             'child-beforeLeave',
             'sibling-beforeEnter'
@@ -990,7 +920,6 @@ describe('Concurrent navigation scenarios', () => {
                     component: () => 'Slow',
                     beforeEnter: async (to, from) => {
                         concurrentLog.push('slow-beforeEnter-start');
-                        // Simulate a slow async operation.
                         await new Promise((resolve) => setTimeout(resolve, 50));
                         concurrentLog.push('slow-beforeEnter-end');
                     }
@@ -1078,15 +1007,11 @@ describe('Concurrent navigation scenarios', () => {
             fastPromise
         ]);
 
-        // The first navigation should be aborted.
         expect(slowResult.status).toBe('aborted');
-        // The second navigation should succeed.
         expect(fastResult.status).toBe('success');
         expect(concurrentRouter.route.path).toBe('/fast');
 
-        // The guard for the second navigation should execute normally.
         expect(concurrentLog).toContain('fast-beforeEnter');
-        // The first navigation might not have started, or it started but was interrupted.
         // Due to timing issues, we only verify the final state is correct.
     });
 
@@ -1107,12 +1032,10 @@ describe('Concurrent navigation scenarios', () => {
             fastPromise
         ]);
 
-        // The first navigation should be aborted.
         expect(slowResult.status).toBe('aborted');
         expect(fastResult.status).toBe('success');
         expect(concurrentRouter.route.path).toBe('/fast');
 
-        // Check the log, the first navigation should have started but been interrupted.
         expect(concurrentLog).toContain('user-beforeEnter-123-start');
         expect(concurrentLog).toContain('fast-beforeEnter');
     });
@@ -1131,10 +1054,8 @@ describe('Concurrent navigation scenarios', () => {
             promise3
         ]);
 
-        // The first two navigations should be aborted.
         expect(result1.status).toBe('aborted');
         expect(result2.status).toBe('aborted');
-        // The last navigation should succeed.
         expect(result3.status).toBe('success');
         expect(concurrentRouter.route.path).toBe('/user/3');
         expect(concurrentRouter.route.params.id).toBe('3');
@@ -1157,16 +1078,12 @@ describe('Concurrent navigation scenarios', () => {
             fastPromise
         ]);
 
-        // The blocking navigation should be aborted (not blocked by its own `return false`).
         expect(blockingResult.status).toBe('aborted');
-        // The fast navigation should succeed.
         expect(fastResult.status).toBe('success');
         expect(concurrentRouter.route.path).toBe('/fast');
 
-        // The blocking navigation should have started.
         expect(concurrentLog).toContain('blocking-beforeEnter-start');
         // Due to the async guard, 'end' might be seen before the task cancellation check.
-        // The important thing is that the navigation is ultimately aborted, not blocked by `return false`.
     });
 
     test('A redirecting navigation is cancelled by a concurrent navigation', async () => {
@@ -1186,13 +1103,10 @@ describe('Concurrent navigation scenarios', () => {
             fastPromise
         ]);
 
-        // The redirecting navigation should be aborted.
         expect(redirectResult.status).toBe('aborted');
-        // The fast navigation should succeed.
         expect(fastResult.status).toBe('success');
         expect(concurrentRouter.route.path).toBe('/fast');
 
-        // The redirect guard should have started but been interrupted.
         expect(concurrentLog).toContain('redirect-source-beforeEnter-start');
         expect(concurrentLog).not.toContain('redirect-target-beforeEnter');
     });
@@ -1245,13 +1159,10 @@ describe('Concurrent navigation scenarios', () => {
 
         const [result1, result2] = await Promise.all([promise1, promise2]);
 
-        // The first navigation should be aborted.
         expect(result1.status).toBe('aborted');
-        // The second navigation should succeed.
         expect(result2.status).toBe('success');
         expect(nestedRouter.route.path).toBe('/parent/child/2');
 
-        // The parent route's guard should have started at least once.
         expect(concurrentLog).toContain('parent-beforeEnter-start');
 
         nestedRouter.destroy();
@@ -1267,21 +1178,18 @@ describe('Concurrent navigation scenarios', () => {
 
         const results = await Promise.all(promises);
 
-        // Only the last one should succeed; the others should be aborted.
         const successResults = results.filter((r) => r.status === 'success');
         const abortedResults = results.filter((r) => r.status === 'aborted');
 
         expect(successResults).toHaveLength(1);
         expect(abortedResults).toHaveLength(4);
 
-        // The route state should be that of the last successful navigation.
         const successResult = successResults[0];
         expect(concurrentRouter.route.path).toBe(successResult.path);
         expect(concurrentRouter.route.params.id).toBe(successResult.params.id);
     });
 
     test('Leaving a route with an async guard to another route with an async guard', async () => {
-        // First navigate to a route with an async guard.
         await concurrentRouter.push('/user/initial');
         concurrentLog = []; // Clear log.
 
@@ -1294,20 +1202,15 @@ describe('Concurrent navigation scenarios', () => {
 
         const [result1, result2] = await Promise.all([promise1, promise2]);
 
-        // Check the final state.
         expect(concurrentRouter.route.path).toBe('/fast');
 
         // Due to timing, the first navigation might succeed or be aborted. We mainly verify the final state is correct.
         if (result1.status === 'aborted') {
-            // First navigation aborted, second succeeded.
             expect(result2.status).toBe('success');
         } else {
-            // First navigation completed successfully. The second might have been aborted or redirected.
-            // But the final route state should be correct.
             expect(concurrentRouter.route.path).toBe('/fast');
         }
 
-        // The beforeLeave guard (from /user/initial) should have at least started.
         expect(concurrentLog).toContain('user-beforeLeave-initial-start');
     });
 });
@@ -1358,13 +1261,11 @@ describe('Validation tests against official Vue Router behavior', () => {
     test('beforeEnter only triggers when entering a different route, not on parameter change', async () => {
         officialLog = []; // Clear log.
 
-        // First entry into /users/:id route - should trigger beforeEnter.
         await officialRouter.push('/users/1');
         expect(officialLog).toEqual(['beforeEnter-triggered-for-1']);
 
         officialLog = []; // Clear log.
 
-        // Parameter change within the same route - should not trigger beforeEnter.
         await officialRouter.push('/users/2');
         expect(officialLog).toEqual([]);
 
@@ -1382,7 +1283,6 @@ describe('Validation tests against official Vue Router behavior', () => {
     });
 
     test('beforeEnter does not trigger on query parameter change', async () => {
-        // First entry.
         await officialRouter.push('/users/1');
         officialLog = []; // Clear log.
 
@@ -1396,7 +1296,6 @@ describe('Validation tests against official Vue Router behavior', () => {
     });
 
     test('beforeEnter does not trigger on hash change', async () => {
-        // First entry.
         await officialRouter.push('/users/1');
         officialLog = []; // Clear log.
 
@@ -1410,7 +1309,6 @@ describe('Validation tests against official Vue Router behavior', () => {
     });
 
     test('beforeEnter behavior for parent routes in nested routing', async () => {
-        // Create a new router for nested testing.
         const nestedRouter = new Router({
             mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
@@ -1442,7 +1340,6 @@ describe('Validation tests against official Vue Router behavior', () => {
         await nestedRouter.replace('/home');
         officialLog = []; // Clear log.
 
-        // First entry into nested route - should trigger parent's beforeEnter.
         await nestedRouter.push('/dashboard/profile');
         expect(officialLog).toEqual(['dashboard-beforeEnter']);
 
@@ -1524,15 +1421,6 @@ describe('Validation of official Vue Router navigation resolution flow', () => {
         await flowRouter.push('/to/123');
 
         // According to Vue Router official docs, the execution order should be:
-        // 1. Navigation triggered.
-        // 2. Call beforeRouteLeave guards in deactivated components.
-        // 3. Call global beforeEach guards.
-        // 4. Call beforeRouteUpdate guards in reused components (not applicable here).
-        // 5. Call beforeEnter in route configs.
-        // 6. Resolve async route components (handled in our implementation).
-        // 7. Call beforeRouteEnter in activated components (we use beforeEnter).
-        // 8. Call global beforeResolve guards (not currently supported).
-        // 9. Navigation confirmed.
         // 10. Call global afterEach hooks.
 
         expect(flowLog).toEqual([
@@ -1544,7 +1432,6 @@ describe('Validation of official Vue Router navigation resolution flow', () => {
     });
 
     test('Flow order on parameter change within the same route', async () => {
-        // First, navigate to the target route.
         await flowRouter.push('/to/123');
         flowLog = []; // Clear log.
         stepCounter = 0;
@@ -1552,7 +1439,6 @@ describe('Validation of official Vue Router navigation resolution flow', () => {
         // Then, change parameter within the same route.
         await flowRouter.push('/to/456');
 
-        // Parameter change should trigger beforeUpdate, not beforeEnter.
         expect(flowLog).toEqual([
             '1. global beforeEach',
             '2. beforeRouteUpdate in reused component',
@@ -1561,7 +1447,6 @@ describe('Validation of official Vue Router navigation resolution flow', () => {
     });
 
     test('Flow order in complex nested routes', async () => {
-        // Create a complex nested route scenario.
         const complexRouter = new Router({
             mode: RouterMode.memory,
             base: new URL('http://localhost:3000/'),
@@ -1631,7 +1516,6 @@ describe('Validation of official Vue Router navigation resolution flow', () => {
         // Navigate from /home to nested route /app/dashboard.
         await complexRouter.push('/app/dashboard');
 
-        // Should execute beforeEnter in parent-to-child order.
         expect(flowLog).toEqual([
             '1. global beforeEach',
             '2. App beforeEnter',
@@ -1659,7 +1543,6 @@ describe('Validation of official Vue Router navigation resolution flow', () => {
         // Navigate from /app/profile/123 to /home (completely leave nested structure).
         await complexRouter.push('/home');
 
-        // Should execute beforeLeave in child-to-parent order.
         expect(flowLog).toEqual([
             '1. Profile beforeLeave',
             '2. App beforeLeave',

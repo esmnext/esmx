@@ -76,11 +76,9 @@ describe('IncrementId', () => {
                 ids.push(incrementId.next());
             }
 
-            // Check that all IDs are unique
             const uniqueIds = new Set(ids);
             expect(uniqueIds.size).toBe(ids.length);
 
-            // Check that IDs are sequential
             expect(ids).toEqual(Array.from({ length: 100 }, (_, i) => i + 1));
         });
 
@@ -145,12 +143,10 @@ describe('multiple instances independence', () => {
     test('should be able to create multiple independent instances', () => {
         const instances = Array.from({ length: 5 }, () => new IncrementId());
 
-        // Each instance starts from 1
         instances.forEach((instance) => {
             expect(instance.next()).toBe(1);
         });
 
-        // Each instance counts independently
         instances.forEach((instance) => {
             expect(instance.next()).toBe(2);
             expect(instance.equal(2)).toBe(true);
@@ -175,7 +171,6 @@ describe('edge cases and error handling', () => {
     });
 
     test('should handle a large number of calls without overflow (within reasonable limits)', () => {
-        // Test with a relatively large number of calls, but not enough to cause performance issues
         for (let i = 0; i < 1000; i++) {
             const id = incrementId.next();
             expect(id).toBe(i + 1);

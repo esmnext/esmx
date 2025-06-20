@@ -11,7 +11,6 @@ import {
     type RouterOptions
 } from './types';
 
-// Create a real mock IncomingMessage object
 const createMockReq = (
     headers: Record<string, string> = {},
     url = '/',
@@ -25,7 +24,6 @@ const createMockReq = (
     return req;
 };
 
-// Create a real mock ServerResponse object
 const createMockRes = (): Partial<ServerResponse> => {
     const res: Partial<ServerResponse> = {
         statusCode: 200,
@@ -35,7 +33,6 @@ const createMockRes = (): Partial<ServerResponse> => {
     return res;
 };
 
-// Create a real Route object
 const createRoute = (
     options: {
         url?: string;
@@ -73,8 +70,6 @@ describe('parsedOptions', () => {
             .spyOn(console, 'warn')
             .mockImplementation(() => {});
 
-        // Here we need to test an invalid base, but RouterOptions requires a URL type.
-        // We use a type assertion to test the error handling logic.
         const invalidOptions = {
             base: 'not-a-url'
         } as unknown as RouterOptions;
@@ -185,7 +180,6 @@ describe('parsedOptions', () => {
         };
         const opts = parsedOptions(options);
         expect(typeof opts.onClose).toBe('function');
-        // The default function should be callable without throwing an error
         expect(() => opts.onClose({} as any)).not.toThrow();
     });
 
@@ -329,13 +323,11 @@ describe('DEFAULT_LOCATION', () => {
 
             DEFAULT_LOCATION(route, null, { res });
 
-            // In a browser environment, res.statusCode should not be set; location.href should be.
             expect(res.statusCode).toBe(200); // Remains initial value
             expect(res.setHeader).not.toHaveBeenCalled();
             expect(res.end).not.toHaveBeenCalled();
             expect(location.href).toBe(route.url.href);
 
-            // Restore original href
             location.href = originalHref;
         });
 
@@ -345,14 +337,12 @@ describe('DEFAULT_LOCATION', () => {
             const res = createMockRes();
             const mockWindow = { opener: 'original' } as Window;
 
-            // Set up a spy for window.open for this test
             const openSpy = vi
                 .spyOn(window, 'open')
                 .mockReturnValue(mockWindow);
 
             const result = DEFAULT_LOCATION(route, null, { res });
 
-            // In a browser environment, window.open is used even if res is passed
             expect(window.open).toHaveBeenCalledWith(route.url.href);
             expect(mockWindow.opener).toBe(null);
             expect(result).toBe(mockWindow);
@@ -366,7 +356,6 @@ describe('DEFAULT_LOCATION', () => {
             const { DEFAULT_LOCATION } = await import('./options');
             const route = createRoute();
 
-            // Should work normally in a browser environment without a res parameter
             expect(() => DEFAULT_LOCATION(route, null)).not.toThrow();
         });
     });
@@ -435,13 +424,11 @@ describe('DEFAULT_LOCATION', () => {
             const res = createMockRes();
             const originalHref = location.href;
 
-            // In a browser environment, statusCode is ignored, and location.href is set directly.
             DEFAULT_LOCATION(route, null, { res });
 
             expect(res.statusCode).toBe(200); // Remains initial value
             expect(location.href).toBe(route.url.href);
 
-            // Restore original href
             location.href = originalHref;
         });
 
@@ -451,13 +438,11 @@ describe('DEFAULT_LOCATION', () => {
             const res = createMockRes();
             const originalHref = location.href;
 
-            // In a browser environment, statusCode is ignored, and location.href is set directly.
             DEFAULT_LOCATION(route, null, { res });
 
             expect(res.statusCode).toBe(200); // Remains initial value
             expect(location.href).toBe(route.url.href);
 
-            // Restore original href
             location.href = originalHref;
         });
 
@@ -465,7 +450,6 @@ describe('DEFAULT_LOCATION', () => {
             const { DEFAULT_LOCATION } = await import('./options');
             const route = createRoute();
 
-            // Should work normally in a browser environment without a context parameter.
             expect(() =>
                 DEFAULT_LOCATION(route, null, undefined)
             ).not.toThrow();
@@ -475,7 +459,6 @@ describe('DEFAULT_LOCATION', () => {
             const { DEFAULT_LOCATION } = await import('./options');
             const route = createRoute();
 
-            // Should work normally in a browser environment when the context object does not contain res.
             expect(() => DEFAULT_LOCATION(route, null, {})).not.toThrow();
         });
     });
@@ -492,7 +475,6 @@ describe('Server-side logic (mocked environment)', () => {
     });
 
     afterEach(() => {
-        // Restore mocks
         vi.doUnmock('./util');
         vi.resetModules();
     });
@@ -708,7 +690,6 @@ describe('Server-side logic (mocked environment)', () => {
 
             DEFAULT_LOCATION(route, null, { res });
 
-            // When statusCode is 0 (falsy), it won't trigger a warning, and the default 302 will be used.
             expect(res.statusCode).toBe(302);
             expect(consoleSpy).not.toHaveBeenCalled();
             consoleSpy.mockRestore();
@@ -718,7 +699,6 @@ describe('Server-side logic (mocked environment)', () => {
             const { DEFAULT_LOCATION } = await import('./options');
             const route = createRoute();
 
-            // Should do nothing and not throw in a server environment without res context
             expect(() => DEFAULT_LOCATION(route, null)).not.toThrow();
             expect(() => DEFAULT_LOCATION(route, null, {})).not.toThrow();
         });
