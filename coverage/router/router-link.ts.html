@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">98.07% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>156/156</span>
+                <span class='fraction'>153/156</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">98.14% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>53/53</span>
+                <span class='fraction'>53/54</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">98.07% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>156/156</span>
+                <span class='fraction'>153/156</span>
             </div>
         
             
@@ -309,7 +309,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -375,6 +374,7 @@
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">6x</span>
@@ -391,6 +391,12 @@
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">11x</span>
@@ -399,7 +405,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">66x</span>
 <span class="cline-any cline-yes">66x</span>
 <span class="cline-any cline-yes">66x</span>
 <span class="cline-any cline-yes">66x</span>
@@ -505,11 +510,6 @@
 <span class="cline-any cline-yes">66x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">66x</span>
-<span class="cline-any cline-yes">66x</span>
-<span class="cline-any cline-yes">66x</span>
-<span class="cline-any cline-yes">66x</span>
-<span class="cline-any cline-yes">66x</span>
-<span class="cline-any cline-yes">66x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">66x</span>
 <span class="cline-any cline-yes">66x</span>
@@ -538,7 +538,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { Router } from './router';
 import type {
     RouteLocationInput,
-    RouterLayerOptions,
     RouterLinkAttributes,
     RouterLinkProps,
     RouterLinkResolved,
@@ -607,11 +606,12 @@ function guardEvent(e: MouseEvent): boolean {
  */
 function executeNavigation(
     router: Router,
-    to: RouteLocationInput,
-    navigationType: RouterLinkType,
-    layerOptions?: Partial&lt;RouterLayerOptions&gt;
+    props: RouterLinkProps,
+    linkType: RouterLinkType
 ): void {
-    switch (navigationType) {
+    const { to, layerOptions } = props;
+&nbsp;
+    switch (linkType) {
         case 'push':
             router.push(to);
             break;
@@ -625,7 +625,13 @@ function executeNavigation(
             router.replaceWindow(to);
             break;
         case 'pushLayer':
-            router.pushLayer(to, layerOptions);
+            router.pushLayer(
+<span class="branch-0 cbranch-no" title="branch not covered" >                layerOptions</span>
+<span class="cstat-no" title="statement not covered" >                    ? typeof to === 'string'</span>
+<span class="cstat-no" title="statement not covered" >                        ? { path: to, layer: layerOptions }</span>
+<span class="cstat-no" title="statement not covered" >                        : { ...to, layer: layerOptions }</span>
+                    : to
+            );
             break;
         default:
             router.push(to);
@@ -637,16 +643,15 @@ function executeNavigation(
  */
 function createNavigateFunction(
     router: Router,
-    to: RouteLocationInput,
-    navigationType: RouterLinkType,
-    layerOptions?: Partial&lt;RouterLayerOptions&gt;
+    props: RouterLinkProps,
+    navigationType: RouterLinkType
 ): (e?: MouseEvent) =&gt; void {
     return (e?: MouseEvent): void =&gt; {
         if (e &amp;&amp; !guardEvent(e)) {
             return;
         }
 &nbsp;
-        executeNavigation(router, to, navigationType, layerOptions);
+        executeNavigation(router, props, navigationType);
     };
 }
 &nbsp;
@@ -740,12 +745,7 @@ export function createLinkResolver(
     const isExactActive = router.isRouteMatched(route, 'exact');
     const isExternal = route.url.origin !== router.route.url.origin;
 &nbsp;
-    const navigate = createNavigateFunction(
-        router,
-        props.to,
-        type,
-        props.layerOptions
-    );
+    const navigate = createNavigateFunction(router, props, type);
 &nbsp;
     const attributes = computeAttributes(
         href,
@@ -778,7 +778,7 @@ export function createLinkResolver(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-06-19T12:28:47.913Z
+                at 2025-06-20T02:34:28.229Z
             </div>
         <script src="prettify.js"></script>
         <script>
