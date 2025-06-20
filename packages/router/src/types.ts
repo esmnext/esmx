@@ -7,12 +7,12 @@ import type { Router } from './router';
 export type { Route };
 
 // ============================================================================
-// Utility types (基础工具类型)
+// Utility types
 // ============================================================================
 export type Awaitable<T> = T | Promise<T>;
 
 // ============================================================================
-// Core enums (核心枚举类型)
+// Core enums
 // ============================================================================
 export enum RouterMode {
     history = 'history',
@@ -40,7 +40,7 @@ export enum RouteStatus {
 }
 
 // ============================================================================
-// Hook function types (Hook 函数类型)
+// Hook function types
 // ============================================================================
 export type RouteConfirmHookResult =
     | void
@@ -68,7 +68,7 @@ export type RouteNotifyHook = (to: Route, from: Route | null) => void;
 export type RouteCloseHook = (router: Router) => void;
 
 // ============================================================================
-// Basic data types (基础数据类型)
+// Basic data types
 // ============================================================================
 export type RouteMeta = Record<string | symbol, unknown>;
 export type RouteState = Record<string, unknown>;
@@ -83,7 +83,7 @@ export type RouteHandleResult = unknown | null | void;
 export type RouteMatchType = 'route' | 'exact' | 'include';
 
 // ============================================================================
-// Route location and config types (路由位置和配置类型)
+// Route location and config types
 // ============================================================================
 export interface RouteLocation {
     path?: string;
@@ -162,7 +162,7 @@ export interface RouteOptions {
 }
 
 // ============================================================================
-// Router Layer types (路由层级类型)
+// Router Layer types
 // ============================================================================
 export interface RouteLayerOptions {
     /**
@@ -212,7 +212,7 @@ export type RouteLayerResult =
 export type RouterLayerOptions = Omit<RouterOptions, 'onClose' | 'layer'>;
 
 // ============================================================================
-// Router MicroApp types (路由微应用类型)
+// Router MicroApp types
 // ============================================================================
 export interface RouterMicroAppOptions {
     mount: (el: HTMLElement) => void;
@@ -227,7 +227,7 @@ export type RouterMicroApp =
     | RouterMicroAppCallback;
 
 // ============================================================================
-// Router core types (路由器核心类型)
+// Router core types
 // ============================================================================
 export interface RouterOptions {
     /**
@@ -303,7 +303,7 @@ export interface RouterParsedOptions extends Readonly<Required<RouterOptions>> {
 }
 
 // ============================================================================
-// RouterLink types (路由链接类型)
+// RouterLink types
 // ============================================================================
 
 /**
