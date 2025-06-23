@@ -166,21 +166,28 @@ describe('parsedOptions', () => {
             layer: true
         });
 
-        // Test onClose hook
-        expect(typeof opts.onClose).toBe('function');
+        // Test handleBackBoundary hook
+        expect(typeof opts.handleBackBoundary).toBe('function');
         // Should not throw when called
-        expect(() => opts.onClose({} as any)).not.toThrow();
+        expect(() => opts.handleBackBoundary({} as any)).not.toThrow();
+
+        // Test handleLayerClose hook
+        expect(typeof opts.handleLayerClose).toBe('function');
+        // Should not throw when called
+        expect(() => opts.handleLayerClose({} as any)).not.toThrow();
     });
 
-    it('should use default onBackNoResponse if not provided', async () => {
+    it('should use default handlers if not provided', async () => {
         const { parsedOptions } = await import('./options');
         const options: RouterOptions = {
             base: new URL('http://a.com'),
             routes: []
         };
         const opts = parsedOptions(options);
-        expect(typeof opts.onClose).toBe('function');
-        expect(() => opts.onClose({} as any)).not.toThrow();
+        expect(typeof opts.handleBackBoundary).toBe('function');
+        expect(() => opts.handleBackBoundary({} as any)).not.toThrow();
+        expect(typeof opts.handleLayerClose).toBe('function');
+        expect(() => opts.handleLayerClose({} as any)).not.toThrow();
     });
 
     it('should NOT clone context object', async () => {

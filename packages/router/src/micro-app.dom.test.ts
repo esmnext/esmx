@@ -47,7 +47,8 @@ const createMockRouter = (
         normalizeURL: (url: URL) => url,
         fallback: () => {},
         rootStyle: false,
-        onClose: () => {}
+        handleBackBoundary: () => {},
+        handleLayerClose: () => {}
     };
 
     const mockParsedOptions = {

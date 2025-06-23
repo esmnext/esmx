@@ -13,7 +13,6 @@ export {
     type RouteVerifyHook,
     type RouteHandleHook,
     type RouteNotifyHook,
-    type RouteCloseHook,
     // Basic data types
     type RouteMeta,
     type RouteState,

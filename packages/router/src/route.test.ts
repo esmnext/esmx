@@ -56,7 +56,8 @@ describe('Route Class Complete Test Suite', () => {
             normalizeURL: (url: URL) => url,
             fallback: () => {},
             rootStyle: false,
-            onClose: () => {},
+            handleBackBoundary: () => {},
+            handleLayerClose: () => {},
             ...overrides
         };
 
@@ -1260,7 +1261,8 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
             normalizeURL: (url: URL) => url,
             fallback: () => {},
             rootStyle: false,
-            onClose: () => {},
+            handleBackBoundary: () => {},
+            handleLayerClose: () => {},
             ...overrides
         };
 

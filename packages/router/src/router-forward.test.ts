@@ -402,9 +402,9 @@ describe('Router.forward Tests', () => {
         });
     });
 
-    describe('🔧 onBackNoResponse Callback Tests', () => {
-        test('forward beyond boundaries should not trigger onBackNoResponse', async () => {
-            const onCloseSpy = vi.fn();
+    describe('🔧 handleBackBoundary Callback Tests', () => {
+        test('forward beyond boundaries should not trigger handleBackBoundary', async () => {
+            const handleBackBoundarySpy = vi.fn();
 
             const testRouter = new Router({
                 mode: RouterMode.memory,
@@ -413,7 +413,7 @@ describe('Router.forward Tests', () => {
                     { path: '/', component: 'Home' },
                     { path: '/about', component: 'About' }
                 ],
-                onClose: onCloseSpy
+                handleBackBoundary: handleBackBoundarySpy
             });
 
             await testRouter.replace('/about');
@@ -421,13 +421,13 @@ describe('Router.forward Tests', () => {
             const route = await testRouter.forward();
 
             expect(route).toBe(null);
-            // forward operation should not trigger onBackNoResponse
-            expect(onCloseSpy).not.toHaveBeenCalled();
+            // forward operation should not trigger handleBackBoundary
+            expect(handleBackBoundarySpy).not.toHaveBeenCalled();
 
             testRouter.destroy();
         });
 
-        test('should not error when no onBackNoResponse callback', async () => {
+        test('should not error when no handleBackBoundary callback', async () => {
             const testRouter = new Router({
                 mode: RouterMode.memory,
                 base: new URL('http://localhost:3000/'),
@@ -435,7 +435,7 @@ describe('Router.forward Tests', () => {
                     { path: '/', component: 'Home' },
                     { path: '/about', component: 'About' }
                 ]
-                // No onBackNoResponse
+                // No handleBackBoundary
             });
 
             await testRouter.replace('/about');

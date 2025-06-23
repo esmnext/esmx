@@ -519,9 +519,9 @@ describe('Router.go Tests', () => {
         });
     });
 
-    describe('🔧 onBackNoResponse Callback Tests', () => {
-        test('should trigger onBackNoResponse when negative index and Navigation returns null', async () => {
-            const onCloseSpy = vi.fn();
+    describe('🔧 handleBackBoundary Callback Tests', () => {
+        test('should trigger handleBackBoundary when negative index and Navigation returns null', async () => {
+            const handleBackBoundarySpy = vi.fn();
 
             const testRouter = new Router({
                 mode: RouterMode.memory,
@@ -530,7 +530,7 @@ describe('Router.go Tests', () => {
                     { path: '/', component: 'Home' },
                     { path: '/about', component: 'About' }
                 ],
-                onClose: onCloseSpy
+                handleBackBoundary: handleBackBoundarySpy
             });
 
             await testRouter.replace('/about');
@@ -538,13 +538,13 @@ describe('Router.go Tests', () => {
             const route = await testRouter.go(-10);
 
             expect(route).toBe(null);
-            expect(onCloseSpy).toHaveBeenCalledWith(testRouter);
+            expect(handleBackBoundarySpy).toHaveBeenCalledWith(testRouter);
 
             testRouter.destroy();
         });
 
-        test('should not trigger onBackNoResponse when positive index and Navigation returns null', async () => {
-            const onCloseSpy = vi.fn();
+        test('should not trigger handleBackBoundary when positive index and Navigation returns null', async () => {
+            const handleBackBoundarySpy = vi.fn();
 
             const testRouter = new Router({
                 mode: RouterMode.memory,
@@ -553,7 +553,7 @@ describe('Router.go Tests', () => {
                     { path: '/', component: 'Home' },
                     { path: '/about', component: 'About' }
                 ],
-                onClose: onCloseSpy
+                handleBackBoundary: handleBackBoundarySpy
             });
 
             await testRouter.replace('/about');
@@ -561,13 +561,13 @@ describe('Router.go Tests', () => {
             const route = await testRouter.go(10);
 
             expect(route).toBe(null);
-            expect(onCloseSpy).not.toHaveBeenCalled();
+            expect(handleBackBoundarySpy).not.toHaveBeenCalled();
 
             testRouter.destroy();
         });
 
-        test('zero index should not trigger onBackNoResponse', async () => {
-            const onCloseSpy = vi.fn();
+        test('zero index should not trigger handleBackBoundary', async () => {
+            const handleBackBoundarySpy = vi.fn();
 
             const testRouter = new Router({
                 mode: RouterMode.memory,
@@ -576,7 +576,7 @@ describe('Router.go Tests', () => {
                     { path: '/', component: 'Home' },
                     { path: '/about', component: 'About' }
                 ],
-                onClose: onCloseSpy
+                handleBackBoundary: handleBackBoundarySpy
             });
 
             await testRouter.replace('/about');
@@ -584,12 +584,12 @@ describe('Router.go Tests', () => {
             const route = await testRouter.go(0);
 
             expect(route).toBe(null);
-            expect(onCloseSpy).not.toHaveBeenCalled();
+            expect(handleBackBoundarySpy).not.toHaveBeenCalled();
 
             testRouter.destroy();
         });
 
-        test('should not error when no onBackNoResponse callback', async () => {
+        test('should not error when no handleBackBoundary callback', async () => {
             const testRouter = new Router({
                 mode: RouterMode.memory,
                 base: new URL('http://localhost:3000/'),
@@ -597,7 +597,7 @@ describe('Router.go Tests', () => {
                     { path: '/', component: 'Home' },
                     { path: '/about', component: 'About' }
                 ]
-                // No onBackNoResponse
+                // No handleBackBoundary
             });
 
             await testRouter.replace('/about');

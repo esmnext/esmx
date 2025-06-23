@@ -66,8 +66,6 @@ export type RouteHandleHook = (
 
 export type RouteNotifyHook = (to: Route, from: Route | null) => void;
 
-export type RouteCloseHook = (router: Router) => void;
-
 // ============================================================================
 // Basic data types
 // ============================================================================
@@ -209,9 +207,12 @@ export type RouteLayerResult =
 
 /**
  * Router options for creating layer instances
- * Excludes onClose and layer fields which are handled internally by createLayer
+ * Excludes handler functions and layer fields which are handled internally by createLayer
  */
-export type RouterLayerOptions = Omit<RouterOptions, 'onClose' | 'layer'>;
+export type RouterLayerOptions = Omit<
+    RouterOptions,
+    'handleBackBoundary' | 'handleLayerClose' | 'layer'
+>;
 
 // ============================================================================
 // Router MicroApp types
@@ -294,7 +295,11 @@ export interface RouterOptions {
 
     rootStyle?: Partial<CSSStyleDeclaration> | false;
     layer?: boolean;
-    onClose?: RouteCloseHook;
+    zIndex?: number;
+    /** 处理后退边界 */
+    handleBackBoundary?: (router: Router) => void;
+    /** 处理弹层关闭 */
+    handleLayerClose?: (router: Router) => void;
 }
 
 export interface RouterParsedOptions extends Readonly<Required<RouterOptions>> {

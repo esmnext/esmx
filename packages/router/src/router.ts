@@ -91,10 +91,7 @@ export class Router {
     public async back(): Promise<Route | null> {
         const result = await this.navigation.go(-1);
         if (result === null) {
-            // Call onClose hook
-            if (this.parsedOptions.onClose) {
-                this.parsedOptions.onClose(this);
-            }
+            this.parsedOptions.handleBackBoundary(this);
             return null;
         }
         return this.transition.to(RouteType.back, {
@@ -110,9 +107,9 @@ export class Router {
 
         const result = await this.navigation.go(index);
         if (result === null) {
-            // Call onClose hook when backward navigation has no response
-            if (index < 0 && this.parsedOptions.onClose) {
-                this.parsedOptions.onClose(this);
+            // Call handleBackBoundary when backward navigation has no response
+            if (index < 0) {
+                this.parsedOptions.handleBackBoundary(this);
             }
             return null;
         }
@@ -260,11 +257,10 @@ export class Router {
         }
         const layerConfig = isPlainObject(toInput) ? toInput.layer : undefined;
 
-        // Extract routerOptions from layer config and merge with options
         const { routerOptions, ...pureLayerConfig } = layerConfig || {};
 
         const layer: Required<Omit<RouteLayerOptions, 'routerOptions'>> = {
-            zIndex: 1000 + LAYER_ID.next(),
+            zIndex: this.parsedOptions.zIndex + LAYER_ID.next(),
             params: {},
             shouldClose: () => false,
             autoPush: true,
@@ -276,7 +272,13 @@ export class Router {
         const promise = new Promise<RouteLayerResult>((resolve) => {
             promiseResolve = resolve;
         });
-
+        const onClose = (router: Router) => {
+            router.destroy();
+            promiseResolve({
+                type: 'close',
+                route: router.route
+            });
+        };
         const nextOptions: RouterOptions = {
             ...this.options,
             mode: RouterMode.memory,
@@ -295,12 +297,8 @@ export class Router {
             root: undefined,
             ...routerOptions,
             ...options,
-            onClose: (router: Router) => {
-                promiseResolve({
-                    type: 'close',
-                    route: router.route
-                });
-            },
+            handleBackBoundary: onClose,
+            handleLayerClose: onClose,
             layer: true
         };
         const router = new Router(nextOptions);
@@ -319,7 +317,7 @@ export class Router {
     }
     public closeLayer() {
         if (this.isLayer) {
-            this.parsedOptions.onClose(this);
+            this.parsedOptions.handleLayerClose(this);
         }
     }
     public async renderToString(throwError = false): Promise<string | null> {

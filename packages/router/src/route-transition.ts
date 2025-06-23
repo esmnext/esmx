@@ -344,8 +344,6 @@ export class RouteTransition {
             to.handleResult = await to.handle(to, from);
         }
 
-        // After navigation is complete, only call afterEach guards if the status is 'success'.
-        // This ensures that only successful navigations trigger afterEach, while cancelled ones do not.
         if (to.status === RouteStatus.success) {
             for (const guard of this.guards.afterEach) {
                 guard(to, from);

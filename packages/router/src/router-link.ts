@@ -1,6 +1,5 @@
 import type { Router } from './router';
 import type {
-    RouteLocationInput,
     RouterLinkAttributes,
     RouterLinkProps,
     RouterLinkResolved,
