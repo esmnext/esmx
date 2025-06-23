@@ -2,28 +2,13 @@ import { describe, expect, it, vi } from 'vitest';
 import { parsedOptions } from './options';
 import { NON_ENUMERABLE_PROPERTIES, Route, applyRouteParams } from './route';
 import type { Router } from './router';
-import { RouteStatus, RouteType, RouterMode } from './types';
+import { RouteType, RouterMode } from './types';
 import type {
     RouteConfig,
     RouteHandleHook,
-    RouteLocationInput,
-    RouteMeta,
     RouterOptions,
     RouterParsedOptions
 } from './types';
-
-/**
- * Route class complete unit test suite
- *
- * Test coverage:
- * 1. Constructor tests - various initialization scenarios
- * 2. Property tests - read-only properties, computed properties, type validation
- * 3. Handle mechanism tests - setting, execution, validation, error handling
- * 4. State management tests - merging, setting, syncing, isolation
- * 5. Clone function tests - independence, deep copy, completeness
- * 6. Edge case tests - exception inputs, extreme values
- * 7. Integration tests - interaction with other components
- */
 
 describe('Route Class Complete Test Suite', () => {
     const createOptions = (
@@ -73,7 +58,6 @@ describe('Route Class Complete Test Suite', () => {
                 expect(route.type).toBe(RouteType.none);
                 expect(route.isPush).toBe(false);
                 expect(route.path).toBe('/');
-                expect(route.status).toBe(RouteStatus.resolved);
                 expect(route.state).toEqual({});
                 expect(route.params).toEqual({});
                 expect(route.query).toEqual({});
@@ -499,7 +483,6 @@ describe('Route Class Complete Test Suite', () => {
                 );
 
                 route.handle = mockHandle;
-                route.status = RouteStatus.success;
 
                 const result = route.handle!(route, null, mockRouter);
                 expect(result).toEqual({ result: 'success' });
@@ -521,13 +504,11 @@ describe('Route Class Complete Test Suite', () => {
                 const mockHandle: RouteHandleHook = vi.fn();
 
                 route.handle = mockHandle;
-                route.status = RouteStatus.error;
 
+                // Since there's no error status anymore, handle should work normally
                 expect(() => {
                     route.handle!(route, null, mockRouter);
-                }).toThrow(
-                    'Cannot call route handle hook - current status is error'
-                );
+                }).not.toThrow();
             });
 
             it('should prevent repeated handle calls', () => {
@@ -545,7 +526,6 @@ describe('Route Class Complete Test Suite', () => {
                 );
 
                 route.handle = mockHandle;
-                route.status = RouteStatus.success;
 
                 route.handle!(route, null, mockRouter);
 
@@ -576,7 +556,7 @@ describe('Route Class Complete Test Suite', () => {
         });
 
         describe('Handle wrapper function tests', () => {
-            it('should test handle calls in all RouteStatus states', () => {
+            it('should test handle calls with double-call prevention', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -592,22 +572,13 @@ describe('Route Class Complete Test Suite', () => {
 
                 route.handle = mockHandle;
 
-                // Test resolve state
-                route.status = RouteStatus.resolved;
-                expect(() => route.handle!(route, null, mockRouter)).toThrow(
-                    'Cannot call route handle hook - current status is resolved'
-                );
+                // Since status concept is removed, the handle should be callable initially
+                const firstResult = route.handle!(route, null, mockRouter);
+                expect(firstResult).toEqual({ result: 'test' });
 
-                // Test aborted state
-                route.status = RouteStatus.aborted;
+                // After first call, subsequent calls should throw due to double-call prevention
                 expect(() => route.handle!(route, null, mockRouter)).toThrow(
-                    'Cannot call route handle hook - current status is aborted'
-                );
-
-                // Test error state
-                route.status = RouteStatus.error;
-                expect(() => route.handle!(route, null, mockRouter)).toThrow(
-                    'Cannot call route handle hook - current status is error'
+                    'Route handle hook can only be called once per navigation'
                 );
             });
 
@@ -630,7 +601,6 @@ describe('Route Class Complete Test Suite', () => {
                 });
 
                 route.handle = mockHandle;
-                route.status = RouteStatus.success;
 
                 const fromRoute = new Route({
                     options,
@@ -665,7 +635,6 @@ describe('Route Class Complete Test Suite', () => {
                 });
 
                 route.handle = errorHandle;
-                route.status = RouteStatus.success;
 
                 expect(() => route.handle!(route, null, mockRouter)).toThrow(
                     'Handle execution failed'
@@ -1625,7 +1594,6 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
                     state: { userId: 456, name: 'Jane' }
                 }
             });
-            sourceRoute.status = RouteStatus.success;
             sourceRoute.statusCode = 200;
 
             const targetRoute = new Route({
@@ -1639,7 +1607,6 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
 
             sourceRoute.syncTo(targetRoute);
 
-            expect(targetRoute.status).toBe(RouteStatus.success);
             expect(targetRoute.statusCode).toBe(200);
 
             expect(targetRoute.state.userId).toBe(456);

@@ -32,14 +32,6 @@ export enum RouteType {
     pushLayer = 'pushLayer'
 }
 
-export enum RouteStatus {
-    resolved = 'resolved', // Route resolution completed, Route object created
-    pending = 'pending', // Executing task chain (guards, async components, etc.)
-    success = 'success', // Task execution successful
-    aborted = 'aborted', // Task was cancelled
-    error = 'error' // Resolution or execution failed
-}
-
 // ============================================================================
 // Hook function types
 // ============================================================================
@@ -203,7 +195,6 @@ export interface RouteLayerOptions {
 }
 
 export type RouteLayerResult =
-    | { type: 'error'; route: Route }
     | { type: 'close'; route: Route }
     | { type: 'push'; route: Route }
     | { type: 'success'; route: Route };

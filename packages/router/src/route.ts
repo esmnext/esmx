@@ -2,7 +2,7 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import { parseLocation } from './location';
 import { parsedOptions } from './options';
 import type { Router } from './router';
-import { RouteStatus } from './types';
+
 import {
     type RouteHandleHook,
     type RouteHandleResult,
@@ -107,7 +107,6 @@ export class Route {
     private readonly _options: RouterParsedOptions;
 
     // Public properties
-    public status: RouteStatus = RouteStatus.resolved;
     public statusCode: number | null = null;
     public readonly state: RouteState;
     public readonly keepScrollPosition: boolean;
@@ -254,11 +253,6 @@ export class Route {
             from: Route | null,
             router: Router
         ) {
-            if (this.status !== RouteStatus.success) {
-                throw new Error(
-                    `Cannot call route handle hook - current status is ${this.status} (expected: ${RouteStatus.success})`
-                );
-            }
             if (self._handled) {
                 throw new Error(
                     'Route handle hook can only be called once per navigation'

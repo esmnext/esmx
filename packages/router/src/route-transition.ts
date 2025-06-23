@@ -5,7 +5,8 @@ import {
     createRouteTask
 } from './route-task';
 import type { Router } from './router';
-import { RouteStatus, RouteType } from './types';
+import { RouteType } from './types';
+
 import type {
     RouteConfirmHook,
     RouteConfirmHookResult,
@@ -383,7 +384,7 @@ export class RouteTransition {
             to.handleResult = await to.handle(to, from, this.router);
         }
 
-        if (to.status === RouteStatus.success) {
+        if (to.handle) {
             for (const guard of this.guards.afterEach) {
                 guard(to, from);
             }

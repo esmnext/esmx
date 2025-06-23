@@ -3,7 +3,7 @@
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Router } from './router';
-import { RouteStatus, RouteType } from './types';
+import { RouteType, RouterMode } from './types';
 import type { Route, RouteLocationInput, RouterOptions } from './types';
 
 describe('Router.restartApp Focused Tests', () => {
@@ -47,7 +47,7 @@ describe('Router.restartApp Focused Tests', () => {
 
             expect(result.type).toBe(RouteType.restartApp);
             expect(result.url.pathname).toBe('/user/123');
-            expect(result.status).toBe(RouteStatus.success);
+            expect(result.handle).not.toBeNull();
             expect(router.route).toBe(result);
         });
 
@@ -56,7 +56,7 @@ describe('Router.restartApp Focused Tests', () => {
 
             expect(result.type).toBe(RouteType.restartApp);
             expect(result.url.pathname).toBe('/about');
-            expect(result.status).toBe(RouteStatus.success);
+            expect(result.handle).not.toBeNull();
             expect(router.route).toBe(result);
         });
 
@@ -73,7 +73,7 @@ describe('Router.restartApp Focused Tests', () => {
             expect(result.query.mode).toBe('edit');
             expect(result.url.hash).toBe('#section1');
             expect(result.params.id).toBe('456');
-            expect(result.status).toBe(RouteStatus.success);
+            expect(result.handle).not.toBeNull();
         });
 
         it('should support restart with state', async () => {
@@ -275,7 +275,7 @@ describe('Router.restartApp Focused Tests', () => {
             for (const path of paths) {
                 const result = await router.restartApp(path);
                 expect(result.type).toBe(RouteType.restartApp);
-                expect(result.status).toBe(RouteStatus.success);
+                expect(result.handle).not.toBeNull();
                 expect(router.route).toBe(result);
             }
         });
@@ -365,9 +365,7 @@ describe('Router.restartApp Focused Tests', () => {
                 }
             });
 
-            const result = await router.restartApp('/about');
-
-            expect(result.status).toBe(RouteStatus.aborted);
+            await expect(router.restartApp('/about')).rejects.toThrow();
             expect(router.route.path).toBe('/'); // Should maintain original route
             unregister();
         });
@@ -383,7 +381,7 @@ describe('Router.restartApp Focused Tests', () => {
 
             expect(result.path).toBe('/user/redirected');
             expect(result.params.id).toBe('redirected');
-            expect(result.status).toBe(RouteStatus.success);
+            expect(result.handle).not.toBeNull();
             unregister();
         });
     });
@@ -431,15 +429,15 @@ describe('Router.restartApp Focused Tests', () => {
         it('should correctly handle async component loading', async () => {
             const result = await asyncRouter.restartApp('/async');
 
-            expect(result.status).toBe(RouteStatus.success);
+            expect(result.handle).not.toBeNull();
             expect(result.matched[0].component).toBeDefined();
             expect(typeof result.matched[0].component).toBe('function');
         });
 
         it('should handle async component loading failures', async () => {
-            const result = await asyncRouter.restartApp('/async-error');
-
-            expect(result.status).toBe(RouteStatus.error);
+            await expect(
+                asyncRouter.restartApp('/async-error')
+            ).rejects.toThrow();
         });
     });
 
@@ -452,13 +450,14 @@ describe('Router.restartApp Focused Tests', () => {
             });
 
             // Rapidly consecutive restartApp calls
-            const results = await Promise.all([
-                router.restartApp('/user/slow'),
-                router.restartApp('/about')
-            ]);
+            const promises = [
+                router.restartApp('/user/slow').catch((err) => err),
+                router.restartApp('/about').catch((err) => err)
+            ];
+            const results = await Promise.all(promises);
 
-            expect(results[0].status).toBe(RouteStatus.aborted);
-            expect(results[1].status).toBe(RouteStatus.success);
+            expect(results[0] instanceof Error).toBe(true);
+            expect(results[1].handle).not.toBeNull();
             expect(router.route.path).toBe('/about');
 
             unregister();
@@ -466,13 +465,14 @@ describe('Router.restartApp Focused Tests', () => {
 
         it('should correctly handle multiple concurrent restartApp calls', async () => {
             const paths = ['/user/1', '/user/2', '/user/3'];
-            const results = await Promise.all(
-                paths.map((path) => router.restartApp(path))
+            const promises = paths.map((path) =>
+                router.restartApp(path).catch((err) => err)
             );
+            const results = await Promise.all(promises);
 
-            expect(results[0].status).toBe(RouteStatus.aborted);
-            expect(results[1].status).toBe(RouteStatus.aborted);
-            expect(results[2].status).toBe(RouteStatus.success);
+            expect(results[0] instanceof Error).toBe(true);
+            expect(results[1] instanceof Error).toBe(true);
+            expect(results[2].handle).not.toBeNull();
             expect(router.route.path).toBe('/user/3');
         });
     });
@@ -531,7 +531,7 @@ describe('Router.restartApp Focused Tests', () => {
                 '/override-test?native=true'
             );
 
-            expect(result.status).toBe(RouteStatus.success);
+            expect(result.handle).not.toBeNull();
             // restartApp doesn't execute override tasks, so handleResult should be undefined
             expect(result.handleResult).toBeUndefined();
             expect(result.config?.override).toBeDefined();
@@ -542,14 +542,14 @@ describe('Router.restartApp Focused Tests', () => {
                 '/override-test?native=false'
             );
 
-            expect(result.status).toBe(RouteStatus.success);
+            expect(result.handle).not.toBeNull();
             expect(result.handle).not.toBeNull();
         });
 
         it('should always use override when function always returns handler', async () => {
             const result = await overrideRouter.restartApp('/hybrid-page');
 
-            expect(result.status).toBe(RouteStatus.success);
+            expect(result.handle).not.toBeNull();
             // restartApp doesn't execute override tasks, so handleResult should be undefined
             expect(result.handleResult).toBeUndefined();
             expect(result.config?.override).toBeDefined();
@@ -564,9 +564,9 @@ describe('Router.restartApp Focused Tests', () => {
                 }
             });
 
-            const result = await router.restartApp('/about');
-
-            expect(result.status).toBe(RouteStatus.error);
+            await expect(router.restartApp('/about')).rejects.toThrow(
+                'Guard error'
+            );
             unregister();
         });
 
@@ -765,14 +765,14 @@ describe('Router.restartApp Focused Tests', () => {
 
             // Rapid consecutive calls
             const promises = Array.from({ length: 10 }, (_, i) =>
-                router.restartApp(`/user/${i}`)
+                router.restartApp(`/user/${i}`).catch((err) => err)
             );
 
             const results = await Promise.all(promises);
             const endTime = Date.now();
 
             const successfulResults = results.filter(
-                (r) => r.status === RouteStatus.success
+                (r) => !(r instanceof Error) && r.handle !== null
             );
             expect(successfulResults).toHaveLength(1);
             expect(successfulResults[0].params.id).toBe('9');

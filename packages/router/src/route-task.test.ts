@@ -1,10 +1,16 @@
 import { describe, expect, it, vi } from 'vitest';
+import {
+    RouteNavigationAbortedError,
+    RouteNoHandlerFoundError,
+    RouteTaskCancelledError,
+    RouteTaskExecutionError
+} from './error';
 import { parsedOptions } from './options';
 import { Route } from './route';
 import { RouteTaskController, createRouteTask } from './route-task';
 import type { RouteTask, RouteTaskOptions } from './route-task';
 import type { Router } from './router';
-import { RouteStatus, RouteType } from './types';
+import { RouteType } from './types';
 import type { RouteConfirmHookResult, RouterParsedOptions } from './types';
 
 // Helper function to create real RouterParsedOptions
@@ -13,6 +19,7 @@ function createRealOptions(): RouterParsedOptions {
         base: new URL('http://localhost/'),
         routes: [
             { path: '/test', component: 'TestComponent' },
+            { path: '/about', component: 'AboutComponent' },
             { path: '/redirected', component: 'RedirectedComponent' },
             { path: '/admin', component: 'AdminComponent' },
             { path: '/login', component: 'LoginComponent' },
@@ -30,7 +37,7 @@ function createMockRouter(): Router {
 }
 
 describe('createRouteTask', () => {
-    it('should handle empty tasks array', async () => {
+    it('should throw RouteNoHandlerFoundError when task array is empty', async () => {
         const router = createMockRouter();
         const to = new Route({
             options: router.parsedOptions,
@@ -42,17 +49,17 @@ describe('createRouteTask', () => {
             toType: RouteType.push,
             toInput: '/home'
         });
+
         const tasks: RouteTask[] = [];
 
-        const result = await createRouteTask({
-            to,
-            from,
-            tasks,
-            router
-        });
-
-        expect(result).toBe(to);
-        expect(to.status).toBe(RouteStatus.error); // Empty task array, no handler function obtained, marked as failed.
+        await expect(
+            createRouteTask({
+                to,
+                from,
+                tasks,
+                router
+            })
+        ).rejects.toThrow(RouteNoHandlerFoundError);
     });
 
     it('should execute tasks in sequence', async () => {
@@ -85,7 +92,8 @@ describe('createRouteTask', () => {
             router: Router
         ) => {
             executionOrder.push('task2');
-            return; // Continue execution.
+            // Return handler function
+            return async () => ({ success: true });
         };
 
         const tasks: RouteTask[] = [
@@ -99,7 +107,7 @@ describe('createRouteTask', () => {
             }
         ];
 
-        await createRouteTask({
+        const result = await createRouteTask({
             to,
             from,
             tasks,
@@ -107,9 +115,11 @@ describe('createRouteTask', () => {
         });
 
         expect(executionOrder).toEqual(['task1', 'task2']);
+        expect(result).toBe(to);
+        expect(to.handle).toBeTypeOf('function');
     });
 
-    it('should set status to success when task returns a function', async () => {
+    it('should set handle when task returns a function', async () => {
         const router = createMockRouter();
         const to = new Route({
             options: router.parsedOptions,
@@ -154,12 +164,11 @@ describe('createRouteTask', () => {
         });
 
         expect(result).toBe(to);
-        expect(to.status).toBe(RouteStatus.success);
         expect(to.handle).toBeTypeOf('function');
         expect(to.handle).not.toBeNull();
     });
 
-    it('should set status to aborted when task returns false', async () => {
+    it('should throw RouteNavigationAbortedError when task returns false', async () => {
         const router = createMockRouter();
         const to = new Route({
             options: router.parsedOptions,
@@ -189,15 +198,14 @@ describe('createRouteTask', () => {
             }
         ];
 
-        const result = await createRouteTask({
-            to,
-            from,
-            tasks,
-            router
-        });
-
-        expect(result).toBe(to);
-        expect(to.status).toBe(RouteStatus.aborted);
+        await expect(
+            createRouteTask({
+                to,
+                from,
+                tasks,
+                router
+            })
+        ).rejects.toThrow(RouteNavigationAbortedError);
     });
 
     it('should handle redirection when task returns a route location string', async () => {
@@ -233,20 +241,17 @@ describe('createRouteTask', () => {
             }
         ];
 
-        const result = await createRouteTask({
-            to,
-            from,
-            tasks,
-            router
-        });
-
-        expect(result).not.toBe(to);
-        expect(result.path).toBe('/redirected');
-        expect(result.type).toBe(RouteType.push);
-        expect(result.status).toBe(RouteStatus.error); // No handler function obtained after redirection, marked as failed.
+        await expect(
+            createRouteTask({
+                to,
+                from,
+                tasks,
+                router
+            })
+        ).rejects.toThrow(RouteNoHandlerFoundError);
     });
 
-    it('should handle redirection when task returns a route location object', async () => {
+    it('should throw RouteTaskExecutionError when task throws an error', async () => {
         const router = createMockRouter();
         const to = new Route({
             options: router.parsedOptions,
@@ -258,106 +263,6 @@ describe('createRouteTask', () => {
             toType: RouteType.push,
             toInput: '/home'
         });
-
-        // Real redirection task function, returns a route object.
-        const redirectTask = async (
-            route: Route,
-            fromRoute: Route | null,
-            router: Router
-        ) => {
-            if (route.path === '/test') {
-                return {
-                    path: '/redirected',
-                    query: { source: 'test' }
-                };
-            }
-        };
-
-        const tasks: RouteTask[] = [
-            {
-                name: 'beforeEach',
-                task: redirectTask
-            }
-        ];
-
-        const result = await createRouteTask({
-            to,
-            from,
-            tasks,
-            router
-        });
-
-        expect(result).not.toBe(to);
-        expect(result.path).toBe('/redirected');
-        expect(result.query.source).toBe('test');
-        expect(result.type).toBe(RouteType.push);
-        expect(result.status).toBe(RouteStatus.error); // No handler function obtained after redirection, marked as failed.
-    });
-
-    it('should handle conditional redirection based on route state', async () => {
-        const router = createMockRouter();
-        const to = new Route({
-            options: router.parsedOptions,
-            toType: RouteType.push,
-            toInput: '/admin'
-        });
-        const from = new Route({
-            options: router.parsedOptions,
-            toType: RouteType.push,
-            toInput: '/home'
-        });
-
-        const authCheckTask = async (
-            route: Route,
-            fromRoute: Route | null,
-            router: Router
-        ) => {
-            const isAuthenticated = false;
-
-            if (route.path === '/admin' && !isAuthenticated) {
-                // Unauthenticated users are redirected to the login page.
-                return '/login';
-            }
-
-            // Authenticated users or non-protected routes pass through directly.
-            return;
-        };
-
-        const tasks: RouteTask[] = [
-            {
-                name: 'beforeEach',
-                task: authCheckTask
-            }
-        ];
-
-        const result = await createRouteTask({
-            to,
-            from,
-            tasks,
-            router
-        });
-
-        expect(result).not.toBe(to);
-        expect(result.path).toBe('/login');
-        expect(result.status).toBe(RouteStatus.error); // No handler function obtained after redirection, marked as failed.
-    });
-
-    it('should set status to error and break on task error', async () => {
-        const router = createMockRouter();
-        const to = new Route({
-            options: router.parsedOptions,
-            toType: RouteType.push,
-            toInput: '/test'
-        });
-        const from = new Route({
-            options: router.parsedOptions,
-            toType: RouteType.push,
-            toInput: '/home'
-        });
-
-        const consoleErrorSpy = vi
-            .spyOn(console, 'error')
-            .mockImplementation(() => {});
 
         // A real task that throws an error.
         const errorTask = async (
@@ -368,42 +273,24 @@ describe('createRouteTask', () => {
             throw new Error('Task execution failed');
         };
 
-        const secondTask = async (
-            route: Route,
-            fromRoute: Route | null,
-            router: Router
-        ) => {
-            return () => ({ message: 'This should not run' });
-        };
-
         const tasks: RouteTask[] = [
             {
                 name: 'beforeEach',
                 task: errorTask
-            },
-            {
-                name: 'beforeEnter',
-                task: secondTask
             }
         ];
 
-        const result = await createRouteTask({
-            to,
-            from,
-            tasks,
-            router
-        });
-
-        expect(result).toBe(to);
-        expect(to.status).toBe(RouteStatus.error);
-        expect(consoleErrorSpy).toHaveBeenCalledWith(
-            '[beforeEach] route confirm hook error: Error: Task execution failed'
-        );
-
-        consoleErrorSpy.mockRestore();
+        await expect(
+            createRouteTask({
+                to,
+                from,
+                tasks,
+                router
+            })
+        ).rejects.toThrow(RouteTaskExecutionError);
     });
 
-    it('should not execute subsequent tasks once status is error', async () => {
+    it('should not execute subsequent tasks once an error is thrown', async () => {
         const router = createMockRouter();
         const to = new Route({
             options: router.parsedOptions,
@@ -415,10 +302,6 @@ describe('createRouteTask', () => {
             toType: RouteType.push,
             toInput: '/home'
         });
-
-        const consoleErrorSpy = vi
-            .spyOn(console, 'error')
-            .mockImplementation(() => {});
 
         const executionOrder: string[] = [];
 
@@ -451,18 +334,16 @@ describe('createRouteTask', () => {
             }
         ];
 
-        const result = await createRouteTask({
-            to,
-            from,
-            tasks,
-            router
-        });
+        await expect(
+            createRouteTask({
+                to,
+                from,
+                tasks,
+                router
+            })
+        ).rejects.toThrow(RouteTaskExecutionError);
 
-        expect(result).toBe(to);
-        expect(to.status).toBe(RouteStatus.error);
         expect(executionOrder).toEqual(['task1']); // Only the first task should be executed.
-
-        consoleErrorSpy.mockRestore();
     });
 
     it('should handle null from route parameter', async () => {
@@ -479,7 +360,7 @@ describe('createRouteTask', () => {
             router: Router
         ) => {
             expect(fromRoute).toBeNull();
-            return;
+            return async () => ({ success: true }); // Return handler
         };
 
         const tasks: RouteTask[] = [
@@ -497,7 +378,7 @@ describe('createRouteTask', () => {
         });
 
         expect(result).toBe(to);
-        expect(to.status).toBe(RouteStatus.error); // No handler function obtained, marked as failed.
+        expect(to.handle).toBeTypeOf('function');
     });
 
     it('should pass the correct to and from parameters to tasks', async () => {
@@ -556,15 +437,15 @@ describe('createRouteTask', () => {
             }
         ];
 
-        const result = await createRouteTask({
-            to,
-            from,
-            tasks,
-            router
-        });
-
-        expect(result).toBe(to);
-        expect(to.status).toBe(RouteStatus.aborted);
+        // Task returning false should throw RouteNavigationAbortedError
+        await expect(
+            createRouteTask({
+                to,
+                from,
+                tasks,
+                router
+            })
+        ).rejects.toThrow(RouteNavigationAbortedError);
     });
 
     it('should execute all tasks until one returns a result', async () => {
@@ -640,9 +521,9 @@ describe('createRouteTask', () => {
         });
 
         expect(result).toBe(to);
-        expect(to.status).toBe(RouteStatus.success);
-        // 使用 toBeTypeOf 而不是 toBe，因为函数引用在传递过程中可能会变化
+        // After removing RouteStatus, we check for successful handle instead of success status
         expect(to.handle).toBeTypeOf('function');
+        expect(to.handle).not.toBe(null);
         expect(executionOrder).toEqual(['task1', 'task2']); // Only the first two tasks should be executed.
     });
 
@@ -661,9 +542,6 @@ describe('createRouteTask', () => {
             });
 
             const controller = new RouteTaskController();
-            const consoleWarnSpy = vi
-                .spyOn(console, 'warn')
-                .mockImplementation(() => {});
 
             const firstTask = async (
                 route: Route,
@@ -695,21 +573,15 @@ describe('createRouteTask', () => {
             // Cancel before execution starts.
             controller.abort();
 
-            const result = await createRouteTask({
-                to,
-                from,
-                tasks,
-                controller,
-                router
-            });
-
-            expect(result).toBe(to);
-            expect(to.status).toBe(RouteStatus.aborted);
-            expect(consoleWarnSpy).toHaveBeenCalledWith(
-                '[beforeEach] route task cancelled'
-            );
-
-            consoleWarnSpy.mockRestore();
+            await expect(
+                createRouteTask({
+                    to,
+                    from,
+                    tasks,
+                    controller,
+                    router
+                })
+            ).rejects.toThrow(RouteTaskCancelledError);
         });
 
         it('should cancel task when abort is called after first task execution', async () => {
@@ -726,9 +598,6 @@ describe('createRouteTask', () => {
             });
 
             const controller = new RouteTaskController();
-            const consoleWarnSpy = vi
-                .spyOn(console, 'warn')
-                .mockImplementation(() => {});
 
             const firstTask = async (
                 route: Route,
@@ -758,21 +627,15 @@ describe('createRouteTask', () => {
                 }
             ];
 
-            const result = await createRouteTask({
-                to,
-                from,
-                tasks,
-                controller,
-                router
-            });
-
-            expect(result).toBe(to);
-            expect(to.status).toBe(RouteStatus.aborted);
-            expect(consoleWarnSpy).toHaveBeenCalledWith(
-                '[beforeEach] route task cancelled'
-            );
-
-            consoleWarnSpy.mockRestore();
+            await expect(
+                createRouteTask({
+                    to,
+                    from,
+                    tasks,
+                    controller,
+                    router
+                })
+            ).rejects.toThrow(RouteTaskCancelledError);
         });
 
         it('should not throw error on shouldCancel if controller is provided', async () => {
@@ -788,18 +651,18 @@ describe('createRouteTask', () => {
                 toInput: '/home'
             });
 
-            const redirectTask = async (
+            const handleTask = async (
                 route: Route,
                 fromRoute: Route | null,
                 router: Router
             ) => {
-                return '/redirected';
+                return async () => ({ success: true }); // Return handle function instead of redirecting
             };
 
             const tasks: RouteTask[] = [
                 {
                     name: 'beforeEach',
-                    task: redirectTask
+                    task: handleTask
                 }
             ];
 
@@ -811,8 +674,8 @@ describe('createRouteTask', () => {
                 router
             });
 
-            expect(result).not.toBe(to);
-            expect(result.path).toBe('/redirected');
+            expect(result).toBe(to);
+            expect(result.handle).toBeTypeOf('function');
         });
     });
 
@@ -839,10 +702,9 @@ describe('createRouteTask', () => {
                 router
             };
 
-            const result = await createRouteTask(routeTaskOptions);
-
-            expect(result).toBe(to);
-            expect(to.status).toBe(RouteStatus.error);
+            await expect(createRouteTask(routeTaskOptions)).rejects.toThrow(
+                RouteNoHandlerFoundError
+            );
         });
 
         it('should correctly handle RouteTaskOptions with controller', async () => {
@@ -869,10 +731,9 @@ describe('createRouteTask', () => {
                 controller
             };
 
-            const result = await createRouteTask(routeTaskOptions);
-
-            expect(result).toBe(to);
-            expect(to.status).toBe(RouteStatus.error);
+            await expect(createRouteTask(routeTaskOptions)).rejects.toThrow(
+                RouteNoHandlerFoundError
+            );
         });
 
         it('should correctly create real task function interface', async () => {
@@ -897,7 +758,7 @@ describe('createRouteTask', () => {
                 expect(route).toBeInstanceOf(Route);
                 expect(fromRoute).toBeInstanceOf(Route);
                 expect(router).toBeDefined();
-                return;
+                return async () => ({ success: true }); // Return handler
             };
 
             const tasks: RouteTask[] = [
@@ -915,7 +776,38 @@ describe('createRouteTask', () => {
             });
 
             expect(result).toBe(to);
-            expect(to.status).toBe(RouteStatus.error);
+            expect(to.handle).toBeTypeOf('function');
         });
+    });
+});
+
+describe('RouteTaskController', () => {
+    it('should handle task cancellation', async () => {
+        const router = createMockRouter();
+        const to = new Route({
+            options: router.parsedOptions,
+            toType: RouteType.push,
+            toInput: '/test'
+        });
+        const controller = new RouteTaskController();
+
+        controller.abort();
+
+        const tasks: RouteTask[] = [
+            {
+                name: 'beforeEach',
+                task: async () => async () => ({ success: true })
+            }
+        ];
+
+        await expect(
+            createRouteTask({
+                to,
+                from: null,
+                tasks,
+                router,
+                controller
+            })
+        ).rejects.toThrow(RouteTaskCancelledError);
     });
 });

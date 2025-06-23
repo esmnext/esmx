@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import { Router } from './router';
-import { RouteStatus, RouteType, RouterMode } from './types';
+import { RouteType, RouterMode } from './types';
 import type { Route, RouteConfig } from './types';
 
 const createTestRouter = (): Router => {
@@ -98,7 +98,6 @@ describe('Router.resolve method tests', () => {
 
             expect(route).toBeInstanceOf(Object);
             expect(route.type).toBe(RouteType.none);
-            expect(route.status).toBe(RouteStatus.resolved);
             expect(route.path).toBe('/about');
             expect(route.fullPath).toBe('/about');
             expect(route.url).toBeInstanceOf(URL);
@@ -402,10 +401,10 @@ describe('Router.resolve method tests', () => {
             expect(route.isPush).toBe(false);
         });
 
-        test('resolved route should have resolve status', () => {
+        test('resolved route should have correct handle state', () => {
             const route: Route = router.resolve('/about');
 
-            expect(route.status).toBe(RouteStatus.resolved);
+            expect(route.handle).toBe(null);
         });
 
         test('resolved route should have correct URL object properties', () => {

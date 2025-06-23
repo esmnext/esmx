@@ -12,13 +12,13 @@ import { MemoryHistory, Navigation } from './navigation';
 import { parsedOptions } from './options';
 import { Route } from './route';
 import type { RouterOptions } from './types';
-import { RouteStatus, RouteType, RouterMode } from './types';
+import { RouteType, RouterMode } from './types';
 
 const sleep = (ms?: number) => new Promise((s) => setTimeout(s, ms));
 const awaitGo = (history: MemoryHistory, delta: number) => {
     const p = Promise.withResolvers<void>();
     const un = history.onPopState(() => {
-        un(); // Cleanup subscription
+        un();
         p.resolve();
     });
     history.go(delta);

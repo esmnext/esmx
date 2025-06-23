@@ -5,7 +5,7 @@ import { parsedOptions } from './options';
 import { Route } from './route';
 import { RouteTransition } from './route-transition';
 import { createLinkResolver } from './router-link';
-import { RouteStatus, RouteType, RouterMode } from './types';
+import { RouteType, RouterMode } from './types';
 import type {
     RouteConfirmHook,
     RouteLayerOptions,
@@ -244,18 +244,9 @@ export class Router {
             toInput
         );
         if (resultRoute.handleResult !== RouteTransition.LAYER_RESULT) {
-            if (resultRoute.status === RouteStatus.success) {
-                return {
-                    promise: Promise.resolve({
-                        type: 'success',
-                        route: resultRoute
-                    }),
-                    router: this
-                };
-            }
             return {
                 promise: Promise.resolve({
-                    type: 'error',
+                    type: 'success',
                     route: resultRoute
                 }),
                 router: this

@@ -1,6 +1,12 @@
+import {
+    RouteNavigationAbortedError,
+    RouteNoHandlerFoundError,
+    RouteSelfRedirectionError,
+    RouteTaskCancelledError,
+    RouteTaskExecutionError
+} from './error';
 import { Route } from './route';
 import type { Router } from './router';
-import { RouteStatus } from './types';
 import type {
     RouteConfirmHook,
     RouteConfirmHookResult,
@@ -21,14 +27,8 @@ export class RouteTaskController {
         this._aborted = true;
     }
 
-    /**
-     * Checks if the task has been cancelled.
-     * @param name - The name of the current task, for logging purposes.
-     * @returns True if the task should be cancelled, false otherwise.
-     */
     shouldCancel(name: string): boolean {
         if (this._aborted) {
-            console.warn(`[${name}] route task cancelled`);
             return true;
         }
         return false;
@@ -50,46 +50,34 @@ export interface RouteTaskOptions {
 export async function createRouteTask(opts: RouteTaskOptions) {
     const { to, from, tasks, controller, router } = opts;
 
-    // When starting the task, change the status from resolved to pending.
-    if (to.status === RouteStatus.resolved) {
-        to.status = RouteStatus.pending;
-    }
-
     for (const task of tasks) {
-        // Check if the task should be cancelled before execution.
         if (controller?.shouldCancel(task.name)) {
-            to.status = RouteStatus.aborted;
-            break;
+            throw new RouteTaskCancelledError(task.name, to);
         }
 
         let result: RouteConfirmHookResult | null = null;
         try {
             result = await task.task(to, from, router);
         } catch (e) {
-            console.error(`[${task.name}] route confirm hook error: ${e}`);
-            to.status = RouteStatus.error;
-            break;
+            throw new RouteTaskExecutionError(
+                task.name,
+                e instanceof Error ? e : new Error(String(e)),
+                to
+            );
         }
 
-        // Check if the task should be cancelled after execution.
         if (controller?.shouldCancel(task.name)) {
-            to.status = RouteStatus.aborted;
-            break;
+            throw new RouteTaskCancelledError(task.name, to);
         }
 
         if (!isValidConfirmHookResult(result)) continue;
         if (typeof result === 'function') {
-            // Navigation confirmed successfully.
-            to.status = RouteStatus.success;
             to.handle = result;
-            break;
+            return to;
         }
         if (result === false) {
-            // Navigation was aborted.
-            to.status = RouteStatus.aborted;
-            break;
+            throw new RouteNavigationAbortedError(task.name, to);
         }
-        // Navigation is redirected, pass the controller.
         const nextTo = new Route({
             options: router.parsedOptions,
             toType: to.type,
@@ -97,11 +85,7 @@ export async function createRouteTask(opts: RouteTaskOptions) {
             from: to.url
         });
         if (isUrlEqual(nextTo.url, to.url)) {
-            console.error(
-                `[@esmx/router] Detected a self-redirection to "${to.fullPath}". Aborting navigation.`
-            );
-            to.status = RouteStatus.error;
-            break;
+            throw new RouteSelfRedirectionError(to.fullPath, to);
         }
         return createRouteTask({
             ...opts,
@@ -112,12 +96,7 @@ export async function createRouteTask(opts: RouteTaskOptions) {
     }
 
     // All tasks have been executed, but no handle function was returned.
-    // If the status is still pending, it means the task chain completed without a handler, marking it as an error.
-    if (to.status === RouteStatus.pending) {
-        to.status = RouteStatus.error;
-    }
-
-    return to;
+    throw new RouteNoHandlerFoundError(to.fullPath, to);
 }
 
 export enum RouteTaskType {

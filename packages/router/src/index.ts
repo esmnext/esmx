@@ -7,7 +7,6 @@ export {
     // Core enums
     RouterMode,
     RouteType,
-    RouteStatus,
     // Hook function types
     type RouteConfirmHook,
     type RouteConfirmHookResult,
@@ -44,3 +43,13 @@ export {
     type RouterLinkProps,
     type RouterLinkResolved
 } from './types';
+
+// Error types
+export {
+    RouteError,
+    RouteTaskCancelledError,
+    RouteTaskExecutionError,
+    RouteNavigationAbortedError,
+    RouteSelfRedirectionError,
+    RouteNoHandlerFoundError
+} from './error';

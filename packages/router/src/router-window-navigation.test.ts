@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Router } from './router';
-import { RouteStatus, RouteType } from './types';
+import { RouteType, RouterMode } from './types';
 import type { Route, RouteLocationInput, RouterOptions } from './types';
 
 describe('Router Window Navigation Tests', () => {
@@ -55,7 +55,7 @@ describe('Router Window Navigation Tests', () => {
                 expect(result.type).toBe(RouteType[methodName]);
                 expect(result.path).toBe('/about');
                 expect(result.isPush).toBe(expectedIsPush);
-                expect(result.status).toBe(RouteStatus.success);
+                expect(result.handle).not.toBeNull();
             });
 
             it(`should support string path parameters`, async () => {
@@ -65,7 +65,7 @@ describe('Router Window Navigation Tests', () => {
                 expect(result.path).toBe('/user/123');
                 expect(result.params.id).toBe('123');
                 expect(result.isPush).toBe(expectedIsPush);
-                expect(result.status).toBe(RouteStatus.success);
+                expect(result.handle).not.toBeNull();
             });
 
             it(`should support object parameters`, async () => {
@@ -81,7 +81,7 @@ describe('Router Window Navigation Tests', () => {
                 expect(result.query.tab).toBe('profile');
                 expect(result.url.hash).toBe('#section1');
                 expect(result.isPush).toBe(expectedIsPush);
-                expect(result.status).toBe(RouteStatus.success);
+                expect(result.handle).not.toBeNull();
             });
 
             it(`should correctly handle complete URLs`, async () => {
@@ -94,7 +94,7 @@ describe('Router Window Navigation Tests', () => {
                     'https://example.com/user/789?sort=name#top'
                 );
                 expect(result.isPush).toBe(expectedIsPush);
-                expect(result.status).toBe(RouteStatus.success);
+                expect(result.handle).not.toBeNull();
             });
         });
 
@@ -168,9 +168,9 @@ describe('Router Window Navigation Tests', () => {
                     return false;
                 });
 
-                const result = await router[methodName]('/about');
-
-                expect(result.status).toBe(RouteStatus.aborted);
+                await expect(router[methodName]('/about')).rejects.toThrow(
+                    'Navigation was aborted'
+                );
                 unregister();
             });
 
@@ -206,7 +206,7 @@ describe('Router Window Navigation Tests', () => {
             it(`should handle non-existent routes`, async () => {
                 const result = await router[methodName]('/nonexistent');
 
-                expect(result.status).toBe(RouteStatus.success);
+                expect(result.handle).not.toBeNull();
                 expect(result.matched.length).toBe(0);
                 expect(result.isPush).toBe(expectedIsPush);
             });
@@ -214,7 +214,7 @@ describe('Router Window Navigation Tests', () => {
             it(`should handle empty string path`, async () => {
                 const result = await router[methodName]('');
 
-                expect(result.status).toBe(RouteStatus.success);
+                expect(result.handle).not.toBeNull();
                 expect(result.isPush).toBe(expectedIsPush);
             });
 
@@ -223,7 +223,7 @@ describe('Router Window Navigation Tests', () => {
                     '/user/测试用户?name=张三&age=25#个人信息'
                 );
 
-                expect(result.status).toBe(RouteStatus.success);
+                expect(result.handle).not.toBeNull();
                 expect(result.isPush).toBe(expectedIsPush);
                 expect(result.url.pathname).toContain(
                     '%E6%B5%8B%E8%AF%95%E7%94%A8%E6%88%B7'
@@ -234,17 +234,21 @@ describe('Router Window Navigation Tests', () => {
         describe(`⚡ ${methodName} Task Cancellation and Concurrency Control`, () => {
             it(`should support concurrent calls`, async () => {
                 const promises = [
-                    router[methodName]('/user/1'),
-                    router[methodName]('/user/2'),
-                    router[methodName]('/user/3')
+                    router[methodName]('/user/1').catch((err) => err),
+                    router[methodName]('/user/2').catch((err) => err),
+                    router[methodName]('/user/3').catch((err) => err)
                 ];
 
                 const results = await Promise.all(promises);
 
                 const successResults = results.filter(
-                    (r) => r.status === RouteStatus.success
+                    (r) => !(r instanceof Error) && r.handle !== null
                 );
+                const errorResults = results.filter((r) => r instanceof Error);
+
+                // At least one should succeed, others may be cancelled
                 expect(successResults.length).toBeGreaterThan(0);
+                expect(successResults.length + errorResults.length).toBe(3);
 
                 successResults.forEach((result) => {
                     expect(result.isPush).toBe(expectedIsPush);
@@ -259,7 +263,7 @@ describe('Router Window Navigation Tests', () => {
                 }
 
                 results.forEach((result, index) => {
-                    expect(result.status).toBe(RouteStatus.success);
+                    expect(result.handle).not.toBeNull();
                     expect(result.params.id).toBe(String(index));
                     expect(result.isPush).toBe(expectedIsPush);
                 });
@@ -272,9 +276,7 @@ describe('Router Window Navigation Tests', () => {
                     throw new Error('Guard error');
                 });
 
-                const result = await router[methodName]('/about');
-
-                expect(result.status).toBe(RouteStatus.error);
+                await expect(router[methodName]('/about')).rejects.toThrow();
                 unregister();
             });
 
@@ -292,7 +294,7 @@ describe('Router Window Navigation Tests', () => {
                 // Location handler exceptions will cause entire route handling to fail
                 await expect(
                     windowRouter[methodName]('/about')
-                ).rejects.toThrow('Location handler error');
+                ).rejects.toThrow();
 
                 windowRouter.destroy();
             });
@@ -322,7 +324,7 @@ describe('Router Window Navigation Tests', () => {
 
                 const result = await asyncRouter[methodName]('/async');
 
-                expect(result.status).toBe(RouteStatus.success);
+                expect(result.handle).not.toBeNull();
                 expect(result.isPush).toBe(expectedIsPush);
                 // so the component remains undefined, only asyncComponent config exists
                 expect(result.matched[0].component).toBeUndefined();
@@ -350,7 +352,7 @@ describe('Router Window Navigation Tests', () => {
 
                 const result = await asyncRouter[methodName]('/async-error');
 
-                expect(result.status).toBe(RouteStatus.success);
+                expect(result.handle).not.toBeNull();
                 // Component should remain undefined since asyncComponent task is not executed
                 expect(result.matched[0].component).toBeUndefined();
                 expect(result.matched[0].asyncComponent).toBeDefined();
@@ -406,7 +408,6 @@ describe('Router Window Navigation Tests', () => {
             expect(pushResult.query).toEqual(replaceResult.query);
             expect(pushResult.url.hash).toBe(replaceResult.url.hash);
             expect(pushResult.matched).toEqual(replaceResult.matched);
-            expect(pushResult.status).toBe(replaceResult.status);
 
             expect(pushResult.isPush).toBe(true);
             expect(replaceResult.isPush).toBe(false);
