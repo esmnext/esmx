@@ -1,11 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { parsedOptions } from './options';
 import { Route } from './route';
-import {
-    RouteTaskController,
-    RouteTaskType,
-    createRouteTask
-} from './route-task';
+import { RouteTaskController, createRouteTask } from './route-task';
 import type { RouteTask, RouteTaskOptions } from './route-task';
 import type { Router } from './router';
 import { RouteStatus, RouteType } from './types';
@@ -94,11 +90,11 @@ describe('createRouteTask', () => {
 
         const tasks: RouteTask[] = [
             {
-                name: RouteTaskType.beforeEach,
+                name: 'beforeEach',
                 task: firstTask
             },
             {
-                name: RouteTaskType.override,
+                name: 'override',
                 task: secondTask
             }
         ];
@@ -145,7 +141,7 @@ describe('createRouteTask', () => {
 
         const tasks: RouteTask[] = [
             {
-                name: RouteTaskType.beforeEach,
+                name: 'beforeEach',
                 task: successTask
             }
         ];
@@ -188,7 +184,7 @@ describe('createRouteTask', () => {
 
         const tasks: RouteTask[] = [
             {
-                name: RouteTaskType.beforeEach,
+                name: 'beforeEach',
                 task: blockingTask
             }
         ];
@@ -232,7 +228,7 @@ describe('createRouteTask', () => {
 
         const tasks: RouteTask[] = [
             {
-                name: RouteTaskType.beforeEach,
+                name: 'beforeEach',
                 task: redirectTask
             }
         ];
@@ -279,7 +275,7 @@ describe('createRouteTask', () => {
 
         const tasks: RouteTask[] = [
             {
-                name: RouteTaskType.beforeEach,
+                name: 'beforeEach',
                 task: redirectTask
             }
         ];
@@ -329,7 +325,7 @@ describe('createRouteTask', () => {
 
         const tasks: RouteTask[] = [
             {
-                name: RouteTaskType.beforeEach,
+                name: 'beforeEach',
                 task: authCheckTask
             }
         ];
@@ -382,11 +378,11 @@ describe('createRouteTask', () => {
 
         const tasks: RouteTask[] = [
             {
-                name: RouteTaskType.beforeEach,
+                name: 'beforeEach',
                 task: errorTask
             },
             {
-                name: RouteTaskType.beforeEnter,
+                name: 'beforeEnter',
                 task: secondTask
             }
         ];
@@ -446,11 +442,11 @@ describe('createRouteTask', () => {
 
         const tasks: RouteTask[] = [
             {
-                name: RouteTaskType.beforeEach,
+                name: 'beforeEach',
                 task: firstTask
             },
             {
-                name: RouteTaskType.beforeEnter,
+                name: 'beforeEnter',
                 task: secondTask
             }
         ];
@@ -488,7 +484,7 @@ describe('createRouteTask', () => {
 
         const tasks: RouteTask[] = [
             {
-                name: RouteTaskType.beforeEach,
+                name: 'beforeEach',
                 task: checkFromRouteTask
             }
         ];
@@ -547,15 +543,15 @@ describe('createRouteTask', () => {
 
         const tasks: RouteTask[] = [
             {
-                name: RouteTaskType.beforeEach,
+                name: 'beforeEach',
                 task: firstTask
             },
             {
-                name: RouteTaskType.beforeEnter,
+                name: 'beforeEnter',
                 task: secondTask
             },
             {
-                name: RouteTaskType.confirm,
+                name: 'confirm',
                 task: thirdTask
             }
         ];
@@ -623,15 +619,15 @@ describe('createRouteTask', () => {
 
         const tasks: RouteTask[] = [
             {
-                name: RouteTaskType.beforeEach,
+                name: 'beforeEach',
                 task: firstTask
             },
             {
-                name: RouteTaskType.beforeEnter,
+                name: 'beforeEnter',
                 task: secondTask
             },
             {
-                name: RouteTaskType.confirm,
+                name: 'confirm',
                 task: thirdTask
             }
         ];
@@ -687,11 +683,11 @@ describe('createRouteTask', () => {
 
             const tasks: RouteTask[] = [
                 {
-                    name: RouteTaskType.beforeEach,
+                    name: 'beforeEach',
                     task: firstTask
                 },
                 {
-                    name: RouteTaskType.beforeEnter,
+                    name: 'beforeEnter',
                     task: secondTask
                 }
             ];
@@ -753,11 +749,11 @@ describe('createRouteTask', () => {
 
             const tasks: RouteTask[] = [
                 {
-                    name: RouteTaskType.beforeEach,
+                    name: 'beforeEach',
                     task: firstTask
                 },
                 {
-                    name: RouteTaskType.beforeEnter,
+                    name: 'beforeEnter',
                     task: secondTask
                 }
             ];
@@ -802,7 +798,7 @@ describe('createRouteTask', () => {
 
             const tasks: RouteTask[] = [
                 {
-                    name: RouteTaskType.beforeEach,
+                    name: 'beforeEach',
                     task: redirectTask
                 }
             ];
@@ -906,7 +902,7 @@ describe('createRouteTask', () => {
 
             const tasks: RouteTask[] = [
                 {
-                    name: RouteTaskType.beforeEach,
+                    name: 'beforeEach',
                     task: realTaskFunction
                 }
             ];

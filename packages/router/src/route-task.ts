@@ -132,6 +132,6 @@ export enum RouteTaskType {
 }
 
 export interface RouteTask {
-    name: RouteTaskType;
+    name: string;
     task: RouteConfirmHook;
 }
