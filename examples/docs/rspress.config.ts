@@ -9,7 +9,7 @@ export default defineConfig({
             ? path.join(__dirname, 'dist/client')
             : undefined,
     globalStyles: path.join(__dirname, 'src/styles/index.css'),
-    lang: 'zh',
+    lang: 'en',
     locales: [
         {
             lang: 'zh',
