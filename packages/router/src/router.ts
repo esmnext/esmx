@@ -44,6 +44,12 @@ export class Router {
     public get root() {
         return this.parsedOptions.root;
     }
+    public get req() {
+        return this.parsedOptions.req ?? null;
+    }
+    public get res() {
+        return this.parsedOptions.res ?? null;
+    }
 
     public constructor(options: RouterOptions) {
         this.options = options;

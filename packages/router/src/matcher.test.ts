@@ -825,7 +825,7 @@ describe('createMatcher', () => {
     test('Route configuration completeness verification', () => {
         const TestComponent = () => 'test';
         const asyncComponent = async () => TestComponent;
-        const beforeEnter = async () => void 0; // Correct RouteConfirmHookResult type
+        const beforeEnter = async (to: any, from: any, router: any) => void 0; // Correct RouteConfirmHookResult type
 
         const matcher = createMatcher([
             {
@@ -926,8 +926,10 @@ describe('createMatcher', () => {
 
     test('Route override configuration handling', () => {
         // Using proper types instead of any
-        const overrideHandler: RouteConfirmHook = (to, from) => {
-            return async (toRoute, fromRoute) => ({ data: 'test' });
+        const overrideHandler: RouteConfirmHook = (to, from, router) => {
+            return async (toRoute, fromRoute, routerInstance) => ({
+                data: 'test'
+            });
         };
         const matcher = createMatcher([
             {
@@ -1003,9 +1005,10 @@ describe('createMatcher', () => {
     });
 
     test('Route guard configuration verification', () => {
-        const beforeEnter = async () => void 0; // Correct RouteConfirmHookResult type
-        const beforeUpdate = async () => void 0; // Correct void type
-        const beforeLeave = async () => '/cancel';
+        const beforeEnter = async (to: any, from: any, router: any) => void 0; // Correct RouteConfirmHookResult type
+        const beforeUpdate = async (to: any, from: any, router: any) => void 0; // Correct void type
+        const beforeLeave = async (to: any, from: any, router: any) =>
+            '/cancel';
 
         const matcher = createMatcher([
             {

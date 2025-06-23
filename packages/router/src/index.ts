@@ -1,4 +1,5 @@
 export { Router } from './router';
+export { Route } from './route';
 
 export {
     // Utility types
@@ -26,7 +27,6 @@ export {
     type RouteMatchResult,
     type RouteMatcher,
     type RouteOptions,
-    type Route,
     // Router Layer types
     type RouteLayerOptions,
     type RouteLayerResult,

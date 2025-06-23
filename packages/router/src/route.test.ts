@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { parsedOptions } from './options';
 import { NON_ENUMERABLE_PROPERTIES, Route, applyRouteParams } from './route';
+import type { Router } from './router';
 import { RouteStatus, RouteType, RouterMode } from './types';
 import type {
     RouteConfig,
@@ -446,9 +447,11 @@ describe('Route Class Complete Test Suite', () => {
                     toType: RouteType.push,
                     toInput: '/users/123'
                 });
-                const mockHandle: RouteHandleHook = vi.fn(() => ({
-                    result: 'test'
-                }));
+                const mockHandle: RouteHandleHook = vi.fn(
+                    (to, from, router) => ({
+                        result: 'test'
+                    })
+                );
 
                 route.handle = mockHandle;
                 expect(route.handle).toBeDefined();
@@ -488,16 +491,23 @@ describe('Route Class Complete Test Suite', () => {
                     toType: RouteType.push,
                     toInput: '/users/123'
                 });
-                const mockHandle: RouteHandleHook = vi.fn(() => ({
-                    result: 'success'
-                }));
+                const mockRouter = {} as Router;
+                const mockHandle: RouteHandleHook = vi.fn(
+                    (to, from, router) => ({
+                        result: 'success'
+                    })
+                );
 
                 route.handle = mockHandle;
                 route.status = RouteStatus.success;
 
-                const result = route.handle!(route, null);
+                const result = route.handle!(route, null, mockRouter);
                 expect(result).toEqual({ result: 'success' });
-                expect(mockHandle).toHaveBeenCalledWith(route, null);
+                expect(mockHandle).toHaveBeenCalledWith(
+                    route,
+                    null,
+                    mockRouter
+                );
             });
 
             it('should throw exception in error state', () => {
@@ -507,13 +517,14 @@ describe('Route Class Complete Test Suite', () => {
                     toType: RouteType.push,
                     toInput: '/users/123'
                 });
+                const mockRouter = {} as Router;
                 const mockHandle: RouteHandleHook = vi.fn();
 
                 route.handle = mockHandle;
                 route.status = RouteStatus.error;
 
                 expect(() => {
-                    route.handle!(route, null);
+                    route.handle!(route, null, mockRouter);
                 }).toThrow(
                     'Cannot call route handle hook - current status is error'
                 );
@@ -526,17 +537,20 @@ describe('Route Class Complete Test Suite', () => {
                     toType: RouteType.push,
                     toInput: '/users/123'
                 });
-                const mockHandle: RouteHandleHook = vi.fn(() => ({
-                    result: 'test'
-                }));
+                const mockRouter = {} as Router;
+                const mockHandle: RouteHandleHook = vi.fn(
+                    (to, from, router) => ({
+                        result: 'test'
+                    })
+                );
 
                 route.handle = mockHandle;
                 route.status = RouteStatus.success;
 
-                route.handle!(route, null);
+                route.handle!(route, null, mockRouter);
 
                 expect(() => {
-                    route.handle!(route, null);
+                    route.handle!(route, null, mockRouter);
                 }).toThrow(
                     'Route handle hook can only be called once per navigation'
                 );
@@ -569,27 +583,30 @@ describe('Route Class Complete Test Suite', () => {
                     toType: RouteType.push,
                     toInput: '/users/123'
                 });
-                const mockHandle: RouteHandleHook = vi.fn(() => ({
-                    result: 'test'
-                }));
+                const mockRouter = {} as Router;
+                const mockHandle: RouteHandleHook = vi.fn(
+                    (to, from, router) => ({
+                        result: 'test'
+                    })
+                );
 
                 route.handle = mockHandle;
 
                 // Test resolve state
                 route.status = RouteStatus.resolved;
-                expect(() => route.handle!(route, null)).toThrow(
+                expect(() => route.handle!(route, null, mockRouter)).toThrow(
                     'Cannot call route handle hook - current status is resolved'
                 );
 
                 // Test aborted state
                 route.status = RouteStatus.aborted;
-                expect(() => route.handle!(route, null)).toThrow(
+                expect(() => route.handle!(route, null, mockRouter)).toThrow(
                     'Cannot call route handle hook - current status is aborted'
                 );
 
                 // Test error state
                 route.status = RouteStatus.error;
-                expect(() => route.handle!(route, null)).toThrow(
+                expect(() => route.handle!(route, null, mockRouter)).toThrow(
                     'Cannot call route handle hook - current status is error'
                 );
             });
@@ -601,13 +618,15 @@ describe('Route Class Complete Test Suite', () => {
                     toType: RouteType.push,
                     toInput: '/users/123'
                 });
+                const mockRouter = {} as Router;
                 const mockHandle: RouteHandleHook = vi.fn(function (
                     this: Route,
                     to: Route,
-                    from: Route | null
+                    from: Route | null,
+                    router: Router
                 ) {
                     expect(this).toBe(route);
-                    return { context: this, to, from };
+                    return { context: this, to, from, router };
                 });
 
                 route.handle = mockHandle;
@@ -618,13 +637,18 @@ describe('Route Class Complete Test Suite', () => {
                     toType: RouteType.push,
                     toInput: '/home'
                 });
-                const result = route.handle!(route, fromRoute);
+                const result = route.handle!(route, fromRoute, mockRouter);
 
-                expect(mockHandle).toHaveBeenCalledWith(route, fromRoute);
+                expect(mockHandle).toHaveBeenCalledWith(
+                    route,
+                    fromRoute,
+                    mockRouter
+                );
                 expect(result).toEqual({
                     context: route,
                     to: route,
-                    from: fromRoute
+                    from: fromRoute,
+                    router: mockRouter
                 });
             });
 
@@ -635,6 +659,7 @@ describe('Route Class Complete Test Suite', () => {
                     toType: RouteType.push,
                     toInput: '/users/123'
                 });
+                const mockRouter = {} as Router;
                 const errorHandle: RouteHandleHook = vi.fn(() => {
                     throw new Error('Handle execution failed');
                 });
@@ -642,7 +667,7 @@ describe('Route Class Complete Test Suite', () => {
                 route.handle = errorHandle;
                 route.status = RouteStatus.success;
 
-                expect(() => route.handle!(route, null)).toThrow(
+                expect(() => route.handle!(route, null, mockRouter)).toThrow(
                     'Handle execution failed'
                 );
                 expect(errorHandle).toHaveBeenCalledOnce();
@@ -1679,6 +1704,7 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
                 toInput: '/test'
             });
 
+            const mockRouter = {} as Router;
             const mockHandle = vi.fn();
             sourceRoute.setHandle(mockHandle);
             (sourceRoute as any)._handleResult = { success: true };

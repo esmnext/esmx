@@ -142,12 +142,12 @@ export class RouteTransition {
 
     // Task definitions - follows the original Router logic for each task type.
     private readonly _tasks: Record<RouteTaskType, RouteConfirmHook> = {
-        [RouteTaskType.fallback]: (to, from) => {
+        [RouteTaskType.fallback]: (to, from, router) => {
             if (to.matched.length === 0) {
-                return this.router.parsedOptions.fallback;
+                return router.parsedOptions.fallback;
             }
         },
-        [RouteTaskType.override]: async (to, from) => {
+        [RouteTaskType.override]: async (to, from, router) => {
             if (!to.config || !to.config.override) {
                 return;
             }
@@ -155,12 +155,12 @@ export class RouteTransition {
             if (!from) {
                 return;
             }
-            const overrideHandler = await to.config.override(to, from);
+            const overrideHandler = await to.config.override(to, from, router);
             if (typeof overrideHandler === 'function') {
                 return overrideHandler;
             }
         },
-        [RouteTaskType.asyncComponent]: async (to, from) => {
+        [RouteTaskType.asyncComponent]: async (to, from, router) => {
             await Promise.all(
                 to.matched.map(async (matched) => {
                     const { asyncComponent, component } = matched;
@@ -177,15 +177,15 @@ export class RouteTransition {
                 })
             );
         },
-        [RouteTaskType.beforeEach]: async (to, from) => {
+        [RouteTaskType.beforeEach]: async (to, from, router) => {
             for (const guard of this.guards.beforeEach) {
-                const result = await guard(to, from);
+                const result = await guard(to, from, router);
                 if (isValidConfirmHookResult(result)) {
                     return result;
                 }
             }
         },
-        [RouteTaskType.beforeLeave]: async (to, from) => {
+        [RouteTaskType.beforeLeave]: async (to, from, router) => {
             if (!from?.matched.length) return;
 
             // Find routes that need to be left (routes in 'from' but not in 'to').
@@ -198,14 +198,14 @@ export class RouteTransition {
             for (let i = leavingRoutes.length - 1; i >= 0; i--) {
                 const route = leavingRoutes[i];
                 if (route.beforeLeave) {
-                    const result = await route.beforeLeave(to, from);
+                    const result = await route.beforeLeave(to, from, router);
                     if (isValidConfirmHookResult(result)) {
                         return result;
                     }
                 }
             }
         },
-        [RouteTaskType.beforeEnter]: async (to, from) => {
+        [RouteTaskType.beforeEnter]: async (to, from, router) => {
             if (!to.matched.length) return;
 
             // Find routes that need to be entered (routes in 'to' but not in 'from').
@@ -217,14 +217,14 @@ export class RouteTransition {
             // Execute beforeEnter guards in order from parent to child.
             for (const route of enteringRoutes) {
                 if (route.beforeEnter) {
-                    const result = await route.beforeEnter(to, from);
+                    const result = await route.beforeEnter(to, from, router);
                     if (isValidConfirmHookResult(result)) {
                         return result;
                     }
                 }
             }
         },
-        [RouteTaskType.beforeUpdate]: async (to, from) => {
+        [RouteTaskType.beforeUpdate]: async (to, from, router) => {
             // beforeUpdate is only executed when parameters change within the exact same route combination.
             // Quick check: if the final route configs are different, it's definitely not the same combination.
             if (!isRouteMatched(to, from, 'route')) return;
@@ -241,7 +241,11 @@ export class RouteTransition {
                 // Execute beforeUpdate guards in order from parent to child.
                 for (const route of to.matched) {
                     if (route.beforeUpdate) {
-                        const result = await route.beforeUpdate(to, from);
+                        const result = await route.beforeUpdate(
+                            to,
+                            from,
+                            router
+                        );
                         if (isValidConfirmHookResult(result)) {
                             return result;
                         }
@@ -252,7 +256,7 @@ export class RouteTransition {
         [RouteTaskType.confirm]: async (to) => {
             switch (to.type) {
                 case RouteType.push:
-                    return async (to, from) => {
+                    return async (to, from, router) => {
                         this.route = to;
                         this.router.microApp._update(this.router);
                         if (!isUrlEqual(to.url, from?.url)) {
@@ -264,7 +268,7 @@ export class RouteTransition {
                         }
                     };
                 case RouteType.replace:
-                    return async (to, from) => {
+                    return async (to, from, router) => {
                         this.route = to;
                         this.router.microApp._update(this.router);
                         const newState = this.router.navigation.replace(to);
@@ -273,7 +277,7 @@ export class RouteTransition {
                 case RouteType.go:
                 case RouteType.forward:
                 case RouteType.back:
-                    return async (to, from) => {
+                    return async (to, from, router) => {
                         this.route = to;
                         this.router.microApp._update(this.router);
                         if (!isUrlEqual(to.url, from?.url)) {
@@ -282,7 +286,7 @@ export class RouteTransition {
                         }
                     };
                 case RouteType.restartApp:
-                    return async (to) => {
+                    return async (to, from, router) => {
                         this.route = to;
                         this.router.microApp._update(this.router, true);
                         const newState = this.router.navigation.replace(to);
@@ -341,7 +345,7 @@ export class RouteTransition {
             from
         );
         if (typeof to.handle === 'function') {
-            to.handleResult = await to.handle(to, from);
+            to.handleResult = await to.handle(to, from, this.router);
         }
 
         if (to.status === RouteStatus.success) {
@@ -369,11 +373,11 @@ export class RouteTransition {
         }));
 
         return createRouteTask({
-            options: this.router.parsedOptions,
             to,
             from,
             tasks,
-            controller: this._controller
+            controller: this._controller,
+            router: this.router
         });
     }
 }

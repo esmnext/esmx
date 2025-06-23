@@ -1,6 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { parseLocation } from './location';
 import { parsedOptions } from './options';
+import type { Router } from './router';
 import { RouteStatus } from './types';
 import {
     type RouteHandleHook,
@@ -249,7 +250,9 @@ export class Route {
         const self = this;
         this._handle = function handle(
             this: Route,
-            ...args: Parameters<RouteHandleHook>
+            to: Route,
+            from: Route | null,
+            router: Router
         ) {
             if (this.status !== RouteStatus.success) {
                 throw new Error(
@@ -262,7 +265,7 @@ export class Route {
                 );
             }
             self._handled = true;
-            return val.call(this, ...args);
+            return val.call(this, to, from, router);
         };
     }
 

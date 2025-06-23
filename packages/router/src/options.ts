@@ -1,4 +1,5 @@
 import { createMatcher } from './matcher';
+import type { Router } from './router';
 import { RouterMode } from './types';
 import type { Route, RouterOptions, RouterParsedOptions } from './types';
 import { isBrowser } from './util';
@@ -11,7 +12,6 @@ import { isBrowser } from './util';
 function getBaseUrl(options: RouterOptions): URL {
     // Determine the URL source
     let sourceUrl: string | URL;
-    let context = '';
 
     if (options.base) {
         sourceUrl = options.base;
@@ -35,13 +35,8 @@ function getBaseUrl(options: RouterOptions): URL {
         const path = req.url || '';
 
         sourceUrl = `${protocol}://${host}${port ? `:${port}` : ''}${path}`;
-        context = 'from request headers';
     } else {
-        // Server environment without req, or other unknown cases
         sourceUrl = 'https://www.esmnext.com/';
-        context = !isBrowser
-            ? 'server environment without request context'
-            : 'unknown context';
     }
 
     // Parse the URL, falling back to a default on failure.
@@ -51,7 +46,7 @@ function getBaseUrl(options: RouterOptions): URL {
         base = new URL('.', sourceUrl);
     } catch (e) {
         console.warn(
-            `Failed to parse base URL ${context ? `(${context})` : ''}'${sourceUrl}', using default: https://www.esmnext.com/`
+            `Failed to parse base URL '${sourceUrl}', using default: https://www.esmnext.com/`
         );
         base = new URL('https://www.esmnext.com/');
     }
@@ -67,13 +62,13 @@ export function parsedOptions(
     const base = getBaseUrl(options);
     const routes = Array.from(options.routes ?? []);
     return Object.freeze<RouterParsedOptions>({
-        rootStyle: options.rootStyle ? { ...options.rootStyle } : false,
+        rootStyle: options.rootStyle || false,
         root: options.root || '',
-        context: options.context ?? {},
+        context: options.context || {},
         req: options.req || null,
         res: options.res || null,
-        layer: options.layer ?? false,
-        zIndex: options.zIndex ?? 10000,
+        layer: options.layer || false,
+        zIndex: options.zIndex || 10000,
         base,
         mode: isBrowser
             ? (options.mode ?? RouterMode.history)
@@ -85,21 +80,17 @@ export function parsedOptions(
                 : Object.assign({}, options.apps),
         matcher: createMatcher(routes),
         normalizeURL: options.normalizeURL ?? ((url) => url),
-        fallback: options.fallback ?? DEFAULT_LOCATION,
+        fallback: options.fallback ?? fallback,
         handleBackBoundary: options.handleBackBoundary ?? (() => {}),
         handleLayerClose: options.handleLayerClose ?? (() => {})
     });
 }
 
-export function DEFAULT_LOCATION(
-    to: Route,
-    from: Route | null,
-    context?: { res?: any }
-) {
+export function fallback(to: Route, from: Route | null, router: Router) {
     const href = to.url.href;
 
     // Server-side environment: handle application-level redirects and status codes
-    if (!isBrowser && context?.res) {
+    if (!isBrowser && router?.res) {
         // Determine status code: prioritize route-specified code, default to 302 temporary redirect
         let statusCode = 302;
 
@@ -114,9 +105,9 @@ export function DEFAULT_LOCATION(
         }
 
         // Set redirect response
-        context.res.statusCode = statusCode;
-        context.res.setHeader('Location', href);
-        context.res.end();
+        router.res.statusCode = statusCode;
+        router.res.setHeader('Location', href);
+        router.res.end();
         return;
     }
 

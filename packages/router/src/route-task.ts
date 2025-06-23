@@ -1,4 +1,5 @@
 import { Route } from './route';
+import type { Router } from './router';
 import { RouteStatus } from './types';
 import type {
     RouteConfirmHook,
@@ -38,7 +39,7 @@ export interface RouteTaskOptions {
     to: Route;
     from: Route | null;
     tasks: RouteTask[];
-    options: RouterParsedOptions;
+    router: Router;
     /**
      * Optional route task controller.
      * Used to control the execution and cancellation of the task.
@@ -47,7 +48,7 @@ export interface RouteTaskOptions {
 }
 
 export async function createRouteTask(opts: RouteTaskOptions) {
-    const { to, from, tasks, controller } = opts;
+    const { to, from, tasks, controller, router } = opts;
 
     // When starting the task, change the status from resolved to pending.
     if (to.status === RouteStatus.resolved) {
@@ -63,7 +64,7 @@ export async function createRouteTask(opts: RouteTaskOptions) {
 
         let result: RouteConfirmHookResult | null = null;
         try {
-            result = await task.task(to, from);
+            result = await task.task(to, from, router);
         } catch (e) {
             console.error(`[${task.name}] route confirm hook error: ${e}`);
             to.status = RouteStatus.error;
@@ -90,7 +91,7 @@ export async function createRouteTask(opts: RouteTaskOptions) {
         }
         // Navigation is redirected, pass the controller.
         const nextTo = new Route({
-            options: opts.options,
+            options: router.parsedOptions,
             toType: to.type,
             toInput: result,
             from: to.url

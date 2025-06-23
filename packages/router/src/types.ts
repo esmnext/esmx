@@ -51,17 +51,20 @@ export type RouteConfirmHookResult =
 
 export type RouteConfirmHook = (
     to: Route,
-    from: Route | null
+    from: Route | null,
+    router: Router
 ) => Awaitable<RouteConfirmHookResult>;
 
 export type RouteVerifyHook = (
     to: Route,
-    from: Route | null
+    from: Route | null,
+    router: Router
 ) => Awaitable<boolean>;
 
 export type RouteHandleHook = (
     to: Route,
-    from: Route | null
+    from: Route | null,
+    router: Router
 ) => Awaitable<RouteHandleResult>;
 
 export type RouteNotifyHook = (to: Route, from: Route | null) => void;
