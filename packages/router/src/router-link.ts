@@ -201,7 +201,7 @@ export function createLinkResolver(
 ): RouterLinkResolved {
     const route = router.resolve(props.to);
     const type = normalizeNavigationType(props);
-    const href = route.fullPath;
+    const href = route.url.href;
 
     const isActive = router.isRouteMatched(route, props.exact);
     const isExactActive = router.isRouteMatched(route, 'exact');

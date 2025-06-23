@@ -63,7 +63,7 @@ import { RouterLink } from '@esmx/router-vue';
     left: 0;
     right: 0;
     height: var(--spacing-1);
-    background: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    background: var(--dark-mask), linear-gradient(90deg, var(--primary-color) 0%, var(--primary-dark) 100%);
     opacity: 0.8;
 }
 
@@ -129,7 +129,7 @@ import { RouterLink } from '@esmx/router-vue';
     left: 0;
     right: 0;
     height: var(--spacing-1);
-    background: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    background: var(--dark-mask), linear-gradient(90deg, var(--primary-color) 0%, var(--primary-dark) 100%);
     opacity: 0;
 }
 
@@ -178,7 +178,7 @@ import { RouterLink } from '@esmx/router-vue';
     top: var(--spacing-4);
     right: var(--spacing-4);
     padding: var(--spacing-2) var(--spacing-4);
-    background: var(--primary-color);
+    background: var(--dark-mask), var(--primary-color);
     color: var(--text-white);
     border: none;
     border-radius: var(--border-radius-md);
@@ -209,6 +209,7 @@ import { RouterLink } from '@esmx/router-vue';
     text-decoration: none;
     font-weight: 600;
     border-top: 1px solid var(--border-light);
+    cursor: pointer;
 }
 
 .card-link:hover {

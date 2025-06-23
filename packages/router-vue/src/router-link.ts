@@ -130,14 +130,19 @@ export const RouterLink = defineComponent({
                     : undefined
             );
 
-            return h(
-                data.tag,
-                {
-                    ...data.attributes,
-                    ...(isVue3 ? eventHandlers : { on: eventHandlers })
-                },
-                slots.default?.()
-            );
+            const props = {};
+            if (isVue3) {
+                Object.assign(props, data.attributes, eventHandlers);
+            } else {
+                const { class: className, ...attrs } = data.attributes;
+                Object.assign(props, {
+                    attrs,
+                    class: className,
+                    on: eventHandlers
+                });
+            }
+
+            return h(data.tag, props, slots.default?.());
         };
     }
 });

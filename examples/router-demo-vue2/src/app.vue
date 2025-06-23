@@ -2,11 +2,67 @@
     <div class="app" :class="{ 'is-layer': $router.isLayer }">
         <view-page v-if="!$router.isLayer" />
         <view-layer v-else />
+        <button class="theme-toggle" @click="isDark = !isDark" :title="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
+            {{ isDark ? '☼' : '☽' }}
+        </button>
     </div>
 </template>
 <script lang="ts" setup>
+import { onMounted, ref, watch } from 'vue';
 import ViewLayer from './components/view-layer.vue';
 import ViewPage from './components/view-page.vue';
+
+const isDark = ref(
+    typeof window === 'object'
+        ? window.matchMedia?.('(prefers-color-scheme: dark)').matches
+        : false
+);
+
+const getAllPrefMediaRules = () =>
+    Array.from(document.styleSheets).reduce((rules, sheet) => {
+        for (const rule of Array.from(sheet.cssRules)) {
+            if (!(rule instanceof CSSMediaRule)) continue;
+            const mediaText = rule.media?.mediaText || '';
+            if (!mediaText.includes('prefers-color-scheme')) continue;
+            rules.push(rule);
+        }
+        return rules;
+    }, [] as CSSMediaRule[]);
+
+const saveAndGetOriColorScheme = (media: MediaList): string[] => {
+    const mediaText = media.mediaText;
+    const oriColorScheme = [];
+    if (!mediaText.includes('original-prefers-color-scheme')) {
+        if (mediaText.includes('light')) oriColorScheme.push('light');
+        if (mediaText.includes('dark')) oriColorScheme.push('dark');
+        media.appendMedium(
+            `(original-prefers-color-scheme: ${oriColorScheme.join(' ')})`
+        );
+    } else {
+        oriColorScheme.push(
+            ...(mediaText
+                .match(/original-prefers-color-scheme:\s*([a-z ]+)/)?.[1]
+                .split(' ') || [])
+        );
+    }
+    return oriColorScheme;
+};
+
+const applyTheme = (dark: boolean) =>
+    getAllPrefMediaRules().forEach(({ media }) => {
+        const oriColorScheme = saveAndGetOriColorScheme(media);
+        if (oriColorScheme.length === 2) return;
+        const mediaText = media.mediaText;
+        const scheme = dark ? 'dark' : 'light';
+        const antiScheme = dark ? 'light' : 'dark';
+        if (mediaText.includes(`(prefers-color-scheme: ${antiScheme})`))
+            media.deleteMedium(`(prefers-color-scheme: ${antiScheme})`);
+        if (oriColorScheme.includes(scheme))
+            media.appendMedium(`(prefers-color-scheme: ${scheme})`);
+    });
+
+onMounted(() => applyTheme(isDark.value));
+watch(isDark, (val) => applyTheme(val));
 </script>
 <style>
 /* 全局样式 */
@@ -64,13 +120,15 @@ import ViewPage from './components/view-page.vue';
     --border-radius-full: 9999px;
     
     /* 🌟 阴影系统 */
-    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-    
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --shadow-sm: 0 1px 3px 0 var(--shadow-color), 0 1px 2px -1px var(--shadow-color);
+    --shadow-md: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color);
+    --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -4px var(--shadow-color);
+    --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 8px 10px -6px var(--shadow-color);
 
-    
+    --dark-mask: linear-gradient(#0000, #0000);
+
+
     /* 📏 间距系统 */
     --spacing-0: 0;
     --spacing-1: 4px;
@@ -145,6 +203,9 @@ import ViewPage from './components/view-page.vue';
         --primary-color: #FFC107;
         --primary-light: #FFD54F;
         --primary-dark: #FF8F00;
+
+        --primary-50: #34300d;
+        --dark-mask: linear-gradient(#0006, #0006);
     }
 }
 
@@ -231,5 +292,35 @@ button, input, select, textarea {
 
 .app.is-layer {
     background: transparent;
+}
+
+/* Theme toggle button styles */
+.theme-toggle {
+    position: fixed;
+    left: 24px;
+    bottom: 24px;
+    z-index: 2000;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: var(--card-color);
+    color: var(--text-primary);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.theme-toggle:hover {
+    background: var(--primary-color);
+    color: var(--text-white);
+    box-shadow: var(--shadow-md);
+}
+.theme-toggle:active {
+    background: var(--primary-dark);
+    box-shadow: var(--shadow-sm);
 }
 </style>

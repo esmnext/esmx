@@ -215,6 +215,11 @@ function toggleLike() {
   align-items: flex-start;
   box-shadow: var(--shadow-sm);
 }
+@media (prefers-color-scheme: dark) {
+  .feature-card {
+    border-left-color: var(--primary-dark);
+  }
+}
 
 .feature-icon {
   font-size: var(--font-size-2xl);
@@ -290,7 +295,7 @@ function toggleLike() {
   box-shadow: var(--shadow-xs);
 }
 .action-btn:hover {
-  background: var(--primary-color);
+  background: var(--dark-mask), var(--primary-color);
   color: var(--text-white);
   box-shadow: var(--shadow-sm);
 }
@@ -334,6 +339,7 @@ function toggleLike() {
   color: var(--link-color);
   text-decoration: none;
   border-radius: var(--border-radius-md);
+  cursor: pointer;
 }
 .related-link:hover {
   background: rgba(31, 114, 232, 0.08);
