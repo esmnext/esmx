@@ -20,39 +20,39 @@
     </a>
   </div>
   
-  <p>A high-performance microfrontend framework supporting Vue, React, Preact, Solid, and Svelte with SSR and Module Federation capabilities</p>
+  <p>支持 Vue、React、Preact、Solid、Svelte 的高性能微前端框架，具备 SSR 和模块联邦能力</p>
   
   <p>
-    English | <a href="https://github.com/esmnext/esmx/blob/master/packages/core/README.zh-CN.md">中文</a>
+    <a href="https://github.com/esmnext/esmx/blob/master/packages/core/README.md">English</a> | 中文
   </p>
 </div>
 
-## 🚀 Features
+## 🚀 特性
 
-- **Native Microfrontend** - Based on ESM + ImportMap for native module loading with zero runtime overhead
-- **Dependency Management** - Centralized dependency management with content-hash-based strong caching strategy
-- **Application Isolation** - ESM native module isolation ensuring runtime stability
-- **SSR Support** - Flexible server-side rendering strategy supporting any frontend framework
-- **Developer Experience** - Complete TypeScript support with native module linking capabilities
+- **原生微前端** - 基于 ESM + ImportMap 的原生模块加载，零运行时开销
+- **依赖管理** - 中心化的依赖管理，基于内容哈希的强缓存策略
+- **应用隔离** - ESM 原生模块隔离，保障应用运行时的稳定性
+- **SSR 支持** - 灵活的服务端渲染策略，支持任意前端框架
+- **开发体验** - 完整的 TypeScript 支持，原生模块链接能力
 
-## 📦 Installation
-
-```bash
-npm install @esmx/core
-```
-
-## 🚀 Quick Start
+## 📦 安装
 
 ```bash
 npm install @esmx/core
 ```
 
-For detailed usage examples and configuration options, please visit the [official documentation](https://www.esmnext.com).
+## 🚀 快速开始
 
-## 📚 Documentation
+```bash
+npm install @esmx/core
+```
 
-Visit the [official documentation](https://www.esmnext.com) for detailed usage guides and API reference.
+详细的使用示例和配置选项，请访问[官方文档](https://www.esmnext.com)。
 
-## 📄 License
+## 📚 文档
+
+访问[官方文档](https://www.esmnext.com)获取详细的使用指南和 API 参考。
+
+## 📄 许可证
 
 MIT © [Esmx Team](https://github.com/esmnext/esmx)

@@ -27,9 +27,6 @@ async function importBuiltinModule(specifier: string, context: vm.Context) {
     return module;
 }
 
-/**
- * 创建一个使用 vm 实现的 importmap 的 import 函数，可以创建多次来实现热更新效果，适合开发使用。
- */
 export function createVmImport(baseURL: URL, importMap: ImportMap = {}) {
     const parsedImportMap = IM.parse(importMap, baseURL);
     const parse = (specifier: string, parent: string) => {
@@ -101,12 +98,10 @@ export function createVmImport(baseURL: URL, importMap: ImportMap = {}) {
                 },
                 identifier: specifier,
                 context: context,
-                // @ts-ignore
                 importModuleDynamically: (specifier, referrer) => {
                     return moduleLinker(
                         specifier,
                         parsed.filename,
-                        // @ts-ignore
                         referrer.context,
                         cache,
                         [...moduleIds, parsed.pathname]

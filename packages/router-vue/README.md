@@ -3,10 +3,21 @@
   <h1>@esmx/router-vue</h1>
   
   <div>
-    <a href="https://www.npmjs.com/package/@esmx/router-vue"><img src="https://img.shields.io/npm/v/@esmx/router-vue.svg" alt="npm version" /></a>
-    <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a>
-    <a href="https://www.npmjs.com/package/@esmx/router-vue"><img src="https://img.shields.io/npm/dm/@esmx/router-vue.svg" alt="downloads monthly" /></a>
-    <a href="https://bundlephobia.com/package/@esmx/router-vue"><img src="https://img.shields.io/bundlephobia/minzip/@esmx/router-vue" alt="size" /></a>
+    <a href="https://www.npmjs.com/package/@esmx/router-vue">
+      <img src="https://img.shields.io/npm/v/@esmx/router-vue.svg" alt="npm version" />
+    </a>
+    <a href="https://github.com/esmnext/esmx/actions/workflows/build.yml">
+      <img src="https://github.com/esmnext/esmx/actions/workflows/build.yml/badge.svg" alt="Build" />
+    </a>
+    <a href="https://www.esmnext.com/coverage/">
+      <img src="https://img.shields.io/badge/coverage-live%20report-brightgreen" alt="Coverage Report" />
+    </a>
+    <a href="https://nodejs.org/">
+      <img src="https://img.shields.io/node/v/@esmx/router-vue.svg" alt="node version" />
+    </a>
+    <a href="https://bundlephobia.com/package/@esmx/router-vue">
+      <img src="https://img.shields.io/bundlephobia/minzip/@esmx/router-vue" alt="size" />
+    </a>
   </div>
   
   <p>Vue integration for <a href="https://github.com/esmnext/esmx/tree/master/packages/router">@esmx/router</a> - A universal router that works seamlessly with both Vue 2.7+ and Vue 3.</p>
@@ -31,10 +42,6 @@
 
 ```bash
 npm install @esmx/router @esmx/router-vue
-# or
-yarn add @esmx/router @esmx/router-vue
-# or
-pnpm add @esmx/router @esmx/router-vue
 ```
 
 ## Quick Start
@@ -54,8 +61,7 @@ const routes = [
 
 const router = new Router({ 
   routes,
-  mode: RouterMode.history,
-  base: new URL('http://localhost:3000/')
+  mode: RouterMode.history
 });
 
 const app = createApp({
@@ -87,8 +93,7 @@ const routes = [
 
 const router = new Router({ 
   routes,
-  mode: RouterMode.history,
-  base: new URL('http://localhost:3000/')
+  mode: RouterMode.history
 });
 
 // Install the plugin
@@ -312,8 +317,7 @@ import { useProvideRouter } from '@esmx/router-vue';
 
 const router = new Router({ 
   routes,
-  mode: RouterMode.history,
-  base: new URL('http://localhost:3000/')
+  mode: RouterMode.history
 });
 
 // In your app's setup function
@@ -527,8 +531,7 @@ import App from './App.vue';
 
 const router = new Router({ 
   routes,
-  mode: RouterMode.history,
-  base: new URL('http://localhost:3000/')
+  mode: RouterMode.history
 });
 
 const app = createApp({

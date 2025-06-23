@@ -9,9 +9,7 @@ interface Data {
 }
 
 let registered = '';
-/**
- * 创建一个使用 loader 实现的 importmap 的 import 函数，只能创建一次，无热更新，适合生产使用。
- */
+
 export function createLoaderImport(baseURL: URL, importMap: ImportMap = {}) {
     if (!registered) {
         module.register<Data>(fileURLToPath(import.meta.url), {
@@ -36,7 +34,6 @@ export function createLoaderImport(baseURL: URL, importMap: ImportMap = {}) {
     };
 }
 
-// loader 线程时的处理逻辑
 let loaderBaseURL: URL = new URL('file:');
 let loaderParsedImportMap: IM.ParsedImportMap = {};
 

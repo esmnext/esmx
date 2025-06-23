@@ -20,31 +20,31 @@
     </a>
   </div>
   
-  <p>A high-performance Rspack integration for Esmx microfrontend framework, providing module federation and SSR capabilities</p>
+  <p>为 Esmx 微前端框架提供的高性能 Rspack 集成，具备模块联邦和 SSR 能力</p>
   
   <p>
-    English | <a href="https://github.com/esmnext/esmx/blob/master/packages/rspack/README.zh-CN.md">中文</a>
+    <a href="https://github.com/esmnext/esmx/blob/master/packages/rspack/README.md">English</a> | 中文
   </p>
 </div>
 
-## 🚀 Features
+## 🚀 特性
 
-- **High-Performance Build** - Ultra-fast building based on Rspack, providing excellent development experience
-- **Application Support** - Complete support for standard applications and HTML applications development and building
-- **Asset Processing** - Smart processing of various assets including JavaScript, CSS, images
-- **SSR Support** - Built-in server-side rendering support for easy isomorphic application building
-- **Developer Experience** - Supports hot reload, intelligent hints, and TypeScript
+- **高性能构建** - 基于 Rspack 的极速构建，为应用提供卓越的开发体验
+- **应用支持** - 完整支持标准应用和 HTML 应用的开发与构建
+- **资源处理** - 智能处理各类资源，支持 JavaScript、CSS、图片等
+- **SSR 支持** - 内置服务端渲染支持，轻松构建同构应用
+- **开发体验** - 支持热更新、智能提示和 TypeScript
 
-## 📦 Installation
+## 📦 安装
 
 ```bash
 npm install @esmx/rspack -D
 ```
 
-## 📚 Documentation
+## 📚 文档
 
-Visit the [official documentation](https://www.esmnext.com/api/app/rspack.html) for detailed usage guides and API reference.
+访问[官方文档](https://www.esmnext.com/api/app/rspack.html)获取详细的使用指南和 API 参考。
 
-## 📄 License
+## 📄 许可证
 
-MIT © [Esmx Team](https://github.com/esmnext/esmx)
+MIT © [Esmx Team](https://github.com/esmnext/esmx) 

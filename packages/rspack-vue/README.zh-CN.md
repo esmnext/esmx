@@ -20,32 +20,32 @@
     </a>
   </div>
   
-  <p>A high-performance Vue integration for Esmx microfrontend framework, providing Vue 2/3 support with SSR and Module Federation capabilities</p>
+  <p>为 Esmx 微前端框架提供的高性能 Vue 集成，支持 Vue 2/3 并具备 SSR 和模块联邦能力</p>
   
   <p>
-    English | <a href="https://github.com/esmnext/esmx/blob/master/packages/rspack-vue/README.zh-CN.md">中文</a>
+    <a href="https://github.com/esmnext/esmx/blob/master/packages/rspack-vue/README.md">English</a> | 中文
   </p>
 </div>
 
-## 🚀 Features
+## 🚀 特性
 
-- **Universal Vue Support** - Supports both Vue 2.7+ and Vue 3 applications
-- **High-Performance Build** - Ultra-fast building based on Rspack with Vue optimization
-- **Module Federation** - Built-in module federation capabilities for microfrontend architecture
-- **SSR Support** - Complete server-side rendering support for Vue applications
-- **Hot Module Replacement** - Fast development experience with Vue component hot reloading
-- **TypeScript Ready** - Full TypeScript support with excellent developer experience
+- **通用 Vue 支持** - 支持 Vue 2.7+ 和 Vue 3 应用
+- **高性能构建** - 基于 Rspack 的超快构建，配有 Vue 优化
+- **模块联邦** - 内置模块联邦能力，支持微前端架构
+- **SSR 支持** - 完整的 Vue 应用服务端渲染支持
+- **热模块替换** - Vue 组件热重载，快速开发体验
+- **TypeScript 就绪** - 完整的 TypeScript 支持，出色的开发体验
 
-## 📦 Installation
+## 📦 安装
 
 ```bash
 npm install @esmx/rspack-vue -D
 ```
 
-## 📚 Documentation
+## 📚 文档
 
-Visit the [official documentation](https://www.esmnext.com) for detailed usage guides and API reference.
+访问[官方文档](https://www.esmnext.com)获取详细的使用指南和 API 参考。
 
-## 📄 License
+## 📄 许可证
 
-MIT © [Esmx Team](https://github.com/esmnext/esmx)
+MIT © [Esmx Team](https://github.com/esmnext/esmx) 
