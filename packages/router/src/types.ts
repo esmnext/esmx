@@ -296,9 +296,6 @@ export interface RouterOptions {
 }
 
 export interface RouterParsedOptions extends Readonly<Required<RouterOptions>> {
-    /** Parsed URL containing only directory pathname, without query and hash */
-    readonly base: URL;
-    /** Route matcher instance */
     readonly matcher: RouteMatcher;
 }
 
