@@ -9,7 +9,6 @@ import type { Router } from './router';
 import { RouteStatus, RouteType } from './types';
 import type {
     RouteConfirmHook,
-    RouteHandleHook,
     RouteLocationInput,
     RouteNotifyHook
 } from './types';
@@ -20,108 +19,96 @@ import {
     removeFromArray
 } from './util';
 
-// Task configuration - Optimized structure with differentiated logic for each route type
-// Following Vue Router's standard navigation resolution flow with performance optimizations
-const BEFORE_TASKS: Record<RouteType, RouteTaskType[]> = {
-    // ========== STANDARD INTERNAL NAVIGATION - Complete guard chain ==========
-
+const TASKS_CONFIG: Record<RouteType, RouteTaskType[]> = {
     [RouteType.push]: [
-        RouteTaskType.fallback, // Keep - Active navigation needs to handle 404 and unmatched routes
-        RouteTaskType.override, // Keep - Active navigation may need to rewrite jump logic
-        RouteTaskType.beforeLeave, // Keep - User may need to prevent leaving current page
-        RouteTaskType.beforeEach, // Keep - Global guards must execute
-        RouteTaskType.beforeUpdate, // Keep - May involve route parameter updates
-        RouteTaskType.beforeEnter, // Keep - Need to check enter permissions
-        RouteTaskType.asyncComponent, // Keep - Need to load target page components
-        RouteTaskType.push // Keep - Execute actual page navigation
+        RouteTaskType.fallback,
+        RouteTaskType.override,
+        RouteTaskType.beforeLeave,
+        RouteTaskType.beforeEach,
+        RouteTaskType.beforeUpdate,
+        RouteTaskType.beforeEnter,
+        RouteTaskType.asyncComponent,
+        RouteTaskType.confirm
     ],
 
     [RouteType.replace]: [
-        RouteTaskType.fallback, // Keep - Active navigation needs to handle 404 and unmatched routes
-        RouteTaskType.override, // Keep - Active navigation may need to rewrite replace logic
-        RouteTaskType.beforeLeave, // Keep - User may need to prevent leaving current page
-        RouteTaskType.beforeEach, // Keep - Global guards must execute
-        RouteTaskType.beforeUpdate, // Keep - May involve route parameter updates
-        RouteTaskType.beforeEnter, // Keep - Need to check enter permissions
-        RouteTaskType.asyncComponent, // Keep - Need to load target page components
-        RouteTaskType.replace // Keep - Execute actual page replacement
+        RouteTaskType.fallback,
+        RouteTaskType.override,
+        RouteTaskType.beforeLeave,
+        RouteTaskType.beforeEach,
+        RouteTaskType.beforeUpdate,
+        RouteTaskType.beforeEnter,
+        RouteTaskType.asyncComponent,
+        RouteTaskType.confirm
     ],
 
-    // ========== PASSIVE NAVIGATION - Simplified application layer control ==========
-
     [RouteType.back]: [
-        // RouteTaskType.fallback,     // Remove - Passive navigation handled by browser, no app-layer fallback needed
-        // RouteTaskType.override,     // Remove - Passive navigation doesn't need app-layer rewriting
-        RouteTaskType.beforeLeave, // Keep - User may need to prevent back operation
-        RouteTaskType.beforeEach, // Keep - Global guards should cover all navigation
-        RouteTaskType.beforeUpdate, // Keep - Back navigation may involve parameter changes
-        RouteTaskType.beforeEnter, // Keep - Target page still needs permission check
-        RouteTaskType.asyncComponent, // Keep - Target page may need component loading
-        RouteTaskType.popstate // Keep - Handle browser back event
+        // RouteTaskType.fallback,
+        // RouteTaskType.override,
+        RouteTaskType.beforeLeave,
+        RouteTaskType.beforeEach,
+        RouteTaskType.beforeUpdate,
+        RouteTaskType.beforeEnter,
+        RouteTaskType.asyncComponent,
+        RouteTaskType.confirm
     ],
 
     [RouteType.go]: [
-        // RouteTaskType.fallback,     // Remove - Passive navigation handled by browser, no app-layer fallback needed
-        // RouteTaskType.override,     // Remove - Passive navigation doesn't need app-layer rewriting
-        RouteTaskType.beforeLeave, // Keep - User may need to prevent go operation
-        RouteTaskType.beforeEach, // Keep - Global guards should cover all navigation
-        RouteTaskType.beforeUpdate, // Keep - History navigation may involve parameter changes
-        RouteTaskType.beforeEnter, // Keep - Target page still needs permission check
-        RouteTaskType.asyncComponent, // Keep - Target page may need component loading
-        RouteTaskType.popstate // Keep - Handle browser history navigation event
+        // RouteTaskType.fallback,
+        // RouteTaskType.override,
+        RouteTaskType.beforeLeave,
+        RouteTaskType.beforeEach,
+        RouteTaskType.beforeUpdate,
+        RouteTaskType.beforeEnter,
+        RouteTaskType.asyncComponent,
+        RouteTaskType.confirm
     ],
 
     [RouteType.forward]: [
-        // RouteTaskType.fallback,     // Remove - Passive navigation handled by browser, no app-layer fallback needed
-        // RouteTaskType.override,     // Remove - Passive navigation doesn't need app-layer rewriting
-        RouteTaskType.beforeLeave, // Keep - User may need to prevent forward operation
-        RouteTaskType.beforeEach, // Keep - Global guards should cover all navigation
-        RouteTaskType.beforeUpdate, // Keep - Forward navigation may involve parameter changes
-        RouteTaskType.beforeEnter, // Keep - Target page still needs permission check
-        RouteTaskType.asyncComponent, // Keep - Target page may need component loading
-        RouteTaskType.popstate // Keep - Handle browser forward event
+        // RouteTaskType.fallback,
+        // RouteTaskType.override,
+        RouteTaskType.beforeLeave,
+        RouteTaskType.beforeEach,
+        RouteTaskType.beforeUpdate,
+        RouteTaskType.beforeEnter,
+        RouteTaskType.asyncComponent,
+        RouteTaskType.confirm
     ],
 
-    // ========== EXTERNAL NAVIGATION - Streamlined internal guards ==========
-
     [RouteType.pushWindow]: [
-        RouteTaskType.fallback, // Keep - Active navigation needs final fallback to handle external jump
-        RouteTaskType.override, // Keep - Active navigation may need to rewrite external jump logic
-        // RouteTaskType.beforeLeave,  // Remove - pushWindow only opens new window, doesn't truly leave current app
-        RouteTaskType.beforeEach, // Keep - Global guards still needed (auth verification, logging)
-        // RouteTaskType.beforeUpdate, // Remove - Opening new window, no internal route update
-        // RouteTaskType.beforeEnter,  // Remove - Opening new window, no internal route enter
-        // RouteTaskType.asyncComponent, // Remove - Opening new window, no internal component loading
-        RouteTaskType.pushWindow // Keep - Execute actual new window opening
+        RouteTaskType.fallback,
+        RouteTaskType.override,
+        // RouteTaskType.beforeLeave
+        RouteTaskType.beforeEach,
+        // RouteTaskType.beforeUpdate
+        // RouteTaskType.beforeEnter
+        // RouteTaskType.asyncComponent
+        RouteTaskType.confirm
     ],
 
     [RouteType.replaceWindow]: [
-        RouteTaskType.fallback, // Keep - Active navigation needs final fallback to handle external jump
-        RouteTaskType.override, // Keep - Active navigation may need to rewrite external jump logic
-        RouteTaskType.beforeLeave, // Keep - replaceWindow refreshes current page, user loses current state, needs confirmation
-        RouteTaskType.beforeEach, // Keep - Global guards still needed (auth verification, logging)
-        // RouteTaskType.beforeUpdate, // Remove - Page refresh replacement, no internal route update concept
-        // RouteTaskType.beforeEnter,  // Remove - Page refresh replacement, no internal route enter concept
-        // RouteTaskType.asyncComponent, // Remove - Page refresh replacement, no internal component loading concept
-        RouteTaskType.replaceWindow // Keep - Execute actual page refresh/replacement
+        RouteTaskType.fallback,
+        RouteTaskType.override,
+        RouteTaskType.beforeLeave,
+        RouteTaskType.beforeEach,
+        // RouteTaskType.beforeUpdate
+        // RouteTaskType.beforeEnter
+        // RouteTaskType.asyncComponent
+        RouteTaskType.confirm
     ],
-
-    // ========== SPECIAL OPERATION - Application restart ==========
 
     [RouteType.restartApp]: [
-        RouteTaskType.fallback, // Keep - Restart target address may return 404
-        // RouteTaskType.override,     // Remove - App restart is pure operation, doesn't need rewrite logic
-        RouteTaskType.beforeLeave, // Keep - Need to leave current page and jump to target address
-        RouteTaskType.beforeEach, // Keep - Global guards should cover all navigation
-        RouteTaskType.beforeUpdate, // Keep - Target address may involve parameter changes
-        RouteTaskType.beforeEnter, // Keep - Need to check target address enter permissions
-        RouteTaskType.asyncComponent, // Keep - Target address may need component loading
-        RouteTaskType.restartApp // Keep - Execute restart + navigation operation
+        RouteTaskType.fallback,
+        // RouteTaskType.override,
+        RouteTaskType.beforeLeave,
+        RouteTaskType.beforeEach,
+        RouteTaskType.beforeUpdate,
+        RouteTaskType.beforeEnter,
+        RouteTaskType.asyncComponent,
+        RouteTaskType.confirm
     ],
 
-    // ========== NO OPERATION ==========
-
-    [RouteType.none]: [] // No operation requires no tasks
+    [RouteType.none]: []
 };
 
 /**
@@ -252,57 +239,52 @@ export class RouteTransition {
                 }
             }
         },
-        [RouteTaskType.push]: async () => {
-            return async (to, from) => {
-                // Update internal route state.
-                this.route = to;
-                this.router.microApp._update(this.router);
-                // Execute push on change, replace if unchanged.
-                if (!isUrlEqual(to.url, from?.url)) {
-                    const newState = this.router.navigation.push(to);
-                    to.mergeState(newState);
-                } else {
-                    const newState = this.router.navigation.replace(to);
-                    to.mergeState(newState);
-                }
-            };
-        },
-        [RouteTaskType.replace]: async () => {
-            return async (to, from) => {
-                // Update internal route state.
-                this.route = to;
-                this.router.microApp._update(this.router);
-                // Always execute replace.
-                const newState = this.router.navigation.replace(to);
-                to.mergeState(newState);
-            };
-        },
-        [RouteTaskType.popstate]: async () => {
-            return async (to, from) => {
-                // Update internal route state.
-                this.route = to;
-                this.router.microApp._update(this.router);
-                // Execute replace on change.
-                if (!isUrlEqual(to.url, from?.url)) {
-                    const newState = this.router.navigation.replace(to);
-                    to.mergeState(newState);
-                }
-            };
-        },
-        [RouteTaskType.restartApp]: async () => {
-            return async (to, from) => {
-                // Update internal route state.
-                this.route = to;
-                this.router.microApp._update(this.router, true);
-                const newState = this.router.navigation.replace(to);
-                to.mergeState(newState);
-            };
-        },
-        [RouteTaskType.pushWindow]: async () => {
-            return this.router.parsedOptions.fallback;
-        },
-        [RouteTaskType.replaceWindow]: async (to) => {
-            return this.router.parsedOptions.fallback;
+        [RouteTaskType.confirm]: async (to) => {
+            switch (to.type) {
+                case RouteType.push:
+                    return async (to, from) => {
+                        this.route = to;
+                        this.router.microApp._update(this.router);
+                        if (!isUrlEqual(to.url, from?.url)) {
+                            const newState = this.router.navigation.push(to);
+                            to.mergeState(newState);
+                        } else {
+                            const newState = this.router.navigation.replace(to);
+                            to.mergeState(newState);
+                        }
+                    };
+                case RouteType.replace:
+                    return async (to, from) => {
+                        this.route = to;
+                        this.router.microApp._update(this.router);
+                        const newState = this.router.navigation.replace(to);
+                        to.mergeState(newState);
+                    };
+                case RouteType.go:
+                case RouteType.forward:
+                case RouteType.back:
+                    return async (to, from) => {
+                        this.route = to;
+                        this.router.microApp._update(this.router);
+                        if (!isUrlEqual(to.url, from?.url)) {
+                            const newState = this.router.navigation.replace(to);
+                            to.mergeState(newState);
+                        }
+                    };
+                case RouteType.restartApp:
+                    return async (to) => {
+                        this.route = to;
+                        this.router.microApp._update(this.router, true);
+                        const newState = this.router.navigation.replace(to);
+                        to.mergeState(newState);
+                    };
+                case RouteType.pushWindow:
+                    return this.router.parsedOptions.fallback;
+                case RouteType.replaceWindow:
+                    return this.router.parsedOptions.fallback;
+                case RouteType.none:
+                    return () => {};
+            }
         }
     };
 
@@ -312,7 +294,6 @@ export class RouteTransition {
 
     public beforeEach(guard: RouteConfirmHook): () => void {
         this.guards.beforeEach.push(guard);
-        // Return a cleanup function.
         return () => {
             removeFromArray(this.guards.beforeEach, guard);
         };
@@ -320,26 +301,23 @@ export class RouteTransition {
 
     public afterEach(guard: RouteNotifyHook): () => void {
         this.guards.afterEach.push(guard);
-        // Return a cleanup function.
         return () => {
             removeFromArray(this.guards.afterEach, guard);
         };
     }
 
     public destroy(): void {
-        // Abort the current task.
         this._controller?.abort();
         this._controller = null;
     }
 
-    // Core route transition method - follows the original Router's _transitionTo logic.
     public async to(
         toType: RouteType,
         toInput: RouteLocationInput
     ): Promise<Route> {
         const from = this.route;
         const to = await this._runTask(
-            BEFORE_TASKS,
+            TASKS_CONFIG,
             new Route({
                 options: this.router.parsedOptions,
                 toType,
@@ -363,16 +341,12 @@ export class RouteTransition {
         return to;
     }
 
-    // Run task - follows the original Router's _runTask logic.
     private _runTask(
         config: Record<RouteType, RouteTaskType[]>,
         to: Route,
         from: Route | null
     ) {
-        // Abort previous tasks.
         this._controller?.abort();
-
-        // Create a new task controller.
         this._controller = new RouteTaskController();
 
         const names: RouteTaskType[] = to.type ? config[to.type] : [];

@@ -127,12 +127,7 @@ export enum RouteTaskType {
     beforeEnter = 'beforeEnter',
     beforeUpdate = 'beforeUpdate',
     beforeLeave = 'beforeLeave',
-    push = 'push',
-    replace = 'replace',
-    popstate = 'popstate',
-    restartApp = 'restartApp',
-    pushWindow = 'pushWindow',
-    replaceWindow = 'replaceWindow'
+    confirm = 'confirm'
 }
 
 export interface RouteTask {
