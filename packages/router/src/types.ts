@@ -28,7 +28,8 @@ export enum RouteType {
     back = 'back',
     none = 'none',
     pushWindow = 'pushWindow',
-    replaceWindow = 'replaceWindow'
+    replaceWindow = 'replaceWindow',
+    pushLayer = 'pushLayer'
 }
 
 export enum RouteStatus {
@@ -201,8 +202,9 @@ export interface RouteLayerOptions {
 }
 
 export type RouteLayerResult =
+    | { type: 'error'; route: Route }
+    | { type: 'close'; route: Route }
     | { type: 'push'; route: Route }
-    | { type: 'close'; route: Route | null }
     | { type: 'success'; route: Route };
 
 /**

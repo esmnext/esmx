@@ -96,7 +96,16 @@ const TASKS_CONFIG: Record<RouteType, RouteTaskType[]> = {
         // RouteTaskType.asyncComponent
         RouteTaskType.confirm
     ],
-
+    [RouteType.pushLayer]: [
+        RouteTaskType.fallback,
+        RouteTaskType.override,
+        // RouteTaskType.beforeLeave
+        RouteTaskType.beforeEach,
+        // RouteTaskType.beforeUpdate
+        // RouteTaskType.beforeEnter
+        // RouteTaskType.asyncComponent
+        RouteTaskType.confirm
+    ],
     [RouteType.restartApp]: [
         RouteTaskType.fallback,
         // RouteTaskType.override,
@@ -117,6 +126,7 @@ const TASKS_CONFIG: Record<RouteType, RouteTaskType[]> = {
  * task processing, and status updates.
  */
 export class RouteTransition {
+    public static LAYER_RESULT = Symbol('LAYER_RESULT');
     private readonly router: Router;
 
     public route: Route | null = null;
@@ -282,6 +292,10 @@ export class RouteTransition {
                     return this.router.parsedOptions.fallback;
                 case RouteType.replaceWindow:
                     return this.router.parsedOptions.fallback;
+                case RouteType.pushLayer:
+                    return () => {
+                        return RouteTransition.LAYER_RESULT;
+                    };
                 case RouteType.none:
                     return () => {};
             }

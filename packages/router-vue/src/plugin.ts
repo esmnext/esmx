@@ -1,6 +1,7 @@
 import { RouterLink } from './router-link';
 import { RouterView } from './router-view';
 import { getRoute, getRouter } from './use';
+import { isVue3 } from './util';
 
 interface VueApp {
     config?: {
@@ -70,16 +71,15 @@ export const RouterPlugin = {
         if (!target) {
             throw new Error('[@esmx/router-vue] Invalid Vue app instance');
         }
-
         Object.defineProperties(target, {
             $router: {
                 get() {
-                    return getRouter();
+                    return getRouter(isVue3 ? null : this);
                 }
             },
             $route: {
                 get() {
-                    return getRoute();
+                    return getRoute(isVue3 ? null : this);
                 }
             }
         });

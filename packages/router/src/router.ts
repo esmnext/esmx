@@ -5,7 +5,7 @@ import { parsedOptions } from './options';
 import { Route } from './route';
 import { RouteTransition } from './route-transition';
 import { createLinkResolver } from './router-link';
-import { RouteType, RouterMode } from './types';
+import { RouteStatus, RouteType, RouterMode } from './types';
 import type {
     RouteConfirmHook,
     RouteLayerOptions,
@@ -235,7 +235,29 @@ export class Router {
     public async createLayer(
         toInput: RouteLocationInput,
         options?: RouterLayerOptions
-    ): Promise<{ promise: Promise<RouteLayerResult>; router: Router }> {
+    ): Promise<{ promise: Promise<RouteLayerResult>; router: Router | null }> {
+        const resultRoute = await this.transition.to(
+            RouteType.pushLayer,
+            toInput
+        );
+        if (resultRoute.handleResult !== RouteTransition.LAYER_RESULT) {
+            if (resultRoute.status === RouteStatus.success) {
+                return {
+                    promise: Promise.resolve({
+                        type: 'success',
+                        route: resultRoute
+                    }),
+                    router: this
+                };
+            }
+            return {
+                promise: Promise.resolve({
+                    type: 'error',
+                    route: resultRoute
+                }),
+                router: this
+            };
+        }
         const layerConfig = isPlainObject(toInput) ? toInput.layer : undefined;
 
         // Extract routerOptions from layer config and merge with options
