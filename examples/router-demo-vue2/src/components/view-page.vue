@@ -1,6 +1,5 @@
 <template>
     <div>
-        <!-- 全新设计的导航栏 -->
         <nav class="esmx-nav">
             <div class="nav-content">
                 <div class="nav-brand">
@@ -28,7 +27,6 @@
                     </router-link>
                 </div>
             </div>
-            <div class="nav-wave"></div>
         </nav>
 
         <div class="app-container">
@@ -69,25 +67,22 @@ import { RouterLink } from '@esmx/router-vue';
 
 /* 🌟 ESMX导航栏 */
 .esmx-nav {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    background: var(--dark-mask),
+        radial-gradient(circle at 20% 50%, #fff2 0, transparent 60%),
+        radial-gradient(circle at 80% 20%, #fff1 0, transparent 60%),
+        linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
     position: relative;
     width: 100%;
     overflow: hidden;
     box-shadow: var(--shadow-lg);
-    border-bottom: 1px solid rgba(255, 193, 7, 0.2);
+    border-bottom: var(--spacing-1) solid;
+    border-image: linear-gradient(90deg, #fff5 0, #fffa 50%, #fff5 100%) 1;
 }
 
-.esmx-nav::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 60%),
-        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 60%);
-    pointer-events: none;
+@media (prefers-color-scheme: dark) {
+    .esmx-nav {
+        border-image: linear-gradient(90deg, #0008 0, #0002 50%, #0008 100%) 1;
+    }
 }
 
 .nav-content {
@@ -156,6 +151,7 @@ import { RouterLink } from '@esmx/router-vue';
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(5px);
+    cursor: pointer;
 }
 
 .nav-item:hover {
@@ -191,18 +187,6 @@ import { RouterLink } from '@esmx/router-vue';
     font-weight: 600;
     white-space: nowrap;
     line-height: 1.2;
-}
-
-.nav-wave {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: var(--spacing-1);
-    background: linear-gradient(90deg, 
-        rgba(255, 255, 255, 0.3) 0%, 
-        rgba(255, 255, 255, 0.6) 50%, 
-        rgba(255, 255, 255, 0.3) 100%);
 }
 
 /* 内容区域 */
@@ -246,7 +230,7 @@ import { RouterLink } from '@esmx/router-vue';
 }
 
 .panel-header {
-    background: linear-gradient(135deg, #2196F3, #FF5722);
+    background: var(--dark-mask), linear-gradient(135deg, #FF5722, #2196F3);
     padding: var(--spacing-4) var(--spacing-6);
     display: flex;
     justify-content: space-between;

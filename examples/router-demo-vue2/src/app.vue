@@ -64,13 +64,15 @@ import ViewPage from './components/view-page.vue';
     --border-radius-full: 9999px;
     
     /* 🌟 阴影系统 */
-    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-    
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --shadow-sm: 0 1px 3px 0 var(--shadow-color), 0 1px 2px -1px var(--shadow-color);
+    --shadow-md: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color);
+    --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -4px var(--shadow-color);
+    --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 8px 10px -6px var(--shadow-color);
 
-    
+    --dark-mask: linear-gradient(#0000, #0000);
+
+
     /* 📏 间距系统 */
     --spacing-0: 0;
     --spacing-1: 4px;
@@ -145,6 +147,9 @@ import ViewPage from './components/view-page.vue';
         --primary-color: #FFC107;
         --primary-light: #FFD54F;
         --primary-dark: #FF8F00;
+
+        --primary-50: #34300d;
+        --dark-mask: linear-gradient(#0006, #0006);
     }
 }
 

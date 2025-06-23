@@ -3,7 +3,6 @@
         <div class="glitch-container">
             <div class="glitch">404</div>
         </div>
-        
         <div class="error-content">
             <h1 class="error-title">页面未找到</h1>
             <p class="error-message">看起来您迷失在了数字世界中。<br>您请求的页面可能已被移除或从未存在。</p>
@@ -20,8 +19,6 @@
                 </button>
             </div>
         </div>
-        
-
     </div>
 </template>
 <script lang="ts" setup>
@@ -103,10 +100,11 @@ function reportError() {
     text-decoration: none;
     position: relative;
     font-size: var(--font-size-base);
+    cursor: pointer;
 }
 
 .home-button {
-    background: var(--primary-color);
+    background: var(--dark-mask), var(--primary-color);
     color: var(--text-white);
     box-shadow: var(--shadow-md);
     border: 1px solid var(--primary-color);
