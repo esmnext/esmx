@@ -1,4 +1,3 @@
-import type { IncomingMessage } from 'node:http';
 /**
  * @vitest-environment node
  */
