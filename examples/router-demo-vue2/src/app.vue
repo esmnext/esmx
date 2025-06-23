@@ -8,16 +8,18 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { ref, onMounted, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import ViewLayer from './components/view-layer.vue';
 import ViewPage from './components/view-page.vue';
 
-const isDark = ref(typeof window === 'object'
-    ? window.matchMedia?.('(prefers-color-scheme: dark)').matches
-    : false);
+const isDark = ref(
+    typeof window === 'object'
+        ? window.matchMedia?.('(prefers-color-scheme: dark)').matches
+        : false
+);
 
-const getAllPrefMediaRules = () => Array.from(document.styleSheets)
-    .reduce((rules, sheet) => {
+const getAllPrefMediaRules = () =>
+    Array.from(document.styleSheets).reduce((rules, sheet) => {
         for (const rule of Array.from(sheet.cssRules)) {
             if (!(rule instanceof CSSMediaRule)) continue;
             const mediaText = rule.media?.mediaText || '';
@@ -33,24 +35,31 @@ const saveAndGetOriColorScheme = (media: MediaList): string[] => {
     if (!mediaText.includes('original-prefers-color-scheme')) {
         if (mediaText.includes('light')) oriColorScheme.push('light');
         if (mediaText.includes('dark')) oriColorScheme.push('dark');
-        media.appendMedium(`(original-prefers-color-scheme: ${oriColorScheme.join(' ')})`);
+        media.appendMedium(
+            `(original-prefers-color-scheme: ${oriColorScheme.join(' ')})`
+        );
     } else {
-        oriColorScheme.push(...mediaText.match(/original-prefers-color-scheme:\s*([a-z ]+)/)?.[1].split(' ') || []);
+        oriColorScheme.push(
+            ...(mediaText
+                .match(/original-prefers-color-scheme:\s*([a-z ]+)/)?.[1]
+                .split(' ') || [])
+        );
     }
     return oriColorScheme;
 };
 
-const applyTheme = (dark: boolean) => getAllPrefMediaRules().forEach(({ media }) => {
-    const oriColorScheme = saveAndGetOriColorScheme(media);
-    if (oriColorScheme.length === 2) return;
-    const mediaText = media.mediaText;
-    const scheme = dark ? 'dark' : 'light';
-    const antiScheme = dark ? 'light' : 'dark';
-    if (mediaText.includes(`(prefers-color-scheme: ${antiScheme})`))
-        media.deleteMedium(`(prefers-color-scheme: ${antiScheme})`);
-    if (oriColorScheme.includes(scheme))
-        media.appendMedium(`(prefers-color-scheme: ${scheme})`);
-});
+const applyTheme = (dark: boolean) =>
+    getAllPrefMediaRules().forEach(({ media }) => {
+        const oriColorScheme = saveAndGetOriColorScheme(media);
+        if (oriColorScheme.length === 2) return;
+        const mediaText = media.mediaText;
+        const scheme = dark ? 'dark' : 'light';
+        const antiScheme = dark ? 'light' : 'dark';
+        if (mediaText.includes(`(prefers-color-scheme: ${antiScheme})`))
+            media.deleteMedium(`(prefers-color-scheme: ${antiScheme})`);
+        if (oriColorScheme.includes(scheme))
+            media.appendMedium(`(prefers-color-scheme: ${scheme})`);
+    });
 
 onMounted(() => applyTheme(isDark.value));
 watch(isDark, (val) => applyTheme(val));
