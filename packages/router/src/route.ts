@@ -113,7 +113,6 @@ export class Route {
 
     // Read-only properties
     public readonly type: RouteType;
-    public readonly isPush: boolean;
     public readonly req: IncomingMessage | null;
     public readonly res: ServerResponse | null;
     public readonly context: Record<string | symbol, any>;
@@ -138,7 +137,6 @@ export class Route {
         // Save original options for cloning
         this._options = options;
         this.type = toType;
-        this.isPush = toType.startsWith('push');
         this.req = options.req;
         this.res = options.res;
         this.context = options.context;
@@ -207,6 +205,9 @@ export class Route {
 
         // Configure property enumerability
         this._configureEnumerability();
+    }
+    get isPush(): boolean {
+        return this.type.startsWith('push');
     }
 
     // handle related getter/setter
