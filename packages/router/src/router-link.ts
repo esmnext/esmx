@@ -204,7 +204,7 @@ export function createLinkResolver(
     const type = normalizeNavigationType(props);
     const href = route.fullPath;
 
-    const isActive = router.isRouteMatched(route, props.exact || 'include');
+    const isActive = router.isRouteMatched(route, props.exact);
     const isExactActive = router.isRouteMatched(route, 'exact');
     const isExternal = route.url.origin !== router.route.url.origin;
 

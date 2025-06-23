@@ -339,6 +339,13 @@ export interface RouterLinkProps {
      * @deprecated Use type='replace' instead
      */
     replace?: boolean;
+    /**
+     * Route matching type for active state detection
+     * - 'route': Route-level matching (compare route configurations)
+     * - 'exact': Exact matching (full paths must be identical)
+     * - 'include': Include matching (current path starts with target path)
+     * @default 'include'
+     */
     exact?: RouteMatchType;
     activeClass?: string;
     event?: string | string[];

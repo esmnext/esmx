@@ -28,7 +28,6 @@ export class Router {
     public readonly isLayer: boolean;
     public readonly navigation: Navigation;
     public readonly microApp: MicroApp = new MicroApp();
-    private _destroys: Array<() => void> = [];
 
     // Route transition manager
     public readonly transition = new RouteTransition(this);
@@ -191,7 +190,7 @@ export class Router {
         const currentRoute = this.transition.route;
         if (!currentRoute) return false;
 
-        return isRouteMatched(targetRoute, currentRoute, matchType);
+        return isRouteMatched(currentRoute, targetRoute, matchType);
     }
 
     /**
@@ -320,12 +319,9 @@ export class Router {
     }
 
     public destroy() {
-        // Terminate current tasks
         this.transition.destroy();
 
         this.navigation.destroy();
         this.microApp.destroy();
-        this._destroys.forEach((destroy) => destroy());
-        this._destroys.length = 0;
     }
 }
