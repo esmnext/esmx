@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">53.21% </span>
+                <span class="strong">52.13% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>124/233</span>
+                <span class='fraction'>122/234</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.87% </span>
+                <span class="strong">96.77% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>31/32</span>
+                <span class='fraction'>30/31</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">53.21% </span>
+                <span class="strong">52.13% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>124/233</span>
+                <span class='fraction'>122/234</span>
             </div>
         
             
@@ -410,9 +410,7 @@
 <a name='L345'></a><a href='#L345'>345</a>
 <a name='L346'></a><a href='#L346'>346</a>
 <a name='L347'></a><a href='#L347'>347</a>
-<a name='L348'></a><a href='#L348'>348</a>
-<a name='L349'></a><a href='#L349'>349</a>
-<a name='L350'></a><a href='#L350'>350</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L348'></a><a href='#L348'>348</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -505,9 +503,6 @@
 <span class="cline-any cline-yes">395x</span>
 <span class="cline-any cline-yes">75x</span>
 <span class="cline-any cline-yes">75x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
@@ -674,7 +669,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -690,7 +684,9 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -854,10 +850,7 @@ export class Router {
     public async back(): Promise&lt;Route | null&gt; {
         const result = await this.navigation.go(-1);
         if (result === null) {
-            // Call onClose hook
-            if (this.parsedOptions.onClose) {
-                this.parsedOptions.onClose(this);
-            }
+            this.parsedOptions.handleBackBoundary(this);
             return null;
         }
         return this.transition.to(RouteType.back, {
@@ -873,9 +866,9 @@ export class Router {
 &nbsp;
         const result = await this.navigation.go(index);
         if (result === null) {
-            // Call onClose hook when backward navigation has no response
-            if (index &lt; 0 &amp;&amp; this.parsedOptions.onClose) {
-                this.parsedOptions.onClose(this);
+            // Call handleBackBoundary when backward navigation has no response
+            if (index &lt; 0) {
+                this.parsedOptions.handleBackBoundary(this);
             }
             return null;
         }
@@ -1023,11 +1016,10 @@ export class Router {
 <span class="cstat-no" title="statement not covered" >        }</span>
 <span class="cstat-no" title="statement not covered" >        const layerConfig = isPlainObject(toInput) ? toInput.layer : undefined;</span>
 &nbsp;
-        // Extract routerOptions from layer config and merge with options
 <span class="cstat-no" title="statement not covered" >        const { routerOptions, ...pureLayerConfig } = layerConfig || {};</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        const layer: Required&lt;Omit&lt;RouteLayerOptions, 'routerOptions'&gt;&gt; = {</span>
-<span class="cstat-no" title="statement not covered" >            zIndex: 1000 + LAYER_ID.next(),</span>
+<span class="cstat-no" title="statement not covered" >            zIndex: this.parsedOptions.zIndex + LAYER_ID.next(),</span>
 <span class="cstat-no" title="statement not covered" >            params: {},</span>
 <span class="cstat-no" title="statement not covered" >            shouldClose: () =&gt; false,</span>
 <span class="cstat-no" title="statement not covered" >            autoPush: true,</span>
@@ -1039,7 +1031,13 @@ export class Router {
 <span class="cstat-no" title="statement not covered" >        const promise = new Promise&lt;RouteLayerResult&gt;((resolve) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >            promiseResolve = resolve;</span>
 <span class="cstat-no" title="statement not covered" >        });</span>
-&nbsp;
+<span class="cstat-no" title="statement not covered" >        const onClose = (router: Router) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >            router.destroy();</span>
+<span class="cstat-no" title="statement not covered" >            promiseResolve({</span>
+<span class="cstat-no" title="statement not covered" >                type: 'close',</span>
+<span class="cstat-no" title="statement not covered" >                route: router.route</span>
+<span class="cstat-no" title="statement not covered" >            });</span>
+<span class="cstat-no" title="statement not covered" >        };</span>
 <span class="cstat-no" title="statement not covered" >        const nextOptions: RouterOptions = {</span>
 <span class="cstat-no" title="statement not covered" >            ...this.options,</span>
 <span class="cstat-no" title="statement not covered" >            mode: RouterMode.memory,</span>
@@ -1058,12 +1056,8 @@ export class Router {
 <span class="cstat-no" title="statement not covered" >            root: undefined,</span>
 <span class="cstat-no" title="statement not covered" >            ...routerOptions,</span>
 <span class="cstat-no" title="statement not covered" >            ...options,</span>
-<span class="cstat-no" title="statement not covered" >            onClose: (router: Router) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >                promiseResolve({</span>
-<span class="cstat-no" title="statement not covered" >                    type: 'close',</span>
-<span class="cstat-no" title="statement not covered" >                    route: router.route</span>
-<span class="cstat-no" title="statement not covered" >                });</span>
-<span class="cstat-no" title="statement not covered" >            },</span>
+<span class="cstat-no" title="statement not covered" >            handleBackBoundary: onClose,</span>
+<span class="cstat-no" title="statement not covered" >            handleLayerClose: onClose,</span>
 <span class="cstat-no" title="statement not covered" >            layer: true</span>
 <span class="cstat-no" title="statement not covered" >        };</span>
 <span class="cstat-no" title="statement not covered" >        const router = new Router(nextOptions);</span>
@@ -1082,7 +1076,7 @@ export class Router {
 <span class="cstat-no" title="statement not covered" >    }</span>
     public <span class="fstat-no" title="function not covered" >closeLayer() {</span>
 <span class="cstat-no" title="statement not covered" >        if (this.isLayer) {</span>
-<span class="cstat-no" title="statement not covered" >            this.parsedOptions.onClose(this);</span>
+<span class="cstat-no" title="statement not covered" >            this.parsedOptions.handleLayerClose(this);</span>
 <span class="cstat-no" title="statement not covered" >        }</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 <span class="fstat-no" title="function not covered" >    public async renderToString(throwError = false): Promise&lt;string | null&gt; {</span>
@@ -1117,7 +1111,7 @@ export class Router {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-06-23T04:24:30.604Z
+                at 2025-06-23T07:12:33.821Z
             </div>
         <script src="prettify.js"></script>
         <script>
