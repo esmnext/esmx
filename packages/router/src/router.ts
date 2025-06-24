@@ -14,7 +14,6 @@ import type {
     RouteMatchType,
     RouteNotifyHook,
     RouteState,
-    RouterLayerOptions,
     RouterLinkProps,
     RouterLinkResolved,
     RouterOptions,
