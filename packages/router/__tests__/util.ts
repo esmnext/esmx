@@ -1,14 +1,8 @@
 import { IncomingMessage, ServerResponse } from 'node:http';
 import { Socket } from 'node:net';
 import { vi } from 'vitest';
-import {
-    Route,
-    type RouteLocation,
-    RouteType,
-    type RouterOptions
-} from '../src';
-import { parsedOptions } from '../src/options';
-import { Router } from '../src/router';
+import { Router, type RouterOptions } from '../src';
+
 export function createRequest(
     options: {
         headers?: Record<string, string | string[]>;
@@ -62,47 +56,15 @@ export function createResponse(): ServerResponse {
 
 export function createRouter(options?: Partial<RouterOptions>): Router {
     const routerOptions: RouterOptions = {
-        base: new URL('http://localhost/'),
-        routes: [{ path: '/test', component: 'TestComponent' }],
+        routes: [
+            { path: '/', component: 'Home' },
+            { path: '/current', component: 'Current' },
+            { path: '/test', component: 'TestComponent' }
+        ],
         ...options
     };
 
     return new Router(routerOptions);
-}
-
-export function createRoute(
-    options: {
-        path?: string;
-        url?: string;
-        statusCode?: number | null;
-        type?: RouteType;
-    } = {}
-): Route {
-    const baseUrl = new URL('http://localhost/');
-    const routerOptions: RouterOptions = {
-        base: baseUrl,
-        routes: [{ path: '/test', component: 'TestComponent' }]
-    };
-
-    const navigationType = options.type || RouteType.none;
-    const routeLocation: RouteLocation = {};
-
-    if (options.url) {
-        routeLocation.url = options.url;
-    } else {
-        routeLocation.path = options.path || '/';
-    }
-
-    if (options.statusCode !== undefined) {
-        routeLocation.statusCode = options.statusCode;
-    }
-
-    return new Route({
-        options: parsedOptions(routerOptions),
-        toType: navigationType,
-        toInput: routeLocation,
-        from: null
-    });
 }
 
 /**

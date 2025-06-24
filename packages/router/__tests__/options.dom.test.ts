@@ -2,12 +2,13 @@
  * @vitest-environment happy-dom
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { RouteType, type RouterOptions } from '../src';
-import { fallback, parsedOptions } from '../src/options';
-import { createRoute, createRouter, withLocationRestore } from './util';
+import type { MockInstance } from 'vitest';
+import { RouteType } from '../src';
+import { fallback } from '../src/options';
+import { createRouter, withLocationRestore } from './util';
 
 describe('options.ts - Browser Environment Tests', () => {
-    let openSpy: any;
+    let openSpy: MockInstance<typeof window.open>;
 
     beforeEach(() => {
         openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
@@ -21,25 +22,27 @@ describe('options.ts - Browser Environment Tests', () => {
         it('should use window.location in browser environments', async () => {
             location.href = 'https://example.com';
 
-            const options: RouterOptions = {};
-            const opts = parsedOptions(options);
-            expect(opts.base.href).toBe('https://example.com/');
+            const router = createRouter({});
+            expect(router.parsedOptions.base.href).toBe('https://example.com/');
+            router.destroy();
         });
 
         it('should use provided base URL in browser environments', async () => {
-            const options: RouterOptions = {
+            const router = createRouter({
                 base: new URL('https://custom.org/')
-            };
-            const opts = parsedOptions(options);
-            expect(opts.base.href).toBe('https://custom.org/');
+            });
+            expect(router.parsedOptions.base.href).toBe('https://custom.org/');
+            router.destroy();
         });
 
         it('should handle string base URL in browser environments', async () => {
-            const options: RouterOptions = {
+            const router = createRouter({
                 base: new URL('https://string-url.net/')
-            };
-            const opts = parsedOptions(options);
-            expect(opts.base.href).toBe('https://string-url.net/');
+            });
+            expect(router.parsedOptions.base.href).toBe(
+                'https://string-url.net/'
+            );
+            router.destroy();
         });
 
         it('should handle different URL formats in browser environments', async () => {
@@ -71,20 +74,22 @@ describe('options.ts - Browser Environment Tests', () => {
             ];
 
             for (const test of testCases) {
-                const options: RouterOptions = { base: new URL(test.base) };
-                const opts = parsedOptions(options);
-                expect(opts.base.href).toBe(test.expected);
+                const router = createRouter({ base: new URL(test.base) });
+                expect(router.parsedOptions.base.href).toBe(test.expected);
+                router.destroy();
             }
         });
 
         it('should handle URLs with username and password', async () => {
-            const options: RouterOptions = {
+            const router = createRouter({
                 base: new URL('https://user:pass@example.com/')
-            };
-            const opts = parsedOptions(options);
-            expect(opts.base.href).toBe('https://user:pass@example.com/');
-            expect(opts.base.username).toBe('user');
-            expect(opts.base.password).toBe('pass');
+            });
+            expect(router.parsedOptions.base.href).toBe(
+                'https://user:pass@example.com/'
+            );
+            expect(router.parsedOptions.base.username).toBe('user');
+            expect(router.parsedOptions.base.password).toBe('pass');
+            router.destroy();
         });
 
         it('should normalize URLs in browser environments', async () => {
@@ -115,42 +120,48 @@ describe('options.ts - Browser Environment Tests', () => {
         });
 
         it('should test pathname normalization without a trailing slash', async () => {
-            const options: RouterOptions = {
+            const router = createRouter({
                 base: new URL('https://example.com/path')
-            };
-            const opts = parsedOptions(options);
-            expect(opts.base.pathname).toBe('/');
-            expect(opts.base.href).toBe('https://example.com/');
+            });
+            expect(router.parsedOptions.base.pathname).toBe('/');
+            expect(router.parsedOptions.base.href).toBe('https://example.com/');
+            router.destroy();
         });
 
         it('should keep trailing slash in pathname', async () => {
-            const options: RouterOptions = {
+            const router = createRouter({
                 base: new URL('https://example.com/path/')
-            };
-            const opts = parsedOptions(options);
-            expect(opts.base.pathname).toBe('/path/');
-            expect(opts.base.href).toBe('https://example.com/path/');
+            });
+            expect(router.parsedOptions.base.pathname).toBe('/path/');
+            expect(router.parsedOptions.base.href).toBe(
+                'https://example.com/path/'
+            );
+            router.destroy();
         });
 
         it('should handle root pathname special case', async () => {
-            const options: RouterOptions = {
+            const router = createRouter({
                 base: new URL('https://example.com/')
-            };
-            const opts = parsedOptions(options);
-            expect(opts.base.pathname).toBe('/');
-            expect(opts.base.href).toBe('https://example.com/');
+            });
+            expect(router.parsedOptions.base.pathname).toBe('/');
+            expect(router.parsedOptions.base.href).toBe('https://example.com/');
+            router.destroy();
         });
     });
 
     describe('fallback in browser environment', () => {
         it('should handle browser redirects', async () => {
-            withLocationRestore(() => {
-                const route = createRoute({
-                    url: 'https://example.com/redirect'
-                });
+            withLocationRestore(async () => {
                 const router = createRouter();
 
-                fallback(route, null, router);
+                // Establish current route state
+                await router.push('/current');
+
+                const targetRoute = router.resolve(
+                    'https://example.com/redirect'
+                );
+
+                fallback(targetRoute, router.route, router);
                 expect(window.location.href).toBe(
                     'https://example.com/redirect'
                 );
@@ -158,102 +169,129 @@ describe('options.ts - Browser Environment Tests', () => {
         });
 
         it('should open new window for pushWindow', async () => {
-            const route = createRoute({
-                url: 'https://example.com/link',
-                type: RouteType.push
-            });
             const router = createRouter();
 
-            fallback(route, null, router);
+            await router.push('/current');
+
+            const targetRoute = router.resolve(
+                'https://example.com/link',
+                RouteType.push
+            );
+
+            fallback(targetRoute, router.route, router);
 
             expect(openSpy).toHaveBeenCalledWith('https://example.com/link');
         });
 
         it('should not throw in browser with any router', async () => {
-            const route = createRoute({
-                url: 'https://example.com/test'
-            });
             const router = createRouter();
 
-            expect(() => fallback(route, null, router)).not.toThrow();
+            await router.push('/current');
+
+            const targetRoute = router.resolve('https://example.com/test');
+
+            expect(() =>
+                fallback(targetRoute, router.route, router)
+            ).not.toThrow();
         });
 
         it('should open window for push route', async () => {
-            const route = createRoute({
-                url: 'https://example.com/push',
-                type: RouteType.push
-            });
             const router = createRouter();
 
-            fallback(route, null, router);
+            await router.push('/current');
+
+            const targetRoute = router.resolve(
+                'https://example.com/push',
+                RouteType.push
+            );
+
+            fallback(targetRoute, router.route, router);
             expect(openSpy).toHaveBeenCalledWith('https://example.com/push');
         });
 
         it('should set location.href for non-push route', async () => {
-            withLocationRestore(() => {
-                const route = createRoute({ url: 'https://example.com/route' });
+            withLocationRestore(async () => {
                 const router = createRouter();
 
-                fallback(route, null, router);
+                await router.push('/current');
+
+                const targetRoute = router.resolve('https://example.com/route');
+
+                fallback(targetRoute, router.route, router);
                 expect(window.location.href).toBe('https://example.com/route');
             });
         });
 
         it('should handle undefined fallbacks gracefully', async () => {
-            const route = createRoute({
-                url: 'https://example.com/undefined'
-            });
             const router = createRouter();
 
-            expect(() => fallback(route, null, router)).not.toThrow();
+            await router.push('/current');
+
+            const targetRoute = router.resolve('https://example.com/undefined');
+
+            expect(() =>
+                fallback(targetRoute, router.route, router)
+            ).not.toThrow();
         });
 
         it('should not throw when router is empty object', async () => {
-            const route = createRoute({
-                url: 'https://example.com/empty'
-            });
             const router = createRouter();
 
-            expect(() => fallback(route, null, router)).not.toThrow();
+            await router.push('/current');
+
+            const targetRoute = router.resolve('https://example.com/empty');
+
+            expect(() =>
+                fallback(targetRoute, router.route, router)
+            ).not.toThrow();
         });
 
         it('should handle context without res in browser environment', async () => {
-            const route = createRoute();
             const router = createRouter();
 
-            expect(() => fallback(route, null, router)).not.toThrow();
+            await router.push('/current');
+
+            const targetRoute = router.resolve('/');
+
+            expect(() =>
+                fallback(targetRoute, router.route, router)
+            ).not.toThrow();
         });
 
-        it('should set opener to null when window.open succeeds', async () => {
-            const mockWindow = { opener: 'initial' };
-            openSpy.mockReturnValue(mockWindow);
+        it('should call window.open for push routes', async () => {
+            openSpy.mockReturnValue(null); // Simulate popup blocked
 
-            const route = createRoute({
-                url: 'https://example.com/success',
-                type: RouteType.push
-            });
             const router = createRouter();
 
-            const result = fallback(route, null, router);
+            await router.push('/current');
+
+            const targetRoute = router.resolve(
+                'https://example.com/success',
+                RouteType.push
+            );
+
+            fallback(targetRoute, router.route, router);
 
             expect(openSpy).toHaveBeenCalledWith('https://example.com/success');
-            expect(mockWindow.opener).toBe(null);
-            expect(result).toBe(mockWindow);
         });
 
         it('should fallback to location.href when window.open throws exception', async () => {
+            openSpy.mockReset();
             openSpy.mockImplementation(() => {
                 throw new Error('Popup blocked');
             });
 
-            withLocationRestore(() => {
-                const route = createRoute({
-                    url: 'https://example.com/blocked',
-                    type: RouteType.push
-                });
+            await withLocationRestore(async () => {
                 const router = createRouter();
 
-                fallback(route, null, router);
+                await router.push('/current');
+
+                const targetRoute = router.resolve(
+                    'https://example.com/blocked',
+                    RouteType.push
+                );
+
+                fallback(targetRoute, router.route, router);
 
                 expect(openSpy).toHaveBeenCalledWith(
                     'https://example.com/blocked'

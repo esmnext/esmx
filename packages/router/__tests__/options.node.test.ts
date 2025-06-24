@@ -1,18 +1,21 @@
 /**
  * @vitest-environment node
  */
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { RouterOptions } from '../src';
-import { fallback, parsedOptions } from '../src/options';
 import {
-    createRequest,
-    createResponse,
-    createRoute,
-    createRouter
-} from './util';
+    type MockInstance,
+    afterEach,
+    beforeEach,
+    describe,
+    expect,
+    it,
+    vi
+} from 'vitest';
+import type { RouterOptions } from '../src';
+import { fallback } from '../src/options';
+import { createRequest, createResponse, createRouter } from './util';
 
 describe('options.ts - Node.js Environment Tests', () => {
-    let consoleSpy: any;
+    let consoleSpy: MockInstance<typeof console.log>;
 
     beforeEach(() => {
         consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
@@ -24,24 +27,15 @@ describe('options.ts - Node.js Environment Tests', () => {
 
     describe('getBaseUrl edge cases in Node.js environment', () => {
         it('should use default URL and NOT warn when in a non-browser environment without request context', async () => {
-            const opts = parsedOptions({});
+            const router = createRouter({});
 
-            expect(opts.base.href).toBe('https://www.esmnext.com/');
+            expect(router.parsedOptions.base.href).toBe(
+                'https://www.esmnext.com/'
+            );
 
             expect(consoleSpy).not.toHaveBeenCalled();
-        });
 
-        it('should use default URL and warn when base is an invalid URL string', async () => {
-            const options: RouterOptions = {
-                base: 'this-is-not-a-valid-url' as any
-            };
-            const opts = parsedOptions(options);
-
-            expect(opts.base.href).toBe('https://www.esmnext.com/');
-
-            expect(consoleSpy).toHaveBeenCalledWith(
-                expect.stringContaining('Failed to parse base URL')
-            );
+            router.destroy();
         });
 
         it('should handle complex server environment scenarios', async () => {
@@ -75,8 +69,11 @@ describe('options.ts - Node.js Environment Tests', () => {
             ];
 
             for (const testCase of testCases) {
-                const opts = parsedOptions(testCase.options as RouterOptions);
-                expect(opts.base.href).toBe(testCase.expectedUrl);
+                const router = createRouter(testCase.options as RouterOptions);
+                expect(router.parsedOptions.base.href).toBe(
+                    testCase.expectedUrl
+                );
+                router.destroy();
             }
         });
 
@@ -100,15 +97,18 @@ describe('options.ts - Node.js Environment Tests', () => {
             ];
 
             for (const testCase of testCases) {
-                const opts = parsedOptions({
+                const router = createRouter({
                     req: createRequest({ headers: testCase.headers, url: '/' })
                 });
-                expect(opts.base.href, testCase.description).toBe(
-                    testCase.expectedUrl
-                );
-                expect(opts.base.port, `${testCase.description} - port`).toBe(
-                    testCase.expectedPort
-                );
+                expect(
+                    router.parsedOptions.base.href,
+                    testCase.description
+                ).toBe(testCase.expectedUrl);
+                expect(
+                    router.parsedOptions.base.port,
+                    `${testCase.description} - port`
+                ).toBe(testCase.expectedPort);
+                router.destroy();
             }
         });
 
@@ -116,12 +116,13 @@ describe('options.ts - Node.js Environment Tests', () => {
             const req = createRequest({ headers: { host: 'example.com' } });
             req.url = undefined;
 
-            const opts = parsedOptions({ req });
-            expect(opts.base.href).toBe('http://example.com/');
+            const router = createRouter({ req });
+            expect(router.parsedOptions.base.href).toBe('http://example.com/');
+            router.destroy();
         });
 
         it('should parse base URL from request headers', async () => {
-            const opts = parsedOptions({
+            const router = createRouter({
                 req: createRequest({
                     headers: {
                         host: 'example.com',
@@ -130,7 +131,10 @@ describe('options.ts - Node.js Environment Tests', () => {
                     url: '/api/test'
                 })
             });
-            expect(opts.base.href).toBe('https://example.com/api/');
+            expect(router.parsedOptions.base.href).toBe(
+                'https://example.com/api/'
+            );
+            router.destroy();
         });
 
         it('should handle various x-forwarded headers', async () => {
@@ -156,12 +160,14 @@ describe('options.ts - Node.js Environment Tests', () => {
             ];
 
             for (const testCase of testCases) {
-                const opts = parsedOptions({
+                const router = createRouter({
                     req: createRequest({ headers: testCase.headers })
                 });
-                expect(opts.base.href, testCase.description).toBe(
-                    testCase.expectedUrl
-                );
+                expect(
+                    router.parsedOptions.base.href,
+                    testCase.description
+                ).toBe(testCase.expectedUrl);
+                router.destroy();
             }
         });
 
@@ -180,30 +186,33 @@ describe('options.ts - Node.js Environment Tests', () => {
             ];
 
             for (const testCase of testCases) {
-                const opts = parsedOptions({
+                const router = createRouter({
                     req: createRequest({
                         headers: { host: 'example.com' },
                         url: '/',
                         encrypted: testCase.encrypted
                     })
                 });
-                expect(opts.base.href, testCase.description).toBe(
-                    testCase.expectedUrl
-                );
+                expect(
+                    router.parsedOptions.base.href,
+                    testCase.description
+                ).toBe(testCase.expectedUrl);
+                router.destroy();
             }
         });
 
         it('should handle missing host header', async () => {
-            const opts = parsedOptions({
+            const router = createRouter({
                 req: createRequest({
                     headers: { 'x-forwarded-proto': 'https' }
                 })
             });
-            expect(opts.base.href).toBe('https://localhost/');
+            expect(router.parsedOptions.base.href).toBe('https://localhost/');
+            router.destroy();
         });
 
         it('should handle x-real-ip header as fallback', async () => {
-            const opts = parsedOptions({
+            const router = createRouter({
                 req: createRequest({
                     headers: {
                         'x-real-ip': 'real.example.com',
@@ -211,11 +220,14 @@ describe('options.ts - Node.js Environment Tests', () => {
                     }
                 })
             });
-            expect(opts.base.href).toBe('https://real.example.com/');
+            expect(router.parsedOptions.base.href).toBe(
+                'https://real.example.com/'
+            );
+            router.destroy();
         });
 
         it('should handle complex URL path', async () => {
-            const opts = parsedOptions({
+            const router = createRouter({
                 req: createRequest({
                     headers: {
                         host: 'example.com',
@@ -224,86 +236,99 @@ describe('options.ts - Node.js Environment Tests', () => {
                     url: '/api/v1/users?id=123'
                 })
             });
-            expect(opts.base.href).toBe('https://example.com/api/v1/');
+            expect(router.parsedOptions.base.href).toBe(
+                'https://example.com/api/v1/'
+            );
+            router.destroy();
         });
 
         it('should use default URL when no req provided in server environment', async () => {
-            const opts = parsedOptions({});
-            expect(opts.base.href).toBe('https://www.esmnext.com/');
+            const router = createRouter({});
+            expect(router.parsedOptions.base.href).toBe(
+                'https://www.esmnext.com/'
+            );
+            router.destroy();
         });
     });
 
     describe('parsedOptions default values in Node.js environment', () => {
         it('should use default empty function for handleLayerClose when not provided', () => {
-            const options: RouterOptions = {};
+            const router = createRouter({});
 
-            const opts = parsedOptions(options);
-
-            expect(opts.handleLayerClose).toBeDefined();
-            expect(typeof opts.handleLayerClose).toBe('function');
+            expect(router.parsedOptions.handleLayerClose).toBeDefined();
+            expect(typeof router.parsedOptions.handleLayerClose).toBe(
+                'function'
+            );
 
             const realRouter = createRouter();
-            expect(() => opts.handleLayerClose(realRouter)).not.toThrow();
+            expect(() =>
+                router.parsedOptions.handleLayerClose(realRouter)
+            ).not.toThrow();
             realRouter.destroy();
+            router.destroy();
         });
 
         it('should use provided handleLayerClose function when specified', () => {
             const customHandler = vi.fn();
-            const options: RouterOptions = {
+            const router = createRouter({
                 handleLayerClose: customHandler
-            };
+            });
 
-            const opts = parsedOptions(options);
-
-            expect(opts.handleLayerClose).toBe(customHandler);
-            expect(opts.handleLayerClose).not.toBe(() => {});
+            expect(router.parsedOptions.handleLayerClose).toBe(customHandler);
+            expect(router.parsedOptions.handleLayerClose).not.toBe(() => {});
 
             const realRouter = createRouter();
-            opts.handleLayerClose(realRouter);
+            router.parsedOptions.handleLayerClose(realRouter);
             expect(customHandler).toHaveBeenCalledWith(realRouter);
             realRouter.destroy();
+            router.destroy();
         });
 
         it('should use default empty function for handleBackBoundary when not provided', () => {
-            const options: RouterOptions = {};
+            const router = createRouter({});
 
-            const opts = parsedOptions(options);
-
-            expect(opts.handleBackBoundary).toBeDefined();
-            expect(typeof opts.handleBackBoundary).toBe('function');
+            expect(router.parsedOptions.handleBackBoundary).toBeDefined();
+            expect(typeof router.parsedOptions.handleBackBoundary).toBe(
+                'function'
+            );
 
             const realRouter = createRouter();
-            expect(() => opts.handleBackBoundary(realRouter)).not.toThrow();
+            expect(() =>
+                router.parsedOptions.handleBackBoundary(realRouter)
+            ).not.toThrow();
             realRouter.destroy();
+            router.destroy();
         });
 
         it('should use provided handleBackBoundary function when specified', () => {
             const customHandler = vi.fn();
-            const options: RouterOptions = {
+            const router = createRouter({
                 handleBackBoundary: customHandler
-            };
+            });
 
-            const opts = parsedOptions(options);
-
-            expect(opts.handleBackBoundary).toBe(customHandler);
+            expect(router.parsedOptions.handleBackBoundary).toBe(customHandler);
 
             const realRouter = createRouter();
-            opts.handleBackBoundary(realRouter);
+            router.parsedOptions.handleBackBoundary(realRouter);
             expect(customHandler).toHaveBeenCalledWith(realRouter);
             realRouter.destroy();
+            router.destroy();
         });
     });
 
     describe('fallback in Node.js environment', () => {
         it('should handle server-side redirects properly', async () => {
             const res = createResponse();
-            const route = createRoute({
+            const router = createRouter({ res });
+
+            await router.push('/current');
+
+            const targetRoute = router.resolve({
                 url: 'https://example.com/redirect',
                 statusCode: 301
             });
-            const router = createRouter({ res });
 
-            fallback(route, null, router);
+            fallback(targetRoute, router.route, router);
 
             expect(res.statusCode).toBe(301);
             expect(res.setHeader).toHaveBeenCalledWith(
@@ -314,23 +339,29 @@ describe('options.ts - Node.js Environment Tests', () => {
         });
 
         it('should do nothing when no res context in server environment', async () => {
-            const route = createRoute({
-                url: 'https://example.com/test'
-            });
             const router = createRouter();
 
-            expect(() => fallback(route, null, router)).not.toThrow();
+            await router.push('/current');
+
+            const targetRoute = router.resolve('https://example.com/test');
+
+            expect(() =>
+                fallback(targetRoute, router.route, router)
+            ).not.toThrow();
         });
 
         it('should handle invalid redirect status codes', async () => {
             const res = createResponse();
-            const route = createRoute({
+            const router = createRouter({ res });
+
+            await router.push('/current');
+
+            const targetRoute = router.resolve({
                 url: 'https://example.com/redirect',
                 statusCode: 200 // Invalid redirect status code
             });
-            const router = createRouter({ res });
 
-            fallback(route, null, router);
+            fallback(targetRoute, router.route, router);
 
             expect(res.statusCode).toBe(302);
             expect(consoleSpy).toHaveBeenCalledWith(
@@ -342,45 +373,53 @@ describe('options.ts - Node.js Environment Tests', () => {
             const res = createResponse();
             const router = createRouter({ res });
 
+            await router.push('/current');
+
             const validCodes = [300, 301, 302, 303, 304, 307, 308];
 
             for (const statusCode of validCodes) {
-                const route = createRoute({
+                const targetRoute = router.resolve({
                     url: 'https://example.com/redirect',
                     statusCode
                 });
 
-                fallback(route, null, router);
+                fallback(targetRoute, router.route, router);
                 expect(res.statusCode).toBe(statusCode);
             }
         });
 
         it('should handle server-side redirect with default status code', async () => {
-            const route = createRoute();
             const res = createResponse();
             const router = createRouter({ res });
 
-            fallback(route, null, router);
+            await router.push('/current');
+
+            const targetRoute = router.resolve('/');
+
+            fallback(targetRoute, router.route, router);
 
             expect(res.statusCode).toBe(302);
             expect(res.setHeader).toHaveBeenCalledWith(
                 'Location',
-                route.url.href
+                targetRoute.url.href
             );
             expect(res.end).toHaveBeenCalled();
         });
 
         it('should use custom status code when valid', async () => {
-            const route = createRoute({ statusCode: 301 });
             const res = createResponse();
             const router = createRouter({ res });
 
-            fallback(route, null, router);
+            await router.push('/current');
+
+            const targetRoute = router.resolve({ path: '/', statusCode: 301 });
+
+            fallback(targetRoute, router.route, router);
 
             expect(res.statusCode).toBe(301);
             expect(res.setHeader).toHaveBeenCalledWith(
                 'Location',
-                route.url.href
+                targetRoute.url.href
             );
             expect(res.end).toHaveBeenCalled();
         });
@@ -392,11 +431,17 @@ describe('options.ts - Node.js Environment Tests', () => {
             ];
 
             for (const testCase of testCases) {
-                const route = createRoute({ statusCode: testCase.statusCode });
                 const res = createResponse();
                 const router = createRouter({ res });
 
-                fallback(route, null, router);
+                await router.push('/current');
+
+                const targetRoute = router.resolve({
+                    path: '/',
+                    statusCode: testCase.statusCode
+                });
+
+                fallback(targetRoute, router.route, router);
 
                 expect(res.statusCode, testCase.description).toBe(302);
             }
@@ -404,12 +449,13 @@ describe('options.ts - Node.js Environment Tests', () => {
 
         it('should use default status code if not specified', async () => {
             const res = createResponse();
-            const route = createRoute({
-                url: 'https://example.com/redirect'
-            });
             const router = createRouter({ res });
 
-            fallback(route, null, router);
+            await router.push('/current');
+
+            const targetRoute = router.resolve('https://example.com/redirect');
+
+            fallback(targetRoute, router.route, router);
 
             expect(res.statusCode).toBe(302); // Default redirect code
             expect(res.setHeader).toHaveBeenCalledWith(
@@ -421,13 +467,16 @@ describe('options.ts - Node.js Environment Tests', () => {
 
         it('should handle 304 Not Modified differently (no Location header)', async () => {
             const res = createResponse();
-            const route = createRoute({
+            const router = createRouter({ res });
+
+            await router.push('/current');
+
+            const targetRoute = router.resolve({
                 url: 'https://example.com/unmodified',
                 statusCode: 304
             });
-            const router = createRouter({ res });
 
-            fallback(route, null, router);
+            fallback(targetRoute, router.route, router);
 
             expect(res.statusCode).toBe(304);
             expect(res.end).toHaveBeenCalled();

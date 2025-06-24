@@ -167,10 +167,13 @@ export class Router {
      * }
      * ```
      */
-    public resolve(toInput: RouteLocationInput): Route {
+    public resolve(
+        toInput: RouteLocationInput,
+        toType: RouteType = RouteType.none
+    ): Route {
         return new Route({
             options: this.parsedOptions,
-            toType: RouteType.none,
+            toType,
             toInput,
             from: this.transition.route?.url ?? null
         });
