@@ -257,7 +257,7 @@ export const ROUTE_TYPE_HANDLERS = {
  * - asyncComponent: Load async components
  * - confirm: Final confirmation and navigation execution
  */
-const ROUTE_TRANSITION_PIPELINE: Record<RouteType, RouteConfirmHook[]> = {
+const ROUTE_TRANSITION_PIPELINE = {
     [RouteType.push]: [
         ROUTE_TRANSITION_HOOKS.fallback,
         ROUTE_TRANSITION_HOOKS.override,
@@ -279,40 +279,6 @@ const ROUTE_TRANSITION_PIPELINE: Record<RouteType, RouteConfirmHook[]> = {
         ROUTE_TRANSITION_HOOKS.asyncComponent,
         ROUTE_TRANSITION_HOOKS.confirm
     ],
-
-    [RouteType.back]: [
-        // ROUTE_TRANSITION_HOOKS.fallback,
-        // ROUTE_TRANSITION_HOOKS.override,
-        ROUTE_TRANSITION_HOOKS.beforeLeave,
-        ROUTE_TRANSITION_HOOKS.beforeEach,
-        ROUTE_TRANSITION_HOOKS.beforeUpdate,
-        ROUTE_TRANSITION_HOOKS.beforeEnter,
-        ROUTE_TRANSITION_HOOKS.asyncComponent,
-        ROUTE_TRANSITION_HOOKS.confirm
-    ],
-
-    [RouteType.go]: [
-        // ROUTE_TRANSITION_HOOKS.fallback,
-        // ROUTE_TRANSITION_HOOKS.override,
-        ROUTE_TRANSITION_HOOKS.beforeLeave,
-        ROUTE_TRANSITION_HOOKS.beforeEach,
-        ROUTE_TRANSITION_HOOKS.beforeUpdate,
-        ROUTE_TRANSITION_HOOKS.beforeEnter,
-        ROUTE_TRANSITION_HOOKS.asyncComponent,
-        ROUTE_TRANSITION_HOOKS.confirm
-    ],
-
-    [RouteType.forward]: [
-        // ROUTE_TRANSITION_HOOKS.fallback,
-        // ROUTE_TRANSITION_HOOKS.override,
-        ROUTE_TRANSITION_HOOKS.beforeLeave,
-        ROUTE_TRANSITION_HOOKS.beforeEach,
-        ROUTE_TRANSITION_HOOKS.beforeUpdate,
-        ROUTE_TRANSITION_HOOKS.beforeEnter,
-        ROUTE_TRANSITION_HOOKS.asyncComponent,
-        ROUTE_TRANSITION_HOOKS.confirm
-    ],
-
     [RouteType.pushWindow]: [
         ROUTE_TRANSITION_HOOKS.fallback,
         ROUTE_TRANSITION_HOOKS.override,
@@ -355,8 +321,17 @@ const ROUTE_TRANSITION_PIPELINE: Record<RouteType, RouteConfirmHook[]> = {
         ROUTE_TRANSITION_HOOKS.confirm
     ],
 
-    [RouteType.unknown]: []
-};
+    [RouteType.unknown]: [
+        ROUTE_TRANSITION_HOOKS.fallback,
+        // ROUTE_TRANSITION_HOOKS.override,
+        ROUTE_TRANSITION_HOOKS.beforeLeave,
+        ROUTE_TRANSITION_HOOKS.beforeEach,
+        ROUTE_TRANSITION_HOOKS.beforeUpdate,
+        ROUTE_TRANSITION_HOOKS.beforeEnter,
+        ROUTE_TRANSITION_HOOKS.asyncComponent,
+        ROUTE_TRANSITION_HOOKS.confirm
+    ]
+} satisfies Record<string, RouteConfirmHook[]>;
 
 /**
  * Route Transition Manager
@@ -407,7 +382,6 @@ export class RouteTransition {
     ): Promise<Route> {
         const from = this.route;
         const to = await this._runTask(
-            ROUTE_TRANSITION_PIPELINE,
             new Route({
                 options: this.router.parsedOptions,
                 toType,
@@ -429,15 +403,12 @@ export class RouteTransition {
         return to;
     }
 
-    private async _runTask(
-        config: Record<RouteType, RouteConfirmHook[]>,
-        to: Route,
-        from: Route | null
-    ): Promise<Route> {
+    private async _runTask(to: Route, from: Route | null): Promise<Route> {
         this._controller?.abort();
         this._controller = new RouteTaskController();
-
-        const taskFunctions: RouteConfirmHook[] = config[to.type];
+        const taskFunctions: RouteConfirmHook[] =
+            ROUTE_TRANSITION_PIPELINE[to.type] ||
+            ROUTE_TRANSITION_PIPELINE[RouteType.unknown];
         const tasks = taskFunctions.map<RouteTask>((taskFn) => ({
             name: taskFn.name,
             task: taskFn

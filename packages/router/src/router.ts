@@ -72,17 +72,11 @@ export class Router {
     public replace(toInput: RouteLocationInput): Promise<Route> {
         return this.transition.to(RouteType.replace, toInput);
     }
-    public pushWindow(toInput?: RouteLocationInput): Promise<Route> {
-        return this.transition.to(
-            RouteType.pushWindow,
-            toInput ?? this.route.url.href
-        );
+    public pushWindow(toInput: RouteLocationInput): Promise<Route> {
+        return this.transition.to(RouteType.pushWindow, toInput);
     }
-    public replaceWindow(toInput?: RouteLocationInput): Promise<Route> {
-        return this.transition.to(
-            RouteType.replaceWindow,
-            toInput ?? this.route.url.href
-        );
+    public replaceWindow(toInput: RouteLocationInput): Promise<Route> {
+        return this.transition.to(RouteType.replaceWindow, toInput);
     }
     public restartApp(): Promise<Route>;
     public restartApp(toInput: RouteLocationInput): Promise<Route>;

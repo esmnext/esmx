@@ -48,9 +48,9 @@ describe('Router Window Navigation Tests', () => {
         expectedIsPush: boolean
     ) {
         describe(`🪟 ${methodName} Core Functionality Tests`, () => {
-            it(`should support parameterless calls (using current route)`, async () => {
+            it(`should support using current route path`, async () => {
                 await router.push('/about');
-                const result = await router[methodName]();
+                const result = await router[methodName]('/about');
 
                 expect(result.type).toBe(RouteType[methodName]);
                 expect(result.path).toBe('/about');
