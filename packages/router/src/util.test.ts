@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { parsedOptions } from './options';
 import { Route } from './route';
 import type { RouterParsedOptions } from './types';
-import { RouteType, RouterMode } from './types';
+import { RouteType } from './types';
 import {
     isNonEmptyPlainObject,
     isNotNullish,

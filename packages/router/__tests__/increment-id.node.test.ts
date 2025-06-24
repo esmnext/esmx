@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from 'vitest';
-import { IncrementId } from './increment-id';
+import { IncrementId } from '../src/increment-id';
 
 describe('IncrementId', () => {
     let incrementId: IncrementId;
