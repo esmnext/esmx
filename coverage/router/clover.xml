@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1750730892914" clover="3.2.0">
-  <project timestamp="1750730892914" name="All files">
-    <metrics statements="1571" coveredstatements="1283" conditionals="452" coveredconditionals="436" methods="132" coveredmethods="116" elements="2155" coveredelements="1835" complexity="0" loc="1571" ncloc="1571" packages="1" files="15" classes="15"/>
+<coverage generated="1750730953525" clover="3.2.0">
+  <project timestamp="1750730953525" name="All files">
+    <metrics statements="1571" coveredstatements="1283" conditionals="453" coveredconditionals="437" methods="132" coveredmethods="116" elements="2156" coveredelements="1836" complexity="0" loc="1571" ncloc="1571" packages="1" files="15" classes="15"/>
     <file name="error.ts" path="/home/runner/work/esmx/esmx/packages/router/src/error.ts">
       <metrics statements="65" coveredstatements="58" conditionals="10" coveredconditionals="9" methods="10" coveredmethods="9"/>
       <line num="3" count="2" type="cond" truecount="1" falsecount="0"/>
@@ -92,7 +92,7 @@
       <line num="48" count="2" type="stmt"/>
     </file>
     <file name="location.ts" path="/home/runner/work/esmx/esmx/packages/router/src/location.ts">
-      <metrics statements="42" coveredstatements="42" conditionals="25" coveredconditionals="25" methods="2" coveredmethods="2"/>
+      <metrics statements="42" coveredstatements="42" conditionals="26" coveredconditionals="26" methods="2" coveredmethods="2"/>
       <line num="2" count="2" type="stmt"/>
       <line num="10" count="2" type="cond" truecount="1" falsecount="0"/>
       <line num="11" count="2339" type="cond" truecount="1" falsecount="0"/>
@@ -114,7 +114,7 @@
       <line num="43" count="283" type="stmt"/>
       <line num="44" count="2339" type="stmt"/>
       <line num="52" count="2" type="cond" truecount="1" falsecount="0"/>
-      <line num="53" count="2003" type="cond" truecount="2" falsecount="0"/>
+      <line num="53" count="2003" type="cond" truecount="3" falsecount="0"/>
       <line num="54" count="1831" type="stmt"/>
       <line num="55" count="1831" type="cond" truecount="2" falsecount="0"/>
       <line num="56" count="2003" type="cond" truecount="2" falsecount="0"/>
