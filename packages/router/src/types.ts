@@ -59,7 +59,11 @@ export type RouteHandleHook = (
     router: Router
 ) => Awaitable<RouteHandleResult>;
 
-export type RouteNotifyHook = (to: Route, from: Route | null) => void;
+export type RouteNotifyHook = (
+    to: Route,
+    from: Route | null,
+    router: Router
+) => void;
 
 // ============================================================================
 // Basic data types
@@ -90,6 +94,7 @@ export interface RouteLocation {
     keepScrollPosition?: boolean;
     statusCode?: number | null;
     layer?: RouteLayerOptions;
+    confirm?: RouteConfirmHook;
 }
 export type RouteLocationInput = RouteLocation | string;
 
@@ -259,40 +264,12 @@ export interface RouterOptions {
     res?: ServerResponse | null;
     apps?: RouterMicroApp;
     normalizeURL?: (to: URL, from: URL | null) => URL;
-
-    /**
-     * Fallback handler for unresolvable routes
-     *
-     * Handles routes that cannot be processed within the current application:
-     * - 404 errors (route not found)
-     * - Cross-origin navigation
-     * - External links
-     * - Window navigation (pushWindow/replaceWindow)
-     *
-     * @param to Target route that cannot be resolved
-     * @param from Source route
-     * @returns Handler function to execute instead of default routing
-     *
-     * @example
-     * ```typescript
-     * fallback: (to, from) => {
-     *   if (to.url.origin !== location.origin) {
-     *     // Handle cross-origin navigation
-     *     return () => window.open(to.url.href);
-     *   }
-     *   // Handle 404 error
-     *   return () => showNotFoundPage();
-     * }
-     * ```
-     */
     fallback?: RouteHandleHook;
 
     rootStyle?: Partial<CSSStyleDeclaration> | false;
     layer?: boolean;
     zIndex?: number;
-    /** 处理后退边界 */
     handleBackBoundary?: (router: Router) => void;
-    /** 处理弹层关闭 */
     handleLayerClose?: (router: Router) => void;
 }
 
@@ -337,22 +314,10 @@ export interface RouterLinkProps {
      * @deprecated Use type='replace' instead
      */
     replace?: boolean;
-    /**
-     * Route matching type for active state detection
-     * - 'route': Route-level matching (compare route configurations)
-     * - 'exact': Exact matching (full paths must be identical)
-     * - 'include': Include matching (current path starts with target path)
-     * @default 'include'
-     */
     exact?: RouteMatchType;
     activeClass?: string;
     event?: string | string[];
     tag?: string;
-    /**
-     * Layer options for layer-based navigation.
-     * Only used when type='pushLayer'.
-     * @example { zIndex: 1000, autoPush: false, routerOptions: { mode: 'memory' } }
-     */
     layerOptions?: RouteLayerOptions;
 }
 

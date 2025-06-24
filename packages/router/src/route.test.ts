@@ -5,6 +5,7 @@ import type { Router } from './router';
 import { RouteType, RouterMode } from './types';
 import type {
     RouteConfig,
+    RouteConfirmHook,
     RouteHandleHook,
     RouterOptions,
     RouterParsedOptions
@@ -357,6 +358,7 @@ describe('Route Class Complete Test Suite', () => {
                 expect(route.matched).toBeDefined();
                 expect(route.config).toBeDefined();
                 expect(route.meta).toBeDefined();
+                expect(route.confirm).toBeDefined();
             });
         });
 
@@ -418,6 +420,106 @@ describe('Route Class Complete Test Suite', () => {
                     });
                     expect(route.type).toBe(type);
                 });
+            });
+        });
+
+        describe('Confirm Handler Tests', () => {
+            it('should initialize confirm as null when not provided', () => {
+                const options = createOptions();
+                const route = new Route({
+                    options,
+                    toType: RouteType.push,
+                    toInput: '/users/123'
+                });
+
+                expect(route.confirm).toBeNull();
+            });
+
+            it('should set confirm handler when provided in RouteLocation', () => {
+                const options = createOptions();
+                const mockConfirmHandler = vi.fn();
+                const route = new Route({
+                    options,
+                    toType: RouteType.push,
+                    toInput: {
+                        path: '/users/123',
+                        confirm: mockConfirmHandler
+                    }
+                });
+
+                expect(route.confirm).toBe(mockConfirmHandler);
+                expect(typeof route.confirm).toBe('function');
+            });
+
+            it('should handle confirm as null when toInput is string', () => {
+                const options = createOptions();
+                const route = new Route({
+                    options,
+                    toType: RouteType.push,
+                    toInput: '/users/123'
+                });
+
+                expect(route.confirm).toBeNull();
+            });
+
+            it('should preserve confirm handler during route cloning', () => {
+                const options = createOptions();
+                const mockConfirmHandler = vi.fn();
+                const originalRoute = new Route({
+                    options,
+                    toType: RouteType.push,
+                    toInput: {
+                        path: '/users/123',
+                        confirm: mockConfirmHandler
+                    }
+                });
+
+                const clonedRoute = originalRoute.clone();
+
+                expect(clonedRoute.confirm).toBe(mockConfirmHandler);
+                expect(clonedRoute.confirm).toBe(originalRoute.confirm);
+            });
+
+            it('should handle null confirm during route cloning', () => {
+                const options = createOptions();
+                const originalRoute = new Route({
+                    options,
+                    toType: RouteType.push,
+                    toInput: '/users/123'
+                });
+
+                const clonedRoute = originalRoute.clone();
+
+                expect(clonedRoute.confirm).toBeNull();
+                expect(clonedRoute.confirm).toBe(originalRoute.confirm);
+            });
+
+            it('should make confirm property non-enumerable', () => {
+                const options = createOptions();
+                const mockConfirmHandler = vi.fn();
+                const route = new Route({
+                    options,
+                    toType: RouteType.push,
+                    toInput: {
+                        path: '/users/123',
+                        confirm: mockConfirmHandler
+                    }
+                });
+
+                const keys = Object.keys(route);
+                const propertyNames = Object.getOwnPropertyNames(route);
+                const descriptor = Object.getOwnPropertyDescriptor(
+                    route,
+                    'confirm'
+                );
+
+                expect(keys).not.toContain('confirm');
+                expect(propertyNames).toContain('confirm');
+                expect(descriptor?.enumerable).toBe(false);
+            });
+
+            it('should be included in NON_ENUMERABLE_PROPERTIES list', () => {
+                expect(NON_ENUMERABLE_PROPERTIES).toContain('confirm');
             });
         });
     });

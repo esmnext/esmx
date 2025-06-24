@@ -386,7 +386,7 @@ export class RouteTransition {
 
         if (to.handle) {
             for (const guard of this.guards.afterEach) {
-                guard(to, from);
+                guard(to, from, this.router);
             }
         }
 

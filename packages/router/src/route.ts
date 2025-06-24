@@ -4,6 +4,7 @@ import { parsedOptions } from './options';
 import type { Router } from './router';
 
 import {
+    type RouteConfirmHook,
     type RouteHandleHook,
     type RouteHandleResult,
     type RouteLocationInput,
@@ -36,7 +37,10 @@ export const NON_ENUMERABLE_PROPERTIES = [
     'context',
 
     // Status code - internal status information
-    'statusCode'
+    'statusCode',
+
+    // Route behavior overrides - framework internal logic
+    'confirm'
 ] satisfies string[];
 
 /**
@@ -110,6 +114,8 @@ export class Route {
     public statusCode: number | null = null;
     public readonly state: RouteState;
     public readonly keepScrollPosition: boolean;
+    /** Custom confirm handler that overrides default route-transition confirm logic */
+    public readonly confirm: RouteConfirmHook | null;
 
     // Read-only properties
     public readonly type: RouteType;
@@ -159,6 +165,8 @@ export class Route {
         this.keepScrollPosition = isPlainObject(toInput)
             ? Boolean(toInput.keepScrollPosition)
             : false;
+        this.confirm =
+            isPlainObject(toInput) && toInput.confirm ? toInput.confirm : null;
         this.config =
             this.matched.length > 0
                 ? this.matched[this.matched.length - 1]
@@ -305,10 +313,11 @@ export class Route {
      * Returns a new Route instance with same configuration and state
      */
     clone(): Route {
-        // Reconstruct route object, passing current state
-        const toInput = {
+        // Reconstruct route object, passing current state and confirm handler
+        const toInput: RouteLocationInput = {
             path: this.fullPath,
-            state: { ...this.state }
+            state: { ...this.state },
+            ...(this.confirm && { confirm: this.confirm })
         };
 
         // Get original options from constructor's finalOptions
