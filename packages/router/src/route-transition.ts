@@ -340,7 +340,6 @@ const ROUTE_TRANSITION_PIPELINE = {
  * task processing, and status updates.
  */
 export class RouteTransition {
-    public static LAYER_RESULT = Symbol('LAYER_RESULT');
     private readonly router: Router;
 
     public route: Route | null = null;
