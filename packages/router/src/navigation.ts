@@ -42,38 +42,48 @@ export class Navigation {
     public get length(): number {
         return this._history.length;
     }
-    public push(route: Route): RouteState {
-        const state: RouteState = Object.freeze({
-            ...route.state,
-            [PAGE_ID_KEY]: PAGE_ID.next()
-        });
-        this._history.pushState(state, '', route.fullPath);
-        return state;
-    }
 
-    public replace(route: Route): RouteState {
-        const oldId = this._history.state?.[PAGE_ID_KEY];
-        const state: RouteState = Object.freeze({
-            ...(route.state || {}),
-            [PAGE_ID_KEY]: typeof oldId === 'number' ? oldId : PAGE_ID.next()
-        });
-        this._history.replaceState(state, '', route.fullPath);
-        return state;
-    }
-    public pushHistoryState(data: any, url?: string | URL | null) {
-        const state: RouteState = Object.freeze({
-            ...data,
+    private _push(
+        history: History,
+        data: any,
+        url?: string | URL | null
+    ): RouteState {
+        const state = Object.freeze({
+            ...(data || {}),
             [PAGE_ID_KEY]: PAGE_ID.next()
         });
         history.pushState(state, '', url);
+        return state;
     }
-    public replaceHistoryState(data: any, url?: string | URL | null) {
+
+    private _replace(
+        history: History,
+        data: any,
+        url?: string | URL | null
+    ): RouteState {
         const oldId = history.state?.[PAGE_ID_KEY];
-        const state: RouteState = Object.freeze({
-            ...data,
+        const state = Object.freeze({
+            ...(data || {}),
             [PAGE_ID_KEY]: typeof oldId === 'number' ? oldId : PAGE_ID.next()
         });
         history.replaceState(state, '', url);
+        return state;
+    }
+
+    public push(data: any, url?: string | URL | null): RouteState {
+        return this._push(this._history, data, url);
+    }
+
+    public replace(data: any, url?: string | URL | null): RouteState {
+        return this._replace(this._history, data, url);
+    }
+
+    public pushHistoryState(data: any, url?: string | URL | null) {
+        this._push(history, data, url);
+    }
+
+    public replaceHistoryState(data: any, url?: string | URL | null) {
+        this._replace(history, data, url);
     }
 
     public go(index: number): Promise<NavigationGoResult> {

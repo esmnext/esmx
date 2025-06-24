@@ -479,58 +479,31 @@ describe('Navigation', () => {
 
     test('should push and replace state correctly', () => {
         const nav = new Navigation({ mode: RouterMode.memory } as any);
-        const route1 = new Route({
-            options: createTestOptions(),
-            toType: RouteType.push,
-            toInput: { path: '/foo', state: { a: 1 } }
-        });
-        const state1 = nav.push(route1);
-        assert.deepEqual(state1.a, 1);
-        const route2 = new Route({
-            options: createTestOptions(),
-            toType: RouteType.push,
-            toInput: { path: '/bar', state: { b: 2 } }
-        });
-        const state2 = nav.replace(route2);
-        assert.deepEqual(state2.b, 2);
+        const state1 = nav.push({ state: { a: 1 } }, '/foo');
+        assert.deepEqual((state1 as any).state.a, 1);
+        const state2 = nav.replace({ state: { b: 2 } }, '/bar');
+        assert.deepEqual((state2 as any).state.b, 2);
         nav.destroy();
     });
 
     test('should resolve go/back/forward with correct url and state', async () => {
         const nav = new Navigation({ mode: RouterMode.memory } as any);
-        nav.push(
-            new Route({
-                options: createTestOptions(),
-                toType: RouteType.push,
-                toInput: { path: '/a', state: { a: 1 } }
-            })
-        );
-        nav.push(
-            new Route({
-                options: createTestOptions(),
-                toType: RouteType.push,
-                toInput: { path: '/b', state: { b: 2 } }
-            })
-        );
-        nav.push(
-            new Route({
-                options: createTestOptions(),
-                toType: RouteType.push,
-                toInput: { path: '/c', state: { c: 3 } }
-            })
-        );
+        nav.push({ state: { a: 1 } }, '/a');
+        nav.push({ state: { b: 2 } }, '/b');
+        nav.push({ state: { c: 3 } }, '/c');
+
         // go(-2) 回到 /a
         const res1 = await nav.go(-2);
         assert.equal(res1?.url, '/a');
-        assert.deepEqual(res1?.state.a, 1);
+        assert.deepEqual((res1?.state as any).state.a, 1);
         // forward 到 /b
         const res2 = await nav.forward();
         assert.equal(res2?.url, '/b');
-        assert.deepEqual(res2?.state.b, 2);
+        assert.deepEqual((res2?.state as any).state.b, 2);
         // back 到 /a
         const res3 = await nav.back();
         assert.equal(res3?.url, '/a');
-        assert.deepEqual(res3?.state.a, 1);
+        assert.deepEqual((res3?.state as any).state.a, 1);
         nav.destroy();
     });
 
@@ -540,21 +513,9 @@ describe('Navigation', () => {
             { mode: RouterMode.memory } as any,
             (url, state) => updates.push({ url, state })
         );
-        nav.push(
-            new Route({
-                options: createTestOptions(),
-                toType: RouteType.push,
-                toInput: { path: '/a', state: { a: 1 } }
-            })
-        );
-        nav.push(
-            new Route({
-                options: createTestOptions(),
-                toType: RouteType.push,
-                toInput: { path: '/b', state: { b: 2 } }
-            })
-        );
-        // await nav.go(-1);
+        nav.push({ state: { a: 1 } }, '/a');
+        nav.push({ state: { b: 2 } }, '/b');
+
         ((nav as any)._history as MemoryHistory).back();
         await sleep(100); // Wait for callback execution
         assert.ok(updates.length > 0);
@@ -667,36 +628,22 @@ describe('Navigation', () => {
 
         it('should call pushState/replaceState and handle go/back/forward', async () => {
             const nav = new Navigation({ mode: RouterMode.history } as any);
-            // console.log('new', (nav as any)._history._entries, (nav as any)._history._index);
             // push
-            const route1 = new Route({
-                options: createTestOptions(),
-                toType: RouteType.push,
-                toInput: { path: '/foo', state: { a: 1 } }
-            });
-            const state1 = nav.push(route1);
-            // console.log('push /foo', (nav as any)._history._entries, (nav as any)._history._index);
+            const state1 = nav.push({ state: { a: 1 } }, '/foo');
             expect(mockHistory.pushState).toHaveBeenCalledWith(
-                expect.objectContaining({ a: 1 }),
+                expect.objectContaining({ state: { a: 1 } }),
                 '',
                 '/foo'
             );
             // replace
-            const route2 = new Route({
-                options: createTestOptions(),
-                toType: RouteType.push,
-                toInput: { path: '/bar', state: { b: 2 } }
-            });
-            const state2 = nav.replace(route2);
-            // console.log('replace /bar', (nav as any)._history._entries, (nav as any)._history._index);
+            const state2 = nav.replace({ state: { b: 2 } }, '/bar');
             expect(mockHistory.replaceState).toHaveBeenCalledWith(
-                expect.objectContaining({ b: 2 }),
+                expect.objectContaining({ state: { b: 2 } }),
                 '',
                 '/bar'
             );
             // go/back/forward
             const res = await nav.go(-1);
-            // console.log('go -1', (nav as any)._history._entries, (nav as any)._history._index);
             expect(res).toEqual({
                 type: 'success',
                 url: '/startPoint',
