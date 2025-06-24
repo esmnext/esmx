@@ -21,147 +21,177 @@ import {
     removeFromArray
 } from './util';
 
-export async function fallback(
-    to: Route,
-    from: Route | null,
-    router: Router
-): Promise<RouteConfirmHookResult> {
-    if (to.matched.length === 0) {
-        return router.parsedOptions.fallback;
-    }
-}
+/**
+ * Route transition hooks responsible for handling different stages of the navigation process.
+ * Each hook is responsible for a specific aspect of route transition.
+ */
+export const ROUTE_TRANSITION_HOOKS = {
+    async fallback(
+        to: Route,
+        from: Route | null,
+        router: Router
+    ): Promise<RouteConfirmHookResult> {
+        if (to.matched.length === 0) {
+            return router.parsedOptions.fallback;
+        }
+    },
 
-export async function override(
-    to: Route,
-    from: Route | null,
-    router: Router
-): Promise<RouteConfirmHookResult> {
-    if (!to.config || !to.config.override) {
-        return;
-    }
-    // Skip override during initial route loading
-    if (!from) {
-        return;
-    }
-    const overrideHandler = await to.config.override(to, from, router);
-    if (typeof overrideHandler === 'function') {
-        return overrideHandler;
-    }
-}
+    async override(
+        to: Route,
+        from: Route | null,
+        router: Router
+    ): Promise<RouteConfirmHookResult> {
+        const result = await to.config?.override?.(to, from, router);
+        if (isValidConfirmHookResult(result)) {
+            return result;
+        }
+    },
 
-export async function asyncComponent(
-    to: Route,
-    from: Route | null,
-    router: Router
-): Promise<RouteConfirmHookResult> {
-    await Promise.all(
-        to.matched.map(async (matched) => {
-            const { asyncComponent, component } = matched;
-            if (!component && typeof asyncComponent === 'function') {
-                try {
-                    const result = await asyncComponent();
-                    matched.component = result;
-                } catch {
-                    throw new Error(
-                        `Async component '${matched.compilePath}' is not a valid component.`
-                    );
+    async asyncComponent(
+        to: Route,
+        from: Route | null,
+        router: Router
+    ): Promise<RouteConfirmHookResult> {
+        await Promise.all(
+            to.matched.map(async (matched) => {
+                const { asyncComponent, component } = matched;
+                if (!component && typeof asyncComponent === 'function') {
+                    try {
+                        const result = await asyncComponent();
+                        matched.component = result;
+                    } catch {
+                        throw new Error(
+                            `Async component '${matched.compilePath}' is not a valid component.`
+                        );
+                    }
                 }
-            }
-        })
-    );
-}
+            })
+        );
+    },
 
-export async function beforeLeave(
-    to: Route,
-    from: Route | null,
-    router: Router
-): Promise<RouteConfirmHookResult> {
-    if (!from?.matched.length) return;
+    async beforeLeave(
+        to: Route,
+        from: Route | null,
+        router: Router
+    ): Promise<RouteConfirmHookResult> {
+        if (!from?.matched.length) return;
 
-    // Find routes that need to be left (routes in 'from' but not in 'to').
-    const leavingRoutes = from.matched.filter(
-        (fromRoute) => !to.matched.some((toRoute) => toRoute === fromRoute)
-    );
+        // Find routes that need to be left (routes in 'from' but not in 'to').
+        const leavingRoutes = from.matched.filter(
+            (fromRoute) => !to.matched.some((toRoute) => toRoute === fromRoute)
+        );
 
-    // Execute beforeLeave guards in order from child to parent.
-    for (let i = leavingRoutes.length - 1; i >= 0; i--) {
-        const route = leavingRoutes[i];
-        if (route.beforeLeave) {
-            const result = await route.beforeLeave(to, from, router);
-            if (isValidConfirmHookResult(result)) {
-                return result;
-            }
-        }
-    }
-}
-
-export async function beforeEnter(
-    to: Route,
-    from: Route | null,
-    router: Router
-): Promise<RouteConfirmHookResult> {
-    if (!to.matched.length) return;
-
-    // Find routes that need to be entered (routes in 'to' but not in 'from').
-    const enteringRoutes = to.matched.filter(
-        (toRoute) => !from?.matched.some((fromRoute) => fromRoute === toRoute)
-    );
-
-    // Execute beforeEnter guards in order from parent to child.
-    for (const route of enteringRoutes) {
-        if (route.beforeEnter) {
-            const result = await route.beforeEnter(to, from, router);
-            if (isValidConfirmHookResult(result)) {
-                return result;
-            }
-        }
-    }
-}
-
-export async function beforeUpdate(
-    to: Route,
-    from: Route | null,
-    router: Router
-): Promise<RouteConfirmHookResult> {
-    // beforeUpdate is only executed when parameters change within the exact same route combination.
-    // Quick check: if the final route configs are different, it's definitely not the same combination.
-    if (!isRouteMatched(to, from, 'route')) return;
-
-    // Detailed check: the 'matched' arrays of both routes must be identical.
-    if (!from || to.matched.length !== from.matched.length) return;
-    const isSameRouteSet = to.matched.every(
-        (toRoute, index) => toRoute === from.matched[index]
-    );
-    if (!isSameRouteSet) return;
-
-    // Only execute beforeUpdate when path parameters or query parameters change.
-    if (!isRouteMatched(to, from, 'exact')) {
-        // Execute beforeUpdate guards in order from parent to child.
-        for (const route of to.matched) {
-            if (route.beforeUpdate) {
-                const result = await route.beforeUpdate(to, from, router);
+        // Execute beforeLeave guards in order from child to parent.
+        for (let i = leavingRoutes.length - 1; i >= 0; i--) {
+            const route = leavingRoutes[i];
+            if (route.beforeLeave) {
+                const result = await route.beforeLeave(to, from, router);
                 if (isValidConfirmHookResult(result)) {
                     return result;
                 }
             }
         }
-    }
-}
+    },
 
-export async function beforeEach(
-    to: Route,
-    from: Route | null,
-    router: Router
-): Promise<RouteConfirmHookResult> {
-    // Access the transition instance from the router to get guards
-    const transition = router.transition;
-    for (const guard of transition.guards.beforeEach) {
-        const result = await guard(to, from, router);
-        if (isValidConfirmHookResult(result)) {
-            return result;
+    async beforeEnter(
+        to: Route,
+        from: Route | null,
+        router: Router
+    ): Promise<RouteConfirmHookResult> {
+        if (!to.matched.length) return;
+
+        // Find routes that need to be entered (routes in 'to' but not in 'from').
+        const enteringRoutes = to.matched.filter(
+            (toRoute) =>
+                !from?.matched.some((fromRoute) => fromRoute === toRoute)
+        );
+
+        // Execute beforeEnter guards in order from parent to child.
+        for (const route of enteringRoutes) {
+            if (route.beforeEnter) {
+                const result = await route.beforeEnter(to, from, router);
+                if (isValidConfirmHookResult(result)) {
+                    return result;
+                }
+            }
+        }
+    },
+
+    async beforeUpdate(
+        to: Route,
+        from: Route | null,
+        router: Router
+    ): Promise<RouteConfirmHookResult> {
+        // beforeUpdate is only executed when parameters change within the exact same route combination.
+        // Quick check: if the final route configs are different, it's definitely not the same combination.
+        if (!isRouteMatched(to, from, 'route')) return;
+
+        // Detailed check: the 'matched' arrays of both routes must be identical.
+        if (!from || to.matched.length !== from.matched.length) return;
+        const isSameRouteSet = to.matched.every(
+            (toRoute, index) => toRoute === from.matched[index]
+        );
+        if (!isSameRouteSet) return;
+
+        // Only execute beforeUpdate when path parameters or query parameters change.
+        if (!isRouteMatched(to, from, 'exact')) {
+            // Execute beforeUpdate guards in order from parent to child.
+            for (const route of to.matched) {
+                if (route.beforeUpdate) {
+                    const result = await route.beforeUpdate(to, from, router);
+                    if (isValidConfirmHookResult(result)) {
+                        return result;
+                    }
+                }
+            }
+        }
+    },
+
+    async beforeEach(
+        to: Route,
+        from: Route | null,
+        router: Router
+    ): Promise<RouteConfirmHookResult> {
+        // Access the transition instance from the router to get guards
+        const transition = router.transition;
+        for (const guard of transition.guards.beforeEach) {
+            const result = await guard(to, from, router);
+            if (isValidConfirmHookResult(result)) {
+                return result;
+            }
+        }
+    },
+
+    async confirm(
+        to: Route,
+        from: Route | null,
+        router: Router
+    ): Promise<RouteConfirmHookResult> {
+        if (to.confirm) {
+            const result = await to.confirm(to, from, router);
+            if (isValidConfirmHookResult(result)) {
+                return result;
+            }
+        }
+
+        switch (to.type) {
+            case RouteType.push:
+                return ROUTE_TYPE_HANDLERS.push;
+            case RouteType.replace:
+                return ROUTE_TYPE_HANDLERS.replace;
+            case RouteType.restartApp:
+                return ROUTE_TYPE_HANDLERS.restartApp;
+            case RouteType.pushWindow:
+                return ROUTE_TYPE_HANDLERS.pushWindow;
+            case RouteType.replaceWindow:
+                return ROUTE_TYPE_HANDLERS.replaceWindow;
+            case RouteType.pushLayer:
+                return ROUTE_TYPE_HANDLERS.pushLayer;
+            default:
+                return ROUTE_TYPE_HANDLERS.default;
         }
     }
-}
+} satisfies Record<string, RouteConfirmHook>;
 
 /**
  * Route type handlers configuration.
@@ -212,36 +242,6 @@ export const ROUTE_TYPE_HANDLERS = {
     }
 } satisfies Record<string, RouteHandleHook>;
 
-export async function confirm(
-    to: Route,
-    from: Route | null,
-    router: Router
-): Promise<RouteConfirmHookResult> {
-    if (to.confirm) {
-        const result = await to.confirm(to, from, router);
-        if (isValidConfirmHookResult(result)) {
-            return result;
-        }
-    }
-
-    switch (to.type) {
-        case RouteType.push:
-            return ROUTE_TYPE_HANDLERS.push;
-        case RouteType.replace:
-            return ROUTE_TYPE_HANDLERS.replace;
-        case RouteType.restartApp:
-            return ROUTE_TYPE_HANDLERS.restartApp;
-        case RouteType.pushWindow:
-            return ROUTE_TYPE_HANDLERS.pushWindow;
-        case RouteType.replaceWindow:
-            return ROUTE_TYPE_HANDLERS.replaceWindow;
-        case RouteType.pushLayer:
-            return ROUTE_TYPE_HANDLERS.pushLayer;
-        default:
-            return ROUTE_TYPE_HANDLERS.default;
-    }
-}
-
 /**
  * Route transition pipeline configuration.
  * Defines the sequence of hooks and guards that should be executed for each route type.
@@ -259,100 +259,100 @@ export async function confirm(
  */
 const ROUTE_TRANSITION_PIPELINE: Record<RouteType, RouteConfirmHook[]> = {
     [RouteType.push]: [
-        fallback,
-        override,
-        beforeLeave,
-        beforeEach,
-        beforeUpdate,
-        beforeEnter,
-        asyncComponent,
-        confirm
+        ROUTE_TRANSITION_HOOKS.fallback,
+        ROUTE_TRANSITION_HOOKS.override,
+        ROUTE_TRANSITION_HOOKS.beforeLeave,
+        ROUTE_TRANSITION_HOOKS.beforeEach,
+        ROUTE_TRANSITION_HOOKS.beforeUpdate,
+        ROUTE_TRANSITION_HOOKS.beforeEnter,
+        ROUTE_TRANSITION_HOOKS.asyncComponent,
+        ROUTE_TRANSITION_HOOKS.confirm
     ],
 
     [RouteType.replace]: [
-        fallback,
-        override,
-        beforeLeave,
-        beforeEach,
-        beforeUpdate,
-        beforeEnter,
-        asyncComponent,
-        confirm
+        ROUTE_TRANSITION_HOOKS.fallback,
+        ROUTE_TRANSITION_HOOKS.override,
+        ROUTE_TRANSITION_HOOKS.beforeLeave,
+        ROUTE_TRANSITION_HOOKS.beforeEach,
+        ROUTE_TRANSITION_HOOKS.beforeUpdate,
+        ROUTE_TRANSITION_HOOKS.beforeEnter,
+        ROUTE_TRANSITION_HOOKS.asyncComponent,
+        ROUTE_TRANSITION_HOOKS.confirm
     ],
 
     [RouteType.back]: [
-        // fallback,
-        // override,
-        beforeLeave,
-        beforeEach,
-        beforeUpdate,
-        beforeEnter,
-        asyncComponent,
-        confirm
+        // ROUTE_TRANSITION_HOOKS.fallback,
+        // ROUTE_TRANSITION_HOOKS.override,
+        ROUTE_TRANSITION_HOOKS.beforeLeave,
+        ROUTE_TRANSITION_HOOKS.beforeEach,
+        ROUTE_TRANSITION_HOOKS.beforeUpdate,
+        ROUTE_TRANSITION_HOOKS.beforeEnter,
+        ROUTE_TRANSITION_HOOKS.asyncComponent,
+        ROUTE_TRANSITION_HOOKS.confirm
     ],
 
     [RouteType.go]: [
-        // fallback,
-        // override,
-        beforeLeave,
-        beforeEach,
-        beforeUpdate,
-        beforeEnter,
-        asyncComponent,
-        confirm
+        // ROUTE_TRANSITION_HOOKS.fallback,
+        // ROUTE_TRANSITION_HOOKS.override,
+        ROUTE_TRANSITION_HOOKS.beforeLeave,
+        ROUTE_TRANSITION_HOOKS.beforeEach,
+        ROUTE_TRANSITION_HOOKS.beforeUpdate,
+        ROUTE_TRANSITION_HOOKS.beforeEnter,
+        ROUTE_TRANSITION_HOOKS.asyncComponent,
+        ROUTE_TRANSITION_HOOKS.confirm
     ],
 
     [RouteType.forward]: [
-        // fallback,
-        // override,
-        beforeLeave,
-        beforeEach,
-        beforeUpdate,
-        beforeEnter,
-        asyncComponent,
-        confirm
+        // ROUTE_TRANSITION_HOOKS.fallback,
+        // ROUTE_TRANSITION_HOOKS.override,
+        ROUTE_TRANSITION_HOOKS.beforeLeave,
+        ROUTE_TRANSITION_HOOKS.beforeEach,
+        ROUTE_TRANSITION_HOOKS.beforeUpdate,
+        ROUTE_TRANSITION_HOOKS.beforeEnter,
+        ROUTE_TRANSITION_HOOKS.asyncComponent,
+        ROUTE_TRANSITION_HOOKS.confirm
     ],
 
     [RouteType.pushWindow]: [
-        fallback,
-        override,
-        // beforeLeave
-        beforeEach,
-        // beforeUpdate
-        // beforeEnter
-        // asyncComponent
-        confirm
+        ROUTE_TRANSITION_HOOKS.fallback,
+        ROUTE_TRANSITION_HOOKS.override,
+        // ROUTE_TRANSITION_HOOKS.beforeLeave
+        ROUTE_TRANSITION_HOOKS.beforeEach,
+        // ROUTE_TRANSITION_HOOKS.beforeUpdate
+        // ROUTE_TRANSITION_HOOKS.beforeEnter
+        // ROUTE_TRANSITION_HOOKS.asyncComponent
+        ROUTE_TRANSITION_HOOKS.confirm
     ],
 
     [RouteType.replaceWindow]: [
-        fallback,
-        override,
-        beforeLeave,
-        beforeEach,
-        // beforeUpdate
-        // beforeEnter
-        // asyncComponent
-        confirm
+        ROUTE_TRANSITION_HOOKS.fallback,
+        ROUTE_TRANSITION_HOOKS.override,
+        ROUTE_TRANSITION_HOOKS.beforeLeave,
+        ROUTE_TRANSITION_HOOKS.beforeEach,
+        // ROUTE_TRANSITION_HOOKS.beforeUpdate
+        // ROUTE_TRANSITION_HOOKS.beforeEnter
+        // ROUTE_TRANSITION_HOOKS.asyncComponent
+        ROUTE_TRANSITION_HOOKS.confirm
     ],
     [RouteType.pushLayer]: [
-        fallback,
-        override,
-        // beforeLeave
-        beforeEach,
-        // beforeUpdate
-        // beforeEnter
-        // asyncComponent
-        confirm
+        ROUTE_TRANSITION_HOOKS.fallback,
+        ROUTE_TRANSITION_HOOKS.override,
+        // ROUTE_TRANSITION_HOOKS.beforeLeave
+        ROUTE_TRANSITION_HOOKS.beforeEach,
+        // ROUTE_TRANSITION_HOOKS.beforeUpdate
+        // ROUTE_TRANSITION_HOOKS.beforeEnter
+        // ROUTE_TRANSITION_HOOKS.asyncComponent
+        ROUTE_TRANSITION_HOOKS.confirm
     ],
     [RouteType.restartApp]: [
-        fallback,
-        // override,
-        beforeLeave,
-        beforeEach,
-        beforeUpdate,
-        beforeEnter,
-        asyncComponent,
-        confirm
+        ROUTE_TRANSITION_HOOKS.fallback,
+        // ROUTE_TRANSITION_HOOKS.override,
+        ROUTE_TRANSITION_HOOKS.beforeLeave,
+        ROUTE_TRANSITION_HOOKS.beforeEach,
+        ROUTE_TRANSITION_HOOKS.beforeUpdate,
+        ROUTE_TRANSITION_HOOKS.beforeEnter,
+        ROUTE_TRANSITION_HOOKS.asyncComponent,
+        ROUTE_TRANSITION_HOOKS.confirm
     ],
 
     [RouteType.unknown]: []
