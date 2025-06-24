@@ -7,6 +7,7 @@ import {
     type RouteConfirmHook,
     type RouteHandleHook,
     type RouteHandleResult,
+    type RouteLayerOptions,
     type RouteLocationInput,
     type RouteMatchResult,
     type RouteMeta,
@@ -40,7 +41,10 @@ export const NON_ENUMERABLE_PROPERTIES = [
     'statusCode',
 
     // Route behavior overrides - framework internal logic
-    'confirm'
+    'confirm',
+
+    // Layer configuration - used for layer routes
+    'layer'
 ] satisfies string[];
 
 /**
@@ -104,6 +108,8 @@ export class Route {
     public readonly keepScrollPosition: boolean;
     /** Custom confirm handler that overrides default route-transition confirm logic */
     public readonly confirm: RouteConfirmHook | null;
+    /** Layer configuration for layer routes */
+    public readonly layer: RouteLayerOptions | null;
 
     // Read-only properties
     public readonly type: RouteType;
@@ -155,6 +161,12 @@ export class Route {
             : false;
         this.confirm =
             isPlainObject(toInput) && toInput.confirm ? toInput.confirm : null;
+        this.layer =
+            toType === RouteType.pushLayer &&
+            isPlainObject(toInput) &&
+            toInput.layer
+                ? toInput.layer
+                : null;
         this.config =
             this.matched.length > 0
                 ? this.matched[this.matched.length - 1]
@@ -305,7 +317,8 @@ export class Route {
         const toInput: RouteLocationInput = {
             path: this.fullPath,
             state: { ...this.state },
-            ...(this.confirm && { confirm: this.confirm })
+            ...(this.confirm && { confirm: this.confirm }),
+            ...(this.layer && { layer: this.layer })
         };
 
         // Get original options from constructor's finalOptions

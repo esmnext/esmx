@@ -1796,4 +1796,223 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
             expect((targetRoute as any)._handled).toBe(true);
         });
     });
+
+    describe('🏗️ Layer Field Tests', () => {
+        describe('Layer Field Initialization', () => {
+            it('should initialize layer as null for non-pushLayer route types', () => {
+                const options = createOptions();
+
+                // Test different route types should all have null layer
+                const routeTypes = [
+                    RouteType.push,
+                    RouteType.replace,
+                    RouteType.back,
+                    RouteType.forward,
+                    RouteType.go,
+                    RouteType.pushWindow,
+                    RouteType.replaceWindow,
+                    RouteType.restartApp,
+                    RouteType.unknown
+                ];
+
+                routeTypes.forEach((routeType) => {
+                    const route = new Route({
+                        options,
+                        toType: routeType,
+                        toInput: {
+                            path: '/test',
+                            layer: { zIndex: 1000, params: { test: true } }
+                        }
+                    });
+
+                    expect(route.layer).toBeNull();
+                });
+            });
+
+            it('should set layer value for pushLayer route type', () => {
+                const options = createOptions();
+                const layerConfig = {
+                    zIndex: 1000,
+                    params: { userId: 123, mode: 'edit' },
+                    autoPush: false,
+                    push: true
+                };
+
+                const route = new Route({
+                    options,
+                    toType: RouteType.pushLayer,
+                    toInput: {
+                        path: '/user/123',
+                        layer: layerConfig
+                    }
+                });
+
+                expect(route.layer).toBe(layerConfig);
+                expect(route.layer?.zIndex).toBe(1000);
+                expect(route.layer?.params?.userId).toBe(123);
+                expect(route.layer?.autoPush).toBe(false);
+            });
+
+            it('should set layer as null for pushLayer without layer config', () => {
+                const options = createOptions();
+
+                const route = new Route({
+                    options,
+                    toType: RouteType.pushLayer,
+                    toInput: '/test'
+                });
+
+                expect(route.layer).toBeNull();
+            });
+
+            it('should set layer as null for pushLayer with string toInput', () => {
+                const options = createOptions();
+
+                const route = new Route({
+                    options,
+                    toType: RouteType.pushLayer,
+                    toInput: '/test'
+                });
+
+                expect(route.layer).toBeNull();
+            });
+        });
+
+        describe('Layer Field Non-Enumerable Property', () => {
+            it('should make layer property non-enumerable', () => {
+                const options = createOptions();
+                const layerConfig = { zIndex: 1000 };
+
+                const route = new Route({
+                    options,
+                    toType: RouteType.pushLayer,
+                    toInput: {
+                        path: '/test',
+                        layer: layerConfig
+                    }
+                });
+
+                const keys = Object.keys(route);
+                const propertyNames = Object.getOwnPropertyNames(route);
+                const descriptor = Object.getOwnPropertyDescriptor(
+                    route,
+                    'layer'
+                );
+
+                expect(keys).not.toContain('layer');
+                expect(propertyNames).toContain('layer');
+                expect(descriptor?.enumerable).toBe(false);
+            });
+
+            it('should be included in NON_ENUMERABLE_PROPERTIES list', () => {
+                expect(NON_ENUMERABLE_PROPERTIES).toContain('layer');
+            });
+        });
+
+        describe('Layer Field in Route Operations', () => {
+            it('should preserve layer during route cloning', () => {
+                const options = createOptions();
+                const layerConfig = {
+                    zIndex: 2000,
+                    params: { modal: true }
+                };
+
+                const originalRoute = new Route({
+                    options,
+                    toType: RouteType.pushLayer,
+                    toInput: {
+                        path: '/modal',
+                        layer: layerConfig
+                    }
+                });
+
+                const clonedRoute = originalRoute.clone();
+
+                expect(clonedRoute.layer).toBe(layerConfig);
+                expect(clonedRoute.layer).toBe(originalRoute.layer);
+            });
+
+            it('should preserve null layer during route cloning', () => {
+                const options = createOptions();
+
+                const originalRoute = new Route({
+                    options,
+                    toType: RouteType.push,
+                    toInput: '/test'
+                });
+
+                const clonedRoute = originalRoute.clone();
+
+                expect(clonedRoute.layer).toBeNull();
+                expect(clonedRoute.layer).toBe(originalRoute.layer);
+            });
+
+            it('should synchronize layer field during syncTo operation', () => {
+                const options = createOptions();
+                const layerConfig = {
+                    zIndex: 3000,
+                    params: { popup: true }
+                };
+
+                const sourceRoute = new Route({
+                    options,
+                    toType: RouteType.pushLayer,
+                    toInput: {
+                        path: '/popup',
+                        layer: layerConfig
+                    }
+                });
+
+                const targetRoute = new Route({
+                    options,
+                    toType: RouteType.push,
+                    toInput: '/target'
+                });
+
+                sourceRoute.syncTo(targetRoute);
+
+                expect(targetRoute.layer).toBe(layerConfig);
+                expect(targetRoute.layer).toBe(sourceRoute.layer);
+            });
+
+            it('should handle complex layer configuration', () => {
+                const options = createOptions();
+                const complexLayerConfig = {
+                    zIndex: 5000,
+                    params: {
+                        userId: 456,
+                        permissions: ['read', 'write'],
+                        metadata: {
+                            title: 'User Settings',
+                            description: 'Edit user profile'
+                        }
+                    },
+                    shouldClose: () => true,
+                    autoPush: true,
+                    push: false,
+                    routerOptions: {
+                        mode: RouterMode.memory
+                    }
+                };
+
+                const route = new Route({
+                    options,
+                    toType: RouteType.pushLayer,
+                    toInput: {
+                        path: '/settings',
+                        layer: complexLayerConfig
+                    }
+                });
+
+                expect(route.layer).toBe(complexLayerConfig);
+                expect((route.layer?.params as any)?.metadata?.title).toBe(
+                    'User Settings'
+                );
+                expect(typeof route.layer?.shouldClose).toBe('function');
+                expect(route.layer?.routerOptions?.mode).toBe(
+                    RouterMode.memory
+                );
+            });
+        });
+    });
 });
