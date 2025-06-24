@@ -43,7 +43,7 @@
                         <span class="control-dot"></span>
                     </div>
                 </div>
-                <pre class="route-data">{{ $route }}</pre>
+                <CollapsibleJson class="route-data" :data="$route" />
             </div>
         </div>
     </div>
@@ -51,6 +51,7 @@
 
 <script lang="ts" setup>
 import { RouterLink } from '@esmx/router-vue';
+import CollapsibleJson from './collapsible-json.vue';
 </script>
 
 <style scoped>
