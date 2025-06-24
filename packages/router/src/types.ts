@@ -197,7 +197,7 @@ export interface RouteLayerOptions {
 export type RouteLayerResult =
     | { type: 'close'; route: Route }
     | { type: 'push'; route: Route }
-    | { type: 'success'; route: Route };
+    | { type: 'success'; route: Route; data?: any };
 
 /**
  * Router options for creating layer instances
@@ -265,7 +265,7 @@ export interface RouterOptions {
     layer?: boolean;
     zIndex?: number;
     handleBackBoundary?: (router: Router) => void;
-    handleLayerClose?: (router: Router) => void;
+    handleLayerClose?: (router: Router, data?: any) => void;
 }
 
 export interface RouterParsedOptions extends Readonly<Required<RouterOptions>> {

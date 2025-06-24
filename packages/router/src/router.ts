@@ -19,7 +19,7 @@ import type {
     RouterOptions,
     RouterParsedOptions
 } from './types';
-import { isPlainObject, isRouteMatched } from './util';
+import { isNotNullish, isPlainObject, isRouteMatched } from './util';
 
 export class Router {
     public readonly options: RouterOptions;
@@ -226,29 +226,17 @@ export class Router {
     public async createLayer(
         toInput: RouteLocationInput
     ): Promise<{ promise: Promise<RouteLayerResult>; router: Router }> {
-        const layerConfig = isPlainObject(toInput) ? toInput.layer : undefined;
+        const layerOptions: RouteLayerOptions =
+            (isPlainObject(toInput) ? toInput.layer : null) || {};
 
-        const { routerOptions, ...pureLayerConfig } = layerConfig || {};
-
-        const layer: Required<Omit<RouteLayerOptions, 'routerOptions'>> = {
-            zIndex: this.parsedOptions.zIndex + LAYER_ID.next(),
-            shouldClose: () => false,
-            autoPush: true,
-            push: true,
-            ...pureLayerConfig
-        };
+        const zIndex =
+            layerOptions.zIndex ?? this.parsedOptions.zIndex + LAYER_ID.next();
 
         let promiseResolve: (result: RouteLayerResult) => void;
         const promise = new Promise<RouteLayerResult>((resolve) => {
             promiseResolve = resolve;
         });
-        const onClose = (router: Router) => {
-            router.destroy();
-            promiseResolve({
-                type: 'close',
-                route: router.route
-            });
-        };
+
         const router = new Router({
             ...this.options,
             mode: RouterMode.memory,
@@ -258,19 +246,58 @@ export class Router {
                 left: '0',
                 width: '100%',
                 height: '100%',
-                zIndex: '' + layer.zIndex,
+                zIndex: String(zIndex),
                 background: 'rgba(0,0,0,.6)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
             },
             root: undefined,
-            ...routerOptions,
-            handleBackBoundary: onClose,
-            handleLayerClose: onClose,
+            ...layerOptions.routerOptions,
+            handleBackBoundary(router) {
+                router.destroy();
+                promiseResolve({
+                    type: 'close',
+                    route: router.route
+                });
+            },
+            handleLayerClose(router, data) {
+                router.destroy();
+                if (isNotNullish(data)) {
+                    promiseResolve({
+                        type: 'success',
+                        route: router.route,
+                        data
+                    });
+                } else {
+                    promiseResolve({
+                        type: 'close',
+                        route: router.route
+                    });
+                }
+            },
             layer: true
         });
         await router.replace(toInput);
+
+        router.afterEach((to, from) => {
+            if (layerOptions.shouldClose) {
+                const result = layerOptions.shouldClose(to, from, router);
+                if (result === false) {
+                    router.destroy();
+                    promiseResolve({
+                        type: 'push',
+                        route: to
+                    });
+                }
+            }
+        });
+        if (layerOptions.push) {
+            router.navigation.pushHistoryState(
+                router.route.state,
+                router.route.url
+            );
+        }
         return {
             promise,
             router
@@ -282,9 +309,9 @@ export class Router {
         const result = await this.transition.to(RouteType.pushLayer, toInput);
         return result.handleResult as RouteLayerResult;
     }
-    public closeLayer() {
+    public closeLayer(data?: any) {
         if (!this.isLayer) return;
-        this.parsedOptions.handleLayerClose(this);
+        this.parsedOptions.handleLayerClose(this, data);
     }
 
     public async renderToString(throwError = false): Promise<string | null> {

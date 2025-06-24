@@ -60,6 +60,21 @@ export class Navigation {
         this._history.replaceState(state, '', route.fullPath);
         return state;
     }
+    public pushHistoryState(data: any, url?: string | URL | null) {
+        const state: RouteState = Object.freeze({
+            ...data,
+            [PAGE_ID_KEY]: PAGE_ID.next()
+        });
+        history.pushState(state, '', url);
+    }
+    public replaceHistoryState(data: any, url?: string | URL | null) {
+        const oldId = history.state?.[PAGE_ID_KEY];
+        const state: RouteState = Object.freeze({
+            ...data,
+            [PAGE_ID_KEY]: typeof oldId === 'number' ? oldId : PAGE_ID.next()
+        });
+        history.replaceState(state, '', url);
+    }
 
     public go(index: number): Promise<NavigationGoResult> {
         if (this._promiseResolve) {
