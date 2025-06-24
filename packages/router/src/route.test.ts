@@ -1821,7 +1821,7 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
                         toType: routeType,
                         toInput: {
                             path: '/test',
-                            layer: { zIndex: 1000, params: { test: true } }
+                            layer: { zIndex: 1000 }
                         }
                     });
 
@@ -1849,7 +1849,6 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
 
                 expect(route.layer).toBe(layerConfig);
                 expect(route.layer?.zIndex).toBe(1000);
-                expect(route.layer?.params?.userId).toBe(123);
                 expect(route.layer?.autoPush).toBe(false);
             });
 
@@ -2005,9 +2004,6 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
                 });
 
                 expect(route.layer).toBe(complexLayerConfig);
-                expect((route.layer?.params as any)?.metadata?.title).toBe(
-                    'User Settings'
-                );
                 expect(typeof route.layer?.shouldClose).toBe('function');
                 expect(route.layer?.routerOptions?.mode).toBe(
                     RouterMode.memory

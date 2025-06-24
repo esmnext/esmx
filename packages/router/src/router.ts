@@ -232,7 +232,6 @@ export class Router {
 
         const layer: Required<Omit<RouteLayerOptions, 'routerOptions'>> = {
             zIndex: this.parsedOptions.zIndex + LAYER_ID.next(),
-            params: {},
             shouldClose: () => false,
             autoPush: true,
             push: true,

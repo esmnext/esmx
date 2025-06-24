@@ -169,11 +169,6 @@ export interface RouteLayerOptions {
      * If not set, will automatically use incremental layer value (1000 + increment)
      */
     zIndex?: number;
-
-    /**
-     * Route layer initialization parameters, passed as key-value pairs
-     */
-    params?: Record<string, unknown>;
     /**
      * Verification hook function before route closure
      * @returns Return true to allow closure, false to prevent closure
