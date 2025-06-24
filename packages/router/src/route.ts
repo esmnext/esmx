@@ -103,7 +103,7 @@ export class Route {
     private readonly _options: RouterParsedOptions;
 
     // Public properties
-    public statusCode: number | null = null;
+    public readonly statusCode: number | null = null;
     public readonly state: RouteState;
     public readonly keepScrollPosition: boolean;
     /** Custom confirm handler that overrides default route-transition confirm logic */
@@ -272,21 +272,12 @@ export class Route {
     }
 
     /**
-     * Merge new state into current route's state
-     * @param newState New state to merge
+     * Apply navigation-generated state to current route
+     * Used by route handlers to add system state like pageId
+     * @param navigationState Navigation-generated state to apply
      */
-    mergeState(newState: Partial<RouteState>): void {
-        // Directly merge new state without clearing existing state
-        Object.assign(this.state, newState);
-    }
-
-    /**
-     * Set single state value
-     * @param name State name
-     * @param value State value
-     */
-    setState(name: string, value: any): void {
-        this.state[name] = value;
+    applyNavigationState(navigationState: Partial<RouteState>): void {
+        Object.assign(this.state, navigationState);
     }
 
     /**
@@ -318,7 +309,8 @@ export class Route {
             path: this.fullPath,
             state: { ...this.state },
             ...(this.confirm && { confirm: this.confirm }),
-            ...(this.layer && { layer: this.layer })
+            ...(this.layer && { layer: this.layer }),
+            ...(this.statusCode !== null && { statusCode: this.statusCode })
         };
 
         // Get original options from constructor's finalOptions
@@ -329,9 +321,6 @@ export class Route {
             toType: this.type,
             toInput
         });
-
-        // Manually copy statusCode as it might have been manually modified
-        clonedRoute.statusCode = this.statusCode;
 
         return clonedRoute;
     }

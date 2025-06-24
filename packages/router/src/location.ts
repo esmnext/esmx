@@ -57,9 +57,27 @@ export function parseLocation(toInput: RouteLocationInput, baseURL: URL): URL {
     const searchParams = url.searchParams;
 
     // Priority: queryArray > query > query in path
-    Object.entries<string | (string | undefined)[]>(
-        Object.assign({}, toInput.query, toInput.queryArray)
-    ).forEach(([key, value]) => {
+    const mergedQuery: Record<string, string | string[]> = {};
+
+    // First, add query values
+    if (toInput.query) {
+        Object.entries(toInput.query).forEach(([key, value]) => {
+            if (typeof value !== 'undefined') {
+                mergedQuery[key] = value;
+            }
+        });
+    }
+
+    // Then, add queryArray values (higher priority)
+    if (toInput.queryArray) {
+        Object.entries(toInput.queryArray).forEach(([key, value]) => {
+            if (typeof value !== 'undefined') {
+                mergedQuery[key] = value;
+            }
+        });
+    }
+
+    Object.entries(mergedQuery).forEach(([key, value]) => {
         searchParams.delete(key); // Clear previous params with the same name
         value = Array.isArray(value) ? value : [value];
         value

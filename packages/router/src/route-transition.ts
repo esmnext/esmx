@@ -205,23 +205,23 @@ export const ROUTE_TYPE_HANDLERS = {
         router.microApp._update(router);
         if (!isUrlEqual(to.url, from?.url)) {
             const newState = router.navigation.push(to);
-            to.mergeState(newState);
+            to.applyNavigationState(newState);
         } else {
             const newState = router.navigation.replace(to);
-            to.mergeState(newState);
+            to.applyNavigationState(newState);
         }
     },
     replace(to, from, router) {
         router.transition.route = to;
         router.microApp._update(router);
         const newState = router.navigation.replace(to);
-        to.mergeState(newState);
+        to.applyNavigationState(newState);
     },
     restartApp(to, from, router) {
         router.transition.route = to;
         router.microApp._update(router, true);
         const newState = router.navigation.replace(to);
-        to.mergeState(newState);
+        to.applyNavigationState(newState);
     },
     pushWindow(to, from, router) {
         return router.parsedOptions.fallback(to, from, router);
@@ -238,7 +238,7 @@ export const ROUTE_TYPE_HANDLERS = {
         router.microApp._update(router);
         if (!isUrlEqual(to.url, from?.url)) {
             const newState = router.navigation.replace(to);
-            to.mergeState(newState);
+            to.applyNavigationState(newState);
         }
     }
 } satisfies Record<string, RouteHandleHook>;

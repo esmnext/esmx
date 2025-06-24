@@ -771,8 +771,8 @@ describe('Route Class Complete Test Suite', () => {
     });
 
     describe('📊 State management tests', () => {
-        describe('State merging', () => {
-            it('should correctly merge new state', () => {
+        describe('Navigation state application', () => {
+            it('should correctly apply navigation state', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -780,11 +780,11 @@ describe('Route Class Complete Test Suite', () => {
                     toInput: { path: '/users/123', state: { a: 1, b: 2 } }
                 });
 
-                route.mergeState({ b: 3, c: 4 });
+                route.applyNavigationState({ b: 3, c: 4 });
                 expect(route.state).toEqual({ a: 1, b: 3, c: 4 });
             });
 
-            it('should handle empty state merging', () => {
+            it('should handle empty navigation state application', () => {
                 const options = createOptions();
                 const route = new Route({
                     options,
@@ -792,12 +792,12 @@ describe('Route Class Complete Test Suite', () => {
                     toInput: '/users/123'
                 });
 
-                route.mergeState({ first: 'value' });
-                expect(route.state).toEqual({ first: 'value' });
+                route.applyNavigationState({ __pageId__: 123 });
+                expect(route.state).toEqual({ __pageId__: 123 });
             });
         });
 
-        describe('Single state setting', () => {
+        describe('Direct state assignment', () => {
             it('should correctly set single state value', () => {
                 const options = createOptions();
                 const route = new Route({
@@ -806,8 +806,8 @@ describe('Route Class Complete Test Suite', () => {
                     toInput: '/users/123'
                 });
 
-                route.setState('userId', 123);
-                route.setState('userName', 'john');
+                route.state.userId = 123;
+                route.state.userName = 'john';
 
                 expect(route.state.userId).toBe(123);
                 expect(route.state.userName).toBe('john');
@@ -821,7 +821,7 @@ describe('Route Class Complete Test Suite', () => {
                     toInput: { path: '/users/123', state: { count: 1 } }
                 });
 
-                route.setState('count', 2);
+                route.state.count = 2;
                 expect(route.state.count).toBe(2);
             });
         });
@@ -840,7 +840,7 @@ describe('Route Class Complete Test Suite', () => {
                     toInput: { path: '/route2', state: { shared: 'value2' } }
                 });
 
-                route1.setState('shared', 'modified1');
+                route1.state.shared = 'modified1';
                 expect(route2.state.shared).toBe('value2');
             });
         });
@@ -915,9 +915,9 @@ describe('Route Class Complete Test Suite', () => {
                 const clonedRoute = originalRoute.clone();
                 expect(clonedRoute.statusCode).toBe(500);
 
-                // Modify original route's statusCode should not affect cloned route
-                originalRoute.statusCode = 200;
+                // statusCode should be readonly, cloned route keeps original value
                 expect(clonedRoute.statusCode).toBe(500);
+                expect(originalRoute.statusCode).toBe(500);
             });
         });
     });
@@ -977,7 +977,7 @@ describe('Route Class Complete Test Suite', () => {
                 const cloned = original.clone();
 
                 // Modify cloned object's state should not affect original
-                cloned.setState('newProp', 'newValue');
+                cloned.state.newProp = 'newValue';
                 expect(original.state.newProp).toBeUndefined();
             });
         });
@@ -1315,7 +1315,7 @@ describe('Route Class Complete Test Suite', () => {
             const startTime = performance.now();
 
             for (let i = 0; i < 1000; i++) {
-                route.setState(`key${i}`, `value${i}`);
+                route.state[`key${i}`] = `value${i}`;
             }
 
             const endTime = performance.now();
@@ -1492,7 +1492,7 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
             expect(cloned.state).not.toBe(original.state);
 
             // Modify cloned object should not affect original
-            cloned.setState('newProp', 'newValue');
+            cloned.state.newProp = 'newValue';
             expect(original.state.newProp).toBeUndefined();
         });
 
@@ -1693,10 +1693,10 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
                 toType: RouteType.push,
                 toInput: {
                     path: '/users/456',
-                    state: { userId: 456, name: 'Jane' }
+                    state: { userId: 456, name: 'Jane' },
+                    statusCode: 200
                 }
             });
-            sourceRoute.statusCode = 200;
 
             const targetRoute = new Route({
                 options,
