@@ -1,6 +1,6 @@
 export { Router } from './router';
 export { Route } from './route';
-
+export { RouteTransition, ROUTE_TYPE_HANDLERS } from './route-transition';
 export {
     // Utility types
     type Awaitable,
@@ -50,6 +50,5 @@ export {
     RouteTaskCancelledError,
     RouteTaskExecutionError,
     RouteNavigationAbortedError,
-    RouteSelfRedirectionError,
-    RouteNoHandlerFoundError
+    RouteSelfRedirectionError
 } from './error';

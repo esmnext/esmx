@@ -1,17 +1,12 @@
 import {
     RouteNavigationAbortedError,
-    RouteNoHandlerFoundError,
     RouteSelfRedirectionError,
     RouteTaskCancelledError,
     RouteTaskExecutionError
 } from './error';
 import { Route } from './route';
 import type { Router } from './router';
-import type {
-    RouteConfirmHook,
-    RouteConfirmHookResult,
-    RouterParsedOptions
-} from './types';
+import type { RouteConfirmHook, RouteConfirmHookResult } from './types';
 import { isUrlEqual, isValidConfirmHookResult } from './util';
 
 /**
@@ -47,27 +42,23 @@ export interface RouteTaskOptions {
     controller?: RouteTaskController;
 }
 
-export async function createRouteTask(opts: RouteTaskOptions) {
+export async function createRouteTask(opts: RouteTaskOptions): Promise<Route> {
     const { to, from, tasks, controller, router } = opts;
 
     for (const task of tasks) {
         if (controller?.shouldCancel(task.name)) {
-            throw new RouteTaskCancelledError(task.name, to);
+            throw new RouteTaskCancelledError(task.name, to, from);
         }
 
         let result: RouteConfirmHookResult | null = null;
         try {
             result = await task.task(to, from, router);
         } catch (e) {
-            throw new RouteTaskExecutionError(
-                task.name,
-                e instanceof Error ? e : new Error(String(e)),
-                to
-            );
+            throw new RouteTaskExecutionError(task.name, to, from, e);
         }
 
         if (controller?.shouldCancel(task.name)) {
-            throw new RouteTaskCancelledError(task.name, to);
+            throw new RouteTaskCancelledError(task.name, to, from);
         }
 
         if (!isValidConfirmHookResult(result)) continue;
@@ -76,7 +67,7 @@ export async function createRouteTask(opts: RouteTaskOptions) {
             return to;
         }
         if (result === false) {
-            throw new RouteNavigationAbortedError(task.name, to);
+            throw new RouteNavigationAbortedError(task.name, to, from);
         }
         const nextTo = new Route({
             options: router.parsedOptions,
@@ -85,7 +76,7 @@ export async function createRouteTask(opts: RouteTaskOptions) {
             from: to.url
         });
         if (isUrlEqual(nextTo.url, to.url)) {
-            throw new RouteSelfRedirectionError(to.fullPath, to);
+            throw new RouteSelfRedirectionError(to.fullPath, to, from);
         }
         return createRouteTask({
             ...opts,
@@ -94,9 +85,7 @@ export async function createRouteTask(opts: RouteTaskOptions) {
             controller
         });
     }
-
-    // All tasks have been executed, but no handle function was returned.
-    throw new RouteNoHandlerFoundError(to.fullPath, to);
+    return to;
 }
 
 export enum RouteTaskType {

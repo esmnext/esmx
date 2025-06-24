@@ -2,24 +2,32 @@ import type { Route } from './route';
 
 export class RouteError extends Error {
     public readonly code: string;
-    public readonly route?: Route;
+    public readonly to: Route;
+    public readonly from: Route | null;
 
-    constructor(message: string, code: string, route?: Route) {
+    constructor(
+        message: string,
+        code: string,
+        to: Route,
+        from: Route | null = null
+    ) {
         super(message);
         this.name = 'RouteError';
         this.code = code;
-        this.route = route;
+        this.to = to;
+        this.from = from;
     }
 }
 
 export class RouteTaskCancelledError extends RouteError {
     public readonly taskName: string;
 
-    constructor(taskName: string, route?: Route) {
+    constructor(taskName: string, to: Route, from: Route | null = null) {
         super(
             `Route task "${taskName}" was cancelled`,
             'ROUTE_TASK_CANCELLED',
-            route
+            to,
+            from
         );
         this.name = 'RouteTaskCancelledError';
         this.taskName = taskName;
@@ -28,25 +36,35 @@ export class RouteTaskCancelledError extends RouteError {
 
 export class RouteTaskExecutionError extends RouteError {
     public readonly taskName: string;
-    public readonly originalError?: Error;
+    public readonly originalError: Error;
 
-    constructor(taskName: string, originalError?: Error, route?: Route) {
-        const message = `Route task "${taskName}" failed${originalError ? `: ${originalError.message}` : ''}`;
-        super(message, 'ROUTE_TASK_EXECUTION_ERROR', route);
+    constructor(
+        taskName: string,
+        to: Route,
+        from: Route | null = null,
+        originalError?: unknown
+    ) {
+        const error =
+            originalError instanceof Error
+                ? originalError
+                : new Error(String(originalError));
+        const message = `Route task "${taskName}" failed${error.message ? `: ${error.message}` : ''}`;
+        super(message, 'ROUTE_TASK_EXECUTION_ERROR', to, from);
         this.name = 'RouteTaskExecutionError';
         this.taskName = taskName;
-        this.originalError = originalError;
+        this.originalError = error;
     }
 }
 
 export class RouteNavigationAbortedError extends RouteError {
     public readonly taskName: string;
 
-    constructor(taskName: string, route?: Route) {
+    constructor(taskName: string, to: Route, from: Route | null = null) {
         super(
             `Navigation was aborted by task "${taskName}"`,
             'ROUTE_NAVIGATION_ABORTED',
-            route
+            to,
+            from
         );
         this.name = 'RouteNavigationAbortedError';
         this.taskName = taskName;
@@ -54,23 +72,13 @@ export class RouteNavigationAbortedError extends RouteError {
 }
 
 export class RouteSelfRedirectionError extends RouteError {
-    constructor(fullPath: string, route?: Route) {
+    constructor(fullPath: string, to: Route, from: Route | null = null) {
         super(
             `Detected a self-redirection to "${fullPath}". Aborting navigation.`,
             'ROUTE_SELF_REDIRECTION',
-            route
+            to,
+            from
         );
         this.name = 'RouteSelfRedirectionError';
-    }
-}
-
-export class RouteNoHandlerFoundError extends RouteError {
-    constructor(fullPath: string, route?: Route) {
-        super(
-            `No handle function found for route "${fullPath}"`,
-            'ROUTE_NO_HANDLER_FOUND',
-            route
-        );
-        this.name = 'RouteNoHandlerFoundError';
     }
 }

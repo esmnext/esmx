@@ -59,7 +59,7 @@ export class Router {
         this.navigation = new Navigation(
             this.parsedOptions,
             (url: string, state: RouteState) => {
-                this.transition.to(RouteType.none, {
+                this.transition.to(RouteType.unknown, {
                     url,
                     state
                 });
@@ -167,10 +167,7 @@ export class Router {
      * }
      * ```
      */
-    public resolve(
-        toInput: RouteLocationInput,
-        toType: RouteType = RouteType.none
-    ): Route {
+    public resolve(toInput: RouteLocationInput, toType?: RouteType): Route {
         return new Route({
             options: this.parsedOptions,
             toType,

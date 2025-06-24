@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
     RouteNavigationAbortedError,
-    RouteNoHandlerFoundError,
     RouteTaskCancelledError,
     RouteTaskExecutionError
 } from './error';
@@ -37,7 +36,7 @@ function createMockRouter(): Router {
 }
 
 describe('createRouteTask', () => {
-    it('should throw RouteNoHandlerFoundError when task array is empty', async () => {
+    it('should return original route when task array is empty', async () => {
         const router = createMockRouter();
         const to = new Route({
             options: router.parsedOptions,
@@ -52,14 +51,14 @@ describe('createRouteTask', () => {
 
         const tasks: RouteTask[] = [];
 
-        await expect(
-            createRouteTask({
-                to,
-                from,
-                tasks,
-                router
-            })
-        ).rejects.toThrow(RouteNoHandlerFoundError);
+        const result = await createRouteTask({
+            to,
+            from,
+            tasks,
+            router
+        });
+
+        expect(result).toBe(to);
     });
 
     it('should execute tasks in sequence', async () => {
@@ -241,14 +240,16 @@ describe('createRouteTask', () => {
             }
         ];
 
-        await expect(
-            createRouteTask({
-                to,
-                from,
-                tasks,
-                router
-            })
-        ).rejects.toThrow(RouteNoHandlerFoundError);
+        const result = await createRouteTask({
+            to,
+            from,
+            tasks,
+            router
+        });
+
+        // Should return a new Route object for the redirected path
+        expect(result).toBeInstanceOf(Route);
+        expect(result.path).toBe('/redirected');
     });
 
     it('should throw RouteTaskExecutionError when task throws an error', async () => {
@@ -288,6 +289,95 @@ describe('createRouteTask', () => {
                 router
             })
         ).rejects.toThrow(RouteTaskExecutionError);
+    });
+
+    it('should handle non-Error exceptions and convert them to Error instances', async () => {
+        const router = createMockRouter();
+        const to = new Route({
+            options: router.parsedOptions,
+            toType: RouteType.push,
+            toInput: '/test'
+        });
+        const from = new Route({
+            options: router.parsedOptions,
+            toType: RouteType.push,
+            toInput: '/home'
+        });
+
+        // Task that throws a string instead of Error
+        const stringErrorTask = async (
+            route: Route,
+            fromRoute: Route | null,
+            router: Router
+        ) => {
+            throw 'String error message'; // eslint-disable-line prefer-promise-reject-errors
+        };
+
+        // Task that throws a number
+        const numberErrorTask = async (
+            route: Route,
+            fromRoute: Route | null,
+            router: Router
+        ) => {
+            throw 404; // eslint-disable-line prefer-promise-reject-errors
+        };
+
+        // Task that throws an object
+        const objectErrorTask = async (
+            route: Route,
+            fromRoute: Route | null,
+            router: Router
+        ) => {
+            throw { code: 'CUSTOM_ERROR', message: 'Custom error object' }; // eslint-disable-line prefer-promise-reject-errors
+        };
+
+        // Test string error
+        const stringTasks: RouteTask[] = [
+            { name: 'stringError', task: stringErrorTask }
+        ];
+        try {
+            await createRouteTask({ to, from, tasks: stringTasks, router });
+        } catch (error) {
+            expect(error).toBeInstanceOf(RouteTaskExecutionError);
+            expect(
+                (error as RouteTaskExecutionError).originalError
+            ).toBeInstanceOf(Error);
+            expect(
+                (error as RouteTaskExecutionError).originalError.message
+            ).toBe('String error message');
+        }
+
+        // Test number error
+        const numberTasks: RouteTask[] = [
+            { name: 'numberError', task: numberErrorTask }
+        ];
+        try {
+            await createRouteTask({ to, from, tasks: numberTasks, router });
+        } catch (error) {
+            expect(error).toBeInstanceOf(RouteTaskExecutionError);
+            expect(
+                (error as RouteTaskExecutionError).originalError
+            ).toBeInstanceOf(Error);
+            expect(
+                (error as RouteTaskExecutionError).originalError.message
+            ).toBe('404');
+        }
+
+        // Test object error
+        const objectTasks: RouteTask[] = [
+            { name: 'objectError', task: objectErrorTask }
+        ];
+        try {
+            await createRouteTask({ to, from, tasks: objectTasks, router });
+        } catch (error) {
+            expect(error).toBeInstanceOf(RouteTaskExecutionError);
+            expect(
+                (error as RouteTaskExecutionError).originalError
+            ).toBeInstanceOf(Error);
+            expect(
+                (error as RouteTaskExecutionError).originalError.message
+            ).toBe('[object Object]');
+        }
     });
 
     it('should not execute subsequent tasks once an error is thrown', async () => {
@@ -675,7 +765,7 @@ describe('createRouteTask', () => {
             });
 
             expect(result).toBe(to);
-            expect(result.handle).toBeTypeOf('function');
+            expect(result?.handle).toBeTypeOf('function');
         });
     });
 
@@ -702,9 +792,8 @@ describe('createRouteTask', () => {
                 router
             };
 
-            await expect(createRouteTask(routeTaskOptions)).rejects.toThrow(
-                RouteNoHandlerFoundError
-            );
+            const result = await createRouteTask(routeTaskOptions);
+            expect(result).toBe(to);
         });
 
         it('should correctly handle RouteTaskOptions with controller', async () => {
@@ -731,9 +820,8 @@ describe('createRouteTask', () => {
                 controller
             };
 
-            await expect(createRouteTask(routeTaskOptions)).rejects.toThrow(
-                RouteNoHandlerFoundError
-            );
+            const result = await createRouteTask(routeTaskOptions);
+            expect(result).toBe(to);
         });
 
         it('should correctly create real task function interface', async () => {

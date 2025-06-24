@@ -387,9 +387,9 @@ describe('Router Window Navigation Tests', () => {
                 expect(windowRoute.matched).toEqual(resolvedRoute.matched);
 
                 expect(windowRoute.type).toBe(RouteType[methodName]);
-                expect(resolvedRoute.type).toBe(RouteType.none);
+                expect(resolvedRoute.type).toBe(RouteType.push);
                 expect(windowRoute.isPush).toBe(expectedIsPush);
-                expect(resolvedRoute.isPush).toBe(false);
+                expect(resolvedRoute.isPush).toBe(true);
             });
         });
     }

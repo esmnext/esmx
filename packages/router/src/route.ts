@@ -44,18 +44,6 @@ export const NON_ENUMERABLE_PROPERTIES = [
 ] satisfies string[];
 
 /**
- * Create default route options
- */
-function createDefaultRouteOptions(): Required<RouteOptions> {
-    return {
-        options: parsedOptions(),
-        toType: RouteType.none,
-        toInput: '/',
-        from: null
-    };
-}
-
-/**
  * Append user-provided parameters to URL path
  * @param match Route matching result
  * @param toInput User-provided route location object
@@ -134,13 +122,13 @@ export class Route {
     public readonly config: RouteParsedConfig | null;
 
     constructor(routeOptions: Partial<RouteOptions> = {}) {
-        // Merge default options
-        const defaults = createDefaultRouteOptions();
-        const finalOptions = { ...defaults, ...routeOptions };
+        const {
+            toType = RouteType.push,
+            toInput = '/',
+            from = null,
+            options = parsedOptions()
+        } = routeOptions;
 
-        const { options, toType, toInput, from } = finalOptions;
-
-        // Save original options for cloning
         this._options = options;
         this.type = toType;
         this.req = options.req;

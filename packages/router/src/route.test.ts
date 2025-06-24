@@ -56,8 +56,8 @@ describe('Route Class Complete Test Suite', () => {
             it('should create route with default options', () => {
                 const route = new Route();
 
-                expect(route.type).toBe(RouteType.none);
-                expect(route.isPush).toBe(false);
+                expect(route.type).toBe(RouteType.push);
+                expect(route.isPush).toBe(true);
                 expect(route.path).toBe('/');
                 expect(route.state).toEqual({});
                 expect(route.params).toEqual({});

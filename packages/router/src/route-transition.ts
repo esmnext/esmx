@@ -10,6 +10,7 @@ import { RouteType } from './types';
 import type {
     RouteConfirmHook,
     RouteConfirmHookResult,
+    RouteHandleHook,
     RouteLocationInput,
     RouteNotifyHook
 } from './types';
@@ -162,66 +163,101 @@ export async function beforeEach(
     }
 }
 
+/**
+ * Route type handlers configuration.
+ * Maps each route type to its corresponding navigation handler function.
+ * These handlers perform the actual navigation operations like updating browser state,
+ * managing micro-app updates, and handling different navigation patterns.
+ */
+export const ROUTE_TYPE_HANDLERS = {
+    push(to, from, router) {
+        router.transition.route = to;
+        router.microApp._update(router);
+        if (!isUrlEqual(to.url, from?.url)) {
+            const newState = router.navigation.push(to);
+            to.mergeState(newState);
+        } else {
+            const newState = router.navigation.replace(to);
+            to.mergeState(newState);
+        }
+    },
+    replace(to, from, router) {
+        router.transition.route = to;
+        router.microApp._update(router);
+        const newState = router.navigation.replace(to);
+        to.mergeState(newState);
+    },
+    restartApp(to, from, router) {
+        router.transition.route = to;
+        router.microApp._update(router, true);
+        const newState = router.navigation.replace(to);
+        to.mergeState(newState);
+    },
+    pushWindow(to, from, router) {
+        return router.parsedOptions.fallback(to, from, router);
+    },
+    replaceWindow(to, from, router) {
+        return router.parsedOptions.fallback(to, from, router);
+    },
+    pushLayer(to, from, router) {
+        console.log('TODO: pushLayer');
+    },
+    default(to, from, router) {
+        router.transition.route = to;
+        router.microApp._update(router);
+        if (!isUrlEqual(to.url, from?.url)) {
+            const newState = router.navigation.replace(to);
+            to.mergeState(newState);
+        }
+    }
+} satisfies Record<string, RouteHandleHook>;
+
 export async function confirm(
     to: Route,
     from: Route | null,
     router: Router
 ): Promise<RouteConfirmHookResult> {
-    // Access the transition instance from the router
-    const transition = router.transition;
+    if (to.confirm) {
+        const result = await to.confirm(to, from, router);
+        if (isValidConfirmHookResult(result)) {
+            return result;
+        }
+    }
 
     switch (to.type) {
         case RouteType.push:
-            return async (to, from, router) => {
-                transition.route = to;
-                router.microApp._update(router);
-                if (!isUrlEqual(to.url, from?.url)) {
-                    const newState = router.navigation.push(to);
-                    to.mergeState(newState);
-                } else {
-                    const newState = router.navigation.replace(to);
-                    to.mergeState(newState);
-                }
-            };
+            return ROUTE_TYPE_HANDLERS.push;
         case RouteType.replace:
-            return async (to, from, router) => {
-                transition.route = to;
-                router.microApp._update(router);
-                const newState = router.navigation.replace(to);
-                to.mergeState(newState);
-            };
-        case RouteType.go:
-        case RouteType.forward:
-        case RouteType.back:
-            return async (to, from, router) => {
-                transition.route = to;
-                router.microApp._update(router);
-                if (!isUrlEqual(to.url, from?.url)) {
-                    const newState = router.navigation.replace(to);
-                    to.mergeState(newState);
-                }
-            };
+            return ROUTE_TYPE_HANDLERS.replace;
         case RouteType.restartApp:
-            return async (to, from, router) => {
-                transition.route = to;
-                router.microApp._update(router, true);
-                const newState = router.navigation.replace(to);
-                to.mergeState(newState);
-            };
+            return ROUTE_TYPE_HANDLERS.restartApp;
         case RouteType.pushWindow:
-            return router.parsedOptions.fallback;
+            return ROUTE_TYPE_HANDLERS.pushWindow;
         case RouteType.replaceWindow:
-            return router.parsedOptions.fallback;
+            return ROUTE_TYPE_HANDLERS.replaceWindow;
         case RouteType.pushLayer:
-            return () => {
-                return RouteTransition.LAYER_RESULT;
-            };
-        case RouteType.none:
-            return () => {};
+            return ROUTE_TYPE_HANDLERS.pushLayer;
+        default:
+            return ROUTE_TYPE_HANDLERS.default;
     }
 }
 
-const TASKS_CONFIG: Record<RouteType, RouteConfirmHook[]> = {
+/**
+ * Route transition pipeline configuration.
+ * Defines the sequence of hooks and guards that should be executed for each route type.
+ * The order matters: hooks are executed sequentially from first to last.
+ *
+ * Pipeline stages:
+ * - fallback: Handle unmatched routes
+ * - override: Allow route override logic
+ * - beforeLeave: Execute before leaving current route
+ * - beforeEach: Global navigation guard
+ * - beforeUpdate: Execute before updating route (same component)
+ * - beforeEnter: Execute before entering new route
+ * - asyncComponent: Load async components
+ * - confirm: Final confirmation and navigation execution
+ */
+const ROUTE_TRANSITION_PIPELINE: Record<RouteType, RouteConfirmHook[]> = {
     [RouteType.push]: [
         fallback,
         override,
@@ -319,7 +355,7 @@ const TASKS_CONFIG: Record<RouteType, RouteConfirmHook[]> = {
         confirm
     ],
 
-    [RouteType.none]: []
+    [RouteType.unknown]: []
 };
 
 /**
@@ -371,7 +407,7 @@ export class RouteTransition {
     ): Promise<Route> {
         const from = this.route;
         const to = await this._runTask(
-            TASKS_CONFIG,
+            ROUTE_TRANSITION_PIPELINE,
             new Route({
                 options: this.router.parsedOptions,
                 toType,
@@ -393,11 +429,11 @@ export class RouteTransition {
         return to;
     }
 
-    private _runTask(
+    private async _runTask(
         config: Record<RouteType, RouteConfirmHook[]>,
         to: Route,
         from: Route | null
-    ) {
+    ): Promise<Route> {
         this._controller?.abort();
         this._controller = new RouteTaskController();
 

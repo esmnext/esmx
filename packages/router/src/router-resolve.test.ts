@@ -97,7 +97,7 @@ describe('Router.resolve method tests', () => {
             const route: Route = router.resolve('/about');
 
             expect(route).toBeInstanceOf(Object);
-            expect(route.type).toBe(RouteType.none);
+            expect(route.type).toBe('push');
             expect(route.path).toBe('/about');
             expect(route.fullPath).toBe('/about');
             expect(route.url).toBeInstanceOf(URL);
@@ -397,8 +397,8 @@ describe('Router.resolve method tests', () => {
         test('resolved route should have correct type', () => {
             const route: Route = router.resolve('/about');
 
-            expect(route.type).toBe(RouteType.none);
-            expect(route.isPush).toBe(false);
+            expect(route.type).toBe('push');
+            expect(route.isPush).toBe(true);
         });
 
         test('resolved route should have correct handle state', () => {

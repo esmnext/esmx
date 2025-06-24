@@ -26,7 +26,7 @@ export enum RouteType {
     go = 'go',
     forward = 'forward',
     back = 'back',
-    none = 'none',
+    unknown = 'unknown',
     pushWindow = 'pushWindow',
     replaceWindow = 'replaceWindow',
     pushLayer = 'pushLayer'

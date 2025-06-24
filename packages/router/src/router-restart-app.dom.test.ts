@@ -321,7 +321,7 @@ describe('Router.restartApp Focused Tests', () => {
             expect(restartedRoute.params).toEqual(resolvedRoute.params);
             expect(restartedRoute.matched).toEqual(resolvedRoute.matched);
             expect(restartedRoute.type).toBe(RouteType.restartApp);
-            expect(resolvedRoute.type).toBe(RouteType.none);
+            expect(resolvedRoute.type).toBe(RouteType.push);
         });
     });
 
