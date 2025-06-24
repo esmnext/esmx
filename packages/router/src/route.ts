@@ -121,8 +121,8 @@ export class Route {
     public readonly fullPath: string;
     public readonly hash: string;
     public readonly params: Record<string, string> = {};
-    public readonly query: Record<string, string | undefined>;
-    public readonly queryArray: Record<string, string[] | undefined>;
+    public readonly query: Record<string, string | undefined> = {};
+    public readonly queryArray: Record<string, string[] | undefined> = {};
     public readonly meta: RouteMeta;
     public readonly matched: readonly RouteParsedConfig[];
     public readonly config: RouteParsedConfig | null;
@@ -152,9 +152,7 @@ export class Route {
         this.path = match
             ? to.pathname.substring(base.pathname.length - 1)
             : to.pathname;
-        this.fullPath = match
-            ? `${this.path}${to.search}${to.hash}`
-            : to.pathname + to.search + to.hash;
+        this.fullPath = (match ? this.path : to.pathname) + to.search + to.hash;
         this.matched = match ? match.matches : Object.freeze([]);
         this.keepScrollPosition = isPlainObject(toInput)
             ? Boolean(toInput.keepScrollPosition)
@@ -180,19 +178,11 @@ export class Route {
         }
         this.state = state;
 
-        // Initialize query parameter objects
-        const query: Record<string, string | undefined> = {};
-        const queryArray: Record<string, string[] | undefined> = {};
-
         // Process query parameters
-        for (const key of to.searchParams.keys()) {
-            if (typeof query[key] === 'undefined') {
-                query[key] = to.searchParams.get(key)!;
-                queryArray[key] = to.searchParams.getAll(key);
-            }
+        for (const key of new Set(to.searchParams.keys())) {
+            this.query[key] = to.searchParams.get(key)!;
+            this.queryArray[key] = to.searchParams.getAll(key);
         }
-        this.query = query;
-        this.queryArray = queryArray;
         this.hash = to.hash;
 
         // Apply user-provided route parameters (if match is successful)
@@ -206,14 +196,17 @@ export class Route {
         // Prioritize user-provided statusCode
         if (isPlainObject(toInput) && typeof toInput.statusCode === 'number') {
             this.statusCode = toInput.statusCode;
-        } else if (isPlainObject(toInput) && toInput.statusCode === null) {
-            this.statusCode = null;
         }
         // If statusCode is not provided, keep default null value
 
         // Configure property enumerability
-        this._configureEnumerability();
+        // Set internal implementation details as non-enumerable, keep user-common properties enumerable
+        // Set specified properties as non-enumerable according to configuration
+        for (const property of NON_ENUMERABLE_PROPERTIES) {
+            Object.defineProperty(this, property, { enumerable: false });
+        }
     }
+
     get isPush(): boolean {
         return this.type.startsWith('push');
     }
@@ -233,17 +226,6 @@ export class Route {
 
     set handleResult(val: RouteHandleResult | null) {
         this._handleResult = val;
-    }
-
-    /**
-     * Configure property enumerability
-     * Set internal implementation details as non-enumerable, keep user-common properties enumerable
-     */
-    private _configureEnumerability(): void {
-        // Set specified properties as non-enumerable according to configuration
-        for (const property of NON_ENUMERABLE_PROPERTIES) {
-            Object.defineProperty(this, property, { enumerable: false });
-        }
     }
 
     /**
@@ -291,11 +273,10 @@ export class Route {
 
         // Copy non-enumerable properties - type-safe property copying
         for (const property of NON_ENUMERABLE_PROPERTIES) {
-            if (property in this && property in targetRoute) {
-                // Use Reflect.set for type-safe property setting
-                const value = Reflect.get(this, property);
-                Reflect.set(targetRoute, property, value);
-            }
+            if (!(property in this && property in targetRoute)) continue;
+            // Use Reflect.set for type-safe property setting
+            const value = Reflect.get(this, property);
+            Reflect.set(targetRoute, property, value);
         }
     }
 
