@@ -162,7 +162,6 @@ describe('edge cases and error handling', () => {
     });
 
     test('equal method should handle non-numeric arguments', () => {
-        // TypeScript catches these errors at compile time, but this tests the runtime behavior
         expect(incrementId.equal(null as any)).toBe(false);
         expect(incrementId.equal(undefined as any)).toBe(false);
         expect(incrementId.equal('1' as any)).toBe(false);
