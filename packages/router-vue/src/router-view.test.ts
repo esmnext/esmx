@@ -429,16 +429,38 @@ describe('router-view.ts - RouterView Component', () => {
             app.mount(testContainer);
             await nextTick();
 
-            expect(testContainer.textContent).toBe('App');
+            // Verify that only the "App" text is rendered and RouterView renders nothing
+            expect(testContainer.textContent?.trim()).toBe('App');
+            expect(testContainer.querySelector('div')?.children.length).toBe(1); // Only the span element
+            expect(testContainer.querySelector('span')?.textContent).toBe(
+                'App'
+            );
 
             app.unmount();
             nullRouter.destroy();
         });
 
         it('should handle non-existent routes', async () => {
+            // Create a new router instance with a valid initial route
+            const nonExistentRouter = new Router({
+                root: '#test-app',
+                routes: [
+                    {
+                        path: '/',
+                        component: null // Initial route with null component
+                    }
+                ],
+                mode: RouterMode.memory,
+                base: new URL('http://localhost:3000/')
+            });
+
+            // Initialize router with root path
+            await nonExistentRouter.replace('/');
+            await new Promise((resolve) => setTimeout(resolve, 10));
+
             const TestApp = defineComponent({
                 setup() {
-                    useProvideRouter(router);
+                    useProvideRouter(nonExistentRouter);
                     return () => h('div', [h('span', 'App'), h(RouterView)]);
                 }
             });
@@ -446,12 +468,22 @@ describe('router-view.ts - RouterView Component', () => {
             const app = createApp(TestApp);
             app.mount(testContainer);
 
-            await router.push('/non-existent');
+            // Navigate to non-existent route
+            await nonExistentRouter.push('/non-existent');
             await nextTick();
 
-            expect(testContainer.textContent).toBe('App');
+            // Wait for any pending route changes
+            await new Promise((resolve) => setTimeout(resolve, 10));
+
+            // Verify that only the "App" text is rendered and RouterView renders nothing
+            expect(testContainer.textContent?.trim()).toBe('App');
+            expect(testContainer.querySelector('div')?.children.length).toBe(1); // Only the span element
+            expect(testContainer.querySelector('span')?.textContent).toBe(
+                'App'
+            );
 
             app.unmount();
+            nonExistentRouter.destroy();
         });
 
         it('should handle malformed ES modules', async () => {
