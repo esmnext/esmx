@@ -230,22 +230,8 @@ export class Router {
     }
 
     public async createLayer(
-        toInput: RouteLocationInput,
-        options?: RouterLayerOptions
-    ): Promise<{ promise: Promise<RouteLayerResult>; router: Router | null }> {
-        const resultRoute = await this.transition.to(
-            RouteType.pushLayer,
-            toInput
-        );
-        if (resultRoute.handleResult !== RouteTransition.LAYER_RESULT) {
-            return {
-                promise: Promise.resolve({
-                    type: 'success',
-                    route: resultRoute
-                }),
-                router: this
-            };
-        }
+        toInput: RouteLocationInput
+    ): Promise<{ promise: Promise<RouteLayerResult>; router: Router }> {
         const layerConfig = isPlainObject(toInput) ? toInput.layer : undefined;
 
         const { routerOptions, ...pureLayerConfig } = layerConfig || {};
@@ -287,7 +273,6 @@ export class Router {
             },
             root: undefined,
             ...routerOptions,
-            ...options,
             handleBackBoundary: onClose,
             handleLayerClose: onClose,
             layer: true
@@ -300,11 +285,10 @@ export class Router {
         };
     }
     public async pushLayer(
-        toInput: RouteLocationInput,
-        options?: RouterLayerOptions
+        toInput: RouteLocationInput
     ): Promise<RouteLayerResult> {
-        const { promise } = await this.createLayer(toInput, options);
-        return promise;
+        const result = await this.transition.to(RouteType.pushLayer, toInput);
+        return result.handleResult as RouteLayerResult;
     }
     public closeLayer() {
         if (this.isLayer) {

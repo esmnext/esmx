@@ -88,13 +88,13 @@ export interface RouteLocation {
     url?: string | URL;
     params?: Record<string, string>;
     query?: Record<string, string | undefined>;
-    queryArray?: Record<string, string[]>;
+    queryArray?: Record<string, string[] | undefined>;
     hash?: string;
     state?: RouteState;
     keepScrollPosition?: boolean;
     statusCode?: number | null;
-    layer?: RouteLayerOptions;
-    confirm?: RouteConfirmHook;
+    layer?: RouteLayerOptions | null;
+    confirm?: RouteConfirmHook | null;
 }
 export type RouteLocationInput = RouteLocation | string;
 

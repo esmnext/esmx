@@ -229,8 +229,9 @@ export const ROUTE_TYPE_HANDLERS = {
     replaceWindow(to, from, router) {
         return router.parsedOptions.fallback(to, from, router);
     },
-    pushLayer(to, from, router) {
-        console.log('TODO: pushLayer');
+    async pushLayer(to, from, router) {
+        const { promise } = await router.createLayer(to);
+        return promise;
     },
     default(to, from, router) {
         router.transition.route = to;
