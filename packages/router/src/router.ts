@@ -66,6 +66,7 @@ export class Router {
             }
         );
     }
+
     public push(toInput: RouteLocationInput): Promise<Route> {
         return this.transition.to(RouteType.push, toInput);
     }
@@ -78,16 +79,13 @@ export class Router {
     public replaceWindow(toInput: RouteLocationInput): Promise<Route> {
         return this.transition.to(RouteType.replaceWindow, toInput);
     }
-    public restartApp(): Promise<Route>;
-    public restartApp(toInput: RouteLocationInput): Promise<Route>;
-    public restartApp(
-        toInput?: RouteLocationInput | undefined
-    ): Promise<Route> {
+    public restartApp(toInput?: RouteLocationInput): Promise<Route> {
         return this.transition.to(
             RouteType.restartApp,
             toInput ?? this.route.url.href
         );
     }
+
     public async back(): Promise<Route | null> {
         const result = await this.navigation.go(-1);
         if (result === null) {
@@ -101,9 +99,7 @@ export class Router {
     }
     public async go(index: number): Promise<Route | null> {
         // go(0) refreshes the page in browser, but we return null directly in router
-        if (index === 0) {
-            return null;
-        }
+        if (index === 0) return null;
 
         const result = await this.navigation.go(index);
         if (result === null) {
@@ -120,14 +116,13 @@ export class Router {
     }
     public async forward(): Promise<Route | null> {
         const result = await this.navigation.go(1);
-        if (result === null) {
-            return null;
-        }
+        if (result === null) return null;
         return this.transition.to(RouteType.forward, {
             url: result.url,
             state: result.state
         });
     }
+
     /**
      * Parse route location without performing actual navigation
      *
@@ -256,7 +251,7 @@ export class Router {
                 route: router.route
             });
         };
-        const nextOptions: RouterOptions = {
+        const router = new Router({
             ...this.options,
             mode: RouterMode.memory,
             rootStyle: {
@@ -265,8 +260,8 @@ export class Router {
                 left: '0',
                 width: '100%',
                 height: '100%',
-                zIndex: `${layer.zIndex}`,
-                background: 'rgba(0, 0,0, 0.6)',
+                zIndex: '' + layer.zIndex,
+                background: 'rgba(0,0,0,.6)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
@@ -276,8 +271,7 @@ export class Router {
             handleBackBoundary: onClose,
             handleLayerClose: onClose,
             layer: true
-        };
-        const router = new Router(nextOptions);
+        });
         await router.replace(toInput);
         return {
             promise,
@@ -291,10 +285,10 @@ export class Router {
         return result.handleResult as RouteLayerResult;
     }
     public closeLayer() {
-        if (this.isLayer) {
-            this.parsedOptions.handleLayerClose(this);
-        }
+        if (!this.isLayer) return;
+        this.parsedOptions.handleLayerClose(this);
     }
+
     public async renderToString(throwError = false): Promise<string | null> {
         try {
             const result = await this.microApp.app?.renderToString?.();
@@ -305,17 +299,16 @@ export class Router {
             return null;
         }
     }
+
     public beforeEach(guard: RouteConfirmHook): () => void {
         return this.transition.beforeEach(guard);
     }
-
     public afterEach(guard: RouteNotifyHook): () => void {
         return this.transition.afterEach(guard);
     }
 
     public destroy() {
         this.transition.destroy();
-
         this.navigation.destroy();
         this.microApp.destroy();
     }
