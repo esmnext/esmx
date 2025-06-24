@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">53.33% </span>
+                <span class="strong">57.41% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>120/225</span>
+                <span class='fraction'>120/209</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">53.33% </span>
+                <span class="strong">57.41% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>120/225</span>
+                <span class='fraction'>120/209</span>
             </div>
         
             
@@ -385,23 +385,7 @@
 <a name='L320'></a><a href='#L320'>320</a>
 <a name='L321'></a><a href='#L321'>321</a>
 <a name='L322'></a><a href='#L322'>322</a>
-<a name='L323'></a><a href='#L323'>323</a>
-<a name='L324'></a><a href='#L324'>324</a>
-<a name='L325'></a><a href='#L325'>325</a>
-<a name='L326'></a><a href='#L326'>326</a>
-<a name='L327'></a><a href='#L327'>327</a>
-<a name='L328'></a><a href='#L328'>328</a>
-<a name='L329'></a><a href='#L329'>329</a>
-<a name='L330'></a><a href='#L330'>330</a>
-<a name='L331'></a><a href='#L331'>331</a>
-<a name='L332'></a><a href='#L332'>332</a>
-<a name='L333'></a><a href='#L333'>333</a>
-<a name='L334'></a><a href='#L334'>334</a>
-<a name='L335'></a><a href='#L335'>335</a>
-<a name='L336'></a><a href='#L336'>336</a>
-<a name='L337'></a><a href='#L337'>337</a>
-<a name='L338'></a><a href='#L338'>338</a>
-<a name='L339'></a><a href='#L339'>339</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L323'></a><a href='#L323'>323</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -636,20 +620,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -662,7 +632,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -703,7 +672,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">352x</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -971,22 +939,8 @@ export class Router {
 <span class="cstat-no" title="statement not covered" >    }</span>
 &nbsp;
 <span class="fstat-no" title="function not covered" >    public async createLayer(</span>
-<span class="cstat-no" title="statement not covered" >        toInput: RouteLocationInput,</span>
-<span class="cstat-no" title="statement not covered" >        options?: RouterLayerOptions</span>
-<span class="cstat-no" title="statement not covered" >    ): Promise&lt;{ promise: Promise&lt;RouteLayerResult&gt;; router: Router | null }&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        const resultRoute = await this.transition.to(</span>
-<span class="cstat-no" title="statement not covered" >            RouteType.pushLayer,</span>
-<span class="cstat-no" title="statement not covered" >            toInput</span>
-<span class="cstat-no" title="statement not covered" >        );</span>
-<span class="cstat-no" title="statement not covered" >        if (resultRoute.handleResult !== RouteTransition.LAYER_RESULT) {</span>
-<span class="cstat-no" title="statement not covered" >            return {</span>
-<span class="cstat-no" title="statement not covered" >                promise: Promise.resolve({</span>
-<span class="cstat-no" title="statement not covered" >                    type: 'success',</span>
-<span class="cstat-no" title="statement not covered" >                    route: resultRoute</span>
-<span class="cstat-no" title="statement not covered" >                }),</span>
-<span class="cstat-no" title="statement not covered" >                router: this</span>
-<span class="cstat-no" title="statement not covered" >            };</span>
-<span class="cstat-no" title="statement not covered" >        }</span>
+<span class="cstat-no" title="statement not covered" >        toInput: RouteLocationInput</span>
+<span class="cstat-no" title="statement not covered" >    ): Promise&lt;{ promise: Promise&lt;RouteLayerResult&gt;; router: Router }&gt; {</span>
 <span class="cstat-no" title="statement not covered" >        const layerConfig = isPlainObject(toInput) ? toInput.layer : undefined;</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        const { routerOptions, ...pureLayerConfig } = layerConfig || {};</span>
@@ -1028,7 +982,6 @@ export class Router {
 <span class="cstat-no" title="statement not covered" >            },</span>
 <span class="cstat-no" title="statement not covered" >            root: undefined,</span>
 <span class="cstat-no" title="statement not covered" >            ...routerOptions,</span>
-<span class="cstat-no" title="statement not covered" >            ...options,</span>
 <span class="cstat-no" title="statement not covered" >            handleBackBoundary: onClose,</span>
 <span class="cstat-no" title="statement not covered" >            handleLayerClose: onClose,</span>
 <span class="cstat-no" title="statement not covered" >            layer: true</span>
@@ -1041,11 +994,10 @@ export class Router {
 <span class="cstat-no" title="statement not covered" >        };</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 <span class="fstat-no" title="function not covered" >    public async pushLayer(</span>
-<span class="cstat-no" title="statement not covered" >        toInput: RouteLocationInput,</span>
-<span class="cstat-no" title="statement not covered" >        options?: RouterLayerOptions</span>
+<span class="cstat-no" title="statement not covered" >        toInput: RouteLocationInput</span>
 <span class="cstat-no" title="statement not covered" >    ): Promise&lt;RouteLayerResult&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        const { promise } = await this.createLayer(toInput, options);</span>
-<span class="cstat-no" title="statement not covered" >        return promise;</span>
+<span class="cstat-no" title="statement not covered" >        const result = await this.transition.to(RouteType.pushLayer, toInput);</span>
+<span class="cstat-no" title="statement not covered" >        return result.handleResult as RouteLayerResult;</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
     public <span class="fstat-no" title="function not covered" >closeLayer() {</span>
 <span class="cstat-no" title="statement not covered" >        if (this.isLayer) {</span>
@@ -1084,7 +1036,7 @@ export class Router {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-06-24T06:52:14.189Z
+                at 2025-06-24T07:00:59.262Z
             </div>
         <script src="prettify.js"></script>
         <script>
