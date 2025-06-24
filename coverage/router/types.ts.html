@@ -409,42 +409,7 @@
 <a name='L344'></a><a href='#L344'>344</a>
 <a name='L345'></a><a href='#L345'>345</a>
 <a name='L346'></a><a href='#L346'>346</a>
-<a name='L347'></a><a href='#L347'>347</a>
-<a name='L348'></a><a href='#L348'>348</a>
-<a name='L349'></a><a href='#L349'>349</a>
-<a name='L350'></a><a href='#L350'>350</a>
-<a name='L351'></a><a href='#L351'>351</a>
-<a name='L352'></a><a href='#L352'>352</a>
-<a name='L353'></a><a href='#L353'>353</a>
-<a name='L354'></a><a href='#L354'>354</a>
-<a name='L355'></a><a href='#L355'>355</a>
-<a name='L356'></a><a href='#L356'>356</a>
-<a name='L357'></a><a href='#L357'>357</a>
-<a name='L358'></a><a href='#L358'>358</a>
-<a name='L359'></a><a href='#L359'>359</a>
-<a name='L360'></a><a href='#L360'>360</a>
-<a name='L361'></a><a href='#L361'>361</a>
-<a name='L362'></a><a href='#L362'>362</a>
-<a name='L363'></a><a href='#L363'>363</a>
-<a name='L364'></a><a href='#L364'>364</a>
-<a name='L365'></a><a href='#L365'>365</a>
-<a name='L366'></a><a href='#L366'>366</a>
-<a name='L367'></a><a href='#L367'>367</a>
-<a name='L368'></a><a href='#L368'>368</a>
-<a name='L369'></a><a href='#L369'>369</a>
-<a name='L370'></a><a href='#L370'>370</a>
-<a name='L371'></a><a href='#L371'>371</a>
-<a name='L372'></a><a href='#L372'>372</a>
-<a name='L373'></a><a href='#L373'>373</a>
-<a name='L374'></a><a href='#L374'>374</a>
-<a name='L375'></a><a href='#L375'>375</a>
-<a name='L376'></a><a href='#L376'>376</a>
-<a name='L377'></a><a href='#L377'>377</a>
-<a name='L378'></a><a href='#L378'>378</a>
-<a name='L379'></a><a href='#L379'>379</a>
-<a name='L380'></a><a href='#L380'>380</a>
-<a name='L381'></a><a href='#L381'>381</a>
-<a name='L382'></a><a href='#L382'>382</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L347'></a><a href='#L347'>347</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -476,41 +441,6 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -886,7 +816,11 @@ export type RouteHandleHook = (
     router: Router
 ) =&gt; Awaitable&lt;RouteHandleResult&gt;;
 &nbsp;
-export type RouteNotifyHook = (to: Route, from: Route | null) =&gt; void;
+export type RouteNotifyHook = (
+    to: Route,
+    from: Route | null,
+    router: Router
+) =&gt; void;
 &nbsp;
 // ============================================================================
 // Basic data types
@@ -917,6 +851,7 @@ export interface RouteLocation {
     keepScrollPosition?: boolean;
     statusCode?: number | null;
     layer?: RouteLayerOptions;
+    confirm?: RouteConfirmHook;
 }
 export type RouteLocationInput = RouteLocation | string;
 &nbsp;
@@ -1086,40 +1021,12 @@ export interface RouterOptions {
     res?: ServerResponse | null;
     apps?: RouterMicroApp;
     normalizeURL?: (to: URL, from: URL | null) =&gt; URL;
-&nbsp;
-    /**
-     * Fallback handler for unresolvable routes
-     *
-     * Handles routes that cannot be processed within the current application:
-     * - 404 errors (route not found)
-     * - Cross-origin navigation
-     * - External links
-     * - Window navigation (pushWindow/replaceWindow)
-     *
-     * @param to Target route that cannot be resolved
-     * @param from Source route
-     * @returns Handler function to execute instead of default routing
-     *
-     * @example
-     * ```typescript
-     * fallback: (to, from) =&gt; {
-     *   if (to.url.origin !== location.origin) {
-     *     // Handle cross-origin navigation
-     *     return () =&gt; window.open(to.url.href);
-     *   }
-     *   // Handle 404 error
-     *   return () =&gt; showNotFoundPage();
-     * }
-     * ```
-     */
     fallback?: RouteHandleHook;
 &nbsp;
     rootStyle?: Partial&lt;CSSStyleDeclaration&gt; | false;
     layer?: boolean;
     zIndex?: number;
-    /** 处理后退边界 */
     handleBackBoundary?: (router: Router) =&gt; void;
-    /** 处理弹层关闭 */
     handleLayerClose?: (router: Router) =&gt; void;
 }
 &nbsp;
@@ -1164,22 +1071,10 @@ export interface RouterLinkProps {
      * @deprecated Use type='replace' instead
      */
     replace?: boolean;
-    /**
-     * Route matching type for active state detection
-     * - 'route': Route-level matching (compare route configurations)
-     * - 'exact': Exact matching (full paths must be identical)
-     * - 'include': Include matching (current path starts with target path)
-     * @default 'include'
-     */
     exact?: RouteMatchType;
     activeClass?: string;
     event?: string | string[];
     tag?: string;
-    /**
-     * Layer options for layer-based navigation.
-     * Only used when type='pushLayer'.
-     * @example { zIndex: 1000, autoPush: false, routerOptions: { mode: 'memory' } }
-     */
     layerOptions?: RouteLayerOptions;
 }
 &nbsp;
@@ -1213,7 +1108,7 @@ export interface RouterLinkResolved {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-06-24T02:14:52.535Z
+                at 2025-06-24T03:01:52.483Z
             </div>
         <script src="prettify.js"></script>
         <script>
