@@ -31,12 +31,13 @@ export class Navigation {
             const dispatchEvent = this._promiseResolve || onUpdated;
             dispatchEvent?.(url, state);
         };
-        this.options = options;
-        this._history = history;
-        this._unSubscribePopState =
+        const subscribePopState =
             history instanceof MemoryHistory
                 ? history.onPopState(onPopStateChange)
                 : subscribeHtmlHistory(onPopStateChange);
+        this.options = options;
+        this._history = history;
+        this._unSubscribePopState = subscribePopState;
     }
     public get length(): number {
         return this._history.length;
