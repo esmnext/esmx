@@ -154,7 +154,6 @@ describe('options.ts - Browser Environment Tests', () => {
             withLocationRestore(async () => {
                 const router = createRouter();
 
-                // Establish current route state
                 await router.push('/current');
 
                 const targetRoute = router.resolve(
@@ -259,7 +258,7 @@ describe('options.ts - Browser Environment Tests', () => {
         });
 
         it('should call window.open for push routes', async () => {
-            openSpy.mockReturnValue(null); // Simulate popup blocked
+            openSpy.mockReturnValue(null);
 
             const router = createRouter();
 
