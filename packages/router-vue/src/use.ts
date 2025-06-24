@@ -271,7 +271,9 @@ export function useProvideRouter(router: Router): void {
     routerContextProperty.set(proxy, context);
 
     const unwatch = router.afterEach((to: Route) => {
-        to.syncTo(context.route.value);
+        if (router.route === to) {
+            to.syncTo(context.route.value);
+        }
     });
 
     onBeforeUnmount(unwatch);
