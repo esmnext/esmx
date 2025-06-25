@@ -165,6 +165,10 @@ export function generateIdentifier({
     name,
     filePath
 }: { root: string; name: string; filePath: string }) {
-    const file = upath.relative(upath.toUnix(root), upath.toUnix(filePath));
+    const unixFilePath = upath.toUnix(filePath);
+    if (!root) {
+        return `${name}@${unixFilePath}`;
+    }
+    const file = upath.relative(upath.toUnix(root), unixFilePath);
     return `${name}@${file}`;
 }
