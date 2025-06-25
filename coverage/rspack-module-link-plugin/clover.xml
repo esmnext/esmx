@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1750851617808" clover="3.2.0">
-  <project timestamp="1750851617808" name="All files">
-    <metrics statements="318" coveredstatements="57" conditionals="22" coveredconditionals="22" methods="11" coveredmethods="7" elements="351" coveredelements="86" complexity="0" loc="318" ncloc="318" packages="1" files="7" classes="7"/>
+<coverage generated="1750852794893" clover="3.2.0">
+  <project timestamp="1750852794893" name="All files">
+    <metrics statements="319" coveredstatements="57" conditionals="22" coveredconditionals="22" methods="11" coveredmethods="7" elements="352" coveredelements="86" complexity="0" loc="319" ncloc="319" packages="1" files="7" classes="7"/>
     <file name="config.ts" path="/home/runner/work/esmx/esmx/packages/rspack-module-link-plugin/src/config.ts">
-      <metrics statements="46" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
+      <metrics statements="47" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
       <line num="4" count="0" type="stmt"/>
       <line num="5" count="0" type="stmt"/>
       <line num="6" count="0" type="stmt"/>
@@ -50,6 +50,7 @@
       <line num="47" count="0" type="stmt"/>
       <line num="48" count="0" type="stmt"/>
       <line num="49" count="0" type="stmt"/>
+      <line num="50" count="0" type="stmt"/>
     </file>
     <file name="entry.ts" path="/home/runner/work/esmx/esmx/packages/rspack-module-link-plugin/src/entry.ts">
       <metrics statements="18" coveredstatements="18" conditionals="8" coveredconditionals="8" methods="1" coveredmethods="1"/>
