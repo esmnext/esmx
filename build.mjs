@@ -1153,7 +1153,7 @@ async function main() {
             '█   🎯 ARTIFACTS: COPIED TO ./dist                                         █'
         );
         console.log(
-            '█   📊 COVERAGE: REPORTS AT https://www.esmnext.com/coverage/             █'
+            '█   📊 COVERAGE: REPORTS AT https://www.esmnext.com/coverage/              █'
         );
         console.log(
             '█   🔥 STATUS: READY TO DOMINATE THE ESM UNIVERSE!                         █'
