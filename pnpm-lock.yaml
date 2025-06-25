@@ -283,8 +283,8 @@ importers:
         specifier: 1.9.4
         version: 1.9.4
       '@esmx/lint':
-        specifier: 3.0.0-rc.18
-        version: 3.0.0-rc.18(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.19.1(typescript@5.8.2))
+        specifier: workspace:*
+        version: link:../lint
       '@types/node':
         specifier: 22.15.18
         version: 22.15.18
@@ -335,8 +335,8 @@ importers:
         specifier: 1.9.4
         version: 1.9.4
       '@esmx/lint':
-        specifier: 3.0.0-rc.18
-        version: 3.0.0-rc.18(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.19.1(typescript@5.8.2))
+        specifier: workspace:*
+        version: link:../lint
       '@types/find':
         specifier: ^0.2.4
         version: 0.2.4
@@ -381,8 +381,8 @@ importers:
         specifier: 1.9.4
         version: 1.9.4
       '@esmx/lint':
-        specifier: 3.0.0-rc.18
-        version: 3.0.0-rc.18(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.19.1(typescript@5.8.2))
+        specifier: workspace:*
+        version: link:../lint
       '@types/cli-progress':
         specifier: ^3.11.6
         version: 3.11.6
@@ -415,8 +415,8 @@ importers:
         specifier: 1.9.4
         version: 1.9.4
       '@esmx/lint':
-        specifier: 3.0.0-rc.18
-        version: 3.0.0-rc.18(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.19.1(typescript@5.8.2))
+        specifier: workspace:*
+        version: link:../lint
       '@types/node':
         specifier: 22.15.18
         version: 22.15.18
@@ -492,8 +492,8 @@ importers:
         specifier: 1.9.4
         version: 1.9.4
       '@esmx/lint':
-        specifier: 3.0.0-rc.18
-        version: 3.0.0-rc.18(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.19.1(typescript@5.8.2))
+        specifier: workspace:*
+        version: link:../lint
       '@types/node':
         specifier: 22.15.18
         version: 22.15.18
@@ -526,8 +526,8 @@ importers:
         specifier: 1.9.4
         version: 1.9.4
       '@esmx/lint':
-        specifier: 3.0.0-rc.18
-        version: 3.0.0-rc.18(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.19.1(typescript@5.8.2))
+        specifier: workspace:*
+        version: link:../lint
       '@types/node':
         specifier: 22.15.18
         version: 22.15.18
@@ -605,8 +605,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       '@esmx/lint':
-        specifier: 3.0.0-rc.18
-        version: 3.0.0-rc.18(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.19.1(typescript@5.8.2))
+        specifier: workspace:*
+        version: link:../lint
       '@types/node':
         specifier: 22.15.18
         version: 22.15.18
@@ -651,8 +651,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       '@esmx/lint':
-        specifier: 3.0.0-rc.18
-        version: 3.0.0-rc.18(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.19.1(typescript@5.8.2))
+        specifier: workspace:*
+        version: link:../lint
       '@rspack/core':
         specifier: 1.2.3
         version: 1.2.3(@swc/helpers@0.5.17)
@@ -700,8 +700,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       '@esmx/lint':
-        specifier: 3.0.0-rc.18
-        version: 3.0.0-rc.18(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.19.1(typescript@5.8.2))
+        specifier: workspace:*
+        version: link:../lint
       '@types/node':
         specifier: 22.15.18
         version: 22.15.18

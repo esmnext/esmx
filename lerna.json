@@ -1,7 +1,7 @@
 {
-    "version": "3.0.0-rc.18",
-    "packages": [
-        "packages/*"
-    ],
-    "npmClient": "pnpm"
+  "version": "3.0.0-rc.19",
+  "packages": [
+    "packages/*"
+  ],
+  "npmClient": "pnpm"
 }
