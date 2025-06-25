@@ -8,14 +8,28 @@ export function initConfig(
     const isProduction = options.mode === 'production';
     options.experiments = {
         ...options.experiments,
-        outputModule: true
+        outputModule: true,
+        rspackFuture: {
+            bundlerInfo: { force: false }
+        }
+    };
+    options.module = {
+        ...options.module,
+        parser: {
+            ...options.module?.parser,
+            javascript: {
+                ...options.module?.parser?.javascript,
+                importMeta: false,
+                strictExportPresence: true
+            }
+        }
     };
     options.output = {
         ...options.output,
         iife: false,
         uniqueName: opts.name,
-        chunkFormat: isProduction ? 'module' : undefined,
-        chunkLoading: isProduction ? 'import' : undefined,
+        chunkFormat: isProduction ? 'module' : 'array-push',
+        chunkLoading: isProduction ? 'import' : 'jsonp',
         module: true,
         library: {
             type: isProduction ? 'modern-module' : 'module'
