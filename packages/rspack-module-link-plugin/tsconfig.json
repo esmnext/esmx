@@ -35,7 +35,8 @@
         "**.cjs",
         "**.js",
         "**.mjs",
-        "**.ts"
+        "**.ts",
+        "tests"
     ],
     "exclude": [
         "dist"
