@@ -1030,15 +1030,6 @@ async function copyArtifacts() {
             cpSync(docsPath, 'dist', { recursive: true });
             log.info(`Copied ${docsPath} to dist/`);
         }
-
-        // Copy sitemap.xml if exists
-        const sitemapPath = 'examples/docs/doc_build/sitemap.xml';
-        if (existsSync(sitemapPath)) {
-            cpSync(sitemapPath, 'dist/sitemap.xml');
-            log.info('Copied sitemap.xml to dist/');
-        } else {
-            log.warn(`sitemap.xml not found at ${sitemapPath}`);
-        }
     } catch (error) {
         log.error(`Artifact copying failed: ${error.message}`);
         throw error; // Re-throw to ensure non-zero exit
