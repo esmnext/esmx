@@ -25,7 +25,6 @@
 - **高性能构建** - 基于Rspack驱动，显著提升构建速度
 - **完整SSR支持** - 高性能服务端渲染，SEO友好
 - **标准ESM语法** - 无框架特定API，学习成本极低
-- **严格测试保障** - [完整测试覆盖](https://www.esmnext.com/coverage/)，持续集成验证
 - **多框架支持** - 支持Vue、React、Preact、Solid等多种前端框架
 
 ## 📊 vs 传统微前端
