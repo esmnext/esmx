@@ -36,15 +36,9 @@ export function createRspackConfig(
         })(),
         output: {
             clean: esmx.isProd,
-            module: true,
-            chunkFormat: esmx.isProd ? 'module' : 'array-push',
-            chunkLoading: esmx.isProd ? 'import' : 'jsonp',
             chunkFilename: esmx.isProd
                 ? '[name].[contenthash:8].final.mjs'
                 : '[name].mjs',
-            library: {
-                type: esmx.isProd ? 'modern-module' : 'module'
-            },
             filename:
                 buildTarget !== 'node' && esmx.isProd
                     ? '[name].[contenthash:8].final.mjs'
@@ -72,32 +66,21 @@ export function createRspackConfig(
                     case 'node':
                         return esmx.resolvePath('dist/node');
                 }
-            })(),
-            environment: {
-                dynamicImport: true,
-                dynamicImportInWorker: true,
-                module: true,
-                nodePrefixForCoreModules: true
-            }
+            })()
         },
-        // 默认插件，不可修改
         plugins: ((): Plugins => {
             return [
-                // 进度条插件
                 new rspack.ProgressPlugin({
                     prefix: buildTarget
                 }),
                 createModuleLinkPlugin(esmx, buildTarget),
-                // 热更新插件
                 isHot ? new rspack.HotModuleReplacementPlugin() : false
             ];
         })(),
         module: {
             parser: {
                 javascript: {
-                    url: buildTarget === 'client' ? true : 'relative',
-                    importMeta: false,
-                    strictExportPresence: true
+                    url: buildTarget === 'client' ? true : 'relative'
                 }
             },
             generator: {
@@ -117,8 +100,6 @@ export function createRspackConfig(
         },
         optimization: {
             minimize: options.minimize ?? esmx.isProd,
-            avoidEntryIife: esmx.isProd,
-            concatenateModules: esmx.isProd,
             emitOnErrors: true,
             splitChunks: {
                 chunks: 'async'
@@ -141,13 +122,6 @@ export function createRspackConfig(
             }
             return [];
         })(),
-        experiments: {
-            outputModule: true,
-            parallelCodeSplitting: true,
-            rspackFuture: {
-                bundlerInfo: { force: false }
-            }
-        },
         target: buildTarget === 'client' ? 'web' : 'node22.6',
         mode: esmx.isProd ? 'production' : 'development',
         cache: !esmx.isProd

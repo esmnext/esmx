@@ -34,7 +34,10 @@ const replacer = (k: string, v: any) => {
                 return `\x01json-unknown\x04[object RegExp( ${v.toString()} )]`;
             }
             if (v instanceof Set || v instanceof Map) {
-                return ('\x01json-unknown\x04' + v.toString()).replace(/\]/, `(${v.size})]`);
+                return ('\x01json-unknown\x04' + v.toString()).replace(
+                    /\]/,
+                    `(${v.size})]`
+                );
             }
     }
     return v;
@@ -42,9 +45,15 @@ const replacer = (k: string, v: any) => {
 
 const vHTML = computed(() =>
     JSON.stringify(props.data, replacer, space)
-        .replace(/^(.*)"\\u0001json-unknown(\\u.*)"(,?)$/gm,'json-unknown$1$2$3')
+        .replace(
+            /^(.*)"\\u0001json-unknown(\\u.*)"(,?)$/gm,
+            'json-unknown$1$2$3'
+        )
         .replace(/^( *)(".*?"):/gm, '$1<span class="json-key">$2</span>:')
-        .replace(/(^ *|: )(".*")(,?)$/gm, '$1<span class="json-str">$2</span>$3')
+        .replace(
+            /(^ *|: )(".*")(,?)$/gm,
+            '$1<span class="json-str">$2</span>$3'
+        )
         .replace(
             /(^ *|: )(null|true|false)(,?)$/gm,
             '$1<span class="json-keyword">$2</span>$3'
@@ -79,30 +88,41 @@ const vHTML = computed(() =>
         .replace(
             /json-unknown( *)(?:(".*?"): )?\\u0002(\d+)(,?$\n?)/gm,
             (all, spaces, key, funcId, end) => {
-                key = key === void 0 ? '' : `<span class="json-key">${key}</span>: `;
+                key =
+                    key === void 0
+                        ? ''
+                        : `<span class="json-key">${key}</span>: `;
                 let func = fnCache[funcId];
                 Reflect.deleteProperty(fnCache, funcId);
                 func = func.toString();
                 const line1 = func.split('\n')[0];
                 let otherLines = func.replace(line1, '');
-                const len = otherLines.replace(/.*^( *)}\)?/sm, '$1').length;
-                otherLines = otherLines.replace(new RegExp('^' + (' '.repeat(len)), 'gm'), '');
-                let ellipsis = line1.startsWith('function') || line1.startsWith('async function')
-                    ? ' ... }'
-                    : otherLines.length > 0
-                        ? ' ... ' + (line1.endsWith('({') ? '})' : '}')
-                        : '';
-                ellipsis = ellipsis.length ? `<span class="json-ellipsis">${ellipsis}</span>` : '';
+                const len = otherLines.replace(/.*^( *)}\)?/ms, '$1').length;
+                otherLines = otherLines.replace(
+                    new RegExp('^' + ' '.repeat(len), 'gm'),
+                    ''
+                );
+                let ellipsis =
+                    line1.startsWith('function') ||
+                    line1.startsWith('async function')
+                        ? ' ... }'
+                        : otherLines.length > 0
+                          ? ' ... ' + (line1.endsWith('({') ? '})' : '}')
+                          : '';
+                ellipsis = ellipsis.length
+                    ? `<span class="json-ellipsis">${ellipsis}</span>`
+                    : '';
                 const fnCollapse = `<details class="json-function"
                         ><summary>${line1}${ellipsis}</summary
                         ><pre>${otherLines}</pre
                     ></details
                 >`;
-                return (key
-                    ? `<i class="json-unknown">${spaces}${key}${fnCollapse}${end}</i>`
-                    : `${spaces}<span class="json-keyword">null</span>${
-                            end.includes(',')? ',': ''
-                        }<i class="json-unknown"> ${fnCollapse}${end.includes('\n')? '\n': ''}</i>`
+                return (
+                    key
+                        ? `<i class="json-unknown">${spaces}${key}${fnCollapse}${end}</i>`
+                        : `${spaces}<span class="json-keyword">null</span>${
+                              end.includes(',') ? ',' : ''
+                          }<i class="json-unknown"> ${fnCollapse}${end.includes('\n') ? '\n' : ''}</i>`
                 ).replace(/\n +>/g, '>');
             }
         )
