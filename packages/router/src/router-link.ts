@@ -66,28 +66,28 @@ function guardEvent(e: MouseEvent): boolean {
 /**
  * Execute route navigation
  */
-function executeNavigation(
+async function executeNavigation(
     router: Router,
     props: RouterLinkProps,
     linkType: RouterLinkType
-): void {
+): Promise<void> {
     const { to, layerOptions } = props;
 
     switch (linkType) {
         case 'push':
-            router.push(to);
+            await router.push(to);
             break;
         case 'replace':
-            router.replace(to);
+            await router.replace(to);
             break;
         case 'pushWindow':
-            router.pushWindow(to);
+            await router.pushWindow(to);
             break;
         case 'replaceWindow':
-            router.replaceWindow(to);
+            await router.replaceWindow(to);
             break;
         case 'pushLayer':
-            router.pushLayer(
+            await router.pushLayer(
                 layerOptions
                     ? typeof to === 'string'
                         ? { path: to, layer: layerOptions }
@@ -96,7 +96,7 @@ function executeNavigation(
             );
             break;
         default:
-            router.push(to);
+            await router.push(to);
     }
 }
 
@@ -107,13 +107,13 @@ function createNavigateFunction(
     router: Router,
     props: RouterLinkProps,
     navigationType: RouterLinkType
-): (e?: MouseEvent) => void {
-    return (e?: MouseEvent): void => {
+): (e?: MouseEvent) => Promise<void> {
+    return async (e?: MouseEvent): Promise<void> => {
         if (e && !guardEvent(e)) {
             return;
         }
 
-        executeNavigation(router, props, navigationType);
+        await executeNavigation(router, props, navigationType);
     };
 }
 
@@ -169,13 +169,13 @@ function computeAttributes(
  * Create event handlers generator function
  */
 function createEventHandlersGenerator(
-    navigate: (e?: MouseEvent) => void,
+    navigate: (e?: MouseEvent) => Promise<void>,
     eventTypes: string[]
 ): (
     nameTransform?: (eventType: string) => string
-) => Record<string, (e: MouseEvent) => void> {
+) => Record<string, (e: MouseEvent) => Promise<void>> {
     return (nameTransform?: (eventType: string) => string) => {
-        const handlers: Record<string, (e: MouseEvent) => void> = {};
+        const handlers: Record<string, (e: MouseEvent) => Promise<void>> = {};
 
         eventTypes.forEach((eventType) => {
             const eventName = nameTransform

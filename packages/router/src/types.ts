@@ -332,10 +332,10 @@ export interface RouterLinkResolved {
     attributes: RouterLinkAttributes;
 
     // Navigation function
-    navigate: (e?: MouseEvent) => void;
+    navigate: (e?: MouseEvent) => Promise<void>;
 
     // Event handling
     getEventHandlers: (
         nameTransform?: (eventType: string) => string
-    ) => Record<string, (e: MouseEvent) => void>;
+    ) => Record<string, (e: MouseEvent) => Promise<void>>;
 }
