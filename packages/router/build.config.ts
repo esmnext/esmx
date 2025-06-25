@@ -10,7 +10,6 @@ export default defineBuildConfig({
             ext: 'mjs',
             cleanDist: true,
             declaration: true,
-            pattern: ['**/*', '!**/*.test.ts', '!**/__test__/**'],
             esbuild: {
                 target: [
                     'chrome87',

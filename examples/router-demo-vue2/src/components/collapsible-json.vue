@@ -21,10 +21,8 @@ const vHTML = computed(() =>
             '$1<span class="json-keyword">$2</span>$3'
         )
         .replace(/(: | +)(\d+)(,?)$/gm, '$1<span class="json-num">$2</span>$3')
-        .replace(
-            /(^ *)(.*)([{[])$\n/gm,
-            (all, spaces, content, bracket) =>
-                `<details${spaces.length ? ' open' : ''} style="--depth: ${spaces.length / space}"
+        .replace(/(^ *)(.*)([{[])$\n/gm, (all, spaces, content, bracket) =>
+            `<details${spaces.length ? ' open' : ''} style="--depth: ${spaces.length / space}"
                     ><summary
                         >${spaces}${content}<span class="json-bracket ${bracket}">${bracket}</span
                         ><span class="json-ellipsis"> ... </span
