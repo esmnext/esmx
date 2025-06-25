@@ -83,4 +83,4 @@ import Button from 'remote/src/Button.vue';
 
 ---
 
-> 💡 **Development**: First run `node build.mjs` to build all packages and examples, then `cd` to specific project directory to start development
+> 💡 **Development**: First run `./build.mjs` to build all packages and examples, then `cd` to specific project directory to start development

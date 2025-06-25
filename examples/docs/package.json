@@ -10,12 +10,9 @@
     "preview": "rspress preview"
   },
   "devDependencies": {
-    "@types/find": "^0.2.4",
     "@types/node": "22.13.17",
-    "find": "^0.3.0",
-    "rspress": "1.43.10",
-    "rspress-plugin-sitemap": "^1.1.1",
-    "typescript": "5.8.2",
-    "write": "^2.0.0"
+    "rspress": "1.44.0",
+    "rspress-plugin-sitemap": "^1.2.0",
+    "typescript": "5.8.2"
   }
 }
