@@ -13,17 +13,26 @@ const vHTML = computed(() =>
     JSON.stringify(props.data, null, 2)
         .replace(/^( *)(".*"):/gm, '$1<span class="json-key">$2</span>:')
         .replace(/: (".*")(,?)$/gm, ': <span class="json-str">$1</span>$2')
-        .replace(/(^ *|: )(null|true|false)(,?)$/gm, '$1<span class="json-keyword">$2</span>$3')
+        .replace(
+            /(^ *|: )(null|true|false)(,?)$/gm,
+            '$1<span class="json-keyword">$2</span>$3'
+        )
         .replace(/(: | +)(\d+)(,?)$/gm, '$1<span class="json-num">$2</span>$3')
-        .replace(/(^.*)([{[])$\n/gm, `<details open
+        .replace(
+            /(^.*)([{[])$\n/gm,
+            `<details open
             ><summary
                 >$1<span class="json-bracket $2">$2</span
                 ><span class="json-ellipsis"> ... </span
             ></summary
-        ><div class="json-content">`)
-        .replace(/(^ *)([\]}])(,?)$\n?/gm, '$1<span class="json-bracket $2">$2</span>$3</div></details>')
+        ><div class="json-content">`
+        )
+        .replace(
+            /(^ *)([\]}])(,?)$\n?/gm,
+            '$1<span class="json-bracket $2">$2</span>$3</div></details>'
+        )
         .replace(/\[\]/g, '<span class="json-bracket [ ]">[]</span>')
-        .replace(/\{\}/g, '<span class="json-bracket { }">{}<\/span>')
+        .replace(/\{\}/g, '<span class="json-bracket { }">{}</span>')
 );
 </script>
 
