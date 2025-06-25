@@ -1,17 +1,17 @@
-import type { Compiler } from '@rspack/core';
+import type { RspackOptionsNormalized } from '@rspack/core';
 import type { ParsedModuleLinkPluginOptions } from './types';
 
 export function initConfig(
-    compiler: Compiler,
+    options: RspackOptionsNormalized,
     opts: ParsedModuleLinkPluginOptions
 ) {
-    const isProduction = compiler.options.mode === 'production';
-    compiler.options.experiments = {
-        ...compiler.options.experiments,
+    const isProduction = options.mode === 'production';
+    options.experiments = {
+        ...options.experiments,
         outputModule: true
     };
-    compiler.options.output = {
-        ...compiler.options.output,
+    options.output = {
+        ...options.output,
         iife: false,
         uniqueName: opts.name,
         chunkFormat: isProduction ? 'module' : undefined,
@@ -21,14 +21,14 @@ export function initConfig(
             type: isProduction ? 'modern-module' : 'module'
         },
         environment: {
-            ...compiler.options.output.environment,
+            ...options.output.environment,
             dynamicImport: true,
             dynamicImportInWorker: true,
             module: true
         }
     };
-    compiler.options.optimization = {
-        ...compiler.options.optimization,
+    options.optimization = {
+        ...options.optimization,
         avoidEntryIife: isProduction,
         concatenateModules: isProduction
     };

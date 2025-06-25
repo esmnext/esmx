@@ -10,15 +10,6 @@ export function parseOptions(
     const exports: ParsedModuleLinkPluginOptions['exports'] = {};
     if (options.exports) {
         for (const [name, item] of Object.entries(options.exports)) {
-            if (name in exports) {
-                console.warn(
-                    styleText(
-                        'yellow',
-                        `[rspack-module-link-plugin] Warning: Duplicate export name '${name}'.`
-                    )
-                );
-                continue;
-            }
             exports[name] = {
                 name,
                 rewrite: !!item.rewrite,
@@ -32,6 +23,7 @@ export function parseOptions(
         ext: options.ext ? `.${options.ext}` : '.mjs',
         exports,
         imports: options.imports ?? {},
-        injectChunkName: options.injectChunkName ?? false
+        injectChunkName: options.injectChunkName ?? false,
+        preEntries: options.preEntries ?? []
     };
 }
