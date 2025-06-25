@@ -1,22 +1,24 @@
-import type { Compiler } from '@rspack/core';
+import type { RspackOptionsNormalized } from '@rspack/core';
 import type { ParsedModuleLinkPluginOptions } from './types';
 
 export function initEntry(
-    compiler: Compiler,
+    options: RspackOptionsNormalized,
     opts: ParsedModuleLinkPluginOptions
 ) {
-    if (typeof compiler.options.entry === 'function') {
+    if (typeof options.entry === 'function') {
         throw new TypeError(`'entry' option does not support functions`);
     }
-    let entry = compiler.options.entry;
+    let entry = options.entry;
 
     if (entry.main && Object.keys(entry.main).length === 0) {
         entry = {};
     }
+
     for (const value of Object.values(opts.exports)) {
         entry[value.name] = {
-            import: [value.file]
+            import: [...opts.preEntries, value.file]
         };
     }
-    compiler.options.entry = entry;
+
+    options.entry = entry;
 }

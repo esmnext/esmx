@@ -11,8 +11,8 @@ export function moduleLinkPlugin(
 ): RspackPluginFunction {
     const opts = parseOptions(options);
     return (compiler: Compiler) => {
-        initConfig(compiler, opts);
-        initEntry(compiler, opts);
+        initConfig(compiler.options, opts);
+        initEntry(compiler.options, opts);
         initExternal(compiler, opts);
         intiManifestJson(compiler, opts);
     };

@@ -31,6 +31,11 @@ export interface ModuleLinkPluginOptions {
      * @default false
      */
     injectChunkName?: boolean;
+    /**
+     * Files to prepend to each entry
+     * @example ['./src/hot-client.ts']
+     */
+    preEntries?: string[];
 }
 /**
  * Parsed module link plugin configuration
@@ -57,4 +62,8 @@ export interface ParsedModuleLinkPluginOptions {
      * Whether to inject chunk name. Usually only needs to be set to `true` when building server-side rendering artifacts
      */
     injectChunkName: boolean;
+    /**
+     * Files to prepend to each entry
+     */
+    preEntries: string[];
 }
