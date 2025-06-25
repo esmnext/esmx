@@ -1,6 +1,6 @@
 (() => {
 const base = document.currentScript.getAttribute("data-base");
-const importmap = {"imports":{"ssr-preact-htm\u002Fsrc\u002Fentry.client":"\u002Fssr-preact-htm\u002Fsrc\u002Fentry.client.9e1f62ba.final.mjs"},"scopes":{"\u002Fssr-preact-htm\u002F":{}}};
+const importmap = {"imports":{"ssr-html\u002Fsrc\u002Fentry.client":"\u002Fssr-html\u002Fsrc\u002Fentry.client.dd8cbf28.final.mjs","ssr-html\u002Fsrc\u002Ftitle\u002Findex":"\u002Fssr-html\u002Fsrc\u002Ftitle\u002Findex.2d79c0c2.final.mjs","ssr-html\u002Fsrc\u002Ftitle":"\u002Fssr-html\u002Fsrc\u002Ftitle\u002Findex.2d79c0c2.final.mjs"},"scopes":{"\u002Fssr-html\u002F":{}}};
 const set = (data) => {
     if (!data) return;
     Object.entries(data).forEach(([k, v]) => {

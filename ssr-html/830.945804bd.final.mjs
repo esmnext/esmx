@@ -1,4 +1,4 @@
-export const __webpack_ids__ = ['830'];
+export const __webpack_ids__ = ["830"];
 export const __webpack_modules__ = {
 878: (function (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 __webpack_require__.d(__webpack_exports__, {
@@ -33,7 +33,7 @@ function layout(slot) {
         if (path.startsWith('http')) return path;
         return base + (path.startsWith('/') ? path.slice(1) : path);
     };
-    return '\n<div class="layout">\n    <header class="header">\n        <div class="container">\n            <h1><img src="https://www.esmnext.com/logo.svg" alt="Esmx Logo" width="48" height="48"></h1>\n            <nav class="nav">\n                <a href="'.concat(resolvePath('/'), ' " class="').concat(isActive('/'), '">首页</a>\n                <a href="').concat(resolvePath('about'), '" class="').concat(isActive('/about'), '">关于我们</a>\n                <a href="https://github.com/esmnext/esmx/tree/master/examples/ssr-html" target="_blank">示例代码</a>\n            </nav>\n        </div>\n    </header>\n    <main class="main">\n        <div class="container">\n            ').concat(slot, "\n        </div>\n    </main>\n</div>\n");
+    return '\n<div class="layout">\n    <header class="header">\n        <div class="container">\n            <h1><img src="https://www.esmnext.com/logo.svg" alt="Esmx Logo" width="48" height="48"></h1>\n            <nav class="nav">\n                <a href="'.concat(resolvePath('/'), ' " class="').concat(isActive('/'), '">\u9996\u9875</a>\n                <a href="').concat(resolvePath('about'), '" class="').concat(isActive('/about'), '">\u5173\u4E8E\u6211\u4EEC</a>\n                <a href="https://github.com/esmnext/esmx/tree/master/examples/ssr-html" target="_blank">\u793A\u4F8B\u4EE3\u7801</a>\n            </nav>\n        </div>\n    </header>\n    <main class="main">\n        <div class="container">\n            ').concat(slot, "\n        </div>\n    </main>\n</div>\n");
 }
 
 
@@ -120,7 +120,7 @@ function _define_property(obj, key, value) {
 class NotFound extends _page__WEBPACK_IMPORTED_MODULE_2__/* .Page */.T {
     render() {
         const { url, base } = this.props;
-        return (0,_components_layout__WEBPACK_IMPORTED_MODULE_0__/* .layout */.b)('<div class="not-found">\n                <div class="not-found-content">\n                    <div class="error-code">404</div>\n                    <h1>页面未找到</h1>\n                    <p>抱歉，您访问的页面不存在或已被移除</p>\n                    <div class="actions">\n                        <a href="'.concat(base, '/" class="back-home">返回首页</a>\n                        <button onclick="window.history.back()" class="go-back">返回上一页</button>\n                    </div>\n                </div>\n            </div>'), {
+        return (0,_components_layout__WEBPACK_IMPORTED_MODULE_0__/* .layout */.b)('<div class="not-found">\n                <div class="not-found-content">\n                    <div class="error-code">404</div>\n                    <h1>\u9875\u9762\u672A\u627E\u5230</h1>\n                    <p>\u62B1\u6B49\uFF0C\u60A8\u8BBF\u95EE\u7684\u9875\u9762\u4E0D\u5B58\u5728\u6216\u5DF2\u88AB\u79FB\u9664</p>\n                    <div class="actions">\n                        <a href="'.concat(base, '/" class="back-home">\u8FD4\u56DE\u9996\u9875</a>\n                        <button onclick="window.history.back()" class="go-back">\u8FD4\u56DE\u4E0A\u4E00\u9875</button>\n                    </div>\n                </div>\n            </div>'), {
             url,
             base
         });

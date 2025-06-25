@@ -82,7 +82,7 @@ __webpack_require__.u = (chunkId) => {
   // return url for filenames not based on template
   
   // return url for filenames based on template
-  return "" + chunkId + "." + {"473": "5b2bd94a","534": "7b1c883c","830": "8712b17d",}[chunkId] + ".final.mjs"
+  return "" + chunkId + "." + {"473": "88885509","534": "7540aaee","830": "945804bd",}[chunkId] + ".final.mjs"
 }
 })();
 // webpack/runtime/global
@@ -127,13 +127,13 @@ __webpack_require__.p = scriptUrl + '../'
 var installedChunks = {"521": 0,};
 var uniqueName = "ssr-html";
 function handleCssComposes(exports, composes) {
-  for (var i = 0; i < composes.length; i += 3) {
-    var moduleId = composes[i];
-    var composeFrom = composes[i + 1];
-    var composeVar = composes[i + 2];
-    var composedId = __webpack_require__(composeFrom)[composeVar];
-    exports[moduleId] = exports[moduleId] + " " + composedId
-  }
+	for (var i = 0; i < composes.length; i += 3) {
+		var moduleId = composes[i];
+		var composeFrom = composes[i + 1];
+		var composeVar = composes[i + 2];
+		var composedId = __webpack_require__(composeFrom)[composeVar];
+		exports[moduleId] = exports[moduleId] + " " + composedId
+	}
 }
 var loadCssChunkData = (target, chunkId) => {
 
@@ -197,6 +197,7 @@ var loadStylesheet = function (chunkId, url, done, hmr, fetchPriority) {
 		link.onerror = onLinkComplete.bind(null, link.onerror);
 		link.onload = onLinkComplete.bind(null, link.onload);
 	} else onLinkComplete(undefined, { type: "load", target: link });
+	if (hmr && hmr.getAttribute("fetchpriority")) link.setAttribute("fetchpriority", hmr.getAttribute("fetchpriority"));
 	hmr ? document.head.insertBefore(link, hmr) : needAttach && document.head.appendChild(link);
 	return link;
 };

@@ -5,75 +5,51 @@
         "src/entry.client": {
             "name": "src/entry.client",
             "rewrite": true,
-            "file": "src/entry.client.a0db096d.final.mjs",
+            "file": "src/entry.client.b0c5500e.final.mjs",
             "identifier": "ssr-vue2-remote/src/entry.client"
         },
         "vue": {
             "name": "vue",
             "rewrite": false,
-            "file": "vue.94c707fc.final.mjs",
+            "file": "vue.389c4cab.final.mjs",
             "identifier": "ssr-vue2-remote/vue"
         },
         "src/components/index": {
             "name": "src/components/index",
             "rewrite": true,
-            "file": "src/components/index.3737c627.final.mjs",
+            "file": "src/components/index.50eacbdb.final.mjs",
             "identifier": "ssr-vue2-remote/src/components/index"
         },
         "src/composables/index": {
             "name": "src/composables/index",
             "rewrite": true,
-            "file": "src/composables/index.fb511c82.final.mjs",
+            "file": "src/composables/index.c2bfa8f0.final.mjs",
             "identifier": "ssr-vue2-remote/src/composables/index"
         },
         "src/examples/index": {
             "name": "src/examples/index",
             "rewrite": true,
-            "file": "src/examples/index.34c9ea59.final.mjs",
+            "file": "src/examples/index.5cb9a8de.final.mjs",
             "identifier": "ssr-vue2-remote/src/examples/index"
         }
     },
     "buildFiles": [
-        "src/components/index.3737c627.final.mjs",
+        "vue.389c4cab.final.mjs",
+        "src/entry.client.b0c5500e.final.mjs",
+        "src/examples/index.5cb9a8de.final.mjs",
+        "src/components/index.50eacbdb.final.mjs",
+        "174.d69c099a.final.mjs",
         "src/components/index.76f4c45a.final.css",
-        "vue.94c707fc.final.mjs",
-        "src/composables/index.fb511c82.final.mjs",
-        "src/examples/index.34c9ea59.final.mjs",
-        "src/entry.client.a0db096d.final.mjs",
-        "504.bcf10f2c.final.css",
-        "src/examples/index.84b37e4f.final.css",
-        "504.57d35123.final.mjs"
+        "src/composables/index.c2bfa8f0.final.mjs",
+        "174.bcf10f2c.final.css",
+        "src/examples/index.84b37e4f.final.css"
     ],
     "chunks": {
-        "ssr-vue2-remote@src/examples/index.ts": {
-            "name": "ssr-vue2-remote@src/examples/index.ts",
-            "js": "src/examples/index.34c9ea59.final.mjs",
-            "css": [
-                "src/examples/index.84b37e4f.final.css"
-            ],
-            "resources": [],
-            "sizes": {
-                "js": 27452,
-                "css": 8255,
-                "resource": 0
-            }
-        },
-        "ssr-vue2-remote@../../node_modules/.pnpm/vue@2.7.16/node_modules/vue/dist/vue.esm.js": {
-            "name": "ssr-vue2-remote@../../node_modules/.pnpm/vue@2.7.16/node_modules/vue/dist/vue.esm.js",
-            "js": "vue.94c707fc.final.mjs",
-            "css": [],
-            "resources": [],
-            "sizes": {
-                "js": 419330,
-                "css": 0,
-                "resource": 0
-            }
-        },
         "ssr-vue2-remote@src/app.vue": {
             "name": "ssr-vue2-remote@src/app.vue",
-            "js": "504.57d35123.final.mjs",
+            "js": "174.d69c099a.final.mjs",
             "css": [
-                "504.bcf10f2c.final.css"
+                "174.bcf10f2c.final.css"
             ],
             "resources": [],
             "sizes": {
@@ -82,20 +58,44 @@
                 "resource": 0
             }
         },
-        "ssr-vue2-remote@src/entry.client.ts": {
-            "name": "ssr-vue2-remote@src/entry.client.ts",
-            "js": "src/entry.client.a0db096d.final.mjs",
+        "ssr-vue2-remote@src/examples/index.ts": {
+            "name": "ssr-vue2-remote@src/examples/index.ts",
+            "js": "src/examples/index.5cb9a8de.final.mjs",
+            "css": [
+                "src/examples/index.84b37e4f.final.css"
+            ],
+            "resources": [],
+            "sizes": {
+                "js": 27713,
+                "css": 8255,
+                "resource": 0
+            }
+        },
+        "ssr-vue2-remote@../../node_modules/.pnpm/vue@2.7.16/node_modules/vue/dist/vue.esm.js": {
+            "name": "ssr-vue2-remote@../../node_modules/.pnpm/vue@2.7.16/node_modules/vue/dist/vue.esm.js",
+            "js": "vue.389c4cab.final.mjs",
             "css": [],
             "resources": [],
             "sizes": {
-                "js": 9038,
+                "js": 419330,
+                "css": 0,
+                "resource": 0
+            }
+        },
+        "ssr-vue2-remote@src/entry.client.ts": {
+            "name": "ssr-vue2-remote@src/entry.client.ts",
+            "js": "src/entry.client.b0c5500e.final.mjs",
+            "css": [],
+            "resources": [],
+            "sizes": {
+                "js": 9144,
                 "css": 0,
                 "resource": 0
             }
         },
         "ssr-vue2-remote@src/composables/index.ts": {
             "name": "ssr-vue2-remote@src/composables/index.ts",
-            "js": "src/composables/index.fb511c82.final.mjs",
+            "js": "src/composables/index.c2bfa8f0.final.mjs",
             "css": [],
             "resources": [],
             "sizes": {
@@ -106,7 +106,7 @@
         },
         "ssr-vue2-remote@src/components/index.ts": {
             "name": "ssr-vue2-remote@src/components/index.ts",
-            "js": "src/components/index.3737c627.final.mjs",
+            "js": "src/components/index.50eacbdb.final.mjs",
             "css": [
                 "src/components/index.76f4c45a.final.css"
             ],
