@@ -25,15 +25,6 @@ export function createRspackConfig(
          * 项目根目录，不可修改
          */
         context: esmx.root,
-        entry: (() => {
-            if (buildTarget === 'node') {
-                return {
-                    [`./src/entry.${buildTarget}`]: {
-                        import: esmx.resolvePath('src/entry.node.ts')
-                    }
-                };
-            }
-        })(),
         output: {
             clean: esmx.isProd,
             chunkFilename: esmx.isProd
@@ -130,7 +121,15 @@ export function createRspackConfig(
 
 function createModuleLinkPlugin(esmx: Esmx, buildTarget: BuildTarget): Plugin {
     if (buildTarget === 'node') {
-        return;
+        return moduleLinkPlugin({
+            name: esmx.name,
+            exports: {
+                'src/entry.node': {
+                    rewrite: false,
+                    file: './src/entry.node'
+                }
+            }
+        });
     }
     const exports: Record<
         string,
@@ -149,7 +148,6 @@ function createModuleLinkPlugin(esmx: Esmx, buildTarget: BuildTarget): Plugin {
     }
     return moduleLinkPlugin({
         name: esmx.name,
-        ext: 'mjs',
         injectChunkName: buildTarget === 'server',
         imports: esmx.moduleConfig.imports,
         exports

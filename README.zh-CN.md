@@ -48,7 +48,7 @@ export default {
 export default {
   modules: {
     links: { 'remote': './node_modules/remote' },
-    imports: { 'vue': 'remote/npm/vue' }
+    imports: { 'vue': 'remote/vue' }
   }
 }
 

@@ -44,6 +44,7 @@ export function initConfig(
     options.optimization = {
         ...options.optimization,
         avoidEntryIife: isProduction,
-        concatenateModules: isProduction
+        concatenateModules: isProduction,
+        usedExports: isProduction
     };
 }
