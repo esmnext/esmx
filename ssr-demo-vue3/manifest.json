@@ -5,21 +5,21 @@
         "src/entry.client": {
             "name": "src/entry.client",
             "rewrite": true,
-            "file": "src/entry.client.5ec9e735.final.mjs",
+            "file": "src/entry.client.531c9fa8.final.mjs",
             "identifier": "ssr-demo-vue3/src/entry.client"
         }
     },
     "buildFiles": [
-        "src/entry.client.5ec9e735.final.mjs"
+        "src/entry.client.531c9fa8.final.mjs"
     ],
     "chunks": {
         "ssr-demo-vue3@src/entry.client.ts": {
             "name": "ssr-demo-vue3@src/entry.client.ts",
-            "js": "src/entry.client.5ec9e735.final.mjs",
+            "js": "src/entry.client.531c9fa8.final.mjs",
             "css": [],
             "resources": [],
             "sizes": {
-                "js": 371293,
+                "js": 368694,
                 "css": 0,
                 "resource": 0
             }
