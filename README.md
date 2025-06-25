@@ -25,7 +25,6 @@
 - **High-Performance Build** - Powered by Rspack, significantly faster builds
 - **Complete SSR Support** - High-performance server-side rendering, SEO-friendly
 - **Standard ESM Syntax** - No framework-specific APIs, minimal learning curve
-- **Comprehensive Testing** - [Complete test coverage](https://www.esmnext.com/coverage/), continuous integration verification
 - **Multi-Framework Support** - Vue, React, Preact, Solid, and more
 
 ## 📊 vs Traditional Micro-frontends
