@@ -1,4 +1,5 @@
-# Delete this comment line, the template will no longer be written
+
 packages:
     - 'packages/*'
     - 'examples/*'
+    - 'examples/router-demo/*'
