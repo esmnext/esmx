@@ -29,7 +29,6 @@ export function initConfig(
         iife: false,
         uniqueName: opts.name,
         chunkFormat: isProduction ? 'module' : 'array-push',
-        chunkLoading: isProduction ? 'import' : 'jsonp',
         module: true,
         library: {
             type: isProduction ? 'modern-module' : 'module'
