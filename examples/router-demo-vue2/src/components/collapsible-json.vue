@@ -13,7 +13,7 @@ const props = defineProps<{
 // console.log(props.data);
 
 const space = props.space !== void 0 && props.space > 0 ? props.space : 2;
-const fnCache = Object.create(null);
+const fnCache = Object.create(null) as Record<string, Function>;
 let fnCount = 0;
 const replacer = (k: string, v: any) => {
     switch (typeof v) {
@@ -92,11 +92,22 @@ const vHTML = computed(() =>
                     key === void 0
                         ? ''
                         : `<span class="json-key">${key}</span>: `;
-                let func = fnCache[funcId];
+                const func = fnCache[funcId];
                 Reflect.deleteProperty(fnCache, funcId);
-                func = func.toString();
-                const line1 = func.split('\n')[0];
-                let otherLines = func.replace(line1, '');
+                const escapeHtmlMap: Record<string, string> = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                };
+                // 转义html特殊字符 & 将 `\u0000` 的字符转成字符实体
+                const fnStr = func
+                    .toString()
+                    .replace(/[&<>"']/g, (m) => escapeHtmlMap[m])
+                    .replace(/\\u([\da-f]{4})/gi, '&#x$1;');
+                const line1 = fnStr.split('\n')[0];
+                let otherLines = fnStr.replace(line1, '');
                 const len = otherLines.replace(/.*^( *)}\)?/ms, '$1').length;
                 otherLines = otherLines.replace(
                     new RegExp('^' + ' '.repeat(len), 'gm'),
