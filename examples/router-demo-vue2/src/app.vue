@@ -12,11 +12,7 @@ import { onMounted, ref, watch } from 'vue';
 import ViewLayer from './components/view-layer.vue';
 import ViewPage from './components/view-page.vue';
 
-const isDark = ref(
-    typeof window === 'object'
-        ? window.matchMedia?.('(prefers-color-scheme: dark)').matches
-        : false
-);
+const isDark = ref(false);
 
 const getAllPrefMediaRules = () =>
     Array.from(document.styleSheets).reduce((rules, sheet) => {
@@ -31,7 +27,7 @@ const getAllPrefMediaRules = () =>
 
 const saveAndGetOriColorScheme = (media: MediaList): string[] => {
     const mediaText = media.mediaText;
-    const oriColorScheme = [];
+    const oriColorScheme: string[] = [];
     if (!mediaText.includes('original-prefers-color-scheme')) {
         if (mediaText.includes('light')) oriColorScheme.push('light');
         if (mediaText.includes('dark')) oriColorScheme.push('dark');
@@ -61,7 +57,19 @@ const applyTheme = (dark: boolean) =>
             media.appendMedium(`(prefers-color-scheme: ${scheme})`);
     });
 
-onMounted(() => applyTheme(isDark.value));
+onMounted(() => {
+    if (typeof window === 'object') {
+        isDark.value = window.matchMedia?.(
+            '(prefers-color-scheme: dark)'
+        ).matches;
+        window
+            .matchMedia?.('(prefers-color-scheme: dark)')
+            .addEventListener('change', (e) => {
+                isDark.value = e.matches;
+            });
+    }
+    applyTheme(isDark.value);
+});
 watch(isDark, (val) => applyTheme(val));
 </script>
 <style>

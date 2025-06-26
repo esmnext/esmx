@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts" setup>
-import { RouterLink } from '@esmx/router-vue';
+import { RouterLink, RouterView } from '@esmx/router-vue';
 import CollapsibleJson from './collapsible-json.vue';
 </script>
 
