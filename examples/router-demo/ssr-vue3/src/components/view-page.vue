@@ -50,8 +50,10 @@
 </template>
 
 <script lang="ts" setup>
-import { RouterLink, RouterView } from '@esmx/router-vue';
+import { RouterLink, RouterView, useRoute } from '@esmx/router-vue';
 import CollapsibleJson from './collapsible-json.vue';
+
+const $route = useRoute();
 </script>
 
 <style scoped>

@@ -1,0 +1,18 @@
+{
+    "name": "ssr-npm-base",
+    "version": "1.0.0",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "build": "esmx build"
+    },
+    "dependencies": {
+        "@esmx/core": "workspace:*"
+    },
+    "devDependencies": {
+        "@esmx/router": "workspace:*",
+        "@esmx/rspack": "workspace:*",
+        "@types/node": "22.8.6",
+        "typescript": "^5.8.3"
+    }
+}

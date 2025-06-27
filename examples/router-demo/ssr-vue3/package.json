@@ -1,0 +1,27 @@
+{
+    "name": "ssr-vue3",
+    "version": "1.0.0",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "NODE_ENV=development esmx dev",
+        "build": "npm run build:dts && npm run build:ssr",
+        "build:ssr": "esmx build",
+        "preview": "esmx preview",
+        "start": "NODE_ENV=production node dist/index.mjs",
+        "build:dts": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/src"
+    },
+    "dependencies": {
+        "@esmx/core": "workspace:*"
+    },
+    "devDependencies": {
+        "@esmx/rspack-vue": "workspace:*",
+        "ssr-npm-base": "workspace:*",
+        "ssr-npm-vue3": "workspace:*",
+        "@types/node": "22.8.6",
+        "@vue/server-renderer": "^3.5.17",
+        "typescript": "^5.8.3",
+        "vue": "^3.5.17",
+        "vue-tsc": "^2.2.10"
+    }
+}

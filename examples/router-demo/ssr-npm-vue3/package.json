@@ -1,0 +1,22 @@
+{
+    "name": "ssr-npm-vue3",
+    "version": "1.0.0",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "build": "esmx build"
+    },
+    "dependencies": {
+        "@esmx/core": "workspace:*"
+    },
+    "devDependencies": {
+        "@esmx/router-vue": "workspace:*",
+        "@esmx/rspack-vue": "workspace:*",
+        "ssr-npm-base": "workspace:*",
+        "@types/node": "22.8.6",
+        "@vue/server-renderer": "^3.5.17",
+        "typescript": "^5.8.3",
+        "vue": "^3.5.17",
+        "vue-tsc": "^2.2.10"
+    }
+}

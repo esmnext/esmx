@@ -8,9 +8,12 @@
     </div>
 </template>
 <script lang="ts" setup>
+import { useRouter } from '@esmx/router-vue';
 import { onMounted, ref, watch } from 'vue';
 import ViewLayer from './components/view-layer.vue';
 import ViewPage from './components/view-page.vue';
+
+const $router = useRouter();
 
 const isDark = ref(false);
 

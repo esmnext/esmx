@@ -8,7 +8,7 @@ export function createSymbolProperty<T>(symbol: symbol) {
             instance[symbol] = value;
         },
         get(instance: any): T | undefined {
-            return instance[symbol];
+            return symbol in instance ? instance[symbol] : void 0;
         }
     } as const;
 }

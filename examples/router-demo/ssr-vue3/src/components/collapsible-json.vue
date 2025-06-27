@@ -99,7 +99,7 @@ const vHTML = computed(() =>
                     '<': '&lt;',
                     '>': '&gt;',
                     '"': '&quot;',
-                    "'": '&#039;'
+                    "'": '&apos;'
                 };
                 // 转义html特殊字符 & 将 `\u0000` 的字符转成字符实体
                 const fnStr = func

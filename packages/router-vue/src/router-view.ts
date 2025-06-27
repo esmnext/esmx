@@ -15,6 +15,7 @@ const RouterViewDepthKey = Symbol('RouterViewDepth');
  * @returns Vue render function that renders the matched route component at current depth
  *
  * @example
+ *
  * ```vue
  * <template>
  *   <div id="app">

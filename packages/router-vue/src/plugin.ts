@@ -12,11 +12,14 @@ interface VueApp {
 }
 
 /**
- * Vue plugin for @esmx/router integration.
+ * Vue plugin for \@esmx/router integration.
  * Registers RouterLink and RouterView components globally.
  * Compatible with both Vue 2.7+ and Vue 3.
  *
- * @example Vue 3 installation
+ * @example
+ *
+ * Vue 3 installation
+ *
  * ```typescript
  * import { createApp } from 'vue';
  * import { Router } from '@esmx/router';
@@ -38,7 +41,10 @@ interface VueApp {
  * app.mount('#app');
  * ```
  *
- * @example Vue 2 installation
+ * @example
+ *
+ * Vue 2 installation
+ *
  * ```typescript
  * import Vue from 'vue';
  * import { Router } from '@esmx/router';
