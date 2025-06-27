@@ -31,10 +31,10 @@
 
 | Feature | Traditional Solutions | Esmx |
 |---------|----------------------|------|
-| **Architecture** | Manual sandbox + proxy | **Native ESM** |
-| **Runtime** | Has overhead | **Zero overhead** |
-| **Learning Curve** | Framework APIs | **Standard syntax** |
-| **Module Isolation** | Sandbox simulation | **Browser native** |
+| **Architecture** | Manual sandbox + proxy | Native ESM |
+| **Runtime** | Has overhead | Zero overhead |
+| **Learning Curve** | Framework APIs | Standard syntax |
+| **Module Isolation** | Sandbox simulation | Browser native |
 
 ## ⚡ Quick Start
 
