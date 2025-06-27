@@ -10,6 +10,7 @@ import {
 import nodeExternals from 'webpack-node-externals';
 import type { RspackAppOptions } from './app';
 import type { BuildTarget } from './build-target';
+import { HMR_DIR, HMR_JSONP } from './hmr-config';
 
 /**
  * 构建 Client、Server、Node 的基础配置
@@ -45,9 +46,10 @@ export function createRspackConfig(
                     ? 'auto'
                     : `${esmx.basePathPlaceholder}${esmx.basePath}`,
             uniqueName: esmx.varName,
-            hotUpdateChunkFilename: '__hot__/[id].[fullhash].hot-update.mjs',
-            hotUpdateMainFilename:
-                '__hot__/[runtime].[fullhash].hot-update.json',
+            hotUpdateGlobal: HMR_JSONP,
+            chunkLoadingGlobal: HMR_JSONP + '_chunk',
+            hotUpdateChunkFilename: `${HMR_DIR}/[id].[fullhash].hot-update.mjs`,
+            hotUpdateMainFilename: `${HMR_DIR}/[runtime].[fullhash].hot-update.json`,
             path: ((): string => {
                 switch (buildTarget) {
                     case 'client':
@@ -71,6 +73,8 @@ export function createRspackConfig(
         module: {
             parser: {
                 javascript: {
+                    // DEV hot update fix
+                    dynamicImportMode: esmx.isProd ? 'lazy' : 'eager',
                     url: buildTarget === 'client' ? true : 'relative'
                 }
             },
@@ -92,9 +96,10 @@ export function createRspackConfig(
         optimization: {
             minimize: options.minimize ?? esmx.isProd,
             emitOnErrors: true,
-            splitChunks: {
-                chunks: 'async'
-            }
+            // DEV hot update fix
+            splitChunks: esmx.isProd ? undefined : false,
+            // DEV hot update fix
+            runtimeChunk: esmx.isProd ? undefined : false
         },
         externalsPresets: {
             web: buildTarget === 'client',
@@ -146,10 +151,18 @@ function createModuleLinkPlugin(esmx: Esmx, buildTarget: BuildTarget): Plugin {
             };
         }
     }
+    const preEntries: string[] = [];
+    if (buildTarget === 'client' && !esmx.isProd) {
+        preEntries.push(
+            `webpack-hot-middleware/client?path=/${esmx.name}/hot-middleware`
+        );
+    }
+
     return moduleLinkPlugin({
         name: esmx.name,
         injectChunkName: buildTarget === 'server',
         imports: esmx.moduleConfig.imports,
-        exports
+        exports,
+        preEntries
     });
 }

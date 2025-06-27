@@ -1,4 +1,6 @@
-import { pathToFileURL } from 'node:url';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
     type App,
     type Esmx,
@@ -16,6 +18,12 @@ import type { BuildTarget } from './build-target';
 import { createRspackConfig } from './config';
 import { pack } from './pack';
 import { createRsBuild } from './utils';
+
+const extension = path.extname(fileURLToPath(import.meta.url));
+const hotFixCode = fs.readFileSync(
+    fileURLToPath(new URL(`./hot-fix${extension}`, import.meta.url)),
+    'utf-8'
+);
 
 /**
  * Rspack 应用配置上下文接口。
@@ -260,6 +268,13 @@ function rewriteRender(esmx: Esmx) {
         const serverRender: ServerRenderHandle = module[rc.entryName];
         if (typeof serverRender === 'function') {
             await serverRender(rc);
+            rc.html = rc.html.replace(
+                '</head>',
+                `
+                <script type="module">${hotFixCode}</script>
+                </head>
+            `
+            );
         }
         return rc;
     };
