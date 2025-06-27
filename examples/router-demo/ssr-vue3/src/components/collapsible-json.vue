@@ -105,7 +105,7 @@ const vHTML = computed(() =>
                 const fnStr = func
                     .toString()
                     .replace(/[&<>"']/g, (m) => escapeHtmlMap[m])
-                    .replace(/\\u([\da-f]{4})/gi, '&#x$1;');
+                    .replace(/\\u\{?([\da-f]{4})\}?/gi, '&#x$1;');
                 const line1 = fnStr.split('\n')[0];
                 let otherLines = fnStr.replace(line1, '');
                 const len = otherLines.replace(/.*^( *)}\)?/ms, '$1').length;
@@ -114,12 +114,12 @@ const vHTML = computed(() =>
                     ''
                 );
                 let ellipsis =
-                    line1.startsWith('function') ||
-                    line1.startsWith('async function')
-                        ? ' ... }'
-                        : otherLines.length > 0
-                          ? ' ... ' + (line1.endsWith('({') ? '})' : '}')
-                          : '';
+                    otherLines.length === 0
+                        ? ''
+                        : line1.startsWith('function') ||
+                            line1.startsWith('async function')
+                          ? ' ... }'
+                          : ' ... ' + (line1.endsWith('({') ? '})' : '}');
                 ellipsis = ellipsis.length
                     ? `<span class="json-ellipsis">${ellipsis}</span>`
                     : '';
