@@ -91,18 +91,6 @@ export function createRspackVueApp(
                     vue$: vueAlias
                 };
             }
-            // 设置 vue 相关忽略信息。
-            if (vueType === '2') {
-                config.ignoreWarnings = [
-                    ...(config.ignoreWarnings ?? []),
-                    (warning) => {
-                        // @ts-ignore
-                        return warning.moduleDescriptor.name.includes(
-                            'vue-server-renderer'
-                        );
-                    }
-                ];
-            }
             // 设置自定义配置
             options?.config?.(context);
         }
