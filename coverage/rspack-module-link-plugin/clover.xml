@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1751020584166" clover="3.2.0">
-  <project timestamp="1751020584166" name="All files">
+<coverage generated="1751021296753" clover="3.2.0">
+  <project timestamp="1751021296753" name="All files">
     <metrics statements="318" coveredstatements="57" conditionals="22" coveredconditionals="22" methods="11" coveredmethods="7" elements="351" coveredelements="86" complexity="0" loc="318" ncloc="318" packages="1" files="7" classes="7"/>
     <file name="config.ts" path="/home/runner/work/esmx/esmx/packages/rspack-module-link-plugin/src/config.ts">
       <metrics statements="46" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
