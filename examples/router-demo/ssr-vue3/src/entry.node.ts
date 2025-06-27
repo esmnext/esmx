@@ -11,9 +11,11 @@ const port = process.env.PORT || 3003;
 export default {
     modules: {
         links: {
+            'ssr-npm-base': './node_modules/ssr-npm-base/dist',
             'ssr-npm-vue3': './node_modules/ssr-npm-vue3/dist'
         },
         imports: {
+            '@esmx/router': 'ssr-npm-base/@esmx/router',
             vue: 'ssr-npm-vue3/vue',
             '@esmx/router-vue': 'ssr-npm-vue3/@esmx/router-vue'
         }

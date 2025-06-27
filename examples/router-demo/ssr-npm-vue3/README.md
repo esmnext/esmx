@@ -3,7 +3,7 @@
 Vue 3 专用共享服务，提供以下模块：
 
 - `vue` - Vue 3
-- `@esmx/router-vue` - Vue 路由集成
+- `@esmx/router-vue` - Vue 路由集成（其要基于具体的 vue 版本进行打包）
 
 ## 使用方式
 

@@ -6,11 +6,7 @@ export default {
     },
     async devApp(esmx) {
         return import('@esmx/rspack-vue').then((m) =>
-            m.createRspackVue3App(esmx, {
-                config(context) {
-                    // 在此处自定义 Rspack 编译配置
-                }
-            })
+            m.createRspackVue3App(esmx)
         );
     }
 } satisfies EsmxOptions;

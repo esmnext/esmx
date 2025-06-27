@@ -16,7 +16,7 @@
     },
     "devDependencies": {
         "@esmx/rspack-vue": "workspace:*",
-        "@esmx/router": "workspace:*",
+        "ssr-npm-base": "workspace:*",
         "ssr-npm-vue2": "workspace:*",
         "@types/node": "22.8.6",
         "typescript": "^5.8.3",

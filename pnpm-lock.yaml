@@ -64,7 +64,7 @@ importers:
         specifier: ^2.1.6
         version: 2.2.10(typescript@5.8.2)
 
-  examples/router-demo/ssr-npm-vue2:
+  examples/router-demo/ssr-npm-base:
     dependencies:
       '@esmx/core':
         specifier: workspace:*
@@ -73,6 +73,22 @@ importers:
       '@esmx/router':
         specifier: workspace:*
         version: link:../../../packages/router
+      '@esmx/rspack':
+        specifier: workspace:*
+        version: link:../../../packages/rspack
+      '@types/node':
+        specifier: 22.8.6
+        version: 22.8.6
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
+
+  examples/router-demo/ssr-npm-vue2:
+    dependencies:
+      '@esmx/core':
+        specifier: workspace:*
+        version: link:../../../packages/core
+    devDependencies:
       '@esmx/router-vue':
         specifier: workspace:*
         version: link:../../../packages/router-vue
@@ -82,6 +98,9 @@ importers:
       '@types/node':
         specifier: 22.8.6
         version: 22.8.6
+      ssr-npm-base:
+        specifier: workspace:*
+        version: link:../ssr-npm-base
       typescript:
         specifier: ^5.7.3
         version: 5.8.2
@@ -101,9 +120,6 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/core
     devDependencies:
-      '@esmx/router':
-        specifier: workspace:*
-        version: link:../../../packages/router
       '@esmx/router-vue':
         specifier: workspace:*
         version: link:../../../packages/router-vue
@@ -116,6 +132,9 @@ importers:
       '@vue/server-renderer':
         specifier: ^3.5.17
         version: 3.5.17(vue@3.5.17(typescript@5.8.3))
+      ssr-npm-base:
+        specifier: workspace:*
+        version: link:../ssr-npm-base
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -132,15 +151,15 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/core
     devDependencies:
-      '@esmx/router':
-        specifier: workspace:*
-        version: link:../../../packages/router
       '@esmx/rspack-vue':
         specifier: workspace:*
         version: link:../../../packages/rspack-vue
       '@types/node':
         specifier: 22.8.6
         version: 22.8.6
+      ssr-npm-base:
+        specifier: workspace:*
+        version: link:../ssr-npm-base
       ssr-npm-vue2:
         specifier: workspace:*
         version: link:../ssr-npm-vue2
@@ -163,12 +182,6 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/core
     devDependencies:
-      '@esmx/router':
-        specifier: workspace:*
-        version: link:../../../packages/router
-      '@esmx/router-vue':
-        specifier: workspace:*
-        version: link:../../../packages/router-vue
       '@esmx/rspack-vue':
         specifier: workspace:*
         version: link:../../../packages/rspack-vue
@@ -178,6 +191,9 @@ importers:
       '@vue/server-renderer':
         specifier: ^3.5.17
         version: 3.5.17(vue@3.5.17(typescript@5.8.3))
+      ssr-npm-base:
+        specifier: workspace:*
+        version: link:../ssr-npm-base
       ssr-npm-vue3:
         specifier: workspace:*
         version: link:../ssr-npm-vue3
