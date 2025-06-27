@@ -7,37 +7,37 @@
         "src/entry.client": {
             "name": "src/entry.client",
             "rewrite": true,
-            "file": "src/entry.client.2d1535be.final.mjs",
+            "file": "src/entry.client.6c7955ad.final.mjs",
             "identifier": "ssr-vue2-host/src/entry.client"
         }
     },
     "buildFiles": [
-        "src/entry.client.2d1535be.final.mjs",
-        "76.c303e8a6.final.css",
-        "76.30a0dd1b.final.mjs"
+        "215.1cb3ee9b.final.mjs",
+        "215.c303e8a6.final.css",
+        "src/entry.client.6c7955ad.final.mjs"
     ],
     "chunks": {
-        "ssr-vue2-host@src/entry.client.ts": {
-            "name": "ssr-vue2-host@src/entry.client.ts",
-            "js": "src/entry.client.2d1535be.final.mjs",
-            "css": [],
-            "resources": [],
-            "sizes": {
-                "js": 9099,
-                "css": 0,
-                "resource": 0
-            }
-        },
         "ssr-vue2-host@src/app.vue": {
             "name": "ssr-vue2-host@src/app.vue",
-            "js": "76.30a0dd1b.final.mjs",
+            "js": "215.1cb3ee9b.final.mjs",
             "css": [
-                "76.c303e8a6.final.css"
+                "215.c303e8a6.final.css"
             ],
             "resources": [],
             "sizes": {
                 "js": 40131,
                 "css": 22250,
+                "resource": 0
+            }
+        },
+        "ssr-vue2-host@src/entry.client.ts": {
+            "name": "ssr-vue2-host@src/entry.client.ts",
+            "js": "src/entry.client.6c7955ad.final.mjs",
+            "css": [],
+            "resources": [],
+            "sizes": {
+                "js": 9100,
+                "css": 0,
                 "resource": 0
             }
         }
