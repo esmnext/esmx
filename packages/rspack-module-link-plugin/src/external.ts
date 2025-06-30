@@ -21,7 +21,19 @@ export function initExternal(
     const importMap = new Map<string, string>();
     externals.push(async (data: ExternalItemFunctionData) => {
         if (!data.request || !data.context || !data.contextInfo?.issuer) return;
+        const request = data.request;
 
+        // 1. Check deps first with highest priority
+        if (opts.deps.length > 0) {
+            const matchedDep = opts.deps.find(
+                (dep) => request === dep || request.startsWith(`${dep}/`)
+            );
+            if (matchedDep) {
+                return `module-import ${request}`;
+            }
+        }
+
+        // 2. Then check imports/exports as before
         if (importMap.size === 0) {
             await Promise.all(
                 Object.values(opts.exports).map(async (value) => {
@@ -43,11 +55,11 @@ export function initExternal(
                 importMap.set(key, key);
             }
         }
-        // 1、先按照标识符查找
-        let importName = importMap.get(data.request);
+        // Check by identifier
+        let importName = importMap.get(request);
         if (!importName) {
-            // 2、再按照路径查找
-            const result = await resolvePath(data, data.context, data.request);
+            // Check by path
+            const result = await resolvePath(data, data.context, request);
             if (result) {
                 importName = importMap.get(result);
             }

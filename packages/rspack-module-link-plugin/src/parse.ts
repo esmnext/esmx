@@ -1,4 +1,3 @@
-import { styleText } from 'node:util';
 import type {
     ModuleLinkPluginOptions,
     ParsedModuleLinkPluginOptions
@@ -18,12 +17,14 @@ export function parseOptions(
             };
         }
     }
+    const deps = (options.deps ?? []).filter((name) => name !== options.name);
     return {
         name: options.name,
         ext: options.ext ? `.${options.ext}` : '.mjs',
         exports,
         imports: options.imports ?? {},
         injectChunkName: options.injectChunkName ?? false,
-        preEntries: options.preEntries ?? []
+        preEntries: options.preEntries ?? [],
+        deps
     };
 }

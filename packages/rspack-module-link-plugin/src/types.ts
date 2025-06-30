@@ -36,6 +36,11 @@ export interface ModuleLinkPluginOptions {
      * @example ['./src/hot-client.ts']
      */
     preEntries?: string[];
+    /**
+     * Module dependencies to be externalized
+     * @example ['ssr-main']
+     */
+    deps?: string[];
 }
 /**
  * Parsed module link plugin configuration
@@ -66,4 +71,8 @@ export interface ParsedModuleLinkPluginOptions {
      * Files to prepend to each entry
      */
     preEntries: string[];
+    /**
+     * Module dependencies to be externalized
+     */
+    deps: string[];
 }
