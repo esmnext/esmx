@@ -311,6 +311,11 @@ export function useProvideRouter(router: Router): void {
  */
 export function useLink(props: RouterLinkProps) {
     const router = useRouter();
+    const route = useRoute();
 
-    return computed(() => router.resolveLink(props));
+    return computed(() => {
+        // vue will trigger a re-render when route.fullPath changes
+        route.fullPath;
+        return router.resolveLink(props);
+    });
 }

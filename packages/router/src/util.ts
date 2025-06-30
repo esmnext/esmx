@@ -82,8 +82,8 @@ export function isUrlEqual(url1: URL, url2?: URL | null): boolean {
 /**
  * Compare if two routes match
  *
- * @param route1 First route object
- * @param route2 Second route object, may be null
+ * @param fromRoute First route object
+ * @param toRoute Second route object, may be null
  * @param matchType Match type
  * - 'route': Route-level matching, compare if route configurations are the same
  * - 'exact': Exact matching, compare if full paths are the same
@@ -91,24 +91,24 @@ export function isUrlEqual(url1: URL, url2?: URL | null): boolean {
  * @returns Whether they match
  */
 export function isRouteMatched(
-    route1: Route,
-    route2: Route | null,
+    fromRoute: Route,
+    toRoute: Route | null,
     matchType: RouteMatchType
 ): boolean {
-    if (!route2) return false;
+    if (!toRoute) return false;
 
     switch (matchType) {
         case 'route':
             // Route-level matching - compare route configurations
-            return route1.config === route2.config;
+            return fromRoute.config === toRoute.config;
 
         case 'exact':
             // Exact matching - full paths are identical
-            return route1.fullPath === route2.fullPath;
+            return fromRoute.fullPath === toRoute.fullPath;
 
         case 'include':
             // Include matching - route1 path contains route2 path
-            return route1.fullPath.startsWith(route2.fullPath);
+            return fromRoute.fullPath.startsWith(toRoute.fullPath);
 
         default:
             return false;
