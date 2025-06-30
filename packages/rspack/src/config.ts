@@ -162,6 +162,7 @@ function createModuleLinkPlugin(esmx: Esmx, buildTarget: BuildTarget): Plugin {
         name: esmx.name,
         injectChunkName: buildTarget === 'server',
         imports: esmx.moduleConfig.imports,
+        deps: Object.keys(esmx.moduleConfig.links),
         exports,
         preEntries
     });

@@ -9,6 +9,7 @@ function createOptions(
     return {
         name: 'test',
         ext: '.mjs',
+        deps: [],
         exports: {},
         imports: {},
         injectChunkName: false,

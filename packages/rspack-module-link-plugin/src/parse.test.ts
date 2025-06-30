@@ -16,6 +16,75 @@ describe('parseOptions', () => {
         expect(result.preEntries).toEqual([]);
     });
 
+    it('should parse deps with default empty array', () => {
+        // Arrange
+        const options: ModuleLinkPluginOptions = {
+            name: 'test'
+        };
+
+        // Act
+        const result = parseOptions(options);
+
+        // Assert
+        expect(result.deps).toEqual([]);
+    });
+
+    it('should filter out self-reference in deps', () => {
+        // Arrange
+        const options: ModuleLinkPluginOptions = {
+            name: 'ssr-main',
+            deps: ['ssr-main', 'ssr-utils', 'ssr-core']
+        };
+
+        // Act
+        const result = parseOptions(options);
+
+        // Assert
+        expect(result.deps).toEqual(['ssr-utils', 'ssr-core']);
+    });
+
+    it('should handle deps with no self-reference', () => {
+        // Arrange
+        const options: ModuleLinkPluginOptions = {
+            name: 'ssr-main',
+            deps: ['ssr-utils', 'ssr-core']
+        };
+
+        // Act
+        const result = parseOptions(options);
+
+        // Assert
+        expect(result.deps).toEqual(['ssr-utils', 'ssr-core']);
+    });
+
+    it('should handle empty deps array', () => {
+        // Arrange
+        const options: ModuleLinkPluginOptions = {
+            name: 'ssr-main',
+            deps: []
+        };
+
+        // Act
+        const result = parseOptions(options);
+
+        // Assert
+        expect(result.deps).toEqual([]);
+    });
+
+    it('should parse deps with provided array', () => {
+        // Arrange
+        const options: ModuleLinkPluginOptions = {
+            name: 'test',
+            deps: ['ssr-main', 'ssr-utils']
+        };
+
+        // Act
+        const result = parseOptions(options);
+
+        // Assert
+        expect(result.deps).toEqual(['ssr-main', 'ssr-utils']);
+    });
+
     it('should parse preEntries with provided array', () => {
         // Arrange
         const options: ModuleLinkPluginOptions = {
@@ -47,7 +116,7 @@ describe('parseOptions', () => {
         expect(result.preEntries).toEqual([]);
     });
 
-    it('should parse complete configuration with preEntries', () => {
+    it('should parse complete configuration with all options', () => {
         // Arrange
         const options: ModuleLinkPluginOptions = {
             name: 'test-module',
@@ -62,7 +131,8 @@ describe('parseOptions', () => {
                 }
             },
             injectChunkName: true,
-            preEntries: ['./src/hot-client.ts']
+            preEntries: ['./src/hot-client.ts'],
+            deps: ['ssr-main', 'test-module', 'ssr-utils']
         };
 
         // Act
@@ -84,7 +154,8 @@ describe('parseOptions', () => {
                 }
             },
             injectChunkName: true,
-            preEntries: ['./src/hot-client.ts']
+            preEntries: ['./src/hot-client.ts'],
+            deps: ['ssr-main', 'ssr-utils'] // test-module is filtered out
         });
     });
 });
