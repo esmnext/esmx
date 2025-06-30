@@ -167,7 +167,7 @@ export class Router {
     /**
      * Check if the route matches the current route
      *
-     * @param targetRoute Target route object to compare
+     * @param toRoute Target route object to compare
      * @param matchType Match type
      * - 'route': Route-level matching, compare if route configurations are the same
      * - 'exact': Exact matching, compare if paths are completely the same
@@ -175,13 +175,13 @@ export class Router {
      * @returns Whether it matches
      */
     public isRouteMatched(
-        targetRoute: Route,
+        toRoute: Route,
         matchType: RouteMatchType = 'include'
     ): boolean {
         const currentRoute = this.transition.route;
         if (!currentRoute) return false;
 
-        return isRouteMatched(currentRoute, targetRoute, matchType);
+        return isRouteMatched(currentRoute, toRoute, matchType);
     }
 
     /**
