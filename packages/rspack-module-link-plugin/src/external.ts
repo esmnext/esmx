@@ -5,10 +5,84 @@ import type {
 } from '@rspack/core';
 import type { ParsedModuleLinkPluginOptions } from './types';
 
+type ResolvePath = (
+    request: string,
+    context?: string
+) => Promise<string | null>;
+
+export function createExternals(opts: ParsedModuleLinkPluginOptions) {
+    const importMap = new Map<string, string>();
+
+    let initPromise: Promise<void> | null = null;
+    let savedResolvePath: ResolvePath | null = null;
+
+    const init = (resolvePath: ResolvePath): Promise<void> => {
+        if (initPromise) return initPromise;
+
+        savedResolvePath = resolvePath;
+
+        initPromise = (async () => {
+            await Promise.all(
+                Object.values(opts.exports).map(async (value) => {
+                    const identifier = value.rewrite
+                        ? value.identifier
+                        : value.name;
+                    importMap.set(identifier, identifier);
+
+                    const resolvedPath = await resolvePath(value.file);
+                    if (resolvedPath) {
+                        importMap.set(resolvedPath, identifier);
+                    }
+                })
+            );
+
+            for (const key of Object.keys(opts.imports)) {
+                importMap.set(key, key);
+            }
+        })();
+
+        return initPromise;
+    };
+
+    const match = async (
+        request: string,
+        context: string
+    ): Promise<string | null> => {
+        if (!request) return null;
+
+        if (opts.deps.length > 0) {
+            const matchedDep = opts.deps.find(
+                (dep) => request === dep || request.startsWith(`${dep}/`)
+            );
+            if (matchedDep) {
+                return request;
+            }
+        }
+
+        if (!savedResolvePath) {
+            throw new Error(
+                'External handler not initialized. Call init() first.'
+            );
+        }
+
+        let importName = importMap.get(request);
+        if (!importName) {
+            const resolvedPath = await savedResolvePath(request, context);
+            if (resolvedPath) {
+                importName = importMap.get(resolvedPath);
+            }
+        }
+
+        return importName || null;
+    };
+
+    return { init, match };
+}
+
 export function initExternal(
     compiler: Compiler,
     opts: ParsedModuleLinkPluginOptions
-) {
+): void {
     const externals: ExternalItem[] = [];
     if (Array.isArray(compiler.options.externals)) {
         externals.push(...compiler.options.externals);
@@ -16,74 +90,34 @@ export function initExternal(
         externals.push(compiler.options.externals);
     }
 
+    const { init, match } = createExternals(opts);
     const defaultContext = compiler.options.context ?? process.cwd();
 
-    const importMap = new Map<string, string>();
     externals.push(async (data: ExternalItemFunctionData) => {
         if (!data.request || !data.context || !data.contextInfo?.issuer) return;
-        const request = data.request;
 
-        // 1. Check deps first with highest priority
-        if (opts.deps.length > 0) {
-            const matchedDep = opts.deps.find(
-                (dep) => request === dep || request.startsWith(`${dep}/`)
-            );
-            if (matchedDep) {
-                return `module-import ${request}`;
+        const resolvePath: ResolvePath = async (
+            request: string,
+            context = defaultContext
+        ): Promise<string | null> => {
+            if (!data.getResolve) {
+                return null;
             }
-        }
-
-        // 2. Then check imports/exports as before
-        if (importMap.size === 0) {
-            await Promise.all(
-                Object.values(opts.exports).map(async (value) => {
-                    const identifier = value.rewrite
-                        ? value.identifier
-                        : value.name;
-                    importMap.set(identifier, identifier);
-                    const entry = await resolvePath(
-                        data,
-                        defaultContext,
-                        value.file
-                    );
-                    if (entry) {
-                        importMap.set(entry, identifier);
-                    }
-                })
-            );
-            for (const key of Object.keys(opts.imports)) {
-                importMap.set(key, key);
-            }
-        }
-        // Check by identifier
-        let importName = importMap.get(request);
-        if (!importName) {
-            // Check by path
-            const result = await resolvePath(data, data.context, request);
-            if (result) {
-                importName = importMap.get(result);
-            }
-        }
-
-        if (importName) {
-            return `module-import ${importName}`;
-        }
-    });
-    compiler.options.externals = externals;
-}
-
-async function resolvePath(
-    data: ExternalItemFunctionData,
-    context: string,
-    request: string
-): Promise<string | null> {
-    return new Promise((resolve) => {
-        if (data.getResolve) {
-            data.getResolve()(context, request, (err, res) => {
-                resolve(res ? res : null);
+            const resolveFunc = data.getResolve();
+            return new Promise<string | null>((resolve) => {
+                resolveFunc(context, request, (err, res) => {
+                    resolve(res ?? null);
+                });
             });
-        } else {
-            resolve(null);
+        };
+
+        await init(resolvePath);
+        const matchedIdentifier = await match(data.request, data.context);
+
+        if (matchedIdentifier) {
+            return `module-import ${matchedIdentifier}`;
         }
     });
+
+    compiler.options.externals = externals;
 }
