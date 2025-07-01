@@ -33,6 +33,37 @@ importers:
         specifier: 5.8.2
         version: 5.8.2
 
+  examples/router-demo-music:
+    dependencies:
+      '@esmx/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+    devDependencies:
+      '@esmx/router':
+        specifier: workspace:*
+        version: link:../../packages/router
+      '@esmx/router-vue':
+        specifier: workspace:*
+        version: link:../../packages/router-vue
+      '@esmx/rspack-vue':
+        specifier: workspace:*
+        version: link:../../packages/rspack-vue
+      '@types/node':
+        specifier: 22.8.6
+        version: 22.8.6
+      typescript:
+        specifier: ^5.7.3
+        version: 5.8.3
+      vue:
+        specifier: ^2.7.16
+        version: 2.7.16
+      vue-server-renderer:
+        specifier: ^2.7.16
+        version: 2.7.16
+      vue-tsc:
+        specifier: ^2.1.6
+        version: 2.2.10(typescript@5.8.3)
+
   examples/router-demo-vue2:
     dependencies:
       '@esmx/core':
@@ -831,7 +862,7 @@ importers:
         version: 4.1.3
       vue2-loader:
         specifier: npm:vue-loader@15.11.1
-        version: vue-loader@15.11.1(@vue/compiler-sfc@3.5.17)(css-loader@7.1.2(@rspack/core@1.4.1(@swc/helpers@0.5.17))(webpack@5.99.9))(webpack@5.99.9)
+        version: vue-loader@15.11.1(@vue/compiler-sfc@3.5.17)(css-loader@7.1.2(@rspack/core@1.4.0(@swc/helpers@0.5.17))(webpack@5.99.9))(webpack@5.99.9)
       vue3-loader:
         specifier: npm:vue-loader@^17.4.2
         version: vue-loader@17.4.2(@vue/compiler-sfc@3.5.17)(vue@3.5.13(typescript@5.8.2))(webpack@5.99.9)
@@ -12122,7 +12153,7 @@ snapshots:
 
   vue-hot-reload-api@2.3.4: {}
 
-  vue-loader@15.11.1(@vue/compiler-sfc@3.5.17)(css-loader@7.1.2(@rspack/core@1.4.1(@swc/helpers@0.5.17))(webpack@5.99.9))(webpack@5.99.9):
+  vue-loader@15.11.1(@vue/compiler-sfc@3.5.17)(css-loader@7.1.2(@rspack/core@1.4.0(@swc/helpers@0.5.17))(webpack@5.99.9))(webpack@5.99.9):
     dependencies:
       '@vue/component-compiler-utils': 3.3.0
       css-loader: 7.1.2(@rspack/core@1.4.1(@swc/helpers@0.5.17))(webpack@5.99.9)
