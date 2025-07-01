@@ -29,9 +29,7 @@
 import { computed } from 'vue';
 import { type Song, musicStore } from '../store/music-store';
 
-const emit = defineEmits<{
-    trackSelected: [track: Song];
-}>();
+const emit = defineEmits<(e: 'trackSelected', track: Song) => void>();
 
 const currentSong = computed(() => musicStore.currentSong.value);
 const playlist = computed(() => musicStore.playlist.value);

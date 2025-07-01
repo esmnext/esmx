@@ -443,7 +443,7 @@ class MusicStore {
     nextSong() {
         if (this.playlist.value.length === 0) return;
 
-        let nextIndex;
+        let nextIndex: number;
         if (this.isShuffled.value) {
             nextIndex = Math.floor(Math.random() * this.playlist.value.length);
         } else {
@@ -459,7 +459,7 @@ class MusicStore {
     previousSong() {
         if (this.playlist.value.length === 0) return;
 
-        let prevIndex;
+        let prevIndex: number;
         if (this.isShuffled.value) {
             prevIndex = Math.floor(Math.random() * this.playlist.value.length);
         } else {
