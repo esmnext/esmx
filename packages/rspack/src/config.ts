@@ -154,7 +154,7 @@ function createModuleLinkPlugin(esmx: Esmx, buildTarget: BuildTarget): Plugin {
     const preEntries: string[] = [];
     if (buildTarget === 'client' && !esmx.isProd) {
         preEntries.push(
-            `${import.meta.resolve('webpack-hot-middleware/client')}?path=/${esmx.name}/hot-middleware`
+            `${import.meta.resolve('webpack-hot-middleware/client.js')}?path=/${esmx.name}/hot-middleware`
         );
     }
 
