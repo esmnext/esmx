@@ -1,4 +1,4 @@
-import { assert, test } from 'vitest';
+import { assert, expect, test } from 'vitest';
 import { getImportMap } from './import-map';
 
 test('should return empty import map when no manifests provided', async () => {
@@ -116,4 +116,30 @@ test('should generate import map with remote exports and module scopes', async (
             '/ssr-vue2-host/': { vue: 'ssr-vue2-remote/vue3' }
         }
     });
+});
+
+test('should throw error when encountering legacy format manifests', async () => {
+    // 模拟旧版本的清单格式，其中 exports 的值是字符串而不是对象
+    const legacyManifest = {
+        name: 'legacy-module',
+        imports: {},
+        exports: {
+            'legacy-export': 'legacy-module/legacy-file.js'
+        } as any
+    };
+
+    const expectedErrorMessage =
+        'Detected incompatible legacy manifest format in legacy-module. Please upgrade your ESMX dependencies first, then rebuild and redeploy your service.';
+
+    expect(() => {
+        getImportMap({
+            manifests: [legacyManifest],
+            getScope(name) {
+                return `/${name}/`;
+            },
+            getFile(name, file) {
+                return `${name}/${file}`;
+            }
+        });
+    }).toThrowError(expectedErrorMessage);
 });
