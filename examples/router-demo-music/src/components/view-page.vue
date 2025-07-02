@@ -10,7 +10,7 @@
                 <span>Explore Esmx Router's Music World</span>
                 <RouterLink to="/search" class="search-btn" activeClass="active">🔍</RouterLink>
                 <ToggleThemeBtn class="toggle-theme-btn"/>
-                <button class="info" title="Current Route">ℹ</button>
+                <button class="info" title="Current Route" @click="showRouteInfo = true">ℹ</button>
             </div>
         </TwoCol>
         <TwoCol>
@@ -47,17 +47,22 @@
             </aside>
             <router-view class="main" />
         </TwoCol>
+        
+        <!-- Route Info Modal -->
+        <RouteInfoModal :show="showRouteInfo" @close="showRouteInfo = false" />
     </div>
 </template>
 
 <script lang="ts" setup>
 import { RouterLink, useRouter } from '@esmx/router-vue';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { type Song, mockSongs, musicStore } from '../store/music-store';
+import RouteInfoModal from './route-info-modal.vue';
 import ToggleThemeBtn from './toggle-theme-btn.vue';
 import TwoCol from './two-col.vue';
 
 const $router = useRouter();
+const showRouteInfo = ref(false);
 
 // 选择精选歌曲用于侧边栏显示
 const featuredSongs = computed(() => {

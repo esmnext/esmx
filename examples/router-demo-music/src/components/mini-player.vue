@@ -63,6 +63,7 @@
 import { RouterLink } from '@esmx/router-vue';
 import { computed, ref, watch } from 'vue';
 import { type Song, musicStore } from '../store/music-store';
+import { formatTime } from '../utils/time';
 import PlayList from './play-list.vue';
 import TwoCol from './two-col.vue';
 
@@ -85,12 +86,6 @@ const progressPercent = computed(() => {
     if (!currentSong.value || currentSong.value.duration === 0) return 0;
     return (currentTime.value / currentSong.value.duration) * 100;
 });
-
-const formatTime = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-};
 
 // 模拟播放进度更新
 let progressTimer: number | null = null;

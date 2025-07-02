@@ -66,6 +66,7 @@ import BubbleBg from '../components/bubble-bg.vue';
 import PlayList from '../components/play-list.vue';
 import TwoCol from '../components/two-col.vue';
 import { type Song, musicStore } from '../store/music-store';
+import { formatTime } from '../utils/time';
 
 const currentSong = computed(() => musicStore.currentSong.value);
 const isPlaying = computed(() => musicStore.isPlaying.value);
@@ -78,12 +79,6 @@ const progressPercent = computed(() => {
     if (!currentSong.value || currentSong.value.duration === 0) return 0;
     return (currentTime.value / currentSong.value.duration) * 100;
 });
-
-const formatTime = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-};
 
 const seekToPosition = (event: MouseEvent) => {
     if (!currentSong.value) return;

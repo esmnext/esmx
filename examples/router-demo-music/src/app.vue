@@ -37,6 +37,7 @@ const currentSong = computed(() => musicStore.currentSong.value);
     --text-secondary: #6b7280;
     --text-tertiary: #9ca3af;
     --text-inverse: #ffffff;
+    --text-muted: #6b7280;
     
     /* 背景颜色 */
     --bg-primary: #ffffff;

@@ -32,8 +32,8 @@
 <script lang="ts" setup>
 import { useRoute } from '@esmx/router-vue';
 import { computed } from 'vue';
-import { type Song, mockPlaylists, musicStore } from '../store/music-store';
 import TracksList from '../components/tracks-list.vue';
+import { type Song, mockPlaylists, musicStore } from '../store/music-store';
 
 const route = useRoute();
 const playlistId = computed(() => Number(route.params.id));

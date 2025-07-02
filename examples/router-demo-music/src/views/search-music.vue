@@ -100,6 +100,7 @@ import {
     mockSongs,
     musicStore
 } from '../store/music-store';
+import { formatTime } from '../utils/time';
 
 const route = useRoute();
 const searchQuery = ref((route.params.query as string) || '');
@@ -145,12 +146,6 @@ const filteredPlaylists = computed(() => {
             playlist.creator.toLowerCase().includes(query)
     );
 });
-
-const formatTime = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-};
 
 const formatFollowers = (count: number): string => {
     if (count >= 1000000) {

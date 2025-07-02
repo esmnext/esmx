@@ -30,13 +30,13 @@
 <script lang="ts" setup>
 import { useRoute, useRouter } from '@esmx/router-vue';
 import { computed } from 'vue';
+import TracksList from '../components/tracks-list.vue';
 import {
     type Song,
     mockArtists,
     mockSongs,
     musicStore
 } from '../store/music-store';
-import TracksList from '../components/tracks-list.vue';
 
 const route = useRoute();
 const router = useRouter();

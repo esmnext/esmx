@@ -45,25 +45,20 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
 import { RouterLink } from '@esmx/router-vue';
+import { computed } from 'vue';
 import { type Song, musicStore } from '../store/music-store';
+import { formatTime } from '../utils/time';
 
 defineProps<{
-    tracks: Song[]
+    tracks: Song[];
 }>();
 
 defineEmits<{
-    playTrack: [track: Song]
+    playTrack: [track: Song];
 }>();
 
 const currentSong = computed(() => musicStore.currentSong.value);
-
-const formatTime = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-};
 </script>
 
 <style scoped>
