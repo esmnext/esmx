@@ -47,13 +47,13 @@
         <!-- 播放列表弹层 -->
         <div v-if="showPlaylist" class="playlist-overlay" @click="closePlaylist">
             <div class="playlist-popup" @click.stop>
-                <div class="playlist-content">
+                <!-- <div class="playlist-content"> -->
                     <PlayList @track-selected="closePlaylist">
                         <template #header>
                             <button @click="closePlaylist" class="close-btn">✕</button>
                         </template>
                     </PlayList>
-                </div>
+                <!-- </div> -->
             </div>
         </div>
     </div>
@@ -283,7 +283,7 @@ watch(isPlaying, (playing) => {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: #0002;
     z-index: var(--z-modal);
     display: flex;
     align-items: flex-end;
@@ -291,47 +291,39 @@ watch(isPlaying, (playing) => {
 }
 
 .playlist-popup {
-    background: var(--card-color);
-    border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
-    border: 1px solid var(--border-light);
     width: 100%;
-    max-width: 600px;
-    max-height: 60vh;
+    max-width: 38.2vw;
+    height: 61.8vh;
     margin-bottom: var(--player-height);
-    margin-left: calc(38.2% - var(--spacing-4));
+    margin-left: calc(38.2% + var(--spacing-1));
     display: flex;
     flex-direction: column;
+    justify-content: flex-end;
+}
+
+:deep(.tracks-list) {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-bottom: 0;
     box-shadow: var(--shadow-xl);
 }
 
-.playlist-content {
-    flex: 1;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    padding: var(--spacing-4) var(--spacing-6);
+:deep(.song-list) {
+    overflow-y: auto;
+    height: calc(100% - 32px - var(--spacing-4) * 2 - var(--spacing-6) - 1px);
+    padding-bottom: var(--spacing-6);
 }
 
-.playlist-content :deep(.playlist-section) {
-    background: transparent;
-    border: none;
-    padding: 0;
-    margin: 0;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.playlist-content :deep(.playlist-header) {
-    padding: 0;
+:deep(.playlist-header) {
     border-bottom: 1px solid var(--border-light);
     padding-bottom: var(--spacing-4);
     margin-bottom: var(--spacing-4);
 }
 
-.playlist-content :deep(.close-btn) {
+.close-btn {
     width: 32px;
     height: 32px;
+    line-height: 32px;
     border: none;
     background: transparent;
     color: var(--text-secondary);
@@ -344,30 +336,15 @@ watch(isPlaying, (playing) => {
     transition: all var(--duration-fast);
 }
 
-.playlist-content :deep(.close-btn:hover) {
-    background: var(--bg-secondary);
+.close-btn:hover {
+    background: var(--bg-primary);
     color: var(--text-primary);
-}
-
-.playlist-content :deep(.playlist-tracks) {
-    flex: 1;
-    overflow-y: auto;
-    padding: var(--spacing-2);
-    max-height: none;
 }
 
 @media (max-width: 768px) {
     .playlist-popup {
         max-height: 70vh;
         border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
-    }
-    
-    .playlist-content {
-        padding: var(--spacing-3) var(--spacing-4);
-    }
-    
-    .playlist-content :deep(.playlist-tracks) {
-        padding: var(--spacing-1);
     }
     
     .song-info {

@@ -19,18 +19,11 @@
             </div>
         </div>
         
-        <div class="tracks-list">
-            <div v-for="(track, index) in albumTracks" :key="track.id" 
-                 class="track-item" 
-                 @click="playTrack(track)">
-                <div class="track-number">{{ index + 1 }}</div>
-                <div class="track-info">
-                    <div class="track-title">{{ track.title }}</div>
-                    <div class="track-artist">{{ track.artist }}</div>
-                </div>
-                <div class="track-duration">{{ formatTime(track.duration) }}</div>
-            </div>
-        </div>
+        <TracksList
+            v-if="albumTracks.length > 0"
+            :tracks="albumTracks"
+            @playTrack="playTrack"
+        />
     </div>
 </template>
 
@@ -43,6 +36,7 @@ import {
     mockSongs,
     musicStore
 } from '../store/music-store';
+import TracksList from '../components/tracks-list.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -65,12 +59,6 @@ const albumTracks = computed(() => {
     }
     return [];
 });
-
-const formatTime = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-};
 
 const playAll = () => {
     if (albumTracks.value.length > 0) {
@@ -97,8 +85,6 @@ const goToArtist = () => {
 <style scoped>
 .album-detail {
     padding: var(--spacing-6);
-    max-width: 800px;
-    margin: 0 auto;
 }
 
 .album-header {
@@ -185,65 +171,6 @@ const goToArtist = () => {
 .play-all-btn:hover {
     background: var(--primary-dark);
     transform: scale(1.05);
-}
-
-.tracks-list {
-    background: var(--card-color);
-    border-radius: var(--border-radius-xl);
-    border: 1px solid var(--border-light);
-    overflow: hidden;
-}
-
-.track-item {
-    display: grid;
-    grid-template-columns: 40px 1fr 80px;
-    gap: var(--spacing-4);
-    padding: var(--spacing-4) var(--spacing-6);
-    border-bottom: 1px solid var(--border-light);
-    cursor: pointer;
-    transition: all var(--duration-fast);
-    align-items: center;
-}
-
-.track-item:hover {
-    background: var(--bg-secondary);
-}
-
-.track-item:last-child {
-    border-bottom: none;
-}
-
-.track-number {
-    color: var(--text-tertiary);
-    text-align: center;
-    font-weight: 600;
-}
-
-.track-info {
-    min-width: 0;
-}
-
-.track-title {
-    font-weight: 600;
-    color: var(--text-primary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: var(--spacing-1);
-}
-
-.track-artist {
-    color: var(--text-secondary);
-    font-size: var(--font-size-sm);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.track-duration {
-    color: var(--text-tertiary);
-    font-variant-numeric: tabular-nums;
-    text-align: right;
 }
 
 @media (max-width: 768px) {

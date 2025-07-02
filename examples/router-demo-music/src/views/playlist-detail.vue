@@ -21,34 +21,11 @@
                 </div>
             </div>
         </div>
-        
-        <div class="tracks-list">
-            <div class="tracks-header">
-                <div class="track-number">#</div>
-                <div class="track-title">Title</div>
-                <div class="track-album">Album</div>
-                <div class="track-duration">Duration</div>
-            </div>
-            
-            <div v-for="(track, index) in playlist?.tracks" :key="track.id" 
-                 class="track-item" 
-                 @click="playTrack(track)">
-                <div class="track-number">{{ index + 1 }}</div>
-                <div class="track-info">
-                    <img :src="track.cover" :alt="track.title" class="track-cover" />
-                    <div class="track-details">
-                        <div class="track-title">{{ track.title }}</div>
-                        <div class="track-artist">{{ track.artist }}</div>
-                    </div>
-                </div>
-                <div class="track-album">{{ track.album }}</div>
-                <div class="track-duration">{{ formatTime(track.duration) }}</div>
-                <div class="track-actions">
-                    <button class="track-action-btn">❤</button>
-                    <button class="track-action-btn">...</button>
-                </div>
-            </div>
-        </div>
+        <TracksList
+            v-if="playlist?.tracks"
+            :tracks="playlist.tracks"
+            @playTrack="playTrack"
+        />
     </div>
 </template>
 
@@ -56,18 +33,13 @@
 import { useRoute } from '@esmx/router-vue';
 import { computed } from 'vue';
 import { type Song, mockPlaylists, musicStore } from '../store/music-store';
+import TracksList from '../components/tracks-list.vue';
 
 const route = useRoute();
 const playlistId = computed(() => Number(route.params.id));
 const playlist = computed(() =>
     mockPlaylists.find((p) => p.id === playlistId.value)
 );
-
-const formatTime = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-};
 
 const playAll = () => {
     if (playlist.value && playlist.value.tracks.length > 0) {
@@ -85,8 +57,6 @@ const playTrack = (track: Song) => {
 <style scoped>
 .playlist-detail {
     padding: var(--spacing-6);
-    max-width: 1200px;
-    margin: 0 auto;
 }
 
 .playlist-header {
@@ -187,122 +157,6 @@ const playTrack = (track: Song) => {
     border-color: var(--music-primary);
 }
 
-.tracks-list {
-    background: var(--card-color);
-    border-radius: var(--border-radius-xl);
-    border: 1px solid var(--border-light);
-    overflow: hidden;
-}
-
-.tracks-header {
-    display: grid;
-    grid-template-columns: 60px 1fr 200px 100px 60px;
-    gap: var(--spacing-4);
-    padding: var(--spacing-4) var(--spacing-6);
-    background: var(--bg-secondary);
-    font-size: var(--font-size-sm);
-    font-weight: 600;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.track-item {
-    display: grid;
-    grid-template-columns: 60px 1fr 200px 100px 60px;
-    gap: var(--spacing-4);
-    padding: var(--spacing-3) var(--spacing-6);
-    border-bottom: 1px solid var(--border-light);
-    cursor: pointer;
-    transition: all var(--duration-fast);
-    align-items: center;
-}
-
-.track-item:hover {
-    background: var(--bg-secondary);
-}
-
-.track-item:last-child {
-    border-bottom: none;
-}
-
-.track-number {
-    color: var(--text-tertiary);
-    text-align: center;
-    font-weight: 500;
-}
-
-.track-info {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-3);
-    min-width: 0;
-}
-
-.track-cover {
-    width: 40px;
-    height: 40px;
-    border-radius: var(--border-radius);
-    object-fit: cover;
-}
-
-.track-details {
-    min-width: 0;
-}
-
-.track-title {
-    font-weight: 600;
-    color: var(--text-primary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.track-artist {
-    color: var(--text-secondary);
-    font-size: var(--font-size-sm);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.track-album {
-    color: var(--text-secondary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.track-duration {
-    color: var(--text-tertiary);
-    font-variant-numeric: tabular-nums;
-}
-
-.track-actions {
-    display: flex;
-    gap: var(--spacing-1);
-}
-
-.track-action-btn {
-    width: 24px;
-    height: 24px;
-    border: none;
-    background: transparent;
-    color: var(--text-tertiary);
-    cursor: pointer;
-    border-radius: var(--border-radius);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--font-size-sm);
-    transition: all var(--duration-fast);
-}
-
-.track-action-btn:hover {
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-}
-
 @media (max-width: 768px) {
     .playlist-header {
         flex-direction: column;
@@ -318,21 +172,6 @@ const playTrack = (track: Song) => {
     
     .playlist-title {
         font-size: var(--font-size-3xl);
-    }
-    
-    .tracks-header {
-        grid-template-columns: 40px 1fr 80px;
-        gap: var(--spacing-2);
-    }
-    
-    .track-item {
-        grid-template-columns: 40px 1fr 80px;
-        gap: var(--spacing-2);
-    }
-    
-    .track-album,
-    .track-actions {
-        display: none;
     }
 }
 </style>

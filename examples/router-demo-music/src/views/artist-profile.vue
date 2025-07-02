@@ -15,23 +15,13 @@
                 </div>
             </div>
         </BubbleBg>
-        
-        <div class="artist-content">
+        <TracksList
+            v-if="popularSongs.length > 0"
+            :tracks="popularSongs"
+            @playTrack="playSong"
+        >
             <h2 class="section-title">Popular Songs</h2>
-            <div class="popular-songs">
-                <div v-for="(song, index) in popularSongs" :key="song.id" 
-                     class="song-item" 
-                     @click="playSong(song)">
-                    <div class="song-rank">{{ index + 1 }}</div>
-                    <img :src="song.cover" :alt="song.title" class="song-cover" />
-                    <div class="song-info">
-                        <div class="song-title">{{ song.title }}</div>
-                        <div class="song-album">{{ song.album }}</div>
-                    </div>
-                    <div class="song-duration">{{ formatTime(song.duration) }}</div>
-                </div>
-            </div>
-        </div>
+        </TracksList>
     </div>
 </template>
 
@@ -39,6 +29,7 @@
 import { useRoute } from '@esmx/router-vue';
 import { computed } from 'vue';
 import BubbleBg from '../components/bubble-bg.vue';
+import TracksList from '../components/tracks-list.vue';
 import {
     type Song,
     mockArtists,
@@ -65,12 +56,6 @@ const formatFollowers = (count: number): string => {
         return (count / 1000).toFixed(1) + 'K';
     }
     return count.toString();
-};
-
-const formatTime = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
 };
 
 const playSong = (song: Song) => {
@@ -181,13 +166,6 @@ const playSong = (song: Song) => {
     border-color: #fff8;
 }
 
-.artist-content {
-    background: var(--card-color);
-    border-radius: var(--border-radius-xl);
-    border: 1px solid var(--border-light);
-    padding: var(--spacing-6);
-}
-
 .section-title {
     font-size: var(--font-size-2xl);
     font-weight: 700;
@@ -196,6 +174,8 @@ const playSong = (song: Song) => {
     display: flex;
     align-items: center;
     gap: var(--spacing-3);
+    padding: var(--spacing-6);
+    padding-bottom: 0;
 }
 
 .section-title::before {
@@ -204,68 +184,6 @@ const playSong = (song: Song) => {
     height: 24px;
     background: var(--music-gradient);
     border-radius: var(--border-radius-full);
-}
-
-.popular-songs {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-2);
-}
-
-.song-item {
-    display: grid;
-    grid-template-columns: 40px 60px 1fr 80px;
-    gap: var(--spacing-4);
-    padding: var(--spacing-3);
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: all var(--duration-fast);
-    align-items: center;
-}
-
-.song-item:hover {
-    background: var(--bg-secondary);
-}
-
-.song-rank {
-    text-align: center;
-    color: var(--text-tertiary);
-    font-weight: 600;
-    font-size: var(--font-size-lg);
-}
-
-.song-cover {
-    width: 50px;
-    height: 50px;
-    border-radius: var(--border-radius);
-    object-fit: cover;
-}
-
-.song-info {
-    min-width: 0;
-}
-
-.song-title {
-    font-weight: 600;
-    color: var(--text-primary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: var(--spacing-1);
-}
-
-.song-album {
-    color: var(--text-secondary);
-    font-size: var(--font-size-sm);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.song-duration {
-    color: var(--text-tertiary);
-    font-variant-numeric: tabular-nums;
-    text-align: right;
 }
 
 @media (max-width: 768px) {
@@ -283,20 +201,6 @@ const playSong = (song: Song) => {
     
     .artist-name {
         font-size: var(--font-size-3xl);
-    }
-    
-    .song-item {
-        grid-template-columns: 30px 50px 1fr 60px;
-        gap: var(--spacing-2);
-    }
-    
-    .song-rank {
-        font-size: var(--font-size-base);
-    }
-    
-    .song-cover {
-        width: 40px;
-        height: 40px;
     }
 }
 </style>
