@@ -30,7 +30,14 @@ export function getImportMap({
     Object.values(manifests).forEach((manifest) => {
         const scopeImports: SpecifierMap = {};
 
-        Object.values(manifest.exports).forEach((exportItem) => {
+        Object.entries(manifest.exports).forEach(([key, exportItem]) => {
+            // Handle the case where exportItem is a string in legacy builds
+            if (typeof exportItem === 'string') {
+                throw new Error(
+                    `Detected incompatible legacy manifest format in ${manifest.name}. Please upgrade your ESMX dependencies first, then rebuild and redeploy your service.`
+                );
+            }
+
             const file = getFile(manifest.name, exportItem.file);
             imports[exportItem.identifier] = file;
             if (!exportItem.rewrite) {
