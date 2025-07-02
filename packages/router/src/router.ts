@@ -283,7 +283,7 @@ export class Router {
         router.afterEach((to, from) => {
             if (layerOptions.shouldClose) {
                 const result = layerOptions.shouldClose(to, from, router);
-                if (result === false) {
+                if (result === true) {
                     router.destroy();
                     promiseResolve({
                         type: 'push',
