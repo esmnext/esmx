@@ -1,5 +1,3 @@
 # Template generation, do not manually modify
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 npx --no-install lint-staged

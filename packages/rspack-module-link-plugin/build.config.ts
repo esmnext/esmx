@@ -12,11 +12,11 @@ export default defineBuildConfig({
             declaration: true,
             esbuild: {
                 target: [
-                    'chrome87',
-                    'firefox78',
-                    'safari14',
-                    'edge88',
-                    'node22'
+                    'chrome64',
+                    'firefox67',
+                    'safari11.1',
+                    'edge79',
+                    'node24'
                 ]
             }
         }

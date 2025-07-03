@@ -50,7 +50,6 @@ import { RSPACK_LOADER } from './loader';
  *     );
  *   }
  * };
- * ```
  */
 export interface RspackHtmlAppOptions extends RspackAppOptions {
     /**
@@ -233,14 +232,14 @@ export interface RspackHtmlAppOptions extends RspackAppOptions {
         /**
          * 浏览器构建目标
          *
-         * @default ['chrome>=87', 'edge>=88', 'firefox>=78', 'safari>=14']
+         * @default ['chrome>=64', 'edge>=79', 'firefox>=67', 'safari>=11.1']
          */
         web?: string[];
 
         /**
          * Node.js 构建目标
          *
-         * @default ['node>=22.6']
+         * @default ['node>=24']
          */
         node?: string[];
     };
@@ -326,8 +325,8 @@ export async function createRspackHtmlApp(
     options = {
         ...options,
         target: {
-            web: ['chrome>=63', 'firefox>=67', 'safari>=11.1'],
-            node: ['node>=22.6'],
+            web: ['chrome>=64', 'edge>=79', 'firefox>=67', 'safari>=11.1'],
+            node: ['node>=24'],
             ...options?.target
         },
         css: options?.css ? options.css : esmx.isProd ? 'css' : 'js'
