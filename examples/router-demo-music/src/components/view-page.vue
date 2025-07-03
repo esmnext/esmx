@@ -37,6 +37,9 @@
                                         shouldClose,
                                         push: true,
                                         autoPush: true,
+                                        routerOptions: {
+                                            rootStyle: false,
+                                        }
                                     }"
                                 >
                                     Details

@@ -2,7 +2,20 @@
     <div class="mini-player" v-if="currentSong">
         <TwoCol class="two-col">
             <div class="left">
-                <RouterLink to="/player" class="song-info">
+                <RouterLink class="song-info" type="pushLayer" :to="{
+                    path: '/player',
+                    layer: {
+                        push: true,
+                        autoPush: true,
+                        shouldClose: (to, from) => to.fullPath === from?.fullPath,
+                        routerOptions: {
+                            rootStyle: false,
+                            context: {
+                                layerType: 'popup',
+                            }
+                        }
+                    }
+                }">
                     <img :src="currentSong.cover" :alt="currentSong.title" class="song-cover" />
                     <div class="song-details">
                         <div class="song-title">{{ currentSong.title }}</div>

@@ -14,8 +14,11 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import RouteInfoModal from './route-info-modal.vue';
+import { useRouter } from '@esmx/router-vue';
+const $router = useRouter();
 
 const showRouteInfo = ref(false);
+
 </script>
 
 <style scoped>
@@ -27,7 +30,7 @@ const showRouteInfo = ref(false);
     bottom: 0;
     z-index: var(--z-modal);
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
     animation: fadeIn var(--duration-normal) ease-out;
 }
@@ -38,20 +41,22 @@ const showRouteInfo = ref(false);
     left: 0;
     right: 0;
     bottom: 0;
-    background: var(--overlay-color);
-    backdrop-filter: blur(8px);
+    background: linear-gradient(180deg, #0008, #0000);
+    /* backdrop-filter: blur(8px); */
     cursor: pointer;
 }
 
 .layer-content {
     position: relative;
     background: var(--card-color);
-    border-radius: var(--border-radius-xl);
+    border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
     box-shadow: var(--shadow-xl);
-    max-width: 90vw;
-    max-height: 90vh;
+    width: 61.8vw;
+    height: 70vh;
+    max-height: 80vh;
+    margin-bottom: var(--player-height);
     overflow: auto;
-    animation: slideUp var(--duration-normal) ease-out, fadeIn var(--duration-normal) ease-out;
+    animation: slideUpFromBottom var(--duration-slow) ease-out, fadeIn var(--duration-normal) ease-out;
     overscroll-behavior: contain;
 }
 
@@ -102,12 +107,12 @@ const showRouteInfo = ref(false);
     }
 }
 
-@keyframes slideUp {
+@keyframes slideUpFromBottom {
     from {
-        transform: translateY(20px) scale(0.95);
+        transform: translateY(100%);
     }
     to {
-        transform: translateY(0) scale(1);
+        transform: translateY(0);
     }
 }
 </style>

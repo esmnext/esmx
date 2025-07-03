@@ -6,7 +6,7 @@
                 <button class="close-btn" @click="$emit('close')">&times;</button>
             </div>
             <div class="modal-body">
-                <CollapsibleJson :data="$route" :collapseDepth="Infinity" />
+                <CollapsibleJson :data="$route" :collapseDepth="2" />
             </div>
         </div>
     </div>

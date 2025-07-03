@@ -1,17 +1,21 @@
 <template>
     <div class="app" :class="{ 'is-layer': $router.isLayer, hasSong: !!currentSong }">
-        <view-page v-if="!$router.isLayer" />
-        <view-layer v-else />
+        <ViewPage v-if="!$router.isLayer" />
+        <ViewLayerPopup v-else-if="$router.parsedOptions.context?.layerType === 'popup'" />
+        <ViewLayer v-else />
         <mini-player v-if="currentSong && !$router.isLayer" />
     </div>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import MiniPlayer from './components/mini-player.vue';
 import ViewLayer from './components/view-layer.vue';
 import ViewPage from './components/view-page.vue';
 import { musicStore } from './store/music-store';
+import ViewLayerPopup from './components/view-layer-popup.vue';
+import { useRoute, useRouter } from '@esmx/router-vue';
+const $router = useRouter();
 
 const currentSong = computed(() => musicStore.currentSong.value);
 </script>
@@ -37,7 +41,6 @@ const currentSong = computed(() => musicStore.currentSong.value);
     --text-secondary: #6b7280;
     --text-tertiary: #9ca3af;
     --text-inverse: #ffffff;
-    --text-muted: #6b7280;
     
     /* 背景颜色 */
     --bg-primary: #ffffff;

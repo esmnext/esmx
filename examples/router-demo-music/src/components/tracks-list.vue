@@ -3,7 +3,7 @@
         <slot></slot>
         <div v-if="tracks.length === 0" class="empty-tracks">
             <slot name="empty">
-                <div class="empty-icon">♫</div>
+                <div class="empty-icon"><slot name="empty-icon">♬</slot></div>
                 <div class="empty-message"><slot name="empty-msg">No tracks available</slot></div>
             </slot>
         </div>

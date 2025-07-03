@@ -9,8 +9,14 @@
                 <div class="player-info">
                     <div class="song-type">Now Playing</div>
                     <h1 class="song-title">{{ currentSong?.title || 'No song playing' }}</h1>
-                    <p class="song-artist">{{ currentSong?.artist || 'Unknown Artist' }}</p>
-                    <p class="song-album">{{ currentSong?.album || 'Unknown Album' }}</p>
+                    <RouterLink v-if="currentSong" :to="`/artist/${currentSong.id}`" class="song-artist">
+                        {{ currentSong.artist || 'Unknown Artist' }}
+                    </RouterLink>
+                    <span v-else class="song-artist">Unknown Artist</span>
+                    <RouterLink v-if="currentSong" :to="`/album/${currentSong.id}`" class="song-album">
+                        {{ currentSong.album || 'Unknown Album' }}
+                    </RouterLink>
+                    <span v-else class="song-album">Unknown Album</span>
                 </div>
             </BubbleBg>
 
@@ -196,14 +202,36 @@ const setVolumeFromClick = (event: MouseEvent) => {
     font-weight: 600;
     color: white;
     margin: 0;
+}
+
+a.song-artist {
     opacity: 0.9;
+    text-decoration: none;
+    cursor: pointer;
+    transition: opacity var(--duration-fast);
+}
+
+a.song-artist:hover {
+    opacity: 1;
+    text-decoration: underline;
 }
 
 .song-album {
     font-size: var(--font-size-base);
     color: white;
     margin: 0;
+}
+
+a.song-album {
     opacity: 0.8;
+    text-decoration: none;
+    transition: opacity var(--duration-fast);
+    cursor: pointer;
+}
+
+a.song-album:hover {
+    opacity: 1;
+    text-decoration: underline;
 }
 
 .player-controls {
