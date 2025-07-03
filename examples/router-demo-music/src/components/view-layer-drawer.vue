@@ -27,10 +27,10 @@
 </template>
 
 <script lang="ts" setup>
+import { RouteLocationInput } from '@esmx/router';
 import { RouterLink, useRoute, useRouter } from '@esmx/router-vue';
 import { onMounted, ref, watch } from 'vue';
 import RouteInfoModal from './route-info-modal.vue';
-import { RouteLocationInput } from '@esmx/router';
 const $router = useRouter();
 const $route = useRoute();
 
@@ -75,14 +75,14 @@ const toSame = (dir: string): RouteLocationInput => ({
     layer: {
         routerOptions: {
             rootStyle: {
-                position: 'absolute',
+                position: 'absolute'
             },
             context: {
                 ...$router.parsedOptions.context,
-                layerSlideDir: dir,
-            },
-        },
-    },
+                layerSlideDir: dir
+            }
+        }
+    }
 });
 </script>
 

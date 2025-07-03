@@ -114,7 +114,7 @@ export async function getManifestList(
                 return data;
             } catch (e) {
                 throw new Error(
-                    `'${item.name}' service '${target}/manifest.json' file read error`
+                    `'${item.name}' service '${filename}' file read error on target '${target}': ${e instanceof Error ? e.message : String(e)}`
                 );
             }
         })
