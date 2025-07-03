@@ -5,7 +5,7 @@
         "src/entry.client": {
             "name": "src/entry.client",
             "rewrite": true,
-            "file": "src/entry.client.f16c8abc.final.mjs",
+            "file": "src/entry.client.ad93aa2b.final.mjs",
             "identifier": "router-demo-music/src/entry.client"
         },
         "vue": {
@@ -28,11 +28,11 @@
         }
     },
     "buildFiles": [
-        "src/entry.client.f16c8abc.final.mjs",
         "896.3c9051dd.final.mjs",
-        "src/entry.client.e3f037da.final.css",
+        "src/entry.client.ad93aa2b.final.mjs",
         "@esmx/router-vue.3618af85.final.mjs",
         "images/sine-wave-notes.47e0c83d.final.svg",
+        "src/entry.client.476562c4.final.css",
         "@esmx/router.6e9fa025.final.mjs",
         "896.841963f8.final.css",
         "vue.389c4cab.final.mjs"
@@ -73,9 +73,9 @@
         },
         "router-demo-music@src/entry.client.ts": {
             "name": "router-demo-music@src/entry.client.ts",
-            "js": "src/entry.client.f16c8abc.final.mjs",
+            "js": "src/entry.client.ad93aa2b.final.mjs",
             "css": [
-                "src/entry.client.e3f037da.final.css"
+                "src/entry.client.476562c4.final.css"
             ],
             "resources": [
                 "images/sine-wave-notes.47e0c83d.final.svg"
