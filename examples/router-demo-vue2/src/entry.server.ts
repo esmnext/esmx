@@ -8,11 +8,11 @@ const renderer = createRenderer();
 
 export default async (rc: RenderContext) => {
     const req = rc.params.req as IncomingMessage;
-    const protocol = req.headers['x-forwarded-proto'] || 'http';
-    const host = req.headers.host || 'localhost';
+    const protocol = req?.headers['x-forwarded-proto'] || 'https';
+    const host = req?.headers.host || 'www.esmnext.com/router-demo-vue2/';
     const router = await createApp({
         base: `${protocol}://${host}`,
-        url: req.url ?? '/',
+        url: req?.url ?? '/',
         renderToString: renderer.renderToString
     });
 

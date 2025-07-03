@@ -11,6 +11,6 @@ const base =
         : location.origin;
 
 createApp({
-    base: location.origin,
+    base,
     url: location.href
 });
