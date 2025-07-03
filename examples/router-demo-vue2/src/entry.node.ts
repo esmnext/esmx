@@ -42,5 +42,11 @@ export default {
         server.listen(3000, () => {
             console.log('服务启动: http://localhost:3000');
         });
+    },
+    async postBuild(esmx) {
+        const rc = await esmx.render({
+            params: { url: '/' }
+        });
+        esmx.writeSync(esmx.resolvePath('dist/client', 'index.html'), rc.html);
     }
 } satisfies EsmxOptions;
