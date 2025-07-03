@@ -12,13 +12,12 @@
 </template>
 
 <script lang="ts" setup>
+import { useRouter } from '@esmx/router-vue';
 import { ref } from 'vue';
 import RouteInfoModal from './route-info-modal.vue';
-import { useRouter } from '@esmx/router-vue';
 const $router = useRouter();
 
 const showRouteInfo = ref(false);
-
 </script>
 
 <style scoped>

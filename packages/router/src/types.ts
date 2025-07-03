@@ -299,6 +299,10 @@ export interface RouterLinkAttributes {
     rel?: string;
 }
 
+export type RouterLinkEventHandler = <E extends Event = MouseEvent>(
+    event: E
+) => boolean | void;
+
 /**
  * Framework-agnostic link configuration interface
  */
@@ -314,6 +318,7 @@ export interface RouterLinkProps {
     event?: string | string[];
     tag?: string;
     layerOptions?: RouteLayerOptions;
+    eventHandler?: RouterLinkEventHandler;
 }
 
 /**
@@ -332,10 +337,10 @@ export interface RouterLinkResolved {
     attributes: RouterLinkAttributes;
 
     // Navigation function
-    navigate: (e?: MouseEvent) => Promise<void>;
+    navigate: (e?: Event) => Promise<void>;
 
     // Event handling
     getEventHandlers: (
         nameTransform?: (eventType: string) => string
-    ) => Record<string, (e: MouseEvent) => Promise<void>>;
+    ) => Record<string, (e: Event) => Promise<void> | undefined>;
 }

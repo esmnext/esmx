@@ -62,7 +62,8 @@ const vHTML = computed(() =>
         .replace(/(^ *|: )(\d+)(,?)$/gm, '$1<span class="json-num">$2</span>$3')
         .replace(/^( *)(.*)([{[])$\n/gm, (all, spaces, content, bracket) =>
             `<details${
-                spaces.length / space <= (props.collapseDepth ?? Infinity)
+                spaces.length / space <=
+                (props.collapseDepth ?? Number.POSITIVE_INFINITY)
                     ? ' open'
                     : ''
             } class="json-collapse" style="--depth: ${spaces.length / space}"

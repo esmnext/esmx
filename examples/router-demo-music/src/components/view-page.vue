@@ -58,13 +58,13 @@
 </template>
 
 <script lang="ts" setup>
+import { RouteVerifyHook } from '@esmx/router';
 import { RouterLink, useRouter } from '@esmx/router-vue';
 import { computed, ref } from 'vue';
 import { type Song, mockSongs, musicStore } from '../store/music-store';
 import RouteInfoModal from './route-info-modal.vue';
 import ToggleThemeBtn from './toggle-theme-btn.vue';
 import TwoCol from './two-col.vue';
-import { RouteVerifyHook } from '@esmx/router';
 
 const shouldClose: RouteVerifyHook = (to, from, router) => {
     return to.fullPath === from?.fullPath;

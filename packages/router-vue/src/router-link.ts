@@ -113,12 +113,55 @@ export const RouterLink = defineComponent({
          * Only used when type='pushLayer'.
          * @example { zIndex: 1000, autoPush: false, routerOptions: { mode: 'memory' } }
          */
-        layerOptions: { type: Object as PropType<RouteLayerOptions> }
+        layerOptions: { type: Object as PropType<RouteLayerOptions> },
+        /**
+         * Custom event handler to control navigation behavior.
+         * Should return `true` to allow router to navigate, otherwise to prevent it.
+         *
+         * @Note you need to call `e.preventDefault()` to prevent default browser navigation.
+         * @default
+         *
+         * (event: Event & Partial<MouseEvent>): boolean => {
+         *   // don't redirect with control keys
+         *   if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) return false;
+         *   // don't redirect when preventDefault called
+         *   if (e.defaultPrevented) return false;
+         *   // don't redirect on right click
+         *   if (e.button !== undefined && e.button !== 0) return false;
+         *   // don't redirect if `target="_blank"`
+         *   const target = e.currentTarget?.getAttribute?.('target') ?? '';
+         *   if (/\b_blank\b/i.test(target)) return false;
+         *   // Prevent default browser navigation to enable SPA routing
+         *   // Note: this may be a Weex event which doesn't have this method
+         *   if (e.preventDefault) e.preventDefault();
+         *
+         *  return true;
+         * }
+         */
+        eventHandler: {
+            type: Function as PropType<
+                (event: Event) => boolean | undefined | void
+            >
+        }
     },
 
     setup(props, context) {
         const { slots, attrs } = context;
         const link = useLink(props);
+
+        const wrapHandler = (
+            externalHandler: Function,
+            internalHandler: Function | undefined
+        ) =>
+            !internalHandler
+                ? (externalHandler as (e: Event) => Promise<void>)
+                : async (e: Event) => {
+                      try {
+                          await externalHandler(e);
+                      } finally {
+                          await internalHandler(e);
+                      }
+                  };
 
         const vue3renderer = () => {
             const data = link.value;
@@ -126,18 +169,11 @@ export const RouterLink = defineComponent({
                 `on${name.charAt(0).toUpperCase()}${name.slice(1)}`;
 
             const eventHandlers = data.getEventHandlers(genEventName);
-            Object.keys(attrs).forEach((key) => {
+            Object.entries(attrs).forEach(([key, listener]) => {
                 // In Vue 3, external event handlers are in attrs with 'on' prefix
-                if (!key.startsWith('on') || typeof attrs[key] !== 'function')
+                if (!key.startsWith('on') || typeof listener !== 'function')
                     return;
-                const externalHandler = attrs[key] as (
-                    e: MouseEvent
-                ) => Promise<void>;
-                const internalHandler = eventHandlers[key];
-                eventHandlers[key] = async (e: MouseEvent) => {
-                    await externalHandler(e);
-                    await internalHandler?.(e);
-                };
+                eventHandlers[key] = wrapHandler(listener, eventHandlers[key]);
             });
 
             return h(
@@ -156,14 +192,9 @@ export const RouterLink = defineComponent({
             const eventHandlers = data.getEventHandlers();
             // Vue 2: get external listeners from context
             const $listeners = (context as any).listeners || {};
-            Object.keys($listeners).forEach((eventName) => {
-                const externalHandler = $listeners[eventName];
-                if (typeof externalHandler !== 'function') return;
-                const internalHandler = eventHandlers[eventName];
-                eventHandlers[eventName] = async (e: MouseEvent) => {
-                    await externalHandler(e);
-                    await internalHandler?.(e);
-                };
+            Object.entries($listeners).forEach(([key, listener]) => {
+                if (typeof listener !== 'function') return;
+                eventHandlers[key] = wrapHandler(listener, eventHandlers[key]);
             });
 
             const { class: className, ...attrs } = data.attributes;

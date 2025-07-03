@@ -49,19 +49,23 @@ function getEventTypeList(eventType: unknown | unknown[]): string[] {
  * This function intelligently decides when to let the browser handle clicks
  * (like Ctrl+click for new tabs) vs when to use SPA routing
  */
-function guardEvent(e?: MouseEvent): number {
-    if (!e) return 1;
+function guardEvent(e?: Event & Partial<MouseEvent>): true | undefined {
+    if (!e) return;
     // don't redirect with control keys
-    if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) return 2;
+    if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) return;
     // don't redirect when preventDefault called
-    if (e.defaultPrevented) return 3;
+    if (e.defaultPrevented) return;
     // don't redirect on right click
-    if (e.button !== undefined && e.button !== 0) return 4;
+    if (e.button !== undefined && e.button !== 0) return;
+    // don't redirect if `target="_blank"`
+    // @ts-expect-error getAttribute exists
+    const target = e.currentTarget?.getAttribute?.('target') ?? '';
+    if (/\b_blank\b/i.test(target)) return;
     // Prevent default browser navigation to enable SPA routing
     // Note: this may be a Weex event which doesn't have this method
     if (e.preventDefault) e.preventDefault();
 
-    return 0;
+    return true;
 }
 
 /**
@@ -108,9 +112,10 @@ function createNavigateFunction(
     router: Router,
     props: RouterLinkProps,
     navigationType: RouterLinkType
-): (e?: MouseEvent) => Promise<void> {
-    return async (e?: MouseEvent): Promise<void> => {
-        if (guardEvent(e)) return;
+): (e?: Event) => Promise<void> {
+    return async (e?: Event): Promise<void> => {
+        const eventHandler = props.eventHandler ?? guardEvent;
+        if (!eventHandler(e!)) return;
 
         await executeNavigation(router, props, navigationType);
     };
@@ -168,13 +173,13 @@ function computeAttributes(
  * Create event handlers generator function
  */
 function createEventHandlersGenerator(
-    navigate: (e?: MouseEvent) => Promise<void>,
+    navigate: (e: Event) => Promise<void>,
     eventTypes: string[]
 ): (
     nameTransform?: (eventType: string) => string
-) => Record<string, (e: MouseEvent) => Promise<void>> {
+) => Record<string, (e: Event) => Promise<void>> {
     return (nameTransform?: (eventType: string) => string) => {
-        const handlers: Record<string, (e: MouseEvent) => Promise<void>> = {};
+        const handlers: Record<string, (e: Event) => Promise<void>> = {};
 
         eventTypes.forEach((eventType) => {
             const eventName =
