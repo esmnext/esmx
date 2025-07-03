@@ -9,6 +9,7 @@ const props = defineProps<{
     data: any;
     space?: number;
     collapseDepth?: number;
+    collapseRoot?: boolean;
 }>();
 
 // console.log(props.data);
@@ -60,19 +61,18 @@ const vHTML = computed(() =>
             '$1<span class="json-keyword">$2</span>$3'
         )
         .replace(/(^ *|: )(\d+)(,?)$/gm, '$1<span class="json-num">$2</span>$3')
-        .replace(/^( *)(.*)([{[])$\n/gm, (all, spaces, content, bracket) =>
-            `<details${
-                spaces.length / space <=
-                (props.collapseDepth ?? Number.POSITIVE_INFINITY)
-                    ? ' open'
-                    : ''
-            } class="json-collapse" style="--depth: ${spaces.length / space}"
+        .replace(/^( *)(.*)([{[])$\n/gm, (all, spaces, content, bracket) => {
+            const depth = spaces.length / space;
+            let open =
+                depth <= (props.collapseDepth ?? Number.POSITIVE_INFINITY);
+            if (props.collapseRoot && depth === 0) open = false;
+            return `<details${open ? ' open' : ''} class="json-collapse" style="--depth: ${depth}"
                 ><summary
                     >${spaces}${content}<span class="json-bracket ${bracket}">${bracket}</span
                     ><span class="json-ellipsis"> ... </span
                 ></summary
-            ><div class="json-content">`.replace(/\n +>/g, '>')
-        )
+            ><div class="json-content">`.replace(/\n +>/g, '>');
+        })
         .replace(
             /(^ *)([\]}])(,?)$\n?/gm,
             '$1<span class="json-bracket $2">$2</span>$3</div></details>'

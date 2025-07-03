@@ -117,24 +117,24 @@ const currentSong = computed(() => musicStore.currentSong.value);
 
 .track-item.active {
     background: var(--music-primary);
-    color: white;
+    color: #fff;
 }
 
 .track-item.active .track-title,
 .track-item.active .track-artist,
 .track-item.active .track-album {
-    color: white;
+    color: #fff;
 }
 
 .track-item.active .track-duration,
 .track-item.active .track-number,
 .track-item.active .track-action-btn {
-    color: var(--text-secondary);
+    color: #fffa;
 }
 
 .track-item.active .track-action-btn:hover {
     background: rgba(255, 255, 255, 0.1);
-    color: white;
+    color: #fff;
 }
 
 .track-item:last-child {

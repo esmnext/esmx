@@ -1,10 +1,10 @@
 <template>
-    <div class="view-layer">
-        <div class="layer-backdrop" @click="$router.closeLayer()" />
+    <div class="view-layer" :class="{ showing }">
+        <div class="layer-backdrop" @click="routerAct('closeLayer')" />
         <div class="layer-content">
-            <button class="layer-back" @click="$router.back()" v-if="$router.navigation.length">←</button>
+            <button class="layer-back" @click="routerAct('back')" v-if="len > 1">←</button>
             <button class="info" title="Current Route" @click="showRouteInfo = true">ℹ</button>
-            <button class="layer-close" @click="$router.closeLayer()">×</button>
+            <button class="layer-close" @click="routerAct('closeLayer')">×</button>
             <router-view />
         </div>
         <RouteInfoModal :show="showRouteInfo" @close="showRouteInfo = false" />
@@ -12,10 +12,47 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { useRoute, useRouter } from '@esmx/router-vue';
+import { onMounted, ref, watch } from 'vue';
 import RouteInfoModal from './route-info-modal.vue';
+const $router = useRouter();
+const $route = useRoute();
+
+const len = ref($router.navigation.length);
+watch(
+    () => $route.fullPath,
+    () => {
+        len.value = $router.navigation.length;
+    }
+);
 
 const showRouteInfo = ref(false);
+
+const showing = ref(false);
+onMounted(() => setTimeout(() => (showing.value = true)));
+const routerAct = async (type: 'closeLayer' | 'back') => {
+    if (!showing.value) return;
+    if (type === 'back' && $router.navigation.length > 1) {
+        $router.back();
+        return;
+    }
+    const animationDuration = (() => {
+        try {
+            let durationStr = getComputedStyle(
+                document.documentElement
+            ).getPropertyValue('--duration-slow');
+            if (durationStr.startsWith('.')) durationStr = '0' + durationStr;
+            let duration = Number.parseFloat(durationStr);
+            if (!durationStr.endsWith('ms')) duration *= 1000;
+            return duration || 400;
+        } catch {
+            return 400; // 默认值
+        }
+    })();
+    showing.value = false;
+    await new Promise((s) => setTimeout(s, animationDuration));
+    $router[type]();
+};
 </script>
 
 <style scoped>
@@ -29,7 +66,12 @@ const showRouteInfo = ref(false);
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: fadeIn var(--duration-normal) ease-out;
+    transition: opacity var(--duration-normal) ease-out;
+    opacity: 0;
+}
+
+.view-layer.showing {
+    opacity: 1;
 }
 
 .layer-backdrop {
@@ -39,8 +81,13 @@ const showRouteInfo = ref(false);
     right: 0;
     bottom: 0;
     background: var(--overlay-color);
-    backdrop-filter: blur(8px);
     cursor: pointer;
+    animation: blur-in 1s forwards;
+}
+
+@keyframes blur-in {
+    from { backdrop-filter: blur(0px); }
+    to { backdrop-filter: blur(8px); }
 }
 
 .layer-content {
@@ -51,8 +98,15 @@ const showRouteInfo = ref(false);
     max-width: 90vw;
     max-height: 90vh;
     overflow: auto;
-    animation: slideUp var(--duration-normal) ease-out, fadeIn var(--duration-normal) ease-out;
     overscroll-behavior: contain;
+    transition: opacity var(--duration-slow) ease-out, transform var(--duration-normal) ease-out;
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+}
+
+.showing .layer-content {
+    opacity: 1;
+    transform: translateY(0) scale(1);
 }
 
 .layer-close, .layer-back, .info {
@@ -91,23 +145,5 @@ const showRouteInfo = ref(false);
 :is(.layer-close, .layer-back, .info):hover {
     background: var(--bg-tertiary);
     transform: scale(1.1);
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes slideUp {
-    from {
-        transform: translateY(20px) scale(0.95);
-    }
-    to {
-        transform: translateY(0) scale(1);
-    }
 }
 </style>

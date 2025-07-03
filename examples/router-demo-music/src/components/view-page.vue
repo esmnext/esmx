@@ -38,7 +38,9 @@
                                         push: true,
                                         autoPush: true,
                                         routerOptions: {
-                                            rootStyle: false,
+                                            rootStyle: {
+                                                position: 'absolute',
+                                            },
                                         }
                                     }"
                                 >

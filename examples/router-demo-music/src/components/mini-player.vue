@@ -9,7 +9,9 @@
                         autoPush: true,
                         shouldClose: (to, from) => to.fullPath === from?.fullPath,
                         routerOptions: {
-                            rootStyle: false,
+                            rootStyle: {
+                                position: 'absolute',
+                            },
                             context: {
                                 layerType: 'popup',
                             }

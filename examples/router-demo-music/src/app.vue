@@ -8,8 +8,8 @@
 </template>
 
 <script lang="ts" setup>
-import { useRoute, useRouter } from '@esmx/router-vue';
-import { computed, watch } from 'vue';
+import { useRouter } from '@esmx/router-vue';
+import { computed } from 'vue';
 import MiniPlayer from './components/mini-player.vue';
 import ViewLayerPopup from './components/view-layer-popup.vue';
 import ViewLayer from './components/view-layer.vue';
@@ -47,7 +47,7 @@ const currentSong = computed(() => musicStore.currentSong.value);
     --bg-secondary: #f9fafb;
     --bg-tertiary: #f3f4f6;
     --card-color: #ffffff;
-    --overlay-color: rgba(0, 0, 0, 0.5);
+    --overlay-color: #0008;
     
     /* 边框颜色 */
     --border-light: #e5e7eb;
@@ -129,7 +129,7 @@ const currentSong = computed(() => musicStore.currentSong.value);
         --bg-secondary: #1f2937;
         --bg-tertiary: #374151;
         --card-color: #1f2937;
-        --overlay-color: rgba(0, 0, 0, .1);
+        --overlay-color: #0006;
         
         --border-light: #374151;
         --border-medium: #4b5563;

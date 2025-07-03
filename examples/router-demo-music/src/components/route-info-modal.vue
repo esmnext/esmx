@@ -6,7 +6,10 @@
                 <button class="close-btn" @click="$emit('close')">&times;</button>
             </div>
             <div class="modal-body">
-                <CollapsibleJson :data="$route" :collapseDepth="2" />
+                <p>Route:</p>
+                <CollapsibleJson :data="$route" :collapseDepth="2" :collapseRoot="true" />
+                <p>Router context:</p>
+                <CollapsibleJson :data="$router.parsedOptions.context" />
             </div>
         </div>
     </div>

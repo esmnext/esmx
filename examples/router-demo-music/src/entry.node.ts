@@ -42,5 +42,11 @@ export default {
                 `🎵 音乐播放器 Demo 服务器已启动: http://localhost:${port}`
             );
         });
+    },
+    async postBuild(esmx) {
+        const rc = await esmx.render({
+            params: { url: '/' }
+        });
+        esmx.writeSync(esmx.resolvePath('dist/client', 'index.html'), rc.html);
     }
 } satisfies EsmxOptions;
