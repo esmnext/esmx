@@ -16,9 +16,10 @@
             </div>
             
             <div v-for="(track, index) in tracks" :key="track.id" 
-                 class="track-item" 
-                 :class="{ 'active': track.id === currentSong?.id }"
-                 @click="$emit('playTrack', track)">
+                class="track-item" 
+                :class="{ 'active': track.id === currentSong?.id }"
+                @click="$emit('playTrack', track)"
+            >
                 <div class="track-number">{{ index + 1 }}</div>
                 <div class="track-info">
                     <img :src="track.cover" :alt="track.title" class="track-cover" />
@@ -27,17 +28,13 @@
                         <div class="track-artist">{{ track.artist }}</div>
                     </div>
                 </div>
-                <RouterLink
-                    :to="`/album/${track.id}`"
-                    class="track-album"
-                    @click.stop
-                >
-                    {{ track.album }}
-                </RouterLink>
+                <RouterLink :to="`/album/${track.id}`" class="track-album" @click.stop>{{
+                    track.album
+                }}</RouterLink>
                 <div class="track-duration">{{ formatTime(track.duration) }}</div>
                 <div class="track-actions">
-                    <button class="track-action-btn">❤</button>
-                    <button class="track-action-btn">⋯</button>
+                    <button class="track-action-btn" @click.stop>❤</button>
+                    <button class="track-action-btn" @click.stop>⋯</button>
                 </div>
             </div>
         </div>
@@ -184,7 +181,7 @@ const currentSong = computed(() => musicStore.currentSong.value);
     text-overflow: ellipsis;
 }
 
-.track-album {
+a.track-album {
     color: var(--text-secondary);
     white-space: nowrap;
     overflow: hidden;
@@ -193,7 +190,7 @@ const currentSong = computed(() => musicStore.currentSong.value);
     transition: color var(--duration-fast);
 }
 
-.track-album:hover {
+a.track-album:hover {
     color: var(--music-primary);
     text-decoration: underline;
 }

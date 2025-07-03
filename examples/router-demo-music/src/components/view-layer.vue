@@ -1,14 +1,21 @@
 <template>
     <div class="view-layer">
-        <div class="layer-backdrop" @click="$router.back()" />
+        <div class="layer-backdrop" @click="$router.closeLayer()" />
         <div class="layer-content">
-            <button class="layer-close" @click="$router.back()">×</button>
+            <button class="layer-back" @click="$router.back()" v-if="$router.navigation.length">←</button>
+            <button class="info" title="Current Route" @click="showRouteInfo = true">ℹ</button>
+            <button class="layer-close" @click="$router.closeLayer()">×</button>
             <router-view />
         </div>
+        <RouteInfoModal :show="showRouteInfo" @close="showRouteInfo = false" />
     </div>
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue';
+import RouteInfoModal from './route-info-modal.vue';
+
+const showRouteInfo = ref(false);
 </script>
 
 <style scoped>
@@ -44,13 +51,12 @@
     max-width: 90vw;
     max-height: 90vh;
     overflow: auto;
-    animation: slideUp var(--duration-normal) ease-out;
+    animation: slideUp var(--duration-normal) ease-out, fadeIn var(--duration-normal) ease-out;
 }
 
-.layer-close {
+.layer-close, .layer-back, .info {
     position: absolute;
     top: var(--spacing-4);
-    right: var(--spacing-4);
     z-index: 10;
     width: 32px;
     height: 32px;
@@ -65,9 +71,23 @@
     font-size: var(--font-size-xl);
     line-height: 1;
     transition: all var(--duration-fast);
+    user-select: none;
+    border: 1px solid var(--border-light);
 }
 
-.layer-close:hover {
+.layer-close {
+    right: var(--spacing-4);
+}
+
+.info {
+    right: calc(var(--spacing-4) * 4);
+}
+
+.layer-back {
+    left: var(--spacing-4);
+}
+
+:is(.layer-close, .layer-back, .info):hover {
     background: var(--bg-tertiary);
     transform: scale(1.1);
 }
@@ -83,11 +103,9 @@
 
 @keyframes slideUp {
     from {
-        opacity: 0;
         transform: translateY(20px) scale(0.95);
     }
     to {
-        opacity: 1;
         transform: translateY(0) scale(1);
     }
 }

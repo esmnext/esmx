@@ -34,12 +34,13 @@
                                     type="pushLayer"
                                     class="detail-btn"
                                     :layerOptions="{
+                                        shouldClose,
                                         push: true,
+                                        autoPush: true,
                                     }"
                                 >
                                     Details
                                 </RouterLink>
-                                <!-- <button @click="asdf(song.id)">asdf</button> -->
                             </div>
                         </div>
                     </div>
@@ -60,6 +61,11 @@ import { type Song, mockSongs, musicStore } from '../store/music-store';
 import RouteInfoModal from './route-info-modal.vue';
 import ToggleThemeBtn from './toggle-theme-btn.vue';
 import TwoCol from './two-col.vue';
+import { RouteVerifyHook } from '@esmx/router';
+
+const shouldClose: RouteVerifyHook = (to, from, router) => {
+    return to.fullPath === from?.fullPath;
+};
 
 const $router = useRouter();
 const showRouteInfo = ref(false);
@@ -73,17 +79,6 @@ const featuredSongs = computed(() => {
 
 const playSong = (song: Song) => {
     musicStore.playSong(song, mockSongs);
-};
-
-const asdf = async (id: number) => {
-    const res = await $router.pushLayer({
-        path: `/album/${id}`,
-        layer: {
-            push: true
-        }
-    });
-    console.log('Layer pushed:', res);
-    $router.back();
 };
 </script>
 
