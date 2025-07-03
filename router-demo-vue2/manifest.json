@@ -28,12 +28,12 @@
         }
     },
     "buildFiles": [
-        "585.6cbbb5d7.final.mjs",
-        "@esmx/router.6e9fa025.final.mjs",
-        "585.cc8fbaa2.final.css",
-        "@esmx/router-vue.3618af85.final.mjs",
         "src/entry.client.991ba891.final.mjs",
         "src/entry.client.0c6e4813.final.css",
+        "@esmx/router.6e9fa025.final.mjs",
+        "585.cc8fbaa2.final.css",
+        "585.6cbbb5d7.final.mjs",
+        "@esmx/router-vue.3618af85.final.mjs",
         "vue.389c4cab.final.mjs"
     ],
     "chunks": {

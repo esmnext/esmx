@@ -5,7 +5,7 @@
         "src/entry.client": {
             "name": "src/entry.client",
             "rewrite": true,
-            "file": "src/entry.client.cddba85d.final.mjs",
+            "file": "src/entry.client.f16c8abc.final.mjs",
             "identifier": "router-demo-music/src/entry.client"
         },
         "vue": {
@@ -28,12 +28,12 @@
         }
     },
     "buildFiles": [
+        "src/entry.client.f16c8abc.final.mjs",
+        "896.3c9051dd.final.mjs",
+        "src/entry.client.e3f037da.final.css",
         "@esmx/router-vue.3618af85.final.mjs",
         "images/sine-wave-notes.47e0c83d.final.svg",
         "@esmx/router.6e9fa025.final.mjs",
-        "896.b9b951e7.final.mjs",
-        "src/entry.client.8d17b3bd.final.css",
-        "src/entry.client.cddba85d.final.mjs",
         "896.841963f8.final.css",
         "vue.389c4cab.final.mjs"
     ],
@@ -73,22 +73,22 @@
         },
         "router-demo-music@src/entry.client.ts": {
             "name": "router-demo-music@src/entry.client.ts",
-            "js": "src/entry.client.cddba85d.final.mjs",
+            "js": "src/entry.client.f16c8abc.final.mjs",
             "css": [
-                "src/entry.client.8d17b3bd.final.css"
+                "src/entry.client.e3f037da.final.css"
             ],
             "resources": [
                 "images/sine-wave-notes.47e0c83d.final.svg"
             ],
             "sizes": {
-                "js": 131061,
-                "css": 71817,
+                "js": 132471,
+                "css": 72930,
                 "resource": 1585
             }
         },
         "router-demo-music@src/views/not-found.vue": {
             "name": "router-demo-music@src/views/not-found.vue",
-            "js": "896.b9b951e7.final.mjs",
+            "js": "896.3c9051dd.final.mjs",
             "css": [
                 "896.841963f8.final.css"
             ],
