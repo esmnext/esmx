@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1751527379220" clover="3.2.0">
-  <project timestamp="1751527379220" name="All files">
-    <metrics statements="231" coveredstatements="199" conditionals="62" coveredconditionals="58" methods="25" coveredmethods="24" elements="318" coveredelements="281" complexity="0" loc="231" ncloc="231" packages="1" files="8" classes="8"/>
+<coverage generated="1751548856497" clover="3.2.0">
+  <project timestamp="1751548856497" name="All files">
+    <metrics statements="236" coveredstatements="203" conditionals="63" coveredconditionals="59" methods="26" coveredmethods="24" elements="325" coveredelements="286" complexity="0" loc="236" ncloc="236" packages="1" files="8" classes="8"/>
     <file name="index.ts" path="/home/runner/work/esmx/esmx/packages/router-vue/src/index.ts">
       <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       <line num="4" count="1" type="stmt"/>
@@ -40,7 +40,7 @@
       <line num="97" count="1" type="stmt"/>
     </file>
     <file name="router-link.ts" path="/home/runner/work/esmx/esmx/packages/router-vue/src/router-link.ts">
-      <metrics statements="75" coveredstatements="44" conditionals="5" coveredconditionals="4" methods="4" coveredmethods="3"/>
+      <metrics statements="80" coveredstatements="48" conditionals="5" coveredconditionals="4" methods="5" coveredmethods="3"/>
       <line num="7" count="1" type="stmt"/>
       <line num="8" count="1" type="stmt"/>
       <line num="9" count="1" type="stmt"/>
@@ -61,37 +61,18 @@
       <line num="104" count="1" type="stmt"/>
       <line num="110" count="1" type="stmt"/>
       <line num="116" count="1" type="stmt"/>
-      <line num="117" count="1" type="stmt"/>
-      <line num="119" count="1" type="cond" truecount="1" falsecount="0"/>
-      <line num="120" count="17" type="stmt"/>
-      <line num="121" count="17" type="stmt"/>
-      <line num="123" count="17" type="cond" truecount="1" falsecount="0"/>
-      <line num="124" count="22" type="stmt"/>
-      <line num="125" count="22" type="cond" truecount="1" falsecount="0"/>
-      <line num="126" count="26" type="stmt"/>
-      <line num="128" count="22" type="stmt"/>
-      <line num="129" count="22" type="stmt"/>
-      <line num="131" count="0" type="stmt"/>
-      <line num="132" count="0" type="stmt"/>
-      <line num="133" count="0" type="stmt"/>
-      <line num="136" count="0" type="stmt"/>
-      <line num="137" count="0" type="stmt"/>
-      <line num="138" count="0" type="stmt"/>
-      <line num="139" count="0" type="stmt"/>
-      <line num="140" count="0" type="stmt"/>
-      <line num="141" count="22" type="stmt"/>
-      <line num="143" count="22" type="stmt"/>
-      <line num="144" count="22" type="stmt"/>
-      <line num="145" count="22" type="stmt"/>
-      <line num="146" count="22" type="stmt"/>
-      <line num="147" count="22" type="stmt"/>
-      <line num="148" count="22" type="stmt"/>
-      <line num="149" count="22" type="stmt"/>
-      <line num="150" count="22" type="stmt"/>
-      <line num="151" count="22" type="stmt"/>
-      <line num="153" count="17" type="stmt"/>
+      <line num="141" count="1" type="stmt"/>
+      <line num="142" count="1" type="stmt"/>
+      <line num="145" count="1" type="stmt"/>
+      <line num="146" count="1" type="stmt"/>
+      <line num="148" count="1" type="cond" truecount="1" falsecount="0"/>
+      <line num="149" count="17" type="stmt"/>
+      <line num="150" count="17" type="stmt"/>
+      <line num="152" count="17" type="stmt"/>
+      <line num="153" count="0" type="stmt"/>
       <line num="154" count="0" type="stmt"/>
       <line num="156" count="0" type="stmt"/>
+      <line num="157" count="0" type="stmt"/>
       <line num="158" count="0" type="stmt"/>
       <line num="159" count="0" type="stmt"/>
       <line num="160" count="0" type="stmt"/>
@@ -99,23 +80,47 @@
       <line num="162" count="0" type="stmt"/>
       <line num="163" count="0" type="stmt"/>
       <line num="164" count="0" type="stmt"/>
-      <line num="165" count="0" type="stmt"/>
-      <line num="166" count="0" type="stmt"/>
-      <line num="167" count="0" type="stmt"/>
-      <line num="169" count="0" type="stmt"/>
-      <line num="170" count="0" type="stmt"/>
-      <line num="171" count="0" type="stmt"/>
-      <line num="172" count="0" type="stmt"/>
-      <line num="173" count="0" type="stmt"/>
+      <line num="166" count="17" type="cond" truecount="1" falsecount="0"/>
+      <line num="167" count="22" type="stmt"/>
+      <line num="168" count="22" type="cond" truecount="1" falsecount="0"/>
+      <line num="169" count="26" type="stmt"/>
+      <line num="171" count="22" type="stmt"/>
+      <line num="172" count="22" type="stmt"/>
       <line num="174" count="0" type="stmt"/>
       <line num="175" count="0" type="stmt"/>
       <line num="176" count="0" type="stmt"/>
-      <line num="177" count="0" type="stmt"/>
-      <line num="178" count="0" type="stmt"/>
-      <line num="179" count="0" type="stmt"/>
-      <line num="181" count="17" type="cond" truecount="1" falsecount="1"/>
-      <line num="182" count="17" type="stmt"/>
-      <line num="183" count="1" type="stmt"/>
+      <line num="177" count="22" type="stmt"/>
+      <line num="179" count="22" type="stmt"/>
+      <line num="180" count="22" type="stmt"/>
+      <line num="181" count="22" type="stmt"/>
+      <line num="182" count="22" type="stmt"/>
+      <line num="183" count="22" type="stmt"/>
+      <line num="184" count="22" type="stmt"/>
+      <line num="185" count="22" type="stmt"/>
+      <line num="186" count="22" type="stmt"/>
+      <line num="187" count="22" type="stmt"/>
+      <line num="189" count="17" type="stmt"/>
+      <line num="190" count="0" type="stmt"/>
+      <line num="192" count="0" type="stmt"/>
+      <line num="194" count="0" type="stmt"/>
+      <line num="195" count="0" type="stmt"/>
+      <line num="196" count="0" type="stmt"/>
+      <line num="197" count="0" type="stmt"/>
+      <line num="198" count="0" type="stmt"/>
+      <line num="200" count="0" type="stmt"/>
+      <line num="201" count="0" type="stmt"/>
+      <line num="202" count="0" type="stmt"/>
+      <line num="203" count="0" type="stmt"/>
+      <line num="204" count="0" type="stmt"/>
+      <line num="205" count="0" type="stmt"/>
+      <line num="206" count="0" type="stmt"/>
+      <line num="207" count="0" type="stmt"/>
+      <line num="208" count="0" type="stmt"/>
+      <line num="209" count="0" type="stmt"/>
+      <line num="210" count="0" type="stmt"/>
+      <line num="212" count="17" type="cond" truecount="1" falsecount="1"/>
+      <line num="213" count="17" type="stmt"/>
+      <line num="214" count="1" type="stmt"/>
     </file>
     <file name="router-view.ts" path="/home/runner/work/esmx/esmx/packages/router-vue/src/router-view.ts">
       <metrics statements="19" coveredstatements="18" conditionals="5" coveredconditionals="4" methods="1" coveredmethods="1"/>
@@ -140,7 +145,7 @@
       <line num="62" count="1" type="stmt"/>
     </file>
     <file name="use.ts" path="/home/runner/work/esmx/esmx/packages/router-vue/src/use.ts">
-      <metrics statements="81" coveredstatements="81" conditionals="24" coveredconditionals="24" methods="10" coveredmethods="10"/>
+      <metrics statements="81" coveredstatements="81" conditionals="25" coveredconditionals="25" methods="10" coveredmethods="10"/>
       <line num="2" count="1" type="stmt"/>
       <line num="11" count="1" type="stmt"/>
       <line num="24" count="1" type="stmt"/>
@@ -171,7 +176,7 @@
       <line num="57" count="13" type="stmt"/>
       <line num="58" count="20" type="cond" truecount="1" falsecount="0"/>
       <line num="59" count="8" type="stmt"/>
-      <line num="60" count="8" type="cond" truecount="1" falsecount="0"/>
+      <line num="60" count="8" type="cond" truecount="2" falsecount="0"/>
       <line num="61" count="5" type="stmt"/>
       <line num="62" count="5" type="stmt"/>
       <line num="63" count="5" type="cond" truecount="1" falsecount="0"/>
