@@ -51,7 +51,7 @@
 
 <script lang="ts" setup>
 import { RouterLink, RouterView, useRoute } from '@esmx/router-vue';
-import CollapsibleJson from './collapsible-json.vue';
+import { CollapsibleJson } from 'ssr-vue-base/src/components';
 
 const $route = useRoute();
 </script>

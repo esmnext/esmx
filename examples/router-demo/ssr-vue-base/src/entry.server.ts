@@ -1,19 +1,18 @@
 import type { IncomingMessage } from 'node:http';
 import type { RenderContext } from '@esmx/core';
-import { createRenderer } from 'vue-server-renderer';
+import { renderToString } from '@vue/server-renderer';
 import { createApp } from './create-app';
-
-// 创建渲染器
-const renderer = createRenderer();
 
 export default async (rc: RenderContext) => {
     const req = rc.params.req as IncomingMessage | undefined;
     const protocol = req?.headers['x-forwarded-proto'] || 'https';
     const host = req?.headers.host || 'www.esmnext.com/router-demo-music/';
+    const ssrCtx: Record<string, any> = {};
     const router = await createApp({
         base: `${protocol}://${host}`,
         url: req?.url ?? '/',
-        renderToString: renderer.renderToString
+        renderToString,
+        ssrCtx
     });
 
     // 使用 Vue 的 renderToString 生成页面内容
@@ -23,19 +22,20 @@ export default async (rc: RenderContext) => {
 
     // 生成完整的 HTML 结构
     rc.html = `<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8"/>
-    ${rc.preload()}
-    <title>音乐播放器 - Esmx Router Demo</title>
-    ${rc.css()}
-</head>
-<body>
-    <div id="root">${html}</div>
-    ${rc.importmap()}
-    ${rc.moduleEntry()}
-    ${rc.modulePreload()}
-</body>
-</html>
-`;
+        <html lang="zh-CN">
+        <head>
+            <meta charset="UTF-8"/>
+            ${rc.preload()}
+            <title>Esmx 快速开始</title>
+            ${rc.css()}
+        </head>
+        <body>${ssrCtx.teleports?.body || ''}
+            <div id="root">${html}</div>
+            <div id="teleported">${ssrCtx.teleports?.['#teleported'] ?? ''}</div>
+            ${rc.importmap()}
+            ${rc.moduleEntry()}
+            ${rc.modulePreload()}
+        </body>
+        </html>
+    `;
 };

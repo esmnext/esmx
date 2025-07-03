@@ -1,5 +1,5 @@
 {
-    "name": "ssr-vue3",
+    "name": "ssr-vue-base",
     "version": "1.0.0",
     "type": "module",
     "private": true,
@@ -16,7 +16,6 @@
     },
     "devDependencies": {
         "@esmx/rspack-vue": "workspace:*",
-        "ssr-vue-base": "workspace:*",
         "ssr-npm-base": "workspace:*",
         "ssr-npm-vue3": "workspace:*",
         "@types/node": "^24.0.10",

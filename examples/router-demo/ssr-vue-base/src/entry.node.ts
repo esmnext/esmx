@@ -6,12 +6,12 @@
 import http from 'node:http';
 import type { EsmxOptions } from '@esmx/core';
 
-const port = process.env.PORT || 3003;
+const port = process.env.PORT || 3001;
 
 export default {
     modules: {
+        exports: ['root:src/components/index.ts'],
         links: {
-            'ssr-vue-base': './node_modules/ssr-vue-base/dist',
             'ssr-npm-base': './node_modules/ssr-npm-base/dist',
             'ssr-npm-vue3': './node_modules/ssr-npm-vue3/dist'
         },
@@ -49,5 +49,11 @@ export default {
         server.listen(port, () => {
             console.log(`服务启动: http://localhost:${port}`);
         });
+    },
+    async postBuild(esmx) {
+        const rc = await esmx.render({
+            params: { url: '/' }
+        });
+        esmx.writeSync(esmx.resolvePath('dist/client', 'index.html'), rc.html);
     }
 } satisfies EsmxOptions;

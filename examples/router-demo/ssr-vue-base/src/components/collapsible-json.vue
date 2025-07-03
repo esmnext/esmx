@@ -8,6 +8,8 @@ import { computed } from 'vue';
 const props = defineProps<{
     data: any;
     space?: number;
+    collapseDepth?: number;
+    collapseRoot?: boolean;
 }>();
 
 // console.log(props.data);
@@ -59,14 +61,18 @@ const vHTML = computed(() =>
             '$1<span class="json-keyword">$2</span>$3'
         )
         .replace(/(^ *|: )(\d+)(,?)$/gm, '$1<span class="json-num">$2</span>$3')
-        .replace(/^( *)(.*)([{[])$\n/gm, (all, spaces, content, bracket) =>
-            `<details${spaces.length ? ' open' : ''} class="json-collapse" style="--depth: ${spaces.length / space}"
+        .replace(/^( *)(.*)([{[])$\n/gm, (all, spaces, content, bracket) => {
+            const depth = spaces.length / space;
+            let open =
+                depth < (props.collapseDepth ?? Number.POSITIVE_INFINITY);
+            if (props.collapseRoot && depth === 0) open = false;
+            return `<details${open ? ' open' : ''} class="json-collapse" style="--depth: ${depth}"
                 ><summary
                     >${spaces}${content}<span class="json-bracket ${bracket}">${bracket}</span
                     ><span class="json-ellipsis"> ... </span
                 ></summary
-            ><div class="json-content">`.replace(/\n +>/g, '>')
-        )
+            ><div class="json-content">`.replace(/\n +>/g, '>');
+        })
         .replace(
             /(^ *)([\]}])(,?)$\n?/gm,
             '$1<span class="json-bracket $2">$2</span>$3</div></details>'
@@ -147,6 +153,22 @@ const vHTML = computed(() =>
 pre {
     border-left: var(--spacing-6) solid transparent;
 }
+
+:deep(*) {
+    --marker-color: var(--text-tertiary);
+    --hover-marker-color: var(--text-secondary);
+    --bracket-obj: var(--music-primary);
+    --bracket-arr: var(--music-secondary);
+    --key-color: var(--warning-color);
+    --str-color: #03a9f4;
+    --num-color: var(--success-color);
+    --keyword-color: var(--primary-color);
+    --unknown-color: var(--text-tertiary);
+    --unknown-error-color: var(--error-color);
+    --indent-line-color: #8884;
+    --indent-line-active-color: #888c;
+}
+
 :deep(.json-collapse) {
     margin: 0;
     margin-left: -2ch;
@@ -158,28 +180,27 @@ pre {
 :deep(summary::marker) {
     cursor: pointer;
     font: inherit;
-    color: var(--text-muted);
+    color: var(--marker-color);
     content: '+ ';
 }
 :deep(.json-collapse[open] > summary::marker) {
     content: '- ';
 }
 :deep(summary:hover::marker) {
-    color: var(--text-tertiary);
+    color: var(--hover-marker-color);
 }
 :deep(.json-collapse:not([open]) > summary) {
     cursor: pointer;
 }
 
+/* hover 时 {}/[] 的边框 */
 :deep(.json-collapse[open]:hover > summary .json-bracket) {
     border: 1px solid var(--border-dark);
-    margin-left: -1px;
-    margin-top: -1px;
+    margin: -1px;
 }
 :deep(.json-collapse[open]:hover > .json-content > .json-bracket:last-child) {
     border: 1px solid var(--border-dark);
-    margin-left: -1px;
-    margin-top: -1px;
+    margin: -1px;
 }
 
 :deep(.json-content) {
@@ -187,54 +208,55 @@ pre {
     padding-left: 2ch;
 }
 :deep(.json-key) {
-    color: var(--primary-color);
+    color: var(--key-color);
     font-weight: bold;
 }
 :deep(.json-str) {
-    color: #f44336;
+    color: var(--str-color);
 }
 :deep(.json-keyword) {
-    color: var(--link-color);
+    color: var(--keyword-color);
 }
 :deep(.json-num) {
-    color: #28a745;
+    color: var(--num-color);
 }
 :deep(.json-bracket) {
     font-weight: bold;
 }
-:deep(*).\{ { color: var(--link-hover); }
-:deep(*).\} { color: var(--link-hover); }
-:deep(*).\[ { color: var(--link-visited); }
-:deep(*).\] { color: var(--link-visited); }
+:deep(*).\{ { color: var(--bracket-obj); }
+:deep(*).\} { color: var(--bracket-obj); }
+:deep(*).\[ { color: var(--bracket-arr); }
+:deep(*).\] { color: var(--bracket-arr); }
 
 :deep(.json-collapse[open] > summary .json-ellipsis) { display: none; }
-:deep(*).\{ + .json-ellipsis::after { content: '}'; color: var(--link-hover); font-weight: bold; }
-:deep(*).\[ + .json-ellipsis::after { content: ']'; color: var(--link-visited); font-weight: bold; }
+:deep(*).\{ + .json-ellipsis::after { content: '}'; color: var(--bracket-obj); font-weight: bold; }
+:deep(*).\[ + .json-ellipsis::after { content: ']'; color: var(--bracket-arr); font-weight: bold; }
 
+/* 缩进线 */
 :deep(.json-content::after) {
     content: '';
     display: block;
     height: calc(100% - 1.75em);
     width: 0;
-    border-left: 1px dashed var(--border-color);
+    border-left: 1px dashed var(--indent-line-color);
     position: absolute;
     left: calc(1ch * var(--space) * var(--depth) + 2ch + .4ch);
     top: 0;
     pointer-events: none;
 }
 :deep(.json-collapse:hover:not(:has(.json-collapse[open]:hover)) > .json-content::after) {
-    border-color: var(--text-tertiary);
+    border-color: var(--indent-line-active-color);
 }
 
 :deep(.json-unknown) {
-    color: var(--text-muted);
+    color: var(--unknown-color);
     user-select: none;
 }
 :deep(.json-unknown .json-key) {
     opacity: .5;
 }
 :deep(.json-unknown.error .json-key) {
-    background: red;
+    background: var(--unknown-error-color);
 }
 
 :deep(.json-function) {
