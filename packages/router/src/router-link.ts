@@ -43,24 +43,25 @@ function getEventTypeList(eventType: unknown | unknown[]): string[] {
 /**
  * Event guard check - determines if the router should handle the navigation
  *
- * Returns false: Let browser handle default behavior (normal link navigation)
- * Returns true: Router takes over navigation, prevents default browser behavior
+ * Returns !0: Let browser handle default behavior (normal link navigation)
+ * Returns 0: Router takes over navigation, prevents default browser behavior
  *
  * This function intelligently decides when to let the browser handle clicks
  * (like Ctrl+click for new tabs) vs when to use SPA routing
  */
-function guardEvent(e: MouseEvent): boolean {
+function guardEvent(e?: MouseEvent): number {
+    if (!e) return 1;
     // don't redirect with control keys
-    if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) return false;
+    if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) return 2;
     // don't redirect when preventDefault called
-    if (e.defaultPrevented) return false;
+    if (e.defaultPrevented) return 3;
     // don't redirect on right click
-    if (e.button !== undefined && e.button !== 0) return false;
+    if (e.button !== undefined && e.button !== 0) return 4;
     // Prevent default browser navigation to enable SPA routing
     // Note: this may be a Weex event which doesn't have this method
     if (e.preventDefault) e.preventDefault();
 
-    return true;
+    return 0;
 }
 
 /**
@@ -109,9 +110,7 @@ function createNavigateFunction(
     navigationType: RouterLinkType
 ): (e?: MouseEvent) => Promise<void> {
     return async (e?: MouseEvent): Promise<void> => {
-        if (e && !guardEvent(e)) {
-            return;
-        }
+        if (guardEvent(e)) return;
 
         await executeNavigation(router, props, navigationType);
     };
@@ -178,9 +177,8 @@ function createEventHandlersGenerator(
         const handlers: Record<string, (e: MouseEvent) => Promise<void>> = {};
 
         eventTypes.forEach((eventType) => {
-            const eventName = nameTransform
-                ? nameTransform(eventType)
-                : eventType.toLowerCase();
+            const eventName =
+                nameTransform?.(eventType) ?? eventType.toLowerCase();
             handlers[eventName] = navigate;
         });
 

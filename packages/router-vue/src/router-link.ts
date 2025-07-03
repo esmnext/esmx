@@ -77,7 +77,7 @@ export const RouterLink = defineComponent({
         type: { type: String as PropType<RouterLinkType>, default: 'push' },
         /**
          * @deprecated Use 'type="replace"' instead
-         * @example replace={true} → type="replace"
+         * @example :replace={true} → type="replace"
          */
         replace: { type: Boolean, default: false },
         /**
@@ -116,33 +116,68 @@ export const RouterLink = defineComponent({
         layerOptions: { type: Object as PropType<RouteLayerOptions> }
     },
 
-    setup(props, { slots }) {
+    setup(props, context) {
+        const { slots, attrs } = context;
         const link = useLink(props);
 
-        return () => {
+        const vue3renderer = () => {
+            const data = link.value;
+            const genEventName = (name: string): string =>
+                `on${name.charAt(0).toUpperCase()}${name.slice(1)}`;
+
+            const eventHandlers = data.getEventHandlers(genEventName);
+            Object.keys(attrs).forEach((key) => {
+                // In Vue 3, external event handlers are in attrs with 'on' prefix
+                if (!key.startsWith('on') || typeof attrs[key] !== 'function')
+                    return;
+                const externalHandler = attrs[key] as (
+                    e: MouseEvent
+                ) => Promise<void>;
+                const internalHandler = eventHandlers[key];
+                eventHandlers[key] = async (e: MouseEvent) => {
+                    await externalHandler(e);
+                    await internalHandler?.(e);
+                };
+            });
+
+            return h(
+                data.tag,
+                {
+                    ...data.attributes,
+                    ...eventHandlers
+                },
+                slots.default?.()
+            );
+        };
+
+        const vue2renderer = () => {
             const data = link.value;
 
-            // Generate event handlers with proper type transformation for Vue 2/3 compatibility
-            const eventHandlers = data.getEventHandlers(
-                isVue3
-                    ? (name: string): string =>
-                          `on${name.charAt(0).toUpperCase()}${name.slice(1)}`
-                    : undefined
-            );
+            const eventHandlers = data.getEventHandlers();
+            // Vue 2: get external listeners from context
+            const $listeners = (context as any).listeners || {};
+            Object.keys($listeners).forEach((eventName) => {
+                const externalHandler = $listeners[eventName];
+                if (typeof externalHandler !== 'function') return;
+                const internalHandler = eventHandlers[eventName];
+                eventHandlers[eventName] = async (e: MouseEvent) => {
+                    await externalHandler(e);
+                    await internalHandler?.(e);
+                };
+            });
 
-            const props = {};
-            if (isVue3) {
-                Object.assign(props, data.attributes, eventHandlers);
-            } else {
-                const { class: className, ...attrs } = data.attributes;
-                Object.assign(props, {
+            const { class: className, ...attrs } = data.attributes;
+            return h(
+                data.tag,
+                {
                     attrs,
                     class: className,
                     on: eventHandlers
-                });
-            }
-
-            return h(data.tag, props, slots.default?.());
+                },
+                slots.default?.()
+            );
         };
+
+        return isVue3 ? vue3renderer : vue2renderer;
     }
 });
