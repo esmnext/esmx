@@ -1,78 +1,58 @@
 ---
-titleSuffix: Esmx Framework Overview and Technological Innovations
-description: Deep dive into the project background, technical evolution, and core advantages of the Esmx micro-frontend framework, exploring modern ESM-based server-side rendering solutions.
+titleSuffix: Overview of Esmx Framework
+description: Esmx is an ESM-based micro-frontend framework providing high-performance server-side rendering capabilities.
 head:
   - - meta
     - property: keywords
-      content: Esmx, Micro-frontend, ESM, Server-side Rendering, SSR, Technological Innovation, Module Federation
+      content: Esmx, micro-frontend, ESM, server-side rendering, SSR, module linking, module federation
 ---
 
 # Introduction
 
-## Project Background
-Esmx is a modern micro-frontend framework based on ECMAScript Modules (ESM), specializing in building high-performance, scalable server-side rendered (SSR) applications. As the third-generation product of the Genesis project, Esmx has continuously innovated through its technical evolution:
+## What is Esmx
 
-- **v1.0**: Implemented on-demand remote component loading via HTTP requests
-- **v2.0**: Achieved application integration through Webpack Module Federation
-- **v3.0**: Redesigned the [Module Linking](/guide/essentials/module-link) system based on native browser ESM
+A micro-frontend framework based on ECMAScript Modules (ESM), designed for building high-performance SSR applications.
 
-## Technical Context
-During the development of micro-frontend architectures, traditional solutions primarily faced the following limitations:
+**Technical Evolution:**
+- **v1.0**: On-demand component loading via HTTP requests
+- **v2.0**: Application integration using Webpack Module Federation
+- **v3.0**: [Module linking](/guide/essentials/module-link) system based on native browser ESM
 
-### Challenges with Existing Solutions
-- **Performance Bottlenecks**: Runtime dependency injection and JavaScript sandbox proxying introduced significant performance overhead
-- **Isolation Mechanisms**: Custom sandbox environments struggled to match native browser module isolation capabilities
-- **Build Complexity**: Build tool modifications for dependency sharing increased project maintenance costs
-- **Standard Deviation**: Special deployment strategies and runtime processing mechanisms deviated from modern web development standards
-- **Ecosystem Constraints**: Framework coupling and custom APIs limited technology stack choices
+## Problems Solved
 
-### Technological Innovations
-Esmx provides a novel solution based on modern web standards:
+### Limitations of Traditional Micro-Frontend Approaches
 
-- **Native Module System**: Leverages browser-native ESM and Import Maps for dependency management, delivering faster parsing and execution
-- **Standard Isolation**: Reliable application isolation through ECMAScript module scoping
-- **Open Technology Stack**: Supports seamless integration with any modern frontend framework
-- **Optimized Developer Experience**: Offers intuitive development patterns and comprehensive debugging capabilities
-- **Performance Optimization**: Achieves zero runtime overhead through native capabilities combined with intelligent caching strategies
+- Performance overhead from runtime dependency injection and JavaScript sandbox proxies
+- Custom sandboxes inferior to browser's native module isolation capabilities
+- Build tool modifications required for dependency sharing
+- Deployment strategies and runtime processing contradicting Web standards
+- Framework coupling restricting technology stack choices
 
-:::tip
-Esmx focuses on building high-performance, easily extensible micro-frontend infrastructure, particularly suited for large-scale server-side rendering applications.
-:::
+### Esmx Solutions
 
-## Technical Specifications
+- Dependency management using browser ESM and Import Maps
+- Application isolation through ECMAScript module scope
+- Support for multiple frontend frameworks
+- Zero runtime overhead
 
-### Environment Requirements
-Refer to the [Environment Requirements](/guide/start/environment) documentation for detailed browser and Node.js version requirements.
+## Technical Composition
 
-### Core Technology Stack
-- **Dependency Management**: Uses [Import Maps](https://caniuse.com/?search=import%20map) for module resolution with [es-module-shims](https://github.com/guybedford/es-module-shims) for compatibility
-- **Build System**: Leverages Rspack's [module-import](https://rspack.dev/config/externals#externalstypemodule-import) for external dependency handling
-- **Development Toolchain**: Supports ESM hot module replacement and native TypeScript execution
+- [Import Maps](https://caniuse.com/?search=import%20map) for module mapping
+- [es-module-shims](https://github.com/guybedford/es-module-shims) for compatibility support
+- Rspack [module-import](https://rspack.dev/config/externals#externalstypemodule-import) for external dependency handling
+- ESM hot updates and native TypeScript execution
 
-## Framework Positioning
-Esmx differs from [Next.js](https://nextjs.org) or [Nuxt.js](https://nuxt.com/) by focusing on micro-frontend infrastructure:
+## Core Features
 
-- **Module Linking System**: Enables efficient and reliable module import/export
-- **Server-Side Rendering**: Provides flexible SSR implementation mechanisms
-- **Type System Support**: Includes comprehensive TypeScript type definitions
-- **Framework Agnostic**: Supports integration with mainstream frontend frameworks
+Unlike [Next.js](https://nextjs.org) or [Nuxt.js](https://nuxt.com/), Esmx focuses on micro-frontend infrastructure:
 
-## Architecture Design
+### Functional Features
 
-### Centralized Dependency Management
-- **Unified Dependency Source**: Centralized third-party dependency management
-- **Automated Distribution**: Global synchronization for dependency updates
-- **Version Consistency**: Precise dependency version control
+- Module linking system
+- Server-side rendering
+- TypeScript type support
+- Framework neutrality
 
-### Modular Design
-- **Separation of Concerns**: Decouples business logic from infrastructure
-- **Plugin Mechanism**: Supports flexible module composition and replacement
-- **Standardized Interfaces**: Normalized inter-module communication protocols
+## Project Status
 
-### Performance Optimization
-- **Zero Overhead Principle**: Maximizes utilization of native browser capabilities
-- **Intelligent Caching**: Content hash-based precise caching strategy
-- **On-Demand Loading**: Granular code splitting and dependency management
-
-## Project Maturity
-Through nearly 5 years of iterative development (v1.0 to v3.0), Esmx has been thoroughly validated in enterprise environments. Currently supporting dozens of production projects, it continues to drive modernization of technology stacks. The framework's stability, reliability, and performance advantages have been fully proven in practice, providing a solid technical foundation for large-scale application development.
+Validated through 5 years of iteration in enterprise environments, currently supporting dozens of business projects in stable production.
