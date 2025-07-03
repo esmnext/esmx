@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>156/156</span>
+                <span class='fraction'>154/154</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">98.18% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>54/54</span>
+                <span class='fraction'>54/55</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>156/156</span>
+                <span class='fraction'>154/154</span>
             </div>
         
             
@@ -296,9 +296,7 @@
 <a name='L231'></a><a href='#L231'>231</a>
 <a name='L232'></a><a href='#L232'>232</a>
 <a name='L233'></a><a href='#L233'>233</a>
-<a name='L234'></a><a href='#L234'>234</a>
-<a name='L235'></a><a href='#L235'>235</a>
-<a name='L236'></a><a href='#L236'>236</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L234'></a><a href='#L234'>234</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -349,6 +347,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">19x</span>
@@ -410,8 +409,6 @@
 <span class="cline-any cline-yes">59x</span>
 <span class="cline-any cline-yes">59x</span>
 <span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-yes">19x</span>
@@ -479,8 +476,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">117x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">111x</span>
+<span class="cline-any cline-yes">117x</span>
 <span class="cline-any cline-yes">117x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -578,24 +574,25 @@ function getEventTypeList(eventType: unknown | unknown[]): string[] {
 /**
  * Event guard check - determines if the router should handle the navigation
  *
- * Returns false: Let browser handle default behavior (normal link navigation)
- * Returns true: Router takes over navigation, prevents default browser behavior
+ * Returns !0: Let browser handle default behavior (normal link navigation)
+ * Returns 0: Router takes over navigation, prevents default browser behavior
  *
  * This function intelligently decides when to let the browser handle clicks
  * (like Ctrl+click for new tabs) vs when to use SPA routing
  */
-function guardEvent(e: MouseEvent): boolean {
+function guardEvent(e?: MouseEvent): number {
+    if (!e) <span class="branch-0 cbranch-no" title="branch not covered" >return 1;</span>
     // don't redirect with control keys
-    if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) return false;
+    if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) return 2;
     // don't redirect when preventDefault called
-    if (e.defaultPrevented) return false;
+    if (e.defaultPrevented) return 3;
     // don't redirect on right click
-    if (e.button !== undefined &amp;&amp; e.button !== 0) return false;
+    if (e.button !== undefined &amp;&amp; e.button !== 0) return 4;
     // Prevent default browser navigation to enable SPA routing
     // Note: this may be a Weex event which doesn't have this method
     if (e.preventDefault) e.preventDefault();
 &nbsp;
-    return true;
+    return 0;
 }
 &nbsp;
 /**
@@ -644,9 +641,7 @@ function createNavigateFunction(
     navigationType: RouterLinkType
 ): (e?: MouseEvent) =&gt; Promise&lt;void&gt; {
     return async (e?: MouseEvent): Promise&lt;void&gt; =&gt; {
-        if (e &amp;&amp; !guardEvent(e)) {
-            return;
-        }
+        if (guardEvent(e)) return;
 &nbsp;
         await executeNavigation(router, props, navigationType);
     };
@@ -713,9 +708,8 @@ function createEventHandlersGenerator(
         const handlers: Record&lt;string, (e: MouseEvent) =&gt; Promise&lt;void&gt;&gt; = {};
 &nbsp;
         eventTypes.forEach((eventType) =&gt; {
-            const eventName = nameTransform
-                ? nameTransform(eventType)
-                : eventType.toLowerCase();
+            const eventName =
+                nameTransform?.(eventType) ?? eventType.toLowerCase();
             handlers[eventName] = navigate;
         });
 &nbsp;
@@ -775,7 +769,7 @@ export function createLinkResolver(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-07-03T07:00:12.472Z
+                at 2025-07-03T07:22:56.377Z
             </div>
         <script src="prettify.js"></script>
         <script>
