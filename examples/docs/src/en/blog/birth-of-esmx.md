@@ -42,13 +42,13 @@ When planning v3.0, we closely observed frontend ecosystem trends and found that
 
 ### Standardized Module System
 
-With mainstream browsers fully supporting [ES Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) and the maturation of [Import Maps](https://github.com/WICG/import-maps) specification, frontend development has entered a true modular era. According to [Can I Use](https://caniuse.com/?search=importmap) statistics, native ESM support in major browsers (Chrome >= 89, Edge >= 89, Firefox >= 108, Safari >= 16.4) has reached 93.5%, providing these advantages:
+With the widespread support for [ES Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) in mainstream browsers and the maturation of the [Import Maps](https://github.com/WICG/import-maps) specification, front-end development has entered a true modular era. According to [Can I Use](https://caniuse.com/?search=importmap) statistics, native ESM support in major browsers (Chrome >= 89, Edge >= 89, Firefox >= 108, Safari >= 16.4) has reached 93.5%, providing these advantages:
 
 - **Standardized Dependency Management**: Import Maps provide browser-level module dependency resolution without complex runtime injection
 - **Resource Loading Optimization**: Browser-native module caching significantly improves resource loading efficiency
 - **Simplified Build Process**: ESM-based development makes build processes more consistent between development and production environments
 
-With compatibility mode support (Chrome >= 87, Edge >= 88, Firefox >= 78, Safari >= 14), browser coverage can be further increased to 96.81%, allowing us to maintain high performance without sacrificing support for older browsers.
+With compatibility mode support (Chrome >= 64, Edge >= 79, Firefox >= 67, Safari >= 11.1), browser coverage can be further increased to 95.59%, allowing us to maintain high performance without sacrificing support for older browsers.
 
 ### Breakthroughs in Performance and Isolation
 

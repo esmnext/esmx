@@ -52,9 +52,9 @@ head:
   },
   "devDependencies": {
     "@esmx/rspack-vue": "*",
-    "@types/node": "22.8.6",
+    "@types/node": "^24.0.10",
     "@vue/server-renderer": "^3.5.13",
-    "typescript": "^5.7.3",
+    "typescript": "^5.8.3",
     "vue": "^3.5.13",
     "vue-tsc": "^2.1.6"
   }

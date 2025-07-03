@@ -52,8 +52,8 @@ Create the `package.json` file to configure project dependencies and scripts:
   },
   "devDependencies": {
     "@esmx/rspack": "*",
-    "@types/node": "22.8.6",
-    "typescript": "^5.7.3"
+    "@types/node": "^24.0.10",
+    "typescript": "^5.8.3"
   }
 }
 ```

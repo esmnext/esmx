@@ -13,39 +13,46 @@ head:
 
 ## Node.js 环境
 
-框架要求 Node.js 版本 >= 22.6，主要用于支持 TypeScript 类型导入（通过 `--experimental-strip-types` 标志），无需额外编译步骤。
+框架要求 Node.js 版本 >= 24，主要用于支持 TypeScript 类型导入（通过 `--experimental-strip-types` 标志），无需额外编译步骤。
 
 ## 浏览器兼容性
 
 框架默认采用兼容模式构建，以支持更广泛的浏览器。但需要注意，要实现完整的浏览器兼容支持，需要手动添加 [es-module-shims](https://github.com/guybedford/es-module-shims) 依赖。
 
-
 ### 兼容模式（默认）
-- 🌐 Chrome：>= 63 
-- 🦊 Firefox：>= 67
-- 🧭 Safari：>= 11.1
 
-根据 [Can I Use](https://caniuse.com/?search=dynamic%20import) 的统计数据，兼容模式下的浏览器覆盖率达到 96.81%。
+| 浏览器 | 最低版本要求 |
+|-------|------------|
+| 🌐 Chrome | >= 64 |
+| 🌊 Edge | >= 79 |
+| 🦊 Firefox | >= 67 |
+| 🧭 Safari | >= 11.1 |
+
+兼容模式要求浏览器同时支持**动态导入**（Dynamic Import）和 **import.meta** 特性。
+
+根据 [Can I Use](https://caniuse.com/?search=dynamic%20import) 的统计数据，兼容模式下的浏览器覆盖率达到 **95.59%**。
 
 ### 原生支持模式
-- 🌐 Chrome：>= 89 
-- 🦊 Firefox：>= 108 
-- 🧭 Safari：>= 16.4 
+
+| 浏览器 | 最低版本要求 |
+|-------|------------|
+| 🌐 Chrome | >= 89 |
+| 🌊 Edge | >= 89 |
+| 🦊 Firefox | >= 108 |
+| 🧭 Safari | >= 16.4 |
 
 原生支持模式具有以下优势：
-- 零运行时开销，无需额外的模块加载器
-- 浏览器原生解析，更快的执行速度
-- 更好的代码分割和按需加载能力
+1. 零运行时开销，无需额外的模块加载器
+2. 浏览器原生解析，更快的执行速度
+3. 更好的代码分割和按需加载能力
 
-根据 [Can I Use](https://caniuse.com/?search=importmap) 的统计数据，兼容模式下的浏览器覆盖率达到 93.5%。
+根据 [Can I Use](https://caniuse.com/?search=importmap) 的统计数据，原生支持模式下的浏览器覆盖率达到 **93.5%**。
 
 ### 启用兼容支持
 
 ::: warning 重要提示
 虽然框架默认使用兼容模式构建，但要实现对旧版浏览器的完整支持，您需要在项目中添加 [es-module-shims](https://github.com/guybedford/es-module-shims) 依赖。
-
 :::
-
 
 在 HTML 文件中添加以下脚本：
 
@@ -58,7 +65,6 @@ head:
 ```
 
 ::: tip 最佳实践
-
 1. 生产环境建议：
    - 将 es-module-shims 部署到自有服务器
    - 确保资源加载的稳定性和访问速度

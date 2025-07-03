@@ -52,11 +52,11 @@ Create the `package.json` file to configure project dependencies and scripts:
   },
   "devDependencies": {
     "@esmx/rspack": "*",
-    "@types/node": "22.8.6",
+    "@types/node": "^24.0.10",
     "htm": "^3.1.1",
     "preact": "^10.26.2",
     "preact-render-to-string": "^6.5.13",
-    "typescript": "^5.2.2"
+    "typescript": "^5.8.3"
   }
 }
 ```

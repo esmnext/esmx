@@ -4,7 +4,7 @@
     "version": "1.0.0",
     "type": "module",
     "scripts": {
-        "prepare": "./prepare.sh",
+        "prepare": "husky",
         "lint:js": "biome check --write --no-errors-on-unmatched",
         "lint:css": "pnpm --filter \"*\" lint:css",
         "lint:type": "pnpm --filter \"*\" lint:type",
@@ -17,7 +17,7 @@
     },
     "devDependencies": {
         "lint-staged": "16.1.2",
-        "husky": "8.0.3",
+        "husky": "9.1.7",
         "@biomejs/biome": "1.9.4"
     },
     "private": false,
@@ -30,7 +30,7 @@
     },
     "engines": {
         "lerna": ">=8",
-        "node": ">=22",
+        "node": ">=24",
         "pnpm": ">=10"
     },
     "pnpm": {

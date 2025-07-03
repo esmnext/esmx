@@ -12,7 +12,7 @@
     "devDependencies": {
         "@esmx/router": "workspace:*",
         "@esmx/rspack": "workspace:*",
-        "@types/node": "22.8.6",
+        "@types/node": "^24.0.10",
         "typescript": "^5.8.3"
     }
 }
