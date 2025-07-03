@@ -1,281 +1,288 @@
 <template>
     <div class="home-container">
-        <div class="hero-section">
-            <h1 class="hero-title">Esmx Router</h1>
-            <p class="hero-subtitle">探索下一代路由体验</p>
-        </div>
-        
-        <div class="news-container">
-            <h2 class="section-title">最新动态</h2>
-            <div class="news-grid">
-                <div v-for="id in 10" :key="id" class="news-card">
-                    <div class="card-content">
-                        <div class="card-tag">新闻 #{{ id }}</div>
-                        <div class="card-title">探索 Esmx 路由的强大功能</div>
-                        <div class="card-meta">{{ new Date().toLocaleDateString() }}</div>
+        <!-- 艺术家区域 -->
+        <div class="artists-section">
+            <h2 class="section-title">Popular Artists</h2>
+            <div class="artists-grid">
+                <RouterLink v-for="artist in mockArtists.slice(0, 5)" :key="artist.id" :to="`/artist/${artist.id}`" class="artist-card">
+                    <img :src="artist.avatar" :alt="artist.name" class="artist-avatar" />
+                    <div class="artist-info">
+                        <div class="artist-name">{{ artist.name }}</div>
+                        <div class="artist-followers">{{ formatFollowers(artist.followers) }} followers</div>
+                        <div class="artist-bio">{{ artist.bio }}</div>
                     </div>
-                    <button @click="$router.pushLayer(`/news/${id}`)" class="layer-button">
-                        弹层预览
-                    </button>
-                    <RouterLink :to="{
-                        path: `/news/${id}`,
-                        state: { id }
-                    }" class="card-link">
-                        查看详情
-                        <span class="link-icon">→</span>
-                    </RouterLink>
-                </div>
+                    <div class="artist-link-text">
+                        View Profile →
+                    </div>
+                </RouterLink>
+            </div>
+        </div>
+        <!-- 播放列表区域 -->
+        <div class="playlists-section">
+            <h2 class="section-title">Featured Playlists</h2>
+            <div class="playlists-grid">
+                <RouterLink v-for="playlist in mockPlaylists" :key="playlist.id" :to="`/playlist/${playlist.id}`" class="playlist-card">
+                    <img :src="playlist.cover" :alt="playlist.title" class="playlist-cover" />
+                    <div class="playlist-info">
+                        <div class="playlist-title">{{ playlist.title }}</div>
+                        <div class="playlist-desc">{{ playlist.description }}</div>
+                        <div class="playlist-meta">{{ playlist.tracks.length }} songs · {{ playlist.creator }}</div>
+                    </div>
+                    <div class="playlist-actions">
+                        <button @click.prevent="playPlaylist(playlist)" class="play-btn">
+                            ▶ Play
+                        </button>
+                        <div class="detail-link-text">
+                            View Details →
+                        </div>
+                    </div>
+                </RouterLink>
             </div>
         </div>
     </div>
 </template>
+
 <script lang="ts" setup>
-import { RouterLink, useRouter } from '@esmx/router-vue';
-const $router = useRouter();
+import { RouterLink } from '@esmx/router-vue';
+import {
+    type Playlist,
+    mockArtists,
+    mockPlaylists,
+    musicStore
+} from 'ssr-vue-base/src/store/music-store';
+
+const playPlaylist = (playlist: Playlist) => {
+    if (playlist.tracks.length > 0) {
+        musicStore.playSong(playlist.tracks[0], playlist.tracks);
+    }
+};
+
+const formatFollowers = (count: number): string => {
+    if (count >= 1000000) {
+        return (count / 1000000).toFixed(1) + 'M';
+    } else if (count >= 1000) {
+        return (count / 1000).toFixed(1) + 'K';
+    }
+    return count.toString();
+};
 </script>
+
 <style scoped>
 .home-container {
     padding: var(--spacing-6);
-    max-width: 900px;
-    margin: 0 auto;
 }
 
-/* 🌟 英雄区域 */
-.hero-section {
-    padding: var(--spacing-12) var(--spacing-8);
-    margin-bottom: var(--spacing-8);
-    background: var(--card-color);
-    border-radius: var(--border-radius-xl);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    border: 1px solid var(--border-light);
-    box-shadow: var(--shadow-sm);
-    position: relative;
-    overflow: hidden;
-}
-
-.hero-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: var(--spacing-1);
-    background: var(--dark-mask), linear-gradient(90deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-    opacity: 0.8;
-}
-
-.hero-section:hover {
-    box-shadow: var(--shadow-md);
-}
-
-.hero-title {
-    font-family: var(--font-family-display);
-    font-size: var(--font-size-4xl);
-    font-weight: 800;
-    margin: 0 0 var(--spacing-4);
-    color: var(--text-primary);
-    letter-spacing: -0.02em;
-    position: relative;
-    z-index: 1;
-}
-
-.hero-subtitle {
-    font-size: var(--font-size-lg);
-    font-weight: 400;
-    color: var(--text-secondary);
-    margin: 0;
-    max-width: 600px;
-    position: relative;
-    z-index: 1;
-}
-
-/* 新闻部分 */
-.news-container {
+.playlists-section {
     margin-top: var(--spacing-8);
 }
 
+/* 章节标题 */
 .section-title {
-    font-size: var(--font-size-3xl);
+    font-size: var(--font-size-2xl);
     font-weight: 700;
-    margin-bottom: var(--spacing-6);
     color: var(--text-primary);
-    letter-spacing: -0.02em;
-}
-
-.news-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--spacing-6);
-}
-
-.news-card {
-    background: var(--card-color);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-sm);
+    margin: 0 0 var(--spacing-6);
     display: flex;
-    flex-direction: column;
-    border: 1px solid var(--border-light);
-    position: relative;
-    overflow: hidden;
+    align-items: center;
+    gap: var(--spacing-3);
 }
 
-.news-card::before {
+.section-title::before {
     content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: var(--spacing-1);
-    background: var(--dark-mask), linear-gradient(90deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-    opacity: 0;
+    width: 4px;
+    height: 24px;
+    background: var(--music-gradient);
+    border-radius: var(--border-radius-full);
 }
 
-.news-card:hover {
-    box-shadow: var(--shadow-lg);
-    border-color: var(--border-color);
+/* 播放列表网格 */
+.playlists-grid {
+    display: flex;
+    gap: var(--spacing-6);
+    margin-bottom: var(--spacing-8);
+    flex-wrap: wrap;
+    max-width: 100%;
 }
 
-.news-card:hover::before {
-    opacity: 1;
-}
-
-.card-content {
-    padding: var(--spacing-6);
-    flex-grow: 1;
-}
-
-.card-tag {
-    display: inline-block;
-    padding: var(--spacing-1) var(--spacing-3);
-    background: var(--primary-50);
-    color: var(--primary-color);
-    border-radius: var(--border-radius-md);
-    font-size: var(--font-size-sm);
-    font-weight: 600;
-    margin-bottom: var(--spacing-3);
-    border: 1px solid rgba(255, 193, 7, 0.2);
-}
-
-.card-title {
-    font-size: var(--font-size-lg);
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: var(--spacing-3);
-    line-height: var(--line-height-tight);
-}
-
-.card-meta {
-    font-size: var(--font-size-sm);
-    color: var(--text-secondary);
-    font-weight: 500;
-}
-
-.layer-button {
-    position: absolute;
-    top: var(--spacing-4);
-    right: var(--spacing-4);
-    padding: var(--spacing-2) var(--spacing-4);
-    background: var(--dark-mask), var(--primary-color);
-    color: var(--text-white);
-    border: none;
-    border-radius: var(--border-radius-md);
-    font-size: var(--font-size-sm);
-    font-weight: 600;
+.playlist-card {
+    background: var(--card-color);
+    border-radius: var(--border-radius-xl);
+    border: 1px solid var(--border-light);
+    overflow: hidden;
+    transition: all var(--duration-normal);
     cursor: pointer;
-    display: none;
-    z-index: 10;
-    box-shadow: var(--shadow-md);
-}
-
-.news-card:hover .layer-button {
+    width: 450px;
+    text-decoration: none;
+    color: inherit;
     display: block;
 }
 
-.layer-button:hover {
-    background: var(--primary-dark);
+.playlist-card:hover {
     box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+    text-decoration: none;
+    color: inherit;
+    border-color: var(--music-primary);
 }
 
-.card-link {
+.playlist-cover {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+}
+
+.playlist-info {
+    padding: var(--spacing-4);
+}
+
+.playlist-title {
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-2);
+    font-size: var(--font-size-lg);
+}
+
+.playlist-desc {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-2);
+    line-height: 1.5;
+}
+
+.playlist-meta {
+    color: var(--text-tertiary);
+    font-size: var(--font-size-xs);
+    margin-bottom: var(--spacing-4);
+}
+
+.playlist-actions {
+    padding: 0 var(--spacing-4) var(--spacing-4);
+    display: flex;
+    gap: var(--spacing-3);
+    align-items: center;
+}
+
+.playlist-actions .play-btn {
+    background: var(--music-primary);
+    color: white;
+    border: none;
+    padding: var(--spacing-2) var(--spacing-3);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--duration-fast);
+    white-space: nowrap;
+}
+
+.playlist-actions .play-btn:hover {
+    background: var(--primary-dark);
+    transform: scale(1.05);
+}
+
+.detail-link-text {
+    color: var(--music-primary);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    transition: color var(--duration-fast);
+}
+
+.playlist-card:hover .detail-link-text {
+    color: var(--primary-dark);
+}
+
+/* 艺术家网格 */
+.artists-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-6);
+}
+
+.artist-card {
+    background: var(--card-color);
+    border-radius: var(--border-radius-xl);
+    border: 1px solid var(--border-light);
+    padding: var(--spacing-6);
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: var(--spacing-4) var(--spacing-6);
-    background: var(--surface-color);
-    color: var(--link-color);
-    text-decoration: none;
-    font-weight: 600;
-    border-top: 1px solid var(--border-light);
+    gap: var(--spacing-4);
+    transition: all var(--duration-normal);
     cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    width: 450px;
 }
 
-.card-link:hover {
-    background: var(--surface-hover);
-    color: var(--link-hover);
+.artist-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    text-decoration: none;
+    color: inherit;
+    border-color: var(--music-primary);
 }
 
-.link-icon {
+.artist-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--border-radius-full);
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.artist-info {
+    flex: 1;
+}
+
+.artist-name {
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-1);
     font-size: var(--font-size-lg);
-    font-weight: bold;
 }
 
-.card-link:hover .link-icon {
-    color: var(--link-hover);
+.artist-followers {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-2);
 }
 
-/* 响应式调整 */
+.artist-bio {
+    color: var(--text-tertiary);
+    font-size: var(--font-size-sm);
+    line-height: 1.4;
+}
+
+.artist-link-text {
+    color: var(--music-primary);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    white-space: nowrap;
+    transition: color var(--duration-fast);
+}
+
+.artist-card:hover .artist-link-text {
+    color: var(--primary-dark);
+}
+
+/* 响应式设计 */
 @media (max-width: 768px) {
     .home-container {
         padding: var(--spacing-4);
     }
     
-    .hero-section {
-        padding: var(--spacing-8) var(--spacing-6);
-        margin-bottom: var(--spacing-6);
-    }
-    
-    .hero-title {
-        font-size: var(--font-size-3xl);
-    }
-    
-    .hero-subtitle {
-        font-size: var(--font-size-base);
-    }
-    
-    .news-grid {
+    .playlists-grid,
+    .artists-grid {
         grid-template-columns: 1fr;
-        gap: var(--spacing-4);
     }
     
-    .section-title {
-        font-size: var(--font-size-2xl);
-        margin-bottom: var(--spacing-4);
-    }
-}
-
-@media (max-width: 480px) {
-    .home-container {
-        padding: var(--spacing-2);
+    .artist-card {
+        flex-direction: column;
+        text-align: center;
     }
     
-    .hero-section {
-        padding: var(--spacing-6) var(--spacing-4);
-    }
-    
-    .hero-title {
-        font-size: var(--font-size-2xl);
-    }
-    
-    .card-content {
-        padding: var(--spacing-4);
-    }
-    
-    .card-link {
-        padding: var(--spacing-3) var(--spacing-4);
+    .artist-avatar {
+        width: 100px;
+        height: 100px;
     }
 }
 </style>

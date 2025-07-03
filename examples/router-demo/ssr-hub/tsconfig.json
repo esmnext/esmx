@@ -17,8 +17,8 @@
         
         "baseUrl": ".",
         "paths": {
-            "ssr-vue-base/src/*": ["./src/*"],
-            // "ssr-vue-base/*": ["./*"]
+            "ssr-hub/src/*": ["./src/*"],
+            "ssr-hub/*": ["./*"]
         }
     },
     "include": ["src"],
