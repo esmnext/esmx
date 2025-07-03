@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        node: ['>=22.11.0', 24]
+        node: [24]
     runs-on: ${{ matrix.os }}
     env:
       RUST_BACKTRACE: full
@@ -45,7 +45,7 @@ jobs:
       run: node ./build.mjs
 
     - name: Deploy
-      if: github.ref == 'refs/heads/master' && matrix.os == 'ubuntu-latest' && matrix.node == '>=22.11.0'
+      if: github.ref == 'refs/heads/master' && matrix.os == 'ubuntu-latest' && matrix.node == '24'
       uses: JamesIves/github-pages-deploy-action@v4.6.8
       with:
         branch: docs

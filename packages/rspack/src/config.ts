@@ -118,7 +118,7 @@ export function createRspackConfig(
             }
             return [];
         })(),
-        target: buildTarget === 'client' ? 'web' : 'node22.6',
+        target: buildTarget === 'client' ? 'web' : 'node24',
         mode: esmx.isProd ? 'production' : 'development',
         cache: !esmx.isProd
     };

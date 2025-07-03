@@ -45,5 +45,5 @@ features:
     details: 为电商网站、新闻媒体等性能敏感场景提供优化，支持 SEO 和首屏加载优化。
   - icon: 🌐
     title: 环境支持
-    details: 支持 Node.js 22.9+ 和现代浏览器，完整支持 ESM dynamic import 和 import.meta。
+    details: 支持 Node.js 24+ 和现代浏览器，完整支持 ESM dynamic import 和 import.meta。
 ---

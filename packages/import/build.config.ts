@@ -11,7 +11,7 @@ export default defineBuildConfig({
             cleanDist: true,
             declaration: true,
             esbuild: {
-                target: 'node22'
+                target: 'node24'
             }
         }
     ]

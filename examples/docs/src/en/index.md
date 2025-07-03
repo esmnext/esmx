@@ -45,5 +45,5 @@ features:
     details: Optimized for performance-sensitive scenarios like e-commerce and media sites, with SEO and first-load optimizations.
   - icon: 🌐
     title: Environment Support
-    details: Supports Node.js 22.9+ and modern browsers, with full ESM dynamic import and import.meta compatibility.
+    details: Supports Node.js 24+ and modern browsers, with full ESM dynamic import and import.meta compatibility.
 ---
