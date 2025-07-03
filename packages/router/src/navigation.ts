@@ -86,7 +86,11 @@ export class Navigation {
         this._replace(history, data, url);
     }
 
-    public go(index: number): Promise<NavigationGoResult> {
+    public backHistoryState() {
+        return this._go(history, -1);
+    }
+
+    private _go(history: History, index: number): Promise<NavigationGoResult> {
         if (this._promiseResolve) {
             return Promise.resolve(null);
         }
@@ -97,8 +101,11 @@ export class Navigation {
                 resolve({ type: 'success', url, state: state || {} });
             };
             setTimeout(this._promiseResolve, 80);
-            this._history.go(index);
+            history.go(index);
         });
+    }
+    public go(delta?: number): Promise<NavigationGoResult> {
+        return this._go(this._history, delta || 0);
     }
     public forward(): Promise<NavigationGoResult> {
         return this.go(1);

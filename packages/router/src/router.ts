@@ -227,13 +227,13 @@ export class Router {
         toInput: RouteLocationInput
     ): Promise<{ promise: Promise<RouteLayerResult>; router: Router }> {
         const layerOptions: RouteLayerOptions =
-            (isPlainObject(toInput) ? toInput.layer : null) || {};
+            (isPlainObject(toInput) && toInput.layer) || {};
 
         const zIndex =
             layerOptions.zIndex ?? this.parsedOptions.zIndex + LAYER_ID.next();
 
         let promiseResolve: (result: RouteLayerResult) => void;
-        const promise = new Promise<RouteLayerResult>((resolve) => {
+        let promise = new Promise<RouteLayerResult>((resolve) => {
             promiseResolve = resolve;
         });
 
@@ -297,6 +297,18 @@ export class Router {
                 router.route.state,
                 router.route.url
             );
+            promise = promise.then(async (result) => {
+                await this.navigation.backHistoryState();
+                return result;
+            });
+        }
+        if (layerOptions.autoPush) {
+            promise = promise.then(async (result) => {
+                if (result.type === 'push') {
+                    await this.push(result.route.url.href);
+                }
+                return result;
+            });
         }
         return {
             promise,
