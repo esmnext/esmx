@@ -7,13 +7,14 @@
                     layer: {
                         push: true,
                         autoPush: true,
-                        shouldClose: (to, from) => to.fullPath === from?.fullPath,
+                        shouldClose: (to, from) => from?.layer !== null && to.fullPath === from?.fullPath,
                         routerOptions: {
                             rootStyle: {
                                 position: 'absolute',
                             },
                             context: {
-                                layerType: 'popup',
+                                layerType: 'drawer',
+                                layerSlideDir: 'up',
                             }
                         }
                     }

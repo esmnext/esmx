@@ -52,7 +52,7 @@ const applyTheme = (dark: boolean) =>
             media.appendMedium(`(prefers-color-scheme: ${scheme})`);
     });
 
-watch(isDark, applyTheme);
+watch(() => isDark.value, applyTheme);
 
 onMounted(() => {
     if (typeof window === 'object') {

@@ -64,7 +64,7 @@ const vHTML = computed(() =>
         .replace(/^( *)(.*)([{[])$\n/gm, (all, spaces, content, bracket) => {
             const depth = spaces.length / space;
             let open =
-                depth <= (props.collapseDepth ?? Number.POSITIVE_INFINITY);
+                depth < (props.collapseDepth ?? Number.POSITIVE_INFINITY);
             if (props.collapseRoot && depth === 0) open = false;
             return `<details${open ? ' open' : ''} class="json-collapse" style="--depth: ${depth}"
                 ><summary

@@ -231,7 +231,9 @@ aside {
 
 .quick-play-section {
     padding: var(--spacing-6);
-    justify-self: flex-end;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
 }
 
 .section-title {

@@ -6,18 +6,19 @@
                 <button class="close-btn" @click="$emit('close')">&times;</button>
             </div>
             <div class="modal-body">
-                <p>Route:</p>
-                <CollapsibleJson :data="$route" :collapseDepth="2" :collapseRoot="true" />
-                <p>Router context:</p>
-                <CollapsibleJson :data="$router.parsedOptions.context" />
+                Route:
+                <CollapsibleJson :data="$route" :collapseDepth="3" :collapseRoot="true" />
+                <p>Router parsedOptions:</p>
+                <CollapsibleJson :data="$router.parsedOptions" :collapseDepth="1" />
             </div>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { useRoute } from '@esmx/router-vue';
+import { useRoute, useRouter } from '@esmx/router-vue';
 import CollapsibleJson from './collapsible-json.vue';
+import { watch } from 'vue';
 
 defineProps<{
     show: boolean;
@@ -28,6 +29,11 @@ defineEmits<{
 }>();
 
 const $route = useRoute();
+const $router = useRouter();
+
+watch(() => $route.fullPath, () => {
+    console.log({ $route, $router });
+}, { immediate: true });
 </script>
 
 <style scoped>
@@ -45,6 +51,7 @@ const $route = useRoute();
     justify-content: center;
     z-index: 1000;
     padding: var(--spacing-4);
+    overscroll-behavior: contain;
 }
 
 .modal-content {
