@@ -1,0 +1,339 @@
+/* 全局滚动条样式 */
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--background-color);
+    color: var(--text-dark);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-y: scroll;
+}
+
+.layout {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.layout > header {
+    flex-shrink: 0;
+}
+
+.layout > main {
+    flex: 1;
+    padding: var(--content-padding);
+}
+
+:root {
+    /* 主题色 - 太阳色系 */
+    --primary-color: #FFC107;  /* 明亮的黄色 */
+    --primary-light: #FFE082;  /* 浅黄色 */
+    --primary-dark: #FFA000;   /* 金黄色 */
+    
+    /* 背景色 - 温暖色调 */
+    --background-color: #FFFAF4; /* 温暖的米色背景 */
+    --background-light: #FFFFFF; /* 纯白色卡片 */
+    --background-dark: #FFF5E6;  /* 浅橙色强调 */
+    
+    /* 文字颜色 */
+    --text-dark: #2C3E50;    /* 深蓝灰色文字 */
+    --text-light: #34495E;   /* 中蓝灰色文字 */
+    --text-muted: #7F8C8D;   /* 浅灰色文字 */
+    
+    /* 边框和阴影 */
+    --border-color: #FFE0B2;  /* 浅橙色边框 */
+    --shadow-color: rgba(255, 152, 0, 0.1);  /* 橙色阴影 */
+    --shadow-color-hover: rgba(255, 152, 0, 0.2);
+    
+    /* 动画时间 */
+    --transition-fast: 0.2s;
+    --transition-normal: 0.3s;
+    
+    /* 布局 */
+    --max-width: 1280px;
+    --header-height: 60px;
+    --content-padding: 2rem;
+    --border-radius: 8px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+a {
+    color: var(--primary-dark);
+    text-decoration: none;
+    transition: all var(--transition-fast) ease;
+}
+
+a:hover {
+    color: var(--primary-color);
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--background-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-light);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+/* 标题样式 */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-dark);
+    margin: 2rem 0 1rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+h1 {
+    font-size: 2.5rem;
+    background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+h2 {
+    font-size: 1.8rem;
+    color: var(--primary-dark);
+}
+
+/* 链接样式 */
+a {
+    color: var(--primary-dark);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+a:hover {
+    color: var(--primary-color);
+}
+
+a:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: var(--primary-color);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+a:hover:after {
+    transform: scaleX(1);
+}
+
+/* 图片样式 */
+.image-wrapper {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+
+.image-info {
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.image-info h3 {
+    margin: 0 0 0.25rem;
+    color: #333;
+}
+
+.image-info p {
+    margin: 0;
+    color: #666;
+    line-height: 1.4;
+}
+
+/* 图片网格样式 */
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+    list-style: none;
+    margin: 0;
+}
+
+.image-grid li {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem;
+}
+
+/* 代码块样式 */
+pre {
+    background: var(--background-light);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    overflow-x: auto;
+    box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+/* 计数器样式 */
+.counter {
+    background: var(--background-light);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px var(--shadow-color);
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.counter-value {
+    font-size: 3rem;
+    font-weight: bold;
+    color: var(--primary-dark);
+    text-shadow: 2px 2px 4px var(--shadow-color);
+}
+
+/* URL 部分样式 */
+.url-section {
+    background: var(--background-light);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px var(--shadow-color);
+    margin: 2rem 0;
+}
+
+/* 容器样式 */
+.container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: var(--content-padding);
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.counter, .url-section, .image-grid li {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* 404 页面样式 */
+.not-found {
+    min-height: calc(100vh - var(--header-height));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: var(--background-color);
+}
+
+.not-found-content {
+    padding: 2rem;
+}
+
+.not-found .error-code {
+    font-size: 6rem;
+    font-weight: bold;
+    line-height: 1;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.not-found h1 {
+    font-size: 1.5rem;
+    color: var(--primary-dark);
+    margin: 0 0 1rem;
+}
+
+.not-found p {
+    color: var(--text-light);
+    margin: 0 0 2rem;
+}
+
+.not-found .actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.not-found .back-home,
+.not-found .go-back {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.not-found .back-home {
+    background: var(--primary-color);
+    color: var(--text-dark);
+    text-decoration: none;
+}
+
+.not-found .back-home:hover {
+    background: var(--primary-dark);
+    color: white;
+}
+
+.not-found .go-back {
+    background: var(--background-light);
+    border: 1px solid var(--border-color);
+    color: var(--text-light);
+}
+
+.not-found .go-back:hover {
+    background: var(--background-color);
+    color: var(--text-dark);
+}
+
+@media (max-width: 1280px) {
+    :root {
+        --content-padding: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --content-padding: 1rem;
+    }
+    
+    body {
+        font-size: 14px;
+    }
+}

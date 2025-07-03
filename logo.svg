@@ -1,0 +1,23 @@
+<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sunCore" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFE082"/>
+      <stop offset="100%" style="stop-color:#FFA000"/>
+    </linearGradient>
+    <linearGradient id="sunRays" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFC107"/>
+      <stop offset="100%" style="stop-color:#FF8F00"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(20, 20)">
+    <path d="
+      M 0,-16 L 4,-8 L 12,-12 L 8,-4 L 16,0 L 8,4 L 12,12 L 4,8 L 0,16 L -4,8 L -12,12 L -8,4 L -16,0 L -8,-4 L -12,-12 L -4,-8 Z
+    " fill="url(#sunRays)">
+    </path>
+    <path d="
+      M 0,-12 L 3,-6 L 9,-9 L 6,-3 L 12,0 L 6,3 L 9,9 L 3,6 L 0,12 L -3,6 L -9,9 L -6,3 L -12,0 L -6,-3 L -9,-9 L -3,-6 Z
+    " fill="url(#sunRays)" opacity="0.8">
+    </path>
+    <circle r="6" fill="url(#sunCore)"/>
+  </g>
+</svg>
