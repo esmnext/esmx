@@ -10,12 +10,15 @@ const port = process.env.PORT || 3002;
 
 export default {
     modules: {
-        exports: ['root:src/routes.ts'],
+        exports: [
+            'root:src/routes.ts',
+            'root:src/components/index.ts',
+            'root:src/layout/index.ts'
+        ],
         links: {
             'ssr-vue-base': './node_modules/ssr-vue-base/dist',
             'ssr-npm-base': './node_modules/ssr-npm-base/dist',
-            'ssr-npm-vue2': './node_modules/ssr-npm-vue2/dist',
-            'ssr-npm-vue3': './node_modules/ssr-npm-vue3/dist'
+            'ssr-npm-vue2': './node_modules/ssr-npm-vue2/dist'
         },
         imports: {
             '@esmx/router': 'ssr-npm-base/@esmx/router',

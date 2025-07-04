@@ -19,11 +19,9 @@
         "ssr-vue-base": "workspace:*",
         "ssr-npm-base": "workspace:*",
         "ssr-npm-vue2": "workspace:*",
-        "ssr-npm-vue3": "workspace:*",
         "@types/node": "^24.0.10",
         "typescript": "^5.8.3",
         "vue": "^2.7.16",
-        "vue-server-renderer": "^2.7.16",
         "vue-tsc": "^2.1.6"
     }
 }

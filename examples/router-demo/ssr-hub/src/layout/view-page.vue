@@ -62,20 +62,25 @@
 <script lang="ts" setup>
 import { RouteVerifyHook } from '@esmx/router';
 import { RouterLink, useRouter } from '@esmx/router-vue';
-import { RouteInfoModal, ToggleThemeBtn } from 'ssr-vue-base/src/components';
-import { TwoCol } from 'ssr-vue-base/src/layout';
 import {
+    type MusicStore,
     type Song,
     mockSongs,
-    musicStore
+    useMusicStore
 } from 'ssr-vue-base/src/store/music-store';
+import { RouteInfoModal, ToggleThemeBtn } from 'ssr-vue3/src/components';
+import { TwoCol } from 'ssr-vue3/src/layout';
 import { computed, ref } from 'vue';
+
+const $router = useRouter();
+const musicStore =
+    ($router?.parsedOptions?.context?.musicStore as MusicStore) ||
+    useMusicStore(ref);
 
 const shouldClose: RouteVerifyHook = (to, from, router) => {
     return to.fullPath === from?.fullPath;
 };
 
-const $router = useRouter();
 const showRouteInfo = ref(false);
 
 // 选择精选歌曲用于侧边栏显示

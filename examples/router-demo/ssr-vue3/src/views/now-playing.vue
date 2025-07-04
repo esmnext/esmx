@@ -67,11 +67,20 @@
 </template>
 
 <script lang="ts" setup>
-import { BubbleBg, PlayList } from 'ssr-vue-base/src/components';
-import { TwoCol } from 'ssr-vue-base/src/layout';
-import { musicStore } from 'ssr-vue-base/src/store/music-store';
+import { useRouter } from '@esmx/router-vue';
+import {
+    type MusicStore,
+    useMusicStore
+} from 'ssr-vue-base/src/store/music-store';
 import { formatTime } from 'ssr-vue-base/src/utils/time';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+import { BubbleBg, PlayList } from '../components';
+import { TwoCol } from '../layout';
+
+const $router = useRouter();
+const musicStore =
+    ($router.parsedOptions.context.musicStore as MusicStore) ||
+    useMusicStore(ref);
 
 const currentSong = computed(() => musicStore.currentSong.value);
 const isPlaying = computed(() => musicStore.isPlaying.value);

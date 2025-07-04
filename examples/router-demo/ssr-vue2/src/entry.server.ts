@@ -1,10 +1,7 @@
 import type { IncomingMessage } from 'node:http';
 import type { RenderContext } from '@esmx/core';
-import { createRenderer } from 'vue-server-renderer';
+import { renderToString } from 'ssr-npm-vue2/src/render-to-str';
 import { createApp } from './create-app';
-
-// 创建渲染器
-const renderer = createRenderer();
 
 export default async (rc: RenderContext) => {
     const req = rc.params.req as IncomingMessage;
@@ -13,7 +10,7 @@ export default async (rc: RenderContext) => {
     const router = await createApp({
         base: `${protocol}://${host}`,
         url: req.url ?? '/',
-        renderToString: renderer.renderToString
+        renderToString
     });
 
     // 使用 Vue 的 renderToString 生成页面内容
@@ -30,8 +27,7 @@ export default async (rc: RenderContext) => {
             <title>Esmx 快速开始</title>
             ${rc.css()}
         </head>
-        <body>
-            <div id="root">${html}</div>
+        <body>${html}
             ${rc.importmap()}
             ${rc.moduleEntry()}
             ${rc.modulePreload()}

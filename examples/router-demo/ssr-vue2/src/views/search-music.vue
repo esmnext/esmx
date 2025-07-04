@@ -90,20 +90,26 @@
 </template>
 
 <script lang="ts" setup>
-import { useRoute } from '@esmx/router-vue';
+import { useRoute, useRouter } from '@esmx/router-vue';
 import { RouterLink } from '@esmx/router-vue';
 import {
+    type MusicStore,
     type Song,
     mockArtists,
     mockPlaylists,
     mockSongs,
-    musicStore
+    useMusicStore
 } from 'ssr-vue-base/src/store/music-store';
 import { formatTime } from 'ssr-vue-base/src/utils/time';
 import { computed, ref } from 'vue';
 
-const route = useRoute();
-const searchQuery = ref((route.params.query as string) || '');
+const $router = useRouter();
+const musicStore =
+    ($router.parsedOptions.context.musicStore as MusicStore) ||
+    useMusicStore(ref);
+
+const $route = useRoute();
+const searchQuery = ref(($route.params.query as string) || '');
 
 const suggestions = [
     'Jay Chou',

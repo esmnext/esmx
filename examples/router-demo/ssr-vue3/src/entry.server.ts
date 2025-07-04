@@ -1,6 +1,6 @@
 import type { IncomingMessage } from 'node:http';
 import type { RenderContext } from '@esmx/core';
-import { renderToString } from '@vue/server-renderer';
+import { renderToString } from 'ssr-npm-vue3/src/render-to-str';
 import { createApp } from './create-app';
 
 export default async (rc: RenderContext) => {
@@ -29,9 +29,7 @@ export default async (rc: RenderContext) => {
             <title>Esmx 快速开始</title>
             ${rc.css()}
         </head>
-        <body>${ssrCtx.teleports?.body || ''}
-            <div id="root">${html}</div>
-            <div id="teleported">${ssrCtx.teleports?.['#teleported'] ?? ''}</div>
+        <body>${html}
             ${rc.importmap()}
             ${rc.moduleEntry()}
             ${rc.modulePreload()}

@@ -9,12 +9,19 @@
 
 <script lang="ts" setup>
 import { useRouter } from '@esmx/router-vue';
-import { MiniPlayer } from 'ssr-vue-base/src/components';
-import { ViewLayer, ViewLayerDrawer } from 'ssr-vue-base/src/layout';
-import { musicStore } from 'ssr-vue-base/src/store/music-store';
-import { computed } from 'vue';
+import {
+    type MusicStore,
+    useMusicStore
+} from 'ssr-vue-base/src/store/music-store';
+import { MiniPlayer } from 'ssr-vue3/src/components';
+import { ViewLayer, ViewLayerDrawer } from 'ssr-vue3/src/layout';
+import { computed, ref } from 'vue';
 import ViewPage from './layout/view-page.vue';
+
 const $router = useRouter();
+const musicStore =
+    ($router?.parsedOptions?.context?.musicStore as MusicStore) ||
+    useMusicStore(ref);
 
 const currentSong = computed(() => musicStore.currentSong.value);
 </script>

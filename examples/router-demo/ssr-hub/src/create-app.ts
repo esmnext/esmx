@@ -13,12 +13,14 @@ const isBrowser = typeof window === 'object' && typeof document === 'object';
 export async function createApp({
     base,
     url,
-    renderToString,
+    vue2render2str,
+    vue3render2str,
     ssrCtx = {}
 }: {
     base: string;
     url: string;
-    renderToString?: (app: any, context?: any) => Promise<string>;
+    vue2render2str?: (app: any, context?: any) => Promise<string>;
+    vue3render2str?: (app: any, context?: any) => Promise<string>;
     ssrCtx?: Record<string, any>;
 }) {
     const router = new Router({
@@ -26,8 +28,8 @@ export async function createApp({
         base: new URL(base),
         routes,
         apps: {
-            vue2: (router) => vue2appCreator(router, renderToString, ssrCtx),
-            vue3: (router) => vue3appCreator(router, renderToString, ssrCtx)
+            vue2: (router) => vue2appCreator(router, vue2render2str, ssrCtx),
+            vue3: (router) => vue3appCreator(router, vue3render2str, ssrCtx)
         }
     });
     await router.replace(url);

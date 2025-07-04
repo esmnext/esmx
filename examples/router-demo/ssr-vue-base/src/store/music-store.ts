@@ -1,4 +1,43 @@
-import { reactive, ref } from 'vue';
+// 响应式包装器接口
+interface ReactiveRef<T> {
+    value: T;
+}
+
+// 响应式工厂函数类型
+type ReactiveFactory = <T>(initialValue: T) => ReactiveRef<T>;
+
+// 事件监听器类型
+type ChangeListener<T> = (newValue: T, oldValue: T) => void;
+
+// 自定义响应式实现（不依赖 Vue 框架）
+class SimpleReactive<T> implements ReactiveRef<T> {
+    private _value: T;
+    private listeners: Set<ChangeListener<T>> = new Set();
+
+    constructor(initialValue: T) {
+        this._value = initialValue;
+    }
+
+    get value(): T {
+        return this._value;
+    }
+
+    set value(newValue: T) {
+        const oldValue = this._value;
+        this._value = newValue;
+        this.listeners.forEach((listener) => listener(newValue, oldValue));
+    }
+
+    addListener(listener: ChangeListener<T>): () => void {
+        this.listeners.add(listener);
+        return () => this.listeners.delete(listener);
+    }
+}
+
+// 创建简单响应式引用
+export function createSimpleRef<T>(initialValue: T): ReactiveRef<T> {
+    return new SimpleReactive(initialValue);
+}
 
 export interface Song {
     id: number;
@@ -415,82 +454,185 @@ export const mockArtists: Artist[] = [
     }
 ];
 
-// 音乐播放状态管理
-class MusicStore {
-    currentSong = ref<Song | null>(null);
-    isPlaying = ref(false);
-    currentTime = ref(0);
-    duration = ref(0);
-    volume = ref(0.8);
-    playlist = ref<Song[]>([]);
-    currentIndex = ref(0);
-    isShuffled = ref(false);
-    repeatMode = ref<'none' | 'one' | 'all'>('none');
+// 基础数据 Store（非响应式）
+class BaseMusicStore {
+    currentSong: Song | null = null;
+    isPlaying = false;
+    currentTime = 0;
+    duration = 0;
+    volume = 0.8;
+    playlist: Song[] = [];
+    currentIndex = 0;
+    isShuffled = false;
+    repeatMode: 'none' | 'one' | 'all' = 'none';
 
     playSong(song: Song, playlist: Song[] = []) {
-        this.currentSong.value = song;
-        this.playlist.value = playlist.length > 0 ? playlist : [song];
-        this.currentIndex.value = this.playlist.value.findIndex(
-            (s) => s.id === song.id
+        this.currentSong = song;
+        this.playlist = playlist.length > 0 ? playlist : [song];
+        this.currentIndex = this.playlist.findIndex(
+            (s: Song) => s.id === song.id
         );
-        this.isPlaying.value = true;
+        this.isPlaying = true;
     }
 
     togglePlay() {
-        this.isPlaying.value = !this.isPlaying.value;
+        this.isPlaying = !this.isPlaying;
     }
 
     nextSong() {
-        if (this.playlist.value.length === 0) return;
+        if (this.playlist.length === 0) return;
 
         let nextIndex: number;
-        if (this.isShuffled.value) {
-            nextIndex = Math.floor(Math.random() * this.playlist.value.length);
+        if (this.isShuffled) {
+            nextIndex = Math.floor(Math.random() * this.playlist.length);
         } else {
-            nextIndex =
-                (this.currentIndex.value + 1) % this.playlist.value.length;
+            nextIndex = (this.currentIndex + 1) % this.playlist.length;
         }
 
-        this.currentIndex.value = nextIndex;
-        this.currentSong.value = this.playlist.value[nextIndex];
-        this.isPlaying.value = true;
+        this.currentIndex = nextIndex;
+        this.currentSong = this.playlist[nextIndex];
+        this.isPlaying = true;
     }
 
     previousSong() {
-        if (this.playlist.value.length === 0) return;
+        if (this.playlist.length === 0) return;
 
         let prevIndex: number;
-        if (this.isShuffled.value) {
-            prevIndex = Math.floor(Math.random() * this.playlist.value.length);
+        if (this.isShuffled) {
+            prevIndex = Math.floor(Math.random() * this.playlist.length);
         } else {
             prevIndex =
-                this.currentIndex.value === 0
-                    ? this.playlist.value.length - 1
-                    : this.currentIndex.value - 1;
+                this.currentIndex === 0
+                    ? this.playlist.length - 1
+                    : this.currentIndex - 1;
         }
 
-        this.currentIndex.value = prevIndex;
-        this.currentSong.value = this.playlist.value[prevIndex];
-        this.isPlaying.value = true;
+        this.currentIndex = prevIndex;
+        this.currentSong = this.playlist[prevIndex];
+        this.isPlaying = true;
     }
 
     setCurrentTime(time: number) {
-        this.currentTime.value = time;
+        this.currentTime = time;
     }
 
     setVolume(vol: number) {
-        this.volume.value = Math.max(0, Math.min(1, vol));
+        this.volume = Math.max(0, Math.min(1, vol));
     }
 
     toggleShuffle() {
-        this.isShuffled.value = !this.isShuffled.value;
+        this.isShuffled = !this.isShuffled;
     }
 
     cycleRepeatMode() {
         const modes: Array<'none' | 'one' | 'all'> = ['none', 'one', 'all'];
-        const currentIndex = modes.indexOf(this.repeatMode.value);
-        this.repeatMode.value = modes[(currentIndex + 1) % modes.length];
+        const currentIndex = modes.indexOf(this.repeatMode);
+        this.repeatMode = modes[(currentIndex + 1) % modes.length];
     }
 }
 
-export const musicStore = new MusicStore();
+// 响应式 Store 包装器
+export class MusicStore {
+    currentSong: ReactiveRef<Song | null>;
+    isPlaying: ReactiveRef<boolean>;
+    currentTime: ReactiveRef<number>;
+    duration: ReactiveRef<number>;
+    volume: ReactiveRef<number>;
+    playlist: ReactiveRef<Song[]>;
+    currentIndex: ReactiveRef<number>;
+    isShuffled: ReactiveRef<boolean>;
+    repeatMode: ReactiveRef<'none' | 'one' | 'all'>;
+
+    private baseStore: BaseMusicStore;
+
+    constructor(refFactory: ReactiveFactory) {
+        this.baseStore = new BaseMusicStore();
+
+        // 创建响应式引用
+        this.currentSong = refFactory(this.baseStore.currentSong);
+        this.isPlaying = refFactory(this.baseStore.isPlaying);
+        this.currentTime = refFactory(this.baseStore.currentTime);
+        this.duration = refFactory(this.baseStore.duration);
+        this.volume = refFactory(this.baseStore.volume);
+        this.playlist = refFactory(this.baseStore.playlist);
+        this.currentIndex = refFactory(this.baseStore.currentIndex);
+        this.isShuffled = refFactory(this.baseStore.isShuffled);
+        this.repeatMode = refFactory(this.baseStore.repeatMode);
+    }
+
+    playSong(song: Song, playlist: Song[] = []) {
+        this.baseStore.playSong(song, playlist);
+        this.syncToReactive();
+    }
+
+    togglePlay() {
+        this.baseStore.togglePlay();
+        this.isPlaying.value = this.baseStore.isPlaying;
+    }
+
+    nextSong() {
+        this.baseStore.nextSong();
+        this.syncToReactive();
+    }
+
+    previousSong() {
+        this.baseStore.previousSong();
+        this.syncToReactive();
+    }
+
+    setCurrentTime(time: number) {
+        this.baseStore.setCurrentTime(time);
+        this.currentTime.value = this.baseStore.currentTime;
+    }
+
+    setVolume(vol: number) {
+        this.baseStore.setVolume(vol);
+        this.volume.value = this.baseStore.volume;
+    }
+
+    toggleShuffle() {
+        this.baseStore.toggleShuffle();
+        this.isShuffled.value = this.baseStore.isShuffled;
+    }
+
+    cycleRepeatMode() {
+        this.baseStore.cycleRepeatMode();
+        this.repeatMode.value = this.baseStore.repeatMode;
+    }
+
+    // 同步基础 store 到响应式引用
+    private syncToReactive() {
+        this.currentSong.value = this.baseStore.currentSong;
+        this.isPlaying.value = this.baseStore.isPlaying;
+        this.currentTime.value = this.baseStore.currentTime;
+        this.duration.value = this.baseStore.duration;
+        this.volume.value = this.baseStore.volume;
+        this.playlist.value = [...this.baseStore.playlist]; // 创建新数组确保响应式更新
+        this.currentIndex.value = this.baseStore.currentIndex;
+        this.isShuffled.value = this.baseStore.isShuffled;
+        this.repeatMode.value = this.baseStore.repeatMode;
+    }
+
+    // 获取原始数据（用于序列化等场景）
+    getRawData() {
+        return {
+            currentSong: this.baseStore.currentSong,
+            isPlaying: this.baseStore.isPlaying,
+            currentTime: this.baseStore.currentTime,
+            duration: this.baseStore.duration,
+            volume: this.baseStore.volume,
+            playlist: this.baseStore.playlist,
+            currentIndex: this.baseStore.currentIndex,
+            isShuffled: this.baseStore.isShuffled,
+            repeatMode: this.baseStore.repeatMode
+        };
+    }
+}
+
+let singletonStore: MusicStore | null = null;
+
+// 主要的 useMusicStore 函数 - 必须传入 ref 函数
+export function useMusicStore(refFactory: ReactiveFactory): MusicStore {
+    if (!singletonStore) singletonStore = new MusicStore(refFactory);
+    return singletonStore;
+}

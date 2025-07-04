@@ -29,18 +29,24 @@
 
 <script lang="ts" setup>
 import { useRoute, useRouter } from '@esmx/router-vue';
-import { TracksList } from 'ssr-vue-base/src/components';
 import {
+    type MusicStore,
     type Song,
     mockArtists,
     mockSongs,
-    musicStore
+    useMusicStore
 } from 'ssr-vue-base/src/store/music-store';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+import TracksList from '../components/tracks-list.vue';
 
-const route = useRoute();
-const router = useRouter();
-const songId = computed(() => Number(route.params.id));
+const $route = useRoute();
+const $router = useRouter();
+
+const musicStore =
+    ($router.parsedOptions.context.musicStore as MusicStore) ||
+    useMusicStore(ref);
+
+const songId = computed(() => Number($route.params.id));
 const selectedSong = computed(() =>
     mockSongs.find((s) => s.id === songId.value)
 );
@@ -76,7 +82,7 @@ const goToArtist = () => {
             (a) => a.name === selectedSong.value?.artist
         );
         if (artist) {
-            router.push(`/artist/${artist.id}`);
+            $router.push(`/artist/${artist.id}`);
         }
     }
 };

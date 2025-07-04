@@ -1,6 +1,7 @@
 import type { IncomingMessage } from 'node:http';
 import type { RenderContext } from '@esmx/core';
-import { renderToString } from '@vue/server-renderer';
+import { renderToString as vue2render2str } from 'ssr-npm-vue2/src/render-to-str';
+import { renderToString as vue3render2str } from 'ssr-npm-vue3/src/render-to-str';
 import { createApp } from './create-app';
 
 export default async (rc: RenderContext) => {
@@ -11,10 +12,9 @@ export default async (rc: RenderContext) => {
     const router = await createApp({
         base: `${protocol}://${host}`,
         url: req?.url ?? '/',
-        renderToString,
-        ssrCtx,
-        req,
-        res: rc.params.res
+        vue2render2str,
+        vue3render2str,
+        ssrCtx
     });
 
     // 使用 Vue 的 renderToString 生成页面内容
@@ -32,9 +32,7 @@ export default async (rc: RenderContext) => {
             <title>Esmx 快速开始</title>
             ${rc.css()}
         </head>
-        <body>${ssrCtx.teleports?.body || ''}
-            <div id="root">${html}</div>
-            <div id="teleported">${ssrCtx.teleports?.['#teleported'] ?? ''}</div>
+        <body>${html}
             ${rc.importmap()}
             ${rc.moduleEntry()}
             ${rc.modulePreload()}

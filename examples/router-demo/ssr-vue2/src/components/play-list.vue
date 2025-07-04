@@ -1,5 +1,5 @@
 <template>
-    <TracksListComponent 
+    <TracksList 
         :tracks="playlist"
         @playTrack="playTrack"
     >
@@ -10,13 +10,23 @@
         <template #empty-msg>
             No playlist
         </template>
-    </TracksListComponent>
+    </TracksList>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
-import { type Song, musicStore } from '../store/music-store';
-import TracksListComponent from './tracks-list.vue';
+import { useRouter } from '@esmx/router-vue';
+import {
+    type MusicStore,
+    type Song,
+    useMusicStore
+} from 'ssr-vue-base/src/store/music-store';
+import { computed, ref } from 'vue';
+import TracksList from './tracks-list.vue';
+
+const $router = useRouter();
+const musicStore =
+    ($router.parsedOptions.context.musicStore as MusicStore) ||
+    useMusicStore(ref);
 
 const emit = defineEmits<(e: 'trackSelected', track: Song) => void>();
 

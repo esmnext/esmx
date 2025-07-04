@@ -26,18 +26,25 @@
 </template>
 
 <script lang="ts" setup>
-import { useRoute } from '@esmx/router-vue';
-import { BubbleBg, TracksList } from 'ssr-vue-base/src/components';
+import { useRoute, useRouter } from '@esmx/router-vue';
 import {
+    type MusicStore,
     type Song,
     mockArtists,
     mockSongs,
-    musicStore
+    useMusicStore
 } from 'ssr-vue-base/src/store/music-store';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+import BubbleBg from '../components/bubble-bg.vue';
+import TracksList from '../components/tracks-list.vue';
 
-const route = useRoute();
-const artistId = computed(() => Number(route.params.id));
+const $router = useRouter();
+const musicStore =
+    ($router.parsedOptions.context.musicStore as MusicStore) ||
+    useMusicStore(ref);
+
+const $route = useRoute();
+const artistId = computed(() => Number($route.params.id));
 const artist = computed(() => mockArtists.find((a) => a.id === artistId.value));
 
 // 模拟该艺术家的热门歌曲

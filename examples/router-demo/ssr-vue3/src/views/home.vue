@@ -43,13 +43,20 @@
 </template>
 
 <script lang="ts" setup>
-import { RouterLink } from '@esmx/router-vue';
+import { RouterLink, useRouter } from '@esmx/router-vue';
 import {
+    type MusicStore,
     type Playlist,
     mockArtists,
     mockPlaylists,
-    musicStore
+    useMusicStore
 } from 'ssr-vue-base/src/store/music-store';
+import { ref } from 'vue';
+
+const $router = useRouter();
+const musicStore =
+    ($router.parsedOptions.context.musicStore as MusicStore) ||
+    useMusicStore(ref);
 
 const playPlaylist = (playlist: Playlist) => {
     if (playlist.tracks.length > 0) {

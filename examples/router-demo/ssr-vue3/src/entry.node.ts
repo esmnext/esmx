@@ -10,7 +10,11 @@ const port = process.env.PORT || 3003;
 
 export default {
     modules: {
-        exports: ['root:src/routes.ts'],
+        exports: [
+            'root:src/routes.ts',
+            'root:src/components/index.ts',
+            'root:src/layout/index.ts'
+        ],
         links: {
             'ssr-vue-base': './node_modules/ssr-vue-base/dist',
             'ssr-npm-base': './node_modules/ssr-npm-base/dist',
