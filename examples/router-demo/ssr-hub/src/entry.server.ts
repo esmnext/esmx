@@ -4,19 +4,22 @@ import { renderToString } from '@vue/server-renderer';
 import { createApp } from './create-app';
 
 export default async (rc: RenderContext) => {
-    const req = rc.params.req as IncomingMessage;
-    const protocol = req.headers['x-forwarded-proto'] || 'http';
-    const host = req.headers.host || 'localhost';
+    const req = rc.params.req as IncomingMessage | undefined;
+    const protocol = req?.headers['x-forwarded-proto'] || 'http';
+    const host = req?.headers.host || 'localhost';
     const ssrCtx: Record<string, any> = {};
     const router = await createApp({
         base: `${protocol}://${host}`,
-        url: req.url ?? '/',
+        url: req?.url ?? '/',
         renderToString,
-        ssrCtx
+        ssrCtx,
+        req,
+        res: rc.params.res
     });
 
     // 使用 Vue 的 renderToString 生成页面内容
-    const html = await router.renderToString();
+    const html = await router.renderToString(true);
+    console.log('SSR HTML:', host, req?.url, html, router);
     // 提交依赖收集，确保所有必要资源都被加载
     await rc.commit();
 

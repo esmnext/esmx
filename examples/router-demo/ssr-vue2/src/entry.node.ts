@@ -14,7 +14,8 @@ export default {
         links: {
             'ssr-vue-base': './node_modules/ssr-vue-base/dist',
             'ssr-npm-base': './node_modules/ssr-npm-base/dist',
-            'ssr-npm-vue2': './node_modules/ssr-npm-vue2/dist'
+            'ssr-npm-vue2': './node_modules/ssr-npm-vue2/dist',
+            'ssr-npm-vue3': './node_modules/ssr-npm-vue3/dist'
         },
         imports: {
             '@esmx/router': 'ssr-npm-base/@esmx/router',

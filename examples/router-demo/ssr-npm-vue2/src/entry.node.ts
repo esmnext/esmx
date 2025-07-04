@@ -8,7 +8,7 @@ export default {
         imports: {
             '@esmx/router': 'ssr-npm-base/@esmx/router'
         },
-        exports: ['npm:vue', 'npm:@esmx/router-vue']
+        exports: ['npm:vue', 'npm:@esmx/router-vue', 'root:src/app-creator.ts']
     },
     async devApp(esmx) {
         return import('@esmx/rspack-vue').then((m) =>

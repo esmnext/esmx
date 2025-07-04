@@ -4,8 +4,8 @@
  */
 
 import { Router } from '@esmx/router';
-import { RouterPlugin, RouterView, useProvideRouter } from '@esmx/router-vue';
-import { createSSRApp, h, provide, ssrContextKey } from 'vue';
+import { appCreator as vue2appCreator } from 'ssr-npm-vue2/src/app-creator';
+import { appCreator as vue3appCreator } from 'ssr-npm-vue3/src/app-creator';
 import { routes } from './routes';
 
 const isBrowser = typeof window === 'object' && typeof document === 'object';
@@ -25,34 +25,9 @@ export async function createApp({
         root: '#root',
         base: new URL(base),
         routes,
-        apps(router) {
-            const app = createSSRApp({
-                setup() {
-                    useProvideRouter(router);
-                    provide(ssrContextKey, ssrCtx);
-                },
-                render: () => h(RouterView)
-            });
-            app.use(RouterPlugin);
-            return {
-                mount(root) {
-                    const ssrEl = root.querySelector('[data-server-rendered]');
-                    if (ssrEl) {
-                        app.mount(ssrEl);
-                    } else {
-                        const el = document.createElement('div');
-                        app.mount(el);
-                        root.appendChild(el);
-                    }
-                },
-                unmount() {
-                    app.unmount();
-                },
-                async renderToString() {
-                    if (typeof renderToString !== 'function') return '';
-                    return `<div data-server-rendered>${await renderToString(app, ssrCtx)}</div>`;
-                }
-            };
+        apps: {
+            vue2: (router) => vue2appCreator(router, renderToString, ssrCtx),
+            vue3: (router) => vue3appCreator(router, renderToString, ssrCtx)
         }
     });
     await router.replace(url);
