@@ -7,7 +7,7 @@ import type { EsmxOptions } from '@esmx/core';
 
 export default {
     modules: {
-        exports: ['root:src/store/music-store.ts', 'root:src/utils/time.ts']
+        exports: ['root:src/store/index.ts', 'root:src/utils/time.ts']
     },
     async devApp(esmx) {
         return import('@esmx/rspack').then((m) => m.createRspackHtmlApp(esmx));

@@ -5,14 +5,14 @@
             <button class="layer-back" @click="routerAct('back')" v-if="len > 1">←</button>
             <button class="info" title="Current Route" @click="showRouteInfo = true">ℹ</button>
             <button class="layer-close" @click="routerAct('closeLayer')">×</button>
-            <router-view />
+            <RouterView />
         </div>
         <RouteInfoModal :show="showRouteInfo" @close="showRouteInfo = false" />
     </div>
 </template>
 
 <script lang="ts" setup>
-import { useRoute, useRouter } from '@esmx/router-vue';
+import { RouterView, useRoute, useRouter } from '@esmx/router-vue';
 import { onMounted, ref, watch } from 'vue';
 import RouteInfoModal from '../components/route-info-modal.vue';
 const $router = useRouter();

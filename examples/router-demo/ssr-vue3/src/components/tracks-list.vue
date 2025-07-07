@@ -42,19 +42,13 @@
 </template>
 
 <script lang="ts" setup>
-import { RouterLink, useRouter } from '@esmx/router-vue';
-import {
-    type MusicStore,
-    type Song,
-    useMusicStore
-} from 'ssr-share/src/store/music-store';
+import { RouterLink } from '@esmx/router-vue';
+import type { Song } from 'ssr-share/src/store';
 import { formatTime } from 'ssr-share/src/utils/time';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
+import { useMusicStore } from '../store/music-store';
 
-const $router = useRouter();
-const musicStore =
-    ($router.parsedOptions.context.musicStore as MusicStore) ||
-    useMusicStore(ref);
+const musicStore = useMusicStore();
 
 defineProps<{
     tracks: Song[];

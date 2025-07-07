@@ -18,7 +18,7 @@
         "baseUrl": ".",
         "paths": {
             "ssr-share/src/*": ["./src/*"],
-            // "ssr-vue-base/*": ["./*"]
+            // "ssr-share/*": ["./*"]
         }
     },
     "include": ["src"],

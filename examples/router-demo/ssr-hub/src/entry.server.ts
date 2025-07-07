@@ -19,7 +19,7 @@ export default async (rc: RenderContext) => {
 
     // 使用 Vue 的 renderToString 生成页面内容
     const html = await router.renderToString(true);
-    console.log('SSR HTML:', host, req?.url, html, router);
+    // console.log('SSR HTML:', host, req?.url, html, router);
     // 提交依赖收集，确保所有必要资源都被加载
     await rc.commit();
 

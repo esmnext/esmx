@@ -93,20 +93,16 @@
 import { useRoute, useRouter } from '@esmx/router-vue';
 import { RouterLink } from '@esmx/router-vue';
 import {
-    type MusicStore,
     type Song,
     mockArtists,
     mockPlaylists,
-    mockSongs,
-    useMusicStore
-} from 'ssr-share/src/store/music-store';
+    mockSongs
+} from 'ssr-share/src/store';
 import { formatTime } from 'ssr-share/src/utils/time';
 import { computed, ref } from 'vue';
+import { useMusicStore } from '../store/music-store';
 
-const $router = useRouter();
-const musicStore =
-    ($router.parsedOptions.context.musicStore as MusicStore) ||
-    useMusicStore(ref);
+const musicStore = useMusicStore();
 
 const $route = useRoute();
 const searchQuery = ref(($route.params.query as string) || '');

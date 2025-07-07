@@ -30,20 +30,13 @@
 </template>
 
 <script lang="ts" setup>
-import { useRoute, useRouter } from '@esmx/router-vue';
-import {
-    type MusicStore,
-    type Song,
-    mockPlaylists,
-    useMusicStore
-} from 'ssr-share/src/store/music-store';
-import { computed, ref } from 'vue';
+import { useRoute } from '@esmx/router-vue';
+import { type Song, mockPlaylists } from 'ssr-share/src/store';
+import { computed } from 'vue';
 import { TracksList } from '../components';
+import { useMusicStore } from '../store/music-store';
 
-const $router = useRouter();
-const musicStore =
-    ($router.parsedOptions.context.musicStore as MusicStore) ||
-    useMusicStore(ref);
+const musicStore = useMusicStore();
 
 const route = useRoute();
 const playlistId = computed(() => Number(route.params.id));

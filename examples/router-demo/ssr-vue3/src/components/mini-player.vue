@@ -76,20 +76,14 @@
 </template>
 
 <script lang="ts" setup>
-import { RouterLink, useRouter } from '@esmx/router-vue';
-import {
-    type MusicStore,
-    useMusicStore
-} from 'ssr-share/src/store/music-store';
+import { RouterLink } from '@esmx/router-vue';
 import { formatTime } from 'ssr-share/src/utils/time';
 import { computed, ref, watch } from 'vue';
 import TwoCol from '../layout/two-col.vue';
+import { useMusicStore } from '../store/music-store';
 import PlayList from './play-list.vue';
 
-const $router = useRouter();
-const musicStore =
-    ($router.parsedOptions.context.musicStore as MusicStore) ||
-    useMusicStore(ref);
+const musicStore = useMusicStore();
 
 const currentSong = computed(() => musicStore.currentSong.value);
 const isPlaying = computed(() => musicStore.isPlaying.value);

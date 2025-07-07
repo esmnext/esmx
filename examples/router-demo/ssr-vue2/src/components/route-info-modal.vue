@@ -17,7 +17,6 @@
 
 <script lang="ts" setup>
 import { useRoute, useRouter } from '@esmx/router-vue';
-import { watch } from 'vue';
 import CollapsibleJson from './collapsible-json.vue';
 
 defineProps<{
@@ -30,14 +29,6 @@ defineEmits<{
 
 const $route = useRoute();
 const $router = useRouter();
-
-watch(
-    () => $route.fullPath,
-    () => {
-        console.log({ $route, $router });
-    },
-    { immediate: true }
-);
 </script>
 
 <style scoped>

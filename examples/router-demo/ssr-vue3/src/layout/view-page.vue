@@ -51,7 +51,7 @@
                     </div>
                 </div>
             </aside>
-            <router-view class="main" />
+            <RouterView class="main" />
         </TwoCol>
         
         <!-- Route Info Modal -->
@@ -61,21 +61,16 @@
 
 <script lang="ts" setup>
 import { RouteVerifyHook } from '@esmx/router';
-import { RouterLink, useRouter } from '@esmx/router-vue';
-import {
-    type MusicStore,
-    type Song,
-    mockSongs,
-    useMusicStore
-} from 'ssr-share/src/store/music-store';
-import { RouteInfoModal, ToggleThemeBtn } from 'ssr-vue3/src/components';
-import { TwoCol } from 'ssr-vue3/src/layout';
+import { RouterLink, RouterView, useRouter } from '@esmx/router-vue';
+import { type Song, mockSongs } from 'ssr-share/src/store';
 import { computed, ref } from 'vue';
+import { RouteInfoModal, ToggleThemeBtn } from '../components';
+import { TwoCol } from '../layout';
+import { useMusicStore } from '../store/music-store';
+
+const musicStore = useMusicStore();
 
 const $router = useRouter();
-const musicStore =
-    ($router?.parsedOptions?.context?.musicStore as MusicStore) ||
-    useMusicStore(ref);
 
 const shouldClose: RouteVerifyHook = (to, from, router) => {
     return to.fullPath === from?.fullPath;
@@ -86,7 +81,8 @@ const showRouteInfo = ref(false);
 // 选择精选歌曲用于侧边栏显示
 const featuredSongs = computed(() => {
     // 随机选择8首歌曲用于侧边栏显示
-    const shuffled = [...mockSongs].sort(() => Math.random() - 0.5);
+    // const shuffled = [...mockSongs].sort(() => Math.random() - 0.5);
+    const shuffled = [...mockSongs];
     return shuffled.slice(0, 8);
 });
 

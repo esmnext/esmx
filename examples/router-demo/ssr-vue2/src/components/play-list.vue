@@ -14,19 +14,12 @@
 </template>
 
 <script lang="ts" setup>
-import { useRouter } from '@esmx/router-vue';
-import {
-    type MusicStore,
-    type Song,
-    useMusicStore
-} from 'ssr-share/src/store/music-store';
-import { computed, ref } from 'vue';
+import { type Song } from 'ssr-share/src/store';
+import { computed } from 'vue';
+import { useMusicStore } from '../store/music-store';
 import TracksList from './tracks-list.vue';
 
-const $router = useRouter();
-const musicStore =
-    ($router.parsedOptions.context.musicStore as MusicStore) ||
-    useMusicStore(ref);
+const musicStore = useMusicStore();
 
 const emit = defineEmits<(e: 'trackSelected', track: Song) => void>();
 

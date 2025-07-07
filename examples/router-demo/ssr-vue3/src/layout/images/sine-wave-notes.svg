@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 80">
+  <defs>
+    <style>
+      .note {
+        font-family: serif;
+        font-size: 20px;
+        fill: white;
+      }
+      .wave {
+        animation: wave-move 8s ease-in-out infinite;
+      }
+      @keyframes wave-move {
+        0%, 100% { transform: translateX(0px) translateY(2px); }
+        25% { transform: translateX(-4px) translateY(4px); }
+        50% { transform: translateX(0px) translateY(3px); }
+        75% { transform: translateX(4px) translateY(1px); }
+      }
+    </style>
+  </defs>
+  
+  <!--
+    余弦波周期 - 音符♪♫
+    for (let i = 0; i < 16; ++i)
+        console.log(Math.cos((360 / 16) * i * (Math.PI / 180)) * 30 + 45);
+  -->
+  <g class="wave">
+    <text x="5"   y="75.00" class="note">♪</text>
+    <text x="55"  y="72.71" class="note">♫</text>
+    <text x="105" y="66.21" class="note">♪</text>
+    <text x="155" y="56.48" class="note">♫</text>
+    <text x="205" y="45.00" class="note">♪</text>
+    <text x="255" y="33.51" class="note">♫</text>
+    <text x="305" y="23.78" class="note">♪</text>
+    <text x="355" y="17.28" class="note">♫</text>
+    <text x="405" y="15.00" class="note">♪</text>
+    <text x="455" y="17.28" class="note">♫</text>
+    <text x="505" y="23.78" class="note">♪</text>
+    <text x="555" y="33.51" class="note">♫</text>
+    <text x="605" y="44.99" class="note">♪</text>
+    <text x="655" y="56.48" class="note">♫</text>
+    <text x="705" y="66.21" class="note">♪</text>
+    <text x="755" y="72.71" class="note">♫</text>
+  </g>
+</svg>

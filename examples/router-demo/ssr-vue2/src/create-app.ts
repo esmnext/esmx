@@ -6,6 +6,7 @@
 import { Router } from '@esmx/router';
 import { appCreator } from 'ssr-npm-vue2/src/app-creator';
 import { routes } from './routes';
+import { Vue2MusicStorePlugin } from './store/music-store';
 
 const isBrowser = typeof window === 'object' && typeof document === 'object';
 
@@ -22,7 +23,14 @@ export async function createApp({
         root: '#root',
         base: new URL(base),
         routes,
-        apps: (router) => appCreator(router, renderToString)
+        context: {},
+        apps: (router) =>
+            appCreator(router, {
+                beforeCreateApp: (Vue) => {
+                    Vue.use(Vue2MusicStorePlugin);
+                },
+                renderToString
+            })
     });
     await router.replace(url);
     if (isBrowser) (window as any).router = router;

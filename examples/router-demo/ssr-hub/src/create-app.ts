@@ -6,6 +6,8 @@
 import { Router } from '@esmx/router';
 import { appCreator as vue2appCreator } from 'ssr-npm-vue2/src/app-creator';
 import { appCreator as vue3appCreator } from 'ssr-npm-vue3/src/app-creator';
+import { Vue2MusicStorePlugin } from 'ssr-vue2/src/store/music-store';
+import { Vue3MusicStorePlugin } from 'ssr-vue3/src/store/music-store';
 import { routes } from './routes';
 
 const isBrowser = typeof window === 'object' && typeof document === 'object';
@@ -27,9 +29,24 @@ export async function createApp({
         root: '#root',
         base: new URL(base),
         routes,
+        context: {},
         apps: {
-            vue2: (router) => vue2appCreator(router, vue2render2str, ssrCtx),
-            vue3: (router) => vue3appCreator(router, vue3render2str, ssrCtx)
+            vue2: (router) =>
+                vue2appCreator(router, {
+                    beforeCreateApp: (Vue) => {
+                        Vue.use(Vue2MusicStorePlugin);
+                    },
+                    renderToString: vue2render2str,
+                    ssrCtx
+                }),
+            vue3: (router) =>
+                vue3appCreator(router, {
+                    afterCreateApp: (app) => {
+                        app.use(Vue3MusicStorePlugin);
+                    },
+                    renderToString: vue3render2str,
+                    ssrCtx
+                })
         }
     });
     await router.replace(url);

@@ -13,7 +13,8 @@ export default {
         exports: [
             'root:src/routes.ts',
             'root:src/components/index.ts',
-            'root:src/layout/index.ts'
+            'root:src/layout/index.ts',
+            'root:src/store/music-store.ts'
         ],
         links: {
             'ssr-share': './node_modules/ssr-share/dist',
