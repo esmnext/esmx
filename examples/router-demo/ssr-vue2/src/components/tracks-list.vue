@@ -1,7 +1,7 @@
 <template>
     <div class="tracks-list">
         <slot></slot>
-        <div v-if="tracks.length === 0" class="empty-tracks">
+        <div v-if="props.tracks.length === 0" class="empty-tracks">
             <slot name="empty">
                 <div class="empty-icon"><slot name="empty-icon">♬</slot></div>
                 <div class="empty-message"><slot name="empty-msg">No tracks available</slot></div>
@@ -15,7 +15,7 @@
                 <div class="track-duration">Duration</div>
             </div>
             
-            <div v-for="(track, index) in tracks" :key="track.id" 
+            <div v-for="(track, index) in props.tracks" :key="track.id" 
                 class="track-item" 
                 :class="{ 'active': track.id === currentSong?.id }"
                 @click="$emit('playTrack', track)"
@@ -47,8 +47,8 @@ import {
     type MusicStore,
     type Song,
     useMusicStore
-} from 'ssr-vue-base/src/store/music-store';
-import { formatTime } from 'ssr-vue-base/src/utils/time';
+} from 'ssr-share/src/store/music-store';
+import { formatTime } from 'ssr-share/src/utils/time';
 import { computed, ref } from 'vue';
 
 const $router = useRouter();
@@ -56,7 +56,7 @@ const musicStore =
     ($router.parsedOptions.context.musicStore as MusicStore) ||
     useMusicStore(ref);
 
-defineProps<{
+const props = defineProps<{
     tracks: Song[];
 }>();
 

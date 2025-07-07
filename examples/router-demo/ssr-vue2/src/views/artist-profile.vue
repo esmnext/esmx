@@ -33,7 +33,7 @@ import {
     mockArtists,
     mockSongs,
     useMusicStore
-} from 'ssr-vue-base/src/store/music-store';
+} from 'ssr-share/src/store/music-store';
 import { computed, ref } from 'vue';
 import BubbleBg from '../components/bubble-bg.vue';
 import TracksList from '../components/tracks-list.vue';

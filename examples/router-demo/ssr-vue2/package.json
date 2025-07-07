@@ -16,7 +16,7 @@
     },
     "devDependencies": {
         "@esmx/rspack-vue": "workspace:*",
-        "ssr-vue-base": "workspace:*",
+        "ssr-share": "workspace:*",
         "ssr-npm-base": "workspace:*",
         "ssr-npm-vue2": "workspace:*",
         "@types/node": "^24.0.10",

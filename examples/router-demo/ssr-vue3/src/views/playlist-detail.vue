@@ -36,7 +36,7 @@ import {
     type Song,
     mockPlaylists,
     useMusicStore
-} from 'ssr-vue-base/src/store/music-store';
+} from 'ssr-share/src/store/music-store';
 import { computed, ref } from 'vue';
 import { TracksList } from '../components';
 

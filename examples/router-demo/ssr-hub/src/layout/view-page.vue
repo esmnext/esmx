@@ -67,7 +67,7 @@ import {
     type Song,
     mockSongs,
     useMusicStore
-} from 'ssr-vue-base/src/store/music-store';
+} from 'ssr-share/src/store/music-store';
 import { RouteInfoModal, ToggleThemeBtn } from 'ssr-vue3/src/components';
 import { TwoCol } from 'ssr-vue3/src/layout';
 import { computed, ref } from 'vue';

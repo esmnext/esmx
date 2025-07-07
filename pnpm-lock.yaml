@@ -119,9 +119,9 @@ importers:
       ssr-npm-vue3:
         specifier: workspace:*
         version: link:../ssr-npm-vue3
-      ssr-vue-base:
+      ssr-share:
         specifier: workspace:*
-        version: link:../ssr-vue-base
+        version: link:../ssr-share
       ssr-vue2:
         specifier: workspace:*
         version: link:../ssr-vue2
@@ -219,7 +219,7 @@ importers:
         specifier: ^2.2.10
         version: 2.2.10(typescript@5.8.3)
 
-  examples/router-demo/ssr-vue-base:
+  examples/router-demo/ssr-share:
     dependencies:
       '@esmx/core':
         specifier: workspace:*
@@ -253,9 +253,9 @@ importers:
       ssr-npm-vue2:
         specifier: workspace:*
         version: link:../ssr-npm-vue2
-      ssr-vue-base:
+      ssr-share:
         specifier: workspace:*
-        version: link:../ssr-vue-base
+        version: link:../ssr-share
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -284,9 +284,9 @@ importers:
       ssr-npm-vue3:
         specifier: workspace:*
         version: link:../ssr-npm-vue3
-      ssr-vue-base:
+      ssr-share:
         specifier: workspace:*
-        version: link:../ssr-vue-base
+        version: link:../ssr-share
       typescript:
         specifier: ^5.8.3
         version: 5.8.3

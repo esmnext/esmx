@@ -71,8 +71,8 @@ import { useRouter } from '@esmx/router-vue';
 import {
     type MusicStore,
     useMusicStore
-} from 'ssr-vue-base/src/store/music-store';
-import { formatTime } from 'ssr-vue-base/src/utils/time';
+} from 'ssr-share/src/store/music-store';
+import { formatTime } from 'ssr-share/src/utils/time';
 import { computed, ref } from 'vue';
 import { BubbleBg, PlayList } from '../components';
 import { TwoCol } from '../layout';

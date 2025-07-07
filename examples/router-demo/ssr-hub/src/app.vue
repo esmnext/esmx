@@ -12,7 +12,7 @@ import { useRouter } from '@esmx/router-vue';
 import {
     type MusicStore,
     useMusicStore
-} from 'ssr-vue-base/src/store/music-store';
+} from 'ssr-share/src/store/music-store';
 import { MiniPlayer } from 'ssr-vue3/src/components';
 import { ViewLayer, ViewLayerDrawer } from 'ssr-vue3/src/layout';
 import { computed, ref } from 'vue';

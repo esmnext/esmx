@@ -50,7 +50,7 @@ import {
     mockArtists,
     mockPlaylists,
     useMusicStore
-} from 'ssr-vue-base/src/store/music-store';
+} from 'ssr-share/src/store/music-store';
 import { ref } from 'vue';
 
 const $router = useRouter();

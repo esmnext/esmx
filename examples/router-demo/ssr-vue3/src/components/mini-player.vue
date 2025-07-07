@@ -80,8 +80,8 @@ import { RouterLink, useRouter } from '@esmx/router-vue';
 import {
     type MusicStore,
     useMusicStore
-} from 'ssr-vue-base/src/store/music-store';
-import { formatTime } from 'ssr-vue-base/src/utils/time';
+} from 'ssr-share/src/store/music-store';
+import { formatTime } from 'ssr-share/src/utils/time';
 import { computed, ref, watch } from 'vue';
 import TwoCol from '../layout/two-col.vue';
 import PlayList from './play-list.vue';

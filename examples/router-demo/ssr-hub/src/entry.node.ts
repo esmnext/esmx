@@ -11,7 +11,7 @@ const port = process.env.PORT || 3004;
 export default {
     modules: {
         links: {
-            'ssr-vue-base': './node_modules/ssr-vue-base/dist',
+            'ssr-share': './node_modules/ssr-share/dist',
             'ssr-vue2': './node_modules/ssr-vue2/dist',
             'ssr-vue3': './node_modules/ssr-vue3/dist',
             'ssr-npm-base': './node_modules/ssr-npm-base/dist',
@@ -52,5 +52,11 @@ export default {
         server.listen(port, () => {
             console.log(`服务启动: http://localhost:${port}`);
         });
+    },
+    async postBuild(esmx) {
+        const rc = await esmx.render({
+            params: { url: '/' }
+        });
+        esmx.writeSync(esmx.resolvePath('dist/client', 'index.html'), rc.html);
     }
 } satisfies EsmxOptions;

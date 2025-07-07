@@ -16,7 +16,7 @@ export default {
             'root:src/layout/index.ts'
         ],
         links: {
-            'ssr-vue-base': './node_modules/ssr-vue-base/dist',
+            'ssr-share': './node_modules/ssr-share/dist',
             'ssr-npm-base': './node_modules/ssr-npm-base/dist',
             'ssr-npm-vue2': './node_modules/ssr-npm-vue2/dist'
         },

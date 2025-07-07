@@ -19,7 +19,7 @@ import {
     type MusicStore,
     type Song,
     useMusicStore
-} from 'ssr-vue-base/src/store/music-store';
+} from 'ssr-share/src/store/music-store';
 import { computed, ref } from 'vue';
 import TracksListComponent from './tracks-list.vue';
 
