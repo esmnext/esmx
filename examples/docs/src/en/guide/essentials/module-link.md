@@ -1,6 +1,6 @@
 ---
-titleSuffix: Esmx Inter-Module Code Sharing
-description: Esmx Module Link: Zero-runtime micro-frontend code sharing solution based on ESM standards
+titleSuffix: Esmx Module Code Sharing
+description: "Esmx Module Link: Zero Runtime Micro-frontend Code Sharing Solution Based on ESM Standards"
 head:
   - - meta
     - property: keywords
