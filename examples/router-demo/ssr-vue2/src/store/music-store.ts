@@ -1,6 +1,6 @@
-import { type MusicStore, Reactive, musicStore } from 'ssr-share/src/store';
-import Vue, { VueConstructor } from 'vue';
-import { ComputedRef, computed, getCurrentInstance } from 'vue';
+import { type MusicStore, musicStore, uniqueKeys } from 'ssr-share/src/store';
+import Vue from 'vue';
+import { getCurrentInstance } from 'vue';
 
 // 扩展 Vue 实例类型
 declare module 'vue/types/vue' {
@@ -29,55 +29,41 @@ export class Vue2MusicStore {
     }
 
     private createReactiveStore(): void {
-        // 遍历 store 的所有属性和方法
-        const allKeys = [
-            ...Object.keys(this._store),
-            ...Object.getOwnPropertyNames(Object.getPrototypeOf(this._store))
-        ];
+        // 为 Reactive 实例，创建响应式包装
+        uniqueKeys.ref.forEach((key) => {
+            const value = this._store[key];
+            // 使用 Vue 2 的响应式系统
+            const reactiveData = Vue.observable({ value: value.value });
 
-        // 去重并过滤掉 constructor
-        const uniqueKeys = [...new Set(allKeys)].filter(
-            (key) => key !== 'constructor'
-        );
-
-        uniqueKeys.forEach((key) => {
-            const value = (this._store as any)[key];
-
-            // 如果是 Reactive 实例，创建响应式包装
-            if (value instanceof Reactive) {
-                // 使用 Vue 2 的响应式系统
-                const reactiveData = Vue.observable({ value: value.value });
-
-                // 监听原始 Reactive 的变化，同步到 Vue observable
-                const unsubscribeFromReactive = value.addListener(
-                    (newValue, oldValue) => {
-                        if (reactiveData.value !== newValue) {
-                            Vue.set(reactiveData, 'value', newValue);
-                        }
+            // 监听原始 Reactive 的变化，同步到 Vue observable
+            const unsubscribeFromReactive = value.addListener(
+                (newValue, oldValue) => {
+                    if (reactiveData.value !== newValue) {
+                        Vue.set(reactiveData, 'value', newValue);
                     }
-                );
+                }
+            );
 
-                // 监听 Vue observable 的变化，同步到原始 Reactive
-                const unwatch = this._vueInstance.$watch(
-                    () => reactiveData.value,
-                    (newValue: any, oldValue: any) => {
-                        if (newValue !== value.value) {
-                            value.value = newValue;
-                        }
-                    },
-                    { deep: true }
-                );
+            // 监听 Vue observable 的变化，同步到原始 Reactive
+            const unwatch = this._vueInstance.$watch(
+                () => reactiveData.value,
+                (newValue: any, oldValue: any) => {
+                    if (newValue !== value.value) {
+                        value.value = newValue;
+                    }
+                },
+                { deep: true }
+            );
 
-                this._reactiveStore[key] = reactiveData;
-                this._cleanupFunctions.push(unsubscribeFromReactive);
-                this._cleanupFunctions.push(unwatch);
-            } else if (typeof value === 'function') {
-                // 绑定方法到原始 store
-                this._reactiveStore[key] = value.bind(this._store);
-            } else {
-                // 其他属性直接赋值
-                this._reactiveStore[key] = value;
-            }
+            this._reactiveStore[key] = reactiveData;
+            this._cleanupFunctions.push(unsubscribeFromReactive);
+            this._cleanupFunctions.push(unwatch);
+        });
+
+        // 绑定方法到原始 store
+        uniqueKeys.fn.forEach((key) => {
+            const value = this._store[key];
+            this._reactiveStore[key] = value.bind(this._store);
         });
     }
 

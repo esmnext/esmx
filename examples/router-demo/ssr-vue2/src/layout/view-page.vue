@@ -51,7 +51,7 @@
                     </div>
                 </div>
             </aside>
-            <router-view class="main" />
+            <RouterView class="main" />
         </TwoCol>
         
         <!-- Route Info Modal -->
@@ -61,7 +61,7 @@
 
 <script lang="ts" setup>
 import { RouteVerifyHook } from '@esmx/router';
-import { RouterLink, useRouter } from '@esmx/router-vue';
+import { RouterLink, RouterView, useRouter } from '@esmx/router-vue';
 import { type Song, mockSongs } from 'ssr-share/src/store';
 import { computed, ref } from 'vue';
 import { RouteInfoModal, ToggleThemeBtn } from '../components';

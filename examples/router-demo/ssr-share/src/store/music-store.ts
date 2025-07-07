@@ -34,7 +34,7 @@ export class Reactive<T> implements Ref<T> {
 }
 
 // 创建简单响应式引用
-export function ref<T>(initialValue: T): Ref<T> {
+export function ref<T>(initialValue: T): Reactive<T> {
     return new Reactive(initialValue);
 }
 
@@ -116,3 +116,34 @@ export class MusicStore {
 }
 
 export const musicStore = new MusicStore();
+
+type MusicStoreRefKeys = {
+    [K in keyof MusicStore]: MusicStore[K] extends Reactive<any> ? K : never;
+}[keyof MusicStore];
+type MusicStoreMethodKeys = {
+    [K in keyof MusicStore]: MusicStore[K] extends Function ? K : never;
+}[keyof MusicStore];
+
+export const uniqueKeys = (() => {
+    // 获取 MusicStore 的所有属性和方法
+    const allKeys = [
+        ...(Object.keys(musicStore) as (keyof MusicStore)[]),
+        ...(Object.getOwnPropertyNames(
+            Object.getPrototypeOf(musicStore)
+        ).filter((key) => key !== 'constructor') as (keyof MusicStore)[])
+    ];
+
+    // 去重 & 分类
+    return [...new Set(allKeys)].reduce(
+        (acc, key) => {
+            const value = musicStore[key];
+            if (value instanceof Reactive) {
+                acc.ref.push(key as MusicStoreRefKeys);
+            } else if (typeof value === 'function') {
+                acc.fn.push(key as MusicStoreMethodKeys);
+            }
+            return acc;
+        },
+        { ref: [] as MusicStoreRefKeys[], fn: [] as MusicStoreMethodKeys[] }
+    );
+})();

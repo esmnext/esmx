@@ -20,7 +20,7 @@
                 <button title="Current Route" @click="showRouteInfo = true">ℹ</button>
                 <button @click="routerAct('closeLayer')">×</button>
             </div>
-            <router-view />
+            <RouterView />
         </div>
         <RouteInfoModal :show="showRouteInfo" @close="showRouteInfo = false" />
     </div>
@@ -28,7 +28,7 @@
 
 <script lang="ts" setup>
 import { RouteLocationInput } from '@esmx/router';
-import { RouterLink, useRoute, useRouter } from '@esmx/router-vue';
+import { RouterLink, RouterView, useRoute, useRouter } from '@esmx/router-vue';
 import { onMounted, ref, watch } from 'vue';
 import RouteInfoModal from '../components/route-info-modal.vue';
 const $router = useRouter();
