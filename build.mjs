@@ -986,19 +986,7 @@ function findSSRDirectories(baseDir) {
         for (const entry of entries) {
             if (!entry.isDirectory()) continue;
             if (entry.name === 'router-demo') {
-                const clientPath = join(
-                    baseDir,
-                    entry.name,
-                    'ssr-hub',
-                    'dist',
-                    'client'
-                );
-                if (existsSync(clientPath)) {
-                    ssrDirs.push({
-                        name: entry.name,
-                        path: clientPath
-                    });
-                }
+                ssrDirs.push(...findSSRDirectories(join(baseDir, entry.name)));
             } else if (
                 ['ssr-', 'router-demo'].some((s) => entry.name.startsWith(s))
             ) {
