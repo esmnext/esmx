@@ -4,13 +4,13 @@ import { renderToString } from 'ssr-npm-vue3/src/render-to-str';
 import { createApp } from './create-app';
 
 export default async (rc: RenderContext) => {
-    const req = rc.params.req as IncomingMessage;
-    const protocol = req.headers['x-forwarded-proto'] || 'http';
-    const host = req.headers.host || 'localhost';
+    const req = rc.params.req as IncomingMessage | undefined;
+    const protocol = req?.headers['x-forwarded-proto'] || 'https';
+    const host = req?.headers.host || 'www.esmnext.com/router-demo/ssr-vue3/';
     const ssrCtx: Record<string, any> = {};
     const router = await createApp({
         base: `${protocol}://${host}`,
-        url: req.url ?? '/',
+        url: req?.url ?? '/',
         renderToString,
         ssrCtx
     });

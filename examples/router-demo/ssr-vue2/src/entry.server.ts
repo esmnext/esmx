@@ -3,13 +3,10 @@ import type { RenderContext } from '@esmx/core';
 import { renderToString } from 'ssr-npm-vue2/src/render-to-str';
 import { createApp } from './create-app';
 
-console.log('SSR Vue 2 entry point initialized');
-
 export default async (rc: RenderContext) => {
     const req = rc.params.req as IncomingMessage | undefined;
-    const protocol = req?.headers['x-forwarded-proto'] || 'http';
-    const host = req?.headers.host || 'localhost';
-    console.log(host, req?.url ?? '/');
+    const protocol = req?.headers['x-forwarded-proto'] || 'https';
+    const host = req?.headers.host || 'www.esmnext.com/router-demo/ssr-vue2/';
     const router = await createApp({
         base: `${protocol}://${host}`,
         url: req?.url ?? '/',

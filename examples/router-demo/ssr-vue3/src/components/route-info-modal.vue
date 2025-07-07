@@ -1,5 +1,5 @@
 <template>
-    <div v-if="show" class="modal-overlay" @click="$emit('close')">
+    <div v-if="props.show" class="modal-overlay" @click="$emit('close')">
         <div class="modal-content" @click.stop>
             <div class="modal-header">
                 <h3>Current Route Information</h3>
@@ -19,7 +19,7 @@
 import { useRoute, useRouter } from '@esmx/router-vue';
 import CollapsibleJson from './collapsible-json.vue';
 
-defineProps<{
+const props = defineProps<{
     show: boolean;
 }>();
 

@@ -5,7 +5,12 @@
 
 import { createApp } from './create-app';
 
+const base =
+    location.origin === 'https://www.esmnext.com'
+        ? 'https://www.esmnext.com/router-demo/'
+        : location.origin;
+
 createApp({
-    base: location.origin,
+    base,
     url: location.href
 });

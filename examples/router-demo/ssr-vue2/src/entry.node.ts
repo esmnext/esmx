@@ -55,5 +55,11 @@ export default {
         server.listen(port, () => {
             console.log(`服务启动: http://localhost:${port}`);
         });
+    },
+    async postBuild(esmx) {
+        const rc = await esmx.render({
+            params: { url: '/' }
+        });
+        esmx.writeSync(esmx.resolvePath('dist/client', 'index.html'), rc.html);
     }
 } satisfies EsmxOptions;
