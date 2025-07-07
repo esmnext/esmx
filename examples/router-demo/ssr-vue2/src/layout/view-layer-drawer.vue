@@ -1,22 +1,13 @@
 <template>
-    <div :class="['view-layer', $router.parsedOptions.context.layerSlideDir || 'up', { showing }]">
+    <div :class="['view-layer', layerSlideDir, { showing }]">
         <div class="layer-backdrop" @click.stop="routerAct('closeLayer')" />
         <div class="layer-content">
             <div class="btns">
                 <button class="layer-back" @click="routerAct('back')" v-if="len > 1">←</button>
-                <RouterLink
-                    v-for="[k, v] in Object.entries({
-                        up: '☝︎',
-                        right: '☞',
-                        down: '☟',
-                        left: '☜',
-                    })"
-                    :key="k"
-                    v-if="$router.parsedOptions.context.layerSlideDir !== k"
-                    :to="toSame(k)"
-                    type="pushLayer"
-                    :title="`Slide from ${k}`"
-                >{{ v }}</RouterLink>
+                <RouterLink :to="toSame('up')" v-if="layerSlideDir !== 'up'" type="pushLayer" title="Slide from up">☝︎</RouterLink>
+                <RouterLink :to="toSame('right')" v-if="layerSlideDir !== 'right'" type="pushLayer" title="Slide from right">☞</RouterLink>
+                <RouterLink :to="toSame('down')" v-if="layerSlideDir !== 'down'" type="pushLayer" title="Slide from down">☟</RouterLink>
+                <RouterLink :to="toSame('left')" v-if="layerSlideDir !== 'left'" type="pushLayer" title="Slide from left">☜</RouterLink>
                 <button title="Current Route" @click="showRouteInfo = true">ℹ</button>
                 <button @click="routerAct('closeLayer')">×</button>
             </div>
@@ -33,6 +24,8 @@ import { onMounted, ref, watch } from 'vue';
 import RouteInfoModal from '../components/route-info-modal.vue';
 const $router = useRouter();
 const $route = useRoute();
+
+const layerSlideDir = $router.parsedOptions.context.layerSlideDir || 'up';
 
 const len = ref($router.navigation.length);
 watch(
