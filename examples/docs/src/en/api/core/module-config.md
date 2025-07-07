@@ -1,67 +1,131 @@
 ---
-titleSuffix: Esmx Framework Module Configuration API Reference
-description: Detailed documentation on the ModuleConfig interface of the Esmx framework, covering module import/export rules, alias configuration, and external dependency management to help developers understand the framework's modular system.
+titleSuffix: Esmx Module Configuration API Reference
+description: ModuleConfig interface detailed documentation, including type definitions, configuration options, resolution mechanisms and usage examples, helping developers understand the core configuration of Esmx module system.
 head:
   - - meta
     - property: keywords
-      content: Esmx, ModuleConfig, Module Configuration, Module Import/Export, External Dependencies, Alias Configuration, Dependency Management, Web Application Framework
+      content: Esmx, ModuleConfig, Module Configuration, API Reference, Module Import Export, Type Definition, Configuration Interface
 ---
 
 # ModuleConfig
 
-ModuleConfig is used to configure module import and export rules:
+Core configuration interface for the module system.
+
+## Interface Definition
 
 ```typescript
 interface ModuleConfig {
-    /**
-     * Links configuration between services
-     * Key: Name of the remote service
-     * Value: Path to the build output directory of the remote service
-     */
     links?: Record<string, string>;
-
-    /**
-     * Import configuration: Maps module identifiers in the current service to modules provided by remote services
-     * Key: Module identifier used in the current service
-     * Value: Module path exported by the remote service
-     */
     imports?: Record<string, string>;
-
-    /**
-     * Export configuration: Exposes modules from the current service for use by other services
-     */
     exports?: ModuleConfigExportExports;
 }
 ```
 
-## links Configuration
+### links
 
-Specify build directory locations of remote services:
+* **Type**: `Record<string, string>`
+* **Description**: Module link configuration. Key is remote module name, value is module build output directory path.
+
+### imports  
+
+* **Type**: `Record<string, string>`
+* **Description**: Module import mapping configuration. Key is local module identifier, value is remote module path.
+
+### exports
+
+* **Type**: `ModuleConfigExportExports`
+* **Description**: Module export configuration. Supports multiple configuration forms.
+
+## Type Definitions
+
+### ModuleConfigExportExports
 
 ```typescript
-{
-  links: {
-    'vue-remote-service': '../vue-remote-service/dist',  // Relative path
-    'other-service': '/var/www/other-service/dist'  // Absolute path
-  }
+type ModuleConfigExportExports =
+    | Array<string | Record<string, string | ModuleConfigExportObject>>
+    | Record<string, string | ModuleConfigExportObject>;
+```
+
+Union type for export configuration, supporting mixed array (strings and objects) and object forms.
+
+### ModuleConfigExportObject
+
+```typescript
+type ModuleConfigExportObject = {
+    input?: string;
+    inputTarget?: Record<BuildSsrTarget, string | false>;
+    rewrite?: boolean;
+};
+```
+
+#### input
+
+* **Type**: `string`
+* **Description**: Input file path, relative to project root directory.
+
+#### inputTarget
+
+* **Type**: `Record<BuildSsrTarget, string | false>`
+* **Description**: Environment-specific input file configuration. Supports client and server differentiated builds.
+
+#### rewrite
+
+* **Type**: `boolean`
+* **Default**: `true`
+* **Description**: Whether to rewrite import paths within modules.
+
+### BuildSsrTarget
+
+```typescript
+type BuildSsrTarget = 'client' | 'server';
+```
+
+Build target environment type.
+
+## Parsed Interface
+
+### ParsedModuleConfig
+
+```typescript
+interface ParsedModuleConfig {
+    name: string;
+    root: string;
+    links: Record<string, LinkInfo>;
+    imports: Record<string, string>;
+    exports: ParsedModuleConfigExports;
 }
 ```
 
-## imports Configuration
-
-Configure modules to use and their sources:
+### ParsedModuleConfigExport
 
 ```typescript
-{
-  imports: {
-    'remote-button': 'vue-remote-service/components/button'
-  }
+interface ParsedModuleConfigExport {
+    name: string;
+    inputTarget: Record<BuildSsrTarget, string | false>;
+    rewrite: boolean;
 }
 ```
 
-## exports Configuration
+## Prefix Syntactic Sugar
 
-The system exports these entry files by default:
+The following prefixes are supported in string items of `exports` array form:
+
+### npm: Prefix
+
+* **Format**: `'npm:packageName'`
+* **Processing**: Automatically sets `rewrite: false`, maintains original import paths
+* **Example**: `'npm:axios'` → `{ input: 'axios', rewrite: false }`
+
+### root: Prefix  
+
+* **Format**: `'root:path/to/file.ext'`
+* **Processing**: Automatically sets `rewrite: true`, removes file extension, adds `./` prefix
+* **Example**: `'root:src/utils/format.ts'` → `{ input: './src/utils/format', rewrite: true }`
+
+## Default Export Items
+
+The framework automatically adds the following default export items for each module:
+
 ```typescript
 {
   'src/entry.client': {
@@ -79,84 +143,67 @@ The system exports these entry files by default:
 }
 ```
 
-### Array Format
+## Examples
+
+### Basic Configuration
+
+```typescript
+export default {
+  modules: {
+    links: {
+      'shared-lib': '../shared-lib/dist'
+    },
+    imports: {
+      'axios': 'shared-lib/axios'
+    },
+    exports: [
+      'npm:axios',
+      'root:src/utils/format.ts'
+    ]
+  }
+} satisfies EsmxOptions;
+```
+
+### Array Form
 
 ```typescript
 exports: [
-    // Export npm package
-    'npm:vue',                           // Will set rewrite: false automatically
-    
-    // Export source file (must include file extension)
-    'root:src/components/button.ts',     // Will be resolved to './src/components/button'
-    
-    // Object configuration
-    {
-      'store': {
-        input: './src/store.ts',         // Isomorphic module
-        inputTarget: {                   // Or specify different client/server implementations
-          client: './src/store.client.ts',
-          server: './src/store.server.ts'
-        },
-        rewrite: true                    // Defaults to true
-      }
-    }
+  'npm:axios',
+  'root:src/utils/format.ts',
+  {
+    'api-client': './src/api/client.ts'
+  }
 ]
 ```
 
-### Object Format
+### Object Form
 
 ```typescript
 exports: {
-    // Directly specify source file path
-    'utils': './src/utils.ts',
-
-    // Complete configuration
-    'api': {
-        input: './src/api/index.ts'      // Entry file for isomorphic module
-    },
-    
-    // Client/Server separation
-    'entry': {
-        inputTarget: {
-            client: './src/entry.client.ts',  // false means no implementation for this environment
-            server: './src/entry.server.ts'
-        }
+  'axios': 'axios',
+  'utils': './src/utils/index.ts',
+  'storage': {
+    inputTarget: {
+      client: './src/storage/indexedDB.ts',
+      server: './src/storage/filesystem.ts'
     }
+  }
 }
 ```
 
-## Configuration Properties
-
-### ModuleConfigExportObject
+### Mixed Array Form
 
 ```typescript
-interface ModuleConfigExportObject {
-    /**
-     * Source file path of the module
-     */
-    input?: string;
-
-    /**
-     * Different entry file configurations for client and server
-     * false means no implementation for that environment
-     */
-    inputTarget?: Record<'client' | 'server', string | false>;
-
-    /**
-     * Whether to rewrite module paths
-     * @default true
-     * @remarks Only needs to be false when exporting npm packages
-     */
-    rewrite?: boolean;
-}
+exports: [
+  {
+    'utils': './src/utils.ts',
+    'api': './src/api.ts'
+  },
+  {
+    'components': {
+      input: './src/components/index.ts',
+      rewrite: true
+    }
+  }
+]
 ```
-
-## Usage Restrictions
-
-1. **Path Requirements**
-   - All paths except `npm:` prefix exports must point to specific files
-   - File paths with `root:` prefix must include file extensions (.ts, .js, etc.)
-
-2. **Path Resolution Rules**
-   - `npm:` prefix: For exporting npm packages, automatically sets `rewrite: false`
-   - `root:` prefix: For exporting source files, resolved to relative paths

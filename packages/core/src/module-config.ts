@@ -2,228 +2,146 @@ import path from 'node:path';
 import type { BuildSsrTarget } from './core';
 
 /**
- * 模块配置接口
- * 在微服务架构中，一个服务既可以作为主服务使用其他服务的模块，
- * 也可以作为远程服务（remote）向其他服务提供模块。
- *
- * @example
- * // 假设有两个服务：
- * // 1. vue-host-service：主服务，需要使用远程服务的 Vue 组件
- * // 2. vue-remote-service：远程服务，提供可复用的 Vue 组件
- *
- * // vue-remote-service 的配置示例：
- * const remoteConfig: ModuleConfig = {
- *   // 服务名称
- *   name: 'vue-remote-service',
- *   // 导入配置：空，因为这个服务不需要导入其他服务的模块
- *   imports: {},
- *   // 导出配置：将组件库暴露给其他服务使用
- *   exports: [
- *     {
- *       'components/button': {
- *         input: './src/components/button.ts'  // 必须指定具体的源文件
- *       }
- *     }
- *   ]
- * };
- *
- * // vue-host-service 的配置示例：
- * const hostConfig: ModuleConfig = {
- *   // 服务名称
- *   name: 'vue-host-service',
- *   // 链接配置：指定远程服务的构建产物位置
- *   links: {
- *     'vue-remote-service': '../vue-remote-service/dist'
- *   },
- *   // 导入配置：使用远程服务提供的组件
- *   imports: {
- *     'remote-button': 'vue-remote-service/components/button'
- *   },
- *   // 导出配置：可选，如果这个服务也需要暴露模块给其他服务使用
- *   exports: []
- * };
+ * Core configuration interface for the module system.
+ * Defines module linking, import mapping, and export configurations.
  */
 export interface ModuleConfig {
     /**
-     * 服务与服务之间的链接配置
-     * 键：远程服务的名称
-     * 值：远程服务的构建产物目录路径
+     * Module link configuration.
+     * Key is remote module name, value is module build output directory path.
+     *
+     * @example
+     * ```typescript
+     * links: {
+     *   'shared-lib': '../shared-lib/dist',
+     *   'api-utils': '/var/www/api-utils/dist'
+     * }
+     * ```
      */
     links?: Record<string, string>;
 
     /**
-     * 导入配置
-     * 用于将当前服务中的某个模块标识符映射到远程服务提供的模块
-     * 键：在当前服务中使用的模块标识符
-     * 值：远程服务导出的模块路径
+     * Module import mapping configuration.
+     * Key is local module identifier, value is remote module path.
+     * Mainly used for standard imports of third-party libraries.
+     *
+     * @example
+     * ```typescript
+     * imports: {
+     *   'axios': 'shared-lib/axios',
+     *   'lodash': 'shared-lib/lodash'
+     * }
+     * ```
      */
     imports?: Record<string, string>;
 
     /**
-     * 导出配置
-     * 用于将当前服务的模块暴露给其他服务使用
-     * 其他服务可以通过 imports 配置来使用这里导出的模块
+     * Module export configuration.
+     * Supports multiple configuration forms: mixed array and object.
+     *
+     * @example
+     * ```typescript
+     * // Array form
+     * exports: ['npm:axios', 'root:src/utils/format.ts']
+     *
+     * // Object form
+     * exports: {
+     *   'axios': 'axios',
+     *   'utils': './src/utils/index.ts'
+     * }
+     * ```
      */
     exports?: ModuleConfigExportExports;
 }
 
 /**
- * 模块导出配置类型
- * 用于定义当前服务要暴露哪些模块供其他服务使用
- *
- * @example
- * // 1. 数组形式 - 字符串简写
- * const exports1: ModuleConfigExportExports = [
- *   // npm 包导出
- *   'npm:lodash',
- *   // 本地文件导出（必须指定具体文件名）
- *   'root:src/components/button.ts'
- * ];
- *
- * // 2. 数组形式 - 对象配置
- * const exports2: ModuleConfigExportExports = [
- *   // 简单的键值对映射
- *   { 'button': './src/components/button.ts' },
- *   // 带完整配置的对象
- *   {
- *     'store': {
- *       input: './src/store.ts',
- *       inputTarget: {
- *         client: './src/store.client.ts',
- *         server: './src/store.server.ts'
- *       }
- *     }
- *   }
- * ];
- *
- * // 3. 对象形式
- * const exports3: ModuleConfigExportExports = {
- *   // 简单路径映射
- *   'utils': './src/utils.ts',
- *
- *   // 完整配置对象
- *   'api': {
- *     input: './src/api/index.ts'
- *   },
- *
- *   // 客户端/服务端分离
- *   'entry': {
- *     inputTarget: {
- *       client: './src/entry.client.ts',
- *       server: './src/entry.server.ts'
- *     }
- *   }
- * };
+ * Union type for export configuration.
+ * Supports mixed array and object forms to provide flexibility
+ * for different configuration scenarios.
  */
 export type ModuleConfigExportExports =
     | Array<string | Record<string, string | ModuleConfigExportObject>>
     | Record<string, string | ModuleConfigExportObject>;
 
 /**
- * 模块导出对象配置
- * 用于详细定义一个要导出的模块的配置
- *
- * @property input - 模块的源文件路径
- * @property inputTarget - 针对客户端和服务端分别配置不同的入口文件
- * @property rewrite - 是否需要重写模块路径，默认为 true
- *                    可以对 npm 包设置为 false 以保持原始路径
- *
- * @example
- * // 导出一个同构组件（客户端和服务端使用相同的实现）
- * const buttonExport: ModuleConfigExportObject = {
- *   input: './src/components/button'
- * };
- *
- * // 导出一个具有不同客户端和服务端实现的模块
- * const storeExport: ModuleConfigExportObject = {
- *   inputTarget: {
- *     client: './src/store/client',  // 客户端特定实现
- *     server: './src/store/server'   // 服务端特定实现
- *   }
- * };
+ * Configuration object for individual module exports.
+ * Provides fine-grained control over module export behavior.
  */
 export type ModuleConfigExportObject = {
     /**
-     * 模块的源文件路径，用于指定导出的具体文件
+     * Input file path, relative to project root directory.
+     *
+     * @example './src/utils/format'
      */
     input?: string;
 
     /**
-     * 客户端和服务端的不同入口文件配置
-     * - false 表示在该环境下不提供实现
+     * Environment-specific input file configuration.
+     * Supports client and server differentiated builds.
+     * Set to `false` to disable builds for specific environments.
+     *
+     * @example
+     * ```typescript
+     * inputTarget: {
+     *   client: './src/storage/indexedDB.ts',
+     *   server: './src/storage/filesystem.ts'
+     * }
+     * ```
      */
     inputTarget?: Record<BuildSsrTarget, string | false>;
 
     /**
-     * 是否需要重写模块路径（不常用）
-     * @default true - 适用于大多数情况
-     * @remarks 仅在导出 npm 包时可能需要设为 false
+     * Whether to rewrite import paths within modules.
+     *
+     * @default true
+     * @remarks Only needs to be false when exporting npm packages
      */
     rewrite?: boolean;
 };
 
 /**
- * 解析后的模块配置接口
- * 这是运行时实际使用的配置格式，由原始配置解析得到
- * 包含了所有必要的绝对路径和解析后的模块映射关系
- *
- * @example
- * const parsedConfig: ParsedModuleConfig = {
- *   // 服务名称
- *   name: 'vue-remote-service',
- *   // 服务根目录
- *   root: '/path/to/vue-remote-service',
- *   // 解析后的服务链接配置（包含了完整的文件路径）
- *   links: {
- *     'vue-remote-service': {
- *       name: 'vue-remote-service',
- *       root: '/path/to/vue-remote-service/dist',
- *       client: '/path/to/vue-remote-service/dist/client',
- *       clientManifestJson: '/path/to/vue-remote-service/dist/client/manifest.json',
- *       server: '/path/to/vue-remote-service/dist/server',
- *       serverManifestJson: '/path/to/vue-remote-service/dist/server/manifest.json'
- *     }
- *   },
- *   // 模块导入映射
- *   imports: {
- *     'remote-button': 'vue-remote-service/components/button'
- *   },
- *   // 解析后的导出配置
- *   exports: {
- *     'components/button': {
- *       name: 'components/button',
- *       inputTarget: {
- *         client: './src/components/button',
- *         server: './src/components/button'
- *       },
- *       // 系统内部标记，用户通常不需要关心
- *       rewrite: true
- *     }
- *   }
- * };
+ * Parsed and normalized module configuration.
+ * Contains resolved paths and processed configuration data.
  */
 export interface ParsedModuleConfig {
+    /** Module name */
     name: string;
+
+    /** Module root directory path */
     root: string;
+
+    /**
+     * Resolved link information for connected modules.
+     * Contains absolute paths to client/server directories and manifest files.
+     */
     links: Record<
         string,
         {
+            /** Module name */
             name: string;
+            /** Original root path (relative or absolute) */
             root: string;
+            /** Absolute path to client build directory */
             client: string;
+            /** Absolute path to client manifest.json */
             clientManifestJson: string;
+            /** Absolute path to server build directory */
             server: string;
+            /** Absolute path to server manifest.json */
             serverManifestJson: string;
         }
     >;
+
+    /** Import mapping configuration (passed through as-is) */
     imports: Record<string, string>;
+
+    /** Processed export configuration */
     exports: ParsedModuleConfigExports;
 }
 
 /**
- * 解析后的模块导出配置
- * 将原始的导出配置转换为标准化的格式
- * 键为导出模块的名称，值为该模块的详细配置
+ * Processed export configuration mapping.
+ * Maps export names to their resolved configuration objects.
  */
 export type ParsedModuleConfigExports = Record<
     string,
@@ -231,36 +149,37 @@ export type ParsedModuleConfigExports = Record<
 >;
 
 /**
- * 解析后的单个导出模块配置
- * @property name - 导出模块的名称，用于其他服务导入此模块
- * @property inputTarget - 客户端和服务端的入口文件配置
- * @property rewrite - 模块路径重写标志，true 表示需要调整路径以适配微服务架构
+ * Processed export configuration for a single module.
+ * Contains resolved input targets and processing flags.
  */
 export interface ParsedModuleConfigExport {
+    /** Export name/identifier */
     name: string;
+
+    /** Resolved input targets for different build environments */
     inputTarget: Record<BuildSsrTarget, string | false>;
+
+    /** Whether to rewrite import paths within this module */
     rewrite: boolean;
 }
 
 /**
- * 解析模块配置
- * 将原始的模块配置转换为标准化的格式，处理路径解析和模块映射
+ * Parse and normalize module configuration.
+ * Resolves paths, processes exports, and creates a standardized configuration object.
  *
- * @param name - 服务的名称
- * @param root - 服务的根目录路径
- * @param config - 原始的模块配置对象
- * @returns 解析后的模块配置
+ * @param name - Module name
+ * @param root - Module root directory path
+ * @param config - Raw module configuration (optional)
+ * @returns Parsed and normalized module configuration
  *
  * @example
- * const parsedConfig = parseModuleConfig('vue-remote-service', '/path/to/service', {
- *   links: {
- *     'vue-remote-service': 'dist'
- *   },
- *   imports: {
- *     'remote-button': 'vue-remote-service/components/button'
- *   },
- *   exports: ['root:src/components/button.ts']  // 必须指定具体文件名
+ * ```typescript
+ * const parsed = parseModuleConfig('my-app', '/path/to/app', {
+ *   links: { 'shared-lib': '../shared-lib/dist' },
+ *   imports: { 'axios': 'shared-lib/axios' },
+ *   exports: ['npm:axios', 'root:src/utils/format.ts']
  * });
+ * ```
  */
 export function parseModuleConfig(
     name: string,
@@ -277,21 +196,26 @@ export function parseModuleConfig(
 }
 
 /**
- * 模块配置中使用的前缀常量
+ * Prefix constants for export configuration syntactic sugar.
+ * Used to identify and process npm: and root: prefixes in export strings.
  */
 const PREFIX = {
-    /** npm 包前缀 */
+    /** Prefix for npm package exports */
     npm: 'npm:',
-    /** 根路径前缀 */
+    /** Prefix for source file exports */
     root: 'root:'
-};
+} as const;
 
 /**
- * 获取解析后的链接配置
- * @param name - 模块名称
- * @param root - 模块根目录路径
- * @param config - 模块配置对象
- * @returns 解析后的链接配置
+ * Process and resolve module links configuration.
+ * Creates absolute paths for client/server directories and manifest files.
+ * Automatically includes the current module as a self-link.
+ *
+ * @param name - Module name
+ * @param root - Module root directory path
+ * @param config - Module configuration
+ * @returns Resolved links configuration with absolute paths
+ *
  * @internal
  */
 function getLinks(name: string, root: string, config: ModuleConfig) {
@@ -319,13 +243,20 @@ function getLinks(name: string, root: string, config: ModuleConfig) {
 }
 
 /**
- * 获取解析后的导出配置
- * @param config - 模块配置对象
- * @returns 解析后的导出配置
+ * Process and normalize module exports configuration.
+ * Handles different export formats (array, object, object array) and
+ * processes prefix syntactic sugar (npm:, root:).
+ * Automatically adds default entry exports for client and server.
+ *
+ * @param config - Module configuration (optional)
+ * @returns Processed exports configuration
+ *
  * @internal
  */
 function getExports(config: ModuleConfig = {}) {
     const result: ParsedModuleConfig['exports'] = {};
+
+    // Default exports added automatically for every module
     const exports: Record<string, ModuleConfigExportObject | string> = {
         'src/entry.client': {
             inputTarget: {
@@ -340,18 +271,24 @@ function getExports(config: ModuleConfig = {}) {
             }
         }
     };
+
     if (Array.isArray(config.exports)) {
+        // Regular expression to match supported file extensions
         const FILE_EXT_REGEX =
             /\.(js|mjs|cjs|jsx|mjsx|cjsx|ts|mts|cts|tsx|mtsx|ctsx)$/i;
+
         config.exports.forEach((item) => {
             if (typeof item === 'string') {
+                // Process prefix syntactic sugar
                 if (item.startsWith(PREFIX.npm)) {
+                    // npm: prefix - export npm package, maintain original import paths
                     item = item.substring(PREFIX.npm.length);
                     exports[item] = {
                         rewrite: false,
                         input: item
                     };
                 } else if (item.startsWith(PREFIX.root)) {
+                    // root: prefix - export source file, rewrite import paths
                     item = item
                         .substring(PREFIX.root.length)
                         .replace(FILE_EXT_REGEX, '');
@@ -362,12 +299,16 @@ function getExports(config: ModuleConfig = {}) {
                     console.error(`Invalid module export: ${item}`);
                 }
             } else {
+                // Object configuration - merge directly
                 Object.assign(exports, item);
             }
         });
     } else if (config.exports) {
+        // Object configuration - merge directly
         Object.assign(exports, config.exports);
     }
+
+    // Normalize all export configurations
     for (const [name, value] of Object.entries(exports)) {
         const opts =
             typeof value === 'string'

@@ -1,67 +1,131 @@
 ---
-titleSuffix: Esmx 框架模块配置 API 参考
-description: 详细介绍 Esmx 框架的 ModuleConfig 配置接口，包括模块导入导出规则、别名配置和外部依赖管理，帮助开发者深入理解框架的模块化系统。
+titleSuffix: Esmx 模块配置 API 参考
+description: ModuleConfig 接口详细说明，包括类型定义、配置选项、解析机制和使用示例，帮助开发者深入理解 Esmx 模块系统的核心配置。
 head:
   - - meta
     - property: keywords
-      content: Esmx, ModuleConfig, 模块配置, 模块导入导出, 外部依赖, 别名配置, 依赖管理, Web 应用框架
+      content: Esmx, ModuleConfig, 模块配置, API 参考, 模块导入导出, 类型定义, 配置接口
 ---
 
 # ModuleConfig
 
-ModuleConfig 用于配置模块的导入导出规则：
+模块系统的核心配置接口。
+
+## 接口定义
 
 ```typescript
 interface ModuleConfig {
-    /**
-     * 服务与服务之间的链接配置
-     * 键：远程服务的名称
-     * 值：远程服务的构建产物目录路径
-     */
     links?: Record<string, string>;
-
-    /**
-     * 导入配置，用于将当前服务中的模块标识符映射到远程服务提供的模块
-     * 键：在当前服务中使用的模块标识符
-     * 值：远程服务导出的模块路径
-     */
     imports?: Record<string, string>;
-
-    /**
-     * 导出配置，用于将当前服务的模块暴露给其他服务使用
-     */
     exports?: ModuleConfigExportExports;
 }
 ```
 
-## links 配置
+### links
 
-指定远程服务的构建目录位置：
+* **类型**: `Record<string, string>`
+* **描述**: 模块链接配置。键为远程模块名称，值为模块构建产物目录路径。
+
+### imports  
+
+* **类型**: `Record<string, string>`
+* **描述**: 模块导入映射配置。键为本地模块标识符，值为远程模块路径。
+
+### exports
+
+* **类型**: `ModuleConfigExportExports`
+* **描述**: 模块导出配置。支持多种配置形式。
+
+## 类型定义
+
+### ModuleConfigExportExports
 
 ```typescript
-{
-  links: {
-    'vue-remote-service': '../vue-remote-service/dist',  // 相对路径
-    'other-service': '/var/www/other-service/dist'  // 绝对路径
-  }
+type ModuleConfigExportExports =
+    | Array<string | Record<string, string | ModuleConfigExportObject>>
+    | Record<string, string | ModuleConfigExportObject>;
+```
+
+导出配置的联合类型，支持混合数组（字符串和对象）、对象两种形式。
+
+### ModuleConfigExportObject
+
+```typescript
+type ModuleConfigExportObject = {
+    input?: string;
+    inputTarget?: Record<BuildSsrTarget, string | false>;
+    rewrite?: boolean;
+};
+```
+
+#### input
+
+* **类型**: `string`
+* **描述**: 输入文件路径，相对于项目根目录。
+
+#### inputTarget
+
+* **类型**: `Record<BuildSsrTarget, string | false>`
+* **描述**: 环境特定的输入文件配置。支持客户端和服务端差异化构建。
+
+#### rewrite
+
+* **类型**: `boolean`
+* **默认值**: `true`
+* **描述**: 是否重写模块内的导入路径。
+
+### BuildSsrTarget
+
+```typescript
+type BuildSsrTarget = 'client' | 'server';
+```
+
+构建目标环境类型。
+
+## 解析后接口
+
+### ParsedModuleConfig
+
+```typescript
+interface ParsedModuleConfig {
+    name: string;
+    root: string;
+    links: Record<string, LinkInfo>;
+    imports: Record<string, string>;
+    exports: ParsedModuleConfigExports;
 }
 ```
 
-## imports 配置
-
-配置要使用的模块及其来源：
+### ParsedModuleConfigExport
 
 ```typescript
-{
-  imports: {
-    'remote-button': 'vue-remote-service/components/button'
-  }
+interface ParsedModuleConfigExport {
+    name: string;
+    inputTarget: Record<BuildSsrTarget, string | false>;
+    rewrite: boolean;
 }
 ```
 
-## exports 配置
+## 前缀语法糖
 
-系统会默认导出以下入口文件：
+在 `exports` 数组形式的字符串项中支持以下前缀：
+
+### npm: 前缀
+
+* **格式**: `'npm:packageName'`
+* **处理**: 自动设置 `rewrite: false`，保持原始导入路径
+* **示例**: `'npm:axios'` → `{ input: 'axios', rewrite: false }`
+
+### root: 前缀  
+
+* **格式**: `'root:path/to/file.ext'`
+* **处理**: 自动设置 `rewrite: true`，去除文件扩展名，添加 `./` 前缀
+* **示例**: `'root:src/utils/format.ts'` → `{ input: './src/utils/format', rewrite: true }`
+
+## 默认导出项
+
+框架自动为每个模块添加以下默认导出项：
+
 ```typescript
 {
   'src/entry.client': {
@@ -79,27 +143,36 @@ interface ModuleConfig {
 }
 ```
 
+## 示例
+
+### 基础配置
+
+```typescript
+export default {
+  modules: {
+    links: {
+      'shared-lib': '../shared-lib/dist'
+    },
+    imports: {
+      'axios': 'shared-lib/axios'
+    },
+    exports: [
+      'npm:axios',
+      'root:src/utils/format.ts'
+    ]
+  }
+} satisfies EsmxOptions;
+```
+
 ### 数组形式
 
 ```typescript
 exports: [
-    // 导出 npm 包
-    'npm:vue',                           // 会自动设置 rewrite: false
-    
-    // 导出源码文件（必须包含文件扩展名）
-    'root:src/components/button.ts',     // 会被解析为 './src/components/button'
-    
-    // 对象配置方式
-    {
-      'store': {
-        input: './src/store.ts',         // 同构模块
-        inputTarget: {                   // 或指定不同的客户端/服务端实现
-          client: './src/store.client.ts',
-          server: './src/store.server.ts'
-        },
-        rewrite: true                    // 默认为 true
-      }
-    }
+  'npm:axios',
+  'root:src/utils/format.ts',
+  {
+    'api-client': './src/api/client.ts'
+  }
 ]
 ```
 
@@ -107,56 +180,30 @@ exports: [
 
 ```typescript
 exports: {
-    // 直接指定源文件路径
-    'utils': './src/utils.ts',
-
-    // 完整配置
-    'api': {
-        input: './src/api/index.ts'      // 同构模块的入口文件
-    },
-    
-    // 客户端/服务端分离
-    'entry': {
-        inputTarget: {
-            client: './src/entry.client.ts',  // false 表示该环境下不提供实现
-            server: './src/entry.server.ts'
-        }
+  'axios': 'axios',
+  'utils': './src/utils/index.ts',
+  'storage': {
+    inputTarget: {
+      client: './src/storage/indexedDB.ts',
+      server: './src/storage/filesystem.ts'
     }
+  }
 }
 ```
 
-## 配置属性说明
-
-### ModuleConfigExportObject
+### 混合数组形式
 
 ```typescript
-interface ModuleConfigExportObject {
-    /**
-     * 模块的源文件路径
-     */
-    input?: string;
-
-    /**
-     * 客户端和服务端的不同入口文件配置
-     * false 表示在该环境下不提供实现
-     */
-    inputTarget?: Record<'client' | 'server', string | false>;
-
-    /**
-     * 是否需要重写模块路径
-     * @default true
-     * @remarks 仅在导出 npm 包时可能需要设为 false
-     */
-    rewrite?: boolean;
-}
+exports: [
+  {
+    'utils': './src/utils.ts',
+    'api': './src/api.ts'
+  },
+  {
+    'components': {
+      input: './src/components/index.ts',
+      rewrite: true
+    }
+  }
+]
 ```
-
-## 使用限制
-
-1. **路径要求**
-   - 除了 `npm:` 前缀的包导出外，其他所有路径都必须指向具体文件
-   - 使用 `root:` 前缀的文件路径必须包含文件扩展名（.ts, .js 等）
-
-2. **路径解析规则**
-   - `npm:` 前缀: 用于导出 npm 包，会自动设置 `rewrite: false`
-   - `root:` 前缀: 用于导出源码文件，会被解析为相对路径

@@ -1,212 +1,299 @@
 ---
-titleSuffix: Esmx Framework Inter-Service Code Sharing Mechanism
-description: Detailed introduction to Esmx framework's module linking mechanism, including inter-service code sharing, dependency management, and ESM specification implementation, helping developers build efficient micro-frontend applications.
+titleSuffix: Esmx Inter-Module Code Sharing
+description: Esmx Module Link: Zero-runtime micro-frontend code sharing solution based on ESM standards
 head:
   - - meta
     - property: keywords
-      content: Esmx, Module Linking, Module Link, ESM, Code Sharing, Dependency Management, Micro-frontend
+      content: Esmx, Module Link, ESM, Code Sharing, Micro-frontend
 ---
 
-# Module Linking
+# Module Link
 
-The Esmx framework provides a comprehensive module linking mechanism for managing code sharing and dependency relationships between services. This mechanism is implemented based on the ESM (ECMAScript Module) specification, supporting source-level module exports/imports and complete dependency management functionality.
+Module Link is Esmx's cross-application code sharing mechanism, based on ECMAScript module standards, achieving micro-frontend architecture with zero runtime overhead.
 
-### Core Concepts
+## Why Module Link?
+
+In micro-frontend architectures, multiple independent applications often need to use the same third-party libraries (such as HTTP clients, utility libraries, UI component libraries) and shared components. Traditional approaches have the following issues:
+
+- **Resource Duplication**: Each application bundles the same dependencies independently, causing users to download duplicate code
+- **Version Inconsistency**: Different applications using different versions of the same library may cause compatibility issues
+- **Memory Waste**: Multiple instances of the same library exist in the browser, occupying additional memory
+- **Cache Invalidation**: Different bundled versions of the same library cannot share browser cache
+
+Module Link solves these problems through the ECMAScript module system and Import Maps specification, enabling multiple applications to safely and efficiently share code modules.
+
+## How It Works
+
+Module Link is based on technology standards natively supported by modern browsers:
+
+### Shared Module Provider
+
+One application acts as a **module provider**, responsible for building and exposing shared third-party libraries and components. Other applications act as **module consumers**, using these shared modules through standard ESM import syntax.
+
+### Import Maps Resolution
+
+Browsers use Import Maps to map module import statements to actual file paths:
+
+```javascript
+// Import statements in application code
+import axios from 'axios';  // Mapped via scopes configuration
+import { formatDate } from 'shared-lib/src/utils/date-utils';  // Mapped via imports configuration
+
+// Import Maps resolves them to
+import axios from 'shared-lib/axios.389c4cab.final.mjs';
+import { formatDate } from 'shared-lib/src/utils/date-utils.2d79c0c2.final.mjs';
+```
+
+### Module Instance Sharing
+
+All applications share the same module instance, ensuring:
+- Global state consistency (such as library global configuration)
+- Unified event system (such as global event bus)
+- Memory usage optimization (avoiding duplicate instantiation)
+
+## Quick Start
+
+### Basic Example
+
+Assume we have a shared library application (shared-lib) and a business application (business-app):
+
+```typescript
+// shared-lib/entry.node.ts - Provide shared modules
+export default {
+  modules: {
+    exports: [
+      'npm:axios',                    // Share HTTP client
+      'root:src/utils/format.ts'      // Share utility functions
+    ]
+  }
+} satisfies EsmxOptions;
+
+// business-app/entry.node.ts - Use shared modules
+export default {
+  modules: {
+    links: { 'shared-lib': '../shared-lib/dist' },
+    imports: { 'axios': 'shared-lib/axios' }
+  }
+} satisfies EsmxOptions;
+```
+
+Using in business application:
+
+```typescript
+// business-app/src/api/orders.ts
+import axios from 'axios';  // Use shared axios instance
+import { formatDate } from 'shared-lib/src/utils/format';  // Use shared utility functions
+
+export async function fetchOrders() {
+  const response = await axios.get('/api/orders');
+  return response.data.map(order => ({
+    ...order,
+    date: formatDate(order.createdAt)
+  }));
+}
+```
+
+## Configuration Guide
+
+Module Link configuration is located in the `modules` field of the `entry.node.ts` file, containing three core configuration items:
+
+### Basic Configuration
 
 #### Module Export
-Module export is the process of exposing specific code units (such as components, utility functions, etc.) from a service in ESM format. Two export types are supported:
-- **Source Export**: Directly exports source code files from the project
-- **Dependency Export**: Exports third-party dependency packages used by the project
+
+`exports` configuration defines content that modules expose externally, supporting two prefixes:
+
+> **Prefix Note**: `npm:` and `root:` prefixes are syntactic sugar for configuration simplification, only valid in string items of `exports` array form. They automatically apply best practice configurations to simplify common use cases.
+
+```typescript
+// shared-lib/entry.node.ts
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+  // Other configurations...
+  modules: {
+    exports: [
+      // npm packages: maintain original import paths
+      'npm:axios',                    // Import: import axios from 'axios'
+      'npm:lodash',                   // Import: import { debounce } from 'lodash'
+      
+      // Source modules: automatically rewrite to module paths
+      'root:src/utils/date-utils.ts',     // Import: import { formatDate } from 'shared-lib/src/utils/date-utils'
+      'root:src/components/Chart.js'      // Import: import Chart from 'shared-lib/src/components/Chart'
+    ]
+  }
+} satisfies EsmxOptions;
+```
+
+**Prefix Processing**:
+- `npm:axios` → Equivalent to `{ 'axios': { input: 'axios', rewrite: false } }`
+- `root:src/utils/date-utils.ts` → Equivalent to `{ 'src/utils/date-utils': { input: './src/utils/date-utils', rewrite: true } }`
 
 #### Module Linking
-Module import is the process of referencing code units exported by other services. Multiple installation methods are supported:
-- **Source Installation**: Suitable for development environments, supports real-time modifications and hot updates
-- **Package Installation**: Suitable for production environments, uses build artifacts directly
 
-## Module Export
+`links` configuration specifies paths where the current module links to other modules:
 
-### Configuration Instructions
-
-Configure modules to be exported in `entry.node.ts`:
-
-```ts title="src/entry.node.ts"
+```typescript
+// business-app/entry.node.ts
 import type { EsmxOptions } from '@esmx/core';
 
 export default {
-    modules: {
-        exports: [
-            // Export source files
-            'root:src/components/button.vue',  // Vue component
-            'root:src/utils/format.ts',        // Utility function
-            // Export third-party dependencies
-            'npm:vue',                         // Vue framework
-            'npm:vue-router'                   // Vue Router
-        ]
+  // Other configurations...
+  modules: {
+    links: {
+      'shared-lib': '../shared-lib/dist',     // Relative path
+      'api-utils': '/var/www/api-utils/dist'  // Absolute path
     }
+  }
 } satisfies EsmxOptions;
 ```
 
-Export configuration supports two types:
-- `root:*`: Exports source files, with paths relative to the project root
-- `npm:*`: Exports third-party dependencies, specified by package name directly
+#### Module Import
 
-## Module Import
+`imports` configuration maps local module names to remote module identifiers, **mainly used for standard imports of third-party libraries**:
 
-### Configuration Instructions
-
-Configure modules to be imported in `entry.node.ts`:
-
-```ts title="src/entry.node.ts"
+```typescript
+// business-app/entry.node.ts
 import type { EsmxOptions } from '@esmx/core';
 
 export default {
-    modules: {
-        // Link configuration
-        links: {
-            // Source installation: points to build output directory
-            'ssr-remote': './node_modules/ssr-remote/dist',
-            // Package installation: points to package directory
-            'other-remote': './node_modules/other-remote'
-        },
-        // Import mapping settings
-        imports: {
-            // Use dependencies from remote modules
-            'vue': 'ssr-remote/npm/vue',
-            'vue-router': 'ssr-remote/npm/vue-router'
-        }
-    }
-} satisfies EsmxOptions;
-```
-
-Configuration items explanation:
-1. **imports**: Configures local paths for remote modules
-   - Source installation: Points to build output directory (dist)
-   - Package installation: Directly points to package directory
-
-2. **externals**: Configures external dependencies
-   - Used for sharing dependencies from remote modules
-   - Avoids duplicate packaging of same dependencies
-   - Supports dependency sharing across multiple modules
-
-### Installation Methods
-
-#### Source Installation
-Suitable for development environments, supports real-time modifications and hot updates.
-
-1. **Workspace Method**
-Recommended for Monorepo projects:
-```ts title="package.json"
-{
-    "devDependencies": {
-        "ssr-remote": "workspace:*"
-    }
-}
-```
-
-2. **Link Method**
-For local development and debugging:
-```ts title="package.json"
-{
-    "devDependencies": {
-        "ssr-remote": "link:../ssr-remote"
-    }
-}
-```
-
-#### Package Installation
-Suitable for production environments, uses build artifacts directly.
-
-1. **NPM Registry**
-Install via npm registry:
-```ts title="package.json"
-{
-    "dependencies": {
-        "ssr-remote": "^1.0.0"
-    }
-}
-```
-
-2. **Static Server**
-Install via HTTP/HTTPS protocol:
-```ts title="package.json"
-{
-    "dependencies": {
-        "ssr-remote": "https://cdn.example.com/ssr-remote/1.0.0.tgz"
-    }
-}
-```
-
-## Package Building
-
-### Configuration Instructions
-
-Configure build options in `entry.node.ts`:
-
-```ts title="src/entry.node.ts"
-import type { EsmxOptions } from '@esmx/core';
-
-export default {
-    // Module export configuration
-    modules: {
-        exports: [
-            'root:src/components/button.vue',
-            'root:src/utils/format.ts',
-            'npm:vue'
-        ]
+  modules: {
+    links: {
+      'shared-lib': '../shared-lib/dist'
     },
-    // Build configuration
-    pack: {
-        // Enable building
-        enable: true,
-
-        // Output configuration
-        outputs: [
-            'dist/client/versions/latest.tgz',
-            'dist/client/versions/1.0.0.tgz'
-        ],
-
-        // Custom package.json
-        packageJson: async (esmx, pkg) => {
-            pkg.version = '1.0.0';
-            return pkg;
-        },
-
-        // Pre-build processing
-        onBefore: async (esmx, pkg) => {
-            // Generate type declarations
-            // Execute test cases
-            // Update documentation, etc.
-        },
-
-        // Post-build processing
-        onAfter: async (esmx, pkg, file) => {
-            // Upload to CDN
-            // Publish to npm registry
-            // Deploy to test environment, etc.
-        }
+    imports: {
+      // Third-party library standard import mapping
+      'axios': 'shared-lib/axios',
+      'lodash': 'shared-lib/lodash'
     }
+  }
+} satisfies EsmxOptions;
+
+// Usage
+import axios from 'axios';  // Correct - use standard library name
+import { debounce } from 'lodash';  // Correct - use standard library name
+
+// Custom module import
+import { formatDate } from 'shared-lib/src/utils/date-utils';  // Correct - directly use link path
+```
+
+### Advanced Configuration
+
+#### Advanced exports Configuration
+
+`exports` supports multiple configuration forms. When complex configurations (such as `inputTarget`) are needed, prefix syntactic sugar cannot satisfy requirements, and complete object form is needed:
+
+**Array Form**:
+```typescript
+// shared-lib/entry.node.ts
+export default {
+  modules: {
+    exports: [
+      // String form - using prefix syntactic sugar
+      'npm:axios',                    // Export npm package
+      'root:src/utils/format.ts',     // Export source file
+      
+      // Object form - complex configurations cannot use prefixes
+      {
+        'api': './src/api.ts',        // Simple mapping
+        'store': {                    // Complete configuration
+          input: './src/store.ts',
+          rewrite: true
+        }
+      }
+    ]
+  }
 } satisfies EsmxOptions;
 ```
 
-### Build Artifacts
-
+**Object Form**:
+```typescript
+// shared-lib/entry.node.ts
+export default {
+  modules: {
+    exports: {
+      // Simple mapping
+      'axios': 'axios',            // Directly specify npm package name
+      
+      // Complete configuration object
+      'src/utils/format': {
+        input: './src/utils/format',  // Input file path
+        rewrite: true,                // Whether to rewrite import paths (default true)
+        inputTarget: {                // Client/server differentiated builds
+          client: './src/utils/format.client',  // Client-specific version
+          server: './src/utils/format.server'   // Server-specific version
+        }
+      }
+    }
+  }
+} satisfies EsmxOptions;
 ```
-your-app-name.tgz
-├── package.json        # Package information
-├── index.js            # Production entry
-├── server/             # Server resources
-│   └── manifest.json   # Server resource mapping
-├── node/               # Node.js runtime
-└── client/             # Client resources
-    └── manifest.json   # Client resource mapping
+
+#### inputTarget Environment Differentiated Builds
+
+```typescript
+exports: {
+  'src/storage/db': {
+    inputTarget: {
+      client: './src/storage/indexedDB',  // Client uses IndexedDB
+      server: './src/storage/mongoAdapter' // Server uses MongoDB adapter
+    }
+  }
+}
 ```
 
-### Publishing Process
+Setting `false` can disable builds for specific environments:
 
-```bash
-# 1. Build production version
-esmx build
-
-# 2. Publish to npm
-npm publish dist/versions/your-app-name.tgz
+```typescript
+exports: {
+  'src/client-only': {
+    inputTarget: {
+      client: './src/client-feature',  // Only available on client
+      server: false                    // Not available on server
+    }
+  }
+}
 ```
+
+## Best Practices
+
+### Applicable Scenarios
+
+**Suitable for**:
+- Multiple applications using the same third-party libraries (axios, lodash, moment, etc.)
+- Need to share business component libraries or utility functions
+- Want to reduce application size and improve loading performance
+- Need to ensure library version consistency across multiple applications
+
+**Not suitable for**:
+- Single application projects (no sharing requirements)
+- Frequently changing experimental code
+- Scenarios requiring extremely low coupling between applications
+
+### Import Standards
+
+**Third-party library imports**:
+```typescript
+// ✅ Recommended - Use standard library names, conform to ecosystem standards
+import axios from 'axios';
+import { debounce } from 'lodash';
+
+// ❌ Not recommended - Violates module ecosystem standards, not conducive to library replacement and maintenance
+import axios from 'shared-lib/axios';
+```
+
+**Custom module imports**:
+```typescript
+// ✅ Recommended - Directly use module link paths, clear dependency source
+import { formatDate } from 'shared-lib/src/utils/date-utils';
+
+// ❌ Invalid configuration - imports does not support path prefix functionality
+imports: { 'components': 'shared-lib/src/components' }
+import Chart from 'components/Chart';  // This import cannot be resolved
+```
+
+### Configuration Principles
+
+1. **Third-party libraries**: Must configure `imports` mapping, use standard names for imports
+2. **Custom modules**: Directly use complete module link paths
+3. **imports purpose**: Only used for third-party library standard name mapping, not directory aliases
