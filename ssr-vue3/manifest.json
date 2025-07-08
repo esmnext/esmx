@@ -9,64 +9,64 @@
         "src/entry.client": {
             "name": "src/entry.client",
             "rewrite": true,
-            "file": "src/entry.client.7883e8cf.final.mjs",
+            "file": "exports/src/entry.client.7883e8cf.final.mjs",
             "identifier": "ssr-vue3/src/entry.client"
         },
         "src/routes": {
             "name": "src/routes",
             "rewrite": true,
-            "file": "src/routes.822edd7e.final.mjs",
+            "file": "exports/src/routes.8b8ae9e2.final.mjs",
             "identifier": "ssr-vue3/src/routes"
         },
         "src/components/index": {
             "name": "src/components/index",
             "rewrite": true,
-            "file": "src/components/index.aa57aa9a.final.mjs",
+            "file": "exports/src/components/index.c252ea87.final.mjs",
             "identifier": "ssr-vue3/src/components/index"
         },
         "src/layout/index": {
             "name": "src/layout/index",
             "rewrite": true,
-            "file": "src/layout/index.d4521836.final.mjs",
+            "file": "exports/src/layout/index.d75e9425.final.mjs",
             "identifier": "ssr-vue3/src/layout/index"
         },
         "src/store/music-store": {
             "name": "src/store/music-store",
             "rewrite": true,
-            "file": "src/store/music-store.8f225acb.final.mjs",
+            "file": "exports/src/store/music-store.8f225acb.final.mjs",
             "identifier": "ssr-vue3/src/store/music-store"
         }
     },
     "buildFiles": [
-        "src/routes.733a85f4.final.css",
-        "src/components/index.1f6293b4.final.css",
-        "src/layout/index.d4521836.final.mjs",
-        "src/layout/index.9c2ecb44.final.css",
-        "src/entry.client.7883e8cf.final.mjs",
+        "exports/src/entry.client.7883e8cf.final.mjs",
+        "chunks/620.eb529c42.final.css",
+        "exports/src/routes.06c14821.final.css",
+        "exports/src/layout/index.d75e9425.final.mjs",
+        "exports/src/routes.8b8ae9e2.final.mjs",
         "images/sine-wave-notes.47e0c83d.final.svg",
-        "src/components/index.aa57aa9a.final.mjs",
-        "src/routes.822edd7e.final.mjs",
-        "620.eb529c42.final.css",
-        "src/store/music-store.8f225acb.final.mjs",
-        "620.be7bdc29.final.mjs"
+        "exports/src/layout/index.9c2ecb44.final.css",
+        "exports/src/components/index.c252ea87.final.mjs",
+        "exports/src/store/music-store.8f225acb.final.mjs",
+        "chunks/620.be7bdc29.final.mjs",
+        "exports/src/components/index.1f6293b4.final.css"
     ],
     "chunks": {
         "ssr-vue3@src/layout/index.ts": {
             "name": "ssr-vue3@src/layout/index.ts",
-            "js": "src/layout/index.d4521836.final.mjs",
+            "js": "exports/src/layout/index.d75e9425.final.mjs",
             "css": [
-                "src/layout/index.9c2ecb44.final.css"
+                "exports/src/layout/index.9c2ecb44.final.css"
             ],
             "resources": [],
             "sizes": {
-                "js": 32708,
+                "js": 32711,
                 "css": 13696,
                 "resource": 0
             }
         },
         "ssr-vue3@src/store/music-store.ts": {
             "name": "ssr-vue3@src/store/music-store.ts",
-            "js": "src/store/music-store.8f225acb.final.mjs",
+            "js": "exports/src/store/music-store.8f225acb.final.mjs",
             "css": [],
             "resources": [],
             "sizes": {
@@ -77,7 +77,7 @@
         },
         "ssr-vue3@src/entry.client.ts": {
             "name": "ssr-vue3@src/entry.client.ts",
-            "js": "src/entry.client.7883e8cf.final.mjs",
+            "js": "exports/src/entry.client.7883e8cf.final.mjs",
             "css": [],
             "resources": [],
             "sizes": {
@@ -88,24 +88,24 @@
         },
         "ssr-vue3@src/routes.ts": {
             "name": "ssr-vue3@src/routes.ts",
-            "js": "src/routes.822edd7e.final.mjs",
+            "js": "exports/src/routes.8b8ae9e2.final.mjs",
             "css": [
-                "src/routes.733a85f4.final.css"
+                "exports/src/routes.06c14821.final.css"
             ],
             "resources": [
                 "images/sine-wave-notes.47e0c83d.final.svg"
             ],
             "sizes": {
-                "js": 50702,
+                "js": 50722,
                 "css": 25565,
                 "resource": 1585
             }
         },
         "ssr-vue3@src/views/playlist-detail.vue": {
             "name": "ssr-vue3@src/views/playlist-detail.vue",
-            "js": "620.be7bdc29.final.mjs",
+            "js": "chunks/620.be7bdc29.final.mjs",
             "css": [
-                "620.eb529c42.final.css"
+                "chunks/620.eb529c42.final.css"
             ],
             "resources": [],
             "sizes": {
@@ -116,13 +116,13 @@
         },
         "ssr-vue3@src/components/index.ts": {
             "name": "ssr-vue3@src/components/index.ts",
-            "js": "src/components/index.aa57aa9a.final.mjs",
+            "js": "exports/src/components/index.c252ea87.final.mjs",
             "css": [
-                "src/components/index.1f6293b4.final.css"
+                "exports/src/components/index.1f6293b4.final.css"
             ],
             "resources": [],
             "sizes": {
-                "js": 52124,
+                "js": 52127,
                 "css": 21893,
                 "resource": 0
             }

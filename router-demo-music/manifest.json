@@ -5,42 +5,42 @@
         "src/entry.client": {
             "name": "src/entry.client",
             "rewrite": true,
-            "file": "src/entry.client.ff7787a3.final.mjs",
+            "file": "exports/src/entry.client.105b7552.final.mjs",
             "identifier": "router-demo-music/src/entry.client"
         },
         "vue": {
             "name": "vue",
             "rewrite": false,
-            "file": "vue.389c4cab.final.mjs",
+            "file": "exports/vue.389c4cab.final.mjs",
             "identifier": "router-demo-music/vue"
         },
         "@esmx/router": {
             "name": "@esmx/router",
             "rewrite": false,
-            "file": "@esmx/router.6e9fa025.final.mjs",
+            "file": "exports/@esmx/router.6e9fa025.final.mjs",
             "identifier": "router-demo-music/@esmx/router"
         },
         "@esmx/router-vue": {
             "name": "@esmx/router-vue",
             "rewrite": false,
-            "file": "@esmx/router-vue.3618af85.final.mjs",
+            "file": "exports/@esmx/router-vue.3618af85.final.mjs",
             "identifier": "router-demo-music/@esmx/router-vue"
         }
     },
     "buildFiles": [
-        "896.3c9051dd.final.mjs",
-        "@esmx/router-vue.3618af85.final.mjs",
+        "chunks/896.3c9051dd.final.mjs",
+        "chunks/896.841963f8.final.css",
+        "exports/src/entry.client.9600eb23.final.css",
         "images/sine-wave-notes.47e0c83d.final.svg",
-        "@esmx/router.6e9fa025.final.mjs",
-        "896.841963f8.final.css",
-        "src/entry.client.476562c4.final.css",
-        "src/entry.client.ff7787a3.final.mjs",
-        "vue.389c4cab.final.mjs"
+        "exports/vue.389c4cab.final.mjs",
+        "exports/@esmx/router.6e9fa025.final.mjs",
+        "exports/src/entry.client.105b7552.final.mjs",
+        "exports/@esmx/router-vue.3618af85.final.mjs"
     ],
     "chunks": {
         "router-demo-music@../../packages/router/dist/index.mjs": {
             "name": "router-demo-music@../../packages/router/dist/index.mjs",
-            "js": "@esmx/router.6e9fa025.final.mjs",
+            "js": "exports/@esmx/router.6e9fa025.final.mjs",
             "css": [],
             "resources": [],
             "sizes": {
@@ -51,7 +51,7 @@
         },
         "router-demo-music@../../packages/router-vue/dist/index.mjs": {
             "name": "router-demo-music@../../packages/router-vue/dist/index.mjs",
-            "js": "@esmx/router-vue.3618af85.final.mjs",
+            "js": "exports/@esmx/router-vue.3618af85.final.mjs",
             "css": [],
             "resources": [],
             "sizes": {
@@ -62,7 +62,7 @@
         },
         "router-demo-music@../../node_modules/.pnpm/vue@2.7.16/node_modules/vue/dist/vue.esm.js": {
             "name": "router-demo-music@../../node_modules/.pnpm/vue@2.7.16/node_modules/vue/dist/vue.esm.js",
-            "js": "vue.389c4cab.final.mjs",
+            "js": "exports/vue.389c4cab.final.mjs",
             "css": [],
             "resources": [],
             "sizes": {
@@ -73,24 +73,24 @@
         },
         "router-demo-music@src/entry.client.ts": {
             "name": "router-demo-music@src/entry.client.ts",
-            "js": "src/entry.client.ff7787a3.final.mjs",
+            "js": "exports/src/entry.client.105b7552.final.mjs",
             "css": [
-                "src/entry.client.476562c4.final.css"
+                "exports/src/entry.client.9600eb23.final.css"
             ],
             "resources": [
                 "images/sine-wave-notes.47e0c83d.final.svg"
             ],
             "sizes": {
-                "js": 132488,
+                "js": 132508,
                 "css": 72930,
                 "resource": 1585
             }
         },
         "router-demo-music@src/views/not-found.vue": {
             "name": "router-demo-music@src/views/not-found.vue",
-            "js": "896.3c9051dd.final.mjs",
+            "js": "chunks/896.3c9051dd.final.mjs",
             "css": [
-                "896.841963f8.final.css"
+                "chunks/896.841963f8.final.css"
             ],
             "resources": [],
             "sizes": {

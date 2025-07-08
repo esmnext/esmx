@@ -5,36 +5,36 @@
         "src/entry.client": {
             "name": "src/entry.client",
             "rewrite": true,
-            "file": "src/entry.client.dd8cbf28.final.mjs",
+            "file": "exports/src/entry.client.01142376.final.mjs",
             "identifier": "ssr-html/src/entry.client"
         },
         "src/title/index": {
             "name": "src/title/index",
             "rewrite": true,
-            "file": "src/title/index.2d79c0c2.final.mjs",
+            "file": "exports/src/title/index.2d79c0c2.final.mjs",
             "identifier": "ssr-html/src/title/index"
         }
     },
     "buildFiles": [
-        "473.88885509.final.mjs",
+        "exports/src/entry.client.2e0a89bc.final.css",
         "images/cat.ed79ef6b.final.jpeg",
-        "src/entry.client.2e0a89bc.final.css",
-        "src/entry.client.dd8cbf28.final.mjs",
-        "830.945804bd.final.mjs",
-        "473.63b8fd4f.final.css",
-        "830.63b8fd4f.final.css",
-        "src/title/index.2d79c0c2.final.mjs",
+        "chunks/830.63b8fd4f.final.css",
+        "chunks/473.63b8fd4f.final.css",
+        "exports/src/title/index.2d79c0c2.final.mjs",
+        "chunks/534.7540aaee.final.mjs",
         "images/starry.d914a632.final.jpg",
         "images/logo.3923d727.final.svg",
         "images/sun.429a7bc5.final.png",
-        "534.63b8fd4f.final.css",
-        "534.7540aaee.final.mjs",
-        "images/running-dog.76197e20.final.gif"
+        "chunks/534.63b8fd4f.final.css",
+        "chunks/473.88885509.final.mjs",
+        "exports/src/entry.client.01142376.final.mjs",
+        "images/running-dog.76197e20.final.gif",
+        "chunks/830.945804bd.final.mjs"
     ],
     "chunks": {
         "ssr-html@src/title/index.ts": {
             "name": "ssr-html@src/title/index.ts",
-            "js": "src/title/index.2d79c0c2.final.mjs",
+            "js": "exports/src/title/index.2d79c0c2.final.mjs",
             "css": [],
             "resources": [],
             "sizes": {
@@ -45,9 +45,9 @@
         },
         "ssr-html@src/views/about.ts": {
             "name": "ssr-html@src/views/about.ts",
-            "js": "473.88885509.final.mjs",
+            "js": "chunks/473.88885509.final.mjs",
             "css": [
-                "473.63b8fd4f.final.css"
+                "chunks/473.63b8fd4f.final.css"
             ],
             "resources": [],
             "sizes": {
@@ -58,22 +58,22 @@
         },
         "ssr-html@src/entry.client.ts": {
             "name": "ssr-html@src/entry.client.ts",
-            "js": "src/entry.client.dd8cbf28.final.mjs",
+            "js": "exports/src/entry.client.01142376.final.mjs",
             "css": [
-                "src/entry.client.2e0a89bc.final.css"
+                "exports/src/entry.client.2e0a89bc.final.css"
             ],
             "resources": [],
             "sizes": {
-                "js": 9836,
+                "js": 9856,
                 "css": 6471,
                 "resource": 0
             }
         },
         "ssr-html@src/views/home.ts": {
             "name": "ssr-html@src/views/home.ts",
-            "js": "534.7540aaee.final.mjs",
+            "js": "chunks/534.7540aaee.final.mjs",
             "css": [
-                "534.63b8fd4f.final.css"
+                "chunks/534.63b8fd4f.final.css"
             ],
             "resources": [
                 "images/cat.ed79ef6b.final.jpeg",
@@ -90,9 +90,9 @@
         },
         "ssr-html@src/views/not-found.ts": {
             "name": "ssr-html@src/views/not-found.ts",
-            "js": "830.945804bd.final.mjs",
+            "js": "chunks/830.945804bd.final.mjs",
             "css": [
-                "830.63b8fd4f.final.css"
+                "chunks/830.63b8fd4f.final.css"
             ],
             "resources": [],
             "sizes": {
