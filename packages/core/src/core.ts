@@ -865,10 +865,14 @@ export class Esmx {
                     json = getImportMap({
                         manifests,
                         getScope: (name: string) => {
-                            return path.join(
-                                moduleConfig.links[name].server,
-                                '/'
-                            );
+                            const linkPath = moduleConfig.links[name].server;
+                            // Get the real physical path instead of symbolic link
+                            // This is crucial when generating import maps on the server side.
+                            // If we use symbolic link paths as scopes, it would cause module resolution errors at runtime
+                            // because the actual accessed paths are real physical paths, not the symbolic links.
+                            // Using realpathSync ensures path consistency between import map generation and runtime resolution.
+                            const realPath = fs.realpathSync(linkPath);
+                            return path.join(realPath, '/');
                         },
                         getFile: (name: string, file: string) => {
                             return path.resolve(
