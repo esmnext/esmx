@@ -104,6 +104,9 @@ importers:
       '@esmx/router':
         specifier: workspace:*
         version: link:../../../packages/router
+      '@esmx/rspack-vue':
+        specifier: workspace:*
+        version: link:../../../packages/rspack-vue
       '@types/node':
         specifier: ^24.0.10
         version: 24.0.10
