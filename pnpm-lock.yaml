@@ -101,15 +101,12 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/core
     devDependencies:
-      '@esmx/rspack-vue':
+      '@esmx/router':
         specifier: workspace:*
-        version: link:../../../packages/rspack-vue
+        version: link:../../../packages/router
       '@types/node':
         specifier: ^24.0.10
         version: 24.0.10
-      '@vue/server-renderer':
-        specifier: ^3.5.17
-        version: 3.5.17(vue@3.5.17(typescript@5.8.3))
       ssr-npm-base:
         specifier: workspace:*
         version: link:../ssr-npm-base
@@ -131,12 +128,6 @@ importers:
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
-      vue:
-        specifier: ^3.5.17
-        version: 3.5.17(typescript@5.8.3)
-      vue-tsc:
-        specifier: ^2.2.10
-        version: 2.2.10(typescript@5.8.3)
 
   examples/router-demo/ssr-npm-base:
     dependencies:

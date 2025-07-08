@@ -9,13 +9,13 @@
         "build:ssr": "esmx build",
         "preview": "esmx preview",
         "start": "NODE_ENV=production node dist/index.mjs",
-        "build:dts": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/src"
+        "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src"
     },
     "dependencies": {
         "@esmx/core": "workspace:*"
     },
     "devDependencies": {
-        "@esmx/rspack-vue": "workspace:*",
+        "@esmx/router": "workspace:*",
         "ssr-share": "workspace:*",
         "ssr-vue2": "workspace:*",
         "ssr-vue3": "workspace:*",
@@ -23,9 +23,6 @@
         "ssr-npm-vue2": "workspace:*",
         "ssr-npm-vue3": "workspace:*",
         "@types/node": "^24.0.10",
-        "@vue/server-renderer": "^3.5.17",
-        "typescript": "^5.8.3",
-        "vue": "^3.5.17",
-        "vue-tsc": "^2.2.10"
+        "typescript": "^5.8.3"
     }
 }
