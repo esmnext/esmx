@@ -22,9 +22,9 @@
         }
     },
     "buildFiles": [
-        "src/entry.client.bfadf2d5.final.mjs",
+        "src/store/index.01f5cb34.final.mjs",
         "src/utils/time.9bf1071f.final.mjs",
-        "src/store/index.01f5cb34.final.mjs"
+        "src/entry.client.bfadf2d5.final.mjs"
     ],
     "chunks": {
         "ssr-share@src/entry.client.ts": {
