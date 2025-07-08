@@ -81,7 +81,7 @@
         "@biomejs/biome": "1.9.4",
         "@esmx/core": "workspace:*",
         "@esmx/lint": "workspace:*",
-        "@types/node": "^24.0.10",
+        "@types/node": "^24.0.0",
         "@types/npmcli__arborist": "^6.3.1",
         "@types/pacote": "^11.1.8",
         "@types/webpack-hot-middleware": "^2.25.9",

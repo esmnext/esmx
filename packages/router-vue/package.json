@@ -55,7 +55,7 @@
     "devDependencies": {
         "@biomejs/biome": "1.9.4",
         "@esmx/lint": "workspace:*",
-        "@types/node": "^24.0.10",
+        "@types/node": "^24.0.0",
         "@vitest/coverage-v8": "3.2.4",
         "stylelint": "16.21.0",
         "typescript": "5.8.3",

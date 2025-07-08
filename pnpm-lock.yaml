@@ -513,7 +513,7 @@ importers:
         specifier: workspace:*
         version: link:../lint
       '@types/node':
-        specifier: ^24.0.10
+        specifier: ^24.0.0
         version: 24.0.10
       '@vitest/coverage-v8':
         specifier: 3.2.4
@@ -568,7 +568,7 @@ importers:
         specifier: ^0.2.4
         version: 0.2.4
       '@types/node':
-        specifier: ^24.0.10
+        specifier: ^24.0.0
         version: 24.0.10
       '@types/send':
         specifier: ^0.17.4
@@ -614,7 +614,7 @@ importers:
         specifier: ^3.11.6
         version: 3.11.6
       '@types/node':
-        specifier: ^24.0.10
+        specifier: ^24.0.0
         version: 24.0.10
       '@vitest/coverage-v8':
         specifier: 3.2.4
@@ -645,7 +645,7 @@ importers:
         specifier: workspace:*
         version: link:../lint
       '@types/node':
-        specifier: ^24.0.10
+        specifier: ^24.0.0
         version: 24.0.10
       '@vitest/coverage-v8':
         specifier: 3.2.4
@@ -691,7 +691,7 @@ importers:
         specifier: workspace:*
         version: 'link:'
       '@types/node':
-        specifier: ^24.0.10
+        specifier: ^24.0.0
         version: 24.0.10
       '@vitest/coverage-v8':
         specifier: 3.2.4
@@ -722,7 +722,7 @@ importers:
         specifier: workspace:*
         version: link:../lint
       '@types/node':
-        specifier: ^24.0.10
+        specifier: ^24.0.0
         version: 24.0.10
       '@vitest/coverage-v8':
         specifier: 3.2.4
@@ -756,7 +756,7 @@ importers:
         specifier: workspace:*
         version: link:../lint
       '@types/node':
-        specifier: ^24.0.10
+        specifier: ^24.0.0
         version: 24.0.10
       '@vitest/coverage-v8':
         specifier: 3.2.4
@@ -835,7 +835,7 @@ importers:
         specifier: workspace:*
         version: link:../lint
       '@types/node':
-        specifier: ^24.0.10
+        specifier: ^24.0.0
         version: 24.0.10
       '@types/npmcli__arborist':
         specifier: ^6.3.1
@@ -884,7 +884,7 @@ importers:
         specifier: 1.2.3
         version: 1.2.3(@swc/helpers@0.5.17)
       '@types/node':
-        specifier: ^24.0.10
+        specifier: ^24.0.0
         version: 24.0.10
       '@vitest/coverage-v8':
         specifier: 3.2.4
@@ -930,7 +930,7 @@ importers:
         specifier: workspace:*
         version: link:../lint
       '@types/node':
-        specifier: ^24.0.10
+        specifier: ^24.0.0
         version: 24.0.10
       '@vitest/coverage-v8':
         specifier: 3.2.4
