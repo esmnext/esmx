@@ -9,7 +9,7 @@
         "src/entry.client": {
             "name": "src/entry.client",
             "rewrite": true,
-            "file": "src/entry.client.e3536c32.final.mjs",
+            "file": "src/entry.client.cc635218.final.mjs",
             "identifier": "ssr-vue2/src/entry.client"
         },
         "src/routes": {
@@ -38,17 +38,17 @@
         }
     },
     "buildFiles": [
-        "src/components/index.2d57064f.final.css",
         "653.7d1d4364.final.css",
-        "src/layout/index.d5eef6ef.final.mjs",
-        "src/components/index.e09a82da.final.mjs",
-        "images/sine-wave-notes.47e0c83d.final.svg",
-        "src/store/music-store.a72d93b9.final.mjs",
-        "src/entry.client.e3536c32.final.mjs",
         "src/routes.800346c2.final.css",
         "src/layout/index.ed0105a9.final.css",
+        "src/components/index.e09a82da.final.mjs",
+        "src/store/music-store.a72d93b9.final.mjs",
+        "images/sine-wave-notes.47e0c83d.final.svg",
+        "src/components/index.2d57064f.final.css",
+        "src/layout/index.d5eef6ef.final.mjs",
+        "src/routes.f0022db3.final.mjs",
         "653.7a4e81af.final.mjs",
-        "src/routes.f0022db3.final.mjs"
+        "src/entry.client.cc635218.final.mjs"
     ],
     "chunks": {
         "ssr-vue2@src/layout/index.ts": {
@@ -77,11 +77,11 @@
         },
         "ssr-vue2@src/entry.client.ts": {
             "name": "ssr-vue2@src/entry.client.ts",
-            "js": "src/entry.client.e3536c32.final.mjs",
+            "js": "src/entry.client.cc635218.final.mjs",
             "css": [],
             "resources": [],
             "sizes": {
-                "js": 1360,
+                "js": 1397,
                 "css": 0,
                 "resource": 0
             }
