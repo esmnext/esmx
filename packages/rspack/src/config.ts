@@ -28,19 +28,19 @@ export function createRspackConfig(
         context: esmx.root,
         output: {
             clean: esmx.isProd,
-            chunkFilename: esmx.isProd
-                ? '[name].[contenthash:8].final.mjs'
-                : '[name].mjs',
             filename:
                 buildTarget !== 'node' && esmx.isProd
-                    ? '[name].[contenthash:8].final.mjs'
-                    : '[name].mjs',
+                    ? 'exports/[name].[contenthash:8].final.mjs'
+                    : 'exports/[name].mjs',
             cssFilename: esmx.isProd
-                ? '[name].[contenthash:8].final.css'
-                : '[name].css',
+                ? 'exports/[name].[contenthash:8].final.css'
+                : 'exports/[name].css',
+            chunkFilename: esmx.isProd
+                ? 'chunks/[name].[contenthash:8].final.mjs'
+                : 'chunks/[name].mjs',
             cssChunkFilename: esmx.isProd
-                ? '[name].[contenthash:8].final.css'
-                : '[name].css',
+                ? 'chunks/[name].[contenthash:8].final.css'
+                : 'chunks/[name].css',
             publicPath:
                 buildTarget === 'client'
                     ? 'auto'
