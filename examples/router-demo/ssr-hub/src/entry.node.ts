@@ -11,12 +11,12 @@ const port = process.env.PORT || 3004;
 export default {
     modules: {
         links: {
-            'ssr-share': './node_modules/ssr-share/dist',
-            'ssr-vue2': './node_modules/ssr-vue2/dist',
-            'ssr-vue3': './node_modules/ssr-vue3/dist',
-            'ssr-npm-base': './node_modules/ssr-npm-base/dist',
-            'ssr-npm-vue2': './node_modules/ssr-npm-vue2/dist',
-            'ssr-npm-vue3': './node_modules/ssr-npm-vue3/dist'
+            'ssr-share': '../ssr-share/dist',
+            'ssr-vue2': '../ssr-vue2/dist',
+            'ssr-vue3': '../ssr-vue3/dist',
+            'ssr-npm-base': '../ssr-npm-base/dist',
+            'ssr-npm-vue2': '../ssr-npm-vue2/dist',
+            'ssr-npm-vue3': '../ssr-npm-vue3/dist'
         },
         imports: {
             '@esmx/router': 'ssr-npm-base/@esmx/router',
