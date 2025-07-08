@@ -7,7 +7,9 @@ export default async (rc: RenderContext) => {
     const req = rc.params.req as IncomingMessage | undefined;
     const protocol = req?.headers['x-forwarded-proto'] || 'https';
     const host = req?.headers.host || 'www.esmnext.com/router-demo/ssr-vue3/';
-    const ssrCtx: Record<string, any> = {};
+    const ssrCtx: Record<string, any> = {
+        importMetaSet: rc.importMetaSet
+    };
     const router = await createApp({
         base: `${protocol}://${host}`,
         url: req?.url ?? '/',

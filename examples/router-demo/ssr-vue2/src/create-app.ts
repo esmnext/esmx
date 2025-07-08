@@ -13,11 +13,13 @@ const isBrowser = typeof window === 'object' && typeof document === 'object';
 export async function createApp({
     base,
     url,
-    renderToString
+    renderToString,
+    ssrCtx = {}
 }: {
     base: string;
     url: string;
     renderToString?: (app: any, context: any) => Promise<string>;
+    ssrCtx?: Record<string, any>;
 }) {
     const router = new Router({
         root: '#root',
@@ -29,7 +31,8 @@ export async function createApp({
                 beforeCreateApp: (Vue) => {
                     Vue.use(Vue2MusicStorePlugin);
                 },
-                renderToString
+                renderToString,
+                ssrCtx
             })
     });
     await router.replace(url);

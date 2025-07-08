@@ -15,11 +15,13 @@ Vue.use(RouterPlugin);
 export async function createApp({
     base,
     url,
-    renderToString
+    renderToString,
+    ssrCtx = {}
 }: {
     base: string;
     url: string;
     renderToString?: (app: any, context: any) => Promise<string>;
+    ssrCtx?: Record<string, any>;
 }) {
     const router = new Router({
         root: '#root',
@@ -49,7 +51,7 @@ export async function createApp({
                 },
                 async renderToString() {
                     if (typeof renderToString === 'function') {
-                        return renderToString(app, {});
+                        return renderToString(app, ssrCtx);
                     }
                     return '';
                 }

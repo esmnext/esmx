@@ -8,7 +8,9 @@ export default async (rc: RenderContext) => {
     const req = rc.params.req as IncomingMessage | undefined;
     const protocol = req?.headers['x-forwarded-proto'] || 'https';
     const host = req?.headers.host || 'www.esmnext.com/router-demo/';
-    const ssrCtx: Record<string, any> = {};
+    const ssrCtx: Record<string, any> = {
+        importMetaSet: rc.importMetaSet
+    };
     const router = await createApp({
         base: `${protocol}://${host}`,
         url: req?.url ?? '/',
@@ -18,7 +20,7 @@ export default async (rc: RenderContext) => {
     });
 
     // 使用 Vue 的 renderToString 生成页面内容
-    const html = await router.renderToString(true);
+    const html = await router.renderToString();
     // 提交依赖收集，确保所有必要资源都被加载
     await rc.commit();
 
