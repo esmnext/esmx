@@ -3,14 +3,14 @@ import {
     RouteNavigationAbortedError,
     RouteTaskCancelledError,
     RouteTaskExecutionError
-} from './error';
-import { parsedOptions } from './options';
-import { Route } from './route';
-import { RouteTaskController, createRouteTask } from './route-task';
-import type { RouteTask, RouteTaskOptions } from './route-task';
-import type { Router } from './router';
-import { RouteType } from './types';
-import type { RouteConfirmHookResult, RouterParsedOptions } from './types';
+} from '../src/error';
+import { parsedOptions } from '../src/options';
+import { Route } from '../src/route';
+import { RouteTaskController, createRouteTask } from '../src/route-task';
+import type { RouteTask, RouteTaskOptions } from '../src/route-task';
+import type { Router } from '../src/router';
+import { RouteType } from '../src/types';
+import type { RouteConfirmHookResult, RouterParsedOptions } from '../src/types';
 
 // Helper function to create real RouterParsedOptions
 function createRealOptions(): RouterParsedOptions {

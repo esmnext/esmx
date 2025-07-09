@@ -2,18 +2,18 @@
  * @vitest-environment happy-dom
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { MicroApp, resolveRootElement } from './micro-app';
-import { parsedOptions } from './options';
-import { Route } from './route';
-import type { Router } from './router';
+import { MicroApp, resolveRootElement } from '../src/micro-app';
+import { parsedOptions } from '../src/options';
+import { Route } from '../src/route';
+import type { Router } from '../src/router';
 import type {
     RouteParsedConfig,
     RouterMicroAppCallback,
     RouterMicroAppOptions,
     RouterOptions,
     RouterParsedOptions
-} from './types';
-import { RouteType, RouterMode } from './types';
+} from '../src/types';
+import { RouteType, RouterMode } from '../src/types';
 
 const createMockParsedConfig = (
     app?: string | RouterMicroAppCallback

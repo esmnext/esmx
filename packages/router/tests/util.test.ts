@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest';
-import { parsedOptions } from './options';
-import { Route } from './route';
-import type { RouterParsedOptions } from './types';
-import { RouteType } from './types';
+import { parsedOptions } from '../src/options';
+import { Route } from '../src/route';
+import type { RouterParsedOptions } from '../src/types';
+import { RouteType } from '../src/types';
 import {
     isNonEmptyPlainObject,
     isNotNullish,
@@ -11,7 +11,7 @@ import {
     isUrlEqual,
     isValidConfirmHookResult,
     removeFromArray
-} from './util';
+} from '../src/util';
 
 const AsyncFunction = (async () => {}).constructor;
 

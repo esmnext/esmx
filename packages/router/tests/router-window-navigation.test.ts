@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { Router } from './router';
-import { RouteType, RouterMode } from './types';
-import type { Route, RouteLocationInput, RouterOptions } from './types';
+import { Router } from '../src/router';
+import { RouteType, RouterMode } from '../src/types';
+import type { Route, RouteLocationInput, RouterOptions } from '../src/types';
 
 describe('Router Window Navigation Tests', () => {
     let router: Router;

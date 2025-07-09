@@ -1,6 +1,6 @@
 import { assert, describe, test } from 'vitest';
-import { createMatcher, joinPathname } from './matcher';
-import type { RouteConfirmHook } from './types';
+import { createMatcher, joinPathname } from '../src/matcher';
+import type { RouteConfirmHook } from '../src/types';
 
 const BASE_URL = new URL('https://www.esmx.dev');
 

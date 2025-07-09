@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import type { Route } from './route';
-import { Router } from './router';
-import { RouterMode } from './types';
-import { removeFromArray } from './util';
+import type { Route } from '../src/route';
+import { Router } from '../src/router';
+import { RouterMode } from '../src/types';
+import { removeFromArray } from '../src/util';
 
 describe('Router Guards Cleanup Tests', () => {
     let router: Router;

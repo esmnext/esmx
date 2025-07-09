@@ -2,9 +2,9 @@
  * @vitest-environment happy-dom
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { Router } from './router';
-import { RouteType, RouterMode } from './types';
-import type { Route, RouteLocationInput, RouterOptions } from './types';
+import { Router } from '../src/router';
+import { RouteType, RouterMode } from '../src/types';
+import type { Route, RouteLocationInput, RouterOptions } from '../src/types';
 
 describe('Router.restartApp Focused Tests', () => {
     let router: Router;

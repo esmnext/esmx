@@ -8,11 +8,11 @@ import {
     test,
     vi
 } from 'vitest';
-import { MemoryHistory, Navigation } from './navigation';
-import { parsedOptions } from './options';
-import { Route } from './route';
-import type { RouterOptions } from './types';
-import { RouteType, RouterMode } from './types';
+import { MemoryHistory, Navigation } from '../src/navigation';
+import { parsedOptions } from '../src/options';
+import { Route } from '../src/route';
+import type { RouterOptions } from '../src/types';
+import { RouteType, RouterMode } from '../src/types';
 
 const sleep = (ms?: number) => new Promise((s) => setTimeout(s, ms));
 const awaitGo = (history: MemoryHistory, delta: number) => {

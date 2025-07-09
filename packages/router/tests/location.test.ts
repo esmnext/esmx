@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import { normalizeURL, parseLocation } from './location';
-import type { RouteLocationInput } from './types';
+import { normalizeURL, parseLocation } from '../src/location';
+import type { RouteLocationInput } from '../src/types';
 
 declare module 'vitest' {
     interface ToEqURLMatchers {
