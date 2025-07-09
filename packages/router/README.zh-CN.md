@@ -65,6 +65,87 @@ await router.push('/about');
 
 访问[官方文档](https://www.esmnext.com)获取详细的使用指南和 API 参考。
 
+### 路由导航时大致的流程说明
+
+```mermaid
+flowchart TD
+  start(["Start"]):::Terminal --> normalizeURL["normalizeURL"]
+  normalizeURL --> isExternalUrl{"是站内地址"}:::Decision
+  isExternalUrl -- Yes --> matchInRouteTable["在路由表内匹配"]
+  isExternalUrl -- No --> fallback["fallback"] --> End
+  matchInRouteTable --> isExist{"存在匹配项"}:::Decision
+  isExist -- No --> fallback
+  isExist -- Yes --> execGuard["执行其他回调钩子/守卫"] --> End(["End"]):::Terminal
+  classDef Terminal fill:#FFF9C4,color:#000
+  classDef Decision fill:#C8E6C9,color:#000
+```
+
+#### 路由钩子管道
+
+|  | fallback | override | beforeLeave | beforeEach | beforeUpdate | beforeEnter | asyncComponent | confirm |
+|---------|----------|----------|-------------|------------|--------------|-------------|----------------|---------|
+| `push` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `replace` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `pushWindow` | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ✅ |
+| `pushLayer` | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ✅ |
+| `replaceWindow` | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ✅ |
+| `restartApp` | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `unknown` | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+```mermaid
+gantt
+  title 路由钩子执行对比
+  dateFormat X
+  axisFormat %s
+  section push<br>replace
+    fallback      :0, 1
+    override      :1, 2
+    beforeLeave   :2, 3
+    beforeEach    :3, 4
+    beforeUpdate  :4, 5
+    beforeEnter   :5, 6
+    asyncComponent:6, 7
+    confirm       :7, 8
+  section pushWindow<br>pushLayer
+    fallback      :0, 1
+    override      :1, 2
+    beforeEach    :3, 4
+    confirm       :7, 8
+  section replaceWindow
+    fallback      :0, 1
+    override      :1, 2
+    beforeLeave   :2, 3
+    beforeEach    :3, 4
+    confirm       :7, 8
+  section restartApp<br>unknown
+    fallback      :0, 1
+    beforeLeave   :2, 3
+    beforeEach    :3, 4
+    beforeUpdate  :4, 5
+    beforeEnter   :5, 6
+    asyncComponent:6, 7
+    confirm       :7, 8
+```
+
+#### 钩子函数说明
+
+- **fallback**: 处理未匹配的路由
+- **override**: 允许路由重写逻辑
+- **beforeLeave**: 离开当前路由前执行
+- **beforeEach**: 全局导航守卫
+- **beforeUpdate**: 路由更新前执行（相同组件）
+- **beforeEnter**: 进入新路由前执行
+- **asyncComponent**: 加载异步组件
+- **confirm**: 最终确认和导航执行
+
+#### 路由类型特点
+
+- **标准导航** (`push`、`replace`): 执行完整的钩子链
+- **窗口操作** (`pushWindow`、`replaceWindow`): 简化的钩子链，主要用于窗口级别的导航
+- **层级操作** (`pushLayer`): 最简化的钩子链，用于层级导航
+- **应用重启** (`restartApp`): 完整钩子链但跳过 override
+- **未知类型** (`unknown`): 完整钩子链但跳过 override，作为默认处理
+
 ## 📄 许可证
 
-MIT © [Esmx Team](https://github.com/esmnext/esmx) 
+MIT © [Esmx Team](https://github.com/esmnext/esmx)
