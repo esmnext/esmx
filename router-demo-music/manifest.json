@@ -28,9 +28,9 @@
         }
     },
     "buildFiles": [
-        "chunks/896.3c9051dd.final.mjs",
         "exports/src/entry.client.105b7552.final.mjs",
         "exports/src/entry.client.9600eb23.final.css",
+        "chunks/896.3c9051dd.final.mjs",
         "chunks/896.841963f8.final.css",
         "images/sine-wave-notes.47e0c83d.final.svg",
         "exports/vue.389c4cab.final.mjs",
