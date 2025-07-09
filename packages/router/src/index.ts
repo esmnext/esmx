@@ -1,9 +1,6 @@
 export { Router } from './router';
 export { Route } from './route';
-export { RouteTransition, ROUTE_TYPE_HANDLERS } from './route-transition';
 export {
-    // Utility types
-    type Awaitable,
     // Core enums
     RouterMode,
     RouteType,
