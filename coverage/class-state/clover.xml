@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1752032069711" clover="3.2.0">
-  <project timestamp="1752032069711" name="All files">
+<coverage generated="1752032352475" clover="3.2.0">
+  <project timestamp="1752032352475" name="All files">
     <metrics statements="290" coveredstatements="257" conditionals="72" coveredconditionals="64" methods="30" coveredmethods="27" elements="392" coveredelements="348" complexity="0" loc="290" ncloc="290" packages="1" files="3" classes="3"/>
     <file name="connect.ts" path="/home/runner/work/esmx/esmx/packages/class-state/src/connect.ts">
       <metrics statements="224" coveredstatements="195" conditionals="48" coveredconditionals="42" methods="18" coveredmethods="16"/>
