@@ -17,7 +17,7 @@
         "@esmx/router": {
             "name": "@esmx/router",
             "rewrite": false,
-            "file": "exports/@esmx/router.6e9fa025.final.mjs",
+            "file": "exports/@esmx/router.7f84eb88.final.mjs",
             "identifier": "router-demo-music/@esmx/router"
         },
         "@esmx/router-vue": {
@@ -29,22 +29,22 @@
     },
     "buildFiles": [
         "chunks/896.3c9051dd.final.mjs",
-        "chunks/896.841963f8.final.css",
+        "exports/src/entry.client.105b7552.final.mjs",
         "exports/src/entry.client.9600eb23.final.css",
+        "chunks/896.841963f8.final.css",
         "images/sine-wave-notes.47e0c83d.final.svg",
         "exports/vue.389c4cab.final.mjs",
-        "exports/@esmx/router.6e9fa025.final.mjs",
-        "exports/src/entry.client.105b7552.final.mjs",
+        "exports/@esmx/router.7f84eb88.final.mjs",
         "exports/@esmx/router-vue.3618af85.final.mjs"
     ],
     "chunks": {
         "router-demo-music@../../packages/router/dist/index.mjs": {
             "name": "router-demo-music@../../packages/router/dist/index.mjs",
-            "js": "exports/@esmx/router.6e9fa025.final.mjs",
+            "js": "exports/@esmx/router.7f84eb88.final.mjs",
             "css": [],
             "resources": [],
             "sizes": {
-                "js": 67765,
+                "js": 67686,
                 "css": 0,
                 "resource": 0
             }
