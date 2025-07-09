@@ -1,0 +1,135 @@
+description: GitHub PR 工作流规则
+globs:
+alwaysApply: true
+---
+
+# GitHub PR 工作流规则
+
+## 0. 基本工作流顺序
+- 工作流必须严格按照以下顺序进行：
+  1. 首先，完成需求讨论阶段
+  2. 其次，进入分支创建与开发阶段
+  3. 然后，进入PR内容讨论阶段
+  4. 最后，进入PR提交阶段
+- 在没有完成上一阶段前，不得跳到下一阶段
+- **每个阶段必须得到用户明确确认后，才能进入下一阶段**
+- 需求没有讨论清楚前，不得开始修改代码
+
+## 强制执行约束
+- **绝对禁止**：在需求讨论阶段使用任何代码修改工具（edit_file、search_replace等）
+- **绝对禁止**：在未获得用户明确确认前，跨越阶段执行任务
+- **绝对禁止**：在需求讨论未完成时提出代码实现方案
+- **必须行为**：每个阶段开始时明确声明当前处于哪个阶段
+- **必须行为**：各阶段间必须有明确的用户确认作为分界点
+
+## 1. 需求讨论阶段
+- 阶段开始时，明确告知用户："我们现在处于**需求讨论阶段**，将专注于理解需求，不会进行代码修改。"
+- 与用户使用中文进行所有需求讨论
+- 提出具体问题以澄清需求细节，包括：
+  - "您期望的具体功能是什么？"
+  - "有哪些技术限制需要考虑？"
+  - "您对实现方式有什么偏好？"
+- 确认功能范围、技术方案和预期结果
+- 讨论可能的技术方案和实现路径
+- 在此阶段仅分析问题和方案，**绝对不进行任何代码修改或提供具体代码**
+- 可以进行代码搜索和文件阅读以理解需求，但不做任何修改
+- **结束时明确提问："需求讨论已完成，您确认可以开始创建分支和开发了吗？"**
+- 必须等待用户明确回复确认后，才能进入下一阶段
+
+## 2. 分支创建与开发阶段
+- 阶段开始时，明确告知用户："我们现在进入**分支创建与开发阶段**，将开始实现功能。"
+- 遵循分支命名规范：
+  - 新功能：`feature/功能名称-简短描述`（如 `feature/user-authentication`）
+  - 修复问题：`fix/问题描述-问题编号`（如 `fix/login-error-123`）
+  - 文档更新：`docs/更新内容`（如 `docs/api-guide`）
+  - 性能优化：`perf/优化对象`（如 `perf/router-matching`）
+- 使用 git 命令创建并切换到新分支
+- 在实现过程中保持与用户的中文交流
+- 遵循项目已有代码风格和架构
+- 严格遵守全局编程规则中的TypeScript和代码质量规范
+- 代码注释必须使用英文，符合全局规则要求
+- 确保代码包含必要的测试，至少覆盖核心功能路径
+- 实现完成后，进行自检查，确认无明显bug和性能问题
+- **结束时明确提问："功能开发已完成，您确认可以进入PR内容讨论阶段了吗？"**
+- 必须等待用户明确回复确认后，才能进入下一阶段
+
+## 3. PR内容讨论阶段
+- 阶段开始时，明确告知用户："我们现在进入**PR内容讨论阶段**，将讨论PR的内容和修改细节。"
+- 用中文与用户讨论PR内容和修改细节
+- 确认PR的标题和描述内容
+- 讨论是否需要添加更多测试或文档
+- 确认PR涉及的所有文件更改都是必要的
+- 与用户一起审查代码，重点关注：
+  - 代码质量和可读性
+  - 潜在的边界情况处理
+  - 与现有代码的兼容性
+  - 可能的性能影响
+- 明确讨论是否需要添加测试用例或改进测试覆盖率
+- **结束时明确提问："PR内容已确认，您确认可以正式提交PR了吗？"**
+- 必须等待用户明确回复确认后，才能进入下一阶段
+
+## 4. PR提交阶段
+- 阶段开始时，明确告知用户："我们现在进入**PR提交阶段**，将准备并提交PR。"
+- 在提交前，确保所有本地代码已完成提交
+- 运行相关测试确保代码质量
+- PR 标题和描述必须使用英文
+- PR 标题应遵循格式：`类型(作用域): 简短描述`（如 `feat(router): add navigation guards`）
+- PR 描述应包含：
+  - 简洁明了的功能介绍
+  - 实现细节和技术选择说明
+  - 相关的测试方法
+  - 可能的影响范围
+  - 需要审阅者特别关注的部分
+- PR 描述模板示例：
+```
+**Feature Description:**
+Brief description of the feature or fix.
+
+**Implementation Details:**
+- Key point 1 about implementation
+- Key point 2 about implementation
+- Technical decisions made and reasoning
+
+**Testing:**
+How this change was tested and verified.
+
+**Potential Impact:**
+Areas that might be affected by this change.
+
+**Additional Notes:**
+Any other information reviewers should know.
+```
+- 使用 `gh pr create` 命令创建 PR
+- 提交信息必须遵循 Conventional Commits 规范：`<type>(<scope>): <description>`
+- 提交类型和作用域规范遵循全局编程规则中的Git提交规范
+- PR 提交后，与用户继续使用中文沟通后续修改和问题
+
+## 命令示例
+```bash
+# 创建分支
+git checkout main  # 先切换到主分支
+git pull  # 确保获取最新代码
+git checkout -b feature/user-authentication  # 创建并切换到新分支
+
+# 开发完成后提交代码
+git add .
+git commit -m "feat(auth): implement user authentication"
+
+# 推送到远程仓库
+git push -u origin feature/user-authentication
+
+# 创建PR
+gh pr create --title "feat(auth): implement user authentication" --body "**Feature Description:**
+Implement user authentication using JWT tokens.
+
+**Implementation Details:**
+- Add login/register endpoints
+- Implement JWT token generation and validation
+- Add user session management
+
+**Testing:**
+Tested with unit tests and manual E2E testing.
+
+**Potential Impact:**
+This change affects the core authentication flow."
+```
