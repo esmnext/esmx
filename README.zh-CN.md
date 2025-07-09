@@ -83,3 +83,7 @@ import Button from 'remote/src/Button.vue';
 ---
 
 > 💡 **开发流程**: 首先执行 `./build.mjs` 构建所有包和示例，然后 `cd` 到具体项目目录开始开发
+
+## 📈 Star 历史
+
+[![Star History Chart](https://api.star-history.com/svg?repos=esmnext/esmx&type=Date)](https://www.star-history.com/#esmnext/esmx&Date)

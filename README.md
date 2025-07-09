@@ -83,3 +83,7 @@ import Button from 'remote/src/Button.vue';
 ---
 
 > 💡 **Development**: First run `./build.mjs` to build all packages and examples, then `cd` to specific project directory to start development
+
+## 📈 Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=esmnext/esmx&type=Date)](https://www.star-history.com/#esmnext/esmx&Date)
