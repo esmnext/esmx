@@ -1,4 +1,5 @@
 import { version } from 'vue';
+import type { Ref } from 'vue';
 
 export const isVue3 = version.startsWith('3.');
 
@@ -11,6 +12,18 @@ export function createSymbolProperty<T>(symbol: symbol) {
             return symbol in instance ? instance[symbol] : void 0;
         }
     } as const;
+}
+
+export function createDependentProxy<T extends object>(
+    obj: T,
+    dep: Ref<boolean>
+): T {
+    return new Proxy(obj, {
+        get(target, prop, receiver) {
+            dep.value;
+            return Reflect.get(target, prop, receiver);
+        }
+    });
 }
 
 export function isESModule(obj: unknown): obj is Record<string | symbol, any> {

@@ -223,7 +223,7 @@ describe('plugin.ts - RouterPlugin', () => {
             await nextTick();
 
             // Verify the getter was called and returned correct value
-            expect(routerResult).toBe(router);
+            expect(routerResult).toEqual(router);
             expect(routerResult).toBeInstanceOf(Router);
         });
 

@@ -8,7 +8,7 @@ import {
     provide,
     ref
 } from 'vue';
-import { createSymbolProperty } from './util';
+import { createDependentProxy, createSymbolProperty } from './util';
 
 export interface VueInstance {
     $parent?: VueInstance | null;
@@ -18,7 +18,7 @@ export interface VueInstance {
 
 interface RouterContext {
     router: Router;
-    route: Ref<Route>;
+    route: Route;
 }
 
 const ROUTER_CONTEXT_KEY = Symbol('router-context');
@@ -136,7 +136,7 @@ export function getRouter(instance?: VueInstance): Router {
  * ```
  */
 export function getRoute(instance?: VueInstance): Route {
-    return findRouterContext(instance).route.value;
+    return findRouterContext(instance).route;
 }
 
 /**
@@ -224,7 +224,7 @@ export function useRouter(): Router {
  * ```
  */
 export function useRoute(): Route {
-    return useRouterContext('useRoute').route.value;
+    return useRouterContext('useRoute').route;
 }
 
 /**
@@ -259,20 +259,23 @@ export function useRoute(): Route {
 export function useProvideRouter(router: Router): void {
     const proxy = getCurrentProxy('useProvideRouter');
 
+    const dep = ref(false);
+
+    const proxiedRouter = createDependentProxy(router, dep);
+    const proxiedRoute = createDependentProxy(router.route, dep);
+
     const context: RouterContext = {
-        router,
-        route: ref(router.route) as Ref<Route>
+        router: proxiedRouter,
+        route: proxiedRoute
     };
 
-    // Provide context via Vue 3's provide/inject (works in setup)
     provide(ROUTER_INJECT_KEY, context);
-
-    // Also set on component instance for fallback (works after mount)
     routerContextProperty.set(proxy, context);
 
     const unwatch = router.afterEach((to: Route) => {
         if (router.route === to) {
-            to.syncTo(context.route.value);
+            to.syncTo(proxiedRoute);
+            dep.value = !dep.value;
         }
     });
 
@@ -311,11 +314,8 @@ export function useProvideRouter(router: Router): void {
  */
 export function useLink(props: RouterLinkProps) {
     const router = useRouter();
-    const route = useRoute();
 
     return computed(() => {
-        // vue will trigger a re-render when route.fullPath changes
-        route.fullPath;
         return router.resolveLink(props);
     });
 }
