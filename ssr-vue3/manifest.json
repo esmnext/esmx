@@ -15,19 +15,19 @@
         "src/routes": {
             "name": "src/routes",
             "rewrite": true,
-            "file": "exports/src/routes.8b8ae9e2.final.mjs",
+            "file": "exports/src/routes.ced2559a.final.mjs",
             "identifier": "ssr-vue3/src/routes"
         },
         "src/components/index": {
             "name": "src/components/index",
             "rewrite": true,
-            "file": "exports/src/components/index.c252ea87.final.mjs",
+            "file": "exports/src/components/index.3e1e3750.final.mjs",
             "identifier": "ssr-vue3/src/components/index"
         },
         "src/layout/index": {
             "name": "src/layout/index",
             "rewrite": true,
-            "file": "exports/src/layout/index.d75e9425.final.mjs",
+            "file": "exports/src/layout/index.7244411b.final.mjs",
             "identifier": "ssr-vue3/src/layout/index"
         },
         "src/store/music-store": {
@@ -39,21 +39,21 @@
     },
     "buildFiles": [
         "exports/src/entry.client.7883e8cf.final.mjs",
-        "chunks/620.eb529c42.final.css",
-        "exports/src/routes.06c14821.final.css",
-        "exports/src/layout/index.d75e9425.final.mjs",
-        "exports/src/routes.8b8ae9e2.final.mjs",
-        "images/sine-wave-notes.47e0c83d.final.svg",
+        "exports/src/routes.ced2559a.final.mjs",
         "exports/src/layout/index.9c2ecb44.final.css",
-        "exports/src/components/index.c252ea87.final.mjs",
+        "exports/src/components/index.1f6293b4.final.css",
+        "images/sine-wave-notes.47e0c83d.final.svg",
+        "chunks/713.eb529c42.final.css",
         "exports/src/store/music-store.8f225acb.final.mjs",
-        "chunks/620.be7bdc29.final.mjs",
-        "exports/src/components/index.1f6293b4.final.css"
+        "exports/src/components/index.3e1e3750.final.mjs",
+        "exports/src/routes.06c14821.final.css",
+        "chunks/713.79d3cafd.final.mjs",
+        "exports/src/layout/index.7244411b.final.mjs"
     ],
     "chunks": {
         "ssr-vue3@src/layout/index.ts": {
             "name": "ssr-vue3@src/layout/index.ts",
-            "js": "exports/src/layout/index.d75e9425.final.mjs",
+            "js": "exports/src/layout/index.7244411b.final.mjs",
             "css": [
                 "exports/src/layout/index.9c2ecb44.final.css"
             ],
@@ -88,7 +88,7 @@
         },
         "ssr-vue3@src/routes.ts": {
             "name": "ssr-vue3@src/routes.ts",
-            "js": "exports/src/routes.8b8ae9e2.final.mjs",
+            "js": "exports/src/routes.ced2559a.final.mjs",
             "css": [
                 "exports/src/routes.06c14821.final.css"
             ],
@@ -96,27 +96,14 @@
                 "images/sine-wave-notes.47e0c83d.final.svg"
             ],
             "sizes": {
-                "js": 50722,
+                "js": 51246,
                 "css": 25565,
                 "resource": 1585
             }
         },
-        "ssr-vue3@src/views/playlist-detail.vue": {
-            "name": "ssr-vue3@src/views/playlist-detail.vue",
-            "js": "chunks/620.be7bdc29.final.mjs",
-            "css": [
-                "chunks/620.eb529c42.final.css"
-            ],
-            "resources": [],
-            "sizes": {
-                "js": 7093,
-                "css": 3292,
-                "resource": 0
-            }
-        },
         "ssr-vue3@src/components/index.ts": {
             "name": "ssr-vue3@src/components/index.ts",
-            "js": "exports/src/components/index.c252ea87.final.mjs",
+            "js": "exports/src/components/index.3e1e3750.final.mjs",
             "css": [
                 "exports/src/components/index.1f6293b4.final.css"
             ],
@@ -124,6 +111,19 @@
             "sizes": {
                 "js": 52127,
                 "css": 21893,
+                "resource": 0
+            }
+        },
+        "ssr-vue3@src/views/playlist-detail.vue": {
+            "name": "ssr-vue3@src/views/playlist-detail.vue",
+            "js": "chunks/713.79d3cafd.final.mjs",
+            "css": [
+                "chunks/713.eb529c42.final.css"
+            ],
+            "resources": [],
+            "sizes": {
+                "js": 7093,
+                "css": 3292,
                 "resource": 0
             }
         }

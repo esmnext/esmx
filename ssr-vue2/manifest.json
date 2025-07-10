@@ -15,19 +15,19 @@
         "src/routes": {
             "name": "src/routes",
             "rewrite": true,
-            "file": "exports/src/routes.48aa55ed.final.mjs",
+            "file": "exports/src/routes.052e93c7.final.mjs",
             "identifier": "ssr-vue2/src/routes"
         },
         "src/components/index": {
             "name": "src/components/index",
             "rewrite": true,
-            "file": "exports/src/components/index.dff8963e.final.mjs",
+            "file": "exports/src/components/index.09621c38.final.mjs",
             "identifier": "ssr-vue2/src/components/index"
         },
         "src/layout/index": {
             "name": "src/layout/index",
             "rewrite": true,
-            "file": "exports/src/layout/index.e832c594.final.mjs",
+            "file": "exports/src/layout/index.ad7013ad.final.mjs",
             "identifier": "ssr-vue2/src/layout/index"
         },
         "src/store/music-store": {
@@ -38,22 +38,22 @@
         }
     },
     "buildFiles": [
-        "chunks/653.7a4e81af.final.mjs",
+        "chunks/356.ad57fc89.final.mjs",
         "exports/src/store/music-store.a72d93b9.final.mjs",
         "exports/src/entry.client.cc635218.final.mjs",
-        "exports/src/components/index.dff8963e.final.mjs",
-        "exports/src/layout/index.e832c594.final.mjs",
+        "chunks/356.7d1d4364.final.css",
         "images/sine-wave-notes.47e0c83d.final.svg",
-        "exports/src/routes.7eaeab22.final.css",
-        "chunks/653.7d1d4364.final.css",
         "exports/src/layout/index.ed0105a9.final.css",
-        "exports/src/routes.48aa55ed.final.mjs",
-        "exports/src/components/index.2d57064f.final.css"
+        "exports/src/components/index.09621c38.final.mjs",
+        "exports/src/components/index.2d57064f.final.css",
+        "exports/src/routes.7eaeab22.final.css",
+        "exports/src/layout/index.ad7013ad.final.mjs",
+        "exports/src/routes.052e93c7.final.mjs"
     ],
     "chunks": {
         "ssr-vue2@src/layout/index.ts": {
             "name": "ssr-vue2@src/layout/index.ts",
-            "js": "exports/src/layout/index.e832c594.final.mjs",
+            "js": "exports/src/layout/index.ad7013ad.final.mjs",
             "css": [
                 "exports/src/layout/index.ed0105a9.final.css"
             ],
@@ -61,6 +61,19 @@
             "sizes": {
                 "js": 31834,
                 "css": 14087,
+                "resource": 0
+            }
+        },
+        "ssr-vue2@src/views/not-found.vue": {
+            "name": "ssr-vue2@src/views/not-found.vue",
+            "js": "chunks/356.ad57fc89.final.mjs",
+            "css": [
+                "chunks/356.7d1d4364.final.css"
+            ],
+            "resources": [],
+            "sizes": {
+                "js": 3806,
+                "css": 2946,
                 "resource": 0
             }
         },
@@ -88,7 +101,7 @@
         },
         "ssr-vue2@src/routes.ts": {
             "name": "ssr-vue2@src/routes.ts",
-            "js": "exports/src/routes.48aa55ed.final.mjs",
+            "js": "exports/src/routes.052e93c7.final.mjs",
             "css": [
                 "exports/src/routes.7eaeab22.final.css"
             ],
@@ -96,27 +109,14 @@
                 "images/sine-wave-notes.47e0c83d.final.svg"
             ],
             "sizes": {
-                "js": 53364,
+                "js": 53348,
                 "css": 34296,
                 "resource": 1585
             }
         },
-        "ssr-vue2@src/views/not-found.vue": {
-            "name": "ssr-vue2@src/views/not-found.vue",
-            "js": "chunks/653.7a4e81af.final.mjs",
-            "css": [
-                "chunks/653.7d1d4364.final.css"
-            ],
-            "resources": [],
-            "sizes": {
-                "js": 3806,
-                "css": 2946,
-                "resource": 0
-            }
-        },
         "ssr-vue2@src/components/index.ts": {
             "name": "ssr-vue2@src/components/index.ts",
-            "js": "exports/src/components/index.dff8963e.final.mjs",
+            "js": "exports/src/components/index.09621c38.final.mjs",
             "css": [
                 "exports/src/components/index.2d57064f.final.css"
             ],

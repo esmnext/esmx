@@ -11,18 +11,18 @@
         "@esmx/router": {
             "name": "@esmx/router",
             "rewrite": false,
-            "file": "exports/@esmx/router.7f84eb88.final.mjs",
+            "file": "exports/@esmx/router.5c709630.final.mjs",
             "identifier": "ssr-npm-base/@esmx/router"
         }
     },
     "buildFiles": [
-        "exports/@esmx/router.7f84eb88.final.mjs",
+        "exports/@esmx/router.5c709630.final.mjs",
         "exports/src/entry.client.bfadf2d5.final.mjs"
     ],
     "chunks": {
         "ssr-npm-base@../../../packages/router/dist/index.mjs": {
             "name": "ssr-npm-base@../../../packages/router/dist/index.mjs",
-            "js": "exports/@esmx/router.7f84eb88.final.mjs",
+            "js": "exports/@esmx/router.5c709630.final.mjs",
             "css": [],
             "resources": [],
             "sizes": {
