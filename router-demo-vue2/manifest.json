@@ -23,17 +23,17 @@
         "@esmx/router-vue": {
             "name": "@esmx/router-vue",
             "rewrite": false,
-            "file": "exports/@esmx/router-vue.3618af85.final.mjs",
+            "file": "exports/@esmx/router-vue.2cf218c5.final.mjs",
             "identifier": "router-demo-vue2/@esmx/router-vue"
         }
     },
     "buildFiles": [
         "exports/vue.389c4cab.final.mjs",
-        "exports/src/entry.client.c6d49bd8.final.mjs",
+        "exports/@esmx/router-vue.2cf218c5.final.mjs",
         "exports/src/entry.client.0c6e4813.final.css",
         "exports/@esmx/router.7f84eb88.final.mjs",
         "chunks/585.cc8fbaa2.final.css",
-        "exports/@esmx/router-vue.3618af85.final.mjs",
+        "exports/src/entry.client.c6d49bd8.final.mjs",
         "chunks/585.6cbbb5d7.final.mjs"
     ],
     "chunks": {
@@ -50,11 +50,11 @@
         },
         "router-demo-vue2@../../packages/router-vue/dist/index.mjs": {
             "name": "router-demo-vue2@../../packages/router-vue/dist/index.mjs",
-            "js": "exports/@esmx/router-vue.3618af85.final.mjs",
+            "js": "exports/@esmx/router-vue.2cf218c5.final.mjs",
             "css": [],
             "resources": [],
             "sizes": {
-                "js": 9662,
+                "js": 9996,
                 "css": 0,
                 "resource": 0
             }
