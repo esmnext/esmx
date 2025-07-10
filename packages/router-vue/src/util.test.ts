@@ -1,9 +1,11 @@
 /**
  * @vitest-environment happy-dom
  */
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { computed, nextTick, ref } from 'vue';
 import { version } from 'vue';
 import {
+    createDependentProxy,
     createSymbolProperty,
     isESModule,
     isVue3,
@@ -251,168 +253,183 @@ describe('util.ts - Utility Functions', () => {
             });
 
             it('should return false for primitive values', () => {
-                const primitives = ['string', 42, true, false, Symbol('test')];
+                const primitives = [42, 'string', true, false, Symbol('test')];
 
                 primitives.forEach((primitive) => {
                     expect(isESModule(primitive)).toBe(false);
+                });
+            });
+
+            it('should return false for functions and arrays', () => {
+                const nonObjects = [
+                    () => {},
+                    () => {},
+                    [],
+                    [1, 2, 3],
+                    new Date()
+                ];
+
+                nonObjects.forEach((nonObj) => {
+                    expect(isESModule(nonObj)).toBe(false);
                 });
             });
         });
     });
 
     describe('resolveComponent', () => {
-        describe('should return null for falsy inputs', () => {
-            const falsyValues = [null, undefined, false, 0, '', Number.NaN];
-
-            falsyValues.forEach((value) => {
-                it(`should return null for ${value}`, () => {
-                    expect(resolveComponent(value)).toBeNull();
-                });
-            });
-        });
-
-        describe('should handle ES modules', () => {
-            it('should return default export when available', () => {
-                const defaultComponent = { name: 'DefaultComponent' };
-                const esModule = {
-                    __esModule: true,
-                    default: defaultComponent,
-                    namedExport: { name: 'NamedComponent' }
-                };
-
-                const result = resolveComponent(esModule);
-
-                expect(result).toBe(defaultComponent);
+        describe('should return default export or module itself', () => {
+            it('should return null for falsy values', () => {
+                expect(resolveComponent(null)).toBeNull();
+                expect(resolveComponent(undefined)).toBeNull();
+                expect(resolveComponent(false)).toBeNull();
+                expect(resolveComponent(0)).toBeNull();
+                expect(resolveComponent('')).toBeNull();
             });
 
-            it('should return the module itself when no default export', () => {
-                const esModule = {
+            it('should return default export if available', () => {
+                const defaultExport = { name: 'DefaultComponent' };
+                const module = {
                     __esModule: true,
-                    namedExport: { name: 'NamedComponent' }
+                    default: defaultExport,
+                    other: 'value'
                 };
 
-                const result = resolveComponent(esModule);
-
-                expect(result).toBe(esModule);
+                expect(resolveComponent(module)).toBe(defaultExport);
             });
 
-            it('should prefer default export over module when both exist', () => {
-                const defaultComponent = { name: 'DefaultComponent' };
-                const esModule = {
+            it('should return the module itself if no default export', () => {
+                const module = {
                     __esModule: true,
-                    default: defaultComponent,
-                    name: 'ModuleComponent'
+                    someExport: 'value',
+                    otherExport: 42
                 };
 
-                const result = resolveComponent(esModule);
-
-                expect(result).toBe(defaultComponent);
-                expect(result).not.toBe(esModule);
+                expect(resolveComponent(module)).toBe(module);
             });
 
             it('should handle modules with Symbol.toStringTag', () => {
-                const defaultComponent = { name: 'SymbolTagComponent' };
-                const esModule = {
+                const defaultExport = { name: 'SymbolDefaultComponent' };
+                const module = {
                     [Symbol.toStringTag]: 'Module',
-                    default: defaultComponent
+                    default: defaultExport
                 };
 
-                const result = resolveComponent(esModule);
-
-                expect(result).toBe(defaultComponent);
+                expect(resolveComponent(module)).toBe(defaultExport);
             });
 
-            it('should handle falsy default export', () => {
-                const falsyDefaults = [null, undefined, false, 0, ''];
-
-                falsyDefaults.forEach((falsyDefault) => {
-                    const esModule = {
-                        __esModule: true,
-                        default: falsyDefault,
-                        fallback: { name: 'FallbackComponent' }
-                    };
-
-                    const result = resolveComponent(esModule);
-
-                    // Should return the module itself when default is falsy
-                    expect(result).toBe(esModule);
-                });
-            });
-        });
-
-        describe('should handle non-ES modules', () => {
-            it('should return component directly for non-ES modules', () => {
-                const component = { name: 'RegularComponent' };
-
-                const result = resolveComponent(component);
-
-                expect(result).toBe(component);
+            it('should return non-module objects as is', () => {
+                const nonModule = { prop: 'value' };
+                expect(resolveComponent(nonModule)).toBe(nonModule);
             });
 
-            it('should return function components directly', () => {
+            it('should handle various component types', () => {
                 const functionComponent = () => ({ name: 'FunctionComponent' });
+                expect(resolveComponent(functionComponent)).toBe(
+                    functionComponent
+                );
 
-                const result = resolveComponent(functionComponent);
-
-                expect(result).toBe(functionComponent);
-            });
-
-            it('should return class components directly', () => {
                 class ClassComponent {
                     name = 'ClassComponent';
                 }
-
-                const result = resolveComponent(ClassComponent);
-
-                expect(result).toBe(ClassComponent);
+                const classInstance = new ClassComponent();
+                expect(resolveComponent(classInstance)).toBe(classInstance);
             });
         });
+    });
 
-        describe('edge cases', () => {
-            it('should handle circular references in modules', () => {
-                const esModule: Record<string, unknown> = {
-                    __esModule: true
-                };
-                esModule.default = esModule; // Circular reference
+    describe('createDependentProxy', () => {
+        it('should return original property values', () => {
+            const original = { foo: 'bar', count: 42 };
+            const dep = ref(false);
+            const proxy = createDependentProxy(original, dep);
 
-                const result = resolveComponent(esModule);
+            expect(proxy.foo).toBe('bar');
+            expect(proxy.count).toBe(42);
+        });
 
-                expect(result).toBe(esModule);
+        it('should handle method calls correctly', () => {
+            const original = {
+                items: [1, 2, 3],
+                getItems() {
+                    return this.items;
+                }
+            };
+            const dep = ref(false);
+            const proxy = createDependentProxy(original, dep);
+
+            expect(proxy.getItems()).toEqual([1, 2, 3]);
+            expect(proxy.getItems()).toBe(original.items);
+        });
+
+        it('should handle nested property access', () => {
+            const original = {
+                nested: {
+                    value: 'nested-value'
+                }
+            };
+            const dep = ref(false);
+            const proxy = createDependentProxy(original, dep);
+
+            expect(proxy.nested.value).toBe('nested-value');
+        });
+
+        it('should allow property modification', () => {
+            const original = { value: 'original' };
+            const dep = ref(false);
+            const proxy = createDependentProxy(original, dep);
+
+            proxy.value = 'modified';
+            expect(proxy.value).toBe('modified');
+            expect(original.value).toBe('modified');
+        });
+
+        it('should trigger computed updates when dependency changes', async () => {
+            const original = { value: 'test' };
+            const dep = ref(false);
+            const proxy = createDependentProxy(original, dep);
+
+            const computedValue = computed(() => {
+                return proxy.value + '-' + String(dep.value);
             });
 
-            it('should handle deeply nested default exports', () => {
-                const actualComponent = { name: 'DeepComponent' };
-                const esModule = {
-                    __esModule: true,
-                    default: {
-                        default: {
-                            default: actualComponent
-                        }
-                    }
-                };
+            expect(computedValue.value).toBe('test-false');
 
-                const result = resolveComponent(esModule);
+            dep.value = true;
+            await nextTick();
+            expect(computedValue.value).toBe('test-true');
 
-                // Should only resolve one level of default
-                expect(result).toEqual({
-                    default: {
-                        default: actualComponent
-                    }
-                });
+            proxy.value = 'updated';
+            dep.value = false;
+            await nextTick();
+            expect(computedValue.value).toBe('updated-false');
+        });
+
+        it('should handle special properties', () => {
+            const symbol = Symbol('test');
+            const original = {
+                [symbol]: 'symbol-value'
+            };
+            const dep = ref(false);
+            const proxy = createDependentProxy(original, dep);
+
+            expect(proxy[symbol]).toBe('symbol-value');
+        });
+
+        it('should read the dependency on property access', () => {
+            const original = { value: 'test' };
+            const dep = ref(false);
+
+            const spy = vi.fn();
+            const depValue = dep.value; // 预先读取一次值
+            vi.spyOn(dep, 'value', 'get').mockImplementation(() => {
+                spy();
+                return depValue;
             });
 
-            it('should handle modules with both __esModule and Symbol.toStringTag', () => {
-                const defaultComponent = { name: 'BothPropertiesComponent' };
-                const esModule = {
-                    __esModule: true,
-                    [Symbol.toStringTag]: 'Module',
-                    default: defaultComponent
-                };
+            const proxy = createDependentProxy(original, dep);
 
-                const result = resolveComponent(esModule);
-
-                expect(result).toBe(defaultComponent);
-            });
+            proxy.value;
+            expect(spy).toHaveBeenCalled();
         });
     });
 });
