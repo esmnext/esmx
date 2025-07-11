@@ -36,7 +36,12 @@ describe('Module Loading Errors', () => {
             );
 
             expect(error.name).toBe('CircularDependencyError');
-            expect(error.message).toBe('Test circular dependency');
+            // Message now contains formatted content
+            expect(error.message).toContain('Test circular dependency');
+            expect(error.message).toContain('Circular dependency:');
+            expect(error.message).toContain('┌─');
+            expect(error.message).toContain('└─');
+            expect(error.message).toContain('circular');
             expect(error.moduleIds).toEqual(moduleIds);
             expect(error.targetModule).toBe(targetModule);
             expect(error instanceof ModuleLoadingError).toBe(true);
@@ -83,7 +88,15 @@ describe('Module Loading Errors', () => {
             );
 
             expect(error.name).toBe('FileReadError');
-            expect(error.message).toBe('Failed to read module');
+            // Message now contains formatted content
+            expect(error.message).toContain('Failed to read module');
+            expect(error.message).toContain('Import chain:');
+            expect(error.message).toContain('main.js');
+            expect(error.message).toContain('App.js');
+            expect(error.message).toContain('missing.js');
+            expect(error.message).toContain('✗ FAILED');
+            expect(error.message).toContain('Cause:');
+            expect(error.message).toContain('ENOENT');
             expect(error.moduleIds).toEqual(moduleIds);
             expect(error.targetModule).toBe(targetModule);
             expect(error.originalError).toBe(originalError);
