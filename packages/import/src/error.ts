@@ -128,10 +128,6 @@ export class CircularDependencyError extends ModuleLoadingError {
         super(formattedMessage, moduleIds, targetModule);
         this.name = 'CircularDependencyError';
     }
-
-    toString(): string {
-        return `${this.name}: ${this.message}`;
-    }
 }
 
 // File read error class
@@ -146,9 +142,5 @@ export class FileReadError extends ModuleLoadingError {
         const formattedMessage = `${message}\n\n${formatModuleChain(moduleIds, targetModule, originalError)}`;
         super(formattedMessage, moduleIds, targetModule, originalError);
         this.name = 'FileReadError';
-    }
-
-    toString(): string {
-        return `${this.name}: ${this.message}`;
     }
 }
