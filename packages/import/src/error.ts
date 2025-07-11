@@ -117,16 +117,45 @@ export class ModuleLoadingError extends Error {
     ) {
         super(message);
         this.name = 'ModuleLoadingError';
+
+        // Hide auxiliary properties from enumeration to avoid cluttering error display
+        Object.defineProperty(this, 'moduleIds', {
+            value: moduleIds,
+            writable: false,
+            enumerable: false,
+            configurable: true
+        });
+
+        Object.defineProperty(this, 'targetModule', {
+            value: targetModule,
+            writable: false,
+            enumerable: false,
+            configurable: true
+        });
+
+        if (originalError) {
+            Object.defineProperty(this, 'originalError', {
+                value: originalError,
+                writable: false,
+                enumerable: false,
+                configurable: true
+            });
+        }
     }
 }
 
 // Circular dependency error class
 export class CircularDependencyError extends ModuleLoadingError {
     constructor(message: string, moduleIds: string[], targetModule: string) {
-        // Use formatted content as the message
-        const formattedMessage = `${message}\n\n${formatCircularDependency(moduleIds, targetModule)}`;
-        super(formattedMessage, moduleIds, targetModule);
+        super(message, moduleIds, targetModule);
         this.name = 'CircularDependencyError';
+
+        // Custom stack for clean error display
+        this.stack = `${this.name}: ${message}\n\n${formatCircularDependency(moduleIds, targetModule)}`;
+    }
+
+    toString(): string {
+        return this.stack || `${this.name}: ${this.message}`;
     }
 }
 
@@ -138,9 +167,14 @@ export class FileReadError extends ModuleLoadingError {
         targetModule: string,
         originalError?: Error
     ) {
-        // Use formatted content as the message
-        const formattedMessage = `${message}\n\n${formatModuleChain(moduleIds, targetModule, originalError)}`;
-        super(formattedMessage, moduleIds, targetModule, originalError);
+        super(message, moduleIds, targetModule, originalError);
         this.name = 'FileReadError';
+
+        // Custom stack for clean error display
+        this.stack = `${this.name}: ${message}\n\n${formatModuleChain(moduleIds, targetModule, originalError)}`;
+    }
+
+    toString(): string {
+        return this.stack || `${this.name}: ${this.message}`;
     }
 }

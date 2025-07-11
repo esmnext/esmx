@@ -36,12 +36,14 @@ describe('Module Loading Errors', () => {
             );
 
             expect(error.name).toBe('CircularDependencyError');
-            // Message now contains formatted content
-            expect(error.message).toContain('Test circular dependency');
-            expect(error.message).toContain('Circular dependency:');
-            expect(error.message).toContain('┌─');
-            expect(error.message).toContain('└─');
-            expect(error.message).toContain('circular');
+            // Message is now clean and simple
+            expect(error.message).toBe('Test circular dependency');
+            // Formatted content is in stack property
+            expect(error.stack).toContain('Test circular dependency');
+            expect(error.stack).toContain('Circular dependency:');
+            expect(error.stack).toContain('┌─');
+            expect(error.stack).toContain('└─');
+            expect(error.stack).toContain('circular');
             expect(error.moduleIds).toEqual(moduleIds);
             expect(error.targetModule).toBe(targetModule);
             expect(error instanceof ModuleLoadingError).toBe(true);
@@ -88,15 +90,17 @@ describe('Module Loading Errors', () => {
             );
 
             expect(error.name).toBe('FileReadError');
-            // Message now contains formatted content
-            expect(error.message).toContain('Failed to read module');
-            expect(error.message).toContain('Import chain:');
-            expect(error.message).toContain('main.js');
-            expect(error.message).toContain('App.js');
-            expect(error.message).toContain('missing.js');
-            expect(error.message).toContain('✗ FAILED');
-            expect(error.message).toContain('Cause:');
-            expect(error.message).toContain('ENOENT');
+            // Message is now clean and simple
+            expect(error.message).toBe('Failed to read module');
+            // Formatted content is in stack property
+            expect(error.stack).toContain('Failed to read module');
+            expect(error.stack).toContain('Import chain:');
+            expect(error.stack).toContain('main.js');
+            expect(error.stack).toContain('App.js');
+            expect(error.stack).toContain('missing.js');
+            expect(error.stack).toContain('✗ FAILED');
+            expect(error.stack).toContain('Cause:');
+            expect(error.stack).toContain('ENOENT');
             expect(error.moduleIds).toEqual(moduleIds);
             expect(error.targetModule).toBe(targetModule);
             expect(error.originalError).toBe(originalError);
