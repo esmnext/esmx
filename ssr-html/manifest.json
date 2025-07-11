@@ -17,11 +17,11 @@
     },
     "buildFiles": [
         "images/cat.ed79ef6b.final.jpeg",
-        "chunks/830.63b8fd4f.final.css",
         "chunks/473.63b8fd4f.final.css",
         "exports/src/title/index.2d79c0c2.final.mjs",
-        "chunks/534.7540aaee.final.mjs",
         "exports/src/entry.client.37df15d1.final.mjs",
+        "chunks/534.7540aaee.final.mjs",
+        "chunks/830.63b8fd4f.final.css",
         "exports/src/entry.client.2e0a89bc.final.css",
         "images/starry.d914a632.final.jpg",
         "images/logo.3923d727.final.svg",
