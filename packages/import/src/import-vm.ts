@@ -3,6 +3,7 @@ import { isBuiltin } from 'node:module';
 import path from 'node:path';
 import vm from 'node:vm';
 import IM from '@import-maps/resolve';
+import { CircularDependencyError, FileReadError } from './error';
 import type { ImportMap } from './types';
 
 async function importBuiltinModule(specifier: string, context: vm.Context) {
@@ -58,8 +59,10 @@ export function createVmImport(baseURL: URL, importMap: ImportMap = {}) {
         const parsed = parse(specifier, parent);
 
         if (moduleIds.includes(parsed.pathname)) {
-            throw new RangeError(
-                `Module circular reference: \n ${JSON.stringify([...moduleIds, parsed.pathname], null, 4)}`
+            throw new CircularDependencyError(
+                'Circular dependency detected',
+                moduleIds,
+                parsed.pathname
             );
         }
 
@@ -67,22 +70,27 @@ export function createVmImport(baseURL: URL, importMap: ImportMap = {}) {
         if (module) {
             return module;
         }
-        const pe = new Promise<vm.SourceTextModule>((resolve) => {
+        const modulePromise = new Promise<vm.SourceTextModule>((resolve) => {
             process.nextTick(() => {
                 moduleBuild().then(resolve);
             });
         });
 
         const dirname = path.dirname(parsed.filename);
-        cache.set(parsed.pathname, pe);
-        return pe;
+        cache.set(parsed.pathname, modulePromise);
+        return modulePromise;
 
         async function moduleBuild(): Promise<vm.SourceTextModule> {
             let text: string;
             try {
                 text = fs.readFileSync(parsed.pathname, 'utf-8');
-            } catch {
-                throw new Error(`Failed to read module: ${parsed.pathname}`);
+            } catch (error) {
+                throw new FileReadError(
+                    `Failed to read module: ${parsed.pathname}`,
+                    moduleIds,
+                    parsed.pathname,
+                    error as Error
+                );
             }
             const module = new vm.SourceTextModule(text, {
                 initializeImportMeta: (meta) => {
