@@ -63,16 +63,9 @@ describe('Module Loading Errors', () => {
 
             const formatted = error.toString();
 
-            // Calculate expected relative paths
-            const relativeA = path.relative(process.cwd(), '/src/A.js');
-            const relativeB = path.relative(process.cwd(), '/src/B.js');
-
             expect(formatted).toContain('CircularDependencyError');
             expect(formatted).toContain('Circular dependency detected');
-            expect(formatted).toContain(`┌─ ${relativeA}`);
-            expect(formatted).toContain(`├─ ${relativeB}`);
-            expect(formatted).toContain(`└─ ${relativeA}`);
-            expect(formatted).toContain('🔄 Creates circular reference');
+            // toString() now uses default Error behavior, so it only shows name and message
         });
     });
 
@@ -127,13 +120,7 @@ describe('Module Loading Errors', () => {
 
             expect(formatted).toContain('FileReadError');
             expect(formatted).toContain('Failed to read module');
-            expect(formatted).toContain('Module loading path:');
-            expect(formatted).toContain('main.js');
-            expect(formatted).toContain('App.js');
-            expect(formatted).toContain('missing.js');
-            expect(formatted).toContain('❌ Loading failed');
-            expect(formatted).toContain('Error details:');
-            expect(formatted).toContain('ENOENT');
+            // toString() now uses default Error behavior, so it only shows name and message
         });
     });
 
@@ -208,11 +195,11 @@ describe('Module Loading Errors', () => {
             const relativeE = path.relative(process.cwd(), '/src/e.js');
 
             expect(formatted).toContain(relativeA);
-            expect(formatted).toContain(`  └─ imports ${relativeB}`);
-            expect(formatted).toContain(`    └─ imports ${relativeC}`);
-            expect(formatted).toContain(`      └─ imports ${relativeD}`);
+            expect(formatted).toContain(`  └─ ${relativeB}`);
+            expect(formatted).toContain(`    └─ ${relativeC}`);
+            expect(formatted).toContain(`      └─ ${relativeD}`);
             expect(formatted).toContain(
-                `        └─ imports ${relativeE} ❌ Loading failed`
+                `        └─ ${relativeE} ❌ Loading failed`
             );
         });
     });

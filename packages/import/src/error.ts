@@ -83,7 +83,7 @@ export const formatModuleChain = (
         result = `${colorize(colorize('Module loading path:', Colors.BOLD), Colors.CYAN)}\n${chain
             .map((module, index) => {
                 const indent = '  '.repeat(index);
-                const connector = index === 0 ? '' : '└─ imports ';
+                const connector = index === 0 ? '' : '└─ ';
                 const displayPath = getRelativeFromCwd(module);
 
                 const isFailedFile = index === chain.length - 1;
@@ -153,10 +153,6 @@ export class CircularDependencyError extends ModuleLoadingError {
         // Custom stack for clean error display
         this.stack = `${this.name}: ${message}\n\n${formatCircularDependency(moduleIds, targetModule)}`;
     }
-
-    toString(): string {
-        return this.stack || `${this.name}: ${this.message}`;
-    }
 }
 
 // File read error class
@@ -172,9 +168,5 @@ export class FileReadError extends ModuleLoadingError {
 
         // Custom stack for clean error display
         this.stack = `${this.name}: ${message}\n\n${formatModuleChain(moduleIds, targetModule, originalError)}`;
-    }
-
-    toString(): string {
-        return this.stack || `${this.name}: ${this.message}`;
     }
 }
