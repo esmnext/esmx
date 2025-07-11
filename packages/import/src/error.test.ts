@@ -40,10 +40,12 @@ describe('Module Loading Errors', () => {
             expect(error.message).toBe('Test circular dependency');
             // Formatted content is in stack property
             expect(error.stack).toContain('Test circular dependency');
-            expect(error.stack).toContain('Circular dependency:');
+            expect(error.stack).toContain(
+                'Module dependency chain (circular reference found):'
+            );
             expect(error.stack).toContain('┌─');
             expect(error.stack).toContain('└─');
-            expect(error.stack).toContain('circular');
+            expect(error.stack).toContain('🔄 Creates circular reference');
             expect(error.moduleIds).toEqual(moduleIds);
             expect(error.targetModule).toBe(targetModule);
             expect(error instanceof ModuleLoadingError).toBe(true);
@@ -70,7 +72,7 @@ describe('Module Loading Errors', () => {
             expect(formatted).toContain(`┌─ ${relativeA}`);
             expect(formatted).toContain(`├─ ${relativeB}`);
             expect(formatted).toContain(`└─ ${relativeA}`);
-            expect(formatted).toContain('circular');
+            expect(formatted).toContain('🔄 Creates circular reference');
         });
     });
 
@@ -94,12 +96,12 @@ describe('Module Loading Errors', () => {
             expect(error.message).toBe('Failed to read module');
             // Formatted content is in stack property
             expect(error.stack).toContain('Failed to read module');
-            expect(error.stack).toContain('Import chain:');
+            expect(error.stack).toContain('Module loading path:');
             expect(error.stack).toContain('main.js');
             expect(error.stack).toContain('App.js');
             expect(error.stack).toContain('missing.js');
-            expect(error.stack).toContain('✗ FAILED');
-            expect(error.stack).toContain('Cause:');
+            expect(error.stack).toContain('❌ Loading failed');
+            expect(error.stack).toContain('Error details:');
             expect(error.stack).toContain('ENOENT');
             expect(error.moduleIds).toEqual(moduleIds);
             expect(error.targetModule).toBe(targetModule);
@@ -125,12 +127,12 @@ describe('Module Loading Errors', () => {
 
             expect(formatted).toContain('FileReadError');
             expect(formatted).toContain('Failed to read module');
-            expect(formatted).toContain('Import chain:');
+            expect(formatted).toContain('Module loading path:');
             expect(formatted).toContain('main.js');
             expect(formatted).toContain('App.js');
             expect(formatted).toContain('missing.js');
-            expect(formatted).toContain('✗ FAILED');
-            expect(formatted).toContain('Cause:');
+            expect(formatted).toContain('❌ Loading failed');
+            expect(formatted).toContain('Error details:');
             expect(formatted).toContain('ENOENT');
         });
     });
@@ -147,12 +149,14 @@ describe('Module Loading Errors', () => {
             const relativeB = path.relative(process.cwd(), '/src/B.js');
             const relativeC = path.relative(process.cwd(), '/src/C.js');
 
-            expect(formatted).toContain('Circular dependency:');
+            expect(formatted).toContain(
+                'Module dependency chain (circular reference found):'
+            );
             expect(formatted).toContain(`┌─ ${relativeA}`);
             expect(formatted).toContain(`├─ ${relativeB}`);
             expect(formatted).toContain(`├─ ${relativeC}`);
             expect(formatted).toContain(`└─ ${relativeA}`);
-            expect(formatted).toContain('circular');
+            expect(formatted).toContain('🔄 Creates circular reference');
         });
 
         it('should format module chain correctly', () => {
@@ -166,12 +170,12 @@ describe('Module Loading Errors', () => {
                 originalError
             );
 
-            expect(formatted).toContain('Import chain:');
+            expect(formatted).toContain('Module loading path:');
             expect(formatted).toContain('main.js');
             expect(formatted).toContain('app.js');
             expect(formatted).toContain('missing.js');
-            expect(formatted).toContain('✗ FAILED');
-            expect(formatted).toContain('Cause:');
+            expect(formatted).toContain('❌ Loading failed');
+            expect(formatted).toContain('Error details:');
             expect(formatted).toContain('File not found');
         });
 
@@ -204,10 +208,12 @@ describe('Module Loading Errors', () => {
             const relativeE = path.relative(process.cwd(), '/src/e.js');
 
             expect(formatted).toContain(relativeA);
-            expect(formatted).toContain(`  └─ ${relativeB}`);
-            expect(formatted).toContain(`    └─ ${relativeC}`);
-            expect(formatted).toContain(`      └─ ${relativeD}`);
-            expect(formatted).toContain(`        └─ ${relativeE} ✗ FAILED`);
+            expect(formatted).toContain(`  └─ imports ${relativeB}`);
+            expect(formatted).toContain(`    └─ imports ${relativeC}`);
+            expect(formatted).toContain(`      └─ imports ${relativeD}`);
+            expect(formatted).toContain(
+                `        └─ imports ${relativeE} ❌ Loading failed`
+            );
         });
     });
 });

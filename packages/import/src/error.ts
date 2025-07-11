@@ -38,7 +38,7 @@ export const formatCircularDependency = (
 ): string => {
     const fullChain = [...moduleIds, targetModule];
 
-    return `${colorize(colorize('Circular dependency:', Colors.BOLD), Colors.RED)}\n${fullChain
+    return `${colorize(colorize('Module dependency chain (circular reference found):', Colors.BOLD), Colors.RED)}\n${fullChain
         .map((module, index) => {
             const isLastModule = index === fullChain.length - 1;
             const prefix =
@@ -59,7 +59,7 @@ export const formatCircularDependency = (
                 : colorize(displayPath, Colors.CYAN);
 
             const suffix = isLastModule
-                ? ` ${colorize('← circular', Colors.YELLOW)}`
+                ? ` ${colorize('🔄 Creates circular reference', Colors.YELLOW)}`
                 : '';
 
             return `${colorize(prefix, Colors.GRAY)}${coloredFile}${suffix}`;
@@ -80,10 +80,10 @@ export const formatModuleChain = (
         result = `${colorize('Failed to load:', Colors.CYAN)} ${colorize(displayPath, Colors.RED)}`;
     } else {
         const chain = [...moduleIds, targetModule];
-        result = `${colorize(colorize('Import chain:', Colors.BOLD), Colors.CYAN)}\n${chain
+        result = `${colorize(colorize('Module loading path:', Colors.BOLD), Colors.CYAN)}\n${chain
             .map((module, index) => {
                 const indent = '  '.repeat(index);
-                const connector = index === 0 ? '' : '└─ ';
+                const connector = index === 0 ? '' : '└─ imports ';
                 const displayPath = getRelativeFromCwd(module);
 
                 const isFailedFile = index === chain.length - 1;
@@ -92,7 +92,7 @@ export const formatModuleChain = (
                     : colorize(displayPath, Colors.CYAN);
 
                 const status = isFailedFile
-                    ? ` ${colorize(colorize('✗ FAILED', Colors.BOLD), Colors.RED)}`
+                    ? ` ${colorize(colorize('❌ Loading failed', Colors.BOLD), Colors.RED)}`
                     : '';
 
                 return `${colorize(indent + connector, Colors.GRAY)}${coloredFile}${status}`;
@@ -101,7 +101,7 @@ export const formatModuleChain = (
     }
 
     if (originalError) {
-        result += `\n\n${colorize('Cause:', Colors.YELLOW)} ${originalError.message}`;
+        result += `\n\n${colorize('Error details:', Colors.YELLOW)} ${originalError.message}`;
     }
 
     return result;
