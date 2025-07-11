@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
     CircularDependencyError,
@@ -53,11 +54,15 @@ describe('Module Loading Errors', () => {
 
             const formatted = error.toString();
 
+            // Calculate expected relative paths
+            const relativeA = path.relative(process.cwd(), '/src/A.js');
+            const relativeB = path.relative(process.cwd(), '/src/B.js');
+
             expect(formatted).toContain('CircularDependencyError');
             expect(formatted).toContain('Circular dependency detected');
-            expect(formatted).toContain('┌─ ../../../../../../src/A.js');
-            expect(formatted).toContain('├─ ../../../../../../src/B.js');
-            expect(formatted).toContain('└─ ../../../../../../src/A.js');
+            expect(formatted).toContain(`┌─ ${relativeA}`);
+            expect(formatted).toContain(`├─ ${relativeB}`);
+            expect(formatted).toContain(`└─ ${relativeA}`);
             expect(formatted).toContain('circular');
         });
     });
@@ -120,11 +125,16 @@ describe('Module Loading Errors', () => {
 
             const formatted = formatCircularDependency(moduleIds, targetModule);
 
+            // Calculate expected relative paths
+            const relativeA = path.relative(process.cwd(), '/src/A.js');
+            const relativeB = path.relative(process.cwd(), '/src/B.js');
+            const relativeC = path.relative(process.cwd(), '/src/C.js');
+
             expect(formatted).toContain('Circular dependency:');
-            expect(formatted).toContain('┌─ ../../../../../../src/A.js');
-            expect(formatted).toContain('├─ ../../../../../../src/B.js');
-            expect(formatted).toContain('├─ ../../../../../../src/C.js');
-            expect(formatted).toContain('└─ ../../../../../../src/A.js');
+            expect(formatted).toContain(`┌─ ${relativeA}`);
+            expect(formatted).toContain(`├─ ${relativeB}`);
+            expect(formatted).toContain(`├─ ${relativeC}`);
+            expect(formatted).toContain(`└─ ${relativeA}`);
             expect(formatted).toContain('circular');
         });
 
@@ -169,13 +179,18 @@ describe('Module Loading Errors', () => {
 
             const formatted = formatModuleChain(moduleIds, targetModule);
 
-            expect(formatted).toContain('../../../../../../src/a.js');
-            expect(formatted).toContain('  └─ ../../../../../../src/b.js');
-            expect(formatted).toContain('    └─ ../../../../../../src/c.js');
-            expect(formatted).toContain('      └─ ../../../../../../src/d.js');
-            expect(formatted).toContain(
-                '        └─ ../../../../../../src/e.js ✗'
-            );
+            // Calculate expected relative paths
+            const relativeA = path.relative(process.cwd(), '/src/a.js');
+            const relativeB = path.relative(process.cwd(), '/src/b.js');
+            const relativeC = path.relative(process.cwd(), '/src/c.js');
+            const relativeD = path.relative(process.cwd(), '/src/d.js');
+            const relativeE = path.relative(process.cwd(), '/src/e.js');
+
+            expect(formatted).toContain(relativeA);
+            expect(formatted).toContain(`  └─ ${relativeB}`);
+            expect(formatted).toContain(`    └─ ${relativeC}`);
+            expect(formatted).toContain(`      └─ ${relativeD}`);
+            expect(formatted).toContain(`        └─ ${relativeE} ✗ FAILED`);
         });
     });
 });
