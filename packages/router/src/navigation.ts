@@ -48,10 +48,10 @@ export class Navigation {
         data: any,
         url?: string | URL | null
     ): RouteState {
-        const state = Object.freeze({
+        const state = {
             ...(data || {}),
             [PAGE_ID_KEY]: PAGE_ID.next()
-        });
+        };
         history.pushState(state, '', url);
         return state;
     }
@@ -62,10 +62,10 @@ export class Navigation {
         url?: string | URL | null
     ): RouteState {
         const oldId = history.state?.[PAGE_ID_KEY];
-        const state = Object.freeze({
+        const state = {
             ...(data || {}),
             [PAGE_ID_KEY]: typeof oldId === 'number' ? oldId : PAGE_ID.next()
-        });
+        };
         history.replaceState(state, '', url);
         return state;
     }
