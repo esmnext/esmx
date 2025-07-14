@@ -99,7 +99,7 @@ import type { UserInfo } from 'your-app-name/src/types';
 
 ### Cross-Service Imports
 
-When module linking (Module Link) is configured, modules from other services can be imported in the same way:
+When Module Linking is configured, modules from other services can be imported in the same way:
 
 ```ts
 // Importing components from a remote service

@@ -33,7 +33,7 @@
 - **Dependency Management** - Centralized dependency management with content-hash-based strong caching strategy
 - **Application Isolation** - ESM native module isolation ensuring runtime stability
 - **SSR Support** - Flexible server-side rendering strategy supporting any frontend framework
-- **Developer Experience** - Complete TypeScript support with native module linking capabilities
+- **Developer Experience** - Complete TypeScript support with native Module Linking capabilities
 
 ## 📦 Installation
 

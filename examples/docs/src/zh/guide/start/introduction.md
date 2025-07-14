@@ -16,7 +16,7 @@ head:
 **技术演进：**
 - **v1.0**：HTTP 请求实现组件按需加载
 - **v2.0**：Webpack Module Federation 实现应用集成
-- **v3.0**：浏览器原生 ESM 的[模块链接](/guide/essentials/module-link)系统
+- **v3.0**：浏览器原生 ESM 的[模块链接](/guide/essentials/module-linking)系统
 
 ## 解决的问题
 

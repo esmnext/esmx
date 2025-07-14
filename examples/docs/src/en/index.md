@@ -9,7 +9,7 @@ head:
 hero:
   name: Esmx
   text: ESM-based Server-Side Rendering Framework
-  tagline: High-performance, scalable module linking system
+  tagline: High-performance, scalable Module Linking system
   actions:
     - theme: brand
       text: Get Started

@@ -29,7 +29,7 @@ export default class Home extends Page {
                         <div class="icon">🔄</div>
                         <div class="content">
                             <h3>模块共享</h3>
-                            <p>创新的 Module Link 技术，实现多个微前端应用间无缝共享和按需加载模块，降低重复依赖。</p>
+                            <p>创新的模块链接技术，实现多个微前端应用间无缝共享和按需加载模块，降低重复依赖。</p>
                         </div>
                     </div>
 

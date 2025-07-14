@@ -7,7 +7,7 @@ import type { BuildSsrTarget } from './core';
  */
 export interface ModuleConfig {
     /**
-     * Module link configuration.
+     * Module linking configuration.
      * Key is remote module name, value is module build output directory path.
      *
      * @example
@@ -207,7 +207,7 @@ const PREFIX = {
 } as const;
 
 /**
- * Process and resolve module links configuration.
+ * Process and resolve module linking configuration.
  * Creates absolute paths for client/server directories and manifest files.
  * Automatically includes the current module as a self-link.
  *

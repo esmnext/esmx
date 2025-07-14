@@ -4,12 +4,12 @@ description: Esmx 模块链接：基于 ESM 标准的零运行时微前端代码
 head:
   - - meta
     - property: keywords
-      content: Esmx, 模块链接, Module Link, ESM, 代码共享, 微前端
+      content: Esmx, 模块链接, Module Linking, ESM, 代码共享, 微前端
 ---
 
 # 模块链接
 
-模块链接（Module Link）是 Esmx 提供的跨应用代码共享机制，基于 ECMAScript 模块标准，实现无运行时开销的微前端架构。
+模块链接（Module Linking）是 Esmx 提供的跨应用代码共享机制，基于 ECMAScript 模块标准，实现无运行时开销的微前端架构。
 
 ## 为什么需要模块链接？
 
@@ -298,13 +298,4 @@ import Chart from 'components/Chart';  // 此导入无法解析
 
 1. **第三方库**：必须配置 `imports` 映射，使用标准名称导入
 2. **自定义模块**：直接使用完整模块链接路径
-3. **imports用途**：仅用于第三方库标准名称映射，不是目录别名
-
-
-
-
-
-
-
-
-
+3. **imports用途**：仅用于第三方库标准名称映射，不是目录别名 
