@@ -875,10 +875,12 @@ export class Esmx {
                             return path.join(realPath, '/');
                         },
                         getFile: (name: string, file: string) => {
-                            return path.resolve(
-                                moduleConfig.links[name].server,
-                                file
-                            );
+                            const linkPath = moduleConfig.links[name].server;
+                            // Get the real physical path instead of symbolic link
+                            // This is crucial to maintain consistency with getScope function
+                            // and ensure proper module resolution at runtime
+                            const realPath = fs.realpathSync(linkPath);
+                            return path.resolve(realPath, file);
                         }
                     });
                     break;
