@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1752219829215" clover="3.2.0">
-  <project timestamp="1752219829215" name="All files">
-    <metrics statements="905" coveredstatements="309" conditionals="77" coveredconditionals="74" methods="69" coveredmethods="17" elements="1051" coveredelements="400" complexity="0" loc="905" ncloc="905" packages="3" files="15" classes="15"/>
+<coverage generated="1752459400421" clover="3.2.0">
+  <project timestamp="1752459400421" name="All files">
+    <metrics statements="904" coveredstatements="309" conditionals="77" coveredconditionals="74" methods="69" coveredmethods="17" elements="1050" coveredelements="400" complexity="0" loc="904" ncloc="904" packages="3" files="15" classes="15"/>
     <package name="src">
-      <metrics statements="637" coveredstatements="210" conditionals="44" coveredconditionals="42" methods="56" coveredmethods="9"/>
+      <metrics statements="636" coveredstatements="210" conditionals="44" coveredconditionals="42" methods="56" coveredmethods="9"/>
       <file name="app.ts" path="/home/runner/work/esmx/esmx/packages/core/src/app.ts">
         <metrics statements="35" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
@@ -43,7 +43,7 @@
         <line num="144" count="0" type="stmt"/>
       </file>
       <file name="core.ts" path="/home/runner/work/esmx/esmx/packages/core/src/core.ts">
-        <metrics statements="320" coveredstatements="57" conditionals="3" coveredconditionals="3" methods="32" coveredmethods="2"/>
+        <metrics statements="319" coveredstatements="57" conditionals="3" coveredconditionals="3" methods="32" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -260,20 +260,17 @@
         <line num="876" count="0" type="stmt"/>
         <line num="877" count="0" type="stmt"/>
         <line num="878" count="0" type="stmt"/>
-        <line num="879" count="0" type="stmt"/>
-        <line num="880" count="0" type="stmt"/>
-        <line num="881" count="0" type="stmt"/>
         <line num="882" count="0" type="stmt"/>
         <line num="883" count="0" type="stmt"/>
         <line num="884" count="0" type="stmt"/>
         <line num="885" count="0" type="stmt"/>
+        <line num="886" count="0" type="stmt"/>
         <line num="887" count="0" type="stmt"/>
-        <line num="888" count="0" type="stmt"/>
         <line num="889" count="0" type="stmt"/>
-        <line num="948" count="1" type="stmt"/>
-        <line num="949" count="0" type="stmt"/>
-        <line num="962" count="0" type="stmt"/>
-        <line num="963" count="0" type="stmt"/>
+        <line num="890" count="0" type="stmt"/>
+        <line num="891" count="0" type="stmt"/>
+        <line num="950" count="1" type="stmt"/>
+        <line num="951" count="0" type="stmt"/>
         <line num="964" count="0" type="stmt"/>
         <line num="965" count="0" type="stmt"/>
         <line num="966" count="0" type="stmt"/>
@@ -282,9 +279,9 @@
         <line num="969" count="0" type="stmt"/>
         <line num="970" count="0" type="stmt"/>
         <line num="971" count="0" type="stmt"/>
+        <line num="972" count="0" type="stmt"/>
         <line num="973" count="0" type="stmt"/>
-        <line num="989" count="0" type="stmt"/>
-        <line num="990" count="0" type="stmt"/>
+        <line num="975" count="0" type="stmt"/>
         <line num="991" count="0" type="stmt"/>
         <line num="992" count="0" type="stmt"/>
         <line num="993" count="0" type="stmt"/>
@@ -331,9 +328,9 @@
         <line num="1034" count="0" type="stmt"/>
         <line num="1035" count="0" type="stmt"/>
         <line num="1036" count="0" type="stmt"/>
-        <line num="1055" count="1" type="stmt"/>
-        <line num="1056" count="0" type="stmt"/>
-        <line num="1057" count="0" type="stmt"/>
+        <line num="1037" count="0" type="stmt"/>
+        <line num="1038" count="0" type="stmt"/>
+        <line num="1057" count="1" type="stmt"/>
         <line num="1058" count="0" type="stmt"/>
         <line num="1059" count="0" type="stmt"/>
         <line num="1060" count="0" type="stmt"/>
@@ -350,20 +347,22 @@
         <line num="1071" count="0" type="stmt"/>
         <line num="1072" count="0" type="stmt"/>
         <line num="1073" count="0" type="stmt"/>
-        <line num="1074" count="1" type="stmt"/>
-        <line num="1098" count="0" type="stmt"/>
-        <line num="1099" count="0" type="stmt"/>
+        <line num="1074" count="0" type="stmt"/>
+        <line num="1075" count="0" type="stmt"/>
+        <line num="1076" count="1" type="stmt"/>
         <line num="1100" count="0" type="stmt"/>
-        <line num="1126" count="1" type="stmt"/>
-        <line num="1127" count="1" type="stmt"/>
-        <line num="1128" count="0" type="stmt"/>
-        <line num="1129" count="0" type="stmt"/>
-        <line num="1130" count="1" type="stmt"/>
-        <line num="1156" count="0" type="stmt"/>
-        <line num="1157" count="0" type="stmt"/>
+        <line num="1101" count="0" type="stmt"/>
+        <line num="1102" count="0" type="stmt"/>
+        <line num="1128" count="1" type="stmt"/>
+        <line num="1129" count="1" type="stmt"/>
+        <line num="1130" count="0" type="stmt"/>
+        <line num="1131" count="0" type="stmt"/>
+        <line num="1132" count="1" type="stmt"/>
         <line num="1158" count="0" type="stmt"/>
         <line num="1159" count="0" type="stmt"/>
         <line num="1160" count="0" type="stmt"/>
+        <line num="1161" count="0" type="stmt"/>
+        <line num="1162" count="0" type="stmt"/>
       </file>
       <file name="index.ts" path="/home/runner/work/esmx/esmx/packages/core/src/index.ts">
         <metrics statements="6" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
