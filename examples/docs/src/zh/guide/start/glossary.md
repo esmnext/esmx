@@ -4,7 +4,7 @@ description: Esmx 框架核心术语解释，帮助开发者理解模块链接�
 head:
   - - meta
     - name: keywords
-      content: Esmx, 术语表, 模块链接, 微前端, ESM, import map
+      content: Esmx, 术语表, 模块链接（Module Linking）, 微前端, ESM, import map
 ---
 
 # 术语表

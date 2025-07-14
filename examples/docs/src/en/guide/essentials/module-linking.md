@@ -1,17 +1,17 @@
 ---
 titleSuffix: Esmx Module Code Sharing
-description: "Esmx Module Link: Zero Runtime Micro-frontend Code Sharing Solution Based on ESM Standards"
+description: "Esmx Module Linking: Zero Runtime Micro-frontend Code Sharing Solution Based on ESM Standards"
 head:
   - - meta
     - property: keywords
-      content: Esmx, Module Link, ESM, Code Sharing, Micro-frontend
+      content: Esmx, Module Linking, ESM, Code Sharing, Micro-frontend
 ---
 
-# Module Link
+# Module Linking
 
-Module Link is Esmx's cross-application code sharing mechanism, based on ECMAScript module standards, achieving micro-frontend architecture with zero runtime overhead.
+Module Linking is Esmx's cross-application code sharing mechanism, based on ECMAScript module standards, achieving micro-frontend architecture with zero runtime overhead.
 
-## Why Module Link?
+## Why Module Linking?
 
 In micro-frontend architectures, multiple independent applications often need to use the same third-party libraries (such as HTTP clients, utility libraries, UI component libraries) and shared components. Traditional approaches have the following issues:
 
@@ -20,11 +20,11 @@ In micro-frontend architectures, multiple independent applications often need to
 - **Memory Waste**: Multiple instances of the same library exist in the browser, occupying additional memory
 - **Cache Invalidation**: Different bundled versions of the same library cannot share browser cache
 
-Module Link solves these problems through the ECMAScript module system and Import Maps specification, enabling multiple applications to safely and efficiently share code modules.
+Module Linking solves these problems through the ECMAScript module system and Import Maps specification, enabling multiple applications to safely and efficiently share code modules.
 
 ## How It Works
 
-Module Link is based on technology standards natively supported by modern browsers:
+Module Linking is based on technology standards natively supported by modern browsers:
 
 ### Shared Module Provider
 
@@ -95,7 +95,7 @@ export async function fetchOrders() {
 
 ## Configuration Guide
 
-Module Link configuration is located in the `modules` field of the `entry.node.ts` file, containing three core configuration items:
+Module Linking configuration is located in the `modules` field of the `entry.node.ts` file, containing three core configuration items:
 
 ### Basic Configuration
 
@@ -257,43 +257,43 @@ exports: {
 
 ## Best Practices
 
-### Applicable Scenarios
+### Use Case Evaluation
 
-**Suitable for**:
+**Suitable Cases**:
 - Multiple applications using the same third-party libraries (axios, lodash, moment, etc.)
 - Need to share business component libraries or utility functions
 - Want to reduce application size and improve loading performance
 - Need to ensure library version consistency across multiple applications
 
-**Not suitable for**:
-- Single application projects (no sharing requirements)
+**Not Suitable Cases**:
+- Single application projects (no sharing needs)
 - Frequently changing experimental code
 - Scenarios requiring extremely low coupling between applications
 
-### Import Standards
+### Import Guidelines
 
-**Third-party library imports**:
+**Third-party Library Imports**:
 ```typescript
-// ✅ Recommended - Use standard library names, conform to ecosystem standards
+// ✅ Recommended - Use standard library names, conforming to ecosystem standards
 import axios from 'axios';
 import { debounce } from 'lodash';
 
-// ❌ Not recommended - Violates module ecosystem standards, not conducive to library replacement and maintenance
+// ❌ Not Recommended - Violates module ecosystem standards, not conducive to library replacement and maintenance
 import axios from 'shared-lib/axios';
 ```
 
-**Custom module imports**:
+**Custom Module Imports**:
 ```typescript
-// ✅ Recommended - Directly use module link paths, clear dependency source
+// ✅ Recommended - Directly use module linking paths, clearly indicating dependency source
 import { formatDate } from 'shared-lib/src/utils/date-utils';
 
-// ❌ Invalid configuration - imports does not support path prefix functionality
+// ❌ Invalid Configuration - imports does not support path prefix functionality
 imports: { 'components': 'shared-lib/src/components' }
 import Chart from 'components/Chart';  // This import cannot be resolved
 ```
 
 ### Configuration Principles
 
-1. **Third-party libraries**: Must configure `imports` mapping, use standard names for imports
-2. **Custom modules**: Directly use complete module link paths
-3. **imports purpose**: Only used for third-party library standard name mapping, not directory aliases
+1. **Third-party Libraries**: Must configure `imports` mapping, use standard names for importing
+2. **Custom Modules**: Directly use complete module linking paths
+3. **imports Purpose**: Only for third-party library standard name mapping, not directory aliases 

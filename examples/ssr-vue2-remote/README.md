@@ -5,7 +5,7 @@
 ## 特点
 
 - 🚀 **高性能**   - 基于 Rust 构建的 Rspack，提供极致的构建性能
-- 💡 **模块输出** - 支持 Module Link，可被其他应用无缝集成
+- 💡 **模块输出** - 支持 Module Linking，可被其他应用无缝集成
 - 🛠 **开发体验** - 快速的热更新、友好的错误提示和完整的类型支持
 - 📱 **SSR支持** - 完整的服务端渲染支持，确保与 Host 应用的 SSR 能力对接
 
@@ -42,7 +42,7 @@ src/
 ├── assets/                 # 静态资源
 ├── entry-client.ts         # 客户端入口
 ├── entry-server.ts         # 服务端入口
-├── expose.ts               # Module Link 导出配置
+├── entry.node.ts           # Module Linking 导出配置
 └── App.vue                 # 根组件
 ```
 

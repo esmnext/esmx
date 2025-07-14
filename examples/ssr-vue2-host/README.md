@@ -1,11 +1,11 @@
 # Esmx SSR Vue2 Host
 
-一个基于 Vue2 的微前端 Host 应用示例，展示了如何使用 Esmx 构建现代化的服务端渲染应用，并通过 Module Link 集成 Remote 应用。
+一个基于 Vue2 的微前端 Host 应用示例，展示了如何使用 Esmx 构建现代化的服务端渲染应用，并通过 Module Linking 集成 Remote 应用。
 
 ## 特点
 
 - 🚀 **高性能** - 基于 Rust 构建的 Rspack，提供极致的构建性能
-- 💡 **微前端架构** - 使用 Module Link 实现应用解耦和独立部署
+- 💡 **微前端架构** - 使用 Module Linking 实现应用解耦和独立部署
 - 🛠 **开发体验** - 快速的热更新、友好的错误提示和完整的类型支持
 - 📱 **SSR支持** - 完整的服务端渲染支持，提供更好的首屏体验和SEO
 

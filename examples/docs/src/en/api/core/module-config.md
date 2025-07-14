@@ -24,7 +24,7 @@ interface ModuleConfig {
 ### links
 
 * **Type**: `Record<string, string>`
-* **Description**: Module link configuration. Key is remote module name, value is module build output directory path.
+* **Description**: Module linking configuration. Key is remote module name, value is module build output directory path.
 
 ### imports  
 

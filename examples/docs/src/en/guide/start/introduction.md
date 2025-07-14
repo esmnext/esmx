@@ -16,7 +16,7 @@ A micro-frontend framework based on ECMAScript Modules (ESM), designed for build
 **Technical Evolution:**
 - **v1.0**: On-demand component loading via HTTP requests
 - **v2.0**: Application integration using Webpack Module Federation
-- **v3.0**: [Module linking](/guide/essentials/module-link) system based on native browser ESM
+- **v3.0**: [Module linking](/guide/essentials/module-linking) system based on native browser ESM
 
 ## Problems Solved
 

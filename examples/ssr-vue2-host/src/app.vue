@@ -3,8 +3,8 @@
     <app-nav current="host" />
     
     <ui-module-header
-      title="Esmx Module Link Host"
-      description="这是一个基于 Module Link 的宿主应用示例，演示了如何在 SSR 环境下集成和使用远程模块。通过 Module Link 的依赖共享机制，可以确保宿主应用和远程模块使用相同版本的 Vue 实例，有效避免运行时冲突。"
+      title="Esmx Module Linking Host"
+      description="这是一个基于 Module Linking 的宿主应用示例，演示了如何在 SSR 环境下集成和使用远程模块。通过 Module Linking 的依赖共享机制，可以确保宿主应用和远程模块使用相同版本的 Vue 实例，有效避免运行时冲突。"
     />
 
     <main class="app-main">

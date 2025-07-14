@@ -100,7 +100,7 @@ import type { UserInfo } from 'your-app-name/src/types';
 
 ### 跨服务导入
 
-当配置了模块链接（Module Link）后，可以使用相同的方式导入其他服务的模块：
+当配置了模块链接后，可以使用相同的方式导入其他服务的模块：
 
 ```ts
 // 导入远程服务的组件
