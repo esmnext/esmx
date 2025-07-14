@@ -19,7 +19,7 @@ head:
 
 原生 ESM（Native ESM）是指浏览器和 Node.js 原生支持的 ES Modules 机制，允许开发者使用标准的 import/export 语法进行模块化开发。Esmx 框架的所有模块链接和依赖隔离均基于原生 ESM 实现。
 
-## import map
+## 导入映射
 
 import map 是一种浏览器原生机制，用于控制 ESM 模块的导入路径映射。通过 import map，可以实现依赖隔离和多包协作，避免包之间的路径冲突。
 
