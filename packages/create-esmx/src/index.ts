@@ -57,9 +57,6 @@ interface TemplateInfo {
 
 function getAvailableTemplates(): TemplateInfo[] {
     const templateDir = resolve(__dirname, '../template');
-    if (!existsSync(templateDir)) {
-        return [];
-    }
 
     const templates: TemplateInfo[] = [];
     const templateFolders = readdirSync(templateDir, { withFileTypes: true })
@@ -82,26 +79,18 @@ function getAvailableTemplates(): TemplateInfo[] {
                 if (packageJson.description) {
                     description = packageJson.description;
                 }
+                templates.push({
+                    folder,
+                    name,
+                    description
+                });
             } catch (error) {
                 // JSON parsing failed, skip this template
                 console.warn(
                     `Warning: Failed to parse package.json for template '${folder}', skipping.`
                 );
-                continue;
             }
-        } else {
-            // Skip templates without package.json
-            console.warn(
-                `Warning: Template '${folder}' is missing package.json, skipping.`
-            );
-            continue;
         }
-
-        templates.push({
-            folder,
-            name,
-            description
-        });
     }
 
     // Sort by name alphabetically
@@ -187,73 +176,62 @@ export async function createProject(
         )
     );
 
-    try {
-        const projectNameInput = await getProjectName(
-            parsedArgs.name,
-            parsedArgs._[0]
-        );
-        if (isCancel(projectNameInput)) {
-            cancel('Operation cancelled');
-            return;
-        }
-
-        const { packageName, targetDir } = formatProjectName(
-            projectNameInput,
-            workingDir
-        );
-
-        const templateType = await getTemplateType(parsedArgs.template);
-        if (isCancel(templateType)) {
-            cancel('Operation cancelled');
-            return;
-        }
-
-        const installCommand = getCommand('install', userAgent);
-        const devCommand = getCommand('dev', userAgent);
-        const buildCommand = getCommand('build', userAgent);
-        const startCommand = getCommand('start', userAgent);
-        const buildTypeCommand = getCommand('build:type', userAgent);
-        const lintTypeCommand = getCommand('lint:type', userAgent);
-
-        await createProjectFromTemplate(
-            targetDir,
-            templateType,
-            workingDir,
-            parsedArgs.force,
-            {
-                projectName: packageName,
-                esmxVersion: getEsmxVersion(),
-                installCommand,
-                devCommand,
-                buildCommand,
-                startCommand,
-                buildTypeCommand,
-                lintTypeCommand
-            }
-        );
-        const installCmd = installCommand;
-        const devCmd = devCommand;
-
-        const nextSteps = [
-            color.reset(`1. ${color.cyan(`cd ${targetDir}`)}`),
-            color.reset(`2. ${color.cyan(installCmd)}`),
-            color.reset(
-                `3. ${color.cyan('git init')} ${color.gray('(optional)')}`
-            ),
-            color.reset(`4. ${color.cyan(devCmd)}`)
-        ];
-
-        note(nextSteps.join('\n'), 'Next steps');
-
-        outro(color.reset(color.green('Happy coding! 🎉')));
-    } catch (error) {
-        if (error instanceof Error) {
-            log.error(`Error: ${error.message}`);
-        } else {
-            log.error('An unknown error occurred');
-        }
-        process.exit(1);
+    const projectNameInput = await getProjectName(
+        parsedArgs.name,
+        parsedArgs._[0]
+    );
+    if (isCancel(projectNameInput)) {
+        cancel('Operation cancelled');
+        return;
     }
+
+    const { packageName, targetDir } = formatProjectName(
+        projectNameInput,
+        workingDir
+    );
+
+    const templateType = await getTemplateType(parsedArgs.template);
+    if (isCancel(templateType)) {
+        cancel('Operation cancelled');
+        return;
+    }
+
+    const installCommand = getCommand('install', userAgent);
+    const devCommand = getCommand('dev', userAgent);
+    const buildCommand = getCommand('build', userAgent);
+    const startCommand = getCommand('start', userAgent);
+    const buildTypeCommand = getCommand('build:type', userAgent);
+    const lintTypeCommand = getCommand('lint:type', userAgent);
+
+    await createProjectFromTemplate(
+        targetDir,
+        templateType,
+        workingDir,
+        parsedArgs.force,
+        {
+            projectName: packageName,
+            esmxVersion: getEsmxVersion(),
+            installCommand,
+            devCommand,
+            buildCommand,
+            startCommand,
+            buildTypeCommand,
+            lintTypeCommand
+        }
+    );
+    const installCmd = installCommand;
+    const devCmd = devCommand;
+
+    const nextSteps = [
+        color.reset(`1. ${color.cyan(`cd ${targetDir}`)}`),
+        color.reset(`2. ${color.cyan(installCmd)}`),
+        color.reset(`3. ${color.cyan('git init')} ${color.gray('(optional)')}`),
+        color.reset(`4. ${color.cyan(devCmd)}`)
+    ];
+
+    note(nextSteps.join('\n'), 'Next steps');
+
+    outro(color.reset(color.green('Happy coding! 🎉')));
 }
 
 async function getProjectName(
@@ -272,7 +250,7 @@ async function getProjectName(
             if (!value.trim()) {
                 return 'Project name or path is required';
             }
-            if (!/^[a-zA-Z0-9_.\/@-]+$/.test(value)) {
+            if (!/^[a-zA-Z0-9_.\/@-]+$/.test(value.trim())) {
                 return 'Project name or path should only contain letters, numbers, hyphens, underscores, dots, and slashes';
             }
         }
