@@ -2,7 +2,8 @@
  * Package manager detection and command generation utilities
  */
 
-type PackageManager = 'npm' | 'yarn' | 'pnpm' | 'bun';
+export type PackageManager = 'npm' | 'yarn' | 'pnpm' | 'bun';
+
 export type CommandType =
     | 'install'
     | 'dev'
@@ -67,12 +68,12 @@ const PACKAGE_MANAGER_CONFIG: Record<PackageManager, PackageManagerCommands> = {
 /**
  * Detect the package manager being used based on user agent
  */
-function detectPackageManager(): PackageManager {
-    const userAgent = process.env.npm_config_user_agent || '';
+function detectPackageManager(userAgent?: string): PackageManager {
+    const agent = userAgent || process.env.npm_config_user_agent || '';
 
-    if (userAgent.includes('pnpm')) return 'pnpm';
-    if (userAgent.includes('yarn')) return 'yarn';
-    if (userAgent.includes('bun')) return 'bun';
+    if (agent.includes('pnpm')) return 'pnpm';
+    if (agent.includes('yarn')) return 'yarn';
+    if (agent.includes('bun')) return 'bun';
 
     // Default to npm
     return 'npm';
@@ -82,7 +83,10 @@ function detectPackageManager(): PackageManager {
  * Get a specific command for the detected package manager
  * Business logic only needs to specify what command to execute
  */
-export function getCommand(commandType: CommandType): string {
-    const packageManager = detectPackageManager();
+export function getCommand(
+    commandType: CommandType,
+    userAgent?: string
+): string {
+    const packageManager = detectPackageManager(userAgent);
     return PACKAGE_MANAGER_CONFIG[packageManager][commandType];
 }

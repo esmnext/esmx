@@ -31,6 +31,12 @@ import {
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+interface CreateProjectOptions {
+    argv?: string[]; // Command line arguments
+    cwd?: string; // Working directory
+    userAgent?: string; // Package manager user agent
+}
+
 function getEsmxVersion(): string {
     try {
         const packageJsonPath = resolve(__dirname, '../package.json');
@@ -43,16 +49,19 @@ function getEsmxVersion(): string {
     }
 }
 
-function getAvailableTemplates() {
+interface TemplateInfo {
+    folder: string;
+    name: string;
+    description: string;
+}
+
+function getAvailableTemplates(): TemplateInfo[] {
     const templateDir = resolve(__dirname, '../template');
     if (!existsSync(templateDir)) {
-        return {};
+        return [];
     }
 
-    const templates: Record<
-        string,
-        { name: string; description: string; color: any }
-    > = {};
+    const templates: TemplateInfo[] = [];
     const templateFolders = readdirSync(templateDir, { withFileTypes: true })
         .filter((dirent) => dirent.isDirectory())
         .map((dirent) => dirent.name);
@@ -74,18 +83,29 @@ function getAvailableTemplates() {
                     description = packageJson.description;
                 }
             } catch (error) {
-                // Use default description if parsing fails
+                // JSON parsing failed, skip this template
+                console.warn(
+                    `Warning: Failed to parse package.json for template '${folder}', skipping.`
+                );
+                continue;
             }
+        } else {
+            // Skip templates without package.json
+            console.warn(
+                `Warning: Template '${folder}' is missing package.json, skipping.`
+            );
+            continue;
         }
 
-        templates[folder] = {
-            name: name,
-            description: description,
-            color: color.gray
-        };
+        templates.push({
+            folder,
+            name,
+            description
+        });
     }
 
-    return templates;
+    // Sort by name alphabetically
+    return templates.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 interface TemplateVariables extends Record<string, string> {
@@ -99,46 +119,63 @@ interface TemplateVariables extends Record<string, string> {
     lintTypeCommand: string;
 }
 
-function showHelp(): void {
-    const createCmd = getCommand('create');
+function showHelp(userAgent?: string): void {
+    const createCmd = getCommand('create', userAgent);
 
     console.log(`
 ${color.reset(color.bold(color.blue('🚀 Create Esmx Project')))}
 
-Usage:
+${color.bold('Usage:')}
   ${createCmd} [project-name]
   ${createCmd} [project-name] [options]
 
-Options:
-  -t, --template <template>    Template to use (vue2-ssr)
-  -n, --name <name>           Project name or path
-  -h, --help                  Show help
-  -v, --version               Show version
+${color.bold('Options:')}
+  -t, --template <template>    Template to use (default: vue2)
+  -n, --name <name>            Project name or path
+  -f, --force                  Force overwrite existing directory
+  -h, --help                   Show help information
+  -v, --version                Show version number
 
-Examples:
+${color.bold('Examples:')}
   ${createCmd} my-project
-  ${createCmd} my-project -t vue2-ssr
+  ${createCmd} my-project -t vue2
+  ${createCmd} my-project --force
+  ${createCmd} . -f -t vue2
+
+${color.bold('Available Templates:')}
+${getAvailableTemplates()
+    .map((t) => `  ${t.folder.padEnd(25)} ${t.description}`)
+    .join('\n')}
+
+For more information, visit: ${color.cyan('https://esmnext.com')}
 `);
 }
 
-export async function createProject(): Promise<void> {
-    const argv = minimist(process.argv.slice(2), {
+export async function createProject(
+    options: CreateProjectOptions = {}
+): Promise<void> {
+    const { argv, cwd, userAgent } = options;
+    const commandLineArgs = argv || process.argv.slice(2);
+    const workingDir = cwd || process.cwd();
+
+    const parsedArgs = minimist(commandLineArgs, {
         string: ['template', 'name'],
-        boolean: ['help', 'version'],
+        boolean: ['help', 'version', 'force'],
         alias: {
             t: 'template',
             n: 'name',
+            f: 'force',
             h: 'help',
             v: 'version'
         }
     });
 
-    if (argv.help) {
-        showHelp();
+    if (parsedArgs.help) {
+        showHelp(userAgent);
         return;
     }
 
-    if (argv.version) {
+    if (parsedArgs.version) {
         console.log(getEsmxVersion());
         return;
     }
@@ -146,42 +183,54 @@ export async function createProject(): Promise<void> {
     console.log();
     intro(
         color.reset(
-            color.bold(color.yellow('🚀 Welcome to Esmx Project Creator!'))
+            color.bold(color.blue('🚀 Welcome to Esmx Project Creator!'))
         )
     );
 
     try {
-        const projectNameInput = await getProjectName(argv.name, argv._[0]);
+        const projectNameInput = await getProjectName(
+            parsedArgs.name,
+            parsedArgs._[0]
+        );
         if (isCancel(projectNameInput)) {
             cancel('Operation cancelled');
             return;
         }
 
-        const { packageName, targetDir } = formatProjectName(projectNameInput);
+        const { packageName, targetDir } = formatProjectName(
+            projectNameInput,
+            workingDir
+        );
 
-        const templateType = await getTemplateType(argv.template);
+        const templateType = await getTemplateType(parsedArgs.template);
         if (isCancel(templateType)) {
             cancel('Operation cancelled');
             return;
         }
 
-        const installCommand = getCommand('install');
-        const devCommand = getCommand('dev');
-        const buildCommand = getCommand('build');
-        const startCommand = getCommand('start');
-        const buildTypeCommand = getCommand('build:type');
-        const lintTypeCommand = getCommand('lint:type');
+        const installCommand = getCommand('install', userAgent);
+        const devCommand = getCommand('dev', userAgent);
+        const buildCommand = getCommand('build', userAgent);
+        const startCommand = getCommand('start', userAgent);
+        const buildTypeCommand = getCommand('build:type', userAgent);
+        const lintTypeCommand = getCommand('lint:type', userAgent);
 
-        await createProjectFromTemplate(targetDir, templateType, {
-            projectName: packageName,
-            esmxVersion: getEsmxVersion(),
-            installCommand,
-            devCommand,
-            buildCommand,
-            startCommand,
-            buildTypeCommand,
-            lintTypeCommand
-        });
+        await createProjectFromTemplate(
+            targetDir,
+            templateType,
+            workingDir,
+            parsedArgs.force,
+            {
+                projectName: packageName,
+                esmxVersion: getEsmxVersion(),
+                installCommand,
+                devCommand,
+                buildCommand,
+                startCommand,
+                buildTypeCommand,
+                lintTypeCommand
+            }
+        );
         const installCmd = installCommand;
         const devCmd = devCommand;
 
@@ -235,17 +284,22 @@ async function getProjectName(
 async function getTemplateType(argTemplate?: string): Promise<string | symbol> {
     const availableTemplates = getAvailableTemplates();
 
-    if (argTemplate && availableTemplates[argTemplate]) {
+    if (
+        argTemplate &&
+        availableTemplates.some((t) => t.folder === argTemplate)
+    ) {
         return argTemplate;
     }
 
+    const options = availableTemplates.map((t) => ({
+        label: color.reset(color.gray(`${t.folder} - `) + color.bold(t.name)),
+        value: t.folder,
+        hint: t.description
+    }));
+
     const template = await select({
         message: 'Select a template:',
-        options: Object.entries(availableTemplates).map(([key, template]) => ({
-            label: color.reset(template.color(template.name)),
-            value: key,
-            hint: template.description
-        }))
+        options: options
     });
 
     return template as string | symbol;
@@ -265,11 +319,13 @@ function isDirectoryEmpty(dirPath: string): boolean {
 async function createProjectFromTemplate(
     targetDir: string,
     templateType: string,
+    workingDir: string,
+    force: boolean,
     variables: TemplateVariables
 ): Promise<void> {
     const templatePath = resolve(__dirname, '../template', templateType);
     const targetPath =
-        targetDir === '.' ? process.cwd() : resolve(process.cwd(), targetDir);
+        targetDir === '.' ? workingDir : resolve(workingDir, targetDir);
 
     if (!existsSync(templatePath)) {
         throw new Error(`Template "${templateType}" not found`);
@@ -278,17 +334,19 @@ async function createProjectFromTemplate(
     // Handle directory existence and overwrite confirmation
     if (targetDir !== '.' && existsSync(targetPath)) {
         if (!isDirectoryEmpty(targetPath)) {
-            const shouldOverwrite = await confirm({
-                message: `Directory "${targetDir}" is not empty. Do you want to overwrite it?`
-            });
+            if (!force) {
+                const shouldOverwrite = await confirm({
+                    message: `Directory "${targetDir}" is not empty. Do you want to overwrite it?`
+                });
 
-            if (isCancel(shouldOverwrite)) {
-                cancel('Operation cancelled');
-                return;
-            }
+                if (isCancel(shouldOverwrite)) {
+                    cancel('Operation cancelled');
+                    return;
+                }
 
-            if (!shouldOverwrite) {
-                throw new Error('Operation cancelled by user');
+                if (!shouldOverwrite) {
+                    throw new Error('Operation cancelled by user');
+                }
             }
 
             // Files will be overwritten during copyTemplateFiles
@@ -299,18 +357,20 @@ async function createProjectFromTemplate(
 
     // Handle current directory case
     if (targetDir === '.' && !isDirectoryEmpty(targetPath)) {
-        const shouldOverwrite = await confirm({
-            message:
-                'Current directory is not empty. Do you want to overwrite existing files?'
-        });
+        if (!force) {
+            const shouldOverwrite = await confirm({
+                message:
+                    'Current directory is not empty. Do you want to overwrite existing files?'
+            });
 
-        if (isCancel(shouldOverwrite)) {
-            cancel('Operation cancelled');
-            return;
-        }
+            if (isCancel(shouldOverwrite)) {
+                cancel('Operation cancelled');
+                return;
+            }
 
-        if (!shouldOverwrite) {
-            throw new Error('Operation cancelled by user');
+            if (!shouldOverwrite) {
+                throw new Error('Operation cancelled by user');
+            }
         }
     }
 

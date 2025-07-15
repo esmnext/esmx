@@ -31,13 +31,17 @@ export interface ProjectNameResult {
  * 6. Input: '.'
  *    Output: folder -> `<cwd>` folder, `package.json#name` -> `<current-dir-name>`
  */
-export function formatProjectName(input: string): ProjectNameResult {
+export function formatProjectName(
+    input: string,
+    cwd?: string
+): ProjectNameResult {
     const targetDir = input.replace(/\/+$/g, '');
 
     let packageName: string;
     if (targetDir === '.') {
         // Use current directory name as package name
-        packageName = basename(process.cwd());
+        const workingDir = cwd || process.cwd();
+        packageName = basename(workingDir);
     } else if (targetDir.startsWith('@')) {
         packageName = targetDir;
     } else {

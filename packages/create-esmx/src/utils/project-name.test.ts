@@ -227,4 +227,119 @@ describe('project-name utilities', () => {
             expect(result.packageName).toBe('project');
         });
     });
+
+    describe('formatProjectName with cwd parameter', () => {
+        it('should use custom cwd when input is "."', () => {
+            // Arrange
+            const input = '.';
+            const customCwd = '/custom/working/directory';
+
+            // Act
+            const result: ProjectNameResult = formatProjectName(
+                input,
+                customCwd
+            );
+
+            // Assert
+            expect(result.targetDir).toBe('.');
+            expect(result.packageName).toBe('directory');
+        });
+
+        it('should fallback to process.cwd() when cwd is not provided', () => {
+            // Arrange
+            const input = '.';
+            const expectedPackageName = basename(process.cwd());
+
+            // Act
+            const result: ProjectNameResult = formatProjectName(input);
+
+            // Assert
+            expect(result.targetDir).toBe('.');
+            expect(result.packageName).toBe(expectedPackageName);
+        });
+
+        it('should ignore cwd parameter when input is not "."', () => {
+            // Arrange
+            const input = 'my-project';
+            const customCwd = '/custom/working/directory';
+
+            // Act
+            const result: ProjectNameResult = formatProjectName(
+                input,
+                customCwd
+            );
+
+            // Assert
+            expect(result.targetDir).toBe('my-project');
+            expect(result.packageName).toBe('my-project');
+        });
+
+        it('should handle scoped packages with custom cwd', () => {
+            // Arrange
+            const input = '@scope/package';
+            const customCwd = '/any/directory';
+
+            // Act
+            const result: ProjectNameResult = formatProjectName(
+                input,
+                customCwd
+            );
+
+            // Assert
+            expect(result.targetDir).toBe('@scope/package');
+            expect(result.packageName).toBe('@scope/package');
+        });
+
+        it('should handle nested paths with custom cwd', () => {
+            // Arrange
+            const input = 'org/team/project';
+            const customCwd = '/any/directory';
+
+            // Act
+            const result: ProjectNameResult = formatProjectName(
+                input,
+                customCwd
+            );
+
+            // Assert
+            expect(result.targetDir).toBe('org/team/project');
+            expect(result.packageName).toBe('project');
+        });
+
+        it('should handle Unix-style absolute paths in cwd', () => {
+            // Arrange
+            const input = '.';
+            const customCwd = '/home/user/projects/my-awesome-app';
+
+            // Act
+            const result: ProjectNameResult = formatProjectName(
+                input,
+                customCwd
+            );
+
+            // Assert
+            expect(result.targetDir).toBe('.');
+            expect(result.packageName).toBe('my-awesome-app');
+        });
+
+        it('should handle Windows-style absolute paths in cwd', () => {
+            // Arrange
+            const input = '.';
+            const customCwd = 'C:\\Users\\Developer\\Projects\\WindowsApp';
+
+            // Act
+            const result: ProjectNameResult = formatProjectName(
+                input,
+                customCwd
+            );
+
+            // Assert
+            expect(result.targetDir).toBe('.');
+            // On Unix systems, backslashes are treated as regular characters
+            // On Windows systems, basename would correctly extract 'WindowsApp'
+            // This test verifies the current behavior on the running platform
+            const expectedPackageName = basename(customCwd);
+            expect(result.packageName).toBe(expectedPackageName);
+        });
+    });
 });

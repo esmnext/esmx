@@ -413,4 +413,128 @@ describe('package-manager utilities', () => {
             });
         });
     });
+
+    describe('getCommand with userAgent parameter', () => {
+        beforeEach(() => {
+            // Clear environment variable to ensure parameter takes precedence
+            process.env.npm_config_user_agent = undefined;
+        });
+
+        it('should use provided userAgent over environment variable', () => {
+            // Arrange
+            process.env.npm_config_user_agent = 'npm/8.19.2 node/v18.12.0';
+            const customUserAgent =
+                'pnpm/7.14.0 npm/? node/v18.12.0 darwin x64';
+
+            // Act
+            const result = getCommand('install', customUserAgent);
+
+            // Assert
+            expect(result).toBe('pnpm install');
+        });
+
+        it('should detect pnpm from custom userAgent', () => {
+            // Arrange
+            const userAgent = 'pnpm/7.14.0 npm/? node/v18.12.0 darwin x64';
+
+            // Act
+            const installResult = getCommand('install', userAgent);
+            const devResult = getCommand('dev', userAgent);
+            const buildResult = getCommand('build', userAgent);
+
+            // Assert
+            expect(installResult).toBe('pnpm install');
+            expect(devResult).toBe('pnpm dev');
+            expect(buildResult).toBe('pnpm build');
+        });
+
+        it('should detect yarn from custom userAgent', () => {
+            // Arrange
+            const userAgent = 'yarn/1.22.19 npm/? node/v18.12.0 darwin x64';
+
+            // Act
+            const installResult = getCommand('install', userAgent);
+            const devResult = getCommand('dev', userAgent);
+            const buildResult = getCommand('build', userAgent);
+
+            // Assert
+            expect(installResult).toBe('yarn install');
+            expect(devResult).toBe('yarn dev');
+            expect(buildResult).toBe('yarn build');
+        });
+
+        it('should detect bun from custom userAgent', () => {
+            // Arrange
+            const userAgent = 'bun/0.6.0 bun/0.6.0 darwin x64';
+
+            // Act
+            const installResult = getCommand('install', userAgent);
+            const buildResult = getCommand('build', userAgent);
+            const buildTypeResult = getCommand('build:type', userAgent);
+
+            // Assert
+            expect(installResult).toBe('bun install');
+            expect(buildResult).toBe('bun run build');
+            expect(buildTypeResult).toBe('bun run build:type');
+        });
+
+        it('should default to npm when userAgent does not match known patterns', () => {
+            // Arrange
+            const userAgent = 'unknown-package-manager/1.0.0';
+
+            // Act
+            const result = getCommand('install', userAgent);
+
+            // Assert
+            expect(result).toBe('npm install');
+        });
+
+        it('should handle empty userAgent string', () => {
+            // Arrange
+            const userAgent = '';
+
+            // Act
+            const result = getCommand('install', userAgent);
+
+            // Assert
+            expect(result).toBe('npm install');
+        });
+
+        it('should fallback to environment variable when userAgent is undefined', () => {
+            // Arrange
+            process.env.npm_config_user_agent =
+                'yarn/1.22.19 npm/? node/v18.12.0';
+
+            // Act
+            const result = getCommand('install', undefined);
+
+            // Assert
+            expect(result).toBe('yarn install');
+        });
+
+        it('should handle case-sensitive package manager detection', () => {
+            // Arrange
+            const userAgent = 'PNPM/7.14.0 npm/? node/v18.12.0'; // uppercase
+
+            // Act
+            const result = getCommand('install', userAgent);
+
+            // Assert
+            expect(result).toBe('npm install'); // Should default to npm as it's case-sensitive
+        });
+
+        it('should test all command types with custom userAgent', () => {
+            // Arrange
+            const userAgent = 'pnpm/7.14.0 npm/? node/v18.12.0';
+
+            // Act & Assert
+            expect(getCommand('install', userAgent)).toBe('pnpm install');
+            expect(getCommand('dev', userAgent)).toBe('pnpm dev');
+            expect(getCommand('build', userAgent)).toBe('pnpm build');
+            expect(getCommand('start', userAgent)).toBe('pnpm start');
+            expect(getCommand('create', userAgent)).toBe('pnpm create esmx');
+            expect(getCommand('build:type', userAgent)).toBe('pnpm build:type');
+            expect(getCommand('lint:type', userAgent)).toBe('pnpm lint:type');
+        });
+    });
 });
