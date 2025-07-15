@@ -146,7 +146,7 @@ export async function createProject(): Promise<void> {
     console.log();
     intro(
         color.reset(
-            color.bold(color.blue('🚀 Welcome to Esmx Project Creator!'))
+            color.bold(color.yellow('🚀 Welcome to Esmx Project Creator!'))
         )
     );
 
