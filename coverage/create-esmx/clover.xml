@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1752630804122" clover="3.2.0">
-  <project timestamp="1752630804122" name="All files">
-    <metrics statements="361" coveredstatements="291" conditionals="65" coveredconditionals="51" methods="14" coveredmethods="13" elements="440" coveredelements="355" complexity="0" loc="361" ncloc="361" packages="2" files="5" classes="5"/>
+<coverage generated="1752631943843" clover="3.2.0">
+  <project timestamp="1752631943843" name="All files">
+    <metrics statements="360" coveredstatements="290" conditionals="65" coveredconditionals="52" methods="15" coveredmethods="14" elements="440" coveredelements="356" complexity="0" loc="360" ncloc="360" packages="2" files="6" classes="6"/>
     <package name="src">
-      <metrics statements="275" coveredstatements="205" conditionals="46" coveredconditionals="32" methods="10" coveredmethods="9"/>
+      <metrics statements="274" coveredstatements="204" conditionals="46" coveredconditionals="33" methods="11" coveredmethods="10"/>
+      <file name="cli.ts" path="/home/runner/work/esmx/esmx/packages/create-esmx/src/cli.ts">
+        <metrics statements="5" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
+        <line num="3" count="0" type="stmt"/>
+        <line num="5" count="0" type="stmt"/>
+        <line num="6" count="0" type="stmt"/>
+        <line num="7" count="0" type="stmt"/>
+        <line num="8" count="0" type="stmt"/>
+      </file>
       <file name="index.ts" path="/home/runner/work/esmx/esmx/packages/create-esmx/src/index.ts">
-        <metrics statements="275" coveredstatements="205" conditionals="46" coveredconditionals="32" methods="10" coveredmethods="9"/>
+        <metrics statements="269" coveredstatements="204" conditionals="45" coveredconditionals="32" methods="10" coveredmethods="9"/>
         <line num="3" count="1" type="stmt"/>
         <line num="11" count="1" type="stmt"/>
         <line num="12" count="1" type="stmt"/>
@@ -275,12 +283,6 @@
         <line num="381" count="242" type="stmt"/>
         <line num="382" count="66" type="stmt"/>
         <line num="384" count="1" type="stmt"/>
-        <line num="386" count="1" type="cond" truecount="0" falsecount="1"/>
-        <line num="387" count="0" type="stmt"/>
-        <line num="388" count="0" type="stmt"/>
-        <line num="389" count="0" type="stmt"/>
-        <line num="390" count="0" type="stmt"/>
-        <line num="391" count="0" type="stmt"/>
       </file>
     </package>
     <package name="src.utils">
