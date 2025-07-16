@@ -30,7 +30,7 @@
     });
     function isSameModule(hotUrl: string, originalUrl: string): boolean {
         const normalizedHotUrl = hotUrl
-            .replace(/\/__hot__\//, '/')
+            .replace(/\/__hot__\//, '/exports/')
             .replace(/\.\w+\.hot-update\.mjs$/, '.mjs');
         const normalizedOriginalUrl = originalUrl;
         return normalizedHotUrl === normalizedOriginalUrl;
