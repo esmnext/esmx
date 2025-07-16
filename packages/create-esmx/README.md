@@ -9,6 +9,15 @@
     <a href="https://github.com/esmnext/esmx/actions/workflows/build.yml">
       <img src="https://github.com/esmnext/esmx/actions/workflows/build.yml/badge.svg" alt="Build" />
     </a>
+    <a href="https://www.esmnext.com/coverage/">
+      <img src="https://img.shields.io/badge/coverage-live%20report-brightgreen" alt="Coverage Report" />
+    </a>
+    <a href="https://nodejs.org/">
+      <img src="https://img.shields.io/node/v/@esmx/core.svg" alt="node version" />
+    </a>
+    <a href="https://bundlephobia.com/package/create-esmx">
+      <img src="https://img.shields.io/bundlephobia/minzip/create-esmx" alt="size" />
+    </a>
   </div>
   
   <p>A scaffold tool for creating Esmx projects</p>
@@ -21,11 +30,11 @@
 ## Features
 
 - Interactive command-line interface
-- Multiple project templates
-- Full TypeScript support
-- Automatic project configuration
+- Support for multiple project templates
+- Complete TypeScript support
+- Automatic project structure configuration
 
-## Installation
+## Usage
 
 ```bash
 # Using npm
@@ -37,25 +46,6 @@ yarn create esmx my-project
 # Using pnpm
 pnpm create esmx my-project
 ```
-
-## Options
-
-```
-Usage:
-  create-esmx [project-name] [options]
-
-Options:
-  -t, --template <template>  Template to use (default: vue2)
-  -f, --force                Force overwrite existing directory
-  -h, --help                 Show help information
-  -v, --version              Show version number
-```
-
-## Available Templates
-
-Currently supported templates:
-
-- `vue2` - Vue 2 project template
 
 ## License
 

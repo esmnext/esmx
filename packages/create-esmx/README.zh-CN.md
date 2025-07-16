@@ -4,10 +4,19 @@
   
   <div>
     <a href="https://www.npmjs.com/package/create-esmx">
-      <img src="https://img.shields.io/npm/v/create-esmx.svg" alt="npm 版本" />
+      <img src="https://img.shields.io/npm/v/create-esmx.svg" alt="npm version" />
     </a>
     <a href="https://github.com/esmnext/esmx/actions/workflows/build.yml">
-      <img src="https://github.com/esmnext/esmx/actions/workflows/build.yml/badge.svg" alt="构建状态" />
+      <img src="https://github.com/esmnext/esmx/actions/workflows/build.yml/badge.svg" alt="Build" />
+    </a>
+    <a href="https://www.esmnext.com/coverage/">
+      <img src="https://img.shields.io/badge/coverage-live%20report-brightgreen" alt="Coverage Report" />
+    </a>
+    <a href="https://nodejs.org/">
+      <img src="https://img.shields.io/node/v/@esmx/core.svg" alt="node version" />
+    </a>
+    <a href="https://bundlephobia.com/package/create-esmx">
+      <img src="https://img.shields.io/bundlephobia/minzip/create-esmx" alt="size" />
     </a>
   </div>
   
@@ -37,25 +46,6 @@ yarn create esmx my-project
 # 使用 pnpm
 pnpm create esmx my-project
 ```
-
-## 命令选项
-
-```
-用法:
-  create-esmx [项目名称] [选项]
-
-选项:
-  -t, --template <模板>    使用的模板 (默认: vue2)
-  -f, --force              强制覆盖现有目录
-  -h, --help               显示帮助信息
-  -v, --version            显示版本号
-```
-
-## 支持的模板
-
-目前支持以下模板:
-
-- `vue2` - Vue 2 项目模板
 
 ## 许可证
 
