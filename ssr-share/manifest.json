@@ -23,8 +23,8 @@
     },
     "buildFiles": [
         "exports/src/store/index.01f5cb34.final.mjs",
-        "exports/src/entry.client.bfadf2d5.final.mjs",
-        "exports/src/utils/time.9bf1071f.final.mjs"
+        "exports/src/utils/time.9bf1071f.final.mjs",
+        "exports/src/entry.client.bfadf2d5.final.mjs"
     ],
     "chunks": {
         "ssr-share@src/entry.client.ts": {
