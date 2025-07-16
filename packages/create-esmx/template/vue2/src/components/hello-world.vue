@@ -28,11 +28,9 @@ const count = ref<number>(0);
 <style scoped>
 .card {
 	padding: 2em;
-	border: 1px solid var(--border-color);
 	border-radius: 12px;
 	margin: 2.5em 0;
 	background-color: var(--bg-card);
-	box-shadow: 0 4px 12px var(--shadow-color);
 }
 
 button {
