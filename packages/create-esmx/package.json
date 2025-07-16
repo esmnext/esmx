@@ -22,7 +22,7 @@
         "minimist": "^1.2.8"
     },
     "devDependencies": {
-        "@esmx/lint": "3.0.0-rc.33",
+        "@esmx/lint": "workspace:*",
         "@types/node": "^24.0.0",
         "@types/minimist": "^1.2.5",
         "stylelint": "16.21.0",
