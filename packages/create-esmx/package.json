@@ -1,6 +1,6 @@
 {
     "name": "create-esmx",
-    "version": "3.0.0-rc.33",
+    "version": "3.0.0-rc.34",
     "description": "A scaffold tool for creating Esmx projects",
     "type": "module",
     "private": false,
@@ -18,19 +18,19 @@
     },
     "dependencies": {
         "@clack/prompts": "^0.7.0",
-        "picocolors": "^1.0.0",
-        "minimist": "^1.2.8"
+        "minimist": "^1.2.8",
+        "picocolors": "^1.0.0"
     },
     "devDependencies": {
+        "@biomejs/biome": "1.9.4",
         "@esmx/lint": "workspace:*",
-        "@types/node": "^24.0.0",
         "@types/minimist": "^1.2.5",
+        "@types/node": "^24.0.0",
+        "@vitest/coverage-v8": "3.2.4",
         "stylelint": "16.21.0",
         "typescript": "5.8.3",
-        "vitest": "3.2.4",
-        "@vitest/coverage-v8": "3.2.4",
-        "@biomejs/biome": "1.9.4",
-        "unbuild": "3.5.0"
+        "unbuild": "3.5.0",
+        "vitest": "3.2.4"
     },
     "exports": {
         ".": {

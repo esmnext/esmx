@@ -608,8 +608,8 @@ importers:
         specifier: 1.9.4
         version: 1.9.4
       '@esmx/lint':
-        specifier: 3.0.0-rc.33
-        version: 3.0.0-rc.33(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.21.0(typescript@5.8.3))
+        specifier: workspace:*
+        version: link:../lint
       '@types/minimist':
         specifier: ^1.2.5
         version: 1.2.5
@@ -1267,11 +1267,6 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
-
-  '@esmx/lint@3.0.0-rc.33':
-    resolution: {integrity: sha512-lfVoOE6Z7D4TwG9+b8+82H8icUg5smtyzsAFEm5ayqPjdcN+B3QrB+Y897cGAQr4sFpdJiuK+aSP0buCxy7low==}
-    peerDependencies:
-      stylelint: '>=16'
 
   '@import-maps/resolve@2.0.0':
     resolution: {integrity: sha512-RwzRTpmrrS6Q1ZhQExwuxJGK1Wqhv4stt+OF2JzS+uawewpwNyU7EJL1WpBex7aDiiGLs4FsXGkfUBdYuX7xiQ==}
@@ -6170,19 +6165,6 @@ snapshots:
 
   '@esbuild/win32-x64@0.25.5':
     optional: true
-
-  '@esmx/lint@3.0.0-rc.33(postcss-html@1.8.0)(postcss@8.5.6)(stylelint@16.21.0(typescript@5.8.3))':
-    dependencies:
-      stylelint: 16.21.0(typescript@5.8.3)
-      stylelint-config-html: 1.1.0(postcss-html@1.8.0)(stylelint@16.21.0(typescript@5.8.3))
-      stylelint-config-recess-order: 5.1.1(stylelint@16.21.0(typescript@5.8.3))
-      stylelint-config-recommended-less: 3.0.1(postcss@8.5.6)(stylelint@16.21.0(typescript@5.8.3))
-      stylelint-config-recommended-vue: 1.6.0(postcss-html@1.8.0)(stylelint@16.21.0(typescript@5.8.3))
-      stylelint-config-standard: 38.0.0(stylelint@16.21.0(typescript@5.8.3))
-      stylelint-order: 7.0.0(stylelint@16.21.0(typescript@5.8.3))
-    transitivePeerDependencies:
-      - postcss
-      - postcss-html
 
   '@import-maps/resolve@2.0.0': {}
 
