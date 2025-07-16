@@ -382,10 +382,3 @@ function copyTemplateFiles(
 }
 
 export default createProject;
-
-if (import.meta.url === `file://${process.argv[1]}`) {
-    createProject().catch((error) => {
-        console.error('Error creating project:', error);
-        process.exit(1);
-    });
-}

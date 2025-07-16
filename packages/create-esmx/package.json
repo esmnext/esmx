@@ -5,7 +5,7 @@
     "type": "module",
     "private": false,
     "bin": {
-        "create-esmx": "./dist/index.mjs"
+        "create-esmx": "./dist/cli.mjs"
     },
     "template": "library-node",
     "scripts": {
