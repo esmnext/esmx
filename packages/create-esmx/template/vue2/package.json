@@ -8,7 +8,7 @@
         "dev": "esmx dev",
         "build": "esmx build",
         "preview": "esmx preview",
-        "start": "esmx start",
+        "start": "NODE_ENV=production node dist/index.mjs",
         "lint:type": "vue-tsc --noEmit",
         "build:type": "vue-tsc --declaration --emitDeclarationOnly --noEmit false --outDir dist/src && tsc-alias -p tsconfig.json --outDir dist/src"
     },

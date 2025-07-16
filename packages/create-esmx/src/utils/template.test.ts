@@ -170,7 +170,7 @@ Esmx version: {{esmxVersion}}`;
   "scripts": {
     "dev": "esmx dev",
     "build": "esmx build",
-    "start": "esmx start"
+    "start": "NODE_ENV=production node dist/index.mjs"
   },
   "dependencies": {
     "esmx": "{{esmxVersion}}"
