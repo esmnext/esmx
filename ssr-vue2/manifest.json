@@ -38,8 +38,8 @@
         }
     },
     "buildFiles": [
-        "exports/src/entry.client.cc635218.final.mjs",
         "chunks/356.ad57fc89.final.mjs",
+        "exports/src/entry.client.cc635218.final.mjs",
         "exports/src/store/music-store.a72d93b9.final.mjs",
         "chunks/356.7d1d4364.final.css",
         "images/sine-wave-notes.47e0c83d.final.svg",
