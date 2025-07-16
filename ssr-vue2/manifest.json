@@ -38,17 +38,17 @@
         }
     },
     "buildFiles": [
+        "exports/src/entry.client.cc635218.final.mjs",
         "chunks/356.ad57fc89.final.mjs",
         "exports/src/store/music-store.a72d93b9.final.mjs",
-        "exports/src/entry.client.cc635218.final.mjs",
         "chunks/356.7d1d4364.final.css",
         "images/sine-wave-notes.47e0c83d.final.svg",
         "exports/src/layout/index.ed0105a9.final.css",
         "exports/src/components/index.09621c38.final.mjs",
         "exports/src/components/index.2d57064f.final.css",
         "exports/src/routes.7eaeab22.final.css",
-        "exports/src/layout/index.ad7013ad.final.mjs",
-        "exports/src/routes.052e93c7.final.mjs"
+        "exports/src/routes.052e93c7.final.mjs",
+        "exports/src/layout/index.ad7013ad.final.mjs"
     ],
     "chunks": {
         "ssr-vue2@src/layout/index.ts": {
