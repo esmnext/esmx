@@ -1,0 +1,71 @@
+{
+    "name": "create-esmx",
+    "version": "3.0.0-rc.33",
+    "description": "A scaffold tool for creating Esmx projects",
+    "type": "module",
+    "private": false,
+    "bin": {
+        "create-esmx": "./dist/index.mjs"
+    },
+    "template": "library-node",
+    "scripts": {
+        "lint:css": "stylelint '**/*.{css,vue}' --fix --aei",
+        "lint:type": "tsc --noEmit",
+        "test": "vitest run --pass-with-no-tests",
+        "coverage": "vitest run --coverage --pass-with-no-tests",
+        "lint:js": "biome check --write --no-errors-on-unmatched",
+        "build": "unbuild"
+    },
+    "dependencies": {
+        "@clack/prompts": "^0.7.0",
+        "picocolors": "^1.0.0",
+        "minimist": "^1.2.8"
+    },
+    "devDependencies": {
+        "@esmx/lint": "3.0.0-rc.33",
+        "@types/node": "^24.0.0",
+        "@types/minimist": "^1.2.5",
+        "stylelint": "16.21.0",
+        "typescript": "5.8.3",
+        "vitest": "3.2.4",
+        "@vitest/coverage-v8": "3.2.4",
+        "@biomejs/biome": "1.9.4",
+        "unbuild": "3.5.0"
+    },
+    "exports": {
+        ".": {
+            "import": "./dist/index.mjs",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "module": "dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "lib",
+        "src",
+        "dist",
+        "*.mjs",
+        "template",
+        "public",
+        "bin"
+    ],
+    "keywords": [
+        "esmx",
+        "scaffold",
+        "template",
+        "vue",
+        "ssr",
+        "esm"
+    ],
+    "author": "Esmx Team",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/esmnext/esmx.git",
+        "directory": "packages/create-esmx"
+    },
+    "bugs": {
+        "url": "https://github.com/esmnext/esmx/issues"
+    },
+    "homepage": "https://github.com/esmnext/esmx#readme"
+}
