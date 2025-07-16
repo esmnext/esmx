@@ -60,7 +60,7 @@ Visit http://localhost:3000 to see the development environment.
 │   │   └── hello-world.vue # Example component with counter functionality
 │   ├── create-app.ts       # Vue instance creation
 │   ├── entry.client.ts     # Client-side entry
-│   ├── entry.node.ts       # Server-side rendering entry
+│   ├── entry.node.ts       # Node.js environment entry point
 │   └── entry.server.ts     # Server-side rendering functions
 ├── package.json
 ├── tsconfig.json
