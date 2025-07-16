@@ -1,7 +1,7 @@
 import type { Esmx } from '@esmx/core';
 import { createRspackHtmlApp, rspack } from '@esmx/rspack';
-import { VueLoaderPlugin as VueLoader2Plugin } from 'vue2-loader';
-import { VueLoaderPlugin as VueLoader3Plugin } from 'vue3-loader';
+import { VueLoaderPlugin as VueLoader2Plugin } from 'vue-loader-v15';
+import { VueLoaderPlugin as VueLoader3Plugin } from 'vue-loader-v17';
 import type { RspackVueAppOptions } from './vue';
 import { vue2Loader } from './vue2-loader';
 import { vue3Loader } from './vue3-loader';
@@ -48,8 +48,11 @@ export function createRspackVueApp(
             // 设置 vue-loader
             const vueRuleUse: rspack.RuleSetUse = [
                 {
-                    loader: new URL(import.meta.resolve(`vue${vueType}-loader`))
-                        .pathname,
+                    loader: new URL(
+                        import.meta.resolve(
+                            `vue-loader-v${vueType === '2' ? '15' : '17'}`
+                        )
+                    ).pathname,
                     options: {
                         ...options?.vueLoader,
                         experimentalInlineMatchResource: true,

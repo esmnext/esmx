@@ -58,8 +58,8 @@
     "dependencies": {
         "@esmx/rspack": "workspace:*",
         "vue-style-loader": "^4.1.3",
-        "vue2-loader": "npm:vue-loader@15.11.1",
-        "vue3-loader": "npm:vue-loader@^17.4.2"
+        "vue-loader-v15": "npm:vue-loader@15.11.1",
+        "vue-loader-v17": "npm:vue-loader@^17.4.2"
     },
     "devDependencies": {
         "@biomejs/biome": "1.9.4",
