@@ -21,7 +21,7 @@ export async function initEnvironment() {
     await cleanDirectories('all');
 
     log.info('Installing dependencies...');
-    await execCommand('pnpm i');
+    await execCommand('pnpm install --ignore-scripts');
 
     log.info('Building packages...');
     await execCommand('pnpm build:packages');
