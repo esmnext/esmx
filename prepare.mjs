@@ -6,7 +6,5 @@ const execAsync = promisify(exec);
 try {
     await execAsync('husky install');
 } catch (error) {
-    console.log(
-        `\x1b[33m[WARN]\x1b[0m Husky not found - skipping in production environment`
-    );
+    console.log(`\x1b[33m[WARN]\x1b[0m Husky not found`);
 }
