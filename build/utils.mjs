@@ -38,6 +38,11 @@ export async function execCommand(command, options = {}) {
         const { stdout, stderr } = await execAsync(command, execOptions);
         return { code: 0, stdout, stderr };
     } catch (error) {
+        log.error(`Command failed: ${command}`);
+        log.error(`Working directory: ${execOptions.cwd}`);
+        log.error(`Exit code: ${error.code}`);
+        if (error.stdout) log.error(`Stdout: ${error.stdout}`);
+        if (error.stderr) log.error(`Stderr: ${error.stderr}`);
         throw new Error(
             `Command failed with exit code ${error.code}: ${error.message}`
         );
