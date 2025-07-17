@@ -3,6 +3,7 @@ import { rm } from 'node:fs/promises';
 import { config } from '../config.mjs';
 import {
     cleanDirectories,
+    cleanNodeModules,
     execCommand,
     log,
     toDisplayPath
@@ -21,11 +22,14 @@ export async function initEnvironment() {
     await cleanDirectories('all');
 
     log.info('Installing dependencies...');
-    await execCommand('pnpm install --ignore-scripts');
+    await execCommand('pnpm i');
 
     log.info('Building packages...');
     await execCommand('pnpm build:packages');
 
+    log.info('Cleaning workspace node_modules and dist directories...');
+    await cleanNodeModules('all');
+
     log.info('Rebuilding workspace links...');
-    await execCommand('pnpm install --ignore-scripts');
+    await execCommand('pnpm i');
 }
