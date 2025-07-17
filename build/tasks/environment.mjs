@@ -30,6 +30,6 @@ export async function initEnvironment() {
     log.info('Cleaning workspace node_modules and dist directories...');
     await cleanNodeModules('all');
 
-    log.info('Rebuilding workspace links...');
+    log.info('Reinstalling dependencies after cleanup...');
     await execCommand('pnpm i');
 }

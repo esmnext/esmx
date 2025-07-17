@@ -21,22 +21,12 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node }}
+        cache: 'pnpm'
 
     - name: Setup pnpm
       uses: pnpm/action-setup@v2
       with:
         version: 10
-
-    - name: Setup pnpm cache
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.pnpm-store
-          $HOME/.pnpm-store
-          %AppData%\pnpm-store\v3
-        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-pnpm-store-
 
     - name: Build (Cross-platform Node.js)
       run: node ./build.mjs
