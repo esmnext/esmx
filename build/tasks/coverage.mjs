@@ -3,12 +3,11 @@ import {
     existsSync,
     mkdirSync,
     readFileSync,
-    readdirSync,
     writeFileSync
 } from 'node:fs';
 import { join } from 'node:path';
 import { config } from '../config.mjs';
-import { colors, log, toDisplayPath } from '../utils.mjs';
+import { colors, getPackagePaths, log, toDisplayPath } from '../utils.mjs';
 import { generateCoverageHTML } from './coverage-html.mjs';
 
 function ensureCoverageDir() {
@@ -17,30 +16,18 @@ function ensureCoverageDir() {
     }
 }
 
-function findPackagesWithCoverage() {
-    const packageDirs = readdirSync(config.packagesDir, { withFileTypes: true })
-        .filter((dirent) => dirent.isDirectory())
-        .map((dirent) => dirent.name);
+async function findPackagesWithCoverage() {
+    const packagePaths = await getPackagePaths('packages');
 
-    return packageDirs.filter((packageName) =>
-        existsSync(
-            join(
-                config.packagesDir,
-                packageName,
-                'coverage',
-                'coverage-final.json'
-            )
-        )
+    return packagePaths.filter((packagePath) =>
+        existsSync(join(packagePath, 'coverage', 'coverage-final.json'))
     );
 }
 
 function copyPackageCoverageReports(packagesWithCoverage) {
-    for (const packageName of packagesWithCoverage) {
-        const packageCoverageDir = join(
-            config.packagesDir,
-            packageName,
-            'coverage'
-        );
+    for (const packagePath of packagesWithCoverage) {
+        const packageName = packagePath.split('/').pop();
+        const packageCoverageDir = join(packagePath, 'coverage');
         const targetDir = join(config.coverageDir, packageName);
 
         if (!existsSync(targetDir)) {
@@ -145,7 +132,7 @@ export async function generateCoverage() {
 
     ensureCoverageDir();
 
-    const packagesWithCoverage = findPackagesWithCoverage();
+    const packagesWithCoverage = await findPackagesWithCoverage();
 
     if (packagesWithCoverage.length === 0) {
         log.warn(
@@ -156,9 +143,10 @@ export async function generateCoverage() {
 
     copyPackageCoverageReports(packagesWithCoverage);
 
-    const packageCoverageData = packagesWithCoverage.map(
-        calculatePackageCoverage
-    );
+    const packageCoverageData = packagesWithCoverage.map((packagePath) => {
+        const packageName = packagePath.split('/').pop();
+        return calculatePackageCoverage(packageName);
+    });
 
     const coverageIndexPath = generateIndexHtml(packageCoverageData);
 

@@ -1,17 +1,12 @@
 import { cpSync, existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { config } from '../config.mjs';
-import { execCommand, log, toDisplayPath } from '../utils.mjs';
+import { execCommand, getPackagePaths, log, toDisplayPath } from '../utils.mjs';
 
 async function findSSRDirectories() {
     log.info('Searching for projects with client builds...');
 
-    const { stdout } = await execCommand(
-        'pnpm -F "./examples/**" exec -- pwd',
-        { stdio: 'pipe', shell: true }
-    );
-
-    const projectPaths = stdout.trim().split('\n');
+    const projectPaths = await getPackagePaths('examples');
     const ssrDirs = [];
     for (const projectPath of projectPaths) {
         const clientPath = join(projectPath, 'dist', 'client');
