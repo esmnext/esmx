@@ -10,24 +10,19 @@ import { runTests } from './tasks/tests.mjs';
 import { log, toDisplayPath } from './utils.mjs';
 
 export async function cli() {
-    try {
-        log.info(`Running on: ${process.platform} ${process.arch}`);
-        log.info(`Root directory: ${toDisplayPath(config.rootDir)}`);
-        log.info(`Output directory: ${toDisplayPath(config.outDir)}`);
+    log.info(`Running on: ${process.platform} ${process.arch}`);
+    log.info(`Root directory: ${toDisplayPath(config.rootDir)}`);
+    log.info(`Output directory: ${toDisplayPath(config.outDir)}`);
 
-        await checkPrerequisites();
-        await initEnvironment();
+    await checkPrerequisites();
+    await initEnvironment();
 
-        await runTests();
-        await generateCoverage();
+    await runTests();
+    await generateCoverage();
 
-        await buildExamples();
-        await copyArtifacts();
-        await generateSitemap();
+    await buildExamples();
+    await copyArtifacts();
+    await generateSitemap();
 
-        displaySuccessMessage();
-    } catch (error) {
-        log.error(`Build failed: ${error.message}`);
-        process.exit(1);
-    }
+    displaySuccessMessage();
 }
