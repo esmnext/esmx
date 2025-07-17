@@ -117,13 +117,11 @@ export async function cleanDirectories(mode = 'all') {
         const distPath = join(projectPath, 'dist');
         const nodeModulesPath = join(projectPath, 'node_modules');
 
-        // 清理 dist 目录
         if (existsSync(distPath)) {
             await rm(distPath, { recursive: true, force: true });
             log.info(`Cleaned ${toDisplayPath(distPath)}`);
         }
 
-        // 清理 node_modules 目录
         if (existsSync(nodeModulesPath)) {
             await rm(nodeModulesPath, { recursive: true, force: true });
             log.info(`Cleaned ${toDisplayPath(nodeModulesPath)}`);
