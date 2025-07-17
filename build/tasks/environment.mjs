@@ -27,5 +27,5 @@ export async function initEnvironment() {
     await execCommand('pnpm build:packages');
 
     log.info('Rebuilding workspace links...');
-    await execCommand('pnpm install');
+    await execCommand('pnpm install --ignore-scripts');
 }
