@@ -9,28 +9,39 @@ export function calculateAverageCoverage(packages, metric) {
     return (total / validPackages.length).toFixed(2);
 }
 
-export function getCoverageClass(coverage) {
-    if (coverage === 'N/A') return 'coverage-low';
+function getCoverageLevel(coverage) {
+    if (coverage === 'N/A') return 'error';
     const num = Number.parseFloat(coverage);
-    if (num >= 80) return 'coverage-high';
-    if (num >= 60) return 'coverage-medium';
-    return 'coverage-low';
+    if (num >= 80) return 'high';
+    if (num >= 60) return 'medium';
+    return 'low';
+}
+
+export function getCoverageClass(coverage) {
+    const level = getCoverageLevel(coverage);
+    return `coverage-${level === 'error' ? 'low' : level}`;
 }
 
 export function getStatusBadgeClass(coverage) {
-    if (coverage === 'N/A') return 'badge-danger';
-    const num = Number.parseFloat(coverage);
-    if (num >= 80) return 'badge-success';
-    if (num >= 60) return 'badge-warning';
-    return 'badge-danger';
+    const level = getCoverageLevel(coverage);
+    const mapping = {
+        high: 'badge-success',
+        medium: 'badge-warning',
+        low: 'badge-danger',
+        error: 'badge-danger'
+    };
+    return mapping[level];
 }
 
 export function getStatusText(coverage) {
-    if (coverage === 'N/A') return 'Error';
-    const num = Number.parseFloat(coverage);
-    if (num >= 80) return 'Good';
-    if (num >= 60) return 'Fair';
-    return 'Poor';
+    const level = getCoverageLevel(coverage);
+    const mapping = {
+        high: 'Good',
+        medium: 'Fair',
+        low: 'Poor',
+        error: 'Error'
+    };
+    return mapping[level];
 }
 
 export function generateCoverageHTML(packageCoverageData) {

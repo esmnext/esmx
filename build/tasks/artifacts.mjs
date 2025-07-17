@@ -1,76 +1,62 @@
-import { cpSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { config } from '../config.mjs';
-import { log, toDisplayPath } from '../utils.mjs';
+import { execCommand, log, toDisplayPath } from '../utils.mjs';
 
-function findSSRDirectories(baseDir) {
-    try {
-        const ssrDirs = [];
+async function findSSRDirectories() {
+    log.info('Searching for projects with client builds...');
 
-        if (!existsSync(baseDir)) {
-            log.warn(`Base directory not found: ${toDisplayPath(baseDir)}`);
-            return ssrDirs;
-        }
+    const { stdout } = await execCommand(
+        'pnpm -F "./examples/**" exec -- pwd',
+        { stdio: 'pipe', shell: true }
+    );
 
-        const entries = readdirSync(baseDir, { withFileTypes: true });
+    const projectPaths = stdout.trim().split('\n');
+    const ssrDirs = [];
+    for (const projectPath of projectPaths) {
+        const clientPath = join(projectPath, 'dist', 'client');
+        if (!existsSync(clientPath)) continue;
 
-        for (const entry of entries) {
-            if (!entry.isDirectory()) continue;
-            if (entry.name === 'router-demo') {
-                ssrDirs.push(...findSSRDirectories(join(baseDir, entry.name)));
-            } else if (
-                ['ssr-', 'router-demo'].some((s) => entry.name.startsWith(s))
-            ) {
-                const clientPath = join(baseDir, entry.name, 'dist', 'client');
-                if (existsSync(clientPath)) {
-                    ssrDirs.push({
-                        name: entry.name,
-                        path: clientPath
-                    });
-                }
-            }
-        }
+        const packageJsonPath = join(projectPath, 'package.json');
+        if (!existsSync(packageJsonPath)) continue;
 
-        return ssrDirs;
-    } catch (error) {
-        log.error(
-            `Failed to find SSR directories in ${toDisplayPath(baseDir)}: ${error.message}`
-        );
-        throw error; // Re-throw to ensure non-zero exit
+        const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
+        if (!packageJson.name) continue;
+
+        ssrDirs.push({ name: packageJson.name, path: clientPath });
+        log.info(`Found client build in ${toDisplayPath(clientPath)}`);
     }
+
+    return ssrDirs;
 }
 
 export async function copyArtifacts() {
-    try {
-        log.info('Copying build artifacts...');
+    log.info('Copying build artifacts...');
 
-        // Create dist directory
-        if (!existsSync(config.outDir)) {
-            mkdirSync(config.outDir, { recursive: true });
-        }
+    if (!existsSync(config.outDir)) {
+        mkdirSync(config.outDir, { recursive: true });
+    }
 
-        // Copy SSR examples using native Node.js APIs
-        const ssrDirs = findSSRDirectories(config.examplesDir);
+    const ssrDirs = await findSSRDirectories();
 
-        for (const { name, path } of ssrDirs) {
-            const targetDir = join(config.outDir, name);
-            mkdirSync(targetDir, { recursive: true });
-            cpSync(path, targetDir, { recursive: true });
-            log.info(
-                `Copied ${toDisplayPath(path)} to ${toDisplayPath(targetDir)}`
-            );
-        }
+    if (ssrDirs.length === 0) {
+        log.warn('No client builds found to copy');
+    }
 
-        // Copy docs
-        const docsPath = join(config.examplesDir, 'docs/dist/client');
-        if (existsSync(docsPath)) {
-            cpSync(docsPath, config.outDir, { recursive: true });
-            log.info(
-                `Copied ${toDisplayPath(docsPath)} to ${toDisplayPath(config.outDir)}`
-            );
-        }
-    } catch (error) {
-        log.error(`Artifact copying failed: ${error.message}`);
-        throw error; // Re-throw to ensure non-zero exit
+    for (const { name, path } of ssrDirs) {
+        const targetDir = join(config.outDir, name);
+        mkdirSync(targetDir, { recursive: true });
+        cpSync(path, targetDir, { recursive: true });
+        log.info(
+            `Copied ${toDisplayPath(path)} to ${toDisplayPath(targetDir)}`
+        );
+    }
+
+    const docsPath = join(config.examplesDir, 'docs/dist/client');
+    if (existsSync(docsPath)) {
+        cpSync(docsPath, config.outDir, { recursive: true });
+        log.info(
+            `Copied ${toDisplayPath(docsPath)} to ${toDisplayPath(config.outDir)}`
+        );
     }
 }

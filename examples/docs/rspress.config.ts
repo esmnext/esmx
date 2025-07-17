@@ -4,6 +4,9 @@ import { defineConfig } from 'rspress/config';
 
 export default defineConfig({
     root: path.join(__dirname, 'src'),
+    route: {
+        cleanUrls: true
+    },
     outDir:
         process.env.NODE_ENV === 'production'
             ? path.join(__dirname, 'dist/client')

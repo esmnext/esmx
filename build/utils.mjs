@@ -1,5 +1,7 @@
-import { execSync, spawn } from 'node:child_process';
+import { exec, execSync } from 'node:child_process';
 import { relative } from 'node:path';
+import { promisify } from 'node:util';
+import { config } from './config.mjs';
 
 export const colors = {
     red: '\x1b[31m',
@@ -21,39 +23,36 @@ export const log = {
         console.log(`${colors.green}${colors.bold}${msg}${colors.reset}`)
 };
 
+const execAsync = promisify(exec);
+
+export async function execCommand(command, options = {}) {
+    const defaultOptions = {
+        shell: true,
+        cwd: config.rootDir
+    };
+    const execOptions = { ...defaultOptions, ...options };
+
+    try {
+        const { stdout, stderr } = await execAsync(command, execOptions);
+        return { code: 0, stdout, stderr };
+    } catch (error) {
+        throw new Error(
+            `Command failed with exit code ${error.code}: ${error.message}`
+        );
+    }
+}
+
 export function commandExists(command) {
     try {
-        execSync(
-            `${process.platform === 'win32' ? 'where' : 'which'} ${command}`,
-            { stdio: 'ignore' }
-        );
+        const checkCmd = process.platform === 'win32' ? 'where' : 'which';
+        execSync(`${checkCmd} ${command}`, { stdio: 'ignore' });
         return true;
     } catch {
         return false;
     }
 }
 
-export function execCommand(command, args = [], options = {}) {
-    return new Promise((resolve, reject) => {
-        const child = spawn(command, args, {
-            stdio: 'inherit',
-            shell: true,
-            ...options
-        });
-
-        child.on('close', (code) => {
-            if (code === 0) {
-                resolve(code);
-            } else {
-                reject(new Error(`Command failed with exit code ${code}`));
-            }
-        });
-
-        child.on('error', reject);
-    });
-}
-
-export function toDisplayPath(absolutePath, rootDir = process.cwd()) {
+export function toDisplayPath(absolutePath, rootDir = config.rootDir) {
     const relativePath = relative(rootDir, absolutePath);
-    return relativePath || '.'; // Return '.' if the path is the root directory itself
+    return relativePath || '.';
 }
