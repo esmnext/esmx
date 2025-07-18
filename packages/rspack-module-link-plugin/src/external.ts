@@ -106,7 +106,7 @@ export function initExternal(
             const resolveFunc = data.getResolve();
             return new Promise<string | null>((resolve) => {
                 resolveFunc(context, request, (err, res) => {
-                    resolve(res ?? null);
+                    resolve(typeof res === 'string' ? res : null);
                 });
             });
         };
