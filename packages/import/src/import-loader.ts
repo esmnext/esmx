@@ -12,7 +12,7 @@ let registered = '';
 
 export function createLoaderImport(baseURL: URL, importMap: ImportMap = {}) {
     if (!registered) {
-        module.register<Data>(fileURLToPath(import.meta.url), {
+        module.register<Data>(import.meta.url, {
             parentURL: baseURL,
             data: {
                 baseURL: baseURL.href,
