@@ -36,6 +36,7 @@ export async function execCommand(command, options = {}) {
 
     try {
         const { stdout, stderr } = await execAsync(command, execOptions);
+        log.error(stdout);
         return { code: 0, stdout, stderr };
     } catch (error) {
         log.error(`Command failed: ${command}`);
