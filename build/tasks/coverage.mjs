@@ -105,7 +105,7 @@ function generateIndexHtml(packageCoverageData) {
 
 function displayCoverageSummary(coverageIndexPath) {
     log.success(
-        `✅ Coverage index generated: ${toDisplayPath(coverageIndexPath)}`
+        `Coverage index generated: ${toDisplayPath(coverageIndexPath)}`
     );
 
     console.log('');

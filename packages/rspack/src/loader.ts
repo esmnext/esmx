@@ -1,5 +1,7 @@
+import { fileURLToPath } from 'node:url';
+
 function resolve(name: string) {
-    return new URL(import.meta.resolve(name)).pathname;
+    return fileURLToPath(import.meta.resolve(name));
 }
 
 export const RSPACK_LOADER = {

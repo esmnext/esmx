@@ -5,5 +5,5 @@ export async function runTests() {
 
     await execCommand('pnpm -r test --coverage --run');
 
-    log.success('✅ All tests passed with coverage reports generated!');
+    log.success('All tests passed with coverage reports generated!');
 }

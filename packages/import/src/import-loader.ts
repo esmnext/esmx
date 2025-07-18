@@ -47,10 +47,8 @@ export function resolve(
     context: Record<string, any>,
     nextResolve: Function
 ) {
-    console.log('>>>>>>>>>>>>11', specifier, context.parentURL);
     const scriptURL = new URL(context.parentURL);
     const result = IM.resolve(specifier, loaderParsedImportMap, scriptURL);
-    console.log('>>>>>>>>>>>>22', specifier, result);
     if (result.matched && result.resolvedImport) {
         return nextResolve(result.resolvedImport.href);
     }

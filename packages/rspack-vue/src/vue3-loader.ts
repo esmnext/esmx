@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import type { rspack } from '@esmx/rspack';
 
 const ADD_IMPORT = `
@@ -20,5 +21,4 @@ export default function (this: rspack.LoaderContext, text: string) {
     return text + ADD_IMPORT;
 }
 
-export const vue3Loader = new URL(import.meta.resolve(import.meta.url))
-    .pathname;
+export const vue3Loader = fileURLToPath(import.meta.resolve(import.meta.url));

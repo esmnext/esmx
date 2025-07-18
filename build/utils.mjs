@@ -18,11 +18,10 @@ export const colors = {
 };
 
 export const log = {
-    info: (msg) => console.log(`${colors.green}[INFO]${colors.reset} ${msg}`),
-    warn: (msg) => console.log(`${colors.yellow}[WARN]${colors.reset} ${msg}`),
-    error: (msg) => console.log(`${colors.red}[ERROR]${colors.reset} ${msg}`),
-    success: (msg) =>
-        console.log(`${colors.green}${colors.bold}${msg}${colors.reset}`)
+    info: (msg) => console.log(`🔵 ${msg}`),
+    warn: (msg) => console.log(`🟡 ${msg}`),
+    error: (msg) => console.log(`🔴 ${msg}`),
+    success: (msg) => console.log(`🟢 ${msg}`)
 };
 
 const execAsync = promisify(exec);
@@ -36,7 +35,7 @@ export async function execCommand(command, options = {}) {
 
     try {
         const { stdout, stderr } = await execAsync(command, execOptions);
-        console.log(stdout);
+        log.success(`${colors.cyan}${command}${colors.reset}`);
         return { code: 0, stdout, stderr };
     } catch (error) {
         log.error(`Command failed: ${command}`);

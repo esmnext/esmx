@@ -134,7 +134,7 @@ function processHtmlLinks(htmlFiles) {
 
     if (processedCount > 0) {
         log.success(
-            `✅ Processed ${processedCount} HTML files to remove .html extensions from links`
+            `Processed ${processedCount} HTML files to remove .html extensions from links`
         );
     } else {
         log.info('No HTML files needed processing');
@@ -169,5 +169,5 @@ export async function generateSitemap() {
 
     writeFileSync(sitemapPath, sitemap, 'utf8');
 
-    log.success(`✅ Sitemap generated: ${toDisplayPath(sitemapPath)}`);
+    log.success(`Sitemap generated: ${toDisplayPath(sitemapPath)}`);
 }
