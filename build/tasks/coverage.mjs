@@ -116,7 +116,7 @@ function displayCoverageSummary(coverageIndexPath) {
         `${colors.cyan}Coverage reports available in: ${toDisplayPath(config.coverageDir)}${colors.reset}`
     );
     console.log(
-        `${colors.cyan}View main coverage report: https://www.esmnext.com/coverage/${colors.reset}`
+        `${colors.cyan}View main coverage report: ${config.coverageUrl}${colors.reset}`
     );
     console.log(
         `${colors.cyan}Local coverage reports: ${toDisplayPath(join(config.coverageDir, 'index.html'))}${colors.reset}`

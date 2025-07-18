@@ -152,7 +152,7 @@ export async function generateSitemap() {
         return;
     }
 
-    const baseUrl = 'https://www.esmnext.com';
+    const baseUrl = config.baseUrl;
     const htmlFiles = findAllHtmlFiles(distDir, distDir);
 
     if (htmlFiles.length === 0) {

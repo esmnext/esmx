@@ -8,5 +8,9 @@ export const config = {
     packagesDir: resolve(rootDir, 'packages'),
     examplesDir: resolve(rootDir, 'examples'),
     nodeModulesDir: resolve(rootDir, 'node_modules'),
-    coverageDir: resolve(rootDir, 'dist', 'coverage')
+    coverageDir: resolve(rootDir, 'dist', 'coverage'),
+
+    // URLs
+    baseUrl: 'https://www.esmnext.com',
+    coverageUrl: 'https://www.esmnext.com/coverage/'
 };

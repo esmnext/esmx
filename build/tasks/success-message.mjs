@@ -96,7 +96,7 @@ export function displaySuccessMessage() {
         `█   🎯 ARTIFACTS: COPIED TO ${toDisplayPath(config.outDir)}                                           █`
     );
     console.log(
-        `█   📊 COVERAGE: REPORTS AT https://www.esmnext.com/coverage/              █`
+        `█   📊 COVERAGE: REPORTS AT ${config.coverageUrl}              █`
     );
     console.log(
         '█   🔥 STATUS: READY TO DOMINATE THE ESM UNIVERSE!                         █'
