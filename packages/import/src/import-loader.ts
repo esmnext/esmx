@@ -12,7 +12,7 @@ let registered = '';
 
 export function createLoaderImport(baseURL: URL, importMap: ImportMap = {}) {
     if (!registered) {
-        module.register<Data>(import.meta.url, {
+        module.register<Data>(fileURLToPath(import.meta.url), {
             parentURL: baseURL,
             data: {
                 baseURL: baseURL.href,
@@ -47,39 +47,12 @@ export function resolve(
     context: Record<string, any>,
     nextResolve: Function
 ) {
+    console.log('>>>>>>>>>>>>11', specifier, context.parentURL);
     const scriptURL = new URL(context.parentURL);
     const result = IM.resolve(specifier, loaderParsedImportMap, scriptURL);
-
-    // Windows-compatible debug logging
-    const debugScriptPath =
-        scriptURL.protocol === 'file:'
-            ? fileURLToPath(scriptURL)
-            : scriptURL.href;
-
+    console.log('>>>>>>>>>>>>22', specifier, result);
     if (result.matched && result.resolvedImport) {
-        const debugResultPath =
-            result.resolvedImport.protocol === 'file:'
-                ? fileURLToPath(result.resolvedImport)
-                : result.resolvedImport.href;
-
-        console.log('Import resolved:', {
-            specifier,
-            from: debugScriptPath,
-            to: debugResultPath
-        });
         return nextResolve(result.resolvedImport.href);
     }
-
-    const debugTarget = new URL(specifier, scriptURL);
-    const debugTargetPath =
-        debugTarget.protocol === 'file:'
-            ? fileURLToPath(debugTarget)
-            : debugTarget.href;
-
-    console.log('Import passthrough:', {
-        specifier,
-        from: debugScriptPath,
-        to: debugTargetPath
-    });
     return nextResolve(specifier, context);
 }

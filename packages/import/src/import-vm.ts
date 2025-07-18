@@ -1,7 +1,6 @@
 import fs from 'node:fs';
 import { isBuiltin } from 'node:module';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
 import IM from '@import-maps/resolve';
 import { CircularDependencyError, FileReadError } from './error';
@@ -41,11 +40,10 @@ export function createVmImport(baseURL: URL, importMap: ImportMap = {}) {
             filename = import.meta.resolve(specifier, parent);
         }
         const url = new URL(filename);
-        const filePath = fileURLToPath(url);
         return {
             filename,
             url,
-            pathname: filePath
+            pathname: url.pathname
         };
     };
     async function moduleLinker(
