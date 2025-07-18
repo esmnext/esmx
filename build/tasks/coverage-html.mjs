@@ -1,3 +1,5 @@
+import { config } from '../config.mjs';
+
 export function calculateAverageCoverage(packages, metric) {
     const validPackages = packages.filter((pkg) => pkg[metric] !== 'N/A');
     if (validPackages.length === 0) return '0.00';

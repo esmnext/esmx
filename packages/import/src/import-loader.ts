@@ -49,9 +49,37 @@ export function resolve(
 ) {
     const scriptURL = new URL(context.parentURL);
     const result = IM.resolve(specifier, loaderParsedImportMap, scriptURL);
-    console.log('>>>>>>>>>>>>', specifier, scriptURL, result);
+
+    // Windows-compatible debug logging
+    const debugScriptPath =
+        scriptURL.protocol === 'file:'
+            ? fileURLToPath(scriptURL)
+            : scriptURL.href;
+
     if (result.matched && result.resolvedImport) {
+        const debugResultPath =
+            result.resolvedImport.protocol === 'file:'
+                ? fileURLToPath(result.resolvedImport)
+                : result.resolvedImport.href;
+
+        console.log('Import resolved:', {
+            specifier,
+            from: debugScriptPath,
+            to: debugResultPath
+        });
         return nextResolve(result.resolvedImport.href);
     }
+
+    const debugTarget = new URL(specifier, scriptURL);
+    const debugTargetPath =
+        debugTarget.protocol === 'file:'
+            ? fileURLToPath(debugTarget)
+            : debugTarget.href;
+
+    console.log('Import passthrough:', {
+        specifier,
+        from: debugScriptPath,
+        to: debugTargetPath
+    });
     return nextResolve(specifier, context);
 }
