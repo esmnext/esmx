@@ -49,7 +49,6 @@ export function resolve(
 ) {
     const scriptURL = new URL(context.parentURL);
     const result = IM.resolve(specifier, loaderParsedImportMap, scriptURL);
-
     if (result.matched && result.resolvedImport) {
         return nextResolve(result.resolvedImport.href);
     }

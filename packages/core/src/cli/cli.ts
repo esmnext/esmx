@@ -83,8 +83,8 @@ function exit(ok: boolean) {
     }
 }
 
-// 支持 TS 文件不需要编写 .ts 后缀。
-module.register(fileURLToPath(import.meta.url), {
+// Support TS files without .ts suffix.
+module.register(import.meta.url, {
     parentURL: import.meta.url
 });
 

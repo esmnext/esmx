@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import type { rspack } from '@esmx/rspack';
 const FIX_ESM = `api.install(require('vue').default)`;
 const ADD_IMPORT = `
@@ -24,5 +25,4 @@ export default function (this: rspack.LoaderContext, text: string) {
     return text;
 }
 
-export const vue2Loader = new URL(import.meta.resolve(import.meta.url))
-    .pathname;
+export const vue2Loader = fileURLToPath(import.meta.resolve(import.meta.url));
