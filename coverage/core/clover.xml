@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1752655524021" clover="3.2.0">
-  <project timestamp="1752655524021" name="All files">
-    <metrics statements="904" coveredstatements="309" conditionals="77" coveredconditionals="74" methods="69" coveredmethods="17" elements="1050" coveredelements="400" complexity="0" loc="904" ncloc="904" packages="3" files="15" classes="15"/>
+<coverage generated="1752830795986" clover="3.2.0">
+  <project timestamp="1752830795986" name="All files">
+    <metrics statements="903" coveredstatements="309" conditionals="77" coveredconditionals="74" methods="69" coveredmethods="17" elements="1049" coveredelements="400" complexity="0" loc="903" ncloc="903" packages="3" files="15" classes="15"/>
     <package name="src">
       <metrics statements="636" coveredstatements="210" conditionals="44" coveredconditionals="42" methods="56" coveredmethods="9"/>
       <file name="app.ts" path="/home/runner/work/esmx/esmx/packages/core/src/app.ts">
@@ -663,12 +663,11 @@
       </file>
     </package>
     <package name="src.cli">
-      <metrics statements="92" coveredstatements="0" conditionals="2" coveredconditionals="1" methods="2" coveredmethods="1"/>
+      <metrics statements="91" coveredstatements="0" conditionals="2" coveredconditionals="1" methods="2" coveredmethods="1"/>
       <file name="cli.ts" path="/home/runner/work/esmx/esmx/packages/core/src/cli/cli.ts">
-        <metrics statements="85" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <metrics statements="84" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="2" count="0" type="stmt"/>
-        <line num="3" count="0" type="stmt"/>
         <line num="4" count="0" type="stmt"/>
         <line num="5" count="0" type="stmt"/>
         <line num="7" count="0" type="stmt"/>
