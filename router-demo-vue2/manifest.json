@@ -5,7 +5,7 @@
         "src/entry.client": {
             "name": "src/entry.client",
             "rewrite": true,
-            "file": "exports/src/entry.client.4c1591c6.final.mjs",
+            "file": "exports/src/entry.client.27f2e711.final.mjs",
             "identifier": "router-demo-vue2/src/entry.client"
         },
         "vue": {
@@ -28,13 +28,13 @@
         }
     },
     "buildFiles": [
-        "chunks/90.b76aaddd.final.mjs",
+        "chunks/680.769d9c00.final.mjs",
         "exports/@esmx/router-vue.0a731974.final.mjs",
         "exports/vue.389c4cab.final.mjs",
-        "exports/src/entry.client.4c1591c6.final.mjs",
-        "chunks/90.cc8fbaa2.final.css",
         "exports/src/entry.client.0c6e4813.final.css",
-        "exports/@esmx/router.567d82e7.final.mjs"
+        "exports/src/entry.client.27f2e711.final.mjs",
+        "exports/@esmx/router.567d82e7.final.mjs",
+        "chunks/680.cc8fbaa2.final.css"
     ],
     "chunks": {
         "router-demo-vue2@../../packages/router/dist/index.mjs": {
@@ -72,7 +72,7 @@
         },
         "router-demo-vue2@src/entry.client.ts": {
             "name": "router-demo-vue2@src/entry.client.ts",
-            "js": "exports/src/entry.client.4c1591c6.final.mjs",
+            "js": "exports/src/entry.client.27f2e711.final.mjs",
             "css": [
                 "exports/src/entry.client.0c6e4813.final.css"
             ],
@@ -85,9 +85,9 @@
         },
         "router-demo-vue2@src/views/not-found.vue": {
             "name": "router-demo-vue2@src/views/not-found.vue",
-            "js": "chunks/90.b76aaddd.final.mjs",
+            "js": "chunks/680.769d9c00.final.mjs",
             "css": [
-                "chunks/90.cc8fbaa2.final.css"
+                "chunks/680.cc8fbaa2.final.css"
             ],
             "resources": [],
             "sizes": {
