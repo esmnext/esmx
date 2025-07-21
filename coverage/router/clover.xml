@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1753090216272" clover="3.2.0">
-  <project timestamp="1753090216272" name="All files">
+<coverage generated="1753090392026" clover="3.2.0">
+  <project timestamp="1753090392026" name="All files">
     <metrics statements="1617" coveredstatements="1454" conditionals="529" coveredconditionals="507" methods="139" coveredmethods="124" elements="2285" coveredelements="2085" complexity="0" loc="1617" ncloc="1617" packages="1" files="15" classes="15"/>
     <file name="error.ts" path="/home/runner/work/esmx/esmx/packages/router/src/error.ts">
       <metrics statements="74" coveredstatements="66" conditionals="11" coveredconditionals="10" methods="9" coveredmethods="8"/>
