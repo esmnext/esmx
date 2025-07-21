@@ -11,10 +11,25 @@ async function getSrcOptions(): Promise<EsmxOptions> {
     );
 }
 
+async function getDistOptions(): Promise<EsmxOptions> {
+    try {
+        return import(
+            resolveImportPath(process.cwd(), './dist/index.mjs')
+        ).then((m) => m.default);
+    } catch (e) {
+        throw new Error(
+            `Failed to load configuration from dist/index.mjs. Please make sure you have run 'esmx build' first.\n${e}`
+        );
+    }
+}
+
 export async function cli(command: string) {
     console.log(`🔥 ${styleText('yellow', 'Esmx')} v${pkg.version}
     `);
-    if (command !== COMMAND.dev) {
+    if (
+        command !== COMMAND.dev &&
+        typeof process.env.NODE_ENV === 'undefined'
+    ) {
         process.env.NODE_ENV = 'production';
     }
     let esmx: Esmx | null;
@@ -29,9 +44,13 @@ export async function cli(command: string) {
             opts = null;
             break;
         case COMMAND.start:
-            throw new Error(
-                `Please use 'NODE_ENV=production node dist/index.mjs' to run the built program`
-            );
+            opts = await getDistOptions();
+            esmx = new Esmx(opts);
+            exit(await esmx.init(COMMAND.start));
+
+            esmx = null;
+            opts = null;
+            break;
         case COMMAND.build:
             opts = await getSrcOptions();
             esmx = new Esmx(opts);

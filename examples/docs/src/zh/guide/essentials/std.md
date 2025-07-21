@@ -81,7 +81,7 @@ Node.js 服务器入口文件负责：
         "build:ssr": "esmx build",
         "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src",
         "preview": "esmx preview",
-        "start": "NODE_ENV=production node dist/index.mjs"
+        "start": "esmx start"
     }
 }
 ```

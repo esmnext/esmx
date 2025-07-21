@@ -44,7 +44,7 @@ head:
     "build": "npm run build:dts && npm run build:ssr",
     "build:ssr": "esmx build",
     "preview": "esmx preview",
-    "start": "NODE_ENV=production node dist/index.mjs",
+    "start": "esmx start",
     "build:dts": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/src"
   },
   "dependencies": {
