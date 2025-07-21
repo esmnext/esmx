@@ -3,7 +3,7 @@
  * @description 负责创建和配置 Vue 应用实例
  */
 
-import { Router } from '@esmx/router';
+import { Router, RouterInstance } from '@esmx/router';
 import { RouterPlugin, RouterView, useProvideRouter } from '@esmx/router-vue';
 import Vue from 'vue';
 import { routes } from './routes';
