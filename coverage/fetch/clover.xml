@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1753071011893" clover="3.2.0">
-  <project timestamp="1753071011893" name="All files">
+<coverage generated="1753078215967" clover="3.2.0">
+  <project timestamp="1753078215968" name="All files">
     <metrics statements="384" coveredstatements="82" conditionals="13" coveredconditionals="6" methods="12" coveredmethods="2" elements="409" coveredelements="90" complexity="0" loc="384" ncloc="384" packages="1" files="5" classes="5"/>
     <file name="fetch-pkg.ts" path="/home/runner/work/esmx/esmx/packages/fetch/src/fetch-pkg.ts">
       <metrics statements="198" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
