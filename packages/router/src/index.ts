@@ -52,18 +52,17 @@ export {
 
 // =================== Re-exporting deprecated types ===================
 
-// Cannot propagate deprecated JSDoc when re-export due to TypeScript bug: https://github.com/microsoft/TypeScript/issues/53960
-// export type {
-//     /** @deprecated Use `Router` directly instead of `RouterInstance`. */
-//     Router as RouterInstance
-// } from './router';
-
 import type { Router } from './router';
+import type { Route, RouteLocation, RouteLocationInput } from './types';
+
 /** @deprecated Use `Router` directly instead of `RouterInstance`. */
 export type RouterInstance = Router;
 
-import type { Route, RouteLocationInput } from './types';
 /** @deprecated Use `RouteLocationInput` directly instead of `RouterRawLocation`. */
 export type RouterRawLocation = RouteLocationInput;
-/** @deprecated Use `Route` directly instead of `RouterLocation`. */
-export type RouterLocation = Route;
+
+/** @deprecated Use `RouteLocation` directly instead of `RouterLocation`. */
+export type RouterLocation = RouteLocation;
+
+/** @deprecated Use `Route` directly instead of `RouteRecord`. */
+export type RouteRecord = Route;
