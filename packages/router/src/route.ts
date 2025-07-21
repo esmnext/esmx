@@ -127,6 +127,16 @@ export class Route {
     public readonly matched: readonly RouteParsedConfig[];
     public readonly config: RouteParsedConfig | null;
 
+    /** @deprecated Use `url.pathname` instead. */
+    public get pathname(): string {
+        return this.url.pathname;
+    }
+
+    /** @deprecated Use `url.href` instead. */
+    public get href(): string {
+        return this.url.href;
+    }
+
     constructor(routeOptions: Partial<RouteOptions> = {}) {
         const {
             toType = RouteType.push,
