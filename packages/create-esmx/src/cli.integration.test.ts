@@ -60,7 +60,7 @@ async function verifyProjectStructure(
             dev: 'esmx dev',
             build: 'esmx build',
             preview: 'esmx preview',
-            start: 'NODE_ENV=production node dist/index.mjs'
+            start: 'esmx start'
         },
         dependencies: {
             '@esmx/core': expect.any(String)

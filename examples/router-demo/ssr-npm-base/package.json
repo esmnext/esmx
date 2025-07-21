@@ -5,7 +5,7 @@
     "private": true,
     "scripts": {
         "build": "esmx build",
-        "start": "NODE_ENV=production node dist/index.mjs"
+        "start": "esmx start"
     },
     "dependencies": {
         "@esmx/core": "workspace:*"

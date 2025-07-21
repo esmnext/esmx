@@ -81,7 +81,7 @@ The Node.js server entry file is responsible for:
         "build:ssr": "esmx build",
         "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src",
         "preview": "esmx preview",
-        "start": "NODE_ENV=production node dist/index.mjs"
+        "start": "esmx start"
     }
 }
 ```
