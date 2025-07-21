@@ -1,5 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { parseLocation } from './location';
+import { parseLocation, resolveRouteLocationInput } from './location';
 import { parsedOptions } from './options';
 import type { Router } from './router';
 
@@ -140,7 +140,6 @@ export class Route {
     constructor(routeOptions: Partial<RouteOptions> = {}) {
         const {
             toType = RouteType.push,
-            toInput = '/',
             from = null,
             options = parsedOptions()
         } = routeOptions;
@@ -152,6 +151,7 @@ export class Route {
         this.context = options.context;
 
         const base = options.base;
+        const toInput = resolveRouteLocationInput(routeOptions.toInput, from);
         const to = options.normalizeURL(parseLocation(toInput, base), from);
         const isSameOrigin = to.origin === base.origin;
         const isSameBase = to.pathname.startsWith(base.pathname);
@@ -164,15 +164,10 @@ export class Route {
             : to.pathname;
         this.fullPath = (match ? this.path : to.pathname) + to.search + to.hash;
         this.matched = match ? match.matches : Object.freeze([]);
-        this.keepScrollPosition = isPlainObject(toInput)
-            ? Boolean(toInput.keepScrollPosition)
-            : false;
-        this.confirm =
-            isPlainObject(toInput) && toInput.confirm ? toInput.confirm : null;
+        this.keepScrollPosition = Boolean(toInput.keepScrollPosition);
+        this.confirm = toInput.confirm || null;
         this.layer =
-            toType === RouteType.pushLayer &&
-            isPlainObject(toInput) &&
-            toInput.layer
+            toType === RouteType.pushLayer && toInput.layer
                 ? toInput.layer
                 : null;
         this.config =
@@ -183,7 +178,7 @@ export class Route {
 
         // Initialize state object - create new local object, merge externally passed state
         const state: RouteState = {};
-        if (isPlainObject(toInput) && toInput.state) {
+        if (toInput.state) {
             Object.assign(state, toInput.state);
         }
         this.state = state;
@@ -204,7 +199,7 @@ export class Route {
 
         // Set status code
         // Prioritize user-provided statusCode
-        if (isPlainObject(toInput) && typeof toInput.statusCode === 'number') {
+        if (typeof toInput.statusCode === 'number') {
             this.statusCode = toInput.statusCode;
         }
         // If statusCode is not provided, keep default null value

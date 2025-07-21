@@ -1,4 +1,4 @@
-import type { RouteLocationInput } from './types';
+import type { RouteLocation, RouteLocationInput } from './types';
 import { isNotNullish } from './util';
 
 /**
@@ -93,4 +93,31 @@ export function parseLocation(toInput: RouteLocationInput, baseURL: URL): URL {
     }
 
     return url;
+}
+
+/**
+ * Resolves RouteLocationInput with fallback from previous route
+ * @param toInput - The route location input
+ * @param from - The previous route URL (optional)
+ * @returns Resolved RouteLocation object
+ */
+export function resolveRouteLocationInput(
+    toInput: RouteLocationInput = '/',
+    from: URL | null = null
+): RouteLocation {
+    if (typeof toInput === 'string') {
+        return { path: toInput };
+    }
+
+    if (
+        toInput &&
+        typeof toInput === 'object' &&
+        typeof toInput.path !== 'string' &&
+        typeof toInput.url !== 'string' &&
+        from !== null
+    ) {
+        return { ...toInput, url: from.href };
+    }
+
+    return toInput;
 }
