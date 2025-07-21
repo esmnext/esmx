@@ -1,5 +1,5 @@
 import module from 'node:module';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { styleText } from 'node:util';
 import path from 'upath';
 import pkg from '../../package.json' with { type: 'json' };
@@ -7,9 +7,22 @@ import pkg from '../../package.json' with { type: 'json' };
 import { COMMAND, Esmx } from '../core';
 import type { EsmxOptions } from '../core';
 
+/**
+ * Safely convert a path to a URL for import
+ * This handles Windows drive letter issues properly
+ */
+function pathToImportURL(filepath: string): URL {
+    // Ensure absolute path for Windows drive letters
+    const absolutePath = path.isAbsolute(filepath)
+        ? filepath
+        : path.resolve(process.cwd(), filepath);
+
+    return pathToFileURL(absolutePath);
+}
+
 async function getSrcOptions(): Promise<EsmxOptions> {
     const entryPath = path.resolve(process.cwd(), './src/entry.node.ts');
-    return import(pathToFileURL(entryPath).href).then((m) => m.default);
+    return import(pathToImportURL(entryPath).href).then((m) => m.default);
 }
 
 export async function cli(command: string) {
@@ -67,7 +80,7 @@ export async function cli(command: string) {
         default:
             {
                 const cmdPath = path.resolve(process.cwd(), command);
-                await import(pathToFileURL(cmdPath).href);
+                await import(pathToImportURL(cmdPath).href);
             }
             break;
     }
