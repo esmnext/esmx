@@ -1,9 +1,9 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
-import path from 'node:path';
 import { cwd } from 'node:process';
 import type { ImportMap, ScopesMap, SpecifierMap } from '@esmx/import';
+import path from 'upath';
 
 import serialize from 'serialize-javascript';
 import { type App, createApp } from './app';

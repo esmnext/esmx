@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import { isBuiltin } from 'node:module';
-import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
 import IM from '@import-maps/resolve';
+import path from 'upath';
 import { CircularDependencyError, FileReadError } from './error';
 import type { ImportMap } from './types';
 

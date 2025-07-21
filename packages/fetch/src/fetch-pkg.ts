@@ -1,6 +1,6 @@
 import fs from 'node:fs';
-import path from 'node:path';
 import genSysCacheDir from 'cachedir';
+import path from 'upath';
 
 import type { FetchPkgOptions, FetchResult } from './types';
 import { downloadFile, getHashText } from './utils';

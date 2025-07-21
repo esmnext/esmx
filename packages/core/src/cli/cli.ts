@@ -1,7 +1,7 @@
 import module from 'node:module';
-import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { styleText } from 'node:util';
+import path from 'upath';
 import pkg from '../../package.json' with { type: 'json' };
 
 import { COMMAND, Esmx, type EsmxOptions } from '../core';

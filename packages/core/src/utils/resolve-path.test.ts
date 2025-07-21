@@ -1,4 +1,4 @@
-import path from 'node:path';
+import path from 'upath';
 import { assert, test } from 'vitest';
 import { resolvePath } from './resolve-path';
 

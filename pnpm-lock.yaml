@@ -32,6 +32,9 @@ importers:
       typescript:
         specifier: 5.8.3
         version: 5.8.3
+      upath:
+        specifier: ^2.0.1
+        version: 2.0.1
 
   examples/router-demo-music:
     dependencies:
@@ -557,6 +560,9 @@ importers:
       serialize-javascript:
         specifier: ^6.0.2
         version: 6.0.2
+      upath:
+        specifier: ^2.0.1
+        version: 2.0.1
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.4
@@ -643,6 +649,9 @@ importers:
       cli-progress:
         specifier: ^3.12.0
         version: 3.12.0
+      upath:
+        specifier: ^2.0.1
+        version: 2.0.1
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.4
@@ -677,6 +686,9 @@ importers:
       '@import-maps/resolve':
         specifier: ^2.0.0
         version: 2.0.0
+      upath:
+        specifier: ^2.0.1
+        version: 2.0.1
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.4
@@ -855,6 +867,9 @@ importers:
       style-resources-loader:
         specifier: ^1.5.0
         version: 1.5.0(webpack@5.99.9)
+      upath:
+        specifier: ^2.0.1
+        version: 2.0.1
       webpack-hot-middleware:
         specifier: ^2.26.1
         version: 2.26.1

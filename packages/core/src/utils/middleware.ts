@@ -1,6 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import path from 'node:path';
 import send from 'send';
+import path from 'upath';
 import type { Esmx } from '../core';
 
 /**

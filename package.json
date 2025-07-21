@@ -16,9 +16,9 @@
         "deploy": "npm run build && ./deploy.sh"
     },
     "devDependencies": {
-        "lint-staged": "16.1.2",
+        "@biomejs/biome": "1.9.4",
         "husky": "9.1.7",
-        "@biomejs/biome": "1.9.4"
+        "lint-staged": "16.1.2"
     },
     "private": false,
     "workspaces": [

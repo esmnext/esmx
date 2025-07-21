@@ -29,7 +29,8 @@
         "build": "unbuild"
     },
     "dependencies": {
-        "@import-maps/resolve": "^2.0.0"
+        "@import-maps/resolve": "^2.0.0",
+        "upath": "^2.0.1"
     },
     "devDependencies": {
         "@biomejs/biome": "1.9.4",

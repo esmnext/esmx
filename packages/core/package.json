@@ -64,7 +64,8 @@
         "es-module-lexer": "^1.7.0",
         "find": "^0.3.0",
         "send": "^1.2.0",
-        "serialize-javascript": "^6.0.2"
+        "serialize-javascript": "^6.0.2",
+        "upath": "^2.0.1"
     },
     "devDependencies": {
         "@biomejs/biome": "1.9.4",

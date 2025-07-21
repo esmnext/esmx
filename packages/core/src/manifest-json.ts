@@ -1,5 +1,5 @@
 import fsp from 'node:fs/promises';
-import path from 'node:path';
+import path from 'upath';
 
 import type { BuildSsrTarget } from './core';
 import type { ParsedModuleConfig } from './module-config';

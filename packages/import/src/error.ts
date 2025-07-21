@@ -1,4 +1,4 @@
-import path from 'node:path';
+import path from 'upath';
 
 // Color constants for terminal output
 const Colors = {

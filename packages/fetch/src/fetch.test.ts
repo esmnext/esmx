@@ -1,5 +1,5 @@
-import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import path from 'upath';
 import { test } from 'vitest';
 import { fetchPkgsWithProgress } from '.';
 

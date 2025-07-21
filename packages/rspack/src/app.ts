@@ -1,5 +1,4 @@
 import fs from 'node:fs';
-import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
     type App,
@@ -13,6 +12,7 @@ import {
 } from '@esmx/core';
 import { createVmImport } from '@esmx/import';
 import type { RspackOptions } from '@rspack/core';
+import path from 'upath';
 import hotMiddleware from 'webpack-hot-middleware';
 import type { BuildTarget } from './build-target';
 import { createRspackConfig } from './config';

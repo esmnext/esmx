@@ -1,6 +1,6 @@
-import path from 'node:path';
 import sitemap from 'rspress-plugin-sitemap';
 import { defineConfig } from 'rspress/config';
+import path from 'upath';
 
 export default defineConfig({
     root: path.join(__dirname, 'src'),

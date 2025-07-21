@@ -1,4 +1,4 @@
-import path from 'node:path';
+import path from 'upath';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
     type ModuleConfig,

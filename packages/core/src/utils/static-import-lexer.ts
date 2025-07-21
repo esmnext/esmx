@@ -1,7 +1,7 @@
 import type fs from 'node:fs';
 import fsp from 'node:fs/promises';
-import path from 'node:path';
 import type { ImportMap, SpecifierMap } from '@esmx/import';
+import path from 'upath';
 import type { ParsedModuleConfig } from '../module-config';
 
 import * as esmLexer from 'es-module-lexer';

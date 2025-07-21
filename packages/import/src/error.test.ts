@@ -1,4 +1,4 @@
-import path from 'node:path';
+import path from 'upath';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
     CircularDependencyError,

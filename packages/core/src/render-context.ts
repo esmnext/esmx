@@ -1,5 +1,5 @@
-import path from 'node:path';
 import serialize from 'serialize-javascript';
+import path from 'upath';
 import type { Esmx } from './core';
 
 /**
