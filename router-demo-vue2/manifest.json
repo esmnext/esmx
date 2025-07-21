@@ -28,13 +28,13 @@
         }
     },
     "buildFiles": [
-        "chunks/680.769d9c00.final.mjs",
-        "exports/@esmx/router-vue.0a731974.final.mjs",
         "exports/vue.389c4cab.final.mjs",
+        "exports/@esmx/router-vue.0a731974.final.mjs",
         "exports/src/entry.client.27f2e711.final.mjs",
         "exports/src/entry.client.0c6e4813.final.css",
         "exports/@esmx/router.96dc1666.final.mjs",
-        "chunks/680.cc8fbaa2.final.css"
+        "chunks/680.cc8fbaa2.final.css",
+        "chunks/680.769d9c00.final.mjs"
     ],
     "chunks": {
         "router-demo-vue2@../../packages/router/dist/index.mjs": {
