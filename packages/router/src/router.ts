@@ -43,6 +43,12 @@ export class Router {
     public get root() {
         return this.parsedOptions.root;
     }
+    public get mode(): RouterMode {
+        return this.parsedOptions.mode;
+    }
+    public get base(): URL {
+        return this.parsedOptions.base;
+    }
     public get req() {
         return this.parsedOptions.req ?? null;
     }
