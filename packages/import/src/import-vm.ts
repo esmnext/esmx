@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import { isBuiltin } from 'node:module';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import vm from 'node:vm';
 import IM from '@import-maps/resolve';
 import { CircularDependencyError, FileReadError } from './error';
@@ -40,7 +40,7 @@ export function createVmImport(baseURL: URL, importMap: ImportMap = {}) {
         } else {
             filename = import.meta.resolve(specifier, parent);
         }
-        const url = new URL(filename);
+        const url = pathToFileURL(filename);
         const pathname = fileURLToPath(url);
         return {
             filename,
