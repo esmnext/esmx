@@ -1,6 +1,7 @@
 import path from 'node:path';
-import { assert, test } from 'vitest';
-import { resolvePath } from './resolve-path';
+import { pathToFileURL } from 'node:url';
+import { assert, describe, test } from 'vitest';
+import { resolveImportPath, resolvePath } from './resolve-path';
 
 const TEST_ROOT = '/test/root';
 
@@ -55,4 +56,36 @@ test('with additional arguments', () => {
         resolvePath(TEST_ROOT, 'src', 'entry.client.ts'),
         path.resolve(TEST_ROOT, 'src', 'entry.client.ts')
     );
+});
+
+describe('resolveImportPath', () => {
+    test('should handle multiple path segments', () => {
+        const result = resolveImportPath('base', 'path', 'file.ts');
+        assert.typeOf(result, 'string');
+        const expectedPath = pathToFileURL(
+            path.resolve('base', 'path', 'file.ts')
+        ).href;
+        assert.equal(result, expectedPath);
+    });
+
+    test('should resolve from cwd when using relative paths', () => {
+        const result = resolveImportPath('./relative/file.ts');
+        const expected = pathToFileURL(path.resolve('./relative/file.ts')).href;
+        assert.equal(result, expected);
+    });
+
+    test('should handle absolute paths', () => {
+        const absolutePath = path.resolve('/absolute/path/file.ts');
+        const result = resolveImportPath(absolutePath);
+        const expected = pathToFileURL(absolutePath).href;
+        assert.equal(result, expected);
+    });
+
+    test('should work with process.cwd()', () => {
+        const result = resolveImportPath(process.cwd(), 'src', 'file.ts');
+        const expected = pathToFileURL(
+            path.resolve(process.cwd(), 'src', 'file.ts')
+        ).href;
+        assert.equal(result, expected);
+    });
 });

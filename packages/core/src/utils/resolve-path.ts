@@ -1,4 +1,5 @@
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 export type ProjectPath =
     | './'
@@ -32,4 +33,9 @@ export function resolvePath(
     ...args: string[]
 ): string {
     return path.resolve(root, projectPath, ...args);
+}
+
+export function resolveImportPath(...paths: string[]): string {
+    const absolutePath = path.resolve(...paths);
+    return pathToFileURL(absolutePath).href;
 }
