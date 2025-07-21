@@ -72,7 +72,7 @@
         "unbuild": "3.5.0",
         "vitest": "3.2.4"
     },
-    "version": "3.0.0-rc.43",
+    "version": "3.0.0-rc.44",
     "type": "module",
     "private": false,
     "exports": {
