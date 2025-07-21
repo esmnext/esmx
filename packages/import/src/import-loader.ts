@@ -50,7 +50,7 @@ export function resolve(
     const scriptURL = new URL(context.parentURL);
     const result = IM.resolve(specifier, loaderParsedImportMap, scriptURL);
     if (result.matched && result.resolvedImport) {
-        return nextResolve(pathToFileURL(result.resolvedImport.href));
+        return nextResolve(pathToFileURL(result.resolvedImport.pathname).href);
     }
     return nextResolve(specifier, context);
 }
