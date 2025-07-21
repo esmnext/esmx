@@ -1,5 +1,5 @@
 import module from 'node:module';
-import { fileURLToPath } from 'node:url';
+import { pathToFileURL } from 'node:url';
 import IM from '@import-maps/resolve';
 import type { ImportMap } from './types';
 
@@ -12,7 +12,7 @@ let registered = '';
 
 export function createLoaderImport(baseURL: URL, importMap: ImportMap = {}) {
     if (!registered) {
-        module.register<Data>(fileURLToPath(import.meta.url), {
+        module.register<Data>(import.meta.url, {
             parentURL: baseURL,
             data: {
                 baseURL: baseURL.href,
@@ -50,7 +50,7 @@ export function resolve(
     const scriptURL = new URL(context.parentURL);
     const result = IM.resolve(specifier, loaderParsedImportMap, scriptURL);
     if (result.matched && result.resolvedImport) {
-        return nextResolve(result.resolvedImport.href);
+        return nextResolve(pathToFileURL(result.resolvedImport.href));
     }
     return nextResolve(specifier, context);
 }
