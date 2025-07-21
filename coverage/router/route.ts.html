@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.94% </span>
+                <span class="strong">97.89% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>191/195</span>
+                <span class='fraction'>186/190</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">98.24% </span>
+                <span class="strong">98% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>56/57</span>
+                <span class='fraction'>49/50</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.94% </span>
+                <span class="strong">97.89% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>191/195</span>
+                <span class='fraction'>186/190</span>
             </div>
         
             
@@ -376,12 +376,7 @@
 <a name='L311'></a><a href='#L311'>311</a>
 <a name='L312'></a><a href='#L312'>312</a>
 <a name='L313'></a><a href='#L313'>313</a>
-<a name='L314'></a><a href='#L314'>314</a>
-<a name='L315'></a><a href='#L315'>315</a>
-<a name='L316'></a><a href='#L316'>316</a>
-<a name='L317'></a><a href='#L317'>317</a>
-<a name='L318'></a><a href='#L318'>318</a>
-<a name='L319'></a><a href='#L319'>319</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L314'></a><a href='#L314'>314</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -445,7 +440,7 @@
 <span class="cline-any cline-yes">2500x</span>
 <span class="cline-any cline-yes">2500x</span>
 <span class="cline-any cline-yes">2500x</span>
-<span class="cline-any cline-yes">554x</span>
+<span class="cline-any cline-yes">2494x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">2500x</span>
 <span class="cline-any cline-yes">2495x</span>
@@ -526,7 +521,6 @@
 <span class="cline-any cline-yes">2507x</span>
 <span class="cline-any cline-yes">2507x</span>
 <span class="cline-any cline-yes">2507x</span>
-<span class="cline-any cline-yes">2507x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2507x</span>
 <span class="cline-any cline-yes">2507x</span>
@@ -534,6 +528,7 @@
 <span class="cline-any cline-yes">2507x</span>
 <span class="cline-any cline-yes">2507x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2507x</span>
 <span class="cline-any cline-yes">2507x</span>
 <span class="cline-any cline-yes">2507x</span>
 <span class="cline-any cline-yes">2507x</span>
@@ -548,14 +543,9 @@
 <span class="cline-any cline-yes">2507x</span>
 <span class="cline-any cline-yes">2507x</span>
 <span class="cline-any cline-yes">2507x</span>
-<span class="cline-any cline-yes">554x</span>
-<span class="cline-any cline-yes">1953x</span>
 <span class="cline-any cline-yes">2507x</span>
 <span class="cline-any cline-yes">2507x</span>
 <span class="cline-any cline-yes">2507x</span>
-<span class="cline-any cline-yes">2507x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">2501x</span>
 <span class="cline-any cline-yes">2507x</span>
@@ -700,7 +690,7 @@
 <span class="cline-any cline-yes">395x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { IncomingMessage, ServerResponse } from 'node:http';
-import { parseLocation } from './location';
+import { parseLocation, resolveRouteLocationInput } from './location';
 import { parsedOptions } from './options';
 import type { Router } from './router';
 &nbsp;
@@ -841,7 +831,6 @@ export class Route {
     constructor(routeOptions: Partial&lt;RouteOptions&gt; = {}) {
         const {
             toType = RouteType.push,
-            toInput = '/',
             from = null,
             options = parsedOptions()
         } = routeOptions;
@@ -853,6 +842,7 @@ export class Route {
         this.context = options.context;
 &nbsp;
         const base = options.base;
+        const toInput = resolveRouteLocationInput(routeOptions.toInput, from);
         const to = options.normalizeURL(parseLocation(toInput, base), from);
         const isSameOrigin = to.origin === base.origin;
         const isSameBase = to.pathname.startsWith(base.pathname);
@@ -865,15 +855,10 @@ export class Route {
             : to.pathname;
         this.fullPath = (match ? this.path : to.pathname) + to.search + to.hash;
         this.matched = match ? match.matches : Object.freeze([]);
-        this.keepScrollPosition = isPlainObject(toInput)
-            ? Boolean(toInput.keepScrollPosition)
-            : false;
-        this.confirm =
-            isPlainObject(toInput) &amp;&amp; toInput.confirm ? toInput.confirm : null;
+        this.keepScrollPosition = Boolean(toInput.keepScrollPosition);
+        this.confirm = toInput.confirm || null;
         this.layer =
-            toType === RouteType.pushLayer &amp;&amp;
-            isPlainObject(toInput) &amp;&amp;
-            toInput.layer
+            toType === RouteType.pushLayer &amp;&amp; toInput.layer
                 ? toInput.layer
                 : null;
         this.config =
@@ -884,7 +869,7 @@ export class Route {
 &nbsp;
         // Initialize state object - create new local object, merge externally passed state
         const state: RouteState = {};
-        if (isPlainObject(toInput) &amp;&amp; toInput.state) {
+        if (toInput.state) {
             Object.assign(state, toInput.state);
         }
         this.state = state;
@@ -905,7 +890,7 @@ export class Route {
 &nbsp;
         // Set status code
         // Prioritize user-provided statusCode
-        if (isPlainObject(toInput) &amp;&amp; typeof toInput.statusCode === 'number') {
+        if (typeof toInput.statusCode === 'number') {
             this.statusCode = toInput.statusCode;
         }
         // If statusCode is not provided, keep default null value
@@ -1024,7 +1009,7 @@ export class Route {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-07-21T09:33:12.012Z
+                at 2025-07-21T10:29:46.858Z
             </div>
         <script src="prettify.js"></script>
         <script>
