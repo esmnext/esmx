@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
 import { cwd } from 'node:process';
+import { pathToFileURL } from 'node:url';
 import type { ImportMap, ScopesMap, SpecifierMap } from '@esmx/import';
 
 import serialize from 'serialize-javascript';
@@ -872,7 +873,7 @@ export class Esmx {
                             // because the actual accessed paths are real physical paths, not the symbolic links.
                             // Using realpathSync ensures path consistency between import map generation and runtime resolution.
                             const realPath = fs.realpathSync(linkPath);
-                            return path.join(realPath, '/');
+                            return pathToFileURL(path.join(realPath, '/')).href;
                         },
                         getFile: (name: string, file: string) => {
                             const linkPath = moduleConfig.links[name].server;
@@ -880,7 +881,8 @@ export class Esmx {
                             // This is crucial to maintain consistency with getScope function
                             // and ensure proper module resolution at runtime
                             const realPath = fs.realpathSync(linkPath);
-                            return path.resolve(realPath, file);
+                            return pathToFileURL(path.resolve(realPath, file))
+                                .href;
                         }
                     });
                     break;
