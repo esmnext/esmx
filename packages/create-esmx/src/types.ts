@@ -5,6 +5,7 @@ export interface CliOptions {
     argv?: string[]; // Command line arguments
     cwd?: string; // Working directory
     userAgent?: string; // Package manager user agent
+    version?: string; // Esmx version override
 }
 
 /**

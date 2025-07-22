@@ -20,3 +20,4 @@ packages/**/coverage
 /types
 remotes
 /Dockerfile
+examples/templates/

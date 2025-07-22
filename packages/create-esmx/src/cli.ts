@@ -108,7 +108,7 @@ async function getTemplateType(argTemplate?: string): Promise<string> {
  * Main function to create a project
  */
 export async function cli(options: CliOptions = {}): Promise<void> {
-    const { argv, cwd, userAgent } = options;
+    const { argv, cwd, userAgent, version } = options;
     const commandLineArgs = argv || process.argv.slice(2);
     const workingDir = cwd || process.cwd();
 
@@ -175,7 +175,7 @@ export async function cli(options: CliOptions = {}): Promise<void> {
         parsedArgs.force,
         {
             projectName: packageName,
-            esmxVersion: getEsmxVersion(),
+            esmxVersion: version || getEsmxVersion(),
             installCommand,
             devCommand,
             buildCommand,
