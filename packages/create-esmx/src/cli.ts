@@ -28,7 +28,7 @@ ${color.bold('Usage:')}
   ${createCmd} [project-name] [options]
 
 ${color.bold('Options:')}
-  -t, --template <template>    Template to use (default: vue2)
+  -t, --template <template>    Template to use (default: vue2-csr)
   -n, --name <name>            Project name or path
   -f, --force                  Force overwrite existing directory
   -h, --help                   Show help information
@@ -36,9 +36,9 @@ ${color.bold('Options:')}
 
 ${color.bold('Examples:')}
   ${createCmd} my-project
-  ${createCmd} my-project -t vue2
+  ${createCmd} my-project -t vue2-csr
   ${createCmd} my-project --force
-  ${createCmd} . -f -t vue2
+  ${createCmd} . -f -t vue2-csr
 
 ${color.bold('Available Templates:')}
 ${getAvailableTemplates()

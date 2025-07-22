@@ -133,7 +133,7 @@ describe('create-esmx CLI integration tests', () => {
         const projectPath = join(tmpDir, 'test-project');
 
         await cli({
-            argv: ['test-project', '--template', 'vue2'],
+            argv: ['test-project', '--template', 'vue2-csr'],
             cwd: tmpDir,
             userAgent: 'npm/test'
         });
@@ -141,7 +141,7 @@ describe('create-esmx CLI integration tests', () => {
         expect(existsSync(join(projectPath, 'package.json'))).toBe(true);
 
         await cli({
-            argv: ['test-project', '--template', 'vue2', '--force'],
+            argv: ['test-project', '--template', 'vue2-csr', '--force'],
             cwd: tmpDir,
             userAgent: 'npm/test'
         });
@@ -202,7 +202,11 @@ describe('create-esmx CLI integration tests', () => {
         const projectPath = join(tmpDir, 'non-existent-parent', 'test-project');
 
         await cli({
-            argv: ['non-existent-parent/test-project', '--template', 'vue2'],
+            argv: [
+                'non-existent-parent/test-project',
+                '--template',
+                'vue2-csr'
+            ],
             cwd: tmpDir,
             userAgent: 'npm/test'
         });
@@ -222,7 +226,7 @@ describe('create-esmx CLI integration tests', () => {
         );
 
         await cli({
-            argv: ['test-project', '--template', 'vue2', '--force'],
+            argv: ['test-project', '--template', 'vue2-csr', '--force'],
             cwd: tmpDir,
             userAgent: 'npm/test'
         });
@@ -236,7 +240,7 @@ describe('create-esmx CLI integration tests', () => {
         await writeFile(testFile, 'existing content');
 
         await cli({
-            argv: ['.', '--template', 'vue2', '--force'],
+            argv: ['.', '--template', 'vue2-csr', '--force'],
             cwd: tmpDir,
             userAgent: 'npm/test'
         });
@@ -248,7 +252,7 @@ describe('create-esmx CLI integration tests', () => {
 
     it('should create project in current directory when target is "."', async () => {
         await cli({
-            argv: ['.', '--template', 'vue2'],
+            argv: ['.', '--template', 'vue2-csr'],
             cwd: tmpDir,
             userAgent: 'npm/test'
         });
@@ -269,7 +273,7 @@ describe('create-esmx CLI integration tests', () => {
             const projectPath = join(tmpDir, projectName);
 
             await cli({
-                argv: [projectName, '--template', 'vue2'],
+                argv: [projectName, '--template', 'vue2-csr'],
                 cwd: tmpDir,
                 userAgent: 'npm/test'
             });

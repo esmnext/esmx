@@ -7,7 +7,6 @@ import { createProjectFromTemplate } from './project';
 import { getEsmxVersion } from './template';
 import { formatProjectName } from './utils/index';
 
-// Test utilities
 async function createTempDir(prefix = 'esmx-unit-test-'): Promise<string> {
     return mkdtemp(join(tmpdir(), prefix));
 }
@@ -32,13 +31,11 @@ describe('project unit tests', () => {
     });
 
     it('should handle isDirectoryEmpty edge cases', async () => {
-        // Test with directory containing only hidden files
         const hiddenFilesDir = join(tmpDir, 'hidden-files-dir');
         await mkdir(hiddenFilesDir, { recursive: true });
         await writeFile(join(hiddenFilesDir, '.hidden-file'), 'hidden content');
         await writeFile(join(hiddenFilesDir, '.gitignore'), 'node_modules/');
 
-        // Get project name and target directory
         const projectNameInput = 'hidden-files-dir';
         const { packageName, targetDir } = formatProjectName(
             projectNameInput,
@@ -46,7 +43,7 @@ describe('project unit tests', () => {
         );
 
         // Create project from template
-        await createProjectFromTemplate(targetDir, 'vue2', tmpDir, false, {
+        await createProjectFromTemplate(targetDir, 'vue2-csr', tmpDir, false, {
             projectName: packageName,
             esmxVersion: getEsmxVersion(),
             installCommand: 'npm install',
@@ -79,7 +76,7 @@ describe('project unit tests', () => {
         );
 
         // Create project from template
-        await createProjectFromTemplate(targetDir, 'vue2', tmpDir, false, {
+        await createProjectFromTemplate(targetDir, 'vue2-csr', tmpDir, false, {
             projectName: packageName,
             esmxVersion: getEsmxVersion(),
             installCommand: 'npm install',
@@ -105,7 +102,7 @@ describe('project unit tests', () => {
         );
 
         // Create project from template
-        await createProjectFromTemplate(targetDir, 'vue2', tmpDir, false, {
+        await createProjectFromTemplate(targetDir, 'vue2-csr', tmpDir, false, {
             projectName: packageName,
             esmxVersion: getEsmxVersion(),
             installCommand: 'npm install',
@@ -141,7 +138,7 @@ describe('project unit tests', () => {
         );
 
         // Create project from template
-        await createProjectFromTemplate(targetDir, 'vue2', tmpDir, false, {
+        await createProjectFromTemplate(targetDir, 'vue2-csr', tmpDir, false, {
             projectName: packageName,
             esmxVersion: getEsmxVersion(),
             installCommand: 'npm install',
@@ -172,7 +169,7 @@ describe('project unit tests', () => {
         // Create project from template with force flag
         await createProjectFromTemplate(
             targetDir,
-            'vue2',
+            'vue2-csr',
             tmpDir,
             true, // force flag
             {
@@ -207,16 +204,22 @@ describe('project unit tests', () => {
             );
 
             // Create project from template
-            await createProjectFromTemplate(targetDir, 'vue2', tmpDir, false, {
-                projectName: packageName,
-                esmxVersion: getEsmxVersion(),
-                installCommand: 'npm install',
-                devCommand: 'npm run dev',
-                buildCommand: 'npm run build',
-                startCommand: 'npm start',
-                buildTypeCommand: 'npm run build:type',
-                lintTypeCommand: 'npm run lint:type'
-            });
+            await createProjectFromTemplate(
+                targetDir,
+                'vue2-csr',
+                tmpDir,
+                false,
+                {
+                    projectName: packageName,
+                    esmxVersion: getEsmxVersion(),
+                    installCommand: 'npm install',
+                    devCommand: 'npm run dev',
+                    buildCommand: 'npm run build',
+                    startCommand: 'npm start',
+                    buildTypeCommand: 'npm run build:type',
+                    lintTypeCommand: 'npm run lint:type'
+                }
+            );
 
             expect(existsSync(projectPath)).toBe(true);
             expect(existsSync(join(projectPath, 'package.json'))).toBe(true);
