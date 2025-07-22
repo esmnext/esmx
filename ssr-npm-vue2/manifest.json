@@ -1,0 +1,84 @@
+{
+    "imports": {
+        "@esmx/router": "ssr-npm-base/@esmx/router"
+    },
+    "name": "ssr-npm-vue2",
+    "exports": {
+        "src/entry.client": {
+            "name": "src/entry.client",
+            "rewrite": true,
+            "file": "exports/src/entry.client.bfadf2d5.final.mjs",
+            "identifier": "ssr-npm-vue2/src/entry.client"
+        },
+        "vue": {
+            "name": "vue",
+            "rewrite": false,
+            "file": "exports/vue.389c4cab.final.mjs",
+            "identifier": "ssr-npm-vue2/vue"
+        },
+        "@esmx/router-vue": {
+            "name": "@esmx/router-vue",
+            "rewrite": false,
+            "file": "exports/@esmx/router-vue.0a731974.final.mjs",
+            "identifier": "ssr-npm-vue2/@esmx/router-vue"
+        },
+        "src/app-creator": {
+            "name": "src/app-creator",
+            "rewrite": true,
+            "file": "exports/src/app-creator.c5b7fc2f.final.mjs",
+            "identifier": "ssr-npm-vue2/src/app-creator"
+        }
+    },
+    "buildFiles": [
+        "exports/src/entry.client.bfadf2d5.final.mjs",
+        "exports/vue.389c4cab.final.mjs",
+        "exports/src/app-creator.c5b7fc2f.final.mjs",
+        "exports/@esmx/router-vue.0a731974.final.mjs"
+    ],
+    "chunks": {
+        "ssr-npm-vue2@../../../packages/router-vue/dist/index.mjs": {
+            "name": "ssr-npm-vue2@../../../packages/router-vue/dist/index.mjs",
+            "js": "exports/@esmx/router-vue.0a731974.final.mjs",
+            "css": [],
+            "resources": [],
+            "sizes": {
+                "js": 9996,
+                "css": 0,
+                "resource": 0
+            }
+        },
+        "ssr-npm-vue2@../../../node_modules/.pnpm/vue@2.7.16/node_modules/vue/dist/vue.esm.js": {
+            "name": "ssr-npm-vue2@../../../node_modules/.pnpm/vue@2.7.16/node_modules/vue/dist/vue.esm.js",
+            "js": "exports/vue.389c4cab.final.mjs",
+            "css": [],
+            "resources": [],
+            "sizes": {
+                "js": 419330,
+                "css": 0,
+                "resource": 0
+            }
+        },
+        "ssr-npm-vue2@src/entry.client.ts": {
+            "name": "ssr-npm-vue2@src/entry.client.ts",
+            "js": "exports/src/entry.client.bfadf2d5.final.mjs",
+            "css": [],
+            "resources": [],
+            "sizes": {
+                "js": 19,
+                "css": 0,
+                "resource": 0
+            }
+        },
+        "ssr-npm-vue2@src/app-creator.ts": {
+            "name": "ssr-npm-vue2@src/app-creator.ts",
+            "js": "exports/src/app-creator.c5b7fc2f.final.mjs",
+            "css": [],
+            "resources": [],
+            "sizes": {
+                "js": 1283,
+                "css": 0,
+                "resource": 0
+            }
+        }
+    }
+}

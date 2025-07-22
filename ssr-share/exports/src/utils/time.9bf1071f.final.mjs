@@ -1,0 +1,1 @@
+let t=t=>{let o=Math.floor(t/60),r=Math.floor(t%60);return"".concat(o,":").concat(r.toString().padStart(2,"0"))};export{t as formatTime};
