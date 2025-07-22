@@ -80,7 +80,7 @@ async function getProjectName(
 /**
  * Get template type from arguments or prompt user
  */
-async function getTemplateType(argTemplate?: string): Promise<string | symbol> {
+async function getTemplateType(argTemplate?: string): Promise<string> {
     const availableTemplates = getAvailableTemplates();
 
     if (
@@ -101,7 +101,7 @@ async function getTemplateType(argTemplate?: string): Promise<string | symbol> {
         options: options
     });
 
-    return template as string | symbol;
+    return String(template);
 }
 
 /**
