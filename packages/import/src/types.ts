@@ -6,3 +6,8 @@ export interface ImportMap {
     imports?: SpecifierMap;
     scopes?: ScopesMap;
 }
+
+export type ImportMapResolver = (
+    specifier: string,
+    parent: string
+) => string | null;

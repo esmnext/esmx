@@ -1,10 +1,10 @@
 import fs from 'node:fs';
 import { isBuiltin } from 'node:module';
 import path from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
-import IM from '@import-maps/resolve';
 import { CircularDependencyError, FileReadError } from './error';
+import { createImportMapResolver } from './import-map-resolve';
 import type { ImportMap } from './types';
 
 async function importBuiltinModule(specifier: string, context: vm.Context) {
@@ -30,22 +30,19 @@ async function importBuiltinModule(specifier: string, context: vm.Context) {
 }
 
 export function createVmImport(baseURL: URL, importMap: ImportMap = {}) {
-    const parsedImportMap = IM.parse(importMap, baseURL);
-    const parse = (specifier: string, parent: string) => {
-        const result = IM.resolve(specifier, parsedImportMap, new URL(parent));
+    const importMapResolver = createImportMapResolver(baseURL.href, importMap);
+    const buildMeta = (specifier: string, parent: string): ImportMeta => {
+        const result = importMapResolver(specifier, parent);
 
-        let filename: string;
-        if (result.matched && result.resolvedImport) {
-            filename = result.resolvedImport.href;
-        } else {
-            filename = import.meta.resolve(specifier, parent);
-        }
-        const url = pathToFileURL(filename);
-        const pathname = fileURLToPath(url);
+        const url: string = result ?? import.meta.resolve(specifier, parent);
+        const filename = fileURLToPath(url);
         return {
             filename,
+            dirname: path.dirname(filename),
             url,
-            pathname
+            resolve: (specifier: string, parent: string | URL = url) => {
+                return import.meta.resolve(specifier, parent);
+            }
         };
     };
     async function moduleLinker(
@@ -58,17 +55,17 @@ export function createVmImport(baseURL: URL, importMap: ImportMap = {}) {
         if (isBuiltin(specifier)) {
             return importBuiltinModule(specifier, context);
         }
-        const parsed = parse(specifier, parent);
+        const meta = buildMeta(specifier, parent);
 
-        if (moduleIds.includes(parsed.pathname)) {
+        if (moduleIds.includes(meta.filename)) {
             throw new CircularDependencyError(
                 'Circular dependency detected',
                 moduleIds,
-                parsed.pathname
+                meta.filename
             );
         }
 
-        const module = cache.get(parsed.pathname);
+        const module = cache.get(meta.filename);
         if (module) {
             return module;
         }
@@ -78,53 +75,44 @@ export function createVmImport(baseURL: URL, importMap: ImportMap = {}) {
             });
         });
 
-        const dirname = path.dirname(parsed.filename);
-        cache.set(parsed.pathname, modulePromise);
+        cache.set(meta.filename, modulePromise);
         return modulePromise;
 
         async function moduleBuild(): Promise<vm.SourceTextModule> {
             let text: string;
             try {
-                text = fs.readFileSync(parsed.pathname, 'utf-8');
+                text = fs.readFileSync(meta.filename, 'utf-8');
             } catch (error) {
                 throw new FileReadError(
-                    `Failed to read module: ${parsed.pathname}`,
+                    `Failed to read module: ${meta.filename}`,
                     moduleIds,
-                    parsed.pathname,
+                    meta.filename,
                     error as Error
                 );
             }
             const module = new vm.SourceTextModule(text, {
-                initializeImportMeta: (meta) => {
-                    meta.filename = parsed.filename;
-                    meta.dirname = dirname;
-                    meta.resolve = (
-                        specifier: string,
-                        parent: string | URL = parsed.url
-                    ) => {
-                        return import.meta.resolve(specifier, parent);
-                    };
-                    meta.url = parsed.url.toString();
+                initializeImportMeta: (importMeta) => {
+                    Object.assign(importMeta, meta);
                 },
                 identifier: specifier,
                 context: context,
                 importModuleDynamically: (specifier, referrer) => {
                     return moduleLinker(
                         specifier,
-                        parsed.filename,
+                        meta.filename,
                         referrer.context,
                         cache,
-                        [...moduleIds, parsed.pathname]
+                        [...moduleIds, meta.filename]
                     );
                 }
             });
             await module.link((specifier: string, referrer) => {
                 return moduleLinker(
                     specifier,
-                    parsed.filename,
+                    meta.filename,
                     referrer.context,
                     cache,
-                    [...moduleIds, parsed.pathname]
+                    [...moduleIds, meta.filename]
                 );
             });
             await module.evaluate();

@@ -1,7 +1,7 @@
 import module from 'node:module';
-import { pathToFileURL } from 'node:url';
 import IM from '@import-maps/resolve';
-import type { ImportMap } from './types';
+import { createImportMapResolver } from './import-map-resolve';
+import type { ImportMap, ImportMapResolver } from './types';
 
 interface Data {
     baseURL: string;
@@ -34,23 +34,17 @@ export function createLoaderImport(baseURL: URL, importMap: ImportMap = {}) {
     };
 }
 
-let loaderBaseURL: URL = new URL('file:');
-let loaderParsedImportMap: IM.ParsedImportMap = {};
+let importMapResolver: ImportMapResolver | null = null;
 
 export function initialize(data: Data) {
-    loaderBaseURL = new URL(data.baseURL);
-    loaderParsedImportMap = IM.parse(data.importMap, loaderBaseURL);
+    importMapResolver = createImportMapResolver(data.baseURL, data.importMap);
 }
 
 export function resolve(
     specifier: string,
-    context: Record<string, any>,
+    context: { parentURL: string },
     nextResolve: Function
 ) {
-    const scriptURL = new URL(context.parentURL);
-    const result = IM.resolve(specifier, loaderParsedImportMap, scriptURL);
-    if (result.matched && result.resolvedImport) {
-        return nextResolve(pathToFileURL(result.resolvedImport.pathname).href);
-    }
-    return nextResolve(specifier, context);
+    const result = importMapResolver?.(specifier, context.parentURL);
+    return nextResolve(result ?? specifier, context);
 }
