@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/45</span>
+                <span class='fraction'>0/38</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/45</span>
+                <span class='fraction'>0/38</span>
             </div>
         
             
@@ -113,14 +113,8 @@
 <a name='L48'></a><a href='#L48'>48</a>
 <a name='L49'></a><a href='#L49'>49</a>
 <a name='L50'></a><a href='#L50'>50</a>
-<a name='L51'></a><a href='#L51'>51</a>
-<a name='L52'></a><a href='#L52'>52</a>
-<a name='L53'></a><a href='#L53'>53</a>
-<a name='L54'></a><a href='#L54'>54</a>
-<a name='L55'></a><a href='#L55'>55</a>
-<a name='L56'></a><a href='#L56'>56</a>
-<a name='L57'></a><a href='#L57'>57</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L51'></a><a href='#L51'>51</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -156,17 +150,11 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -176,9 +164,9 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import module from 'node:module';<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
-<span class="cstat-no" title="statement not covered" >import { pathToFileURL } from 'node:url';</span>
-<span class="cstat-no" title="statement not covered" >import IM from '@import-maps/resolve';</span>
-import type { ImportMap } from './types';
+import IM from '@import-maps/resolve';
+<span class="cstat-no" title="statement not covered" >import { createImportMapResolver } from './import-map-resolve';</span>
+import type { ImportMap, ImportMapResolver } from './types';
 &nbsp;
 interface Data {
     baseURL: string;
@@ -211,25 +199,19 @@ interface Data {
 <span class="cstat-no" title="statement not covered" >    };</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >let loaderBaseURL: URL = new URL('file:');</span>
-<span class="cstat-no" title="statement not covered" >let loaderParsedImportMap: IM.ParsedImportMap = {};</span>
+<span class="cstat-no" title="statement not covered" >let importMapResolver: ImportMapResolver | null = null;</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >export function initialize(data: Data) {</span>
-<span class="cstat-no" title="statement not covered" >    loaderBaseURL = new URL(data.baseURL);</span>
-<span class="cstat-no" title="statement not covered" >    loaderParsedImportMap = IM.parse(data.importMap, loaderBaseURL);</span>
+<span class="cstat-no" title="statement not covered" >    importMapResolver = createImportMapResolver(data.baseURL, data.importMap);</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >export function resolve(</span>
 <span class="cstat-no" title="statement not covered" >    specifier: string,</span>
-<span class="cstat-no" title="statement not covered" >    context: Record&lt;string, any&gt;,</span>
+<span class="cstat-no" title="statement not covered" >    context: { parentURL: string },</span>
 <span class="cstat-no" title="statement not covered" >    nextResolve: Function</span>
 <span class="cstat-no" title="statement not covered" >) {</span>
-<span class="cstat-no" title="statement not covered" >    const scriptURL = new URL(context.parentURL);</span>
-<span class="cstat-no" title="statement not covered" >    const result = IM.resolve(specifier, loaderParsedImportMap, scriptURL);</span>
-<span class="cstat-no" title="statement not covered" >    if (result.matched &amp;&amp; result.resolvedImport) {</span>
-<span class="cstat-no" title="statement not covered" >        return nextResolve(pathToFileURL(result.resolvedImport.pathname).href);</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >    return nextResolve(specifier, context);</span>
+<span class="cstat-no" title="statement not covered" >    const result = importMapResolver?.(specifier, context.parentURL);</span>
+<span class="cstat-no" title="statement not covered" >    return nextResolve(result ?? specifier, context);</span>
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;</pre></td></tr></table></pre>
 
@@ -238,7 +220,7 @@ interface Data {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-07-22T07:35:47.172Z
+                at 2025-07-22T08:47:39.098Z
             </div>
         <script src="prettify.js"></script>
         <script>

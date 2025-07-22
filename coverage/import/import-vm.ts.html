@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/142</span>
+                <span class='fraction'>0/130</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/142</span>
+                <span class='fraction'>0/130</span>
             </div>
         
             
@@ -202,19 +202,7 @@
 <a name='L137'></a><a href='#L137'>137</a>
 <a name='L138'></a><a href='#L138'>138</a>
 <a name='L139'></a><a href='#L139'>139</a>
-<a name='L140'></a><a href='#L140'>140</a>
-<a name='L141'></a><a href='#L141'>141</a>
-<a name='L142'></a><a href='#L142'>142</a>
-<a name='L143'></a><a href='#L143'>143</a>
-<a name='L144'></a><a href='#L144'>144</a>
-<a name='L145'></a><a href='#L145'>145</a>
-<a name='L146'></a><a href='#L146'>146</a>
-<a name='L147'></a><a href='#L147'>147</a>
-<a name='L148'></a><a href='#L148'>148</a>
-<a name='L149'></a><a href='#L149'>149</a>
-<a name='L150'></a><a href='#L150'>150</a>
-<a name='L151'></a><a href='#L151'>151</a>
-<a name='L152'></a><a href='#L152'>152</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L140'></a><a href='#L140'>140</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -272,9 +260,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -296,16 +281,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -368,10 +344,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import fs from 'node:fs';<span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" ></span></span></span>
 <span class="cstat-no" title="statement not covered" >import { isBuiltin } from 'node:module';</span>
 <span class="cstat-no" title="statement not covered" >import path from 'node:path';</span>
-<span class="cstat-no" title="statement not covered" >import { fileURLToPath, pathToFileURL } from 'node:url';</span>
+<span class="cstat-no" title="statement not covered" >import { fileURLToPath } from 'node:url';</span>
 <span class="cstat-no" title="statement not covered" >import vm from 'node:vm';</span>
-<span class="cstat-no" title="statement not covered" >import IM from '@import-maps/resolve';</span>
 <span class="cstat-no" title="statement not covered" >import { CircularDependencyError, FileReadError } from './error';</span>
+<span class="cstat-no" title="statement not covered" >import { createImportMapResolver } from './import-map-resolve';</span>
 import type { ImportMap } from './types';
 &nbsp;
 <span class="cstat-no" title="statement not covered" >async function importBuiltinModule(specifier: string, context: vm.Context) {</span>
@@ -397,22 +373,19 @@ import type { ImportMap } from './types';
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >export function createVmImport(baseURL: URL, importMap: ImportMap = {}) {</span>
-<span class="cstat-no" title="statement not covered" >    const parsedImportMap = IM.parse(importMap, baseURL);</span>
-<span class="cstat-no" title="statement not covered" >    const parse = (specifier: string, parent: string) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        const result = IM.resolve(specifier, parsedImportMap, new URL(parent));</span>
+<span class="cstat-no" title="statement not covered" >    const importMapResolver = createImportMapResolver(baseURL.href, importMap);</span>
+<span class="cstat-no" title="statement not covered" >    const buildMeta = (specifier: string, parent: string): ImportMeta =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        const result = importMapResolver(specifier, parent);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        let filename: string;</span>
-<span class="cstat-no" title="statement not covered" >        if (result.matched &amp;&amp; result.resolvedImport) {</span>
-<span class="cstat-no" title="statement not covered" >            filename = result.resolvedImport.href;</span>
-<span class="cstat-no" title="statement not covered" >        } else {</span>
-<span class="cstat-no" title="statement not covered" >            filename = import.meta.resolve(specifier, parent);</span>
-<span class="cstat-no" title="statement not covered" >        }</span>
-<span class="cstat-no" title="statement not covered" >        const url = pathToFileURL(filename);</span>
-<span class="cstat-no" title="statement not covered" >        const pathname = fileURLToPath(url);</span>
+<span class="cstat-no" title="statement not covered" >        const url: string = result ?? import.meta.resolve(specifier, parent);</span>
+<span class="cstat-no" title="statement not covered" >        const filename = fileURLToPath(url);</span>
 <span class="cstat-no" title="statement not covered" >        return {</span>
 <span class="cstat-no" title="statement not covered" >            filename,</span>
+<span class="cstat-no" title="statement not covered" >            dirname: path.dirname(filename),</span>
 <span class="cstat-no" title="statement not covered" >            url,</span>
-<span class="cstat-no" title="statement not covered" >            pathname</span>
+<span class="cstat-no" title="statement not covered" >            resolve: (specifier: string, parent: string | URL = url) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                return import.meta.resolve(specifier, parent);</span>
+<span class="cstat-no" title="statement not covered" >            }</span>
 <span class="cstat-no" title="statement not covered" >        };</span>
 <span class="cstat-no" title="statement not covered" >    };</span>
 <span class="cstat-no" title="statement not covered" >    async function moduleLinker(</span>
@@ -425,17 +398,17 @@ import type { ImportMap } from './types';
 <span class="cstat-no" title="statement not covered" >        if (isBuiltin(specifier)) {</span>
 <span class="cstat-no" title="statement not covered" >            return importBuiltinModule(specifier, context);</span>
 <span class="cstat-no" title="statement not covered" >        }</span>
-<span class="cstat-no" title="statement not covered" >        const parsed = parse(specifier, parent);</span>
+<span class="cstat-no" title="statement not covered" >        const meta = buildMeta(specifier, parent);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        if (moduleIds.includes(parsed.pathname)) {</span>
+<span class="cstat-no" title="statement not covered" >        if (moduleIds.includes(meta.filename)) {</span>
 <span class="cstat-no" title="statement not covered" >            throw new CircularDependencyError(</span>
 <span class="cstat-no" title="statement not covered" >                'Circular dependency detected',</span>
 <span class="cstat-no" title="statement not covered" >                moduleIds,</span>
-<span class="cstat-no" title="statement not covered" >                parsed.pathname</span>
+<span class="cstat-no" title="statement not covered" >                meta.filename</span>
 <span class="cstat-no" title="statement not covered" >            );</span>
 <span class="cstat-no" title="statement not covered" >        }</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        const module = cache.get(parsed.pathname);</span>
+<span class="cstat-no" title="statement not covered" >        const module = cache.get(meta.filename);</span>
 <span class="cstat-no" title="statement not covered" >        if (module) {</span>
 <span class="cstat-no" title="statement not covered" >            return module;</span>
 <span class="cstat-no" title="statement not covered" >        }</span>
@@ -445,53 +418,44 @@ import type { ImportMap } from './types';
 <span class="cstat-no" title="statement not covered" >            });</span>
 <span class="cstat-no" title="statement not covered" >        });</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        const dirname = path.dirname(parsed.filename);</span>
-<span class="cstat-no" title="statement not covered" >        cache.set(parsed.pathname, modulePromise);</span>
+<span class="cstat-no" title="statement not covered" >        cache.set(meta.filename, modulePromise);</span>
 <span class="cstat-no" title="statement not covered" >        return modulePromise;</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        async function moduleBuild(): Promise&lt;vm.SourceTextModule&gt; {</span>
 <span class="cstat-no" title="statement not covered" >            let text: string;</span>
 <span class="cstat-no" title="statement not covered" >            try {</span>
-<span class="cstat-no" title="statement not covered" >                text = fs.readFileSync(parsed.pathname, 'utf-8');</span>
+<span class="cstat-no" title="statement not covered" >                text = fs.readFileSync(meta.filename, 'utf-8');</span>
 <span class="cstat-no" title="statement not covered" >            } catch (error) {</span>
 <span class="cstat-no" title="statement not covered" >                throw new FileReadError(</span>
-<span class="cstat-no" title="statement not covered" >                    `Failed to read module: ${parsed.pathname}`,</span>
+<span class="cstat-no" title="statement not covered" >                    `Failed to read module: ${meta.filename}`,</span>
 <span class="cstat-no" title="statement not covered" >                    moduleIds,</span>
-<span class="cstat-no" title="statement not covered" >                    parsed.pathname,</span>
+<span class="cstat-no" title="statement not covered" >                    meta.filename,</span>
 <span class="cstat-no" title="statement not covered" >                    error as Error</span>
 <span class="cstat-no" title="statement not covered" >                );</span>
 <span class="cstat-no" title="statement not covered" >            }</span>
 <span class="cstat-no" title="statement not covered" >            const module = new vm.SourceTextModule(text, {</span>
-<span class="cstat-no" title="statement not covered" >                initializeImportMeta: (meta) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >                    meta.filename = parsed.filename;</span>
-<span class="cstat-no" title="statement not covered" >                    meta.dirname = dirname;</span>
-<span class="cstat-no" title="statement not covered" >                    meta.resolve = (</span>
-<span class="cstat-no" title="statement not covered" >                        specifier: string,</span>
-<span class="cstat-no" title="statement not covered" >                        parent: string | URL = parsed.url</span>
-<span class="cstat-no" title="statement not covered" >                    ) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >                        return import.meta.resolve(specifier, parent);</span>
-<span class="cstat-no" title="statement not covered" >                    };</span>
-<span class="cstat-no" title="statement not covered" >                    meta.url = parsed.url.toString();</span>
+<span class="cstat-no" title="statement not covered" >                initializeImportMeta: (importMeta) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                    Object.assign(importMeta, meta);</span>
 <span class="cstat-no" title="statement not covered" >                },</span>
 <span class="cstat-no" title="statement not covered" >                identifier: specifier,</span>
 <span class="cstat-no" title="statement not covered" >                context: context,</span>
 <span class="cstat-no" title="statement not covered" >                importModuleDynamically: (specifier, referrer) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >                    return moduleLinker(</span>
 <span class="cstat-no" title="statement not covered" >                        specifier,</span>
-<span class="cstat-no" title="statement not covered" >                        parsed.filename,</span>
+<span class="cstat-no" title="statement not covered" >                        meta.filename,</span>
 <span class="cstat-no" title="statement not covered" >                        referrer.context,</span>
 <span class="cstat-no" title="statement not covered" >                        cache,</span>
-<span class="cstat-no" title="statement not covered" >                        [...moduleIds, parsed.pathname]</span>
+<span class="cstat-no" title="statement not covered" >                        [...moduleIds, meta.filename]</span>
 <span class="cstat-no" title="statement not covered" >                    );</span>
 <span class="cstat-no" title="statement not covered" >                }</span>
 <span class="cstat-no" title="statement not covered" >            });</span>
 <span class="cstat-no" title="statement not covered" >            await module.link((specifier: string, referrer) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >                return moduleLinker(</span>
 <span class="cstat-no" title="statement not covered" >                    specifier,</span>
-<span class="cstat-no" title="statement not covered" >                    parsed.filename,</span>
+<span class="cstat-no" title="statement not covered" >                    meta.filename,</span>
 <span class="cstat-no" title="statement not covered" >                    referrer.context,</span>
 <span class="cstat-no" title="statement not covered" >                    cache,</span>
-<span class="cstat-no" title="statement not covered" >                    [...moduleIds, parsed.pathname]</span>
+<span class="cstat-no" title="statement not covered" >                    [...moduleIds, meta.filename]</span>
 <span class="cstat-no" title="statement not covered" >                );</span>
 <span class="cstat-no" title="statement not covered" >            });</span>
 <span class="cstat-no" title="statement not covered" >            await module.evaluate();</span>
@@ -523,7 +487,7 @@ import type { ImportMap } from './types';
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-07-22T07:35:47.172Z
+                at 2025-07-22T08:47:39.098Z
             </div>
         <script src="prettify.js"></script>
         <script>
