@@ -15,7 +15,7 @@ import { createVmImport } from '@esmx/import';
 import type { RspackOptions } from '@rspack/core';
 import hotMiddleware from 'webpack-hot-middleware';
 import type { BuildTarget } from './build-target';
-import { createRspackConfig } from './config';
+import { createRspackConfig } from './chain-config';
 import { pack } from './pack';
 import { createRsBuild } from './utils';
 
@@ -88,6 +88,42 @@ export interface RspackAppConfigContext {
 }
 
 /**
+ * Rspack 链式配置上下文接口。
+ *
+ * 该接口提供了在 chain 钩子函数中可以访问的上下文信息，允许你：
+ * - 访问 Esmx 框架实例
+ * - 获取当前的构建目标（client/server/node）
+ * - 使用 rspack-chain 修改配置
+ * - 访问应用选项
+ */
+export interface RspackAppChainContext {
+    /**
+     * Esmx 框架实例。
+     * 可用于访问框架提供的 API 和工具函数。
+     */
+    esmx: Esmx;
+
+    /**
+     * 当前的构建目标。
+     * - 'client': 客户端构建，生成浏览器可执行的代码
+     * - 'server': 服务端构建，生成 SSR 渲染代码
+     * - 'node': Node.js 构建，生成服务器入口代码
+     */
+    buildTarget: BuildTarget;
+
+    /**
+     * rspack-chain 配置对象。
+     * 你可以在 chain 钩子中使用链式 API 修改配置。
+     */
+    chain: import('rspack-chain');
+
+    /**
+     * 创建应用时传入的选项对象。
+     */
+    options: RspackAppOptions;
+}
+
+/**
  * Rspack 应用配置选项接口。
  *
  * 该接口提供了创建 Rspack 应用时可以使用的配置选项，包括：
@@ -138,6 +174,16 @@ export interface RspackAppOptions {
      * @param context - 配置上下文，包含框架实例、构建目标和配置对象
      */
     config?: (context: RspackAppConfigContext) => void;
+
+    /**
+     * Rspack chain 配置钩子函数。
+     *
+     * 使用 rspack-chain 提供链式配置方式，可以更灵活地修改 Rspack 配置。
+     * 在 config 钩子之后调用，如果有 chain 钩子则优先使用链式配置。
+     *
+     * @param context - 配置上下文，包含框架实例、构建目标和 chain 配置对象
+     */
+    chain?: (context: RspackAppChainContext) => void;
 }
 
 /**
@@ -240,11 +286,8 @@ function generateBuildConfig(
     esmx: Esmx,
     options: RspackAppOptions,
     buildTarget: BuildTarget
-) {
-    const config = createRspackConfig(esmx, buildTarget, options);
-    options.config?.({ esmx, options, buildTarget, config });
-
-    return config;
+): RspackOptions {
+    return createRspackConfig(esmx, buildTarget, options);
 }
 
 function rewriteRender(esmx: Esmx) {

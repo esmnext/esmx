@@ -1,11 +1,12 @@
 export {
     type RspackAppConfigContext,
+    type RspackAppChainContext,
     type RspackAppOptions,
-    createRspackApp
-} from './app';
-export { createRspackHtmlApp, type RspackHtmlAppOptions } from './html-app';
-export type { BuildTarget } from './build-target';
-export { RSPACK_LOADER } from './loader';
+    type BuildTarget,
+    createRspackApp,
+    RSPACK_LOADER
+} from './rspack';
+export { createRspackHtmlApp, type RspackHtmlAppOptions } from './rspack-html';
 
 import * as rspack from '@rspack/core';
 
