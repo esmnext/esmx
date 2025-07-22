@@ -5,7 +5,7 @@
         "src/entry.client": {
             "name": "src/entry.client",
             "rewrite": true,
-            "file": "exports/src/entry.client.74002fd3.final.mjs",
+            "file": "exports/src/entry.client.234a8760.final.mjs",
             "identifier": "ssr-vue2-remote/src/entry.client"
         },
         "vue": {
@@ -35,16 +35,29 @@
     },
     "buildFiles": [
         "exports/src/examples/index.84b37e4f.final.css",
-        "chunks/509.af50fee8.final.mjs",
-        "exports/src/components/index.ab83c694.final.mjs",
         "exports/src/examples/index.79cce571.final.mjs",
-        "exports/vue.389c4cab.final.mjs",
         "exports/src/composables/index.c2bfa8f0.final.mjs",
-        "exports/src/entry.client.74002fd3.final.mjs",
+        "chunks/150.35cce147.final.mjs",
+        "exports/vue.389c4cab.final.mjs",
+        "exports/src/components/index.ab83c694.final.mjs",
         "exports/src/components/index.76f4c45a.final.css",
-        "chunks/509.6b60ed37.final.css"
+        "chunks/150.6b60ed37.final.css",
+        "exports/src/entry.client.234a8760.final.mjs"
     ],
     "chunks": {
+        "ssr-vue2-remote@src/app.vue": {
+            "name": "ssr-vue2-remote@src/app.vue",
+            "js": "chunks/150.35cce147.final.mjs",
+            "css": [
+                "chunks/150.6b60ed37.final.css"
+            ],
+            "resources": [],
+            "sizes": {
+                "js": 10504,
+                "css": 4691,
+                "resource": 0
+            }
+        },
         "ssr-vue2-remote@src/examples/index.ts": {
             "name": "ssr-vue2-remote@src/examples/index.ts",
             "js": "exports/src/examples/index.79cce571.final.mjs",
@@ -53,7 +66,7 @@
             ],
             "resources": [],
             "sizes": {
-                "js": 27716,
+                "js": 27758,
                 "css": 8255,
                 "resource": 0
             }
@@ -69,22 +82,9 @@
                 "resource": 0
             }
         },
-        "ssr-vue2-remote@src/app.vue": {
-            "name": "ssr-vue2-remote@src/app.vue",
-            "js": "chunks/509.af50fee8.final.mjs",
-            "css": [
-                "chunks/509.6b60ed37.final.css"
-            ],
-            "resources": [],
-            "sizes": {
-                "js": 10490,
-                "css": 4691,
-                "resource": 0
-            }
-        },
         "ssr-vue2-remote@src/entry.client.ts": {
             "name": "ssr-vue2-remote@src/entry.client.ts",
-            "js": "exports/src/entry.client.74002fd3.final.mjs",
+            "js": "exports/src/entry.client.234a8760.final.mjs",
             "css": [],
             "resources": [],
             "sizes": {
@@ -112,7 +112,7 @@
             ],
             "resources": [],
             "sizes": {
-                "js": 31321,
+                "js": 31405,
                 "css": 13422,
                 "resource": 0
             }

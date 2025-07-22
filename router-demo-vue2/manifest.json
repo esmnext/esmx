@@ -5,7 +5,7 @@
         "src/entry.client": {
             "name": "src/entry.client",
             "rewrite": true,
-            "file": "exports/src/entry.client.27f2e711.final.mjs",
+            "file": "exports/src/entry.client.8c5e2f19.final.mjs",
             "identifier": "router-demo-vue2/src/entry.client"
         },
         "vue": {
@@ -28,13 +28,13 @@
         }
     },
     "buildFiles": [
-        "chunks/680.769d9c00.final.mjs",
-        "exports/@esmx/router-vue.0a731974.final.mjs",
         "exports/vue.389c4cab.final.mjs",
-        "exports/src/entry.client.27f2e711.final.mjs",
+        "exports/@esmx/router-vue.0a731974.final.mjs",
         "exports/src/entry.client.0c6e4813.final.css",
-        "exports/@esmx/router.c7a40b8d.final.mjs",
-        "chunks/680.cc8fbaa2.final.css"
+        "chunks/538.cc8fbaa2.final.css",
+        "chunks/538.eced6808.final.mjs",
+        "exports/src/entry.client.8c5e2f19.final.mjs",
+        "exports/@esmx/router.c7a40b8d.final.mjs"
     ],
     "chunks": {
         "router-demo-vue2@../../packages/router/dist/index.mjs": {
@@ -72,26 +72,26 @@
         },
         "router-demo-vue2@src/entry.client.ts": {
             "name": "router-demo-vue2@src/entry.client.ts",
-            "js": "exports/src/entry.client.27f2e711.final.mjs",
+            "js": "exports/src/entry.client.8c5e2f19.final.mjs",
             "css": [
                 "exports/src/entry.client.0c6e4813.final.css"
             ],
             "resources": [],
             "sizes": {
-                "js": 51214,
+                "js": 51284,
                 "css": 35878,
                 "resource": 0
             }
         },
         "router-demo-vue2@src/views/not-found.vue": {
             "name": "router-demo-vue2@src/views/not-found.vue",
-            "js": "chunks/680.769d9c00.final.mjs",
+            "js": "chunks/538.eced6808.final.mjs",
             "css": [
-                "chunks/680.cc8fbaa2.final.css"
+                "chunks/538.cc8fbaa2.final.css"
             ],
             "resources": [],
             "sizes": {
-                "js": 4406,
+                "js": 4420,
                 "css": 4139,
                 "resource": 0
             }
