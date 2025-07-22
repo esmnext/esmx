@@ -1,6 +1,7 @@
 import { exec, execSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { rm } from 'node:fs/promises';
+import { glob } from 'node:fs/promises';
 import { join, relative } from 'node:path';
 import { promisify } from 'node:util';
 import { config } from './config.mjs';
@@ -81,19 +82,20 @@ export async function getPackagePaths(mode = 'examples') {
         paths.push(...examplesPaths, ...packagesPaths, config.rootDir);
     } else if (mode === 'examples' || mode === 'packages') {
         const pattern = patterns[mode];
-        try {
-            const { stdout } = await execCommand(
-                `pnpm -F "${pattern}" exec -- pwd`,
-                { stdio: 'pipe', shell: true }
-            );
+        const entries = [];
+        for await (const entry of glob(pattern, {
+            cwd: config.rootDir,
+            ignore: ['**/node_modules/**', '**/dist/**', '**/.git/**']
+        })) {
+            entries.push(entry);
+        }
 
-            const projectPaths = stdout.trim().split('\n').filter(Boolean);
-            paths.push(...projectPaths);
-        } catch (error) {
-            if (error.message.includes('No projects matched')) {
-                return [];
+        for (const entry of entries) {
+            const fullPath = join(config.rootDir, entry);
+            const packageJsonPath = join(fullPath, 'package.json');
+            if (existsSync(packageJsonPath)) {
+                paths.push(fullPath);
             }
-            throw error;
         }
     }
 
