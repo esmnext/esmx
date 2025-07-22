@@ -5,13 +5,16 @@ export default {
     async devApp(esmx) {
         return import('@esmx/rspack-vue').then((m) =>
             m.createRspackVue2App(esmx, {
-                config(context) {
+                chain(context) {
                     // Custom Rspack configuration
                 }
             })
         );
     },
-
+    async postBuild(esmx) {
+        const rc = await esmx.render();
+        esmx.writeSync(esmx.resolvePath('dist/client', 'index.html'), rc.html);
+    },
     async server(esmx) {
         const server = http.createServer((req, res) => {
             esmx.middleware(req, res, async () => {

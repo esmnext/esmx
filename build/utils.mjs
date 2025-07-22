@@ -67,8 +67,8 @@ export function toDisplayPath(absolutePath, rootDir = config.rootDir) {
 
 export async function getPackagePaths(mode = 'examples') {
     const patterns = {
-        examples: './examples/*',
-        packages: './packages/*'
+        examples: './examples/**',
+        packages: './packages/**'
     };
 
     const paths = [];
@@ -85,7 +85,7 @@ export async function getPackagePaths(mode = 'examples') {
         const entries = [];
         for await (const entry of glob(pattern, {
             cwd: config.rootDir,
-            ignore: ['**/node_modules/**', '**/dist/**', '**/.git/**']
+            exclude: ['**/node_modules/**', '**/dist/**', '**/.git/**']
         })) {
             entries.push(entry);
         }

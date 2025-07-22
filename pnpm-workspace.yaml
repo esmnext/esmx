@@ -1,5 +1,4 @@
 
 packages:
     - 'packages/*'
-    - 'examples/*'
-    - 'examples/router-demo/*'
+    - 'examples/**'

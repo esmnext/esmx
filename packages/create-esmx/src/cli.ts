@@ -28,7 +28,7 @@ ${color.bold('Usage:')}
   ${createCmd} [project-name] [options]
 
 ${color.bold('Options:')}
-  -t, --template <template>    Template to use (default: vue2)
+  -t, --template <template>    Template to use (default: vue2-csr)
   -n, --name <name>            Project name or path
   -f, --force                  Force overwrite existing directory
   -h, --help                   Show help information
@@ -36,9 +36,9 @@ ${color.bold('Options:')}
 
 ${color.bold('Examples:')}
   ${createCmd} my-project
-  ${createCmd} my-project -t vue2
+  ${createCmd} my-project -t vue2-csr
   ${createCmd} my-project --force
-  ${createCmd} . -f -t vue2
+  ${createCmd} . -f -t vue2-csr
 
 ${color.bold('Available Templates:')}
 ${getAvailableTemplates()
@@ -80,7 +80,7 @@ async function getProjectName(
 /**
  * Get template type from arguments or prompt user
  */
-async function getTemplateType(argTemplate?: string): Promise<string | symbol> {
+async function getTemplateType(argTemplate?: string): Promise<string> {
     const availableTemplates = getAvailableTemplates();
 
     if (
@@ -101,14 +101,14 @@ async function getTemplateType(argTemplate?: string): Promise<string | symbol> {
         options: options
     });
 
-    return template as string | symbol;
+    return String(template);
 }
 
 /**
  * Main function to create a project
  */
 export async function cli(options: CliOptions = {}): Promise<void> {
-    const { argv, cwd, userAgent } = options;
+    const { argv, cwd, userAgent, version } = options;
     const commandLineArgs = argv || process.argv.slice(2);
     const workingDir = cwd || process.cwd();
 
@@ -175,7 +175,7 @@ export async function cli(options: CliOptions = {}): Promise<void> {
         parsedArgs.force,
         {
             projectName: packageName,
-            esmxVersion: getEsmxVersion(),
+            esmxVersion: version || getEsmxVersion(),
             installCommand,
             devCommand,
             buildCommand,
