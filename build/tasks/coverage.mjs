@@ -5,7 +5,7 @@ import {
     readFileSync,
     writeFileSync
 } from 'node:fs';
-import { join } from 'node:path';
+import { basename, join } from 'node:path';
 import { config } from '../config.mjs';
 import { colors, getPackagePaths, log, toDisplayPath } from '../utils.mjs';
 import { generateCoverageHTML } from './coverage-html.mjs';
@@ -26,7 +26,7 @@ async function findPackagesWithCoverage() {
 
 function copyPackageCoverageReports(packagesWithCoverage) {
     for (const packagePath of packagesWithCoverage) {
-        const packageName = packagePath.split('/').pop();
+        const packageName = basename(packagePath);
         const packageCoverageDir = join(packagePath, 'coverage');
         const targetDir = join(config.coverageDir, packageName);
 
@@ -144,7 +144,7 @@ export async function generateCoverage() {
     copyPackageCoverageReports(packagesWithCoverage);
 
     const packageCoverageData = packagesWithCoverage.map((packagePath) => {
-        const packageName = packagePath.split('/').pop();
+        const packageName = basename(packagePath);
         return calculatePackageCoverage(packageName);
     });
 
