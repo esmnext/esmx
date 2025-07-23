@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { dirname, isAbsolute, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { cancel, confirm, isCancel } from '@clack/prompts';
 import { copyTemplateFiles, isDirectoryEmpty } from './template';
@@ -18,8 +18,11 @@ export async function createProjectFromTemplate(
     variables: TemplateVariables
 ): Promise<void> {
     const templatePath = resolve(__dirname, '../template', templateType);
-    const targetPath =
-        targetDir === '.' ? workingDir : resolve(workingDir, targetDir);
+    const targetPath = isAbsolute(targetDir)
+        ? targetDir
+        : targetDir === '.'
+          ? workingDir
+          : resolve(workingDir, targetDir);
 
     if (!existsSync(templatePath)) {
         throw new Error(`Template "${templateType}" not found`);
