@@ -64,37 +64,6 @@ importers:
         specifier: ^2.1.6
         version: 2.2.12(typescript@5.8.3)
 
-  examples/router-demo-music/dist:
-    dependencies:
-      '@esmx/core':
-        specifier: workspace:*
-        version: link:../../../packages/core
-    devDependencies:
-      '@esmx/router':
-        specifier: workspace:*
-        version: link:../../../packages/router
-      '@esmx/router-vue':
-        specifier: workspace:*
-        version: link:../../../packages/router-vue
-      '@esmx/rspack-vue':
-        specifier: workspace:*
-        version: link:../../../packages/rspack-vue
-      '@types/node':
-        specifier: ^24.0.10
-        version: 24.0.12
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-      vue:
-        specifier: ^2.7.16
-        version: 2.7.16
-      vue-server-renderer:
-        specifier: ^2.7.16
-        version: 2.7.16
-      vue-tsc:
-        specifier: ^2.1.6
-        version: 2.2.12(typescript@5.8.3)
-
   examples/router-demo-vue2:
     dependencies:
       '@esmx/core':
@@ -110,37 +79,6 @@ importers:
       '@esmx/rspack-vue':
         specifier: workspace:*
         version: link:../../packages/rspack-vue
-      '@types/node':
-        specifier: ^24.0.10
-        version: 24.0.12
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-      vue:
-        specifier: ^2.7.16
-        version: 2.7.16
-      vue-server-renderer:
-        specifier: ^2.7.16
-        version: 2.7.16
-      vue-tsc:
-        specifier: ^2.1.6
-        version: 2.2.12(typescript@5.8.3)
-
-  examples/router-demo-vue2/dist:
-    dependencies:
-      '@esmx/core':
-        specifier: workspace:*
-        version: link:../../../packages/core
-    devDependencies:
-      '@esmx/router':
-        specifier: workspace:*
-        version: link:../../../packages/router
-      '@esmx/router-vue':
-        specifier: workspace:*
-        version: link:../../../packages/router-vue
-      '@esmx/rspack-vue':
-        specifier: workspace:*
-        version: link:../../../packages/rspack-vue
       '@types/node':
         specifier: ^24.0.10
         version: 24.0.12
@@ -174,59 +112,22 @@ importers:
         version: 24.0.12
       ssr-npm-base:
         specifier: workspace:*
-        version: link:../ssr-npm-base/dist
+        version: link:../ssr-npm-base
       ssr-npm-vue2:
         specifier: workspace:*
-        version: link:../ssr-npm-vue2/dist
+        version: link:../ssr-npm-vue2
       ssr-npm-vue3:
         specifier: workspace:*
-        version: link:../ssr-npm-vue3/dist
+        version: link:../ssr-npm-vue3
       ssr-share:
         specifier: workspace:*
-        version: link:../ssr-share/dist
+        version: link:../ssr-share
       ssr-vue2:
         specifier: workspace:*
-        version: link:../ssr-vue2/dist
+        version: link:../ssr-vue2
       ssr-vue3:
         specifier: workspace:*
-        version: link:../ssr-vue3/dist
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-
-  examples/router-demo/ssr-hub/dist:
-    dependencies:
-      '@esmx/core':
-        specifier: workspace:*
-        version: link:../../../../packages/core
-    devDependencies:
-      '@esmx/router':
-        specifier: workspace:*
-        version: link:../../../../packages/router
-      '@esmx/rspack-vue':
-        specifier: workspace:*
-        version: link:../../../../packages/rspack-vue
-      '@types/node':
-        specifier: ^24.0.10
-        version: 24.0.12
-      ssr-npm-base:
-        specifier: workspace:*
-        version: link:../../ssr-npm-base/dist
-      ssr-npm-vue2:
-        specifier: workspace:*
-        version: link:../../ssr-npm-vue2/dist
-      ssr-npm-vue3:
-        specifier: workspace:*
-        version: link:../../ssr-npm-vue3/dist
-      ssr-share:
-        specifier: workspace:*
-        version: link:../../ssr-share/dist
-      ssr-vue2:
-        specifier: workspace:*
-        version: link:../../ssr-vue2/dist
-      ssr-vue3:
-        specifier: workspace:*
-        version: link:../../ssr-vue3/dist
+        version: link:../ssr-vue3
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -243,25 +144,6 @@ importers:
       '@esmx/rspack':
         specifier: workspace:*
         version: link:../../../packages/rspack
-      '@types/node':
-        specifier: ^24.0.10
-        version: 24.0.12
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-
-  examples/router-demo/ssr-npm-base/dist:
-    dependencies:
-      '@esmx/core':
-        specifier: workspace:*
-        version: link:../../../../packages/core
-    devDependencies:
-      '@esmx/router':
-        specifier: workspace:*
-        version: link:../../../../packages/router
-      '@esmx/rspack':
-        specifier: workspace:*
-        version: link:../../../../packages/rspack
       '@types/node':
         specifier: ^24.0.10
         version: 24.0.12
@@ -286,38 +168,7 @@ importers:
         version: 24.0.12
       ssr-npm-base:
         specifier: workspace:*
-        version: link:../ssr-npm-base/dist
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-      vue:
-        specifier: ^2.7.16
-        version: 2.7.16
-      vue-server-renderer:
-        specifier: ^2.7.16
-        version: 2.7.16
-      vue-tsc:
-        specifier: ^2.1.6
-        version: 2.2.12(typescript@5.8.3)
-
-  examples/router-demo/ssr-npm-vue2/dist:
-    dependencies:
-      '@esmx/core':
-        specifier: workspace:*
-        version: link:../../../../packages/core
-    devDependencies:
-      '@esmx/router-vue':
-        specifier: workspace:*
-        version: link:../../../../packages/router-vue
-      '@esmx/rspack-vue':
-        specifier: workspace:*
-        version: link:../../../../packages/rspack-vue
-      '@types/node':
-        specifier: ^24.0.10
-        version: 24.0.12
-      ssr-npm-base:
-        specifier: workspace:*
-        version: link:../../ssr-npm-base/dist
+        version: link:../ssr-npm-base
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -351,38 +202,7 @@ importers:
         version: 3.5.17(vue@3.5.17(typescript@5.8.3))
       ssr-npm-base:
         specifier: workspace:*
-        version: link:../ssr-npm-base/dist
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-      vue:
-        specifier: ^3.5.17
-        version: 3.5.17(typescript@5.8.3)
-      vue-tsc:
-        specifier: ^2.2.10
-        version: 2.2.12(typescript@5.8.3)
-
-  examples/router-demo/ssr-npm-vue3/dist:
-    dependencies:
-      '@esmx/core':
-        specifier: workspace:*
-        version: link:../../../../packages/core
-    devDependencies:
-      '@esmx/router-vue':
-        specifier: workspace:*
-        version: link:../../../../packages/router-vue
-      '@esmx/rspack-vue':
-        specifier: workspace:*
-        version: link:../../../../packages/rspack-vue
-      '@types/node':
-        specifier: ^24.0.10
-        version: 24.0.12
-      '@vue/server-renderer':
-        specifier: ^3.5.17
-        version: 3.5.17(vue@3.5.17(typescript@5.8.3))
-      ssr-npm-base:
-        specifier: workspace:*
-        version: link:../../ssr-npm-base/dist
+        version: link:../ssr-npm-base
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -409,22 +229,6 @@ importers:
         specifier: ^5.8.3
         version: 5.8.3
 
-  examples/router-demo/ssr-share/dist:
-    dependencies:
-      '@esmx/core':
-        specifier: workspace:*
-        version: link:../../../../packages/core
-    devDependencies:
-      '@esmx/rspack':
-        specifier: workspace:*
-        version: link:../../../../packages/rspack
-      '@types/node':
-        specifier: ^24.0.10
-        version: 24.0.12
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-
   examples/router-demo/ssr-vue2:
     dependencies:
       '@esmx/core':
@@ -439,44 +243,13 @@ importers:
         version: 24.0.12
       ssr-npm-base:
         specifier: workspace:*
-        version: link:../ssr-npm-base/dist
+        version: link:../ssr-npm-base
       ssr-npm-vue2:
         specifier: workspace:*
-        version: link:../ssr-npm-vue2/dist
+        version: link:../ssr-npm-vue2
       ssr-share:
         specifier: workspace:*
-        version: link:../ssr-share/dist
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-      vue:
-        specifier: ^2.7.16
-        version: 2.7.16
-      vue-tsc:
-        specifier: ^2.1.6
-        version: 2.2.12(typescript@5.8.3)
-
-  examples/router-demo/ssr-vue2/dist:
-    dependencies:
-      '@esmx/core':
-        specifier: workspace:*
-        version: link:../../../../packages/core
-    devDependencies:
-      '@esmx/rspack-vue':
-        specifier: workspace:*
-        version: link:../../../../packages/rspack-vue
-      '@types/node':
-        specifier: ^24.0.10
-        version: 24.0.12
-      ssr-npm-base:
-        specifier: workspace:*
-        version: link:../../ssr-npm-base/dist
-      ssr-npm-vue2:
-        specifier: workspace:*
-        version: link:../../ssr-npm-vue2/dist
-      ssr-share:
-        specifier: workspace:*
-        version: link:../../ssr-share/dist
+        version: link:../ssr-share
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -501,44 +274,13 @@ importers:
         version: 24.0.12
       ssr-npm-base:
         specifier: workspace:*
-        version: link:../ssr-npm-base/dist
+        version: link:../ssr-npm-base
       ssr-npm-vue3:
         specifier: workspace:*
-        version: link:../ssr-npm-vue3/dist
+        version: link:../ssr-npm-vue3
       ssr-share:
         specifier: workspace:*
-        version: link:../ssr-share/dist
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-      vue:
-        specifier: ^3.5.17
-        version: 3.5.17(typescript@5.8.3)
-      vue-tsc:
-        specifier: ^2.2.10
-        version: 2.2.12(typescript@5.8.3)
-
-  examples/router-demo/ssr-vue3/dist:
-    dependencies:
-      '@esmx/core':
-        specifier: workspace:*
-        version: link:../../../../packages/core
-    devDependencies:
-      '@esmx/rspack-vue':
-        specifier: workspace:*
-        version: link:../../../../packages/rspack-vue
-      '@types/node':
-        specifier: ^24.0.10
-        version: 24.0.12
-      ssr-npm-base:
-        specifier: workspace:*
-        version: link:../../ssr-npm-base/dist
-      ssr-npm-vue3:
-        specifier: workspace:*
-        version: link:../../ssr-npm-vue3/dist
-      ssr-share:
-        specifier: workspace:*
-        version: link:../../ssr-share/dist
+        version: link:../ssr-share
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -565,22 +307,6 @@ importers:
         specifier: ^5.8.3
         version: 5.8.3
 
-  examples/ssr-demo-html/dist:
-    dependencies:
-      '@esmx/core':
-        specifier: workspace:*
-        version: link:../../../packages/core
-    devDependencies:
-      '@esmx/rspack':
-        specifier: workspace:*
-        version: link:../../../packages/rspack
-      '@types/node':
-        specifier: ^24.0.10
-        version: 24.0.12
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-
   examples/ssr-demo-preact-htm:
     dependencies:
       '@esmx/core':
@@ -590,31 +316,6 @@ importers:
       '@esmx/rspack':
         specifier: workspace:*
         version: link:../../packages/rspack
-      '@types/node':
-        specifier: ^24.0.10
-        version: 24.0.12
-      htm:
-        specifier: ^3.1.1
-        version: 3.1.1
-      preact:
-        specifier: ^10.26.2
-        version: 10.26.9
-      preact-render-to-string:
-        specifier: ^6.5.13
-        version: 6.5.13(preact@10.26.9)
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-
-  examples/ssr-demo-preact-htm/dist:
-    dependencies:
-      '@esmx/core':
-        specifier: workspace:*
-        version: link:../../../packages/core
-    devDependencies:
-      '@esmx/rspack':
-        specifier: workspace:*
-        version: link:../../../packages/rspack
       '@types/node':
         specifier: ^24.0.10
         version: 24.0.12
@@ -656,31 +357,6 @@ importers:
         specifier: ^2.1.6
         version: 2.2.12(typescript@5.8.3)
 
-  examples/ssr-demo-vue2/dist:
-    dependencies:
-      '@esmx/core':
-        specifier: workspace:*
-        version: link:../../../packages/core
-    devDependencies:
-      '@esmx/rspack-vue':
-        specifier: workspace:*
-        version: link:../../../packages/rspack-vue
-      '@types/node':
-        specifier: ^24.0.10
-        version: 24.0.12
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-      vue:
-        specifier: ^2.7.16
-        version: 2.7.16
-      vue-server-renderer:
-        specifier: ^2.7.16
-        version: 2.7.16
-      vue-tsc:
-        specifier: ^2.1.6
-        version: 2.2.12(typescript@5.8.3)
-
   examples/ssr-demo-vue3:
     dependencies:
       '@esmx/core':
@@ -690,31 +366,6 @@ importers:
       '@esmx/rspack-vue':
         specifier: workspace:*
         version: link:../../packages/rspack-vue
-      '@types/node':
-        specifier: ^24.0.10
-        version: 24.0.12
-      '@vue/server-renderer':
-        specifier: ^3.5.13
-        version: 3.5.17(vue@3.5.17(typescript@5.8.3))
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-      vue:
-        specifier: ^3.5.13
-        version: 3.5.17(typescript@5.8.3)
-      vue-tsc:
-        specifier: ^2.2.8
-        version: 2.2.12(typescript@5.8.3)
-
-  examples/ssr-demo-vue3/dist:
-    dependencies:
-      '@esmx/core':
-        specifier: workspace:*
-        version: link:../../../packages/core
-    devDependencies:
-      '@esmx/rspack-vue':
-        specifier: workspace:*
-        version: link:../../../packages/rspack-vue
       '@types/node':
         specifier: ^24.0.10
         version: 24.0.12
@@ -747,22 +398,6 @@ importers:
         specifier: ^5.8.3
         version: 5.8.3
 
-  examples/ssr-html/dist:
-    dependencies:
-      '@esmx/core':
-        specifier: workspace:*
-        version: link:../../../packages/core
-    devDependencies:
-      '@esmx/rspack':
-        specifier: workspace:*
-        version: link:../../../packages/rspack
-      '@types/node':
-        specifier: ^24.0.10
-        version: 24.0.12
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-
   examples/ssr-preact-htm:
     dependencies:
       '@esmx/core':
@@ -772,31 +407,6 @@ importers:
       '@esmx/rspack':
         specifier: workspace:*
         version: link:../../packages/rspack
-      '@types/node':
-        specifier: ^24.0.10
-        version: 24.0.12
-      htm:
-        specifier: ^3.1.1
-        version: 3.1.1
-      preact:
-        specifier: ^10.26.2
-        version: 10.26.9
-      preact-render-to-string:
-        specifier: ^6.5.13
-        version: 6.5.13(preact@10.26.9)
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-
-  examples/ssr-preact-htm/dist:
-    dependencies:
-      '@esmx/core':
-        specifier: workspace:*
-        version: link:../../../packages/core
-    devDependencies:
-      '@esmx/rspack':
-        specifier: workspace:*
-        version: link:../../../packages/rspack
       '@types/node':
         specifier: ^24.0.10
         version: 24.0.12
@@ -839,47 +449,7 @@ importers:
         version: 4.3.0
       ssr-vue2-remote:
         specifier: workspace:*
-        version: link:../ssr-vue2-remote/dist
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-      vue:
-        specifier: 2.7.16
-        version: 2.7.16
-      vue-server-renderer:
-        specifier: 2.7.16
-        version: 2.7.16
-      vue-tsc:
-        specifier: ^2.1.6
-        version: 2.2.12(typescript@5.8.3)
-
-  examples/ssr-vue2-host/dist:
-    dependencies:
-      '@esmx/core':
-        specifier: workspace:*
-        version: link:../../../packages/core
-      express:
-        specifier: ^4.19.2
-        version: 4.21.2
-    devDependencies:
-      '@esmx/rspack':
-        specifier: workspace:*
-        version: link:../../../packages/rspack
-      '@esmx/rspack-vue':
-        specifier: workspace:*
-        version: link:../../../packages/rspack-vue
-      '@types/express':
-        specifier: ^4.17.21
-        version: 4.17.23
-      '@types/node':
-        specifier: ^24.0.10
-        version: 24.0.12
-      less:
-        specifier: ^4.2.0
-        version: 4.3.0
-      ssr-vue2-remote:
-        specifier: workspace:*
-        version: link:../../ssr-vue2-remote/dist
+        version: link:../ssr-vue2-remote
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -930,43 +500,6 @@ importers:
         specifier: ^2.1.6
         version: 2.2.12(typescript@5.8.3)
 
-  examples/ssr-vue2-remote/dist:
-    dependencies:
-      '@esmx/core':
-        specifier: workspace:*
-        version: link:../../../packages/core
-      express:
-        specifier: ^4.19.2
-        version: 4.21.2
-    devDependencies:
-      '@esmx/rspack':
-        specifier: workspace:*
-        version: link:../../../packages/rspack
-      '@esmx/rspack-vue':
-        specifier: workspace:*
-        version: link:../../../packages/rspack-vue
-      '@types/express':
-        specifier: ^4.17.21
-        version: 4.17.23
-      '@types/node':
-        specifier: ^24.0.10
-        version: 24.0.12
-      less:
-        specifier: ^4.2.0
-        version: 4.3.0
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
-      vue:
-        specifier: 2.7.16
-        version: 2.7.16
-      vue-server-renderer:
-        specifier: 2.7.16
-        version: 2.7.16
-      vue-tsc:
-        specifier: ^2.1.6
-        version: 2.2.12(typescript@5.8.3)
-
   examples/templates/vue2-csr:
     dependencies:
       '@esmx/core':
@@ -992,31 +525,6 @@ importers:
         specifier: ^3.0.1
         version: 3.0.3(typescript@5.8.3)
 
-  examples/templates/vue2-csr/dist:
-    dependencies:
-      '@esmx/core':
-        specifier: workspace:*
-        version: link:../../../../packages/core
-    devDependencies:
-      '@esmx/rspack-vue':
-        specifier: workspace:*
-        version: link:../../../../packages/rspack-vue
-      '@types/node':
-        specifier: ^24.0.0
-        version: 24.0.12
-      tsc-alias:
-        specifier: ^1.8.16
-        version: 1.8.16
-      typescript:
-        specifier: 5.8.3
-        version: 5.8.3
-      vue:
-        specifier: 2.7.16
-        version: 2.7.16
-      vue-tsc:
-        specifier: ^3.0.1
-        version: 3.0.3(typescript@5.8.3)
-
   examples/templates/vue2-ssr:
     dependencies:
       '@esmx/core':
@@ -1026,34 +534,6 @@ importers:
       '@esmx/rspack-vue':
         specifier: workspace:*
         version: link:../../../packages/rspack-vue
-      '@types/node':
-        specifier: ^24.0.0
-        version: 24.0.12
-      tsc-alias:
-        specifier: ^1.8.16
-        version: 1.8.16
-      typescript:
-        specifier: 5.8.3
-        version: 5.8.3
-      vue:
-        specifier: 2.7.16
-        version: 2.7.16
-      vue-server-renderer:
-        specifier: 2.7.16
-        version: 2.7.16
-      vue-tsc:
-        specifier: ^3.0.1
-        version: 3.0.3(typescript@5.8.3)
-
-  examples/templates/vue2-ssr/dist:
-    dependencies:
-      '@esmx/core':
-        specifier: workspace:*
-        version: link:../../../../packages/core
-    devDependencies:
-      '@esmx/rspack-vue':
-        specifier: workspace:*
-        version: link:../../../../packages/rspack-vue
       '@types/node':
         specifier: ^24.0.0
         version: 24.0.12

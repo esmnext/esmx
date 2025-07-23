@@ -1,6 +1,6 @@
 # {{projectName}}
 
-An Esmx project with Vue2 and Server-Side Rendering.
+An Esmx project with Vue2 and Client-Side Rendering.
 
 ## 📦 Tech Stack
 
@@ -8,7 +8,7 @@ An Esmx project with Vue2 and Server-Side Rendering.
 - **UI Framework**: Vue2 with Composition API
 - **Build Tool**: Rspack
 - **Type Checking**: TypeScript
-- **Rendering Mode**: Server-Side Rendering (SSR)
+- **Rendering Mode**: Client-Side Rendering (CSR)
 
 ## 🚀 Quick Start
 
