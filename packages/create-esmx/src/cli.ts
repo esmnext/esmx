@@ -185,16 +185,18 @@ export async function cli(options: CliOptions = {}): Promise<void> {
     const devCmd = devCommand;
 
     const targetDirForDisplay =
-        projectNameInput === '.'
-            ? '.'
-            : root.split('/').pop() || root.split('\\').pop() || root;
+        projectNameInput === '.' ? '.' : projectNameInput;
 
-    const nextSteps = [
-        color.reset(`1. ${color.cyan(`cd ${targetDirForDisplay}`)}`),
-        color.reset(`2. ${color.cyan(installCmd)}`),
-        color.reset(`3. ${color.cyan('git init')} ${color.gray('(optional)')}`),
-        color.reset(`4. ${color.cyan(devCmd)}`)
-    ];
+    const steps = [
+        projectNameInput !== '.' ? `cd ${targetDirForDisplay}` : null,
+        installCmd,
+        `git init ${color.gray('(optional)')}`,
+        devCmd
+    ].filter(Boolean);
+
+    const nextSteps = steps.map((step, index) => {
+        return color.reset(`${index + 1}. ${color.cyan(step)}`);
+    });
 
     note(nextSteps.join('\n'), 'Next steps');
 

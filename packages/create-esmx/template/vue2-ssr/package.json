@@ -1,7 +1,7 @@
 {
     "name": "{{projectName}}",
     "version": "1.0.0",
-    "description": "Vue2 with Server-Side Rendering",
+    "description": "Vue2 Server-Side Rendering framework",
     "type": "module",
     "private": true,
     "scripts": {
