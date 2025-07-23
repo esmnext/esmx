@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">53.7% </span>
+                <span class="strong">47.36% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>29/54</span>
+                <span class='fraction'>27/57</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">76.92% </span>
+                <span class="strong">44.44% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>10/13</span>
+                <span class='fraction'>4/9</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">53.7% </span>
+                <span class="strong">47.36% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>29/54</span>
+                <span class='fraction'>27/57</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -135,7 +135,10 @@
 <a name='L70'></a><a href='#L70'>70</a>
 <a name='L71'></a><a href='#L71'>71</a>
 <a name='L72'></a><a href='#L72'>72</a>
-<a name='L73'></a><a href='#L73'>73</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -157,6 +160,9 @@
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -164,8 +170,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -181,19 +187,14 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -203,12 +204,17 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { existsSync, mkdirSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { dirname, isAbsolute, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { cancel, confirm, isCancel } from '@clack/prompts';
 import { copyTemplateFiles, isDirectoryEmpty } from './template';
@@ -227,8 +233,11 @@ export async function createProjectFromTemplate(
     variables: TemplateVariables
 ): Promise&lt;void&gt; {
     const templatePath = resolve(__dirname, '../template', templateType);
-    const targetPath =
-        targetDir === '.' ? workingDir : resolve(workingDir, targetDir);
+    const targetPath = isAbsolute(targetDir)
+        ? <span class="branch-0 cbranch-no" title="branch not covered" >targetDir</span>
+<span class="cstat-no" title="statement not covered" >        : targetDir === '.'</span>
+<span class="cstat-no" title="statement not covered" >          ? workingDir</span>
+<span class="cstat-no" title="statement not covered" >          : resolve(workingDir, targetDir);</span>
 &nbsp;
     if (!existsSync(templatePath)) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
 <span class="cstat-no" title="statement not covered" >        throw new Error(`Template "${templateType}" not found`);</span>
@@ -259,8 +268,8 @@ export async function createProjectFromTemplate(
     }
 &nbsp;
     // Handle current directory case
-    if (targetDir === '.' &amp;&amp; !isDirectoryEmpty(targetPath)) {
-        if (!force) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+    if (targetDir === <span class="branch-0 cbranch-no" title="branch not covered" >'.' &amp;&amp; !isDirectoryEmpty(targetPath)) <span class="branch-0 cbranch-no" title="branch not covered" >{</span></span>
+<span class="cstat-no" title="statement not covered" >        if (!force) {</span>
 <span class="cstat-no" title="statement not covered" >            const shouldOverwrite = await confirm({</span>
 <span class="cstat-no" title="statement not covered" >                message:</span>
 <span class="cstat-no" title="statement not covered" >                    'Current directory is not empty. Do you want to overwrite existing files?'</span>
@@ -275,7 +284,7 @@ export async function createProjectFromTemplate(
 <span class="cstat-no" title="statement not covered" >                throw new Error('Operation cancelled by user');</span>
 <span class="cstat-no" title="statement not covered" >            }</span>
 <span class="cstat-no" title="statement not covered" >        }</span>
-    }
+<span class="cstat-no" title="statement not covered" >    }</span>
 &nbsp;
     copyTemplateFiles(templatePath, targetPath, variables);
 }
@@ -286,7 +295,7 @@ export async function createProjectFromTemplate(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-07-22T12:52:04.178Z
+                at 2025-07-23T03:03:37.019Z
             </div>
         <script src="../prettify.js"></script>
         <script>

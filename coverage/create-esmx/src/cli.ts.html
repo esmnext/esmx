@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.76% </span>
+                <span class="strong">78.91% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>115/146</span>
+                <span class='fraction'>116/147</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">68.42% </span>
+                <span class="strong">65.21% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>13/19</span>
+                <span class='fraction'>15/23</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.76% </span>
+                <span class="strong">78.91% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>115/146</span>
+                <span class='fraction'>116/147</span>
             </div>
         
             
@@ -263,7 +263,9 @@
 <a name='L198'></a><a href='#L198'>198</a>
 <a name='L199'></a><a href='#L199'>199</a>
 <a name='L200'></a><a href='#L200'>200</a>
-<a name='L201'></a><a href='#L201'>201</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L201'></a><a href='#L201'>201</a>
+<a name='L202'></a><a href='#L202'>202</a>
+<a name='L203'></a><a href='#L203'>203</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -416,9 +418,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">13x</span>
@@ -454,15 +453,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import {
     cancel,
     intro,
@@ -615,10 +619,7 @@ export async function cli(options: CliOptions = {}): Promise&lt;void&gt; {
 <span class="cstat-no" title="statement not covered" >        return;</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 &nbsp;
-    const { packageName, targetDir } = formatProjectName(
-        projectNameInput,
-        workingDir
-    );
+    const { name, root } = formatProjectName(projectNameInput, workingDir);
 &nbsp;
     const templateType = await getTemplateType(parsedArgs.template);
     if (isCancel(templateType)) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
@@ -634,12 +635,12 @@ export async function cli(options: CliOptions = {}): Promise&lt;void&gt; {
     const lintTypeCommand = getCommand('lint:type', userAgent);
 &nbsp;
     await createProjectFromTemplate(
-        targetDir,
+        root,
         templateType,
         workingDir,
         parsedArgs.force,
         {
-            projectName: packageName,
+            projectName: name,
             esmxVersion: version || getEsmxVersion(),
             installCommand,
             devCommand,
@@ -652,8 +653,13 @@ export async function cli(options: CliOptions = {}): Promise&lt;void&gt; {
     const installCmd = installCommand;
     const devCmd = devCommand;
 &nbsp;
+    const targetDirForDisplay =
+        projectNameInput === '.'
+            ? '.'
+            : root.split('/').pop(<span class="branch-0 cbranch-no" title="branch not covered" >) || root.split('\\').pop(<span class="branch-0 cbranch-no" title="branch not covered" >) || r</span>oot;</span>
+&nbsp;
     const nextSteps = [
-        color.reset(`1. ${color.cyan(`cd ${targetDir}`)}`),
+        color.reset(`1. ${color.cyan(`cd ${targetDirForDisplay}`)}`),
         color.reset(`2. ${color.cyan(installCmd)}`),
         color.reset(`3. ${color.cyan('git init')} ${color.gray('(optional)')}`),
         color.reset(`4. ${color.cyan(devCmd)}`)
@@ -670,7 +676,7 @@ export async function cli(options: CliOptions = {}): Promise&lt;void&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-07-22T12:52:04.178Z
+                at 2025-07-23T03:03:37.019Z
             </div>
         <script src="../prettify.js"></script>
         <script>
