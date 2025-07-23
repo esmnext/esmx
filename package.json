@@ -4,7 +4,7 @@
     "version": "1.0.0",
     "type": "module",
     "scripts": {
-        "prepare": "node prepare.mjs",
+        "prepare": "node ./prepare.mjs",
         "lint:js": "biome check --write --no-errors-on-unmatched",
         "lint:css": "pnpm --filter \"*\" lint:css",
         "lint:type": "pnpm --filter \"*\" lint:type",

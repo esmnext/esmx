@@ -150,10 +150,7 @@ export async function cli(options: CliOptions = {}): Promise<void> {
         return;
     }
 
-    const { packageName, targetDir } = formatProjectName(
-        projectNameInput,
-        workingDir
-    );
+    const { name, root } = formatProjectName(projectNameInput, workingDir);
 
     const templateType = await getTemplateType(parsedArgs.template);
     if (isCancel(templateType)) {
@@ -169,12 +166,12 @@ export async function cli(options: CliOptions = {}): Promise<void> {
     const lintTypeCommand = getCommand('lint:type', userAgent);
 
     await createProjectFromTemplate(
-        targetDir,
+        root,
         templateType,
         workingDir,
         parsedArgs.force,
         {
-            projectName: packageName,
+            projectName: name,
             esmxVersion: version || getEsmxVersion(),
             installCommand,
             devCommand,
@@ -187,8 +184,13 @@ export async function cli(options: CliOptions = {}): Promise<void> {
     const installCmd = installCommand;
     const devCmd = devCommand;
 
+    const targetDirForDisplay =
+        projectNameInput === '.'
+            ? '.'
+            : root.split('/').pop() || root.split('\\').pop() || root;
+
     const nextSteps = [
-        color.reset(`1. ${color.cyan(`cd ${targetDir}`)}`),
+        color.reset(`1. ${color.cyan(`cd ${targetDirForDisplay}`)}`),
         color.reset(`2. ${color.cyan(installCmd)}`),
         color.reset(`3. ${color.cyan('git init')} ${color.gray('(optional)')}`),
         color.reset(`4. ${color.cyan(devCmd)}`)

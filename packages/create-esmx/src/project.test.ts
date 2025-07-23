@@ -11,12 +11,8 @@ async function createTempDir(prefix = 'esmx-unit-test-'): Promise<string> {
     return mkdtemp(join(tmpdir(), prefix));
 }
 
-async function cleanupTempDir(tempDir: string): Promise<void> {
-    try {
-        await rm(tempDir, { recursive: true, force: true });
-    } catch (error) {
-        console.warn(`Failed to cleanup temp directory: ${tempDir}`, error);
-    }
+async function cleanupTempDir(tmpDir: string): Promise<void> {
+    await rm(tmpDir, { recursive: true, force: true });
 }
 
 describe('project unit tests', () => {
@@ -37,14 +33,11 @@ describe('project unit tests', () => {
         await writeFile(join(hiddenFilesDir, '.gitignore'), 'node_modules/');
 
         const projectNameInput = 'hidden-files-dir';
-        const { packageName, targetDir } = formatProjectName(
-            projectNameInput,
-            tmpDir
-        );
+        const { name, root } = formatProjectName(projectNameInput, tmpDir);
 
         // Create project from template
-        await createProjectFromTemplate(targetDir, 'vue2-csr', tmpDir, false, {
-            projectName: packageName,
+        await createProjectFromTemplate(root, 'vue2-csr', tmpDir, false, {
+            projectName: name,
             esmxVersion: getEsmxVersion(),
             installCommand: 'npm install',
             devCommand: 'npm run dev',
@@ -70,14 +63,11 @@ describe('project unit tests', () => {
 
         // Get project name and target directory
         const projectNameInput = 'very/deep/nested/path/project';
-        const { packageName, targetDir } = formatProjectName(
-            projectNameInput,
-            tmpDir
-        );
+        const { name, root } = formatProjectName(projectNameInput, tmpDir);
 
         // Create project from template
-        await createProjectFromTemplate(targetDir, 'vue2-csr', tmpDir, false, {
-            projectName: packageName,
+        await createProjectFromTemplate(root, 'vue2-csr', tmpDir, false, {
+            projectName: name,
             esmxVersion: getEsmxVersion(),
             installCommand: 'npm install',
             devCommand: 'npm run dev',
@@ -96,14 +86,11 @@ describe('project unit tests', () => {
 
         // Get project name and target directory
         const projectNameInput = 'variable-test';
-        const { packageName, targetDir } = formatProjectName(
-            projectNameInput,
-            tmpDir
-        );
+        const { name, root } = formatProjectName(projectNameInput, tmpDir);
 
         // Create project from template
-        await createProjectFromTemplate(targetDir, 'vue2-csr', tmpDir, false, {
-            projectName: packageName,
+        await createProjectFromTemplate(root, 'vue2-csr', tmpDir, false, {
+            projectName: name,
             esmxVersion: getEsmxVersion(),
             installCommand: 'npm install',
             devCommand: 'npm run dev',
@@ -132,14 +119,11 @@ describe('project unit tests', () => {
 
         // Get project name and target directory
         const projectNameInput = 'empty-dir';
-        const { packageName, targetDir } = formatProjectName(
-            projectNameInput,
-            tmpDir
-        );
+        const { name, root } = formatProjectName(projectNameInput, tmpDir);
 
         // Create project from template
-        await createProjectFromTemplate(targetDir, 'vue2-csr', tmpDir, false, {
-            projectName: packageName,
+        await createProjectFromTemplate(root, 'vue2-csr', tmpDir, false, {
+            projectName: name,
             esmxVersion: getEsmxVersion(),
             installCommand: 'npm install',
             devCommand: 'npm run dev',
@@ -161,19 +145,16 @@ describe('project unit tests', () => {
 
         // Get project name and target directory
         const projectNameInput = 'mixed-dir';
-        const { packageName, targetDir } = formatProjectName(
-            projectNameInput,
-            tmpDir
-        );
+        const { name, root } = formatProjectName(projectNameInput, tmpDir);
 
         // Create project from template with force flag
         await createProjectFromTemplate(
-            targetDir,
+            root,
             'vue2-csr',
             tmpDir,
             true, // force flag
             {
-                projectName: packageName,
+                projectName: name,
                 esmxVersion: getEsmxVersion(),
                 installCommand: 'npm install',
                 devCommand: 'npm run dev',
@@ -198,28 +179,19 @@ describe('project unit tests', () => {
             const projectPath = join(tmpDir, projectName);
 
             // Get project name and target directory
-            const { packageName, targetDir } = formatProjectName(
-                projectName,
-                tmpDir
-            );
+            const { name, root } = formatProjectName(projectName, tmpDir);
 
             // Create project from template
-            await createProjectFromTemplate(
-                targetDir,
-                'vue2-csr',
-                tmpDir,
-                false,
-                {
-                    projectName: packageName,
-                    esmxVersion: getEsmxVersion(),
-                    installCommand: 'npm install',
-                    devCommand: 'npm run dev',
-                    buildCommand: 'npm run build',
-                    startCommand: 'npm start',
-                    buildTypeCommand: 'npm run build:type',
-                    lintTypeCommand: 'npm run lint:type'
-                }
-            );
+            await createProjectFromTemplate(root, 'vue2-csr', tmpDir, false, {
+                projectName: name,
+                esmxVersion: getEsmxVersion(),
+                installCommand: 'npm install',
+                devCommand: 'npm run dev',
+                buildCommand: 'npm run build',
+                startCommand: 'npm start',
+                buildTypeCommand: 'npm run build:type',
+                lintTypeCommand: 'npm run lint:type'
+            });
 
             expect(existsSync(projectPath)).toBe(true);
             expect(existsSync(join(projectPath, 'package.json'))).toBe(true);
