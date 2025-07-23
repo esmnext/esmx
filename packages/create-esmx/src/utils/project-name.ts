@@ -1,37 +1,12 @@
+/**
+ * Project name utilities
+ */
+
 import { basename, isAbsolute, normalize, resolve } from 'node:path';
 
 export interface ProjectNameResult {
     name: string;
     root: string;
-}
-
-/**
- * Check if input looks like a Windows absolute path (drive letter or UNC)
- */
-function isWindowsAbsolutePath(input: string): boolean {
-    // Drive letter: C:\ or C:/
-    if (/^[a-zA-Z]:[\/\\]/.test(input)) {
-        return true;
-    }
-    // UNC path: \\server\share or //server/share
-    if (/^[\/\\]{2}[^\/\\]/.test(input)) {
-        return true;
-    }
-    return false;
-}
-
-/**
- * Extract project name from Windows-style path
- */
-function getWindowsBasename(input: string): string {
-    // Normalize separators to forward slashes for easier processing
-    const normalized = input.replace(/\\/g, '/');
-
-    // Split by '/' and get the last non-empty segment
-    const segments = normalized
-        .split('/')
-        .filter((segment) => segment.length > 0);
-    return segments[segments.length - 1] || 'esmx-project';
 }
 
 /**
@@ -80,54 +55,43 @@ export function formatProjectName(
 ): ProjectNameResult {
     const workingDir = cwd || process.cwd();
 
-    // Clean trailing slashes but preserve single '/' or '\'
     let cleanInput = input;
-    if (input !== '/' && input !== '\\') {
-        cleanInput = input.replace(/[\/\\]+$/g, '');
+    if (input !== '/' && input !== '\\' && input.length > 1) {
+        cleanInput = input.replace(/[\\/]+$/, '');
+    }
+
+    if (cleanInput === '.') {
+        return {
+            name: basename(workingDir),
+            root: workingDir
+        };
+    }
+
+    if (cleanInput === '' || cleanInput === '/' || cleanInput === '\\') {
+        if (cleanInput === '/') {
+            return {
+                name: 'esmx-project',
+                root: '/'
+            };
+        }
+        return {
+            name: 'esmx-project',
+            root: resolve(workingDir, 'esmx-project')
+        };
     }
 
     let root: string;
-    let name: string;
+    if (isAbsolute(cleanInput)) {
+        root = normalize(cleanInput);
+    } else {
+        root = resolve(workingDir, cleanInput);
+    }
 
-    if (cleanInput === '.') {
-        root = workingDir;
-        name = basename(workingDir);
-    } else if (cleanInput === '' || cleanInput === '/' || cleanInput === '\\') {
-        if (cleanInput === '/') {
-            root = '/';
-            name = 'esmx-project';
-        } else {
-            root = resolve(workingDir, 'esmx-project');
-            name = 'esmx-project';
-        }
-    } else if (cleanInput.startsWith('@')) {
-        if (isAbsolute(cleanInput) || isWindowsAbsolutePath(cleanInput)) {
-            root = resolve(cleanInput);
-        } else {
-            root = resolve(workingDir, cleanInput);
-        }
+    let name: string;
+    if (cleanInput.startsWith('@')) {
         name = cleanInput;
     } else {
-        const isAbsPath =
-            isAbsolute(cleanInput) || isWindowsAbsolutePath(cleanInput);
-
-        if (isAbsPath) {
-            root = resolve(cleanInput);
-            if (isWindowsAbsolutePath(cleanInput)) {
-                name = getWindowsBasename(cleanInput);
-            } else {
-                name = basename(normalize(cleanInput)) || 'esmx-project';
-            }
-        } else {
-            root = resolve(workingDir, cleanInput);
-            // For relative paths, also check for Windows-style separators
-            if (cleanInput.includes('\\')) {
-                name = getWindowsBasename(cleanInput);
-            } else {
-                const normalizedPath = normalize(cleanInput);
-                name = basename(normalizedPath) || 'esmx-project';
-            }
-        }
+        name = basename(normalize(cleanInput)) || 'esmx-project';
     }
 
     return {
