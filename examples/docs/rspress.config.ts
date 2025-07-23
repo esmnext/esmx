@@ -1,6 +1,5 @@
 import path from 'node:path';
-import sitemap from 'rspress-plugin-sitemap';
-import { defineConfig } from 'rspress/config';
+import { defineConfig } from '@rspress/core';
 
 export default defineConfig({
     root: path.join(__dirname, 'src'),
@@ -47,11 +46,5 @@ export default defineConfig({
     markdown: {
         showLineNumbers: true
     },
-    plugins: [
-        sitemap({
-            domain: 'https://www.esmnext.com',
-            defaultChangeFreq: 'monthly',
-            defaultPriority: '0.5'
-        })
-    ]
+    plugins: []
 });
