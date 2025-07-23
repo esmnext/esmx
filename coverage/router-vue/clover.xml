@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1753264926583" clover="3.2.0">
-  <project timestamp="1753264926583" name="All files">
+<coverage generated="1753265311929" clover="3.2.0">
+  <project timestamp="1753265311929" name="All files">
     <metrics statements="249" coveredstatements="216" conditionals="63" coveredconditionals="59" methods="28" coveredmethods="26" elements="340" coveredelements="301" complexity="0" loc="249" ncloc="249" packages="1" files="8" classes="8"/>
     <file name="index.ts" path="/home/runner/work/esmx/esmx/packages/router-vue/src/index.ts">
       <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
