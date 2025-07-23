@@ -12,8 +12,7 @@
         "build": "pnpm -r build",
         "build:packages": "pnpm --filter \"./packages/**\" build",
         "build:examples": "pnpm --filter \"./examples/**\" build",
-        "release": "npm run build:packages && lerna publish --force-publish --exact",
-        "deploy": "npm run build && ./deploy.sh"
+        "release": "npm run build:packages && lerna publish --force-publish --exact"
     },
     "devDependencies": {
         "lint-staged": "16.1.2",
