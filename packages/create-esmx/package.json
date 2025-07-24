@@ -15,8 +15,7 @@
         "coverage": "vitest run --coverage --pass-with-no-tests",
         "lint:js": "biome check --write --no-errors-on-unmatched",
         "build": "unbuild",
-        "postbuild": "node build/postbuild.mjs",
-        "export-templates": "node build/postbuild.mjs"
+        "postbuild": "node build/postbuild.mjs"
     },
     "dependencies": {
         "@clack/prompts": "^0.7.0",
