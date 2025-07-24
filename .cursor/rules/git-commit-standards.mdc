@@ -1,10 +1,11 @@
+
 ---
-description: "Git提交规范和分支命名标准"
+description: "Git提交规范和分支命名标准，基于Conventional Commits规范"
 ---
 
-# Git 提交规范
+# 📝 Git 提交规范
 
-## Conventional Commits 格式
+## 📋 Conventional Commits 格式
 ```
 <type>[optional scope]: <description>
 
@@ -13,7 +14,7 @@ description: "Git提交规范和分支命名标准"
 [optional footer(s)]
 ```
 
-## 提交类型
+## 💻 提交类型
 - `feat`: A new feature
 - `fix`: A bug fix
 - `docs`: Documentation only changes  
@@ -25,7 +26,7 @@ description: "Git提交规范和分支命名标准"
 - `ci`: Changes to CI configuration files and scripts
 - `chore`: Other changes that don't modify src or test files
 
-## 分支命名规范（使用短杠）
+## 🌿 分支命名规范（使用短杠）
 ```bash
 feat-user-authentication
 fix-payment-validation-error
@@ -34,7 +35,7 @@ docs-readme-installation-guide
 chore-dependency-updates
 ```
 
-## 提交消息示例
+## 📝 提交消息示例
 ```bash
 feat(auth): add JWT token validation
 
@@ -45,8 +46,8 @@ Closes #123
 BREAKING CHANGE: AUTH_SECRET environment variable now required
 ```
 
-## 提交要求
-- 标题行不超过 50 字符
-- 使用祈使语气（"add" 不是 "added"）
-- 首字母小写，末尾不加句号
-- 必须使用英文编写提交信息
+## ✅ 提交要求
+- **标题行不超过 50 字符**
+- **使用祈使语气**（"add" 不是 "added"）
+- **首字母小写，末尾不加句号**
+- **❌ 必须使用英文编写提交信息**

@@ -1,5 +1,9 @@
+---
+description: "错误处理规范，优先使用Result模式，限制try-catch使用"
+globs: "*.ts,*.tsx,*.js,*.jsx"
+---
 
-# 错误处理规范
+# ⚠️ 错误处理规范
 
 ## ❌ 严格限制 try-catch 使用
 - **避免滥用**：禁止"写一段代码就包一个 try-catch"的习惯
@@ -34,7 +38,7 @@ const processUser = async (userData: unknown): Promise<Result<User, ValidationEr
 
 ## 📝 try-catch 合理使用场景
 
-**允许使用 try-catch 的正当理由**：
+**✅ 允许使用 try-catch 的正当理由**：
 
 ### 1. 工具函数封装
 包括安全操作函数和 Result 模式适配器：
@@ -207,15 +211,15 @@ const complexOperation = async () => {
 };
 ```
 
-## 错误处理策略
-- **禁止假装成功**: 执行失败了不能假装成功，要根据业务情况正确处理
+## 🛡️ 错误处理策略
+- **❌ 禁止假装成功**: 执行失败了不能假装成功，要根据业务情况正确处理
 - **显式处理**: 每个可能失败的操作都必须显式检查Result
 - **早期返回**: 使用早期返回处理错误条件，避免深层嵌套
 - **错误传播**: 让错误向上传播到能够处理的边界层
 - **类型安全**: 使用具体的错误类型，提供详细的错误信息
 - **正当性检查**: try-catch 使用前必须确认有充分的正当理由
 
-## 严格的错误流程控制
+## ⚠️ 严格的错误流程控制
 **核心原则**: 执行失败了不能假装成功，要根据业务情况正确处理错误。
 
 ### 文件操作示例
@@ -319,7 +323,7 @@ const createUser = async (userData: CreateUserData): Promise<Result<User, Databa
 };
 ```
 
-## 自定义错误类型
+## 🏗️ 自定义错误类型
 ```typescript
 export class ValidationError extends Error {
   constructor(
@@ -364,7 +368,7 @@ export class DatabaseError extends Error {
 }
 ```
 
-## 工具函数示例
+## 🔧 工具函数示例
 ```typescript
 // Safe file reading
 export const safeReadFile = async (filePath: string): Promise<Result<string, Error>> => {
@@ -402,3 +406,4 @@ export const safeDbOperation = async <T>(
   }
   return { success: true, data: result };
 };
+```

@@ -1,0 +1,68 @@
+---
+alwaysApply: true
+---
+# 📦 开发常用命令
+
+## ⚠️ 重要原则
+**✅ 允许：读取信息、执行命令**
+**❌ 严格禁止：修改系统配置、设置默认值、自动配置**
+
+## 🔧 包管理命令
+
+### pnpm 命令
+```bash
+# 基础命令
+pnpm install          # 安装依赖
+pnpm dev              # 启动开发服务器
+pnpm build            # 构建项目
+pnpm test             # 运行测试
+pnpm start            # 启动生产服务器
+pnpm preview          # 预览构建结果
+
+# 构建命令
+pnpm build:packages   # 构建 packages 目录
+pnpm build:examples   # 构建 examples 目录
+pnpm build:ssr        # 构建 SSR 应用
+pnpm build:dts        # 生成 TypeScript 声明文件
+pnpm coverage         # 生成测试覆盖率报告
+
+# 检查命令
+pnpm lint:type        # TypeScript 类型检查
+pnpm lint:js          # JavaScript/TypeScript 检查
+pnpm lint:css         # CSS/Vue 样式检查
+
+# 发布命令
+pnpm release          # 发布到 npm
+
+# Monorepo 命令
+pnpm --filter "*" [command]              # 对所有包执行
+pnpm --filter "./packages/**" [command]  # 对 packages 目录
+pnpm --filter "./examples/**" [command]  # 对 examples 目录
+pnpm -r [command]                        # 递归执行
+```
+
+### npm 命令
+```bash
+npm install           # 安装依赖
+npm run dev           # 启动开发服务器
+npm run build         # 构建项目
+npm run test          # 运行测试
+```
+
+## 📋 Node 版本查看
+```bash
+node --version        # 查看当前 Node 版本
+node -v               # 简写形式
+npm --version         # 查看 npm 版本
+pnpm --version        # 查看 pnpm 版本
+```
+
+## 🔄 nvm 版本切换
+```bash
+nvm list              # 查看已安装的 Node 版本
+nvm install 22        # 安装 Node 22
+nvm install 24        # 安装 Node 24
+nvm use 22            # 切换到 Node 22
+nvm use 24            # 切换到 Node 24
+nvm current           # 查看当前使用的版本
+```
