@@ -1,0 +1,202 @@
+
+---
+globs: "*.ts,*.tsx,*.vue"
+description: "TypeScript编码标准和类型安全规范"
+---
+
+# TypeScript 编码标准
+
+## ESM 模块系统要求
+- 强制使用 ESM (ECMAScript Modules) 进行开发
+- 使用 `import/export` 语句，禁用 `require/module.exports`
+- Node.js 内置模块必须使用 `node:` 前缀
+- 配置 `"type": "module"` 在 package.json 中
+
+## Monorepo 开发规范
+- 使用 `pnpm workspace` 管理 monorepo 依赖
+- 包间引用使用 workspace 协议：`"workspace:*"`
+- 包名遵循命名空间：`@project/package-name`
+- 共享配置文件放在根目录
+- 包级别的配置继承根配置
+- **examples** 目录包含示例项目，支持嵌套结构
+- 构建产物 (`dist/`) 自动排除在 workspace 外
+
+**目录结构**：
+```
+project/
+├── packages/           # 核心包目录
+│   ├── core/
+│   │   ├── package.json
+│   │   └── src/
+│   ├── utils/
+│   │   ├── package.json
+│   │   └── src/
+│   └── ui/
+│       ├── package.json
+│       └── src/
+├── examples/           # 示例项目目录
+│   ├── basic-app/
+│   │   ├── package.json
+│   │   └── src/
+│   └── advanced-demo/
+│       ├── package.json
+│       └── src/
+├── package.json (workspace root)
+├── pnpm-workspace.yaml
+└── tsconfig.json (base config)
+```
+
+**pnpm-workspace.yaml 配置**：
+```yaml
+packages:
+  - 'packages/*'      # 核心包
+  - 'examples/**'     # 示例项目（支持嵌套）
+  - '!**/dist/**'     # 排除构建产物
+```
+
+**包间依赖**：
+```json
+{
+  "dependencies": {
+    "@project/core": "workspace:*",
+    "@project/utils": "workspace:*"
+  }
+}
+```
+
+**导入规范**：
+```typescript
+// ✅ Core package imports
+import { createUser } from '@project/core';
+import { logger } from '@project/utils';
+
+// ✅ Example project imports (examples directory)
+import { DemoComponent } from '@project/demo-components';
+import { exampleConfig } from '@project/example-config';
+
+// ✅ Internal module imports
+import { validateEmail } from '../validators';
+import { formatDate } from './utils';
+```
+
+## 类型安全要求
+- 所有代码使用 TypeScript，优先使用 interfaces 而非 types
+- 避免 enums，使用 const 对象代替
+- 启用 TypeScript 严格模式以提高类型安全
+- 避免 `any` 类型，类型不确定时使用 `unknown`
+
+## 代码示例
+
+### ✅ 推荐写法
+```typescript
+interface UserData {
+  id: string;
+  email: string;
+  isActive: boolean;
+}
+
+const PAYMENT_STATUS = {
+  PENDING: 'pending',
+  COMPLETED: 'completed',
+  FAILED: 'failed'
+} as const;
+
+// Use unknown instead of any
+const processInput = (input: unknown): UserData => {
+  if (typeof input === 'object' && input !== null) {
+    return input as UserData;
+  }
+  throw new Error('Invalid input');
+};
+```
+
+### ❌ 避免写法
+```typescript
+enum PaymentStatus {
+  PENDING = 'pending',
+  COMPLETED = 'completed', 
+  FAILED = 'failed'
+}
+
+// Avoid using any
+const processInput = (input: any): UserData => {
+  return input;
+};
+```
+
+## 导入规范
+严格按照 Biome 默认导入顺序规范：
+1. **Bun 导入**：`bun:*` 模块
+2. **Node.js 内置模块**：`node:*` 前缀的模块
+3. **外部库**：来自 node_modules 的第三方包
+4. **Monorepo 包间导入**：`@project/*` 命名空间的包
+5. **内部模块（绝对路径）**：当前包内的绝对导入
+6. **相对导入（父级）**：`../` 开头的导入
+7. **相对导入（同级）**：`./` 开头的导入
+8. **类型导入**：`import type` 语句（每个组内分别排列）
+
+**重要要求**：
+- 不同导入组之间必须用空行分隔
+- 同组内导入按字母顺序排列
+- 类型导入放在对应组的最后
+- **Bun 和 Node.js 内置模块使用命名空间导入，禁止具名导入**
+
+```typescript
+// ✅ Compliant with Biome import order specification
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import util from 'node:util';
+
+import express from 'express';
+import { z } from 'zod';
+
+import { createUser } from '@project/core';
+import { logger } from '@project/utils';
+
+import { config } from '@/config';
+import { database } from '@/lib/database';
+
+import { validateRequest } from '../middleware';
+import { userSchema } from '../schemas';
+
+import { formatDate } from './utils';
+import { constants } from './constants';
+
+import type { Request, Response } from 'express';
+import type { UserData } from '@project/core';
+import type { Config } from './types';
+
+// ❌ Forbidden import patterns
+import { readFile } from 'node:fs/promises'; // Forbidden: named imports
+import { join } from 'node:path';            // Forbidden: named imports
+const fs = require('fs');                    // Forbidden: CommonJS
+```
+
+**使用示例**：
+```typescript
+// ✅ Correct usage
+import fs from 'node:fs/promises';
+import path from 'node:path';
+
+const content = await fs.readFile('file.txt', 'utf-8');
+const fullPath = path.join(process.cwd(), 'src', 'index.ts');
+
+// ❌ Incorrect usage
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+```
+
+## 导出规范
+- 优先使用命名导出
+- 只在绝对必要时使用默认导出
+- 使用 ESM 导出语法
+
+```typescript
+// ✅ Recommended ESM exports
+export const createUser = (data: UserData): User => { /* */ };
+export const updateUser = (id: string, data: Partial<UserData>): User => { /* */ };
+export { validateEmail, formatDate } from './utils';
+
+// ❌ Forbidden CommonJS exports
+module.exports = { createUser, updateUser };
+exports.createUser = (data) => { /* */ };

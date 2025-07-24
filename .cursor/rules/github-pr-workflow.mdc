@@ -1,0 +1,151 @@
+
+---
+description: "GitHub PR五阶段工作流，通过@github-pr-workflow唤起"
+---
+
+# GitHub PR 五阶段工作流
+
+## 📋 工作流程
+
+```text
+🎯 需求讨论 → 🌿 分支创建 → 💻 开发实现 → 📝 预提交确认 → ✅ 最终提交
+```
+
+## 🎯 阶段一：需求讨论 (`STAGE_1_REQUIREMENTS`)
+
+**进入条件**：用户使用 `@github-pr-workflow` 唤起
+
+**允许操作**：
+- 代码分析工具（codebase_search, read_file, grep_search）
+- 信息查找工具（file_search, list_dir, web_search）
+
+**严格禁止**：
+- 任何代码修改操作
+- 任何终端命令
+
+**离开条件**：用户明确确认"需求讨论完成，进入分支创建阶段"
+
+## 🌿 阶段二：分支创建 (`STAGE_2_BRANCH`)
+
+**分支命名规范**：
+1. 必须先读取 `.cursor/rules/git-commit-standards.mdc` 文件
+2. 严格按照该文件中的分支命名规范执行
+3. 验证分支名是否符合规范后再创建
+
+**允许操作**：
+```bash
+git status
+git branch  
+git checkout master
+git pull origin master
+git checkout -b {branch-name}
+```
+
+**严格禁止**：
+- 代码修改操作
+- 除分支操作外的所有命令
+
+**离开条件**：分支创建成功且用户确认"分支创建完成，进入开发阶段"
+
+## 💻 阶段三：开发实现 (`STAGE_3_DEVELOPMENT`)
+
+**允许操作**：
+- 所有代码修改操作（edit_file, search_replace, delete_file）
+- 测试、构建、lint命令
+
+**严格禁止**：
+```bash
+git commit
+git push  
+gh pr create
+```
+
+**离开条件**：功能完成、测试通过、用户确认"开发完成，进入预提交阶段"
+
+## 📝 阶段四：预提交确认 (`STAGE_4_PRE_COMMIT`)
+
+**提交信息规范**：
+1. 必须先读取 `.cursor/rules/git-commit-standards.mdc` 文件
+2. 严格按照 Conventional Commits 格式生成提交信息
+3. 提交类型、作用域、描述必须符合该文件中的规范
+
+**双重确认流程**：
+
+### 第一步：中文确认
+```text
+📋 提交信息确认（中文版）
+
+Commit 信息
+类型: feat/fix/docs/refactor/perf/test
+作用域: 包名/模块名  
+描述: 简短描述变更内容
+
+PR 信息
+标题: 类型(作用域): 简短描述
+描述:
+- 🎯 变更内容: 具体变更项目
+- 🔧 技术细节: 技术实现细节
+- ✅ 测试情况: 测试通过情况
+
+请确认以上信息是否正确？（回复"是"确认）
+```
+
+### 第二步：英文确认
+```text
+📋 提交信息确认（英文版）
+
+Commit Message
+{type}({scope}): {description}
+
+{detailed description}
+
+PR Information  
+Title: {type}({scope}): {description}
+Description:
+- 🎯 Changes: Specific changes made
+- 🔧 Technical Details: Technical implementation details  
+- ✅ Testing: Testing status
+
+请确认英文版本是否正确？（回复"确认无误，允许提交"）
+```
+
+**严格禁止**：
+- 所有工具调用（仅生成确认文本）
+
+**离开条件**：双重确认完成，用户确认"确认无误，允许提交"
+
+## ✅ 阶段五：最终提交 (`STAGE_5_CONFIRMED`)
+
+**提交流程**（严格按顺序执行）：
+```bash
+git add .
+git commit -m "英文版本的commit信息"
+git push origin 分支名  
+gh pr create --title "英文版本的PR标题" --body "英文版本的PR描述"
+```
+
+**严格要求**：
+- 必须使用阶段四确认的英文版本信息
+- 必须按顺序执行，不可跳过或合并
+
+**完成标志**：PR创建成功
+
+## 🛡️ 强制状态显示
+
+每次回复必须显示当前工作流状态：
+```text
+📋 当前阶段：{阶段名称} ({阶段代码})
+🎯 当前任务：{具体任务描述}
+🔄 下一步：{下一步操作}
+
+⚠️ 阶段提醒：{当前阶段的约束说明}
+```
+
+## ⚠️ 绝对禁止
+
+1. **跳过任何阶段**
+2. **在错误阶段执行禁止操作**  
+3. **代替用户进行阶段确认**
+4. **合并多个阶段操作**
+
+**违反任何禁止项将导致工作流立即中断！**

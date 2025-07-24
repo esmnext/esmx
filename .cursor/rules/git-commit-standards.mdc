@@ -1,0 +1,52 @@
+---
+description: "Git提交规范和分支命名标准"
+---
+
+# Git 提交规范
+
+## Conventional Commits 格式
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+## 提交类型
+- `feat`: A new feature
+- `fix`: A bug fix
+- `docs`: Documentation only changes  
+- `style`: Changes that do not affect the meaning of the code
+- `refactor`: A code change that neither fixes a bug nor adds a feature
+- `perf`: A code change that improves performance
+- `test`: Adding missing tests or correcting existing tests
+- `build`: Changes that affect the build system or external dependencies
+- `ci`: Changes to CI configuration files and scripts
+- `chore`: Other changes that don't modify src or test files
+
+## 分支命名规范（使用短杠）
+```bash
+feat-user-authentication
+fix-payment-validation-error
+refactor-api-error-handling
+docs-readme-installation-guide
+chore-dependency-updates
+```
+
+## 提交消息示例
+```bash
+feat(auth): add JWT token validation
+
+Implement token expiration check and refresh mechanism
+Add comprehensive test coverage for authentication flow
+
+Closes #123
+BREAKING CHANGE: AUTH_SECRET environment variable now required
+```
+
+## 提交要求
+- 标题行不超过 50 字符
+- 使用祈使语气（"add" 不是 "added"）
+- 首字母小写，末尾不加句号
+- 必须使用英文编写提交信息

@@ -1,0 +1,68 @@
+
+---
+globs: "*.test.ts,*.test.tsx,*.spec.ts,*.spec.tsx"
+description: "测试规范和最佳实践"
+---
+
+# 测试规范
+
+## 测试原则
+- 编写有意义的测试名称，描述期望行为
+- 使用 AAA 模式：准备数据 → 执行操作 → 验证结果（用换行隔开，无需注释）
+- 每次测试一个功能
+- 禁止 mock 对象，一律使用真实对象
+- 确保测试隔离且可独立运行
+- 覆盖边界情况和错误条件
+
+## 测试文件命名
+- 使用 `[filename].test.ts` 格式
+- DOM 相关测试使用 `[filename].dom.test.ts`
+
+## 测试结构模板
+```typescript
+describe('UserService', () => {
+  let userService: UserService;
+  let testDatabase: TestDatabase;
+  
+  beforeEach(() => {
+    testDatabase = createTestDatabase();
+    userService = new UserService(testDatabase);
+  });
+  
+  afterEach(() => {
+    testDatabase.cleanup();
+  });
+  
+  describe('createUser', () => {
+    it('should create user with valid data', async () => {
+      const userData = {
+        email: 'test@example.com',
+        name: 'Test User'
+      };
+      
+      const result = await userService.createUser(userData);
+      
+      expect(result.success).toBe(true);
+      expect(result.data.id).toBeDefined();
+      expect(result.data.email).toBe(userData.email);
+    });
+    
+    it('should return error for invalid email', async () => {
+      const invalidUserData = {
+        email: 'invalid-email',
+        name: 'Test User'
+      };
+      
+      const result = await userService.createUser(invalidUserData);
+      
+      expect(result.success).toBe(false);
+      expect(result.error.message).toContain('invalid email');
+    });
+  });
+});
+```
+
+## 断言最佳实践
+- 使用具体断言：`toBe()`, `toEqual()`, `toBeInstanceOf()`
+- 避免模糊断言：`toBeTruthy()`, `toBeFalsy()`
+- 异步测试使用 `await expect().resolves/rejects`
