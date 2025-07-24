@@ -57,7 +57,7 @@ export function createVmImport(baseURL: URL, importMap: ImportMap = {}) {
         }
         const meta = buildMeta(specifier, parent);
 
-        if (moduleIds.includes(meta.filename)) {
+        if (moduleIds.includes(meta.url)) {
             throw new CircularDependencyError(
                 'Circular dependency detected',
                 moduleIds,
@@ -65,7 +65,7 @@ export function createVmImport(baseURL: URL, importMap: ImportMap = {}) {
             );
         }
 
-        const module = cache.get(meta.filename);
+        const module = cache.get(meta.url);
         if (module) {
             return module;
         }
@@ -75,7 +75,7 @@ export function createVmImport(baseURL: URL, importMap: ImportMap = {}) {
             });
         });
 
-        cache.set(meta.filename, modulePromise);
+        cache.set(meta.url, modulePromise);
         return modulePromise;
 
         async function moduleBuild(): Promise<vm.SourceTextModule> {
@@ -99,7 +99,7 @@ export function createVmImport(baseURL: URL, importMap: ImportMap = {}) {
                 importModuleDynamically: (specifier, referrer) => {
                     return moduleLinker(
                         specifier,
-                        meta.filename,
+                        meta.url,
                         referrer.context,
                         cache,
                         [...moduleIds, meta.filename]
@@ -109,7 +109,7 @@ export function createVmImport(baseURL: URL, importMap: ImportMap = {}) {
             await module.link((specifier: string, referrer) => {
                 return moduleLinker(
                     specifier,
-                    meta.filename,
+                    meta.url,
                     referrer.context,
                     cache,
                     [...moduleIds, meta.filename]
@@ -134,6 +134,6 @@ export function createVmImport(baseURL: URL, importMap: ImportMap = {}) {
             []
         );
 
-        return module.namespace as Record<string, any>;
+        return module.namespace;
     };
 }
