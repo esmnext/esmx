@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1753265302854" clover="3.2.0">
-  <project timestamp="1753265302854" name="All files">
-    <metrics statements="290" coveredstatements="257" conditionals="72" coveredconditionals="64" methods="30" coveredmethods="27" elements="392" coveredelements="348" complexity="0" loc="290" ncloc="290" packages="1" files="3" classes="3"/>
+<coverage generated="1753325590344" clover="3.2.0">
+  <project timestamp="1753325590344" name="All files">
+    <metrics statements="290" coveredstatements="257" conditionals="73" coveredconditionals="65" methods="30" coveredmethods="27" elements="393" coveredelements="349" complexity="0" loc="290" ncloc="290" packages="1" files="3" classes="3"/>
     <file name="connect.ts" path="/home/runner/work/esmx/esmx/packages/class-state/src/connect.ts">
-      <metrics statements="224" coveredstatements="195" conditionals="48" coveredconditionals="42" methods="18" coveredmethods="16"/>
+      <metrics statements="224" coveredstatements="195" conditionals="49" coveredconditionals="43" methods="18" coveredmethods="16"/>
       <line num="2" count="1" type="stmt"/>
       <line num="4" count="1" type="stmt"/>
       <line num="10" count="1" type="stmt"/>
@@ -112,7 +112,7 @@
       <line num="178" count="58" type="cond" truecount="1" falsecount="0"/>
       <line num="179" count="29" type="cond" truecount="1" falsecount="0"/>
       <line num="180" count="29" type="stmt"/>
-      <line num="181" count="112" type="cond" truecount="1" falsecount="0"/>
+      <line num="181" count="112" type="cond" truecount="2" falsecount="0"/>
       <line num="182" count="28" type="stmt"/>
       <line num="183" count="28" type="cond" truecount="1" falsecount="0"/>
       <line num="184" count="21" type="stmt"/>
