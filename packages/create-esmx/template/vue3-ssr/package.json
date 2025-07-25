@@ -1,0 +1,27 @@
+{
+    "name": "{{projectName}}",
+    "version": "1.0.0",
+    "description": "Vue3 Server-Side Rendering framework",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "esmx dev",
+        "build": "esmx build",
+        "preview": "esmx preview",
+        "start": "esmx start",
+        "lint:type": "vue-tsc --noEmit",
+        "build:type": "vue-tsc --declaration --emitDeclarationOnly --noEmit false --outDir dist/src && tsc-alias -p tsconfig.json --outDir dist/src"
+    },
+    "dependencies": {
+        "@esmx/core": "{{esmxVersion}}"
+    },
+    "devDependencies": {
+        "tsc-alias": "^1.8.16",
+        "@esmx/rspack-vue": "{{esmxVersion}}",
+        "@types/node": "^24.0.0",
+        "vue": "3.5.18",
+        "@vue/server-renderer": "3.5.18",
+        "typescript": "5.8.3",
+        "vue-tsc": "^3.0.1"
+    }
+} 
