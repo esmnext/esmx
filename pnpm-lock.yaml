@@ -497,6 +497,59 @@ importers:
         specifier: ^2.1.6
         version: 2.2.12(typescript@5.8.3)
 
+  examples/templates/vue-csr:
+    dependencies:
+      '@esmx/core':
+        specifier: workspace:*
+        version: link:../../../packages/core
+    devDependencies:
+      '@esmx/rspack-vue':
+        specifier: workspace:*
+        version: link:../../../packages/rspack-vue
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.0.12
+      tsc-alias:
+        specifier: ^1.8.16
+        version: 1.8.16
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
+      vue:
+        specifier: ^3.5.18
+        version: 3.5.18(typescript@5.8.3)
+      vue-tsc:
+        specifier: ^3.0.1
+        version: 3.0.3(typescript@5.8.3)
+
+  examples/templates/vue-ssr:
+    dependencies:
+      '@esmx/core':
+        specifier: workspace:*
+        version: link:../../../packages/core
+    devDependencies:
+      '@esmx/rspack-vue':
+        specifier: workspace:*
+        version: link:../../../packages/rspack-vue
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.0.12
+      '@vue/server-renderer':
+        specifier: 3.5.18
+        version: 3.5.18(vue@3.5.18(typescript@5.8.3))
+      tsc-alias:
+        specifier: ^1.8.16
+        version: 1.8.16
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
+      vue:
+        specifier: 3.5.18
+        version: 3.5.18(typescript@5.8.3)
+      vue-tsc:
+        specifier: ^3.0.1
+        version: 3.0.3(typescript@5.8.3)
+
   examples/templates/vue2-csr:
     dependencies:
       '@esmx/core':
