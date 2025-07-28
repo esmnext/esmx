@@ -1,2 +1,2 @@
-export * from '@esmx/rspack';
-export * from './vue';
+export type { RspackVueAppOptions } from './vue';
+export { createRspackVue2App, createRspackVue3App } from './vue';
