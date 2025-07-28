@@ -13,7 +13,7 @@
         "vue": {
             "name": "vue",
             "rewrite": false,
-            "file": "exports/vue.68fb3891.final.mjs",
+            "file": "exports/vue.4ef8bfc4.final.mjs",
             "identifier": "ssr-npm-vue3/vue"
         },
         "@esmx/router-vue": {
@@ -31,8 +31,8 @@
     },
     "buildFiles": [
         "exports/src/entry.client.bfadf2d5.final.mjs",
-        "exports/vue.68fb3891.final.mjs",
         "exports/src/app-creator.208b1463.final.mjs",
+        "exports/vue.4ef8bfc4.final.mjs",
         "exports/@esmx/router-vue.0a731974.final.mjs"
     ],
     "chunks": {
@@ -47,13 +47,13 @@
                 "resource": 0
             }
         },
-        "ssr-npm-vue3@../../../node_modules/.pnpm/vue@3.5.17_typescript@5.8.3/node_modules/vue/dist/vue.runtime.esm-browser.js": {
-            "name": "ssr-npm-vue3@../../../node_modules/.pnpm/vue@3.5.17_typescript@5.8.3/node_modules/vue/dist/vue.runtime.esm-browser.js",
-            "js": "exports/vue.68fb3891.final.mjs",
+        "ssr-npm-vue3@../../../node_modules/.pnpm/vue@3.5.17_typescript@5.8.3/node_modules/vue/dist/vue.runtime.esm-browser.prod.js": {
+            "name": "ssr-npm-vue3@../../../node_modules/.pnpm/vue@3.5.17_typescript@5.8.3/node_modules/vue/dist/vue.runtime.esm-browser.prod.js",
+            "js": "exports/vue.4ef8bfc4.final.mjs",
             "css": [],
             "resources": [],
             "sizes": {
-                "js": 367705,
+                "js": 103040,
                 "css": 0,
                 "resource": 0
             }

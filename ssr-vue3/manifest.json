@@ -15,19 +15,19 @@
         "src/routes": {
             "name": "src/routes",
             "rewrite": true,
-            "file": "exports/src/routes.ad8a7155.final.mjs",
+            "file": "exports/src/routes.860e9e0d.final.mjs",
             "identifier": "ssr-vue3/src/routes"
         },
         "src/components/index": {
             "name": "src/components/index",
             "rewrite": true,
-            "file": "exports/src/components/index.3e1e3750.final.mjs",
+            "file": "exports/src/components/index.ca2d73cf.final.mjs",
             "identifier": "ssr-vue3/src/components/index"
         },
         "src/layout/index": {
             "name": "src/layout/index",
             "rewrite": true,
-            "file": "exports/src/layout/index.7244411b.final.mjs",
+            "file": "exports/src/layout/index.e1f92d22.final.mjs",
             "identifier": "ssr-vue3/src/layout/index"
         },
         "src/store/music-store": {
@@ -38,28 +38,28 @@
         }
     },
     "buildFiles": [
-        "exports/src/routes.06c14821.final.css",
+        "chunks/95.eb529c42.final.css",
         "exports/src/store/music-store.8f225acb.final.mjs",
-        "exports/src/components/index.1f6293b4.final.css",
+        "exports/src/layout/index.e1f92d22.final.mjs",
+        "exports/src/routes.06c14821.final.css",
         "images/sine-wave-notes.47e0c83d.final.svg",
-        "chunks/914.eb529c42.final.css",
-        "exports/src/entry.client.7883e8cf.final.mjs",
-        "exports/src/components/index.3e1e3750.final.mjs",
-        "exports/src/routes.ad8a7155.final.mjs",
-        "chunks/914.4c8958e1.final.mjs",
         "exports/src/layout/index.9c2ecb44.final.css",
-        "exports/src/layout/index.7244411b.final.mjs"
+        "chunks/95.2bc3ffd7.final.mjs",
+        "exports/src/entry.client.7883e8cf.final.mjs",
+        "exports/src/components/index.ca2d73cf.final.mjs",
+        "exports/src/components/index.1f6293b4.final.css",
+        "exports/src/routes.860e9e0d.final.mjs"
     ],
     "chunks": {
         "ssr-vue3@src/layout/index.ts": {
             "name": "ssr-vue3@src/layout/index.ts",
-            "js": "exports/src/layout/index.7244411b.final.mjs",
+            "js": "exports/src/layout/index.e1f92d22.final.mjs",
             "css": [
                 "exports/src/layout/index.9c2ecb44.final.css"
             ],
             "resources": [],
             "sizes": {
-                "js": 32767,
+                "js": 31062,
                 "css": 13696,
                 "resource": 0
             }
@@ -88,7 +88,7 @@
         },
         "ssr-vue3@src/routes.ts": {
             "name": "ssr-vue3@src/routes.ts",
-            "js": "exports/src/routes.ad8a7155.final.mjs",
+            "js": "exports/src/routes.860e9e0d.final.mjs",
             "css": [
                 "exports/src/routes.06c14821.final.css"
             ],
@@ -96,33 +96,33 @@
                 "images/sine-wave-notes.47e0c83d.final.svg"
             ],
             "sizes": {
-                "js": 51302,
+                "js": 49938,
                 "css": 25565,
                 "resource": 1585
             }
         },
         "ssr-vue3@src/components/index.ts": {
             "name": "ssr-vue3@src/components/index.ts",
-            "js": "exports/src/components/index.3e1e3750.final.mjs",
+            "js": "exports/src/components/index.ca2d73cf.final.mjs",
             "css": [
                 "exports/src/components/index.1f6293b4.final.css"
             ],
             "resources": [],
             "sizes": {
-                "js": 52211,
+                "js": 49483,
                 "css": 21893,
                 "resource": 0
             }
         },
         "ssr-vue3@src/views/playlist-detail.vue": {
             "name": "ssr-vue3@src/views/playlist-detail.vue",
-            "js": "chunks/914.4c8958e1.final.mjs",
+            "js": "chunks/95.2bc3ffd7.final.mjs",
             "css": [
-                "chunks/914.eb529c42.final.css"
+                "chunks/95.eb529c42.final.css"
             ],
             "resources": [],
             "sizes": {
-                "js": 7107,
+                "js": 6766,
                 "css": 3292,
                 "resource": 0
             }
