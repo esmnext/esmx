@@ -17,7 +17,7 @@
         "src/components/index": {
             "name": "src/components/index",
             "rewrite": true,
-            "file": "exports/src/components/index.c7ff432e.final.mjs",
+            "file": "exports/src/components/index.69a48b11.final.mjs",
             "identifier": "ssr-vue2-remote/src/components/index"
         },
         "src/composables/index": {
@@ -36,13 +36,13 @@
     "buildFiles": [
         "chunks/229.2335e281.final.mjs",
         "chunks/229.6b60ed37.final.css",
-        "exports/src/examples/index.5ec97ba3.final.mjs",
+        "exports/src/components/index.76f4c45a.final.css",
         "exports/vue.1de5cf38.final.mjs",
         "exports/src/composables/index.c2bfa8f0.final.mjs",
-        "exports/src/entry.client.73a05d79.final.mjs",
-        "exports/src/components/index.76f4c45a.final.css",
-        "exports/src/components/index.c7ff432e.final.mjs",
-        "exports/src/examples/index.84b37e4f.final.css"
+        "exports/src/examples/index.84b37e4f.final.css",
+        "exports/src/examples/index.5ec97ba3.final.mjs",
+        "exports/src/components/index.69a48b11.final.mjs",
+        "exports/src/entry.client.73a05d79.final.mjs"
     ],
     "chunks": {
         "ssr-vue2-remote@src/app.vue": {
@@ -106,7 +106,7 @@
         },
         "ssr-vue2-remote@src/components/index.ts": {
             "name": "ssr-vue2-remote@src/components/index.ts",
-            "js": "exports/src/components/index.c7ff432e.final.mjs",
+            "js": "exports/src/components/index.69a48b11.final.mjs",
             "css": [
                 "exports/src/components/index.76f4c45a.final.css"
             ],

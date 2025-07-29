@@ -1,6 +1,6 @@
 (() => {
 const base = document.currentScript.getAttribute("data-base");
-const importmap = {"imports":{"vue2-csr\u002Fsrc\u002Fentry.client":"\u002Fvue2-csr\u002Fexports\u002Fsrc\u002Fentry.client.77eeef41.final.mjs"},"scopes":{"\u002Fvue2-csr\u002F":{}}};
+const importmap = {"imports":{"vue2-csr\u002Fsrc\u002Fentry.client":"\u002Fvue2-csr\u002Fexports\u002Fsrc\u002Fentry.client.eaffc6b7.final.mjs","vue2-csr\u002Fvue":"\u002Fvue2-csr\u002Fexports\u002Fvue.1de5cf38.final.mjs"},"scopes":{"\u002Fvue2-csr\u002F":{"vue":"\u002Fvue2-csr\u002Fexports\u002Fvue.1de5cf38.final.mjs"}}};
 const set = (data) => {
     if (!data) return;
     Object.entries(data).forEach(([k, v]) => {
