@@ -36,28 +36,14 @@
 | **Learning Curve** | Framework APIs | Standard syntax |
 | **Module Isolation** | Sandbox simulation | Browser native |
 
-## ⚡ Quick Start
-
-```typescript
-// Remote App - Export modules
-export default {
-  modules: { exports: ['npm:vue', 'root:src/Button.vue'] }
-}
-
-// Host App - Import modules
-export default {
-  modules: {
-    links: { 'remote': './node_modules/remote' },
-    imports: { 'vue': 'remote/vue' }
-  }
-}
-
-// Using standard ESM syntax
-import { createApp } from 'vue';
-import Button from 'remote/src/Button.vue';
-```
 
 ## 🚀 Getting Started
+
+```bash
+npx create-esmx@latest my-app
+```
+
+After running, you will be interactively guided to select a template without manually specifying the name.
 
 📖 [Documentation](https://www.esmnext.com/guide/start/getting-started.html)
 

@@ -36,28 +36,14 @@
 | **学习成本** | 框架API | 标准语法 |
 | **模块隔离** | 沙箱模拟 | 浏览器原生 |
 
-## ⚡ 快速入门
-
-```typescript
-// Remote App - 导出模块
-export default {
-  modules: { exports: ['npm:vue', 'root:src/Button.vue'] }
-}
-
-// Host App - 导入模块
-export default {
-  modules: {
-    links: { 'remote': './node_modules/remote' },
-    imports: { 'vue': 'remote/vue' }
-  }
-}
-
-// 标准ESM语法使用
-import { createApp } from 'vue';
-import Button from 'remote/src/Button.vue';
-```
 
 ## 🚀 快速开始
+
+```bash
+npx create-esmx@latest my-app
+```
+
+运行后将交互式引导选择模板，无需手动指定名称。
 
 📖 [文档](https://www.esmnext.com/guide/start/getting-started.html)
 
