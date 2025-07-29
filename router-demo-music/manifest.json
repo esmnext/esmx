@@ -28,14 +28,14 @@
         }
     },
     "buildFiles": [
-        "exports/vue.1de5cf38.final.mjs",
+        "chunks/218.99cba2f0.final.mjs",
         "exports/@esmx/router-vue.0a731974.final.mjs",
         "exports/src/entry.client.9600eb23.final.css",
         "exports/@esmx/router.64f1224d.final.mjs",
         "images/sine-wave-notes.47e0c83d.final.svg",
         "exports/src/entry.client.7d2f95cf.final.mjs",
         "chunks/218.841963f8.final.css",
-        "chunks/218.99cba2f0.final.mjs"
+        "exports/vue.1de5cf38.final.mjs"
     ],
     "chunks": {
         "router-demo-music@../../packages/router/dist/index.mjs": {
