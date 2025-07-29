@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1753778219935" clover="3.2.0">
-  <project timestamp="1753778219935" name="All files">
-    <metrics statements="144" coveredstatements="0" conditionals="7" coveredconditionals="2" methods="7" coveredmethods="2" elements="158" coveredelements="4" complexity="0" loc="144" ncloc="144" packages="2" files="7" classes="7"/>
+<coverage generated="1753779050533" clover="3.2.0">
+  <project timestamp="1753779050533" name="All files">
+    <metrics statements="145" coveredstatements="0" conditionals="7" coveredconditionals="2" methods="7" coveredmethods="2" elements="159" coveredelements="4" complexity="0" loc="145" ncloc="145" packages="2" files="7" classes="7"/>
     <package name="src">
-      <metrics statements="117" coveredstatements="0" conditionals="3" coveredconditionals="2" methods="3" coveredmethods="2"/>
+      <metrics statements="118" coveredstatements="0" conditionals="3" coveredconditionals="2" methods="3" coveredmethods="2"/>
       <file name="index.ts" path="/home/runner/work/esmx/esmx/packages/rspack-vue/src/index.ts">
-        <metrics statements="1" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
+        <metrics statements="2" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="2" count="0" type="stmt"/>
+        <line num="4" count="0" type="stmt"/>
       </file>
       <file name="vue-app.ts" path="/home/runner/work/esmx/esmx/packages/rspack-vue/src/vue-app.ts">
         <metrics statements="109" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
