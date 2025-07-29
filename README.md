@@ -43,8 +43,6 @@
 npx create-esmx@latest my-app
 ```
 
-After running, you will be interactively guided to select a template without manually specifying the name.
-
 📖 [Documentation](https://www.esmnext.com/guide/start/getting-started.html)
 
 ## 📦 Core Packages

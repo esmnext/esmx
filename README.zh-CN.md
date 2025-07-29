@@ -43,8 +43,6 @@
 npx create-esmx@latest my-app
 ```
 
-运行后将交互式引导选择模板，无需手动指定名称。
-
 📖 [文档](https://www.esmnext.com/guide/start/getting-started.html)
 
 ## 📦 核心软件包
