@@ -158,6 +158,11 @@ export class Route {
         const match =
             isSameOrigin && isSameBase ? options.matcher(to, base) : null;
 
+        if (match) {
+            applyRouteParams(match, toInput, base, to);
+            Object.assign(this.params, match.params);
+        }
+
         this.url = to;
         this.path = match
             ? to.pathname.substring(base.pathname.length - 1)
@@ -176,26 +181,17 @@ export class Route {
                 : null;
         this.meta = this.config?.meta || {};
 
-        // Initialize state object - create new local object, merge externally passed state
         const state: RouteState = {};
         if (toInput.state) {
             Object.assign(state, toInput.state);
         }
         this.state = state;
 
-        // Process query parameters
         for (const key of new Set(to.searchParams.keys())) {
             this.query[key] = to.searchParams.get(key)!;
             this.queryArray[key] = to.searchParams.getAll(key);
         }
         this.hash = to.hash;
-
-        // Apply user-provided route parameters (if match is successful)
-        if (match) {
-            applyRouteParams(match, toInput, base, to);
-            // Assign matched parameters to route object
-            Object.assign(this.params, match.params);
-        }
 
         // Set status code
         // Prioritize user-provided statusCode

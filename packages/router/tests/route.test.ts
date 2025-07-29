@@ -2015,4 +2015,29 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
             });
         });
     });
+    describe('🎯 Route parameter replacement bug fix tests', () => {
+        it('should correctly update path and fullPath when params override route parameters', () => {
+            const options = createOptions({
+                routes: [
+                    {
+                        path: '/user/:id/detail',
+                        meta: { title: 'User Detail' }
+                    }
+                ]
+            });
+            const route = new Route({
+                options,
+                toType: RouteType.push,
+                toInput: {
+                    path: '/user/0/detail',
+                    params: { id: '1000' }
+                }
+            });
+
+            expect(route.path).toBe('/user/1000/detail');
+            expect(route.fullPath).toBe('/user/1000/detail');
+            expect(route.params.id).toBe('1000');
+            expect(route.url.pathname).toBe('/app/user/1000/detail');
+        });
+    });
 });
