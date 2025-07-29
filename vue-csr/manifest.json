@@ -5,24 +5,24 @@
         "src/entry.client": {
             "name": "src/entry.client",
             "rewrite": true,
-            "file": "exports/src/entry.client.9f70d34f.final.mjs",
+            "file": "exports/src/entry.client.e4d00206.final.mjs",
             "identifier": "vue-csr/src/entry.client"
         }
     },
     "buildFiles": [
-        "exports/src/entry.client.9f70d34f.final.mjs",
-        "exports/src/entry.client.45dbb9a1.final.css"
+        "exports/src/entry.client.8430e301.final.css",
+        "exports/src/entry.client.e4d00206.final.mjs"
     ],
     "chunks": {
         "vue-csr@src/entry.client.ts": {
             "name": "vue-csr@src/entry.client.ts",
-            "js": "exports/src/entry.client.9f70d34f.final.mjs",
+            "js": "exports/src/entry.client.e4d00206.final.mjs",
             "css": [
-                "exports/src/entry.client.45dbb9a1.final.css"
+                "exports/src/entry.client.8430e301.final.css"
             ],
             "resources": [],
             "sizes": {
-                "js": 112327,
+                "js": 112325,
                 "css": 4424,
                 "resource": 0
             }
