@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1753778069517" clover="3.2.0">
-  <project timestamp="1753778069517" name="All files">
+<coverage generated="1753778204556" clover="3.2.0">
+  <project timestamp="1753778204556" name="All files">
     <metrics statements="29" coveredstatements="0" conditionals="2" coveredconditionals="1" methods="2" coveredmethods="1" elements="33" coveredelements="2" complexity="0" loc="29" ncloc="29" packages="1" files="2" classes="2"/>
     <file name="css.ts" path="/home/runner/work/esmx/esmx/packages/lint/src/css.ts">
       <metrics statements="29" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
