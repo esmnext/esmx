@@ -1,7 +1,7 @@
 {
     "name": "{{projectName}}",
     "version": "1.0.0",
-    "description": "Vue3 Client-Side Rendering framework",
+    "description": "Vue Client-Side Rendering framework",
     "type": "module",
     "private": true,
     "scripts": {

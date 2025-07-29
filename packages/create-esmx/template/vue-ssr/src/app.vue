@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import HelloWorld from './components/hello-world.vue';
 
-const title = ref<string>('Vue3 SSR Demo');
+const title = ref<string>('Vue SSR Demo');
 </script>
 
 <template>
