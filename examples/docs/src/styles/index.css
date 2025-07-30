@@ -1,9 +1,9 @@
 :root {
-    --rp-c-brand: #FFC107;
-    --rp-c-brand-light: #FFE082;
-    --rp-c-brand-lighter: #FFF3E0;
-    --rp-c-brand-dark: #FFA000;
-    --rp-c-brand-darker: #FF8F00;
+    --rp-c-brand: #ffc107;
+    --rp-c-brand-light: #ffe082;
+    --rp-c-brand-lighter: #fff3e0;
+    --rp-c-brand-dark: #ffa000;
+    --rp-c-brand-darker: #ff8f00;
     --rp-c-brand-tint: rgba(255, 193, 7, 0.16);
 }
 .rspress-logo {

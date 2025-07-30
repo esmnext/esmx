@@ -39,6 +39,7 @@
         "tests"
     ],
     "exclude": [
-        "dist"
+        "dist",
+        "template"
     ]
 }

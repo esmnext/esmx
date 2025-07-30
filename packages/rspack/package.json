@@ -44,7 +44,7 @@
     ],
     "scripts": {
         "lint:js": "biome check --write --no-errors-on-unmatched",
-        "lint:css": "stylelint '**/*.{css,vue}' --fix --aei",
+        "lint:css": "npm run lint:js",
         "lint:type": "tsc --noEmit",
         "test": "vitest run --pass-with-no-tests",
         "coverage": "vitest run --coverage --pass-with-no-tests",
@@ -81,14 +81,12 @@
     "devDependencies": {
         "@biomejs/biome": "1.9.4",
         "@esmx/core": "workspace:*",
-        "@esmx/lint": "workspace:*",
         "@types/node": "^24.0.0",
         "@types/npmcli__arborist": "^6.3.1",
         "@types/pacote": "^11.1.8",
         "@types/webpack-hot-middleware": "^2.25.9",
         "@types/webpack-node-externals": "^3.0.4",
         "@vitest/coverage-v8": "3.2.4",
-        "stylelint": "16.21.0",
         "typescript": "5.8.3",
         "unbuild": "3.5.0",
         "vitest": "3.2.4"

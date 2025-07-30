@@ -1,10 +1,12 @@
 /* 全局滚动条样式 */
-html, body {
+html,
+body {
     height: 100%;
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, sans-serif;
     background: var(--background-color);
     color: var(--text-dark);
     line-height: 1.6;
@@ -30,29 +32,29 @@ body {
 
 :root {
     /* 主题色 - 太阳色系 */
-    --primary-color: #FFC107;  /* 明亮的黄色 */
-    --primary-light: #FFE082;  /* 浅黄色 */
-    --primary-dark: #FFA000;   /* 金黄色 */
-    
+    --primary-color: #ffc107; /* 明亮的黄色 */
+    --primary-light: #ffe082; /* 浅黄色 */
+    --primary-dark: #ffa000; /* 金黄色 */
+
     /* 背景色 - 温暖色调 */
-    --background-color: #FFFAF4; /* 温暖的米色背景 */
-    --background-light: #FFFFFF; /* 纯白色卡片 */
-    --background-dark: #FFF5E6;  /* 浅橙色强调 */
-    
+    --background-color: #fffaf4; /* 温暖的米色背景 */
+    --background-light: #ffffff; /* 纯白色卡片 */
+    --background-dark: #fff5e6; /* 浅橙色强调 */
+
     /* 文字颜色 */
-    --text-dark: #2C3E50;    /* 深蓝灰色文字 */
-    --text-light: #34495E;   /* 中蓝灰色文字 */
-    --text-muted: #7F8C8D;   /* 浅灰色文字 */
-    
+    --text-dark: #2c3e50; /* 深蓝灰色文字 */
+    --text-light: #34495e; /* 中蓝灰色文字 */
+    --text-muted: #7f8c8d; /* 浅灰色文字 */
+
     /* 边框和阴影 */
-    --border-color: #FFE0B2;  /* 浅橙色边框 */
-    --shadow-color: rgba(255, 152, 0, 0.1);  /* 橙色阴影 */
+    --border-color: #ffe0b2; /* 浅橙色边框 */
+    --shadow-color: rgba(255, 152, 0, 0.1); /* 橙色阴影 */
     --shadow-color-hover: rgba(255, 152, 0, 0.2);
-    
+
     /* 动画时间 */
     --transition-fast: 0.2s;
     --transition-normal: 0.3s;
-    
+
     /* 布局 */
     --max-width: 1280px;
     --header-height: 60px;
@@ -101,7 +103,12 @@ img {
 }
 
 /* 标题样式 */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     color: var(--text-dark);
     margin: 2rem 0 1rem;
     font-weight: 600;
@@ -110,7 +117,11 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
     font-size: 2.5rem;
-    background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+    background: linear-gradient(
+        45deg,
+        var(--primary-color),
+        var(--primary-dark)
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -133,7 +144,7 @@ a:hover {
 }
 
 a:after {
-    content: '';
+    content: "";
     position: absolute;
     width: 100%;
     height: 2px;
@@ -248,7 +259,9 @@ pre {
     }
 }
 
-.counter, .url-section, .image-grid li {
+.counter,
+.url-section,
+.image-grid li {
     animation: fadeIn 0.5s ease-out forwards;
 }
 
@@ -332,7 +345,7 @@ pre {
     :root {
         --content-padding: 1rem;
     }
-    
+
     body {
         font-size: 14px;
     }

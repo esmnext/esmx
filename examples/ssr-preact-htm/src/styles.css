@@ -1,16 +1,17 @@
 :root {
-    --primary: #FFC107;
-    --primary-light: #FFE082;
-    --primary-dark: #FFA000;
-    --gray: #7F8C8D;
-    --gray-light: #FFFAF4;
-    --light: #FFFAF4;
-    --border: #FFE0B2;
+    --primary: #ffc107;
+    --primary-light: #ffe082;
+    --primary-dark: #ffa000;
+    --gray: #7f8c8d;
+    --gray-light: #fffaf4;
+    --light: #fffaf4;
+    --border: #ffe0b2;
     --radius: 8px;
-    --success: #FFA000;
+    --success: #ffa000;
     --danger: #ff4444;
     --shadow: 0 4px 14px rgba(255, 152, 0, 0.1);
-    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Helvetica Neue", sans-serif;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Microsoft YaHei", "Hiragino Sans GB", "Helvetica Neue", sans-serif;
 }
 
 * {
@@ -45,7 +46,11 @@ h1 {
     align-items: center;
     justify-content: center;
     gap: 1rem;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    background: linear-gradient(
+        135deg,
+        var(--primary) 0%,
+        var(--primary-light) 100%
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -68,7 +73,7 @@ h1 {
 }
 
 .card::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -98,7 +103,7 @@ h2 {
 }
 
 h2::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: -4px;
     left: 0;
@@ -125,10 +130,14 @@ h2::after {
 }
 
 .counter::after {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.1) 100%);
+    background: linear-gradient(
+        135deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.1) 100%
+    );
     pointer-events: none;
 }
 
@@ -187,13 +196,17 @@ button {
 }
 
 button::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
     width: 300%;
     height: 300%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
+    background: radial-gradient(
+        circle,
+        rgba(255, 255, 255, 0.2) 0%,
+        transparent 60%
+    );
     transform: translate(-50%, -50%) scale(0);
     border-radius: 50%;
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -233,10 +246,14 @@ button:disabled {
 }
 
 .success::after {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.1) 100%);
+    background: linear-gradient(
+        135deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.1) 100%
+    );
     pointer-events: none;
 }
 
@@ -264,10 +281,14 @@ button:disabled {
 }
 
 .items li::after {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.1) 100%);
+    background: linear-gradient(
+        135deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.1) 100%
+    );
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.2s ease;
@@ -325,10 +346,14 @@ button:disabled {
 }
 
 .features li::after {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.1) 100%);
+    background: linear-gradient(
+        135deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.1) 100%
+    );
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.2s ease;
@@ -364,10 +389,14 @@ footer a {
 }
 
 footer a::after {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.1) 100%);
+    background: linear-gradient(
+        135deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.1) 100%
+    );
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.2s ease;
@@ -408,15 +437,15 @@ footer a:hover::after {
     body {
         padding: 1rem;
     }
-    
+
     h1 {
         font-size: 1.75rem;
     }
-    
+
     h2 {
         font-size: 1.15rem;
     }
-    
+
     .counter {
         flex-direction: column;
     }
@@ -424,11 +453,11 @@ footer a:hover::after {
     .form-group {
         flex-direction: column;
     }
-    
+
     .items li {
         padding: 0.75rem;
     }
-    
+
     .items button.remove {
         opacity: 1;
         padding: 0.4rem;

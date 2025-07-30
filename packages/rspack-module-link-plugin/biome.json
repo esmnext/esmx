@@ -54,7 +54,7 @@
                 "noConfusingVoidType": "off",
                 "noExplicitAny": "off",
                 "noAssignInExpressions": "off",
-                "useGetterReturn": "warn",
+                "useGetterReturn": "off",
                 "noGlobalIsNan": "warn",
                 "noImplicitAnyLet": "warn",
                 "noShadowRestrictedNames": "warn",
@@ -117,7 +117,10 @@
     },
     "css": {
         "formatter": {
-            "enabled": false
+            "enabled": true
+        },
+        "linter": {
+            "enabled": true
         }
     }
 }

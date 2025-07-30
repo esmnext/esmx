@@ -55,7 +55,7 @@
 }
 
 .nav a::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 2px;
     left: 1rem;
@@ -128,7 +128,11 @@ section h2 {
 .counter-value {
     font-size: 5rem;
     font-weight: bold;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    background: linear-gradient(
+        135deg,
+        var(--primary-color),
+        var(--primary-dark)
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -216,7 +220,11 @@ section h2 {
     text-align: center;
     margin-bottom: 4rem;
     padding: 3rem 0;
-    background: linear-gradient(135deg, var(--background-light) 0%, var(--background-dark) 100%);
+    background: linear-gradient(
+        135deg,
+        var(--background-light) 0%,
+        var(--background-dark) 100%
+    );
     border-radius: 16px;
 }
 

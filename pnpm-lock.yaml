@@ -665,9 +665,6 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
-      '@esmx/lint':
-        specifier: workspace:*
-        version: link:../lint
       '@types/node':
         specifier: ^24.0.0
         version: 24.0.12
@@ -677,9 +674,6 @@ importers:
       '@vue/compiler-dom':
         specifier: ^3.5.13
         version: 3.5.17
-      stylelint:
-        specifier: 16.21.0
-        version: 16.21.0(typescript@5.8.3)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -717,9 +711,6 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
-      '@esmx/lint':
-        specifier: workspace:*
-        version: link:../lint
       '@types/find':
         specifier: ^0.2.4
         version: 0.2.4
@@ -735,9 +726,6 @@ importers:
       '@vitest/coverage-v8':
         specifier: 3.2.4
         version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.0.12)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.2)(terser@5.43.1)(yaml@2.8.0))
-      stylelint:
-        specifier: 16.21.0
-        version: 16.21.0(typescript@5.8.3)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -803,9 +791,6 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
-      '@esmx/lint':
-        specifier: workspace:*
-        version: link:../lint
       '@types/cli-progress':
         specifier: ^3.11.6
         version: 3.11.6
@@ -815,9 +800,6 @@ importers:
       '@vitest/coverage-v8':
         specifier: 3.2.4
         version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.0.12)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.2)(terser@5.43.1)(yaml@2.8.0))
-      stylelint:
-        specifier: 16.21.0
-        version: 16.21.0(typescript@5.8.3)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -837,18 +819,12 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
-      '@esmx/lint':
-        specifier: workspace:*
-        version: link:../lint
       '@types/node':
         specifier: ^24.0.0
         version: 24.0.12
       '@vitest/coverage-v8':
         specifier: 3.2.4
         version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.0.12)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.2)(terser@5.43.1)(yaml@2.8.0))
-      stylelint:
-        specifier: 16.21.0
-        version: 16.21.0(typescript@5.8.3)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -861,6 +837,9 @@ importers:
 
   packages/lint:
     dependencies:
+      stylelint:
+        specifier: '>=16'
+        version: 16.21.0(typescript@5.8.3)
       stylelint-config-html:
         specifier: 1.1.0
         version: 1.1.0(postcss-html@1.8.0)(stylelint@16.21.0(typescript@5.8.3))
@@ -883,18 +862,12 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
-      '@esmx/lint':
-        specifier: workspace:*
-        version: 'link:'
       '@types/node':
         specifier: ^24.0.0
         version: 24.0.12
       '@vitest/coverage-v8':
         specifier: 3.2.4
         version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.0.12)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.2)(terser@5.43.1)(yaml@2.8.0))
-      stylelint:
-        specifier: 16.21.0
-        version: 16.21.0(typescript@5.8.3)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -914,9 +887,6 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
-      '@esmx/lint':
-        specifier: workspace:*
-        version: link:../lint
       '@types/node':
         specifier: ^24.0.0
         version: 24.0.12
@@ -926,9 +896,6 @@ importers:
       happy-dom:
         specifier: ^18.0.1
         version: 18.0.1
-      stylelint:
-        specifier: 16.21.0
-        version: 16.21.0(typescript@5.8.3)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -948,18 +915,12 @@ importers:
       '@biomejs/biome':
         specifier: 1.9.4
         version: 1.9.4
-      '@esmx/lint':
-        specifier: workspace:*
-        version: link:../lint
       '@types/node':
         specifier: ^24.0.0
         version: 24.0.12
       '@vitest/coverage-v8':
         specifier: 3.2.4
         version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.0.12)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.2)(terser@5.43.1)(yaml@2.8.0))
-      stylelint:
-        specifier: 16.21.0
-        version: 16.21.0(typescript@5.8.3)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -1030,9 +991,6 @@ importers:
       '@esmx/core':
         specifier: workspace:*
         version: link:../core
-      '@esmx/lint':
-        specifier: workspace:*
-        version: link:../lint
       '@types/node':
         specifier: ^24.0.0
         version: 24.0.12
@@ -1051,9 +1009,6 @@ importers:
       '@vitest/coverage-v8':
         specifier: 3.2.4
         version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.0.12)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.2)(terser@5.43.1)(yaml@2.8.0))
-      stylelint:
-        specifier: 16.21.0
-        version: 16.21.0(typescript@5.8.3)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -1076,9 +1031,6 @@ importers:
       '@esmx/core':
         specifier: workspace:*
         version: link:../core
-      '@esmx/lint':
-        specifier: workspace:*
-        version: link:../lint
       '@rspack/core':
         specifier: 1.4.8
         version: 1.4.8(@swc/helpers@0.5.17)
@@ -1088,9 +1040,6 @@ importers:
       '@vitest/coverage-v8':
         specifier: 3.2.4
         version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.0.12)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.2)(terser@5.43.1)(yaml@2.8.0))
-      stylelint:
-        specifier: 16.21.0
-        version: 16.21.0(typescript@5.8.3)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -1125,18 +1074,12 @@ importers:
       '@esmx/core':
         specifier: workspace:*
         version: link:../core
-      '@esmx/lint':
-        specifier: workspace:*
-        version: link:../lint
       '@types/node':
         specifier: ^24.0.0
         version: 24.0.12
       '@vitest/coverage-v8':
         specifier: 3.2.4
         version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.0.12)(happy-dom@18.0.1)(jiti@2.4.2)(less@4.3.0)(sass-embedded@1.89.2)(terser@5.43.1)(yaml@2.8.0))
-      stylelint:
-        specifier: 16.21.0
-        version: 16.21.0(typescript@5.8.3)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
