@@ -3,7 +3,11 @@ import type { RouteConfig, RouteMatcher, RouteParsedConfig } from './types';
 
 export function createMatcher(routes: RouteConfig[]): RouteMatcher {
     const compiledRoutes = createRouteMatches(routes);
-    return (toURL: URL, baseURL: URL) => {
+    return (
+        toURL: URL,
+        baseURL: URL,
+        cb?: (item: RouteParsedConfig) => boolean
+    ) => {
         const matchPath = toURL.pathname.substring(baseURL.pathname.length - 1);
         const matches: RouteParsedConfig[] = [];
         const params: Record<string, string | string[]> = {};
@@ -11,6 +15,9 @@ export function createMatcher(routes: RouteConfig[]): RouteMatcher {
             routes: RouteParsedConfig[]
         ): boolean => {
             for (const item of routes) {
+                if (cb && !cb(item)) {
+                    continue;
+                }
                 // Depth-first traversal
                 if (
                     item.children.length &&

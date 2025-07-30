@@ -61,27 +61,11 @@ function getBaseUrl(options: RouterOptions): URL {
     return base;
 }
 
-function filterRoutesByLayer(
-    routes: RouteConfig[],
-    layerMode: boolean
-): RouteConfig[] {
-    return routes.filter((route) => {
-        if (layerMode && route.layer !== true) return false;
-        if (!layerMode && route.layer === true) return false;
-        if (route.children)
-            route.children = filterRoutesByLayer(route.children, layerMode);
-        return true;
-    });
-}
-
 export function parsedOptions(
     options: RouterOptions = {}
 ): RouterParsedOptions {
     const base = getBaseUrl(options);
-    const routes = filterRoutesByLayer(
-        options.routes ?? [],
-        options.layer || false
-    );
+    const routes = options.routes ?? [];
     return Object.freeze<RouterParsedOptions>({
         rootStyle: options.rootStyle || false,
         root: options.root || '',
