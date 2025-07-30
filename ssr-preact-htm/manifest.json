@@ -10,8 +10,8 @@
         }
     },
     "buildFiles": [
-        "exports/src/entry.client.b3dcf7cc.final.mjs",
-        "exports/src/entry.client.480d2198.final.css"
+        "exports/src/entry.client.480d2198.final.css",
+        "exports/src/entry.client.b3dcf7cc.final.mjs"
     ],
     "chunks": {
         "ssr-preact-htm@src/entry.client.ts": {
@@ -23,7 +23,7 @@
             "resources": [],
             "sizes": {
                 "js": 24756,
-                "css": 8754,
+                "css": 8952,
                 "resource": 0
             }
         }
