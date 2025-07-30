@@ -153,10 +153,22 @@ export class Route {
         const base = options.base;
         const toInput = resolveRouteLocationInput(routeOptions.toInput, from);
         const to = options.normalizeURL(parseLocation(toInput, base), from);
-        const isSameOrigin = to.origin === base.origin;
-        const isSameBase = to.pathname.startsWith(base.pathname);
-        const match =
-            isSameOrigin && isSameBase ? options.matcher(to, base) : null;
+        let match: RouteMatchResult | null = null;
+
+        // Check if URL origin matches base origin (protocol + hostname + port)
+        // If origins don't match, treat as external URL and don't attempt route matching
+        if (
+            to.origin === base.origin &&
+            to.pathname.startsWith(base.pathname)
+        ) {
+            const isLayer = toType === RouteType.pushLayer;
+            match = options.matcher(to, base, (config) => {
+                if (isLayer) {
+                    return config.layer !== false;
+                }
+                return config.layer !== true;
+            });
+        }
 
         if (match) {
             applyRouteParams(match, toInput, base, to);

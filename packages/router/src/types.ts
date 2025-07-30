@@ -146,7 +146,11 @@ export interface RouteMatchResult {
     readonly params: Record<string, string | string[] | undefined>;
 }
 
-export type RouteMatcher = (targetURL: URL, baseURL: URL) => RouteMatchResult;
+export type RouteMatcher = (
+    to: URL,
+    base: URL,
+    cb?: (item: RouteParsedConfig) => boolean
+) => RouteMatchResult;
 
 /**
  * Route constructor options interface

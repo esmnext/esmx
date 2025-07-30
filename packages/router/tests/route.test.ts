@@ -1329,6 +1329,176 @@ describe('Route Class Complete Test Suite', () => {
             expect(Object.keys(route.state)).toHaveLength(1000);
         });
     });
+
+    describe('🧩 Route Layer Matching Tests', () => {
+        const createOptions = (
+            overrides: Partial<RouterOptions> = {}
+        ): RouterParsedOptions => {
+            const base = new URL('http://localhost:3000/app/');
+            const layerRoutes: RouteConfig[] = [
+                { path: '/dashboard', layer: true },
+                { path: '/users', layer: false },
+                { path: '/public' },
+                {
+                    path: '/admin',
+                    layer: false,
+                    children: [
+                        { path: 'settings', layer: false },
+                        { path: 'profile', layer: true }
+                    ]
+                },
+                {
+                    path: '/layer',
+                    layer: true,
+                    children: [
+                        { path: 'modal', layer: true },
+                        { path: 'content', layer: false }
+                    ]
+                }
+            ];
+
+            return parsedOptions({
+                routes: layerRoutes,
+                base,
+                ...overrides
+            });
+        };
+
+        it('should only match layer routes in pushLayer mode', () => {
+            const options = createOptions();
+
+            // Create a route with pushLayer type
+            const layerRoute = new Route({
+                options,
+                toType: RouteType.pushLayer,
+                toInput: '/dashboard'
+            });
+
+            expect(layerRoute.matched).toHaveLength(1);
+            expect(layerRoute.matched[0].path).toBe('/dashboard');
+            expect(layerRoute.config).not.toBeNull();
+            expect(layerRoute.config?.layer).toBe(true);
+        });
+
+        it('should not match non-layer routes in pushLayer mode', () => {
+            const options = createOptions();
+
+            // Create a route with pushLayer type pointing to a non-layer route
+            const layerRoute = new Route({
+                options,
+                toType: RouteType.pushLayer,
+                toInput: '/users'
+            });
+
+            expect(layerRoute.matched).toHaveLength(0);
+            expect(layerRoute.config).toBeNull();
+        });
+
+        it('should not match layer routes in standard push mode', () => {
+            const options = createOptions();
+
+            // Create a standard route pointing to a layer route
+            const standardRoute = new Route({
+                options,
+                toType: RouteType.push,
+                toInput: '/dashboard'
+            });
+
+            expect(standardRoute.matched).toHaveLength(0);
+            expect(standardRoute.config).toBeNull();
+        });
+
+        it('should match non-layer and undefined layer routes in standard push mode', () => {
+            const options = createOptions();
+
+            // Test explicit non-layer route
+            const nonLayerRoute = new Route({
+                options,
+                toType: RouteType.push,
+                toInput: '/users'
+            });
+
+            expect(nonLayerRoute.matched).toHaveLength(1);
+            expect(nonLayerRoute.matched[0].path).toBe('/users');
+            expect(nonLayerRoute.config?.layer).toBe(false);
+
+            // Test undefined layer route (should also match in standard mode)
+            const undefinedLayerRoute = new Route({
+                options,
+                toType: RouteType.push,
+                toInput: '/public'
+            });
+
+            expect(undefinedLayerRoute.matched).toHaveLength(1);
+            expect(undefinedLayerRoute.matched[0].path).toBe('/public');
+            expect(undefinedLayerRoute.config?.layer).toBeUndefined();
+        });
+
+        it('should correctly handle nested routes with mixed layer settings', () => {
+            const options = createOptions();
+
+            // In standard mode, should match non-layer parent and child
+            const standardNestedRoute = new Route({
+                options,
+                toType: RouteType.push,
+                toInput: '/admin/settings'
+            });
+
+            expect(standardNestedRoute.matched).toHaveLength(2);
+            expect(standardNestedRoute.matched[0].path).toBe('/admin');
+            expect(standardNestedRoute.matched[1].path).toBe('settings');
+            expect(standardNestedRoute.config?.layer).toBe(false);
+
+            // In standard mode, should not match non-layer parent with layer child
+            const mixedNestedRoute = new Route({
+                options,
+                toType: RouteType.push,
+                toInput: '/admin/profile'
+            });
+
+            expect(mixedNestedRoute.matched).toHaveLength(0);
+            expect(mixedNestedRoute.config).toBeNull();
+
+            // In layer mode, should not match non-layer parent with layer child
+            const layerMixedNestedRoute = new Route({
+                options,
+                toType: RouteType.pushLayer,
+                toInput: '/admin/profile'
+            });
+
+            expect(layerMixedNestedRoute.matched).toHaveLength(0);
+            expect(layerMixedNestedRoute.config).toBeNull();
+        });
+
+        it('should correctly match layer parent with layer child in layer mode', () => {
+            const options = createOptions();
+
+            const layerNestedRoute = new Route({
+                options,
+                toType: RouteType.pushLayer,
+                toInput: '/layer/modal'
+            });
+
+            expect(layerNestedRoute.matched).toHaveLength(2);
+            expect(layerNestedRoute.matched[0].path).toBe('/layer');
+            expect(layerNestedRoute.matched[1].path).toBe('modal');
+            expect(layerNestedRoute.matched[0].layer).toBe(true);
+            expect(layerNestedRoute.matched[1].layer).toBe(true);
+        });
+
+        it('should not match layer parent with non-layer child in layer mode', () => {
+            const options = createOptions();
+
+            const layerMixedNestedRoute = new Route({
+                options,
+                toType: RouteType.pushLayer,
+                toInput: '/layer/content'
+            });
+
+            expect(layerMixedNestedRoute.matched).toHaveLength(0);
+            expect(layerMixedNestedRoute.config).toBeNull();
+        });
+    });
 });
 
 // Supplement missing test cases
