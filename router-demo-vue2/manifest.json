@@ -17,7 +17,7 @@
         "@esmx/router": {
             "name": "@esmx/router",
             "rewrite": false,
-            "file": "exports/@esmx/router.64f1224d.final.mjs",
+            "file": "exports/@esmx/router.1e358e1b.final.mjs",
             "identifier": "router-demo-vue2/@esmx/router"
         },
         "@esmx/router-vue": {
@@ -33,17 +33,17 @@
         "exports/src/entry.client.0c6e4813.final.css",
         "exports/src/entry.client.7328a9fe.final.mjs",
         "exports/vue.1de5cf38.final.mjs",
-        "exports/@esmx/router.64f1224d.final.mjs",
+        "exports/@esmx/router.1e358e1b.final.mjs",
         "chunks/604.cc8fbaa2.final.css"
     ],
     "chunks": {
         "router-demo-vue2@../../packages/router/dist/index.mjs": {
             "name": "router-demo-vue2@../../packages/router/dist/index.mjs",
-            "js": "exports/@esmx/router.64f1224d.final.mjs",
+            "js": "exports/@esmx/router.1e358e1b.final.mjs",
             "css": [],
             "resources": [],
             "sizes": {
-                "js": 68231,
+                "js": 68597,
                 "css": 0,
                 "resource": 0
             }
