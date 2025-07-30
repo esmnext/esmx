@@ -110,6 +110,8 @@ export interface RouteConfig {
     beforeEnter?: RouteConfirmHook;
     beforeUpdate?: RouteConfirmHook;
     beforeLeave?: RouteConfirmHook;
+    /** Mark this route as only effective in layer mode */
+    layer?: boolean;
 
     /**
      * Route override function for hybrid app development
