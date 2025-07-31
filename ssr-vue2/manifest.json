@@ -15,19 +15,19 @@
         "src/routes": {
             "name": "src/routes",
             "rewrite": true,
-            "file": "exports/src/routes.205303f2.final.mjs",
+            "file": "exports/src/routes.f8a1b3ae.final.mjs",
             "identifier": "ssr-vue2/src/routes"
         },
         "src/components/index": {
             "name": "src/components/index",
             "rewrite": true,
-            "file": "exports/src/components/index.ad92c795.final.mjs",
+            "file": "exports/src/components/index.679b20e5.final.mjs",
             "identifier": "ssr-vue2/src/components/index"
         },
         "src/layout/index": {
             "name": "src/layout/index",
             "rewrite": true,
-            "file": "exports/src/layout/index.3b323967.final.mjs",
+            "file": "exports/src/layout/index.4dfbf5f3.final.mjs",
             "identifier": "ssr-vue2/src/layout/index"
         },
         "src/store/music-store": {
@@ -38,22 +38,35 @@
         }
     },
     "buildFiles": [
-        "exports/src/layout/index.ed0105a9.final.css",
-        "exports/src/components/index.ad92c795.final.mjs",
-        "exports/src/layout/index.3b323967.final.mjs",
-        "exports/src/components/index.2d57064f.final.css",
+        "chunks/277.7d1d4364.final.css",
+        "exports/src/routes.f8a1b3ae.final.mjs",
+        "exports/src/components/index.679b20e5.final.mjs",
         "exports/src/routes.7eaeab22.final.css",
+        "chunks/277.57d7e640.final.mjs",
         "images/sine-wave-notes.47e0c83d.final.svg",
+        "exports/src/components/index.2d57064f.final.css",
         "exports/src/store/music-store.a72d93b9.final.mjs",
-        "chunks/809.2a795fc8.final.mjs",
-        "chunks/809.7d1d4364.final.css",
         "exports/src/entry.client.cc635218.final.mjs",
-        "exports/src/routes.205303f2.final.mjs"
+        "exports/src/layout/index.4dfbf5f3.final.mjs",
+        "exports/src/layout/index.ed0105a9.final.css"
     ],
     "chunks": {
+        "ssr-vue2@src/views/not-found.vue": {
+            "name": "ssr-vue2@src/views/not-found.vue",
+            "js": "chunks/277.57d7e640.final.mjs",
+            "css": [
+                "chunks/277.7d1d4364.final.css"
+            ],
+            "resources": [],
+            "sizes": {
+                "js": 3820,
+                "css": 2946,
+                "resource": 0
+            }
+        },
         "ssr-vue2@src/layout/index.ts": {
             "name": "ssr-vue2@src/layout/index.ts",
-            "js": "exports/src/layout/index.3b323967.final.mjs",
+            "js": "exports/src/layout/index.4dfbf5f3.final.mjs",
             "css": [
                 "exports/src/layout/index.ed0105a9.final.css"
             ],
@@ -88,7 +101,7 @@
         },
         "ssr-vue2@src/routes.ts": {
             "name": "ssr-vue2@src/routes.ts",
-            "js": "exports/src/routes.205303f2.final.mjs",
+            "js": "exports/src/routes.f8a1b3ae.final.mjs",
             "css": [
                 "exports/src/routes.7eaeab22.final.css"
             ],
@@ -103,7 +116,7 @@
         },
         "ssr-vue2@src/components/index.ts": {
             "name": "ssr-vue2@src/components/index.ts",
-            "js": "exports/src/components/index.ad92c795.final.mjs",
+            "js": "exports/src/components/index.679b20e5.final.mjs",
             "css": [
                 "exports/src/components/index.2d57064f.final.css"
             ],
@@ -111,19 +124,6 @@
             "sizes": {
                 "js": 45620,
                 "css": 22573,
-                "resource": 0
-            }
-        },
-        "ssr-vue2@src/views/not-found.vue": {
-            "name": "ssr-vue2@src/views/not-found.vue",
-            "js": "chunks/809.2a795fc8.final.mjs",
-            "css": [
-                "chunks/809.7d1d4364.final.css"
-            ],
-            "resources": [],
-            "sizes": {
-                "js": 3820,
-                "css": 2946,
                 "resource": 0
             }
         }

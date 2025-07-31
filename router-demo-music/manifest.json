@@ -5,7 +5,7 @@
         "src/entry.client": {
             "name": "src/entry.client",
             "rewrite": true,
-            "file": "exports/src/entry.client.7d2f95cf.final.mjs",
+            "file": "exports/src/entry.client.199d87c9.final.mjs",
             "identifier": "router-demo-music/src/entry.client"
         },
         "vue": {
@@ -28,14 +28,14 @@
         }
     },
     "buildFiles": [
-        "chunks/218.99cba2f0.final.mjs",
         "exports/@esmx/router-vue.0a731974.final.mjs",
-        "exports/src/entry.client.7d2f95cf.final.mjs",
+        "exports/src/entry.client.199d87c9.final.mjs",
+        "exports/vue.1de5cf38.final.mjs",
+        "chunks/195.841963f8.final.css",
         "images/sine-wave-notes.47e0c83d.final.svg",
+        "chunks/195.9f5974ef.final.mjs",
         "exports/src/entry.client.9600eb23.final.css",
-        "exports/@esmx/router.6322d508.final.mjs",
-        "chunks/218.841963f8.final.css",
-        "exports/vue.1de5cf38.final.mjs"
+        "exports/@esmx/router.6322d508.final.mjs"
     ],
     "chunks": {
         "router-demo-music@../../packages/router/dist/index.mjs": {
@@ -51,9 +51,9 @@
         },
         "router-demo-music@src/views/not-found.vue": {
             "name": "router-demo-music@src/views/not-found.vue",
-            "js": "chunks/218.99cba2f0.final.mjs",
+            "js": "chunks/195.9f5974ef.final.mjs",
             "css": [
-                "chunks/218.841963f8.final.css"
+                "chunks/195.841963f8.final.css"
             ],
             "resources": [],
             "sizes": {
@@ -86,7 +86,7 @@
         },
         "router-demo-music@src/entry.client.ts": {
             "name": "router-demo-music@src/entry.client.ts",
-            "js": "exports/src/entry.client.7d2f95cf.final.mjs",
+            "js": "exports/src/entry.client.199d87c9.final.mjs",
             "css": [
                 "exports/src/entry.client.9600eb23.final.css"
             ],

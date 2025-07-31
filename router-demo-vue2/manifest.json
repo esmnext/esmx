@@ -5,7 +5,7 @@
         "src/entry.client": {
             "name": "src/entry.client",
             "rewrite": true,
-            "file": "exports/src/entry.client.7328a9fe.final.mjs",
+            "file": "exports/src/entry.client.0c759a1a.final.mjs",
             "identifier": "router-demo-vue2/src/entry.client"
         },
         "vue": {
@@ -28,13 +28,13 @@
         }
     },
     "buildFiles": [
-        "chunks/604.f94210dd.final.mjs",
-        "exports/@esmx/router-vue.0a731974.final.mjs",
         "exports/src/entry.client.0c6e4813.final.css",
+        "exports/@esmx/router-vue.0a731974.final.mjs",
+        "chunks/200.37441eba.final.mjs",
         "exports/vue.1de5cf38.final.mjs",
-        "exports/src/entry.client.7328a9fe.final.mjs",
         "exports/@esmx/router.6322d508.final.mjs",
-        "chunks/604.cc8fbaa2.final.css"
+        "chunks/200.cc8fbaa2.final.css",
+        "exports/src/entry.client.0c759a1a.final.mjs"
     ],
     "chunks": {
         "router-demo-vue2@../../packages/router/dist/index.mjs": {
@@ -45,6 +45,19 @@
             "sizes": {
                 "js": 69063,
                 "css": 0,
+                "resource": 0
+            }
+        },
+        "router-demo-vue2@src/views/not-found.vue": {
+            "name": "router-demo-vue2@src/views/not-found.vue",
+            "js": "chunks/200.37441eba.final.mjs",
+            "css": [
+                "chunks/200.cc8fbaa2.final.css"
+            ],
+            "resources": [],
+            "sizes": {
+                "js": 4420,
+                "css": 4139,
                 "resource": 0
             }
         },
@@ -72,7 +85,7 @@
         },
         "router-demo-vue2@src/entry.client.ts": {
             "name": "router-demo-vue2@src/entry.client.ts",
-            "js": "exports/src/entry.client.7328a9fe.final.mjs",
+            "js": "exports/src/entry.client.0c759a1a.final.mjs",
             "css": [
                 "exports/src/entry.client.0c6e4813.final.css"
             ],
@@ -80,19 +93,6 @@
             "sizes": {
                 "js": 51284,
                 "css": 35878,
-                "resource": 0
-            }
-        },
-        "router-demo-vue2@src/views/not-found.vue": {
-            "name": "router-demo-vue2@src/views/not-found.vue",
-            "js": "chunks/604.f94210dd.final.mjs",
-            "css": [
-                "chunks/604.cc8fbaa2.final.css"
-            ],
-            "resources": [],
-            "sizes": {
-                "js": 4420,
-                "css": 4139,
                 "resource": 0
             }
         }
