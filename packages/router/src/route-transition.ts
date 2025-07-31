@@ -380,7 +380,7 @@ export class RouteTransition {
         toType: RouteType,
         toInput: RouteLocationInput
     ): Promise<Route> {
-        const from = this.route?.clone() ?? null;
+        const from = this.route;
         const to = await this._runTask(
             new Route({
                 options: this.router.parsedOptions,

@@ -143,7 +143,7 @@ export interface RouteParsedConfig extends RouteConfig {
 
 export interface RouteMatchResult {
     readonly matches: readonly RouteParsedConfig[];
-    readonly params: Record<string, string | string[] | undefined>;
+    readonly params: Record<string, string | string[]>;
 }
 
 export type RouteMatcher = (

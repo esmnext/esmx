@@ -17,7 +17,7 @@ import {
     RouteType,
     type RouterParsedOptions
 } from './types';
-import { isNonEmptyPlainObject, isPlainObject } from './util';
+import { decodeParams, isNonEmptyPlainObject, isPlainObject } from './util';
 
 /**
  * Configuration for non-enumerable properties in Route class
@@ -120,7 +120,8 @@ export class Route {
     public readonly path: string;
     public readonly fullPath: string;
     public readonly hash: string;
-    public readonly params: Record<string, string> = {};
+    public readonly params: Record<string, string | undefined> = {};
+    public readonly paramsArray: Record<string, string[] | undefined> = {};
     public readonly query: Record<string, string | undefined> = {};
     public readonly queryArray: Record<string, string[] | undefined> = {};
     public readonly meta: RouteMeta;
@@ -172,7 +173,20 @@ export class Route {
 
         if (match) {
             applyRouteParams(match, toInput, base, to);
-            Object.assign(this.params, match.params);
+
+            const decodedParams = decodeParams(match.params);
+
+            for (const key in decodedParams) {
+                const value = decodedParams[key];
+
+                if (Array.isArray(value)) {
+                    this.params[key] = value[0] || '';
+                    this.paramsArray[key] = value;
+                } else {
+                    this.params[key] = value;
+                    this.paramsArray[key] = [value];
+                }
+            }
         }
 
         this.url = to;

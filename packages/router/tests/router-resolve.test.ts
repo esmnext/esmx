@@ -304,14 +304,16 @@ describe('Router.resolve method tests', () => {
         test('should correctly handle paths with special characters', () => {
             const route: Route = router.resolve('/user/test%20user');
 
-            expect(route.params.id).toBe('test%20user');
+            expect(route.params.id).toBe('test user');
+            expect(route.paramsArray.id).toEqual(['test user']);
             expect(route.path).toBe('/user/test%20user');
         });
 
         test('should correctly handle URL encoded parameters', () => {
             const route: Route = router.resolve('/user/john%40example.com');
 
-            expect(route.params.id).toBe('john%40example.com');
+            expect(route.params.id).toBe('john@example.com');
+            expect(route.paramsArray.id).toEqual(['john@example.com']);
             expect(route.path).toBe('/user/john%40example.com');
         });
     });

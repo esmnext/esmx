@@ -114,3 +114,22 @@ export function isRouteMatched(
             return false;
     }
 }
+
+export function decodeParams<T extends Record<string, string | string[]>>(
+    params: T
+): T {
+    const result = {} as T;
+
+    for (const key in params) {
+        const value = params[key];
+        if (Array.isArray(value)) {
+            result[key] = value.map((item) =>
+                decodeURIComponent(item)
+            ) as T[typeof key];
+        } else {
+            result[key] = decodeURIComponent(value) as T[typeof key];
+        }
+    }
+
+    return result;
+}

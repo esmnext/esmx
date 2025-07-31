@@ -79,6 +79,7 @@ describe('Route Class Complete Test Suite', () => {
 
                 expect(route.path).toBe('/users/123');
                 expect(route.params.id).toBe('123');
+                expect(route.paramsArray.id).toEqual(['123']);
                 expect(route.type).toBe(RouteType.push);
                 expect(route.isPush).toBe(true);
             });
@@ -98,6 +99,7 @@ describe('Route Class Complete Test Suite', () => {
 
                 expect(route.path).toBe('/users/456');
                 expect(route.params.id).toBe('456');
+                expect(route.paramsArray.id).toEqual(['456']);
                 expect(route.query.tab).toBe('profile');
                 expect(route.state.fromPage).toBe('dashboard');
                 expect(route.keepScrollPosition).toBe(true);
@@ -106,6 +108,55 @@ describe('Route Class Complete Test Suite', () => {
         });
 
         describe('URL Parsing and Matching', () => {
+            it('should correctly handle wildcard parameters', () => {
+                const mockRoutes: RouteConfig[] = [
+                    { path: '/tags/:splat(.*)' }
+                ];
+                const routerOptions: RouterOptions = {
+                    routes: mockRoutes,
+                    base: new URL('http://localhost:3000/')
+                };
+                const options = parsedOptions(routerOptions);
+
+                const route = new Route({
+                    options,
+                    toType: RouteType.push,
+                    toInput: '/tags/tag1/tag2/tag3'
+                });
+
+                // For wildcard parameters, they're captured as a single string
+                expect(route.params.splat).toBe('tag1/tag2/tag3');
+                expect(route.paramsArray.splat).toEqual(['tag1/tag2/tag3']);
+            });
+
+            it('should correctly handle URL encoded params in paramsArray', () => {
+                const mockRoutes: RouteConfig[] = [
+                    { path: '/:name/:values(.*)' }
+                ];
+                const routerOptions: RouterOptions = {
+                    routes: mockRoutes,
+                    base: new URL('http://localhost:3000/')
+                };
+                const options = parsedOptions(routerOptions);
+
+                const route = new Route({
+                    options,
+                    toType: RouteType.push,
+                    toInput: '/user/value%201/value%202/value%203'
+                });
+
+                expect(route.params.name).toBe('user');
+                expect(route.paramsArray.name).toEqual(['user']);
+
+                // params should be decoded
+                expect(route.params.values).toBe('value 1/value 2/value 3');
+
+                // paramsArray should contain the decoded value as well
+                expect(route.paramsArray.values).toEqual([
+                    'value 1/value 2/value 3'
+                ]);
+            });
+
             it('should correctly parse complex URL', () => {
                 const options = createOptions();
                 const route = new Route({
@@ -133,6 +184,79 @@ describe('Route Class Complete Test Suite', () => {
 
                 expect(route.query.tags).toBe('js'); // First value
                 expect(route.queryArray.tags).toEqual(['js', 'react', 'vue']);
+            });
+
+            it('should handle URL encoded parameters', () => {
+                const options = createOptions();
+                const mockRoutes: RouteConfig[] = [{ path: '/test/:encoded' }];
+                const routerOptions: RouterOptions = {
+                    routes: mockRoutes,
+                    base: new URL('http://localhost:3000/')
+                };
+                const customOptions = parsedOptions(routerOptions);
+
+                const route = new Route({
+                    options: customOptions,
+                    toType: RouteType.push,
+                    toInput: '/test/hello%20world'
+                });
+
+                expect(route.params.encoded).toBe('hello world');
+                expect(route.paramsArray.encoded).toEqual(['hello world']);
+            });
+
+            it('should handle array parameters correctly', () => {
+                const mockRoutes: RouteConfig[] = [
+                    { path: '/api/:version/:splat(.*)' }
+                ];
+                const routerOptions: RouterOptions = {
+                    routes: mockRoutes,
+                    base: new URL('http://localhost:3000/')
+                };
+                const options = parsedOptions(routerOptions);
+
+                const route = new Route({
+                    options,
+                    toType: RouteType.push,
+                    toInput: '/api/v1/users/profile/settings'
+                });
+
+                expect(route.params.version).toBe('v1');
+                expect(route.params.splat).toBe('users/profile/settings');
+                expect(route.paramsArray.version).toEqual(['v1']);
+                expect(route.paramsArray.splat).toEqual([
+                    'users/profile/settings'
+                ]);
+            });
+
+            it('should handle repeatable parameters correctly', () => {
+                const mockRoutes: RouteConfig[] = [
+                    {
+                        path: '/numbers/:numbers(\\d+)+',
+                        component: 'NumbersPage'
+                    }
+                ];
+                const routerOptions: RouterOptions = {
+                    routes: mockRoutes,
+                    base: new URL('http://localhost:3000/')
+                };
+                const options = parsedOptions(routerOptions);
+
+                const route = new Route({
+                    options,
+                    toType: RouteType.push,
+                    toInput: '/numbers/123/456/789'
+                });
+
+                // params should contain the first value
+                expect(route.params.numbers).toBe('123');
+
+                // paramsArray should contain all values
+                expect(route.paramsArray.numbers).toEqual([
+                    '123',
+                    '456',
+                    '789'
+                ]);
             });
 
             it('should correctly match nested route parameters', () => {
