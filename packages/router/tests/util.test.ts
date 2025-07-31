@@ -4,6 +4,7 @@ import { Route } from '../src/route';
 import type { RouterParsedOptions } from '../src/types';
 import { RouteType } from '../src/types';
 import {
+    decodeParams,
     isNonEmptyPlainObject,
     isNotNullish,
     isPlainObject,
@@ -1257,6 +1258,43 @@ describe('isRouteMatched', () => {
 
             // @ts-expect-error - testing invalid match type
             expect(isRouteMatched(route1, route2, 'invalid')).toBe(false);
+        });
+    });
+});
+
+describe('decodeParams', () => {
+    test('should decode simple string parameters', () => {
+        const params = { name: 'john', age: '25' };
+        const decoded = decodeParams(params);
+        expect(decoded).toEqual({ name: 'john', age: '25' });
+    });
+
+    test('should decode URL encoded string parameters', () => {
+        const params = { name: 'john%20doe', email: 'john%40example.com' };
+        const decoded = decodeParams(params);
+        expect(decoded).toEqual({
+            name: 'john doe',
+            email: 'john@example.com'
+        });
+    });
+
+    test('should decode array parameters', () => {
+        const params = { tags: ['javascript', 'react', 'vue'] };
+        const decoded = decodeParams(params);
+        expect(decoded).toEqual({ tags: ['javascript', 'react', 'vue'] });
+    });
+
+    test('should decode URL encoded array parameters', () => {
+        const params = {
+            tags: [
+                'javascript%20frameworks',
+                'react%20hooks',
+                'vue%20components'
+            ]
+        };
+        const decoded = decodeParams(params);
+        expect(decoded).toEqual({
+            tags: ['javascript frameworks', 'react hooks', 'vue components']
         });
     });
 });
