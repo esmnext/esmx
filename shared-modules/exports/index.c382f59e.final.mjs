@@ -1,0 +1,1 @@
+function t(t){let e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:2;return t.toFixed(e)}export{t as toFixed};
