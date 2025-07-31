@@ -497,6 +497,28 @@ importers:
         specifier: ^2.1.6
         version: 2.2.12(typescript@5.8.3)
 
+  examples/templates/shared-modules:
+    dependencies:
+      '@esmx/core':
+        specifier: workspace:*
+        version: link:../../../packages/core
+      '@esmx/router':
+        specifier: workspace:*
+        version: link:../../../packages/router
+    devDependencies:
+      '@esmx/rspack':
+        specifier: workspace:*
+        version: link:../../../packages/rspack
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.0.12
+      tsc-alias:
+        specifier: ^1.8.16
+        version: 1.8.16
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
+
   examples/templates/vue-csr:
     dependencies:
       '@esmx/core':
