@@ -47,7 +47,7 @@
         "stylelint-config-standard": "38.0.0",
         "stylelint-order": "7.0.0"
     },
-    "version": "3.0.0-rc.51",
+    "version": "3.0.0-rc.52",
     "type": "module",
     "private": false,
     "exports": {
