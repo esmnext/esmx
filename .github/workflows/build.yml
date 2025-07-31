@@ -30,7 +30,7 @@ jobs:
         cache: 'pnpm'
 
     - name: Build (Cross-platform Node.js)
-      run: node ./build.mjs
+      run: pnpm build
 
     - name: Deploy
       if: github.ref == 'refs/heads/master' && matrix.os == 'ubuntu-latest' && matrix.node == '24'

@@ -66,7 +66,7 @@ npx create-esmx@latest my-app
 
 ---
 
-> 💡 **开发流程**: 首先执行 `./build.mjs` 构建所有包和示例，然后 `cd` 到具体项目目录开始开发
+> 💡 **开发流程**: 首先执行 `pnpm build` 构建所有包和示例，然后 `cd` 到具体项目目录开始开发
 
 ## 📈 Star 历史
 

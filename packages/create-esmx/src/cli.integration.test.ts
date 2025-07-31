@@ -31,8 +31,7 @@ async function verifyProjectStructure(
         'tsconfig.json',
         'README.md',
         'src/entry.client.ts',
-        'src/entry.node.ts',
-        'src/create-app.ts'
+        'src/entry.node.ts'
     ];
 
     for (const file of requiredFiles) {
