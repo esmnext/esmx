@@ -9,7 +9,7 @@
         "lint:css": "pnpm --filter \"*\" lint:css",
         "lint:type": "pnpm --filter \"*\" lint:type",
         "test": "pnpm --filter \"*\" test",
-        "build": "./build.mjs",
+        "build": "node ./build.mjs",
         "build:packages": "pnpm --filter \"./packages/**\" build",
         "build:examples": "pnpm --filter \"./examples/**\" build",
         "release": "npm run build:packages && lerna publish --force-publish --exact"

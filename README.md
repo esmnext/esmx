@@ -66,7 +66,7 @@ npx create-esmx@latest my-app
 
 ---
 
-> 💡 **Development**: First run `./build.mjs` to build all packages and examples, then `cd` to specific project directory to start development
+> 💡 **Development**: First run `pnpm build` to build all packages and examples, then `cd` to specific project directory to start development
 
 ## 📈 Star History
 
