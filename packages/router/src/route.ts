@@ -120,8 +120,8 @@ export class Route {
     public readonly path: string;
     public readonly fullPath: string;
     public readonly hash: string;
-    public readonly params: Record<string, string | undefined> = {};
-    public readonly paramsArray: Record<string, string[] | undefined> = {};
+    public readonly params: Record<string, string> = {};
+    public readonly paramsArray: Record<string, string[]> = {};
     public readonly query: Record<string, string | undefined> = {};
     public readonly queryArray: Record<string, string[] | undefined> = {};
     public readonly meta: RouteMeta;
