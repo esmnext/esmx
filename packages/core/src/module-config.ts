@@ -256,7 +256,6 @@ function getLinks(name: string, root: string, config: ModuleConfig) {
 function getExports(config: ModuleConfig = {}) {
     const result: ParsedModuleConfig['exports'] = {};
 
-    // Default exports added automatically for every module
     const exports: Record<string, ModuleConfigExportObject | string> = {
         'src/entry.client': {
             inputTarget: {
@@ -273,13 +272,11 @@ function getExports(config: ModuleConfig = {}) {
     };
 
     if (Array.isArray(config.exports)) {
-        // Regular expression to match supported file extensions
         const FILE_EXT_REGEX =
             /\.(js|mjs|cjs|jsx|mjsx|cjsx|ts|mts|cts|tsx|mtsx|ctsx)$/i;
 
         config.exports.forEach((item) => {
             if (typeof item === 'string') {
-                // Process prefix syntactic sugar
                 if (item.startsWith(PREFIX.npm)) {
                     // npm: prefix - export npm package, maintain original import paths
                     item = item.substring(PREFIX.npm.length);
@@ -308,7 +305,6 @@ function getExports(config: ModuleConfig = {}) {
         Object.assign(exports, config.exports);
     }
 
-    // Normalize all export configurations
     for (const [name, value] of Object.entries(exports)) {
         const opts =
             typeof value === 'string'

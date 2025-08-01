@@ -56,7 +56,7 @@ async function buildPackageJson(esmx: Esmx): Promise<Record<string, any>> {
     set.forEach((name) => {
         const client = clientJson.exports[name];
         const server = serverJson.exports[name];
-        const exportName = `./${name}`;
+        const exportName = name === 'index' ? '.' : `./${name}`;
         if (client && server) {
             exports[exportName] = {
                 default: `./server/${server.file}`,
