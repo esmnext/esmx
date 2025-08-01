@@ -36,6 +36,40 @@ export async function pack(esmx: Esmx): Promise<boolean> {
     return true;
 }
 
+export interface GenerateExportsOptions {
+    client: ManifestJson['exports'];
+    server: ManifestJson['exports'];
+    base?: Record<string, unknown>;
+}
+
+export function generateExports(
+    options: GenerateExportsOptions
+): Record<string, unknown> {
+    const { client, server, base = {} } = options;
+    const exports: Record<string, unknown> = { ...base };
+
+    const set = new Set([...Object.keys(client), ...Object.keys(server)]);
+
+    set.forEach((name) => {
+        const clientExport = client[name];
+        const serverExport = server[name];
+        const exportName = name === 'index' ? '.' : `./${name}`;
+
+        if (clientExport && serverExport) {
+            exports[exportName] = {
+                default: `./server/${serverExport.file}`,
+                browser: `./client/${clientExport.file}`
+            };
+        } else if (clientExport) {
+            exports[exportName] = `./client/${clientExport.file}`;
+        } else if (serverExport) {
+            exports[exportName] = `./server/${serverExport.file}`;
+        }
+    });
+
+    return exports;
+}
+
 async function buildPackageJson(esmx: Esmx): Promise<Record<string, any>> {
     const [clientJson, serverJson, curJson] = await Promise.all([
         esmx.readJson<ManifestJson>(
@@ -46,27 +80,11 @@ async function buildPackageJson(esmx: Esmx): Promise<Record<string, any>> {
         ),
         esmx.readJson(esmx.resolvePath('package.json'))
     ]);
-    const exports: Record<string, any> = {
-        ...curJson?.exports
-    };
-    const set = new Set([
-        ...Object.keys(clientJson.exports),
-        ...Object.keys(serverJson.exports)
-    ]);
-    set.forEach((name) => {
-        const client = clientJson.exports[name];
-        const server = serverJson.exports[name];
-        const exportName = name === 'index' ? '.' : `./${name}`;
-        if (client && server) {
-            exports[exportName] = {
-                default: `./server/${server.file}`,
-                browser: `./client/${client.file}`
-            };
-        } else if (client) {
-            exports[exportName] = `./client/${client.file}`;
-        } else if (server) {
-            exports[exportName] = `./server/${server.file}`;
-        }
+
+    const exports = generateExports({
+        client: clientJson.exports,
+        server: serverJson.exports,
+        base: curJson?.exports
     });
 
     const buildJson: Record<string, any> = {
@@ -76,8 +94,8 @@ async function buildPackageJson(esmx: Esmx): Promise<Record<string, any>> {
     return buildJson;
 }
 
-function contentHash(buffer: Buffer, algorithm = 'sha256') {
-    const hash = crypto.createHash('sha256');
+export function contentHash(buffer: Buffer, algorithm = 'sha256') {
+    const hash = crypto.createHash(algorithm);
     hash.update(buffer);
     return `${algorithm}-${hash.digest('hex')}`;
 }
