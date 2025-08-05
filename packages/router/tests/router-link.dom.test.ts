@@ -908,14 +908,26 @@ describe('router-link.ts - RouterLink DOM Environment Tests', () => {
 
         it('should handle protocol-relative URLs correctly', () => {
             const props: RouterLinkProps = {
-                to: '//example.com/path'
+                to: '//google.com/path'
             };
 
             const result = createLinkResolver(router, props);
 
             expect(result.isExternal).toBe(true);
-            expect(result.attributes.href).toBe('http://example.com/path');
+            expect(result.attributes.href).toBe('https://google.com/path');
             expect(result.attributes.rel).toContain('external');
+        });
+
+        it('should handle protocol-relative URLs to same domain as internal', () => {
+            const props: RouterLinkProps = {
+                to: '//example.com/path'
+            };
+
+            const result = createLinkResolver(router, props);
+
+            expect(result.isExternal).toBe(false);
+            expect(result.attributes.href).toBe('https://example.com/path');
+            expect(result.attributes.rel).toBeUndefined();
         });
 
         it('should handle root-relative URLs correctly', () => {
