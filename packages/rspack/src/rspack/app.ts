@@ -26,13 +26,13 @@ const hotFixCode = fs.readFileSync(
 );
 
 /**
- * Rspack 应用配置上下文接口。
+ * Rspack application configuration context interface.
  *
- * 该接口提供了在配置钩子函数中可以访问的上下文信息，允许你：
- * - 访问 Esmx 框架实例
- * - 获取当前的构建目标（client/server/node）
- * - 修改 Rspack 配置
- * - 访问应用选项
+ * This interface provides context information accessible in configuration hook functions, allowing you to:
+ * - Access the Esmx framework instance
+ * - Get the current build target (client/server/node)
+ * - Modify Rspack configuration
+ * - Access application options
  *
  * @example
  * ```ts
@@ -41,11 +41,11 @@ const hotFixCode = fs.readFileSync(
  *   async devApp(esmx) {
  *     return import('@esmx/rspack').then((m) =>
  *       m.createRspackApp(esmx, {
- *         // 配置钩子函数
+ *         // Configuration hook function
  *         config(context) {
- *           // 访问构建目标
+ *           // Access build target
  *           if (context.buildTarget === 'client') {
- *             // 修改客户端构建配置
+ *             // Modify client build configuration
  *             context.config.optimization = {
  *               ...context.config.optimization,
  *               splitChunks: {
@@ -62,73 +62,73 @@ const hotFixCode = fs.readFileSync(
  */
 export interface RspackAppConfigContext {
     /**
-     * Esmx 框架实例。
-     * 可用于访问框架提供的 API 和工具函数。
+     * Esmx framework instance.
+     * Can be used to access framework APIs and utility functions.
      */
     esmx: Esmx;
 
     /**
-     * 当前的构建目标。
-     * - 'client': 客户端构建，生成浏览器可执行的代码
-     * - 'server': 服务端构建，生成 SSR 渲染代码
-     * - 'node': Node.js 构建，生成服务器入口代码
+     * Current build target.
+     * - 'client': Client build, generates browser-executable code
+     * - 'server': Server build, generates SSR rendering code
+     * - 'node': Node.js build, generates server entry code
      */
     buildTarget: BuildTarget;
 
     /**
-     * Rspack 编译配置对象。
-     * 你可以在配置钩子中修改这个对象来自定义构建行为。
+     * Rspack compilation configuration object.
+     * You can modify this object in configuration hooks to customize build behavior.
      */
     config: RspackOptions;
 
     /**
-     * 创建应用时传入的选项对象。
+     * Options object passed when creating the application.
      */
     options: RspackAppOptions;
 }
 
 /**
- * Rspack 链式配置上下文接口。
+ * Rspack chain configuration context interface.
  *
- * 该接口提供了在 chain 钩子函数中可以访问的上下文信息，允许你：
- * - 访问 Esmx 框架实例
- * - 获取当前的构建目标（client/server/node）
- * - 使用 rspack-chain 修改配置
- * - 访问应用选项
+ * This interface provides context information accessible in chain hook functions, allowing you to:
+ * - Access the Esmx framework instance
+ * - Get the current build target (client/server/node)
+ * - Modify configuration using rspack-chain
+ * - Access application options
  */
 export interface RspackAppChainContext {
     /**
-     * Esmx 框架实例。
-     * 可用于访问框架提供的 API 和工具函数。
+     * Esmx framework instance.
+     * Can be used to access framework APIs and utility functions.
      */
     esmx: Esmx;
 
     /**
-     * 当前的构建目标。
-     * - 'client': 客户端构建，生成浏览器可执行的代码
-     * - 'server': 服务端构建，生成 SSR 渲染代码
-     * - 'node': Node.js 构建，生成服务器入口代码
+     * Current build target.
+     * - 'client': Client build, generates browser-executable code
+     * - 'server': Server build, generates SSR rendering code
+     * - 'node': Node.js build, generates server entry code
      */
     buildTarget: BuildTarget;
 
     /**
-     * rspack-chain 配置对象。
-     * 你可以在 chain 钩子中使用链式 API 修改配置。
+     * rspack-chain configuration object.
+     * You can use the chain API in chain hooks to modify the configuration.
      */
     chain: import('rspack-chain');
 
     /**
-     * 创建应用时传入的选项对象。
+     * Options object passed when creating the application.
      */
     options: RspackAppOptions;
 }
 
 /**
- * Rspack 应用配置选项接口。
+ * Rspack application configuration options interface.
  *
- * 该接口提供了创建 Rspack 应用时可以使用的配置选项，包括：
- * - 代码压缩选项
- * - Rspack 配置钩子函数
+ * This interface provides configuration options available when creating a Rspack application, including:
+ * - Code compression options
+ * - Rspack configuration hook functions
  *
  * @example
  * ```ts
@@ -137,9 +137,9 @@ export interface RspackAppChainContext {
  *   async devApp(esmx) {
  *     return import('@esmx/rspack').then((m) =>
  *       m.createRspackApp(esmx, {
- *         // 禁用代码压缩
+ *         // Disable code compression
  *         minimize: false,
- *         // 自定义 Rspack 配置
+ *         // Custom Rspack configuration
  *         config(context) {
  *           if (context.buildTarget === 'client') {
  *             context.config.optimization.splitChunks = {
@@ -155,47 +155,43 @@ export interface RspackAppChainContext {
  */
 export interface RspackAppOptions {
     /**
-     * 是否启用代码压缩。
+     * Whether to enable code compression.
      *
-     * - true: 启用代码压缩
-     * - false: 禁用代码压缩
-     * - undefined: 根据环境自动判断（生产环境启用，开发环境禁用）
+     * - true: Enable code compression
+     * - false: Disable code compression
+     * - undefined: Automatically determine based on environment (enabled in production, disabled in development)
      *
      * @default undefined
      */
     minimize?: boolean;
 
     /**
-     * Rspack 配置钩子函数。
+     * Called before the build starts, this function allows you to modify the Rspack compilation configuration.
+     * Supports differentiated configuration for different build targets (client/server/node).
      *
-     * 在构建开始前调用，可以通过该函数修改 Rspack 的编译配置。
-     * 支持针对不同的构建目标（client/server/node）进行差异化配置。
-     *
-     * @param context - 配置上下文，包含框架实例、构建目标和配置对象
+     * @param context - Configuration context, containing framework instance, build target, and configuration object
      */
     config?: (context: RspackAppConfigContext) => void;
 
     /**
-     * Rspack chain 配置钩子函数。
+     * Uses rspack-chain to provide chained configuration method, allowing more flexible modification of Rspack configuration.
+     * Called after the config hook, if chain hook exists, chained configuration is preferred.
      *
-     * 使用 rspack-chain 提供链式配置方式，可以更灵活地修改 Rspack 配置。
-     * 在 config 钩子之后调用，如果有 chain 钩子则优先使用链式配置。
-     *
-     * @param context - 配置上下文，包含框架实例、构建目标和 chain 配置对象
+     * @param context - Configuration context, containing framework instance, build target, and chain configuration object
      */
     chain?: (context: RspackAppChainContext) => void;
 }
 
 /**
- * 创建 Rspack 应用实例。
+ * Create Rspack application instance.
  *
- * 该函数根据运行环境（开发/生产）创建不同的应用实例：
- * - 开发环境：配置热更新中间件和实时渲染
- * - 生产环境：配置构建任务
+ * This function creates different application instances based on the runtime environment (development/production):
+ * - Development environment: Configures hot update middleware and real-time rendering
+ * - Production environment: Configures build tasks
  *
- * @param esmx - Esmx 框架实例
- * @param options - Rspack 应用配置选项
- * @returns 返回应用实例
+ * @param esmx - Esmx framework instance
+ * @param options - Rspack application configuration options
+ * @returns Returns application instance
  *
  * @example
  * ```ts
@@ -205,7 +201,7 @@ export interface RspackAppOptions {
  *     return import('@esmx/rspack').then((m) =>
  *       m.createRspackApp(esmx, {
  *         config(context) {
- *           // 配置 loader 处理不同类型的文件
+ *           // Configure loader to handle different file types
  *           context.config.module = {
  *             rules: [
  *               {
