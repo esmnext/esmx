@@ -1,5 +1,9 @@
 import { describe, expect, test } from 'vitest';
-import { normalizeURL, parseLocation } from '../src/location';
+import {
+    normalizeURL,
+    parseLocation,
+    resolveRouteLocationInput
+} from '../src/location';
 import type { RouteLocationInput } from '../src/types';
 
 declare module 'vitest' {
@@ -40,9 +44,9 @@ describe('normalizeURL', () => {
         {
             input: '//example.com/path',
             base: 'https://github.com',
-            expected: 'http://example.com/path',
+            expected: 'https://example.com/path',
             description:
-                'should handle protocol-relative URLs (starting with //)'
+                'should handle protocol-relative URLs (starting with //) using base URL protocol'
         },
         {
             input: 'http://github.com/path?a#h',
@@ -402,5 +406,39 @@ describe('normalizeURL more', () => {
             );
             expect(urlWithBaseSuffix).toEqURL(expected + pathSuffix);
         });
+    });
+});
+
+describe('normalizeURL protocol-relative URLs', () => {
+    test('should use https protocol from base URL', () => {
+        const result = normalizeURL(
+            '//example.com/path',
+            new URL('https://github.com')
+        );
+        expect(result).toEqURL('https://example.com/path');
+    });
+
+    test('should use http protocol from base URL', () => {
+        const result = normalizeURL(
+            '//example.com/path',
+            new URL('http://github.com')
+        );
+        expect(result).toEqURL('http://example.com/path');
+    });
+
+    test('should handle protocol-relative URLs with query parameters', () => {
+        const result = normalizeURL(
+            '//example.com/path?query=value',
+            new URL('https://github.com')
+        );
+        expect(result).toEqURL('https://example.com/path?query=value');
+    });
+
+    test('should handle protocol-relative URLs with hash', () => {
+        const result = normalizeURL(
+            '//example.com/path#section',
+            new URL('https://github.com')
+        );
+        expect(result).toEqURL('https://example.com/path#section');
     });
 });

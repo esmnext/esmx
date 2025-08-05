@@ -14,8 +14,9 @@ export function normalizeURL(url: string | URL, base: URL): URL {
 
     // Handle protocol-relative URLs (e.g., //example.com)
     if (url.startsWith('//')) {
-        // Using http: as a default protocol for protocol-relative URLs.
-        return new URL(`http:${url}`);
+        // Use the current base URL's protocol for security and consistency
+        const protocol = base.protocol;
+        return new URL(`${protocol}${url}`);
     }
 
     // Handle root-relative paths
