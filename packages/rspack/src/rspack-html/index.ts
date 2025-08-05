@@ -12,7 +12,10 @@ import {
     type RspackAppOptions,
     createRspackApp
 } from '../rspack';
+import { getTargetSetting } from './target-setting';
+import type { TargetSetting } from './target-setting';
 
+export type { TargetSetting };
 export interface RspackHtmlAppOptions extends RspackAppOptions {
     /**
      * CSS output mode configuration
@@ -168,25 +171,23 @@ export interface RspackHtmlAppOptions extends RspackAppOptions {
      *
      * @example
      * ```ts
+     * // Global compatible mode
+     * target: 'compatible'
+     *
+     * // Global modern mode
+     * target: 'modern'
+     *
+     * // Global custom targets
+     * target: ['chrome>=89', 'edge>=89', 'firefox>=108', 'safari>=16.4', 'node>=24']
+     *
+     * // Per-build-target configuration
      * target: {
-     *   // Browser build targets
-     *   web: ['chrome>=87', 'firefox>=78', 'safari>=14'],
-     *   // Node.js build targets
-     *   node: ['node>=16']
+     *   client: 'modern',
+     *   server: ['node>=18']
      * }
      * ```
      */
-    target?: {
-        /**
-         * @default ['chrome>=64', 'edge>=79', 'firefox>=67', 'safari>=11.1']
-         */
-        web?: string[];
-
-        /**
-         * @default ['node>=24']
-         */
-        node?: string[];
-    };
+    target?: TargetSetting;
 }
 
 export async function createRspackHtmlApp(
@@ -195,11 +196,6 @@ export async function createRspackHtmlApp(
 ) {
     options = {
         ...options,
-        target: {
-            web: ['chrome>=64', 'edge>=79', 'firefox>=67', 'safari>=11.1'],
-            node: ['node>=24'],
-            ...options?.target
-        },
         css: options?.css ? options.css : esmx.isProd ? 'css' : 'js'
     };
     return createRspackApp(esmx, {
@@ -296,10 +292,7 @@ function configureTypeScriptRule(
         )
         .options({
             env: {
-                targets:
-                    buildTarget === 'client'
-                        ? options?.target?.web
-                        : options?.target?.node,
+                targets: getTargetSetting(options?.target, buildTarget),
                 ...options?.swcLoader?.env
             },
             jsc: {
@@ -336,7 +329,7 @@ function configureOptimization(
         .use(rspack.LightningCssMinimizerRspackPlugin, [
             {
                 minimizerOptions: {
-                    targets: options.target?.web,
+                    targets: getTargetSetting(options?.target, 'client'),
                     errorRecovery: false
                 }
             }
@@ -392,11 +385,11 @@ function configureCssInJS(
         .test(/\.css$/)
         .use('style-loader')
         .loader(options.loaders?.styleLoader ?? RSPACK_LOADER.styleLoader)
-        .options(options.styleLoader || {})
+        .options(options.styleLoader ?? {})
         .end()
         .use('css-loader')
         .loader(options.loaders?.cssLoader ?? RSPACK_LOADER.cssLoader)
-        .options(options.cssLoader || {})
+        .options(options.cssLoader ?? {})
         .end()
         .use('lightning-css-loader')
         .loader(
@@ -404,7 +397,7 @@ function configureCssInJS(
                 RSPACK_LOADER.lightningcssLoader
         )
         .options({
-            targets: options.target?.web ?? [],
+            targets: getTargetSetting(options?.target, 'client'),
             minify: esmx.isProd
         } as LightningcssLoaderOptions)
         .end()
@@ -415,11 +408,11 @@ function configureCssInJS(
         .test(/\.less$/)
         .use('style-loader')
         .loader(options.loaders?.styleLoader ?? RSPACK_LOADER.styleLoader)
-        .options(options.styleLoader || {})
+        .options(options.styleLoader ?? {})
         .end()
         .use('css-loader')
         .loader(options.loaders?.cssLoader ?? RSPACK_LOADER.cssLoader)
-        .options(options.cssLoader || {})
+        .options(options.cssLoader ?? {})
         .end()
         .use('lightning-css-loader')
         .loader(
@@ -427,13 +420,13 @@ function configureCssInJS(
                 RSPACK_LOADER.lightningcssLoader
         )
         .options({
-            targets: options.target?.web ?? [],
+            targets: getTargetSetting(options?.target, 'client'),
             minify: esmx.isProd
         } as LightningcssLoaderOptions)
         .end()
         .use('less-loader')
         .loader(options.loaders?.lessLoader ?? RSPACK_LOADER.lessLoader)
-        .options(options.lessLoader || {})
+        .options(options.lessLoader ?? {})
         .end();
 
     if (options.styleResourcesLoader) {
@@ -455,7 +448,7 @@ function configureCssExtract(
     options: RspackHtmlAppOptions
 ): void {
     chain.set('experiments', {
-        ...(chain.get('experiments') || {}),
+        ...(chain.get('experiments') ?? {}),
         css: true
     });
 
@@ -469,7 +462,7 @@ function configureCssExtract(
         .test(/\.less$/)
         .use('less-loader')
         .loader(options.loaders?.lessLoader ?? RSPACK_LOADER.lessLoader)
-        .options(options.lessLoader || {})
+        .options(options.lessLoader ?? {})
         .end();
 
     if (options.styleResourcesLoader) {
