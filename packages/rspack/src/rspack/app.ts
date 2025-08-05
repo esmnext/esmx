@@ -255,8 +255,6 @@ async function createMiddleware(
     if (esmx.command !== esmx.COMMAND.dev) {
         return [];
     }
-    // const middlewares: Middleware[] = [];
-
     const rsBuild = createRsBuild([
         generateBuildConfig(esmx, options, 'client'),
         generateBuildConfig(esmx, options, 'server')
