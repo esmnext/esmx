@@ -13,7 +13,7 @@ import type { BuildTarget } from './build-target';
 import { HMR_DIR, HMR_JSONP } from './hmr-config';
 
 /**
- * 构建 Client、Server、Node 的基础配置
+ * Base configuration for building Client, Server, and Node targets
  */
 export function createRspackConfig(
     esmx: Esmx,
@@ -23,7 +23,7 @@ export function createRspackConfig(
     const isHot = buildTarget === 'client' && !esmx.isProd;
     return {
         /**
-         * 项目根目录，不可修改
+         * Project root directory, cannot be modified
          */
         context: esmx.root,
         output: {

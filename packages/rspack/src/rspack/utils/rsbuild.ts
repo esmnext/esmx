@@ -51,7 +51,7 @@ export function createRsBuild(options: RspackOptions[]) {
                 }
             });
 
-            // 监听进程信号，确保优雅退出
+            // Listen to process signals to ensure graceful shutdown
             const signals = ['SIGINT', 'SIGTERM', 'SIGHUP'] satisfies string[];
             signals.forEach((signal) => {
                 process.on(signal, () => {
@@ -61,7 +61,7 @@ export function createRsBuild(options: RspackOptions[]) {
                 });
             });
 
-            // 监听未捕获的异常和 Promise 拒绝
+            // Listen to uncaught exceptions and Promise rejections
             process.on('uncaughtException', handleExit);
             process.on('unhandledRejection', handleExit);
 

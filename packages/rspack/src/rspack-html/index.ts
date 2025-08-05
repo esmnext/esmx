@@ -15,41 +15,41 @@ import {
 
 export interface RspackHtmlAppOptions extends RspackAppOptions {
     /**
-     * CSS 输出模式配置
+     * CSS output mode configuration
      *
-     * @default 根据环境自动选择：
-     * - 生产环境: 'css'，将CSS输出到独立文件中，有利于缓存和并行加载
-     * - 开发环境: 'js'，将CSS打包到JS中以支持热更新(HMR)，实现样式的即时更新
+     * @default Automatically selected based on environment:
+     * - Production: 'css', outputs CSS to separate files for better caching and parallel loading
+     * - Development: 'js', bundles CSS into JS to support hot module replacement (HMR) for instant style updates
      *
-     * - 'css': 将 CSS 输出到独立的 CSS 文件中
-     * - 'js': 将 CSS 打包到 JS 文件中，运行时动态插入样式
-     * - false: 关闭默认的 CSS 处理配置，需要手动配置 loader 规则
+     * - 'css': Output CSS to separate CSS files
+     * - 'js': Bundle CSS into JS files and dynamically inject styles at runtime
+     * - false: Disable default CSS processing configuration, requires manual loader rule configuration
      *
      * @example
      * ```ts
-     * // 使用环境默认配置
+     * // Use environment default configuration
      * css: undefined
      *
-     * // 强制输出到独立的 CSS 文件
+     * // Force output to separate CSS files
      * css: 'css'
      *
-     * // 强制打包到 JS 中
+     * // Force bundle into JS
      * css: 'js'
      *
-     * // 自定义 CSS 处理
+     * // Custom CSS processing
      * css: false
      * ```
      */
     css?: 'css' | 'js' | false;
 
     /**
-     * 自定义 loader 配置
+     * Custom loader configuration
      *
-     * 允许替换默认的 loader 实现，可用于切换到特定框架的 loader
+     * Allows replacing default loader implementations, useful for switching to framework-specific loaders
      *
      * @example
      * ```ts
-     * // 使用 Vue 的 style-loader
+     * // Use Vue's style-loader
      * loaders: {
      *   styleLoader: 'vue-style-loader'
      * }
@@ -58,9 +58,7 @@ export interface RspackHtmlAppOptions extends RspackAppOptions {
     loaders?: Partial<Record<keyof typeof RSPACK_LOADER, string>>;
 
     /**
-     * style-loader 配置项
-     *
-     * 用于配置样式注入方式，完整选项参考:
+     * Configure style injection method. For complete options, see:
      * https://github.com/webpack-contrib/style-loader
      *
      * @example
@@ -74,9 +72,7 @@ export interface RspackHtmlAppOptions extends RspackAppOptions {
     styleLoader?: Record<string, any>;
 
     /**
-     * css-loader 配置项
-     *
-     * 用于配置 CSS 模块化、URL 解析等，完整选项参考:
+     * Configure CSS modules, URL resolution, etc. For complete options, see:
      * https://github.com/webpack-contrib/css-loader
      *
      * @example
@@ -90,9 +86,7 @@ export interface RspackHtmlAppOptions extends RspackAppOptions {
     cssLoader?: Record<string, any>;
 
     /**
-     * less-loader 配置项
-     *
-     * 用于配置 Less 编译选项，完整选项参考:
+     * Configure Less compilation options. For complete options, see:
      * https://github.com/webpack-contrib/less-loader
      *
      * @example
@@ -108,9 +102,7 @@ export interface RspackHtmlAppOptions extends RspackAppOptions {
     lessLoader?: Record<string, any>;
 
     /**
-     * style-resources-loader 配置项
-     *
-     * 用于自动注入全局的样式资源，完整选项参考:
+     * Automatically inject global style resources. For complete options, see:
      * https://github.com/yenshih/style-resources-loader
      *
      * @example
@@ -126,9 +118,7 @@ export interface RspackHtmlAppOptions extends RspackAppOptions {
     styleResourcesLoader?: Record<string, any>;
 
     /**
-     * SWC loader 配置项
-     *
-     * 用于配置 TypeScript/JavaScript 编译选项，完整选项参考:
+     * Configure TypeScript/JavaScript compilation options. For complete options, see:
      * https://rspack.dev/guide/features/builtin-swc-loader
      *
      * @example
@@ -149,19 +139,17 @@ export interface RspackHtmlAppOptions extends RspackAppOptions {
     swcLoader?: SwcLoaderOptions;
 
     /**
-     * DefinePlugin 配置项
-     *
-     * 用于定义编译时的全局常量，支持针对不同构建目标设置不同的值
-     * 完整说明参考: https://rspack.dev/plugins/webpack/define-plugin
+     * Define compile-time global constants, supports setting different values for different build targets
+     * For complete documentation, see: https://rspack.dev/plugins/webpack/define-plugin
      *
      * @example
      * ```ts
-     * // 统一的值
+     * // Unified value
      * definePlugin: {
      *   'process.env.APP_ENV': JSON.stringify('production')
      * }
      *
-     * // 针对不同构建目标的值
+     * // Values for different build targets
      * definePlugin: {
      *   'process.env.IS_SERVER': {
      *     server: 'true',
@@ -176,31 +164,25 @@ export interface RspackHtmlAppOptions extends RspackAppOptions {
     >;
 
     /**
-     * 构建目标配置
-     *
-     * 用于设置代码的目标运行环境，影响代码的编译降级和 polyfill 注入
+     * Set the target runtime environment for the code, affecting code compilation downgrading and polyfill injection
      *
      * @example
      * ```ts
      * target: {
-     *   // 浏览器构建目标
+     *   // Browser build targets
      *   web: ['chrome>=87', 'firefox>=78', 'safari>=14'],
-     *   // Node.js 构建目标
+     *   // Node.js build targets
      *   node: ['node>=16']
      * }
      * ```
      */
     target?: {
         /**
-         * 浏览器构建目标
-         *
          * @default ['chrome>=64', 'edge>=79', 'firefox>=67', 'safari>=11.1']
          */
         web?: string[];
 
         /**
-         * Node.js 构建目标
-         *
          * @default ['node>=24']
          */
         node?: string[];
