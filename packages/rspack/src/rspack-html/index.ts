@@ -236,7 +236,9 @@ export async function createRspackHtmlApp(
 function configureAssetRules(chain: RspackChain, esmx: Esmx): void {
     chain.module
         .rule('images')
-        .test(/\.(jpe?g|png|gif|bmp|webp|svg)$/i)
+        .test(
+            /\.(png|jpg|jpeg|gif|svg|bmp|webp|ico|apng|avif|tif|tiff|jfif|pjpeg|pjp|cur)$/i
+        )
         .type('asset/resource')
         .set('generator', {
             filename: filename(esmx, 'images')
@@ -244,15 +246,23 @@ function configureAssetRules(chain: RspackChain, esmx: Esmx): void {
 
     chain.module
         .rule('media')
-        .test(/\.(mp4|webm|ogg|mp3|wav|flac|aac)$/i)
+        .test(/\.(mp4|webm|ogg|mov)$/i)
         .type('asset/resource')
         .set('generator', {
             filename: filename(esmx, 'media')
         });
 
     chain.module
+        .rule('audio')
+        .test(/\.(mp3|wav|flac|aac|m4a|opus)$/i)
+        .type('asset/resource')
+        .set('generator', {
+            filename: filename(esmx, 'audio')
+        });
+
+    chain.module
         .rule('fonts')
-        .test(/\.(woff|woff2|eot|ttf|otf)(\?.*)?$/i)
+        .test(/\.(woff|woff2|eot|ttf|otf|ttc)(\?.*)?$/i)
         .type('asset/resource')
         .set('generator', {
             filename: filename(esmx, 'fonts')
