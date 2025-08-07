@@ -52,7 +52,7 @@
     },
     "scripts": {
         "lint:js": "biome check --write --no-errors-on-unmatched",
-        "lint:css": "npm run lint:js",
+        "lint:css": "pnpm run lint:js",
         "lint:type": "tsc --noEmit",
         "test": "vitest run --pass-with-no-tests",
         "coverage": "vitest run --coverage --pass-with-no-tests",
