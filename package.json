@@ -12,7 +12,7 @@
         "build": "node ./build.mjs",
         "build:packages": "pnpm --filter \"./packages/**\" build",
         "build:examples": "pnpm --filter \"./examples/**\" build",
-        "release": "npm run build:packages && lerna publish --force-publish --exact"
+        "release": "pnpm run build:packages && lerna publish --force-publish --exact"
     },
     "devDependencies": {
         "lint-staged": "16.1.2",

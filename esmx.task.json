@@ -2,14 +2,13 @@
     "packages": [
         "packages/class-state",
         "packages/core",
+        "packages/create-esmx",
         "packages/fetch",
         "packages/import",
-        "packages/lint",
         "packages/router",
         "packages/router-vue",
         "packages/rspack",
         "packages/rspack-module-link-plugin",
-        "packages/rspack-vue",
-        "packages/create-esmx"
+        "packages/rspack-vue"
     ]
 }
