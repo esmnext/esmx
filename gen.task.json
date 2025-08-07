@@ -9,6 +9,7 @@
         "packages/router-vue",
         "packages/rspack",
         "packages/rspack-module-link-plugin",
-        "packages/rspack-vue"
+        "packages/rspack-vue",
+        "packages/create-esmx"
     ]
 }

@@ -1,5 +1,5 @@
 {
-    "$schema": "https://biomejs.dev/schemas/1.9.2/schema.json",
+    "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
     "vcs": {
         "enabled": false
     },
@@ -54,7 +54,7 @@
                 "noConfusingVoidType": "off",
                 "noExplicitAny": "off",
                 "noAssignInExpressions": "off",
-                "useGetterReturn": "warn",
+                "useGetterReturn": "off",
                 "noGlobalIsNan": "warn",
                 "noImplicitAnyLet": "warn",
                 "noShadowRestrictedNames": "warn",
@@ -117,7 +117,10 @@
     },
     "css": {
         "formatter": {
-            "enabled": false
+            "enabled": true
+        },
+        "linter": {
+            "enabled": true
         }
     }
 }

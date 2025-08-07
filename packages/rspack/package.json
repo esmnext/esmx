@@ -87,8 +87,8 @@
         "@types/webpack-hot-middleware": "^2.25.9",
         "@types/webpack-node-externals": "^3.0.4",
         "@vitest/coverage-v8": "3.2.4",
-        "typescript": "5.8.3",
-        "unbuild": "3.5.0",
+        "typescript": "5.9.2",
+        "unbuild": "3.6.0",
         "vitest": "3.2.4"
     },
     "version": "3.0.0-rc.55",
