@@ -53,7 +53,7 @@ type ModuleConfigExportExports =
 ```typescript
 type ModuleConfigExportObject = {
     input?: string;
-    inputTarget?: Record<BuildSsrTarget, string | false>;
+    entryPoints?: Record<BuildEnvironment, string | false>;
     rewrite?: boolean;
 };
 ```
@@ -63,9 +63,9 @@ type ModuleConfigExportObject = {
 * **类型**: `string`
 * **描述**: 输入文件路径，相对于项目根目录。
 
-#### inputTarget
+#### entryPoints
 
-* **类型**: `Record<BuildSsrTarget, string | false>`
+* **类型**: `Record<BuildEnvironment, string | false>`
 * **描述**: 环境特定的输入文件配置。支持客户端和服务端差异化构建。
 
 #### rewrite
@@ -74,10 +74,10 @@ type ModuleConfigExportObject = {
 * **默认值**: `true`
 * **描述**: 是否重写模块内的导入路径。
 
-### BuildSsrTarget
+### BuildEnvironment
 
 ```typescript
-type BuildSsrTarget = 'client' | 'server';
+type BuildEnvironment = 'client' | 'server';
 ```
 
 构建目标环境类型。
@@ -101,7 +101,7 @@ interface ParsedModuleConfig {
 ```typescript
 interface ParsedModuleConfigExport {
     name: string;
-    inputTarget: Record<BuildSsrTarget, string | false>;
+    entryPoints: Record<BuildEnvironment, string | false>;
     rewrite: boolean;
 }
 ```
@@ -129,13 +129,13 @@ interface ParsedModuleConfigExport {
 ```typescript
 {
   'src/entry.client': {
-    inputTarget: {
+    entryPoints: {
       client: './src/entry.client',
       server: false
     }
   },
   'src/entry.server': {
-    inputTarget: {
+    entryPoints: {
       client: false,
       server: './src/entry.server'
     }
@@ -183,7 +183,7 @@ exports: {
   'axios': 'axios',
   'utils': './src/utils/index.ts',
   'storage': {
-    inputTarget: {
+    entryPoints: {
       client: './src/storage/indexedDB.ts',
       server: './src/storage/filesystem.ts'
     }

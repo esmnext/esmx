@@ -155,10 +155,10 @@ function createModuleLinkConfig(esmx: Esmx, buildTarget: BuildTarget) {
 
     const exports: Record<string, { rewrite: boolean; file: string }> = {};
     for (const [name, item] of Object.entries(esmx.moduleConfig.exports)) {
-        if (item.inputTarget[buildTarget]) {
+        if (item.entryPoints[buildTarget]) {
             exports[name] = {
                 rewrite: item.rewrite,
-                file: item.inputTarget[buildTarget]
+                file: item.entryPoints[buildTarget]
             };
         }
     }

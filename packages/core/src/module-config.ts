@@ -1,5 +1,5 @@
 import path from 'node:path';
-import type { BuildSsrTarget } from './core';
+import type { BuildEnvironment } from './core';
 
 /**
  * Core configuration interface for the module system.
@@ -82,13 +82,13 @@ export type ModuleConfigExportObject = {
      *
      * @example
      * ```typescript
-     * inputTarget: {
+     * entryPoints: {
      *   client: './src/storage/indexedDB.ts',
      *   server: './src/storage/filesystem.ts'
      * }
      * ```
      */
-    inputTarget?: Record<BuildSsrTarget, string | false>;
+    entryPoints?: Record<BuildEnvironment, string | false>;
 
     /**
      * Whether to rewrite import paths within modules.
@@ -157,7 +157,7 @@ export interface ParsedModuleConfigExport {
     name: string;
 
     /** Resolved input targets for different build environments */
-    inputTarget: Record<BuildSsrTarget, string | false>;
+    entryPoints: Record<BuildEnvironment, string | false>;
 
     /** Whether to rewrite import paths within this module */
     rewrite: boolean;
@@ -258,13 +258,13 @@ function getExports(config: ModuleConfig = {}) {
 
     const exports: Record<string, ModuleConfigExportObject | string> = {
         'src/entry.client': {
-            inputTarget: {
+            entryPoints: {
                 client: './src/entry.client',
                 server: false
             }
         },
         'src/entry.server': {
-            inputTarget: {
+            entryPoints: {
                 client: false,
                 server: './src/entry.server'
             }
@@ -312,12 +312,12 @@ function getExports(config: ModuleConfig = {}) {
                       input: value
                   }
                 : value;
-        const client = opts.inputTarget?.client ?? opts.input ?? name;
-        const server = opts.inputTarget?.server ?? opts.input ?? name;
+        const client = opts.entryPoints?.client ?? opts.input ?? name;
+        const server = opts.entryPoints?.server ?? opts.input ?? name;
         result[name] = {
             name,
             rewrite: opts.rewrite ?? true,
-            inputTarget: {
+            entryPoints: {
                 client,
                 server
             }

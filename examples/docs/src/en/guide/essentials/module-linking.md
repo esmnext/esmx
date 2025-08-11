@@ -181,7 +181,7 @@ import { formatDate } from 'shared-lib/src/utils/date-utils';  // Correct - dire
 
 #### Advanced exports Configuration
 
-`exports` supports multiple configuration forms. When complex configurations (such as `inputTarget`) are needed, prefix syntactic sugar cannot satisfy requirements, and complete object form is needed:
+`exports` supports multiple configuration forms. When complex configurations (such as `entryPoints`) are needed, prefix syntactic sugar cannot satisfy requirements, and complete object form is needed:
 
 **Array Form**:
 ```typescript
@@ -219,7 +219,7 @@ export default {
       'src/utils/format': {
         input: './src/utils/format',  // Input file path
         rewrite: true,                // Whether to rewrite import paths (default true)
-        inputTarget: {                // Client/server differentiated builds
+        entryPoints: {                // Client/server differentiated builds
           client: './src/utils/format.client',  // Client-specific version
           server: './src/utils/format.server'   // Server-specific version
         }
@@ -229,12 +229,12 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-#### inputTarget Environment Differentiated Builds
+#### entryPoints Environment Differentiated Builds
 
 ```typescript
 exports: {
   'src/storage/db': {
-    inputTarget: {
+    entryPoints: {
       client: './src/storage/indexedDB',  // Client uses IndexedDB
       server: './src/storage/mongoAdapter' // Server uses MongoDB adapter
     }
@@ -247,7 +247,7 @@ Setting `false` can disable builds for specific environments:
 ```typescript
 exports: {
   'src/client-only': {
-    inputTarget: {
+    entryPoints: {
       client: './src/client-feature',  // Only available on client
       server: false                    // Not available on server
     }

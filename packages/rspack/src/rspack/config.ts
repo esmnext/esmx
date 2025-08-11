@@ -144,10 +144,10 @@ function createModuleLinkPlugin(esmx: Esmx, buildTarget: BuildTarget): Plugin {
         }
     > = {};
     for (const [name, item] of Object.entries(esmx.moduleConfig.exports)) {
-        if (item.inputTarget[buildTarget]) {
+        if (item.entryPoints[buildTarget]) {
             exports[name] = {
                 rewrite: item.rewrite,
-                file: item.inputTarget[buildTarget]
+                file: item.entryPoints[buildTarget]
             };
         }
     }

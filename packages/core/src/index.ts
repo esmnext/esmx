@@ -1,7 +1,7 @@
 export {
     type EsmxOptions,
     type COMMAND,
-    type BuildSsrTarget,
+    type BuildEnvironment,
     type ImportMap,
     type SpecifierMap,
     type ScopesMap,
