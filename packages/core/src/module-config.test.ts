@@ -182,7 +182,7 @@ describe('module-config', () => {
                 expect(result.exports['src/entry.client']).toEqual({
                     name: 'src/entry.client',
                     rewrite: true,
-                    inputTarget: {
+                    entryPoints: {
                         client: './src/entry.client',
                         server: false
                     }
@@ -191,7 +191,7 @@ describe('module-config', () => {
                 expect(result.exports['src/entry.server']).toEqual({
                     name: 'src/entry.server',
                     rewrite: true,
-                    inputTarget: {
+                    entryPoints: {
                         client: false,
                         server: './src/entry.server'
                     }
@@ -217,7 +217,7 @@ describe('module-config', () => {
                 expect(result.exports.axios).toEqual({
                     name: 'axios',
                     rewrite: false,
-                    inputTarget: {
+                    entryPoints: {
                         client: 'axios',
                         server: 'axios'
                     }
@@ -226,7 +226,7 @@ describe('module-config', () => {
                 expect(result.exports.lodash).toEqual({
                     name: 'lodash',
                     rewrite: false,
-                    inputTarget: {
+                    entryPoints: {
                         client: 'lodash',
                         server: 'lodash'
                     }
@@ -254,7 +254,7 @@ describe('module-config', () => {
                 expect(result.exports['src/utils/format']).toEqual({
                     name: 'src/utils/format',
                     rewrite: true,
-                    inputTarget: {
+                    entryPoints: {
                         client: './src/utils/format',
                         server: './src/utils/format'
                     }
@@ -263,7 +263,7 @@ describe('module-config', () => {
                 expect(result.exports['src/components/Button']).toEqual({
                     name: 'src/components/Button',
                     rewrite: true,
-                    inputTarget: {
+                    entryPoints: {
                         client: './src/components/Button',
                         server: './src/components/Button'
                     }
@@ -272,7 +272,7 @@ describe('module-config', () => {
                 expect(result.exports['src/api/client']).toEqual({
                     name: 'src/api/client',
                     rewrite: true,
-                    inputTarget: {
+                    entryPoints: {
                         client: './src/api/client',
                         server: './src/api/client'
                     }
@@ -338,7 +338,7 @@ describe('module-config', () => {
                 expect(result.exports['custom-api']).toEqual({
                     name: 'custom-api',
                     rewrite: true,
-                    inputTarget: {
+                    entryPoints: {
                         client: './src/api/custom.ts',
                         server: './src/api/custom.ts'
                     }
@@ -347,7 +347,7 @@ describe('module-config', () => {
                 expect(result.exports.utils).toEqual({
                     name: 'utils',
                     rewrite: true,
-                    inputTarget: {
+                    entryPoints: {
                         client: './src/utils/index.ts',
                         server: './src/utils/index.ts'
                     }
@@ -399,7 +399,7 @@ describe('module-config', () => {
                 expect(result.exports.axios).toEqual({
                     name: 'axios',
                     rewrite: true,
-                    inputTarget: {
+                    entryPoints: {
                         client: 'axios',
                         server: 'axios'
                     }
@@ -408,7 +408,7 @@ describe('module-config', () => {
                 expect(result.exports.utils).toEqual({
                     name: 'utils',
                     rewrite: true,
-                    inputTarget: {
+                    entryPoints: {
                         client: './src/utils/index.ts',
                         server: './src/utils/index.ts'
                     }
@@ -420,7 +420,7 @@ describe('module-config', () => {
                 const config: ModuleConfig = {
                     exports: {
                         storage: {
-                            inputTarget: {
+                            entryPoints: {
                                 client: './src/storage/indexedDB.ts',
                                 server: './src/storage/filesystem.ts'
                             },
@@ -444,7 +444,7 @@ describe('module-config', () => {
                 expect(result.exports.storage).toEqual({
                     name: 'storage',
                     rewrite: true,
-                    inputTarget: {
+                    entryPoints: {
                         client: './src/storage/indexedDB.ts',
                         server: './src/storage/filesystem.ts'
                     }
@@ -453,25 +453,25 @@ describe('module-config', () => {
                 expect(result.exports['npm-package']).toEqual({
                     name: 'npm-package',
                     rewrite: false,
-                    inputTarget: {
+                    entryPoints: {
                         client: 'some-package',
                         server: 'some-package'
                     }
                 });
             });
 
-            it('should handle inputTarget with false values', () => {
+            it('should handle entryPoints with false values', () => {
                 // Arrange
                 const config: ModuleConfig = {
                     exports: {
                         'client-only': {
-                            inputTarget: {
+                            entryPoints: {
                                 client: './src/client-feature.ts',
                                 server: false
                             }
                         },
                         'server-only': {
-                            inputTarget: {
+                            entryPoints: {
                                 client: false,
                                 server: './src/server-feature.ts'
                             }
@@ -490,7 +490,7 @@ describe('module-config', () => {
                 expect(result.exports['client-only']).toEqual({
                     name: 'client-only',
                     rewrite: true,
-                    inputTarget: {
+                    entryPoints: {
                         client: './src/client-feature.ts',
                         server: false
                     }
@@ -499,7 +499,7 @@ describe('module-config', () => {
                 expect(result.exports['server-only']).toEqual({
                     name: 'server-only',
                     rewrite: true,
-                    inputTarget: {
+                    entryPoints: {
                         client: false,
                         server: './src/server-feature.ts'
                     }
@@ -515,9 +515,9 @@ describe('module-config', () => {
                         // Simple string mapping
                         simple: './src/simple.ts',
 
-                        // Complete object with inputTarget
+                        // Complete object with entryPoints
                         complex: {
-                            inputTarget: {
+                            entryPoints: {
                                 client: './src/complex.client.ts',
                                 server: './src/complex.server.ts'
                             },
@@ -547,7 +547,7 @@ describe('module-config', () => {
                 expect(result.exports.simple).toEqual({
                     name: 'simple',
                     rewrite: true,
-                    inputTarget: {
+                    entryPoints: {
                         client: './src/simple.ts',
                         server: './src/simple.ts'
                     }
@@ -556,7 +556,7 @@ describe('module-config', () => {
                 expect(result.exports.complex).toEqual({
                     name: 'complex',
                     rewrite: false,
-                    inputTarget: {
+                    entryPoints: {
                         client: './src/complex.client.ts',
                         server: './src/complex.server.ts'
                     }
@@ -565,7 +565,7 @@ describe('module-config', () => {
                 expect(result.exports['with-input']).toEqual({
                     name: 'with-input',
                     rewrite: true,
-                    inputTarget: {
+                    entryPoints: {
                         client: './src/with-input.ts',
                         server: './src/with-input.ts'
                     }
@@ -574,7 +574,7 @@ describe('module-config', () => {
                 expect(result.exports['with-rewrite']).toEqual({
                     name: 'with-rewrite',
                     rewrite: false,
-                    inputTarget: {
+                    entryPoints: {
                         client: 'with-rewrite',
                         server: 'with-rewrite'
                     }
@@ -610,7 +610,7 @@ describe('module-config', () => {
                 const config: ModuleConfig = {
                     exports: {
                         'fallback-test': {
-                            // No input or inputTarget specified
+                            // No input or entryPoints specified
                             rewrite: false
                         }
                     }
@@ -624,7 +624,7 @@ describe('module-config', () => {
                 );
 
                 // Assert
-                expect(result.exports['fallback-test'].inputTarget).toEqual({
+                expect(result.exports['fallback-test'].entryPoints).toEqual({
                     client: 'fallback-test',
                     server: 'fallback-test'
                 });
@@ -790,9 +790,9 @@ describe('module-config', () => {
             const exportConfig: ParsedModuleConfigExport = result.exports.axios;
             expect(typeof exportConfig.name).toBe('string');
             expect(typeof exportConfig.rewrite).toBe('boolean');
-            expect(typeof exportConfig.inputTarget).toBe('object');
-            expect(typeof exportConfig.inputTarget.client).toBe('string');
-            expect(typeof exportConfig.inputTarget.server).toBe('string');
+            expect(typeof exportConfig.entryPoints).toBe('object');
+            expect(typeof exportConfig.entryPoints.client).toBe('string');
+            expect(typeof exportConfig.entryPoints.server).toBe('string');
         });
     });
 });

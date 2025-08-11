@@ -183,7 +183,7 @@ import { formatDate } from 'shared-lib/src/utils/date-utils';  // 正确 - 直�
 
 #### exports 高级配置
 
-`exports` 支持多种配置形式。当需要复杂配置（如 `inputTarget`）时，前缀语法糖无法满足，需要使用完整的对象形式：
+`exports` 支持多种配置形式。当需要复杂配置（如 `entryPoints`）时，前缀语法糖无法满足，需要使用完整的对象形式：
 
 **数组形式**：
 ```typescript
@@ -221,7 +221,7 @@ export default {
       'src/utils/format': {
         input: './src/utils/format',  // 输入文件路径
         rewrite: true,                // 是否重写导入路径（默认为 true）
-        inputTarget: {                // 客户端/服务端差异化构建
+        entryPoints: {                // 客户端/服务端差异化构建
           client: './src/utils/format.client',  // 客户端特定版本
           server: './src/utils/format.server'   // 服务端特定版本
         }
@@ -231,12 +231,12 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-#### inputTarget 环境差异化构建
+#### entryPoints 环境差异化构建
 
 ```typescript
 exports: {
   'src/storage/db': {
-    inputTarget: {
+    entryPoints: {
       client: './src/storage/indexedDB',  // 客户端使用 IndexedDB
       server: './src/storage/mongoAdapter' // 服务端使用 MongoDB适配器
     }
@@ -249,7 +249,7 @@ exports: {
 ```typescript
 exports: {
   'src/client-only': {
-    inputTarget: {
+    entryPoints: {
       client: './src/client-feature',  // 仅客户端可用
       server: false                    // 服务端不可用
     }

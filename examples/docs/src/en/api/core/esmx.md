@@ -15,11 +15,11 @@ Esmx is a high-performance web application framework based on Rspack, providing 
 
 ## Type Definitions
 
-### BuildSsrTarget
+### BuildEnvironment
 
 - **Type Definition**:
 ```ts
-type BuildSsrTarget = 'client' | 'server'
+type BuildEnvironment = 'client' | 'server'
 ```
 
 Application runtime environment types:
@@ -517,7 +517,7 @@ async server(esmx) {
 Gets build manifest list.
 
 - **Parameters**:
-  - `target`: `BuildSsrTarget` - Target environment type
+  - `target`: `BuildEnvironment` - Target environment type
     - `'client'`: Client environment
     - `'server'`: Server environment
 
@@ -557,7 +557,7 @@ async server(esmx) {
 Gets import map object.
 
 - **Parameters**:
-  - `target`: `BuildSsrTarget` - Target environment type
+  - `target`: `BuildEnvironment` - Target environment type
     - `'client'`: Generates browser environment import map
     - `'server'`: Generates server environment import map
 
@@ -678,7 +678,7 @@ async server(esmx) {
 Gets module's static import path list.
 
 - **Parameters**:
-  - `target`: `BuildSsrTarget` - Build target
+  - `target`: `BuildEnvironment` - Build target
     - `'client'`: Client environment
     - `'server'`: Server environment
   - `specifier`: `string` - Module specifier

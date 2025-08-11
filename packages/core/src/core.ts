@@ -99,7 +99,7 @@ export interface EsmxOptions {
  * - client: 客户端构建目标，用于生成浏览器端运行的代码
  * - server: 服务端构建目标，用于生成 Node.js 环境运行的代码
  */
-export type BuildSsrTarget = 'client' | 'server';
+export type BuildEnvironment = 'client' | 'server';
 
 /**
  * Esmx 框架的命令枚举。
@@ -765,7 +765,7 @@ export class Esmx {
      *    - 包含模块导出信息
      *    - 记录资源依赖关系
      *
-     * @param target - 目标环境类型
+     * @param env - 目标环境类型
      *   - 'client': 客户端环境
      *   - 'server': 服务端环境
      * @returns 返回只读的构建清单列表
@@ -788,10 +788,10 @@ export class Esmx {
      * ```
      */
     public async getManifestList(
-        target: BuildSsrTarget
+        env: BuildEnvironment
     ): Promise<readonly ManifestJson[]> {
-        return this.readied.cache(`getManifestList-${target}`, async () =>
-            Object.freeze(await getManifestList(target, this.moduleConfig))
+        return this.readied.cache(`getManifestList-${env}`, async () =>
+            Object.freeze(await getManifestList(env, this.moduleConfig))
         );
     }
 
@@ -813,7 +813,7 @@ export class Esmx {
      *    - 自动处理模块路径
      *    - 支持动态基础路径
      *
-     * @param target - 目标环境类型
+     * @param env - 目标环境类型
      *   - 'client': 生成浏览器环境的导入映射
      *   - 'server': 生成服务端环境的导入映射
      * @returns 返回只读的导入映射对象
@@ -844,13 +844,13 @@ export class Esmx {
      * ```
      */
     public async getImportMap(
-        target: BuildSsrTarget
+        env: BuildEnvironment
     ): Promise<Readonly<ImportMap>> {
-        return this.readied.cache(`getImportMap-${target}`, async () => {
+        return this.readied.cache(`getImportMap-${env}`, async () => {
             const { moduleConfig } = this.readied;
-            const manifests = await this.getManifestList(target);
+            const manifests = await this.getManifestList(env);
             let json: ImportMap = {};
-            switch (target) {
+            switch (env) {
                 case 'client':
                     json = getImportMap({
                         manifests,
@@ -1042,7 +1042,7 @@ document.head.appendChild(script);
     /**
      * 获取模块的静态导入路径列表。
      *
-     * @param target - 构建目标（'client' | 'server'）
+     * @param env - 构建目标（'client' | 'server'）
      * @param specifier - 模块标识符
      * @returns 返回静态导入路径列表，如果未找到则返回 null
      * @throws {NotReadyError} 在框架实例未初始化时调用此方法会抛出错误
@@ -1057,15 +1057,15 @@ document.head.appendChild(script);
      * ```
      */
     public async getStaticImportPaths(
-        target: BuildSsrTarget,
+        env: BuildEnvironment,
         specifier: string
     ) {
         return this.readied.cache(
-            `getStaticImportPaths-${target}-${specifier}`,
+            `getStaticImportPaths-${env}-${specifier}`,
             async () => {
                 const result = await getStaticImportPaths(
                     specifier,
-                    await this.getImportMap(target),
+                    await this.getImportMap(env),
                     this.moduleConfig
                 );
                 if (!result) {

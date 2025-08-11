@@ -15,11 +15,11 @@ Esmx 是一个基于 Rspack 的高性能 Web 应用框架，提供了完整的�
 
 ## 类型定义
 
-### BuildSsrTarget
+### BuildEnvironment
 
 - **类型定义**:
 ```ts
-type BuildSsrTarget = 'client' | 'server'
+type BuildEnvironment = 'client' | 'server'
 ```
 
 应用程序运行时环境类型：
@@ -518,7 +518,7 @@ async server(esmx) {
 获取构建清单列表。
 
 - **参数**:
-  - `target`: `BuildSsrTarget` - 目标环境类型
+  - `target`: `BuildEnvironment` - 目标环境类型
     - `'client'`: 客户端环境
     - `'server'`: 服务端环境
 
@@ -558,7 +558,7 @@ async server(esmx) {
 获取导入映射对象。
 
 - **参数**:
-  - `target`: `BuildSsrTarget` - 目标环境类型
+  - `target`: `BuildEnvironment` - 目标环境类型
     - `'client'`: 生成浏览器环境的导入映射
     - `'server'`: 生成服务端环境的导入映射
 
@@ -679,7 +679,7 @@ async server(esmx) {
 获取模块的静态导入路径列表。
 
 - **参数**:
-  - `target`: `BuildSsrTarget` - 构建目标
+  - `target`: `BuildEnvironment` - 构建目标
     - `'client'`: 客户端环境
     - `'server'`: 服务端环境
   - `specifier`: `string` - 模块标识符

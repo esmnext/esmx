@@ -53,7 +53,7 @@ Union type for export configuration, supporting mixed array (strings and objects
 ```typescript
 type ModuleConfigExportObject = {
     input?: string;
-    inputTarget?: Record<BuildSsrTarget, string | false>;
+    entryPoints?: Record<BuildEnvironment, string | false>;
     rewrite?: boolean;
 };
 ```
@@ -63,9 +63,9 @@ type ModuleConfigExportObject = {
 * **Type**: `string`
 * **Description**: Input file path, relative to project root directory.
 
-#### inputTarget
+#### entryPoints
 
-* **Type**: `Record<BuildSsrTarget, string | false>`
+* **Type**: `Record<BuildEnvironment, string | false>`
 * **Description**: Environment-specific input file configuration. Supports client and server differentiated builds.
 
 #### rewrite
@@ -74,10 +74,10 @@ type ModuleConfigExportObject = {
 * **Default**: `true`
 * **Description**: Whether to rewrite import paths within modules.
 
-### BuildSsrTarget
+### BuildEnvironment
 
 ```typescript
-type BuildSsrTarget = 'client' | 'server';
+type BuildEnvironment = 'client' | 'server';
 ```
 
 Build target environment type.
@@ -101,7 +101,7 @@ interface ParsedModuleConfig {
 ```typescript
 interface ParsedModuleConfigExport {
     name: string;
-    inputTarget: Record<BuildSsrTarget, string | false>;
+    entryPoints: Record<BuildEnvironment, string | false>;
     rewrite: boolean;
 }
 ```
@@ -129,13 +129,13 @@ The framework automatically adds the following default export items for each mod
 ```typescript
 {
   'src/entry.client': {
-    inputTarget: {
+    entryPoints: {
       client: './src/entry.client',
       server: false
     }
   },
   'src/entry.server': {
-    inputTarget: {
+    entryPoints: {
       client: false,
       server: './src/entry.server'
     }
@@ -183,7 +183,7 @@ exports: {
   'axios': 'axios',
   'utils': './src/utils/index.ts',
   'storage': {
-    inputTarget: {
+    entryPoints: {
       client: './src/storage/indexedDB.ts',
       server: './src/storage/filesystem.ts'
     }
