@@ -520,10 +520,10 @@ importers:
       '@esmx/core':
         specifier: workspace:*
         version: link:../../../packages/core
+    devDependencies:
       '@esmx/router':
         specifier: workspace:*
         version: link:../../../packages/router
-    devDependencies:
       '@esmx/rspack':
         specifier: workspace:*
         version: link:../../../packages/rspack
