@@ -424,7 +424,7 @@ describe.concurrent('subscribeMemory', () => {
 });
 
 describe('Navigation', () => {
-    const createTestOptions = () => {
+    const createTestOptions = (opts: Partial<RouterOptions> = {}) => {
         const baseOptions: RouterOptions = {
             context: {},
             routes: [],
@@ -437,10 +437,18 @@ describe('Navigation', () => {
             fallback: () => {},
             rootStyle: false,
             handleBackBoundary: () => {},
-            handleLayerClose: () => {}
+            handleLayerClose: () => {},
+            ...opts
         };
         return parsedOptions(baseOptions);
     };
+
+    test('should handle rootStyle being null in options', () => {
+        const opts = createTestOptions({
+            rootStyle: null
+        });
+        expect(opts.rootStyle).toBeNull();
+    });
 
     test('should provide access to history length', () => {
         const nav = new Navigation({ mode: RouterMode.memory } as any);

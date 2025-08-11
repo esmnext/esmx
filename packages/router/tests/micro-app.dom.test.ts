@@ -471,6 +471,23 @@ describe('MicroApp', () => {
             expect(microApp.root!.style.fontSize).toBe('16px');
         });
 
+        it('should not apply any style when rootStyle is null', () => {
+            const mockApp = createMockApp();
+            const mockFactory = vi.fn().mockReturnValue(mockApp);
+
+            const router = createMockRouter({
+                matched: [{ app: 'test-app' }],
+                options: { apps: { 'test-app': mockFactory } },
+                parsedOptions: {
+                    rootStyle: null
+                }
+            });
+
+            microApp._update(router);
+
+            expect(microApp.root!.style.cssText).toBe('');
+        });
+
         it('should unmount the old application if it exists', () => {
             const oldApp = createMockApp();
             const newApp = createMockApp();
@@ -653,6 +670,21 @@ describe('MicroApp', () => {
                 matched: [{ app: 'test-app' }],
                 options: { apps: { 'test-app': mockFactory } },
                 parsedOptions: { rootStyle: false }
+            });
+
+            microApp._update(router);
+
+            expect(microApp.root!.style.cssText).toBe('');
+        });
+
+        it('should correctly handle rootStyle being null', () => {
+            const mockApp = createMockApp();
+            const mockFactory = vi.fn().mockReturnValue(mockApp);
+
+            const router = createMockRouter({
+                matched: [{ app: 'test-app' }],
+                options: { apps: { 'test-app': mockFactory } },
+                parsedOptions: { rootStyle: null }
             });
 
             microApp._update(router);
