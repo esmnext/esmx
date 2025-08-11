@@ -13,10 +13,10 @@
         "build:type": "tsc --declaration --emitDeclarationOnly --outDir dist/src && tsc-alias -p tsconfig.json --outDir dist/src"
     },
     "dependencies": {
-        "@esmx/core": "{{esmxVersion}}",
-        "@esmx/router": "{{esmxVersion}}"
+        "@esmx/core": "{{esmxVersion}}"
     },
     "devDependencies": {
+        "@esmx/router": "{{esmxVersion}}",
         "tsc-alias": "^1.8.16",
         "@esmx/rspack": "{{esmxVersion}}",
         "@types/node": "^24.0.0",
