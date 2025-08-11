@@ -244,8 +244,6 @@ export class Router {
         });
 
         const router = new Router({
-            ...this.options,
-            mode: RouterMode.memory,
             rootStyle: {
                 position: 'fixed',
                 top: '0',
@@ -258,6 +256,8 @@ export class Router {
                 alignItems: 'center',
                 justifyContent: 'center'
             },
+            ...this.options,
+            mode: RouterMode.memory,
             root: undefined,
             ...layerOptions.routerOptions,
             handleBackBoundary(router) {

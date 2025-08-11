@@ -267,7 +267,7 @@ export interface RouterOptions {
     normalizeURL?: (to: URL, from: URL | null) => URL;
     fallback?: RouteHandleHook;
 
-    rootStyle?: Partial<CSSStyleDeclaration> | false;
+    rootStyle?: Partial<CSSStyleDeclaration> | false | null;
     layer?: boolean;
     zIndex?: number;
     handleBackBoundary?: (router: Router) => void;
