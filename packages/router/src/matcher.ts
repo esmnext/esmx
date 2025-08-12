@@ -1,8 +1,10 @@
 import { compile, match } from 'path-to-regexp';
 import type { RouteConfig, RouteMatcher, RouteParsedConfig } from './types';
 
-export function createMatcher(routes: RouteConfig[]): RouteMatcher {
-    const compiledRoutes = createRouteMatches(routes);
+export function createMatcher(
+    routes: RouteConfig[],
+    compiledRoutes = createRouteMatches(routes)
+): RouteMatcher {
     return (
         toURL: URL,
         baseURL: URL,
@@ -42,7 +44,7 @@ export function createMatcher(routes: RouteConfig[]): RouteMatcher {
     };
 }
 
-function createRouteMatches(
+export function createRouteMatches(
     routes: RouteConfig[],
     base = ''
 ): RouteParsedConfig[] {

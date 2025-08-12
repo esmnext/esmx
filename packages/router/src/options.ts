@@ -1,12 +1,7 @@
-import { createMatcher } from './matcher';
+import { createMatcher, createRouteMatches } from './matcher';
 import type { Router } from './router';
 import { RouterMode } from './types';
-import type {
-    Route,
-    RouteConfig,
-    RouterOptions,
-    RouterParsedOptions
-} from './types';
+import type { Route, RouterOptions, RouterParsedOptions } from './types';
 import { isBrowser } from './util';
 
 /**
@@ -66,6 +61,7 @@ export function parsedOptions(
 ): RouterParsedOptions {
     const base = getBaseUrl(options);
     const routes = options.routes ?? [];
+    const compiledRoutes = createRouteMatches(routes);
     return Object.freeze<RouterParsedOptions>({
         rootStyle: options.rootStyle || false,
         root: options.root || '',
@@ -83,7 +79,8 @@ export function parsedOptions(
             typeof options.apps === 'function'
                 ? options.apps
                 : Object.assign({}, options.apps),
-        matcher: createMatcher(routes),
+        compiledRoutes,
+        matcher: createMatcher(routes, compiledRoutes),
         normalizeURL: options.normalizeURL ?? ((url) => url),
         fallback: options.fallback ?? fallback,
         handleBackBoundary: options.handleBackBoundary ?? (() => {}),

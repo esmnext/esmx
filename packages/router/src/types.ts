@@ -275,6 +275,7 @@ export interface RouterOptions {
 }
 
 export interface RouterParsedOptions extends Readonly<Required<RouterOptions>> {
+    readonly compiledRoutes: readonly RouteParsedConfig[];
     readonly matcher: RouteMatcher;
 }
 
