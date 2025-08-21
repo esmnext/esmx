@@ -25,7 +25,7 @@ import RouteInfoModal from '../components/route-info-modal.vue';
 const $router = useRouter();
 const $route = useRoute();
 
-const layerSlideDir = $router.parsedOptions.context.layerSlideDir || 'up';
+const layerSlideDir = $router.context.layerSlideDir || 'up';
 
 const len = ref($router.navigation.length);
 watch(
@@ -71,7 +71,7 @@ const toSame = (dir: string): RouteLocationInput => ({
                 position: 'absolute'
             },
             context: {
-                ...$router.parsedOptions.context,
+                ...$router.context,
                 layerSlideDir: dir
             }
         }

@@ -1,7 +1,7 @@
 <template>
     <div class="app" :class="{ 'is-layer': $router.isLayer, hasSong: !!currentSong }">
         <ViewPage v-if="!$router.isLayer" />
-        <ViewLayerDrawer v-else-if="$router.parsedOptions.context?.layerType === 'drawer'" />
+        <ViewLayerDrawer v-else-if="$router.context?.layerType === 'drawer'" />
         <ViewLayer v-else />
         <mini-player v-if="currentSong && !$router.isLayer" />
     </div>

@@ -1,5 +1,5 @@
 <template>
-    <div :class="['view-layer', $router.parsedOptions.context.layerSlideDir || 'up', { showing }]">
+    <div :class="['view-layer', $router.context.layerSlideDir || 'up', { showing }]">
         <div class="layer-backdrop" @click.stop="routerAct('closeLayer')" />
         <div class="layer-content">
             <div class="btns">
@@ -14,7 +14,7 @@
                     :key="k"
                 >
                     <RouterLink
-                        v-if="$router.parsedOptions.context.layerSlideDir !== k"
+                        v-if="$router.context.layerSlideDir !== k"
                         :to="toSame(k)"
                         type="pushLayer"
                         :title="`Slide from ${k}`"
@@ -81,7 +81,7 @@ const toSame = (dir: string): RouteLocationInput => ({
                 position: 'absolute'
             },
             context: {
-                ...$router.parsedOptions.context,
+                ...$router.context,
                 layerSlideDir: dir
             }
         }

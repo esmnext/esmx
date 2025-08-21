@@ -41,7 +41,7 @@ export class Router {
     }
 
     public get context() {
-        return this.options.context;
+        return this.parsedOptions.context;
     }
 
     public get root() {
@@ -261,6 +261,7 @@ export class Router {
                 justifyContent: 'center'
             },
             ...this.options,
+            context: this.parsedOptions.context,
             mode: RouterMode.memory,
             root: undefined,
             ...layerOptions.routerOptions,
