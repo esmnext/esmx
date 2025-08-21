@@ -40,6 +40,10 @@ export class Router {
         return route;
     }
 
+    public get context() {
+        return this.options.context;
+    }
+
     public get root() {
         return this.parsedOptions.root;
     }
