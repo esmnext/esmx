@@ -905,8 +905,8 @@ importers:
         specifier: ^21.0.0
         version: 21.0.0
       rspack-chain:
-        specifier: ^1.1.1
-        version: 1.2.6
+        specifier: ^1.4.0
+        version: 1.4.0
       style-loader:
         specifier: ^4.0.0
         version: 4.0.0(webpack@5.99.9)
@@ -5186,8 +5186,8 @@ packages:
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
-  rspack-chain@1.2.6:
-    resolution: {integrity: sha512-o2dahcMZt7YdF8LOQCi5Z9zdJNoru/jeYK1RnkFovUVC0a5ermGiybkE45r0M7cSQPfy/DtGmtR9TWJcjKWnnQ==}
+  rspack-chain@1.4.0:
+    resolution: {integrity: sha512-C7TMioPQzHePujQEspkmPOlnZUnlgldEWQ6qJgoqFit6fnimT1XirIBo8M5pIDSjboGb9kIVumTiMLi1Ifek2Q==}
 
   rspack-plugin-virtual-module@1.0.1:
     resolution: {integrity: sha512-NQJ3fXa1v0WayvfHMWbyqLUA3JIqgCkhIcIOnZscuisinxorQyIAo+bqcU5pCusMKSyPqVIWO3caQyl0s9VDAg==}
@@ -10998,7 +10998,7 @@ snapshots:
       '@rollup/rollup-win32-x64-msvc': 4.46.2
       fsevents: 2.3.3
 
-  rspack-chain@1.2.6:
+  rspack-chain@1.4.0:
     dependencies:
       deepmerge: 4.3.1
       javascript-stringify: 2.1.0
