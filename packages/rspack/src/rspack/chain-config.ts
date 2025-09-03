@@ -6,7 +6,6 @@ import RspackChain from 'rspack-chain';
 import nodeExternals from 'webpack-node-externals';
 import type { RspackAppOptions } from './app';
 import type { BuildTarget } from './build-target';
-import { HMR_DIR, HMR_JSONP } from './hmr-config';
 
 export function createChainConfig(
     esmx: Esmx,
@@ -40,13 +39,11 @@ export function createChainConfig(
         .publicPath(
             isClient ? 'auto' : `${esmx.basePathPlaceholder}${esmx.basePath}`
         )
-        .uniqueName(esmx.varName)
-        .hotUpdateGlobal(HMR_JSONP)
-        .chunkLoadingGlobal(`${HMR_JSONP}_chunk`)
-        .hotUpdateChunkFilename(`${HMR_DIR}/[id].[fullhash].hot-update.mjs`)
-        .hotUpdateMainFilename(
-            `${HMR_DIR}/[runtime].[fullhash].hot-update.json`
-        );
+        .uniqueName(esmx.varName);
+    // .hotUpdateChunkFilename(`${HMR_DIR}/[id].[fullhash].hot-update.mjs`)
+    // .hotUpdateMainFilename(
+    //     `${HMR_DIR}/[runtime].[fullhash].hot-update.mjs`
+    // );
 
     config.output.set(
         'cssFilename',
@@ -120,17 +117,6 @@ export function createChainConfig(
                 importType: 'module-import'
             })
         ]);
-    }
-
-    // Temporary fix for development environment
-    // Related issue: https://github.com/esmnext/esmx/issues/109
-    // TODO: Remove when Rspack officially supports these features
-    if (!esmx.isProd) {
-        config.optimization.splitChunks(false).runtimeChunk(false);
-        config.module.parser.set('javascript', {
-            ...config.module.parser.get('javascript'),
-            dynamicImportMode: 'eager'
-        });
     }
 
     return config;
