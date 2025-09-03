@@ -38,12 +38,7 @@ export function createChainConfig(
         )
         .publicPath(
             isClient ? 'auto' : `${esmx.basePathPlaceholder}${esmx.basePath}`
-        )
-        .uniqueName(esmx.varName);
-    // .hotUpdateChunkFilename(`${HMR_DIR}/[id].[fullhash].hot-update.mjs`)
-    // .hotUpdateMainFilename(
-    //     `${HMR_DIR}/[runtime].[fullhash].hot-update.mjs`
-    // );
+        );
 
     config.output.set(
         'cssFilename',
@@ -85,7 +80,6 @@ export function createChainConfig(
     }
 
     config.module.parser.set('javascript', {
-        dynamicImportMode: 'lazy',
         url: isClient ? true : 'relative'
     });
 

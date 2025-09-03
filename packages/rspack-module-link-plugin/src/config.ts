@@ -28,7 +28,7 @@ export function initConfig(
         ...options.output,
         iife: false,
         uniqueName: opts.name,
-        chunkFormat: isProduction ? 'module' : 'array-push',
+        chunkFormat: 'module',
         module: true,
         library: {
             type: isProduction ? 'modern-module' : 'module'
