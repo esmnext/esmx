@@ -112,6 +112,9 @@ export function createChainConfig(
             })
         ]);
     }
+    config.experiments({
+        nativeWatcher: true
+    });
 
     return config;
 }
