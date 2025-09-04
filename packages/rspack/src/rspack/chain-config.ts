@@ -6,7 +6,6 @@ import RspackChain from 'rspack-chain';
 import nodeExternals from 'webpack-node-externals';
 import type { RspackAppOptions } from './app';
 import type { BuildTarget } from './build-target';
-import { HMR_DIR, HMR_JSONP } from './hmr-config';
 
 export function createChainConfig(
     esmx: Esmx,
@@ -39,13 +38,6 @@ export function createChainConfig(
         )
         .publicPath(
             isClient ? 'auto' : `${esmx.basePathPlaceholder}${esmx.basePath}`
-        )
-        .uniqueName(esmx.varName)
-        .hotUpdateGlobal(HMR_JSONP)
-        .chunkLoadingGlobal(`${HMR_JSONP}_chunk`)
-        .hotUpdateChunkFilename(`${HMR_DIR}/[id].[fullhash].hot-update.mjs`)
-        .hotUpdateMainFilename(
-            `${HMR_DIR}/[runtime].[fullhash].hot-update.json`
         );
 
     config.output.set(
@@ -61,17 +53,17 @@ export function createChainConfig(
             : 'chunks/[name].css'
     );
 
-    const outputPath = (() => {
-        switch (buildTarget) {
-            case 'client':
-                return esmx.resolvePath('dist/client');
-            case 'server':
-                return esmx.resolvePath('dist/server');
-            case 'node':
-                return esmx.resolvePath('dist/node');
-        }
-    })();
-    config.output.path(outputPath);
+    switch (buildTarget) {
+        case 'client':
+            config.output.path(esmx.resolvePath('dist/client'));
+            break;
+        case 'server':
+            config.output.path(esmx.resolvePath('dist/server'));
+            break;
+        case 'node':
+            config.output.path(esmx.resolvePath('dist/node'));
+            break;
+    }
 
     config.plugin('progress').use(rspack.ProgressPlugin, [
         {
@@ -88,7 +80,6 @@ export function createChainConfig(
     }
 
     config.module.parser.set('javascript', {
-        dynamicImportMode: 'lazy',
         url: isClient ? true : 'relative'
     });
 
@@ -120,17 +111,6 @@ export function createChainConfig(
                 importType: 'module-import'
             })
         ]);
-    }
-
-    // Temporary fix for development environment
-    // Related issue: https://github.com/esmnext/esmx/issues/109
-    // TODO: Remove when Rspack officially supports these features
-    if (!esmx.isProd) {
-        config.optimization.splitChunks(false).runtimeChunk(false);
-        config.module.parser.set('javascript', {
-            ...config.module.parser.get('javascript'),
-            dynamicImportMode: 'eager'
-        });
     }
 
     return config;
