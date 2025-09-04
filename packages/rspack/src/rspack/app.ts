@@ -36,15 +36,6 @@ import { createRsBuild } from './utils';
  *         // Configuration hook function
  *         config(context) {
  *           // Access build target
- *           if (context.buildTarget === 'client') {
- *             // Modify client build configuration
- *             context.config.optimization = {
- *               ...context.config.optimization,
- *               splitChunks: {
- *                 chunks: 'all'
- *               }
- *             };
- *           }
  *         }
  *       })
  *     );
@@ -133,11 +124,6 @@ export interface RspackAppChainContext {
  *         minimize: false,
  *         // Custom Rspack configuration
  *         config(context) {
- *           if (context.buildTarget === 'client') {
- *             context.config.optimization.splitChunks = {
- *               chunks: 'all'
- *             };
- *           }
  *         }
  *       })
  *     );

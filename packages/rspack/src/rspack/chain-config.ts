@@ -53,17 +53,17 @@ export function createChainConfig(
             : 'chunks/[name].css'
     );
 
-    const outputPath = (() => {
-        switch (buildTarget) {
-            case 'client':
-                return esmx.resolvePath('dist/client');
-            case 'server':
-                return esmx.resolvePath('dist/server');
-            case 'node':
-                return esmx.resolvePath('dist/node');
-        }
-    })();
-    config.output.path(outputPath);
+    switch (buildTarget) {
+        case 'client':
+            config.output.path(esmx.resolvePath('dist/client'));
+            break;
+        case 'server':
+            config.output.path(esmx.resolvePath('dist/server'));
+            break;
+        case 'node':
+            config.output.path(esmx.resolvePath('dist/node'));
+            break;
+    }
 
     config.plugin('progress').use(rspack.ProgressPlugin, [
         {
