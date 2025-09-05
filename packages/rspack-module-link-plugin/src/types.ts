@@ -3,7 +3,6 @@ export type {
     ManifestJson,
     ManifestJsonChunks,
     ManifestJsonChunk,
-    ManifestJsonChunkSizes,
     ManifestJsonExport,
     ManifestJsonExports
 } from '@esmx/core';
