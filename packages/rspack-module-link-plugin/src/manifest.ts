@@ -144,17 +144,11 @@ function getChunks(
 
         const css = chunk.files?.filter((file) => file.endsWith('.css')) ?? [];
         const resources = chunk.auxiliaryFiles ?? [];
-        const sizes = chunk.sizes ?? {};
         buildChunks[name] = {
             name,
             js,
             css,
-            resources,
-            sizes: {
-                js: (sizes?.javascript ?? 0) + (sizes.runtime ?? 0),
-                css: (sizes.css ?? 0) + (sizes['css/mini-extract'] ?? 0),
-                resource: sizes.asset ?? 0
-            }
+            resources
         };
     }
     return buildChunks;

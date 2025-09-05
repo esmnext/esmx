@@ -33,7 +33,6 @@ export {
 export type {
     ManifestJson,
     ManifestJsonChunk,
-    ManifestJsonChunkSizes,
     ManifestJsonChunks,
     ManifestJsonExport,
     ManifestJsonExports

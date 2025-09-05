@@ -75,25 +75,6 @@ export interface ManifestJsonChunk {
      * Other resource files.
      */
     resources: string[];
-    /**
-     * Build output sizes.
-     */
-    sizes: ManifestJsonChunkSizes;
-}
-
-export interface ManifestJsonChunkSizes {
-    /**
-     * JavaScript file size in bytes
-     */
-    js: number;
-    /**
-     * CSS file size in bytes
-     */
-    css: number;
-    /**
-     * Resource file size in bytes
-     */
-    resource: number;
 }
 
 /**
