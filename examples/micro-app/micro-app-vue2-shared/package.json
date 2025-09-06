@@ -1,0 +1,29 @@
+{
+    "name": "micro-app-vue2-shared",
+    "version": "1.0.0",
+    "description": "Shared modules for the project",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "esmx dev",
+        "build": "esmx build",
+        "preview": "esmx preview",
+        "start": "esmx start",
+        "lint:type": "tsc --noEmit",
+        "build:type": "tsc --declaration --emitDeclarationOnly --outDir dist/src && tsc-alias -p tsconfig.json --outDir dist/src"
+    },
+    "dependencies": {
+        "@esmx/core": "workspace:*"
+    },
+    "devDependencies": {
+        "micro-app-shared": "workspace:*",
+        "vue": "2.7.16",
+        "vue-server-renderer": "2.7.16",
+        "@esmx/router": "workspace:*",
+        "@esmx/router-vue": "workspace:*",
+        "tsc-alias": "^1.8.16",
+        "@esmx/rspack-vue": "workspace:*",
+        "@types/node": "^24.0.0",
+        "typescript": "5.8.3"
+    }
+}

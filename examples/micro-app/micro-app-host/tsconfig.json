@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "isolatedModules": true,
+        "resolveJsonModule": true,
+        
+        "target": "ESNext",
+        "lib": ["ESNext", "DOM"],
+        
+        "strict": true,
+        "skipLibCheck": true,
+        "types": ["@types/node"],
+        
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        
+        "baseUrl": ".",
+        "paths": {
+            "micro-app-host/src/*": ["./src/*"],
+            "micro-app-host/*": ["./*"]
+        }
+    },
+    "include": ["src"],
+    "exclude": ["dist", "node_modules"]
+}

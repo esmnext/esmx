@@ -30,6 +30,112 @@ importers:
         specifier: 5.8.3
         version: 5.8.3
 
+  examples/micro-app/micro-app-host:
+    dependencies:
+      '@esmx/core':
+        specifier: workspace:*
+        version: link:../../../packages/core
+    devDependencies:
+      '@esmx/router':
+        specifier: workspace:*
+        version: link:../../../packages/router
+      '@esmx/rspack':
+        specifier: workspace:*
+        version: link:../../../packages/rspack
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.0.12
+      tsc-alias:
+        specifier: ^1.8.16
+        version: 1.8.16
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
+
+  examples/micro-app/micro-app-shared:
+    dependencies:
+      '@esmx/core':
+        specifier: workspace:*
+        version: link:../../../packages/core
+    devDependencies:
+      '@esmx/router':
+        specifier: workspace:*
+        version: link:../../../packages/router
+      '@esmx/rspack':
+        specifier: workspace:*
+        version: link:../../../packages/rspack
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.0.12
+      tsc-alias:
+        specifier: ^1.8.16
+        version: 1.8.16
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
+
+  examples/micro-app/micro-app-vue2-app:
+    dependencies:
+      '@esmx/core':
+        specifier: workspace:*
+        version: link:../../../packages/core
+    devDependencies:
+      '@esmx/rspack-vue':
+        specifier: workspace:*
+        version: link:../../../packages/rspack-vue
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.0.12
+      tsc-alias:
+        specifier: ^1.8.16
+        version: 1.8.16
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
+      vue:
+        specifier: 2.7.16
+        version: 2.7.16
+      vue-server-renderer:
+        specifier: 2.7.16
+        version: 2.7.16
+      vue-tsc:
+        specifier: ^3.0.5
+        version: 3.0.5(typescript@5.8.3)
+
+  examples/micro-app/micro-app-vue2-shared:
+    dependencies:
+      '@esmx/core':
+        specifier: workspace:*
+        version: link:../../../packages/core
+    devDependencies:
+      '@esmx/router':
+        specifier: workspace:*
+        version: link:../../../packages/router
+      '@esmx/router-vue':
+        specifier: workspace:*
+        version: link:../../../packages/router-vue
+      '@esmx/rspack-vue':
+        specifier: workspace:*
+        version: link:../../../packages/rspack-vue
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.0.12
+      micro-app-shared:
+        specifier: workspace:*
+        version: link:../micro-app-shared
+      tsc-alias:
+        specifier: ^1.8.16
+        version: 1.8.16
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
+      vue:
+        specifier: 2.7.16
+        version: 2.7.16
+      vue-server-renderer:
+        specifier: 2.7.16
+        version: 2.7.16
+
   examples/router-demo-music:
     dependencies:
       '@esmx/core':
@@ -7489,7 +7595,7 @@ snapshots:
 
   '@vue/compiler-sfc@2.7.16':
     dependencies:
-      '@babel/parser': 7.27.5
+      '@babel/parser': 7.28.0
       postcss: 8.5.6
       source-map: 0.6.1
     optionalDependencies:
