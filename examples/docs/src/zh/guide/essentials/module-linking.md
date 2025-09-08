@@ -1,6 +1,6 @@
 ---
 titleSuffix: Esmx 模块间代码共享
-description: Esmx 模块链接：基于 ESM 标准的零运行时微前端代码共享解决方案
+description: "Esmx 模块链接：基于 ESM 标准的零运行时微前端代码共享解决方案"
 head:
   - - meta
     - property: keywords
@@ -11,7 +11,7 @@ head:
 
 模块链接（Module Linking）是 Esmx 提供的跨应用代码共享机制，基于 ECMAScript 模块标准，实现无运行时开销的微前端架构。
 
-## 为什么需要模块链接？
+## 概述
 
 在微前端架构中，多个独立应用往往需要使用相同的第三方库（如 HTTP 客户端、工具库、UI 组件库）和共享组件。传统方案存在以下问题：
 
@@ -22,36 +22,22 @@ head:
 
 模块链接通过 ECMAScript 模块系统和 Import Maps 规范解决这些问题，让多个应用能够安全、高效地共享代码模块。
 
-## 工作原理
+### 工作原理
 
 模块链接基于现代浏览器原生支持的技术标准：
 
-### 共享模块提供者
+**共享模块提供者**：一个应用作为**模块提供者**，负责构建和暴露共享的第三方库和组件。其他应用作为**模块消费者**，通过标准的 ESM 导入语法使用这些共享模块。
 
-一个应用作为**模块提供者**，负责构建和暴露共享的第三方库和组件。其他应用作为**模块消费者**，通过标准的 ESM 导入语法使用这些共享模块。
-
-### Import Maps 解析
-
-浏览器使用 Import Maps 将模块导入语句映射到实际的文件路径：
+**Import Maps 解析**：浏览器使用 Import Maps 将模块导入语句映射到实际的文件路径：
 
 ```javascript
-// 应用代码中的导入语句
-import axios from 'axios';  // 通过 scopes 配置映射
-import { formatDate } from 'shared-lib/src/utils/date-utils';  // 通过 imports 配置映射
+import axios from 'axios';
+import { formatDate } from 'shared-lib/src/utils/date-utils';
 
 // Import Maps 将其解析为
 import axios from 'shared-lib/axios.389c4cab.final.mjs';
 import { formatDate } from 'shared-lib/src/utils/date-utils.2d79c0c2.final.mjs';
 ```
-
-### 模块实例共享
-
-所有应用共享同一个模块实例，确保：
-- 全局状态一致性（如库的全局配置）
-- 事件系统统一（如全局事件总线）
-- 内存使用优化（避免重复实例化）
-
-
 
 ## 快速开始
 
@@ -95,43 +81,11 @@ export async function fetchOrders() {
 }
 ```
 
-## 配置指南
+## 核心配置
 
 模块链接配置位于 `entry.node.ts` 文件的 `modules` 字段内，包含三个核心配置项：
 
-### 基础配置
-
-#### 模块导出
-
-`exports` 配置定义模块向外提供的内容，支持两种前缀：
-
-> **前缀说明**：`npm:` 和 `root:` 前缀是配置简化的语法糖，仅在 `exports` 数组形式的字符串项中有效。它们自动应用最佳实践配置，简化常见使用场景。
-
-```typescript
-// shared-lib/entry.node.ts
-import type { EsmxOptions } from '@esmx/core';
-
-export default {
-  // 其他配置...
-  modules: {
-    exports: [
-      // npm包：保持原始导入路径
-      'npm:axios',                    // 导入时: import axios from 'axios'
-      'npm:lodash',                   // 导入时: import { debounce } from 'lodash'
-      
-      // 源码模块：自动重写为模块路径
-      'root:src/utils/date-utils.ts',     // 导入时: import { formatDate } from 'shared-lib/src/utils/date-utils'
-      'root:src/components/Chart.js'      // 导入时: import Chart from 'shared-lib/src/components/Chart'
-    ]
-  }
-} satisfies EsmxOptions;
-```
-
-**前缀处理说明**：
-- `npm:axios` → 等价于 `{ 'axios': { input: 'axios', rewrite: false } }`
-- `root:src/utils/date-utils.ts` → 等价于 `{ 'src/utils/date-utils': { input: './src/utils/date-utils', rewrite: true } }`
-
-#### 模块链接
+### 模块链接 (links)
 
 `links` 配置指定当前模块链接到其他模块的路径：
 
@@ -140,7 +94,6 @@ export default {
 import type { EsmxOptions } from '@esmx/core';
 
 export default {
-  // 其他配置...
   modules: {
     links: {
       'shared-lib': '../shared-lib/dist',     // 相对路径
@@ -150,9 +103,9 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-#### 模块导入
+### 模块导入 (imports)
 
-`imports` 配置将本地模块名映射到远程模块标识符，**主要用于第三方库的标准导入**：
+`imports` 配置将本地模块名映射到远程模块标识符，支持标准导入和环境特定配置：
 
 ```typescript
 // business-app/entry.node.ts
@@ -164,42 +117,46 @@ export default {
       'shared-lib': '../shared-lib/dist'
     },
     imports: {
-      // 第三方库标准导入映射
+      // 标准导入映射（适用于两个环境）
       'axios': 'shared-lib/axios',
-      'lodash': 'shared-lib/lodash'
+      'lodash': 'shared-lib/lodash',
+      
+      // 环境特定的导入映射
+      'storage': {
+        client: 'shared-lib/storage/client',
+        server: 'shared-lib/storage/server'
+      },
+      'config': {
+        client: 'shared-lib/config/browser',
+        server: 'shared-lib/config/node'
+      }
     }
   }
 } satisfies EsmxOptions;
-
-// 使用方式
-import axios from 'axios';  // 正确 - 使用标准库名
-import { debounce } from 'lodash';  // 正确 - 使用标准库名
-
-// 自定义模块导入
-import { formatDate } from 'shared-lib/src/utils/date-utils';  // 正确 - 直接使用链接路径
 ```
 
-### 高级配置
+### 模块导出 (exports)
 
-#### exports 高级配置
+`exports` 配置定义模块向外提供的内容，仅支持数组格式：
 
-`exports` 支持多种配置形式。当需要复杂配置（如 `entryPoints`）时，前缀语法糖无法满足，需要使用完整的对象形式：
-
-**数组形式**：
 ```typescript
 // shared-lib/entry.node.ts
 export default {
   modules: {
     exports: [
-      // 字符串形式 - 使用前缀语法糖
-      'npm:axios',                    // 导出 npm 包
-      'root:src/utils/format.ts',     // 导出源码文件
+      // npm包：保持原始导入路径
+      'npm:axios',                    // 导入时: import axios from 'axios'
+      'npm:lodash',                   // 导入时: import { debounce } from 'lodash'
       
-      // 对象形式 - 复杂配置无法使用前缀
+      // 源码模块：自动重写为模块路径
+      'root:src/utils/date-utils.ts',     // 导入时: import { formatDate } from 'shared-lib/src/utils/date-utils'
+      'root:src/components/Chart.js',     // 导入时: import Chart from 'shared-lib/src/components/Chart'
+      
+      // 对象形式 - 复杂配置
       {
         'api': './src/api.ts',        // 简单映射
         'store': {                    // 完整配置
-          input: './src/store.ts',
+          file: './src/store.ts',
           rewrite: true
         }
       }
@@ -208,35 +165,20 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-**对象形式**：
-```typescript
-// shared-lib/entry.node.ts
-export default {
-  modules: {
-    exports: {
-      // 简单映射方式
-      'axios': 'axios',            // 直接指定 npm 包名
-      
-      // 完整配置对象
-      'src/utils/format': {
-        input: './src/utils/format',  // 输入文件路径
-        rewrite: true,                // 是否重写导入路径（默认为 true）
-        entryPoints: {                // 客户端/服务端差异化构建
-          client: './src/utils/format.client',  // 客户端特定版本
-          server: './src/utils/format.server'   // 服务端特定版本
-        }
-      }
-    }
-  }
-} satisfies EsmxOptions;
-```
+**前缀处理说明**：
+- `npm:axios` → 等价于 `{ 'axios': { file: 'axios', rewrite: false } }`
+- `root:src/utils/date-utils.ts` → 等价于 `{ 'src/utils/date-utils': { file: './src/utils/date-utils', rewrite: true } }`
 
-#### entryPoints 环境差异化构建
+**文件扩展名支持**：支持 `.js`, `.mjs`, `.cjs`, `.jsx`, `.mjsx`, `.cjsx`, `.ts`, `.mts`, `.cts`, `.tsx`, `.mtsx`, `.ctsx` 等扩展名，配置时会自动去除扩展名。
+
+## 高级配置
+
+### 环境差异化构建
 
 ```typescript
 exports: {
   'src/storage/db': {
-    entryPoints: {
+    files: {
       client: './src/storage/indexedDB',  // 客户端使用 IndexedDB
       server: './src/storage/mongoAdapter' // 服务端使用 MongoDB适配器
     }
@@ -249,12 +191,36 @@ exports: {
 ```typescript
 exports: {
   'src/client-only': {
-    entryPoints: {
+    files: {
       client: './src/client-feature',  // 仅客户端可用
       server: false                    // 服务端不可用
     }
   }
 }
+```
+
+### 混合配置格式
+
+```typescript
+exports: [
+  'npm:axios',
+  'root:src/utils/format.ts',
+  {
+    'api': './src/api/index.ts',
+    'components': {
+      file: './src/components/index.ts',
+      rewrite: true
+    }
+  },
+  {
+    'storage': {
+      files: {
+        client: './src/storage/browser.ts',
+        server: './src/storage/node.ts'
+      }
+    }
+  }
+]
 ```
 
 ## 最佳实践
@@ -297,5 +263,5 @@ import Chart from 'components/Chart';  // 此导入无法解析
 ### 配置原则
 
 1. **第三方库**：必须配置 `imports` 映射，使用标准名称导入
-2. **自定义模块**：直接使用完整模块链接路径
-3. **imports用途**：仅用于第三方库标准名称映射，不是目录别名 
+2. **自定义模块**：直接使用完整模块链接路径  
+3. **imports用途**：仅用于第三方库标准名称映射，不是目录别名

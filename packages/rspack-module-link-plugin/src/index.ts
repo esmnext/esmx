@@ -17,3 +17,5 @@ export function moduleLinkPlugin(
         intiManifestJson(compiler, opts);
     };
 }
+
+export type { ModuleLinkPluginOptions };

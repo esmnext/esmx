@@ -15,7 +15,7 @@ export default {
             {
                 'src/render-to-str': {
                     input: './src/render-to-str.ts',
-                    entryPoints: {
+                    files: {
                         client: false,
                         server: './src/render-to-str.ts'
                     }

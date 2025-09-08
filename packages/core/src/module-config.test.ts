@@ -1,12 +1,12 @@
 import path from 'node:path';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
     type ModuleConfig,
-    type ModuleConfigExportExports,
-    type ModuleConfigExportObject,
     type ParsedModuleConfig,
     type ParsedModuleConfigExport,
-    parseModuleConfig
+    getEnvironmentImports,
+    parseModuleConfig,
+    parsedExportValue
 } from './module-config';
 
 describe('module-config', () => {
@@ -15,33 +15,33 @@ describe('module-config', () => {
 
     describe('parseModuleConfig', () => {
         it('should parse empty configuration with defaults', () => {
-            // Arrange
             const config: ModuleConfig = {};
 
-            // Act
             const result = parseModuleConfig(testModuleName, testRoot, config);
 
-            // Assert
             expect(result.name).toBe(testModuleName);
             expect(result.root).toBe(testRoot);
-            expect(result.imports).toEqual({});
+            expect(result.environments.client.imports).toEqual({});
+            expect(result.environments.server.imports).toEqual({});
             expect(result.links).toHaveProperty(testModuleName);
-            expect(result.exports).toHaveProperty('src/entry.client');
-            expect(result.exports).toHaveProperty('src/entry.server');
+            expect(result.environments.client.exports).toHaveProperty(
+                'src/entry.client'
+            );
+            expect(result.environments.server.exports).toHaveProperty(
+                'src/entry.server'
+            );
         });
 
         it('should parse configuration without config parameter', () => {
-            // Arrange & Act
             const result = parseModuleConfig(testModuleName, testRoot);
 
-            // Assert
             expect(result.name).toBe(testModuleName);
             expect(result.root).toBe(testRoot);
-            expect(result.imports).toEqual({});
+            expect(result.environments.client.imports).toEqual({});
+            expect(result.environments.server.imports).toEqual({});
         });
 
         it('should parse complete configuration', () => {
-            // Arrange
             const config: ModuleConfig = {
                 links: {
                     'shared-lib': '../shared-lib/dist',
@@ -51,37 +51,46 @@ describe('module-config', () => {
                     axios: 'shared-lib/axios',
                     lodash: 'shared-lib/lodash'
                 },
-                exports: {
-                    axios: 'axios',
-                    'src/utils/format': './src/utils/format.ts',
-                    'custom-api': './src/api/custom.ts'
-                }
+                exports: [
+                    {
+                        axios: 'axios',
+                        'src/utils/format': './src/utils/format.ts',
+                        'custom-api': './src/api/custom.ts'
+                    }
+                ]
             };
 
-            // Act
             const result = parseModuleConfig(testModuleName, testRoot, config);
 
-            // Assert
             expect(result.name).toBe(testModuleName);
             expect(result.root).toBe(testRoot);
-            expect(result.imports).toEqual(config.imports);
+            expect(result.environments.client.imports).toEqual(config.imports);
+            expect(result.environments.server.imports).toEqual(config.imports);
             expect(result.links).toHaveProperty('shared-lib');
             expect(result.links).toHaveProperty('api-utils');
-            expect(result.exports).toHaveProperty('axios');
-            expect(result.exports).toHaveProperty('src/utils/format');
-            expect(result.exports).toHaveProperty('custom-api');
+            expect(result.environments.client.exports).toHaveProperty('axios');
+            expect(result.environments.client.exports).toHaveProperty(
+                'src/utils/format'
+            );
+            expect(result.environments.client.exports).toHaveProperty(
+                'custom-api'
+            );
+            expect(result.environments.server.exports).toHaveProperty('axios');
+            expect(result.environments.server.exports).toHaveProperty(
+                'src/utils/format'
+            );
+            expect(result.environments.server.exports).toHaveProperty(
+                'custom-api'
+            );
         });
     });
 
     describe('links processing', () => {
         it('should create self-link with default dist path', () => {
-            // Arrange
             const config: ModuleConfig = {};
 
-            // Act
             const result = parseModuleConfig(testModuleName, testRoot, config);
 
-            // Assert
             const selfLink = result.links[testModuleName];
             expect(selfLink).toBeDefined();
             expect(selfLink.name).toBe(testModuleName);
@@ -97,17 +106,14 @@ describe('module-config', () => {
         });
 
         it('should process relative path links', () => {
-            // Arrange
             const config: ModuleConfig = {
                 links: {
                     'shared-lib': '../shared-lib/dist'
                 }
             };
 
-            // Act
             const result = parseModuleConfig(testModuleName, testRoot, config);
 
-            // Assert
             const sharedLibLink = result.links['shared-lib'];
             expect(sharedLibLink.name).toBe('shared-lib');
             expect(sharedLibLink.root).toBe('../shared-lib/dist');
@@ -120,7 +126,6 @@ describe('module-config', () => {
         });
 
         it('should process absolute path links', () => {
-            // Arrange
             const absolutePath = '/absolute/path/api-utils/dist';
             const config: ModuleConfig = {
                 links: {
@@ -128,10 +133,8 @@ describe('module-config', () => {
                 }
             };
 
-            // Act
             const result = parseModuleConfig(testModuleName, testRoot, config);
 
-            // Assert
             const apiUtilsLink = result.links['api-utils'];
             expect(apiUtilsLink.name).toBe('api-utils');
             expect(apiUtilsLink.root).toBe(absolutePath);
@@ -144,7 +147,6 @@ describe('module-config', () => {
         });
 
         it('should handle multiple links', () => {
-            // Arrange
             const config: ModuleConfig = {
                 links: {
                     lib1: '../lib1/dist',
@@ -153,11 +155,9 @@ describe('module-config', () => {
                 }
             };
 
-            // Act
             const result = parseModuleConfig(testModuleName, testRoot, config);
 
-            // Assert
-            expect(Object.keys(result.links)).toHaveLength(4); // 3 + self-link
+            expect(Object.keys(result.links)).toHaveLength(4);
             expect(result.links).toHaveProperty('lib1');
             expect(result.links).toHaveProperty('lib2');
             expect(result.links).toHaveProperty('lib3');
@@ -168,73 +168,70 @@ describe('module-config', () => {
     describe('exports processing', () => {
         describe('default exports', () => {
             it('should add default entry exports', () => {
-                // Arrange
                 const config: ModuleConfig = {};
 
-                // Act
                 const result = parseModuleConfig(
                     testModuleName,
                     testRoot,
                     config
                 );
 
-                // Assert
-                expect(result.exports['src/entry.client']).toEqual({
+                expect(
+                    result.environments.client.exports['src/entry.client']
+                ).toEqual({
                     name: 'src/entry.client',
                     rewrite: true,
-                    entryPoints: {
-                        client: './src/entry.client',
-                        server: false
-                    }
+                    file: './src/entry.client'
                 });
 
-                expect(result.exports['src/entry.server']).toEqual({
+                expect(
+                    result.environments.server.exports['src/entry.server']
+                ).toEqual({
                     name: 'src/entry.server',
                     rewrite: true,
-                    entryPoints: {
-                        client: false,
-                        server: './src/entry.server'
-                    }
+                    file: './src/entry.server'
                 });
             });
         });
 
         describe('array format', () => {
             it('should process npm: prefix exports', () => {
-                // Arrange
                 const config: ModuleConfig = {
                     exports: ['npm:axios', 'npm:lodash']
                 };
 
-                // Act
                 const result = parseModuleConfig(
                     testModuleName,
                     testRoot,
                     config
                 );
 
-                // Assert
-                expect(result.exports.axios).toEqual({
+                expect(result.environments.client.exports.axios).toEqual({
                     name: 'axios',
                     rewrite: false,
-                    entryPoints: {
-                        client: 'axios',
-                        server: 'axios'
-                    }
+                    file: 'axios'
                 });
 
-                expect(result.exports.lodash).toEqual({
+                expect(result.environments.server.exports.axios).toEqual({
+                    name: 'axios',
+                    rewrite: false,
+                    file: 'axios'
+                });
+
+                expect(result.environments.client.exports.lodash).toEqual({
                     name: 'lodash',
                     rewrite: false,
-                    entryPoints: {
-                        client: 'lodash',
-                        server: 'lodash'
-                    }
+                    file: 'lodash'
+                });
+
+                expect(result.environments.server.exports.lodash).toEqual({
+                    name: 'lodash',
+                    rewrite: false,
+                    file: 'lodash'
                 });
             });
 
             it('should process root: prefix exports with file extensions', () => {
-                // Arrange
                 const config: ModuleConfig = {
                     exports: [
                         'root:src/utils/format.ts',
@@ -243,44 +240,62 @@ describe('module-config', () => {
                     ]
                 };
 
-                // Act
                 const result = parseModuleConfig(
                     testModuleName,
                     testRoot,
                     config
                 );
 
-                // Assert
-                expect(result.exports['src/utils/format']).toEqual({
+                expect(
+                    result.environments.client.exports['src/utils/format']
+                ).toEqual({
                     name: 'src/utils/format',
                     rewrite: true,
-                    entryPoints: {
-                        client: './src/utils/format',
-                        server: './src/utils/format'
-                    }
+                    file: './src/utils/format'
                 });
 
-                expect(result.exports['src/components/Button']).toEqual({
+                expect(
+                    result.environments.server.exports['src/utils/format']
+                ).toEqual({
+                    name: 'src/utils/format',
+                    rewrite: true,
+                    file: './src/utils/format'
+                });
+
+                expect(
+                    result.environments.client.exports['src/components/Button']
+                ).toEqual({
                     name: 'src/components/Button',
                     rewrite: true,
-                    entryPoints: {
-                        client: './src/components/Button',
-                        server: './src/components/Button'
-                    }
+                    file: './src/components/Button'
                 });
 
-                expect(result.exports['src/api/client']).toEqual({
+                expect(
+                    result.environments.server.exports['src/components/Button']
+                ).toEqual({
+                    name: 'src/components/Button',
+                    rewrite: true,
+                    file: './src/components/Button'
+                });
+
+                expect(
+                    result.environments.client.exports['src/api/client']
+                ).toEqual({
                     name: 'src/api/client',
                     rewrite: true,
-                    entryPoints: {
-                        client: './src/api/client',
-                        server: './src/api/client'
-                    }
+                    file: './src/api/client'
+                });
+
+                expect(
+                    result.environments.server.exports['src/api/client']
+                ).toEqual({
+                    name: 'src/api/client',
+                    rewrite: true,
+                    file: './src/api/client'
                 });
             });
 
             it('should handle all supported file extensions', () => {
-                // Arrange
                 const extensions = [
                     'js',
                     'mjs',
@@ -299,342 +314,185 @@ describe('module-config', () => {
                     exports: extensions.map((ext) => `root:src/test.${ext}`)
                 };
 
-                // Act
                 const result = parseModuleConfig(
                     testModuleName,
                     testRoot,
                     config
                 );
 
-                // Assert
                 extensions.forEach((ext) => {
-                    expect(result.exports['src/test']).toBeDefined();
+                    expect(
+                        result.environments.client.exports['src/test']
+                    ).toBeDefined();
+                    expect(
+                        result.environments.server.exports['src/test']
+                    ).toBeDefined();
                 });
             });
 
             it('should handle object exports in array', () => {
-                // Arrange
                 const config: ModuleConfig = {
                     exports: [
                         'npm:axios',
                         {
                             'custom-api': './src/api/custom.ts',
                             utils: {
-                                input: './src/utils/index.ts',
+                                file: './src/utils/index.ts',
                                 rewrite: true
                             }
                         }
                     ]
                 };
 
-                // Act
                 const result = parseModuleConfig(
                     testModuleName,
                     testRoot,
                     config
                 );
 
-                // Assert
-                expect(result.exports['custom-api']).toEqual({
+                expect(
+                    result.environments.client.exports['custom-api']
+                ).toEqual({
                     name: 'custom-api',
                     rewrite: true,
-                    entryPoints: {
-                        client: './src/api/custom.ts',
-                        server: './src/api/custom.ts'
-                    }
+                    file: './src/api/custom.ts'
                 });
 
-                expect(result.exports.utils).toEqual({
+                expect(
+                    result.environments.server.exports['custom-api']
+                ).toEqual({
+                    name: 'custom-api',
+                    rewrite: true,
+                    file: './src/api/custom.ts'
+                });
+
+                expect(result.environments.client.exports.utils).toEqual({
                     name: 'utils',
                     rewrite: true,
-                    entryPoints: {
-                        client: './src/utils/index.ts',
-                        server: './src/utils/index.ts'
-                    }
+                    file: './src/utils/index.ts'
+                });
+
+                expect(result.environments.server.exports.utils).toEqual({
+                    name: 'utils',
+                    rewrite: true,
+                    file: './src/utils/index.ts'
                 });
             });
 
             it('should handle invalid export strings', () => {
-                // Arrange
-                const consoleSpy = vi
-                    .spyOn(console, 'error')
-                    .mockImplementation(() => {});
                 const config: ModuleConfig = {
                     exports: ['invalid-export', 'another-invalid']
                 };
 
-                // Act
-                parseModuleConfig(testModuleName, testRoot, config);
-
-                // Assert
-                expect(consoleSpy).toHaveBeenCalledWith(
-                    'Invalid module export: invalid-export'
-                );
-                expect(consoleSpy).toHaveBeenCalledWith(
-                    'Invalid module export: another-invalid'
-                );
-
-                consoleSpy.mockRestore();
-            });
-        });
-
-        describe('object format', () => {
-            it('should process simple string mappings', () => {
-                // Arrange
-                const config: ModuleConfig = {
-                    exports: {
-                        axios: 'axios',
-                        utils: './src/utils/index.ts'
-                    }
-                };
-
-                // Act
                 const result = parseModuleConfig(
                     testModuleName,
                     testRoot,
                     config
                 );
 
-                // Assert
-                expect(result.exports.axios).toEqual({
-                    name: 'axios',
+                expect(
+                    result.environments.client.exports['invalid-export']
+                ).toEqual({
+                    name: 'invalid-export',
                     rewrite: true,
-                    entryPoints: {
-                        client: 'axios',
-                        server: 'axios'
-                    }
+                    file: 'invalid-export'
                 });
-
-                expect(result.exports.utils).toEqual({
-                    name: 'utils',
+                expect(
+                    result.environments.server.exports['another-invalid']
+                ).toEqual({
+                    name: 'another-invalid',
                     rewrite: true,
-                    entryPoints: {
-                        client: './src/utils/index.ts',
-                        server: './src/utils/index.ts'
-                    }
-                });
-            });
-
-            it('should process complete export objects', () => {
-                // Arrange
-                const config: ModuleConfig = {
-                    exports: {
-                        storage: {
-                            entryPoints: {
-                                client: './src/storage/indexedDB.ts',
-                                server: './src/storage/filesystem.ts'
-                            },
-                            rewrite: true
-                        },
-                        'npm-package': {
-                            input: 'some-package',
-                            rewrite: false
-                        }
-                    }
-                };
-
-                // Act
-                const result = parseModuleConfig(
-                    testModuleName,
-                    testRoot,
-                    config
-                );
-
-                // Assert
-                expect(result.exports.storage).toEqual({
-                    name: 'storage',
-                    rewrite: true,
-                    entryPoints: {
-                        client: './src/storage/indexedDB.ts',
-                        server: './src/storage/filesystem.ts'
-                    }
-                });
-
-                expect(result.exports['npm-package']).toEqual({
-                    name: 'npm-package',
-                    rewrite: false,
-                    entryPoints: {
-                        client: 'some-package',
-                        server: 'some-package'
-                    }
-                });
-            });
-
-            it('should handle entryPoints with false values', () => {
-                // Arrange
-                const config: ModuleConfig = {
-                    exports: {
-                        'client-only': {
-                            entryPoints: {
-                                client: './src/client-feature.ts',
-                                server: false
-                            }
-                        },
-                        'server-only': {
-                            entryPoints: {
-                                client: false,
-                                server: './src/server-feature.ts'
-                            }
-                        }
-                    }
-                };
-
-                // Act
-                const result = parseModuleConfig(
-                    testModuleName,
-                    testRoot,
-                    config
-                );
-
-                // Assert
-                expect(result.exports['client-only']).toEqual({
-                    name: 'client-only',
-                    rewrite: true,
-                    entryPoints: {
-                        client: './src/client-feature.ts',
-                        server: false
-                    }
-                });
-
-                expect(result.exports['server-only']).toEqual({
-                    name: 'server-only',
-                    rewrite: true,
-                    entryPoints: {
-                        client: false,
-                        server: './src/server-feature.ts'
-                    }
+                    file: 'another-invalid'
                 });
             });
         });
 
         describe('mixed configurations', () => {
             it('should handle complex mixed export configuration', () => {
-                // Arrange
                 const config: ModuleConfig = {
-                    exports: {
-                        // Simple string mapping
-                        simple: './src/simple.ts',
-
-                        // Complete object with entryPoints
-                        complex: {
-                            entryPoints: {
-                                client: './src/complex.client.ts',
-                                server: './src/complex.server.ts'
+                    exports: [
+                        'npm:react',
+                        'npm:lodash',
+                        {
+                            utils: 'root:src/utils/index.ts',
+                            components: {
+                                file: './src/components/index.ts',
+                                rewrite: true
                             },
-                            rewrite: false
-                        },
-
-                        // Object with just input
-                        'with-input': {
-                            input: './src/with-input.ts'
-                        },
-
-                        // Object with just rewrite
-                        'with-rewrite': {
-                            rewrite: false
+                            api: {
+                                files: {
+                                    client: './src/api/client.ts',
+                                    server: './src/api/server.ts'
+                                }
+                            }
                         }
-                    }
+                    ]
                 };
 
-                // Act
                 const result = parseModuleConfig(
                     testModuleName,
                     testRoot,
                     config
                 );
 
-                // Assert
-                expect(result.exports.simple).toEqual({
-                    name: 'simple',
-                    rewrite: true,
-                    entryPoints: {
-                        client: './src/simple.ts',
-                        server: './src/simple.ts'
-                    }
-                });
-
-                expect(result.exports.complex).toEqual({
-                    name: 'complex',
-                    rewrite: false,
-                    entryPoints: {
-                        client: './src/complex.client.ts',
-                        server: './src/complex.server.ts'
-                    }
-                });
-
-                expect(result.exports['with-input']).toEqual({
-                    name: 'with-input',
-                    rewrite: true,
-                    entryPoints: {
-                        client: './src/with-input.ts',
-                        server: './src/with-input.ts'
-                    }
-                });
-
-                expect(result.exports['with-rewrite']).toEqual({
-                    name: 'with-rewrite',
-                    rewrite: false,
-                    entryPoints: {
-                        client: 'with-rewrite',
-                        server: 'with-rewrite'
-                    }
-                });
-            });
-        });
-
-        describe('default value handling', () => {
-            it('should use default rewrite value of true', () => {
-                // Arrange
-                const config: ModuleConfig = {
-                    exports: {
-                        'test-export': {
-                            input: './src/test.ts'
-                            // rewrite not specified, should default to true
-                        }
-                    }
-                };
-
-                // Act
-                const result = parseModuleConfig(
-                    testModuleName,
-                    testRoot,
-                    config
+                expect(result.environments.client.exports).toHaveProperty(
+                    'react'
+                );
+                expect(result.environments.client.exports).toHaveProperty(
+                    'lodash'
+                );
+                expect(result.environments.client.exports).toHaveProperty(
+                    'utils'
+                );
+                expect(result.environments.client.exports).toHaveProperty(
+                    'components'
+                );
+                expect(result.environments.client.exports).toHaveProperty(
+                    'api'
                 );
 
-                // Assert
-                expect(result.exports['test-export'].rewrite).toBe(true);
-            });
-
-            it('should use export name as fallback for input paths', () => {
-                // Arrange
-                const config: ModuleConfig = {
-                    exports: {
-                        'fallback-test': {
-                            // No input or entryPoints specified
-                            rewrite: false
-                        }
-                    }
-                };
-
-                // Act
-                const result = parseModuleConfig(
-                    testModuleName,
-                    testRoot,
-                    config
+                expect(result.environments.client.exports.react.rewrite).toBe(
+                    false
                 );
-
-                // Assert
-                expect(result.exports['fallback-test'].entryPoints).toEqual({
-                    client: 'fallback-test',
-                    server: 'fallback-test'
-                });
+                expect(result.environments.client.exports.utils.rewrite).toBe(
+                    true
+                );
+                expect(
+                    result.environments.client.exports.components.rewrite
+                ).toBe(true);
             });
         });
     });
 
     describe('imports processing', () => {
+        it('should handle environment-specific import mappings correctly', () => {
+            const config: ModuleConfig = {
+                imports: {
+                    storage: {
+                        client: 'client-storage',
+                        server: 'server-storage'
+                    },
+                    lodash: 'shared-lib/lodash'
+                }
+            };
+
+            const result = parseModuleConfig(testModuleName, testRoot, config);
+
+            expect(result.environments.client.imports.storage).toBe(
+                'client-storage'
+            );
+            expect(result.environments.client.imports.lodash).toBe(
+                'shared-lib/lodash'
+            );
+            expect(result.environments.server.imports.storage).toBe(
+                'server-storage'
+            );
+            expect(result.environments.server.imports.lodash).toBe(
+                'shared-lib/lodash'
+            );
+        });
+
         it('should pass through imports configuration unchanged', () => {
-            // Arrange
             const imports = {
                 axios: 'shared-lib/axios',
                 lodash: 'shared-lib/lodash',
@@ -642,157 +500,653 @@ describe('module-config', () => {
             };
             const config: ModuleConfig = { imports };
 
-            // Act
             const result = parseModuleConfig(testModuleName, testRoot, config);
 
-            // Assert
-            expect(result.imports).toEqual(imports);
+            expect(result.environments.client.imports).toEqual(imports);
+            expect(result.environments.server.imports).toEqual(imports);
         });
 
         it('should handle empty imports', () => {
-            // Arrange
             const config: ModuleConfig = {};
 
-            // Act
             const result = parseModuleConfig(testModuleName, testRoot, config);
 
-            // Assert
-            expect(result.imports).toEqual({});
+            expect(result.environments.client.imports).toEqual({});
+            expect(result.environments.server.imports).toEqual({});
         });
 
         it('should handle undefined imports', () => {
-            // Arrange
             const config: ModuleConfig = {
                 links: { test: './test' },
                 exports: ['npm:axios']
-                // imports intentionally omitted
             };
 
-            // Act
             const result = parseModuleConfig(testModuleName, testRoot, config);
 
-            // Assert
-            expect(result.imports).toEqual({});
+            expect(result.environments.client.imports).toEqual({});
+            expect(result.environments.server.imports).toEqual({});
+        });
+
+        describe('environment-specific imports', () => {
+            it('should handle simple string imports for all environments', () => {
+                const imports = {
+                    axios: 'shared-lib/axios',
+                    lodash: 'shared-lib/lodash'
+                };
+                const config: ModuleConfig = { imports };
+
+                const result = parseModuleConfig(
+                    testModuleName,
+                    testRoot,
+                    config
+                );
+
+                expect(result.environments.client.imports).toEqual(imports);
+                expect(result.environments.server.imports).toEqual(imports);
+            });
+
+            it('should handle environment-specific imports', () => {
+                const imports = {
+                    axios: {
+                        client: 'client-libs/axios',
+                        server: 'server-libs/axios'
+                    },
+                    'client-only': {
+                        client: 'client-specific/lib',
+                        server: 'server-specific/lib'
+                    },
+                    'server-only': {
+                        client: 'client-specific/lib',
+                        server: 'server-specific/lib'
+                    }
+                };
+                const config: ModuleConfig = { imports };
+
+                const result = parseModuleConfig(
+                    testModuleName,
+                    testRoot,
+                    config
+                );
+
+                expect(result.environments.client.imports).toEqual({
+                    axios: 'client-libs/axios',
+                    'client-only': 'client-specific/lib',
+                    'server-only': 'client-specific/lib'
+                });
+                expect(result.environments.server.imports).toEqual({
+                    axios: 'server-libs/axios',
+                    'client-only': 'server-specific/lib',
+                    'server-only': 'server-specific/lib'
+                });
+            });
+
+            it('should handle mixed simple and environment-specific imports', () => {
+                const imports = {
+                    lodash: 'shared-lib/lodash',
+                    axios: {
+                        client: 'client-libs/axios',
+                        server: 'server-libs/axios'
+                    },
+                    'client-specific': {
+                        client: 'client-only/lib',
+                        server: 'server-only/lib'
+                    }
+                };
+                const config: ModuleConfig = { imports };
+
+                const result = parseModuleConfig(
+                    testModuleName,
+                    testRoot,
+                    config
+                );
+
+                expect(result.environments.client.imports).toEqual({
+                    lodash: 'shared-lib/lodash',
+                    axios: 'client-libs/axios',
+                    'client-specific': 'client-only/lib'
+                });
+                expect(result.environments.server.imports).toEqual({
+                    lodash: 'shared-lib/lodash',
+                    axios: 'server-libs/axios',
+                    'client-specific': 'server-only/lib'
+                });
+            });
+
+            it('should handle imports with only some environments defined', () => {
+                const imports = {
+                    'partial-config': {
+                        client: 'client/path',
+                        server: 'server/path'
+                    },
+                    'another-partial': {
+                        client: 'client/path',
+                        server: 'server/path'
+                    }
+                };
+                const config: ModuleConfig = { imports };
+
+                const result = parseModuleConfig(
+                    testModuleName,
+                    testRoot,
+                    config
+                );
+
+                expect(result.environments.client.imports).toEqual({
+                    'partial-config': 'client/path',
+                    'another-partial': 'client/path'
+                });
+                expect(result.environments.server.imports).toEqual({
+                    'partial-config': 'server/path',
+                    'another-partial': 'server/path'
+                });
+            });
+
+            it('should handle imports with undefined values for specific environments', () => {
+                const imports = {
+                    'explicit-undefined': {
+                        client: 'client/path',
+                        server: 'server/path'
+                    },
+                    'implicit-undefined': {
+                        client: 'client/path',
+                        server: 'server/path'
+                    }
+                };
+                const config: ModuleConfig = { imports };
+
+                const result = parseModuleConfig(
+                    testModuleName,
+                    testRoot,
+                    config
+                );
+
+                expect(result.environments.client.imports).toEqual({
+                    'explicit-undefined': 'client/path',
+                    'implicit-undefined': 'client/path'
+                });
+                expect(result.environments.server.imports).toEqual({
+                    'explicit-undefined': 'server/path',
+                    'implicit-undefined': 'server/path'
+                });
+            });
+
+            it('should handle complex environment-specific import scenarios', () => {
+                const imports = {
+                    lodash: 'shared-lib/lodash',
+                    storage: {
+                        client: 'client-storage/index',
+                        server: 'server-storage/index'
+                    },
+                    'dom-utils': {
+                        client: 'client-utils/dom',
+                        server: 'server-utils/dom'
+                    },
+                    'db-utils': {
+                        client: 'client-utils/db',
+                        server: 'server-utils/db'
+                    },
+                    'api-client': {
+                        client: 'client/api/browser',
+                        server: 'server/api/node'
+                    }
+                };
+                const config: ModuleConfig = { imports };
+
+                const result = parseModuleConfig(
+                    testModuleName,
+                    testRoot,
+                    config
+                );
+
+                expect(result.environments.client.imports).toEqual({
+                    lodash: 'shared-lib/lodash',
+                    storage: 'client-storage/index',
+                    'dom-utils': 'client-utils/dom',
+                    'db-utils': 'client-utils/db',
+                    'api-client': 'client/api/browser'
+                });
+                expect(result.environments.server.imports).toEqual({
+                    lodash: 'shared-lib/lodash',
+                    storage: 'server-storage/index',
+                    'dom-utils': 'server-utils/dom',
+                    'db-utils': 'server-utils/db',
+                    'api-client': 'server/api/node'
+                });
+            });
+        });
+    });
+
+    describe('getEnvironmentImports function', () => {
+        it('should handle empty imports', () => {
+            const result = getEnvironmentImports('client', {});
+            expect(result).toEqual({});
+        });
+
+        it('should handle undefined imports', () => {
+            const result = getEnvironmentImports('client');
+            expect(result).toEqual({});
+        });
+
+        it('should handle simple string imports', () => {
+            const imports = {
+                axios: 'shared-lib/axios',
+                lodash: 'shared-lib/lodash'
+            };
+            const result = getEnvironmentImports('client', imports);
+            expect(result).toEqual(imports);
+        });
+
+        it('should handle environment-specific imports', () => {
+            const imports = {
+                axios: {
+                    client: 'client-libs/axios',
+                    server: 'server-libs/axios'
+                }
+            };
+            const clientResult = getEnvironmentImports('client', imports);
+            const serverResult = getEnvironmentImports('server', imports);
+
+            expect(clientResult).toEqual({ axios: 'client-libs/axios' });
+            expect(serverResult).toEqual({ axios: 'server-libs/axios' });
+        });
+
+        it('should handle mixed imports', () => {
+            const imports = {
+                lodash: 'shared-lib/lodash',
+                axios: {
+                    client: 'client-libs/axios',
+                    server: 'server-libs/axios'
+                }
+            };
+            const clientResult = getEnvironmentImports('client', imports);
+            const serverResult = getEnvironmentImports('server', imports);
+
+            expect(clientResult).toEqual({
+                lodash: 'shared-lib/lodash',
+                axios: 'client-libs/axios'
+            });
+            expect(serverResult).toEqual({
+                lodash: 'shared-lib/lodash',
+                axios: 'server-libs/axios'
+            });
+        });
+
+        it('should handle imports with missing environment keys', () => {
+            const imports = {
+                'client-only': {
+                    client: 'client/path',
+                    server: 'server/path'
+                },
+                'server-only': {
+                    client: 'client/path',
+                    server: 'server/path'
+                },
+                both: {
+                    client: 'client/path',
+                    server: 'server/path'
+                }
+            };
+            const clientResult = getEnvironmentImports('client', imports);
+            const serverResult = getEnvironmentImports('server', imports);
+
+            expect(clientResult).toEqual({
+                'client-only': 'client/path',
+                'server-only': 'client/path',
+                both: 'client/path'
+            });
+            expect(serverResult).toEqual({
+                'client-only': 'server/path',
+                'server-only': 'server/path',
+                both: 'server/path'
+            });
+        });
+
+        it('should handle imports with undefined values', () => {
+            const imports = {
+                'explicit-undefined': {
+                    client: 'client/path',
+                    server: 'server/path'
+                },
+                'implicit-undefined': {
+                    client: 'client/path',
+                    server: 'server/path'
+                }
+            };
+            const clientResult = getEnvironmentImports('client', imports);
+            const serverResult = getEnvironmentImports('server', imports);
+
+            expect(clientResult).toEqual({
+                'explicit-undefined': 'client/path',
+                'implicit-undefined': 'client/path'
+            });
+            expect(serverResult).toEqual({
+                'explicit-undefined': 'server/path',
+                'implicit-undefined': 'server/path'
+            });
+        });
+
+        it('should handle imports with all undefined values', () => {
+            const imports = {
+                'all-undefined': {
+                    client: 'client/path',
+                    server: 'server/path'
+                }
+            };
+            const clientResult = getEnvironmentImports('client', imports);
+            const serverResult = getEnvironmentImports('server', imports);
+
+            expect(clientResult).toEqual({
+                'all-undefined': 'client/path'
+            });
+            expect(serverResult).toEqual({
+                'all-undefined': 'server/path'
+            });
         });
     });
 
     describe('edge cases', () => {
         it('should handle empty exports array', () => {
-            // Arrange
             const config: ModuleConfig = {
                 exports: []
             };
 
-            // Act
             const result = parseModuleConfig(testModuleName, testRoot, config);
 
-            // Assert
-            // Should still have default exports
-            expect(result.exports).toHaveProperty('src/entry.client');
-            expect(result.exports).toHaveProperty('src/entry.server');
-            expect(Object.keys(result.exports)).toHaveLength(2);
-        });
-
-        it('should handle empty exports object', () => {
-            // Arrange
-            const config: ModuleConfig = {
-                exports: {}
-            };
-
-            // Act
-            const result = parseModuleConfig(testModuleName, testRoot, config);
-
-            // Assert
-            // Should still have default exports
-            expect(result.exports).toHaveProperty('src/entry.client');
-            expect(result.exports).toHaveProperty('src/entry.server');
-            expect(Object.keys(result.exports)).toHaveLength(2);
+            expect(result.environments.client.exports).toHaveProperty(
+                'src/entry.client'
+            );
+            expect(result.environments.server.exports).toHaveProperty(
+                'src/entry.server'
+            );
+            expect(
+                Object.keys(result.environments.client.exports)
+            ).toHaveLength(1);
+            expect(
+                Object.keys(result.environments.server.exports)
+            ).toHaveLength(1);
         });
 
         it('should handle null and undefined values gracefully', () => {
-            // Arrange
             const config: ModuleConfig = {
                 links: undefined,
                 imports: undefined,
                 exports: undefined
             };
 
-            // Act
             const result = parseModuleConfig(testModuleName, testRoot, config);
 
-            // Assert
             expect(result.links).toHaveProperty(testModuleName);
-            expect(result.imports).toEqual({});
-            expect(result.exports).toHaveProperty('src/entry.client');
-            expect(result.exports).toHaveProperty('src/entry.server');
+            expect(result.environments.client.imports).toEqual({});
+            expect(result.environments.server.imports).toEqual({});
+            expect(result.environments.client.exports).toHaveProperty(
+                'src/entry.client'
+            );
+            expect(result.environments.server.exports).toHaveProperty(
+                'src/entry.server'
+            );
         });
+    });
 
-        it('should handle special characters in module names and paths', () => {
-            // Arrange
-            const specialModuleName = 'test-module_with.special@chars';
+    describe('real-world usage scenarios', () => {
+        it('should handle complex project structure with mixed configurations', () => {
             const config: ModuleConfig = {
                 links: {
-                    'special-lib@1.0.0': '../special-lib/dist'
+                    'ui-components': '../../packages/ui-components/dist',
+                    'api-client': '/external/api-client/dist'
                 },
-                exports: {
-                    'special_export-name': './src/special.ts'
-                }
+                imports: {
+                    react: 'ui-components/react',
+                    axios: {
+                        client: 'ui-components/axios-browser',
+                        server: 'api-client/axios-node'
+                    }
+                },
+                exports: [
+                    'npm:react',
+                    'npm:react-dom',
+                    {
+                        components: 'root:src/components/index.ts',
+                        hooks: {
+                            file: './src/hooks/index.ts',
+                            rewrite: true
+                        },
+                        api: {
+                            files: {
+                                client: './src/api/client.ts',
+                                server: './src/api/server.ts'
+                            }
+                        }
+                    }
+                ]
             };
 
-            // Act
+            const result = parseModuleConfig('my-app', '/path/to/app', config);
+
+            expect(result.links).toHaveProperty('ui-components');
+            expect(result.links).toHaveProperty('api-client');
+            expect(result.links).toHaveProperty('my-app');
+
+            expect(result.environments.client.imports.react).toBe(
+                'ui-components/react'
+            );
+            expect(result.environments.client.imports.axios).toBe(
+                'ui-components/axios-browser'
+            );
+            expect(result.environments.server.imports.axios).toBe(
+                'api-client/axios-node'
+            );
+
+            expect(result.environments.client.exports).toHaveProperty('react');
+            expect(result.environments.client.exports).toHaveProperty(
+                'react-dom'
+            );
+            expect(result.environments.client.exports).toHaveProperty(
+                'components'
+            );
+            expect(result.environments.client.exports).toHaveProperty('hooks');
+            expect(result.environments.client.exports).toHaveProperty('api');
+
+            expect(result.environments.client.exports.react.rewrite).toBe(
+                false
+            );
+            expect(result.environments.client.exports.components.rewrite).toBe(
+                true
+            );
+            expect(result.environments.client.exports.hooks.rewrite).toBe(true);
+
+            expect(result.environments.client.exports.api.file).toBe(
+                './src/api/client.ts'
+            );
+            expect(result.environments.server.exports.api.file).toBe(
+                './src/api/server.ts'
+            );
+        });
+
+        it('should handle library development with multiple entry points', () => {
+            const config: ModuleConfig = {
+                exports: [
+                    'npm:lodash',
+                    'npm:axios',
+                    {
+                        index: './src/index.ts',
+                        utils: {
+                            file: './src/utils/index.ts',
+                            rewrite: false
+                        },
+                        types: {
+                            file: './src/types/index.ts',
+                            rewrite: false
+                        },
+                        constants: {
+                            file: './src/constants.ts',
+                            rewrite: true
+                        }
+                    }
+                ]
+            };
+
             const result = parseModuleConfig(
-                specialModuleName,
-                testRoot,
+                'my-library',
+                '/libs/my-lib',
                 config
             );
 
-            // Assert
-            expect(result.name).toBe(specialModuleName);
-            expect(result.links).toHaveProperty('special-lib@1.0.0');
-            expect(result.exports).toHaveProperty('special_export-name');
+            expect(result.environments.client.exports).toHaveProperty('lodash');
+            expect(result.environments.client.exports).toHaveProperty('axios');
+            expect(result.environments.client.exports).toHaveProperty('index');
+            expect(result.environments.client.exports).toHaveProperty('utils');
+            expect(result.environments.client.exports).toHaveProperty('types');
+            expect(result.environments.client.exports).toHaveProperty(
+                'constants'
+            );
+
+            expect(result.environments.client.exports.lodash.rewrite).toBe(
+                false
+            );
+            expect(result.environments.client.exports.axios.rewrite).toBe(
+                false
+            );
+            expect(result.environments.client.exports.index.rewrite).toBe(true);
+            expect(result.environments.client.exports.utils.rewrite).toBe(
+                false
+            );
+            expect(result.environments.client.exports.types.rewrite).toBe(
+                false
+            );
+            expect(result.environments.client.exports.constants.rewrite).toBe(
+                true
+            );
         });
     });
 
     describe('type safety', () => {
         it('should maintain type safety for ParsedModuleConfig', () => {
-            // Arrange
             const config: ModuleConfig = {
                 links: { test: './test' },
                 imports: { axios: 'test/axios' },
                 exports: ['npm:lodash']
             };
 
-            // Act
             const result: ParsedModuleConfig = parseModuleConfig(
                 testModuleName,
                 testRoot,
                 config
             );
 
-            // Assert
             expect(typeof result.name).toBe('string');
             expect(typeof result.root).toBe('string');
             expect(typeof result.links).toBe('object');
-            expect(typeof result.imports).toBe('object');
-            expect(typeof result.exports).toBe('object');
+            expect(typeof result.environments.client.imports).toBe('object');
+            expect(typeof result.environments.server.imports).toBe('object');
+            expect(typeof result.environments.client.exports).toBe('object');
+            expect(typeof result.environments.server.exports).toBe('object');
         });
 
         it('should maintain type safety for ParsedModuleConfigExport', () => {
-            // Arrange
             const config: ModuleConfig = {
                 exports: ['npm:axios']
             };
 
-            // Act
             const result = parseModuleConfig(testModuleName, testRoot, config);
 
-            // Assert
-            const exportConfig: ParsedModuleConfigExport = result.exports.axios;
+            const exportConfig: ParsedModuleConfigExport =
+                result.environments.client.exports.axios;
             expect(typeof exportConfig.name).toBe('string');
             expect(typeof exportConfig.rewrite).toBe('boolean');
-            expect(typeof exportConfig.entryPoints).toBe('object');
-            expect(typeof exportConfig.entryPoints.client).toBe('string');
-            expect(typeof exportConfig.entryPoints.server).toBe('string');
+            expect(typeof exportConfig.file).toBe('string');
+        });
+    });
+
+    describe('parsedExportValue function', () => {
+        it('should parse npm: prefix exports', () => {
+            const result = parsedExportValue('npm:axios');
+            expect(result).toEqual({
+                name: 'axios',
+                rewrite: false,
+                file: 'axios'
+            });
+        });
+
+        it('should parse root: prefix exports with file extensions', () => {
+            const result = parsedExportValue('root:src/utils/format.ts');
+            expect(result).toEqual({
+                name: 'src/utils/format',
+                rewrite: true,
+                file: './src/utils/format'
+            });
+        });
+
+        it('should parse root: prefix exports with various extensions', () => {
+            const extensions = [
+                'js',
+                'mjs',
+                'cjs',
+                'jsx',
+                'mjsx',
+                'cjsx',
+                'ts',
+                'mts',
+                'cts',
+                'tsx',
+                'mtsx',
+                'ctsx'
+            ];
+
+            extensions.forEach((ext) => {
+                const result = parsedExportValue(`root:src/test.${ext}`);
+                expect(result).toEqual({
+                    name: 'src/test',
+                    rewrite: true,
+                    file: './src/test'
+                });
+            });
+        });
+
+        it('should handle root: prefix exports without extensions', () => {
+            const result = parsedExportValue('root:src/utils/format');
+            expect(result).toEqual({
+                name: 'src/utils/format',
+                rewrite: true,
+                file: './src/utils/format'
+            });
+        });
+
+        it('should handle invalid export strings by returning file object', () => {
+            const result = parsedExportValue('invalid-export');
+            expect(result).toEqual({
+                name: 'invalid-export',
+                rewrite: true,
+                file: 'invalid-export'
+            });
+        });
+
+        it('should handle complex file paths with root: prefix', () => {
+            const result = parsedExportValue(
+                'root:src/components/nested/Button.tsx'
+            );
+            expect(result).toEqual({
+                name: 'src/components/nested/Button',
+                rewrite: true,
+                file: './src/components/nested/Button'
+            });
+        });
+
+        it('should handle npm packages with scopes', () => {
+            const result = parsedExportValue('npm:@babel/core');
+            expect(result).toEqual({
+                name: '@babel/core',
+                rewrite: false,
+                file: '@babel/core'
+            });
+        });
+
+        it('should handle npm packages with versions', () => {
+            const result = parsedExportValue('npm:lodash@4.17.21');
+            expect(result).toEqual({
+                name: 'lodash@4.17.21',
+                rewrite: false,
+                file: 'lodash@4.17.21'
+            });
         });
     });
 });

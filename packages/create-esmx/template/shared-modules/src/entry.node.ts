@@ -7,7 +7,7 @@ export default {
             'npm:@esmx/router',
             {
                 index: {
-                    input: './src/index.ts'
+                    file: './src/index.ts'
                 }
             }
         ]
