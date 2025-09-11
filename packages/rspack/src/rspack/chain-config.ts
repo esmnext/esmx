@@ -55,18 +55,7 @@ export function createChainConfig(
             ? 'chunks/[name].[contenthash:8].final.css'
             : 'chunks/[name].css'
     );
-
-    switch (buildTarget) {
-        case 'client':
-            config.output.path(esmx.resolvePath('dist/client'));
-            break;
-        case 'server':
-            config.output.path(esmx.resolvePath('dist/server'));
-            break;
-        case 'node':
-            config.output.path(esmx.resolvePath('dist/node'));
-            break;
-    }
+    config.output.path(esmx.resolvePath('dist', buildTarget));
 
     config.plugin('progress').use(rspack.ProgressPlugin, [
         {
