@@ -176,27 +176,24 @@ export default {
 ### Environment Differentiated Builds
 
 ```typescript
-exports: {
-  'src/storage/db': {
-    files: {
-      client: './src/storage/indexedDB',  // Client uses IndexedDB
-      server: './src/storage/mongoAdapter' // Server uses MongoDB adapter
+exports: [
+  {
+    'src/storage/db': {
+      files: {
+        client: './src/storage/indexedDB',  // Client uses IndexedDB
+        server: './src/storage/mongoAdapter' // Server uses MongoDB adapter
+      }
+    }
+  },
+  {
+    'src/client-only': {
+      files: {
+        client: './src/client-feature',  // Only available on client
+        server: false                    // Not available on server
+      }
     }
   }
-}
-```
-
-Setting `false` can disable builds for specific environments:
-
-```typescript
-exports: {
-  'src/client-only': {
-    files: {
-      client: './src/client-feature',  // Only available on client
-      server: false                    // Not available on server
-    }
-  }
-}
+]
 ```
 
 ### Mixed Configuration Format

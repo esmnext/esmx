@@ -176,27 +176,24 @@ export default {
 ### 环境差异化构建
 
 ```typescript
-exports: {
-  'src/storage/db': {
-    files: {
-      client: './src/storage/indexedDB',  // 客户端使用 IndexedDB
-      server: './src/storage/mongoAdapter' // 服务端使用 MongoDB适配器
+exports: [
+  {
+    'src/storage/db': {
+      files: {
+        client: './src/storage/indexedDB',  // 客户端使用 IndexedDB
+        server: './src/storage/mongoAdapter' // 服务端使用 MongoDB 适配器
+      }
+    }
+  },
+  {
+    'src/client-only': {
+      files: {
+        client: './src/client-feature',  // 仅客户端可用
+        server: false                    // 服务端不可用
+      }
     }
   }
-}
-```
-
-设置 `false` 可禁用特定环境的构建：
-
-```typescript
-exports: {
-  'src/client-only': {
-    files: {
-      client: './src/client-feature',  // 仅客户端可用
-      server: false                    // 服务端不可用
-    }
-  }
-}
+]
 ```
 
 ### 混合配置格式
