@@ -461,6 +461,152 @@ describe('module-config', () => {
                     result.environments.client.exports.components.rewrite
                 ).toBe(true);
             });
+
+            it('should handle files set to false by using virtual empty file', () => {
+                const config: ModuleConfig = {
+                    exports: [
+                        {
+                            'client-only': {
+                                files: {
+                                    client: './src/client-only.ts',
+                                    server: false
+                                }
+                            },
+                            'server-only': {
+                                files: {
+                                    client: false,
+                                    server: './src/server-only.ts'
+                                }
+                            },
+                            'both-disabled': {
+                                files: {
+                                    client: false,
+                                    server: false
+                                }
+                            }
+                        }
+                    ]
+                };
+
+                const result = parseModuleConfig(
+                    testModuleName,
+                    testRoot,
+                    config
+                );
+
+                expect(
+                    result.environments.client.exports['client-only']
+                ).toEqual({
+                    name: 'client-only',
+                    rewrite: true,
+                    file: './src/client-only.ts'
+                });
+                expect(
+                    result.environments.server.exports['client-only']
+                ).toEqual({
+                    name: 'client-only',
+                    rewrite: true,
+                    file: ''
+                });
+
+                expect(
+                    result.environments.client.exports['server-only']
+                ).toEqual({
+                    name: 'server-only',
+                    rewrite: true,
+                    file: ''
+                });
+                expect(
+                    result.environments.server.exports['server-only']
+                ).toEqual({
+                    name: 'server-only',
+                    rewrite: true,
+                    file: './src/server-only.ts'
+                });
+
+                expect(
+                    result.environments.client.exports['both-disabled']
+                ).toEqual({
+                    name: 'both-disabled',
+                    rewrite: true,
+                    file: ''
+                });
+                expect(
+                    result.environments.server.exports['both-disabled']
+                ).toEqual({
+                    name: 'both-disabled',
+                    rewrite: true,
+                    file: ''
+                });
+            });
+
+            it('should handle mixed file configurations with false values', () => {
+                const config: ModuleConfig = {
+                    exports: [
+                        {
+                            'api-client': {
+                                file: './src/api/client.ts',
+                                files: {
+                                    client: './src/api/client-browser.ts',
+                                    server: false
+                                }
+                            },
+                            storage: {
+                                files: {
+                                    client: false,
+                                    server: './src/storage/node.ts'
+                                }
+                            },
+                            utils: {
+                                file: './src/utils/index.ts'
+                            }
+                        }
+                    ]
+                };
+
+                const result = parseModuleConfig(
+                    testModuleName,
+                    testRoot,
+                    config
+                );
+
+                expect(
+                    result.environments.client.exports['api-client']
+                ).toEqual({
+                    name: 'api-client',
+                    rewrite: true,
+                    file: './src/api/client-browser.ts'
+                });
+                expect(
+                    result.environments.server.exports['api-client']
+                ).toEqual({
+                    name: 'api-client',
+                    rewrite: true,
+                    file: ''
+                });
+
+                expect(result.environments.client.exports.storage).toEqual({
+                    name: 'storage',
+                    rewrite: true,
+                    file: ''
+                });
+                expect(result.environments.server.exports.storage).toEqual({
+                    name: 'storage',
+                    rewrite: true,
+                    file: './src/storage/node.ts'
+                });
+
+                expect(result.environments.client.exports.utils).toEqual({
+                    name: 'utils',
+                    rewrite: true,
+                    file: './src/utils/index.ts'
+                });
+                expect(result.environments.server.exports.utils).toEqual({
+                    name: 'utils',
+                    rewrite: true,
+                    file: './src/utils/index.ts'
+                });
+            });
         });
     });
 
@@ -858,12 +1004,28 @@ describe('module-config', () => {
             expect(result.environments.server.exports).toHaveProperty(
                 'src/entry.server'
             );
+
             expect(
                 Object.keys(result.environments.client.exports)
-            ).toHaveLength(1);
+            ).toHaveLength(2);
             expect(
                 Object.keys(result.environments.server.exports)
-            ).toHaveLength(1);
+            ).toHaveLength(2);
+
+            expect(
+                result.environments.client.exports['src/entry.server']
+            ).toEqual({
+                name: 'src/entry.server',
+                rewrite: true,
+                file: ''
+            });
+            expect(
+                result.environments.server.exports['src/entry.client']
+            ).toEqual({
+                name: 'src/entry.client',
+                rewrite: true,
+                file: ''
+            });
         });
 
         it('should handle null and undefined values gracefully', () => {

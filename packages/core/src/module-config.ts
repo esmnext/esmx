@@ -300,12 +300,12 @@ function getEnvironments(config: ModuleConfig, env: BuildEnvironment) {
                 };
                 return;
             }
-            const file =
+            let file =
                 exportObject[name].files?.[env] ??
                 exportObject[name].file ??
                 name;
             if (file === false) {
-                return;
+                file = '';
             }
             const parsedValue = parsedExportValue(file);
             const rewrite: boolean =
