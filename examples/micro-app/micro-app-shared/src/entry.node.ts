@@ -8,7 +8,7 @@ export default {
             'root:src/create-app.ts',
             {
                 index: {
-                    input: './src/index.ts'
+                    file: './src/index.ts'
                 }
             }
         ]

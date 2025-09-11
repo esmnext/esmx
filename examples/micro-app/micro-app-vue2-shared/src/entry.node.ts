@@ -2,8 +2,6 @@ import http from 'node:http';
 import path from 'node:path';
 import type { EsmxOptions } from '@esmx/core';
 
-// /Volumes/work/github/esmx/examples/micro-app-shared/dist/server/manifest.json
-
 export default {
     modules: {
         links: {
@@ -17,11 +15,11 @@ export default {
             'root:src/create-app.ts',
             {
                 index: {
-                    input: './src/index.ts'
+                    file: './src/index.ts'
                 },
                 'vue-server-renderer': {
-                    entryPoints: {
-                        server: 'vue-server-renderer',
+                    files: {
+                        server: 'npm:vue-server-renderer',
                         client: false
                     }
                 }
