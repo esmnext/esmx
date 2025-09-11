@@ -15,9 +15,11 @@ export function initEntry(
     }
 
     for (const value of Object.values(opts.exports)) {
-        entry[value.name] = {
-            import: [...opts.preEntries, value.file]
-        };
+        if (value.file) {
+            entry[value.name] = {
+                import: [...opts.preEntries, value.file]
+            };
+        }
     }
 
     options.entry = entry;

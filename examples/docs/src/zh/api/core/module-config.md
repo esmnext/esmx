@@ -16,7 +16,7 @@ head:
 ```typescript
 interface ModuleConfig {
     links?: Record<string, string>;
-    imports?: Record<string, string>;
+    imports?: Record<string, string | Record<BuildEnvironment, string>>;
     exports?: ModuleConfigExportExports;
 }
 ```
@@ -28,8 +28,8 @@ interface ModuleConfig {
 
 ### imports  
 
-* **类型**: `Record<string, string>`
-* **描述**: 模块导入映射配置。键为本地模块标识符，值为远程模块路径。
+* **类型**: `Record<string, string | Record<BuildEnvironment, string>>`
+* **描述**: 模块导入映射配置。键为本地模块标识符，值为远程模块路径。支持环境特定的配置。
 
 ### exports
 
@@ -41,29 +41,27 @@ interface ModuleConfig {
 ### ModuleConfigExportExports
 
 ```typescript
-type ModuleConfigExportExports =
-    | Array<string | Record<string, string | ModuleConfigExportObject>>
-    | Record<string, string | ModuleConfigExportObject>;
+type ModuleConfigExportExports = Array<string | Record<string, string | ModuleConfigExportObject>>;
 ```
 
-导出配置的联合类型，支持混合数组（字符串和对象）、对象两种形式。
+导出配置的数组类型，支持混合数组（字符串和对象）形式。
 
 ### ModuleConfigExportObject
 
 ```typescript
 type ModuleConfigExportObject = {
-    input?: string;
-    entryPoints?: Record<BuildEnvironment, string | false>;
+    file?: string;
+    files?: Record<BuildEnvironment, string | false>;
     rewrite?: boolean;
 };
 ```
 
-#### input
+#### file
 
 * **类型**: `string`
 * **描述**: 输入文件路径，相对于项目根目录。
 
-#### entryPoints
+#### files
 
 * **类型**: `Record<BuildEnvironment, string | false>`
 * **描述**: 环境特定的输入文件配置。支持客户端和服务端差异化构建。
@@ -90,9 +88,27 @@ type BuildEnvironment = 'client' | 'server';
 interface ParsedModuleConfig {
     name: string;
     root: string;
-    links: Record<string, LinkInfo>;
-    imports: Record<string, string>;
-    exports: ParsedModuleConfigExports;
+    links: Record<
+        string,
+        {
+            name: string;
+            root: string;
+            client: string;
+            clientManifestJson: string;
+            server: string;
+            serverManifestJson: string;
+        }
+    >;
+    environments: {
+        client: {
+            imports: Record<string, string>;
+            exports: ParsedModuleConfigExports;
+        };
+        server: {
+            imports: Record<string, string>;
+            exports: ParsedModuleConfigExports;
+        };
+    };
 }
 ```
 
@@ -101,7 +117,7 @@ interface ParsedModuleConfig {
 ```typescript
 interface ParsedModuleConfigExport {
     name: string;
-    entryPoints: Record<BuildEnvironment, string | false>;
+    file: string;
     rewrite: boolean;
 }
 ```
@@ -114,13 +130,13 @@ interface ParsedModuleConfigExport {
 
 * **格式**: `'npm:packageName'`
 * **处理**: 自动设置 `rewrite: false`，保持原始导入路径
-* **示例**: `'npm:axios'` → `{ input: 'axios', rewrite: false }`
+* **示例**: `'npm:axios'` → `{ file: 'axios', rewrite: false }`
 
 ### root: 前缀  
 
 * **格式**: `'root:path/to/file.ext'`
 * **处理**: 自动设置 `rewrite: true`，去除文件扩展名，添加 `./` 前缀
-* **示例**: `'root:src/utils/format.ts'` → `{ input: './src/utils/format', rewrite: true }`
+* **示例**: `'root:src/utils/format.ts'` → `{ file: './src/utils/format', rewrite: true }`
 
 ## 默认导出项
 
@@ -129,13 +145,13 @@ interface ParsedModuleConfigExport {
 ```typescript
 {
   'src/entry.client': {
-    entryPoints: {
+    files: {
       client: './src/entry.client',
       server: false
     }
   },
   'src/entry.server': {
-    entryPoints: {
+    files: {
       client: false,
       server: './src/entry.server'
     }
@@ -164,34 +180,59 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-### 数组形式
+### 数组形式（推荐）
 
 ```typescript
 exports: [
   'npm:axios',
   'root:src/utils/format.ts',
   {
-    'api-client': './src/api/client.ts'
+    'api-client': './src/api/client.ts',
+    'utils': {
+      file: './src/utils/index.ts',
+      rewrite: true
+    }
   }
 ]
 ```
 
-### 对象形式
+### 环境特定的导入配置
 
 ```typescript
-exports: {
-  'axios': 'axios',
-  'utils': './src/utils/index.ts',
+imports: {
+  // 标准导入映射（适用于两个环境）
+  'axios': 'shared-lib/axios',
+  
+  // 环境特定的导入映射
   'storage': {
-    entryPoints: {
-      client: './src/storage/indexedDB.ts',
-      server: './src/storage/filesystem.ts'
-    }
+    client: 'shared-lib/storage/client',
+    server: 'shared-lib/storage/server'
+  },
+  
+  // 另一个环境特定的示例
+  'config': {
+    client: 'shared-lib/config/browser',
+    server: 'shared-lib/config/node'
   }
 }
 ```
 
-### 混合数组形式
+### 环境特定的导出配置
+
+```typescript
+exports: [
+  {
+    'storage': {
+      files: {
+        client: './src/storage/indexedDB.ts',
+        server: './src/storage/filesystem.ts'
+      }
+    }
+  }
+]
+```
+
+### 对象形式（数组中的对象元素）
 
 ```typescript
 exports: [
@@ -201,7 +242,7 @@ exports: [
   },
   {
     'components': {
-      input: './src/components/index.ts',
+      file: './src/components/index.ts',
       rewrite: true
     }
   }

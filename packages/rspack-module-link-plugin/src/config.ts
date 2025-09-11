@@ -1,11 +1,18 @@
 import type { RspackOptionsNormalized } from '@rspack/core';
-import type { ParsedModuleLinkPluginOptions } from './types';
 
-export function initConfig(
-    options: RspackOptionsNormalized,
-    opts: ParsedModuleLinkPluginOptions
-) {
+export function initConfig(options: RspackOptionsNormalized) {
     const isProduction = options.mode === 'production';
+
+    options.output = {
+        ...options.output,
+        module: true,
+        chunkFormat: 'module',
+        chunkLoading: 'import',
+        workerChunkLoading: 'import',
+        library: {
+            type: 'module'
+        }
+    };
     options.experiments = {
         ...options.experiments,
         outputModule: true,
@@ -13,6 +20,7 @@ export function initConfig(
             bundlerInfo: { force: false }
         }
     };
+
     options.module = {
         ...options.module,
         parser: {
@@ -24,26 +32,13 @@ export function initConfig(
             }
         }
     };
-    options.output = {
-        ...options.output,
-        iife: false,
-        uniqueName: opts.name,
-        chunkFormat: 'module',
-        module: true,
-        library: {
-            type: isProduction ? 'modern-module' : 'module'
-        },
-        environment: {
-            ...options.output.environment,
-            dynamicImport: true,
-            dynamicImportInWorker: true,
-            module: true
-        }
-    };
     options.optimization = {
         ...options.optimization,
-        avoidEntryIife: isProduction,
-        concatenateModules: isProduction,
-        usedExports: isProduction
+        // See detail: https://github.com/web-infra-dev/rspack/issues/11578
+        // runtimeChunk: 'single',
+        // splitChunks: {
+        //     chunks: 'all'
+        // },
+        avoidEntryIife: isProduction
     };
 }

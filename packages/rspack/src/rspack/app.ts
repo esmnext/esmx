@@ -98,7 +98,7 @@ export interface RspackAppChainContext {
      * rspack-chain configuration object.
      * You can use the chain API in chain hooks to modify the configuration.
      */
-    chain: import('rspack-chain');
+    chain: import('rspack-chain').default;
 
     /**
      * Options object passed when creating the application.

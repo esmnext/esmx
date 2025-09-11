@@ -33,7 +33,7 @@ export interface ModuleConfig {
      * }
      * ```
      */
-    imports?: Record<string, string>;
+    imports?: Record<string, string | Record<BuildEnvironment, string>>;
 
     /**
      * Module export configuration.
@@ -56,12 +56,11 @@ export interface ModuleConfig {
 
 /**
  * Union type for export configuration.
- * Supports mixed array and object forms to provide flexibility
- * for different configuration scenarios.
+ * Supports array form to provide flexibility for different configuration scenarios.
  */
-export type ModuleConfigExportExports =
-    | Array<string | Record<string, string | ModuleConfigExportObject>>
-    | Record<string, string | ModuleConfigExportObject>;
+export type ModuleConfigExportExports = Array<
+    string | Record<string, string | ModuleConfigExportObject>
+>;
 
 /**
  * Configuration object for individual module exports.
@@ -73,7 +72,7 @@ export type ModuleConfigExportObject = {
      *
      * @example './src/utils/format'
      */
-    input?: string;
+    file?: string;
 
     /**
      * Environment-specific input file configuration.
@@ -82,13 +81,13 @@ export type ModuleConfigExportObject = {
      *
      * @example
      * ```typescript
-     * entryPoints: {
+     * files: {
      *   client: './src/storage/indexedDB.ts',
      *   server: './src/storage/filesystem.ts'
      * }
      * ```
      */
-    entryPoints?: Record<BuildEnvironment, string | false>;
+    files?: Record<BuildEnvironment, string | false>;
 
     /**
      * Whether to rewrite import paths within modules.
@@ -132,11 +131,23 @@ export interface ParsedModuleConfig {
         }
     >;
 
-    /** Import mapping configuration (passed through as-is) */
-    imports: Record<string, string>;
-
-    /** Processed export configuration */
-    exports: ParsedModuleConfigExports;
+    /** Environment-specific configuration */
+    environments: {
+        /** Client environment configuration */
+        client: {
+            /** Import mapping configuration (passed through as-is) */
+            imports: Record<string, string>;
+            /** Processed export configuration */
+            exports: ParsedModuleConfigExports;
+        };
+        /** Server environment configuration */
+        server: {
+            /** Import mapping configuration (passed through as-is) */
+            imports: Record<string, string>;
+            /** Processed export configuration */
+            exports: ParsedModuleConfigExports;
+        };
+    };
 }
 
 /**
@@ -150,14 +161,14 @@ export type ParsedModuleConfigExports = Record<
 
 /**
  * Processed export configuration for a single module.
- * Contains resolved input targets and processing flags.
+ * Contains resolved input target and processing flags.
  */
 export interface ParsedModuleConfigExport {
     /** Export name/identifier */
     name: string;
 
-    /** Resolved input targets for different build environments */
-    entryPoints: Record<BuildEnvironment, string | false>;
+    /** Input file path */
+    file: string;
 
     /** Whether to rewrite import paths within this module */
     rewrite: boolean;
@@ -190,21 +201,12 @@ export function parseModuleConfig(
         name,
         root,
         links: getLinks(name, root, config),
-        imports: config.imports ?? {},
-        exports: getExports(config)
+        environments: {
+            client: getEnvironments(config, 'client'),
+            server: getEnvironments(config, 'server')
+        }
     };
 }
-
-/**
- * Prefix constants for export configuration syntactic sugar.
- * Used to identify and process npm: and root: prefixes in export strings.
- */
-const PREFIX = {
-    /** Prefix for npm package exports */
-    npm: 'npm:',
-    /** Prefix for source file exports */
-    root: 'root:'
-} as const;
 
 /**
  * Process and resolve module linking configuration.
@@ -243,85 +245,143 @@ function getLinks(name: string, root: string, config: ModuleConfig) {
 }
 
 /**
- * Process and normalize module exports configuration.
+ * Process environment-specific import configuration.
+ * Resolves import mappings for different build environments.
+ *
+ * @param environment - Target build environment
+ * @param imports - Raw import configuration
+ * @returns Processed import mappings for the specified environment
+ *
+ * @internal
+ */
+export function getEnvironmentImports(
+    environment: BuildEnvironment,
+    imports: Record<string, string | Record<BuildEnvironment, string>> = {}
+): Record<string, string> {
+    const result: Record<string, string> = {};
+
+    for (const [key, value] of Object.entries(imports)) {
+        if (typeof value === 'string') {
+            result[key] = value;
+        } else {
+            const environmentValue = value[environment];
+            if (environmentValue !== undefined) {
+                result[key] = environmentValue;
+            }
+        }
+    }
+
+    return result;
+}
+
+/**
+ * Process and normalize module environment configuration.
  * Handles different export formats (array, object, object array) and
  * processes prefix syntactic sugar (npm:, root:).
  * Automatically adds default entry exports for client and server.
  *
  * @param config - Module configuration (optional)
- * @returns Processed exports configuration
+ * @returns Processed environment configuration
  *
  * @internal
  */
-function getExports(config: ModuleConfig = {}) {
-    const result: ParsedModuleConfig['exports'] = {};
+function getEnvironments(config: ModuleConfig, env: BuildEnvironment) {
+    const exports: ParsedModuleConfigExports = {};
 
-    const exports: Record<string, ModuleConfigExportObject | string> = {
+    const applyExports = (
+        exportObject: Record<string, ModuleConfigExportObject | string>
+    ) => {
+        Object.keys(exportObject).forEach((name) => {
+            if (typeof exportObject[name] === 'string') {
+                const parsedValue = parsedExportValue(exportObject[name]);
+                exports[name] = {
+                    ...parsedValue,
+                    name
+                };
+                return;
+            }
+            let file =
+                exportObject[name].files?.[env] ??
+                exportObject[name].file ??
+                name;
+            if (file === false) {
+                file = '';
+            }
+            const parsedValue = parsedExportValue(file);
+            const rewrite: boolean =
+                exportObject[name].rewrite ?? parsedValue.rewrite;
+            exports[name] = {
+                name,
+                rewrite,
+                file: parsedValue.file
+            };
+        });
+    };
+    // Parse default entry exports first
+    applyExports({
         'src/entry.client': {
-            entryPoints: {
+            files: {
                 client: './src/entry.client',
                 server: false
             }
         },
         'src/entry.server': {
-            entryPoints: {
+            files: {
                 client: false,
                 server: './src/entry.server'
             }
         }
+    });
+
+    config.exports?.forEach((item) => {
+        if (typeof item === 'string') {
+            const parsedValue = parsedExportValue(item);
+            exports[parsedValue.name] = parsedValue;
+        } else {
+            applyExports(item);
+        }
+    });
+
+    return {
+        imports: getEnvironmentImports(env, config.imports),
+        exports
     };
+}
 
-    if (Array.isArray(config.exports)) {
-        const FILE_EXT_REGEX =
-            /\.(js|mjs|cjs|jsx|mjsx|cjsx|ts|mts|cts|tsx|mtsx|ctsx)$/i;
+/**
+ * Parse export value string and return parsed export configuration.
+ * Handles npm: and root: prefix syntactic sugar.
+ *
+ * @param value - Export value string (e.g., 'npm:axios', 'root:src/utils/format.ts')
+ * @returns Parsed export configuration object
+ *
+ * @internal
+ */
+export function parsedExportValue(value: string): ParsedModuleConfigExport {
+    const FILE_EXT_REGEX =
+        /\.(js|mjs|cjs|jsx|mjsx|cjsx|ts|mts|cts|tsx|mtsx|ctsx)$/i;
 
-        config.exports.forEach((item) => {
-            if (typeof item === 'string') {
-                if (item.startsWith(PREFIX.npm)) {
-                    // npm: prefix - export npm package, maintain original import paths
-                    item = item.substring(PREFIX.npm.length);
-                    exports[item] = {
-                        rewrite: false,
-                        input: item
-                    };
-                } else if (item.startsWith(PREFIX.root)) {
-                    // root: prefix - export source file, rewrite import paths
-                    item = item
-                        .substring(PREFIX.root.length)
-                        .replace(FILE_EXT_REGEX, '');
-                    exports[item] = {
-                        input: './' + item
-                    };
-                } else {
-                    console.error(`Invalid module export: ${item}`);
-                }
-            } else {
-                // Object configuration - merge directly
-                Object.assign(exports, item);
-            }
-        });
-    } else if (config.exports) {
-        // Object configuration - merge directly
-        Object.assign(exports, config.exports);
-    }
-
-    for (const [name, value] of Object.entries(exports)) {
-        const opts =
-            typeof value === 'string'
-                ? {
-                      input: value
-                  }
-                : value;
-        const client = opts.entryPoints?.client ?? opts.input ?? name;
-        const server = opts.entryPoints?.server ?? opts.input ?? name;
-        result[name] = {
-            name,
-            rewrite: opts.rewrite ?? true,
-            entryPoints: {
-                client,
-                server
-            }
+    if (value.startsWith('npm:')) {
+        const item = value.substring('npm:'.length);
+        return {
+            name: item,
+            rewrite: false,
+            file: item
+        };
+    } else if (value.startsWith('root:')) {
+        const item = value
+            .substring('root:'.length)
+            .replace(FILE_EXT_REGEX, '');
+        return {
+            name: item,
+            rewrite: true,
+            file: './' + item
+        };
+    } else {
+        return {
+            name: value,
+            rewrite: true,
+            file: value
         };
     }
-    return result;
 }

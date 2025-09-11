@@ -28,6 +28,7 @@ export function createExternals(opts: ParsedModuleLinkPluginOptions) {
                         ? value.identifier
                         : value.name;
                     importMap.set(identifier, identifier);
+                    importMap.set(value.name, identifier);
 
                     const resolvedPath = await resolvePath(value.file);
                     if (resolvedPath) {

@@ -1,5 +1,8 @@
 import type { Esmx } from '@esmx/core';
-import { moduleLinkPlugin } from '@esmx/rspack-module-link-plugin';
+import {
+    type ModuleLinkPluginOptions,
+    moduleLinkPlugin
+} from '@esmx/rspack-module-link-plugin';
 import { rspack } from '@rspack/core';
 import type { RspackOptions } from '@rspack/core';
 import RspackChain from 'rspack-chain';
@@ -52,18 +55,7 @@ export function createChainConfig(
             ? 'chunks/[name].[contenthash:8].final.css'
             : 'chunks/[name].css'
     );
-
-    switch (buildTarget) {
-        case 'client':
-            config.output.path(esmx.resolvePath('dist/client'));
-            break;
-        case 'server':
-            config.output.path(esmx.resolvePath('dist/server'));
-            break;
-        case 'node':
-            config.output.path(esmx.resolvePath('dist/node'));
-            break;
-    }
+    config.output.path(esmx.resolvePath('dist', buildTarget));
 
     config.plugin('progress').use(rspack.ProgressPlugin, [
         {
@@ -119,7 +111,10 @@ export function createChainConfig(
     return config;
 }
 
-function createModuleLinkConfig(esmx: Esmx, buildTarget: BuildTarget) {
+function createModuleLinkConfig(
+    esmx: Esmx,
+    buildTarget: BuildTarget
+): ModuleLinkPluginOptions {
     const isClient = buildTarget === 'client';
     const isServer = buildTarget === 'server';
     const isNode = buildTarget === 'node';
@@ -136,15 +131,7 @@ function createModuleLinkConfig(esmx: Esmx, buildTarget: BuildTarget) {
         };
     }
 
-    const exports: Record<string, { rewrite: boolean; file: string }> = {};
-    for (const [name, item] of Object.entries(esmx.moduleConfig.exports)) {
-        if (item.entryPoints[buildTarget]) {
-            exports[name] = {
-                rewrite: item.rewrite,
-                file: item.entryPoints[buildTarget]
-            };
-        }
-    }
+    const environmentConfig = esmx.moduleConfig.environments[buildTarget];
 
     const preEntries: string[] = [];
     if (isClient && !esmx.isProd) {
@@ -156,9 +143,9 @@ function createModuleLinkConfig(esmx: Esmx, buildTarget: BuildTarget) {
     return {
         name: esmx.name,
         injectChunkName: isServer,
-        imports: esmx.moduleConfig.imports,
+        imports: environmentConfig.imports,
         deps: Object.keys(esmx.moduleConfig.links),
-        exports,
+        exports: environmentConfig.exports,
         preEntries
     };
 }
