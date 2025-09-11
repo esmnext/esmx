@@ -1,6 +1,6 @@
 ---
-titleSuffix: Esmx Module Code Sharing
-description: "Esmx Module Linking: Zero Runtime Micro-frontend Code Sharing Solution Based on ESM Standards"
+titleSuffix: Esmx Inter-Module Code Sharing
+description: "Esmx Module Linking: Zero-runtime Micro-frontend Code Sharing Solution Based on ESM Standards"
 head:
   - - meta
     - property: keywords
@@ -11,45 +11,33 @@ head:
 
 Module Linking is Esmx's cross-application code sharing mechanism, based on ECMAScript module standards, achieving micro-frontend architecture with zero runtime overhead.
 
-## Why Module Linking?
+## Overview
 
 In micro-frontend architectures, multiple independent applications often need to use the same third-party libraries (such as HTTP clients, utility libraries, UI component libraries) and shared components. Traditional approaches have the following issues:
 
 - **Resource Duplication**: Each application bundles the same dependencies independently, causing users to download duplicate code
-- **Version Inconsistency**: Different applications using different versions of the same library may cause compatibility issues
+- **Version Inconsistency**: Different applications using different versions of the same library may cause compatibility issues  
 - **Memory Waste**: Multiple instances of the same library exist in the browser, occupying additional memory
 - **Cache Invalidation**: Different bundled versions of the same library cannot share browser cache
 
 Module Linking solves these problems through the ECMAScript module system and Import Maps specification, enabling multiple applications to safely and efficiently share code modules.
 
-## How It Works
+### How It Works
 
 Module Linking is based on technology standards natively supported by modern browsers:
 
-### Shared Module Provider
+**Shared Module Provider**: One application acts as a **module provider**, responsible for building and exposing shared third-party libraries and components. Other applications act as **module consumers**, using these shared modules through standard ESM import syntax.
 
-One application acts as a **module provider**, responsible for building and exposing shared third-party libraries and components. Other applications act as **module consumers**, using these shared modules through standard ESM import syntax.
-
-### Import Maps Resolution
-
-Browsers use Import Maps to map module import statements to actual file paths:
+**Import Maps Resolution**: Browsers use Import Maps to map module import statements to actual file paths:
 
 ```javascript
-// Import statements in application code
-import axios from 'axios';  // Mapped via scopes configuration
-import { formatDate } from 'shared-lib/src/utils/date-utils';  // Mapped via imports configuration
+import axios from 'axios';
+import { formatDate } from 'shared-lib/src/utils/date-utils';
 
 // Import Maps resolves them to
 import axios from 'shared-lib/axios.389c4cab.final.mjs';
 import { formatDate } from 'shared-lib/src/utils/date-utils.2d79c0c2.final.mjs';
 ```
-
-### Module Instance Sharing
-
-All applications share the same module instance, ensuring:
-- Global state consistency (such as library global configuration)
-- Unified event system (such as global event bus)
-- Memory usage optimization (avoiding duplicate instantiation)
 
 ## Quick Start
 
@@ -93,43 +81,11 @@ export async function fetchOrders() {
 }
 ```
 
-## Configuration Guide
+## Core Configuration
 
 Module Linking configuration is located in the `modules` field of the `entry.node.ts` file, containing three core configuration items:
 
-### Basic Configuration
-
-#### Module Export
-
-`exports` configuration defines content that modules expose externally, supporting two prefixes:
-
-> **Prefix Note**: `npm:` and `root:` prefixes are syntactic sugar for configuration simplification, only valid in string items of `exports` array form. They automatically apply best practice configurations to simplify common use cases.
-
-```typescript
-// shared-lib/entry.node.ts
-import type { EsmxOptions } from '@esmx/core';
-
-export default {
-  // Other configurations...
-  modules: {
-    exports: [
-      // npm packages: maintain original import paths
-      'npm:axios',                    // Import: import axios from 'axios'
-      'npm:lodash',                   // Import: import { debounce } from 'lodash'
-      
-      // Source modules: automatically rewrite to module paths
-      'root:src/utils/date-utils.ts',     // Import: import { formatDate } from 'shared-lib/src/utils/date-utils'
-      'root:src/components/Chart.js'      // Import: import Chart from 'shared-lib/src/components/Chart'
-    ]
-  }
-} satisfies EsmxOptions;
-```
-
-**Prefix Processing**:
-- `npm:axios` → Equivalent to `{ 'axios': { input: 'axios', rewrite: false } }`
-- `root:src/utils/date-utils.ts` → Equivalent to `{ 'src/utils/date-utils': { input: './src/utils/date-utils', rewrite: true } }`
-
-#### Module Linking
+### Module Links (links)
 
 `links` configuration specifies paths where the current module links to other modules:
 
@@ -138,7 +94,6 @@ export default {
 import type { EsmxOptions } from '@esmx/core';
 
 export default {
-  // Other configurations...
   modules: {
     links: {
       'shared-lib': '../shared-lib/dist',     // Relative path
@@ -148,9 +103,9 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-#### Module Import
+### Module Imports (imports)
 
-`imports` configuration maps local module names to remote module identifiers, **mainly used for standard imports of third-party libraries**:
+`imports` configuration maps local module names to remote module identifiers, supporting standard imports and environment-specific configurations:
 
 ```typescript
 // business-app/entry.node.ts
@@ -162,42 +117,46 @@ export default {
       'shared-lib': '../shared-lib/dist'
     },
     imports: {
-      // Third-party library standard import mapping
+      // Standard import mapping (applies to both environments)
       'axios': 'shared-lib/axios',
-      'lodash': 'shared-lib/lodash'
+      'lodash': 'shared-lib/lodash',
+      
+      // Environment-specific import mapping
+      'storage': {
+        client: 'shared-lib/storage/client',
+        server: 'shared-lib/storage/server'
+      },
+      'config': {
+        client: 'shared-lib/config/browser',
+        server: 'shared-lib/config/node'
+      }
     }
   }
 } satisfies EsmxOptions;
-
-// Usage
-import axios from 'axios';  // Correct - use standard library name
-import { debounce } from 'lodash';  // Correct - use standard library name
-
-// Custom module import
-import { formatDate } from 'shared-lib/src/utils/date-utils';  // Correct - directly use link path
 ```
 
-### Advanced Configuration
+### Module Exports (exports)
 
-#### Advanced exports Configuration
+`exports` configuration defines content that modules expose externally, supporting only array format:
 
-`exports` supports multiple configuration forms. When complex configurations (such as `entryPoints`) are needed, prefix syntactic sugar cannot satisfy requirements, and complete object form is needed:
-
-**Array Form**:
 ```typescript
 // shared-lib/entry.node.ts
 export default {
   modules: {
     exports: [
-      // String form - using prefix syntactic sugar
-      'npm:axios',                    // Export npm package
-      'root:src/utils/format.ts',     // Export source file
+      // npm packages: maintain original import paths
+      'npm:axios',                    // Import: import axios from 'axios'
+      'npm:lodash',                   // Import: import { debounce } from 'lodash'
       
-      // Object form - complex configurations cannot use prefixes
+      // Source modules: automatically rewrite to module paths
+      'root:src/utils/date-utils.ts',     // Import: import { formatDate } from 'shared-lib/src/utils/date-utils'
+      'root:src/components/Chart.js',     // Import: import Chart from 'shared-lib/src/components/Chart'
+      
+      // Object form - complex configurations
       {
         'api': './src/api.ts',        // Simple mapping
         'store': {                    // Complete configuration
-          input: './src/store.ts',
+          file: './src/store.ts',
           rewrite: true
         }
       }
@@ -206,35 +165,20 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-**Object Form**:
-```typescript
-// shared-lib/entry.node.ts
-export default {
-  modules: {
-    exports: {
-      // Simple mapping
-      'axios': 'axios',            // Directly specify npm package name
-      
-      // Complete configuration object
-      'src/utils/format': {
-        input: './src/utils/format',  // Input file path
-        rewrite: true,                // Whether to rewrite import paths (default true)
-        entryPoints: {                // Client/server differentiated builds
-          client: './src/utils/format.client',  // Client-specific version
-          server: './src/utils/format.server'   // Server-specific version
-        }
-      }
-    }
-  }
-} satisfies EsmxOptions;
-```
+**Prefix Processing**:
+- `npm:axios` → Equivalent to `{ 'axios': { file: 'axios', rewrite: false } }`
+- `root:src/utils/date-utils.ts` → Equivalent to `{ 'src/utils/date-utils': { file: './src/utils/date-utils', rewrite: true } }`
 
-#### entryPoints Environment Differentiated Builds
+**File Extension Support**: Supports extensions like `.js`, `.mjs`, `.cjs`, `.jsx`, `.mjsx`, `.cjsx`, `.ts`, `.mts`, `.cts`, `.tsx`, `.mtsx`, `.ctsx`, which are automatically removed during configuration.
+
+## Advanced Configuration
+
+### Environment Differentiated Builds
 
 ```typescript
 exports: {
   'src/storage/db': {
-    entryPoints: {
+    files: {
       client: './src/storage/indexedDB',  // Client uses IndexedDB
       server: './src/storage/mongoAdapter' // Server uses MongoDB adapter
     }
@@ -247,12 +191,36 @@ Setting `false` can disable builds for specific environments:
 ```typescript
 exports: {
   'src/client-only': {
-    entryPoints: {
+    files: {
       client: './src/client-feature',  // Only available on client
       server: false                    // Not available on server
     }
   }
 }
+```
+
+### Mixed Configuration Format
+
+```typescript
+exports: [
+  'npm:axios',
+  'root:src/utils/format.ts',
+  {
+    'api': './src/api/index.ts',
+    'components': {
+      file: './src/components/index.ts',
+      rewrite: true
+    }
+  },
+  {
+    'storage': {
+      files: {
+        client: './src/storage/browser.ts',
+        server: './src/storage/node.ts'
+      }
+    }
+  }
+]
 ```
 
 ## Best Practices
@@ -295,5 +263,5 @@ import Chart from 'components/Chart';  // This import cannot be resolved
 ### Configuration Principles
 
 1. **Third-party Libraries**: Must configure `imports` mapping, use standard names for importing
-2. **Custom Modules**: Directly use complete module linking paths
-3. **imports Purpose**: Only for third-party library standard name mapping, not directory aliases 
+2. **Custom Modules**: Directly use complete module linking paths  
+3. **imports Purpose**: Only for third-party library standard name mapping, not directory aliases
