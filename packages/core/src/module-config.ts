@@ -298,23 +298,23 @@ function getEnvironments(config: ModuleConfig, env: BuildEnvironment) {
                     ...parsedValue,
                     name
                 };
-            } else {
-                const file =
-                    exportObject[name].files?.[env] ??
-                    exportObject[name].file ??
-                    name;
-                if (file === false) {
-                    return;
-                }
-                const parsedValue = parsedExportValue(file);
-                const rewrite: boolean =
-                    exportObject[name].rewrite ?? parsedValue.rewrite;
-                exports[name] = {
-                    name,
-                    rewrite,
-                    file: parsedValue.file
-                };
+                return;
             }
+            const file =
+                exportObject[name].files?.[env] ??
+                exportObject[name].file ??
+                name;
+            if (file === false) {
+                return;
+            }
+            const parsedValue = parsedExportValue(file);
+            const rewrite: boolean =
+                exportObject[name].rewrite ?? parsedValue.rewrite;
+            exports[name] = {
+                name,
+                rewrite,
+                file: parsedValue.file
+            };
         });
     };
     // Parse default entry exports first
