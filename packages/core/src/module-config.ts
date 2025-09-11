@@ -7,8 +7,13 @@ import type { BuildEnvironment } from './core';
  */
 export interface ModuleConfig {
     /**
-     * Module linking configuration.
-     * Key is remote module name, value is module build output directory path.
+     * Module linking configuration for connecting to other modules.
+     * Maps module names to their distribution directory paths.
+     *
+     * @remarks
+     * Links enable module-to-module communication and sharing.
+     * Paths can be relative or absolute. The current module is automatically
+     * included as a self-link pointing to its own dist directory.
      *
      * @example
      * ```typescript
@@ -21,42 +26,73 @@ export interface ModuleConfig {
     links?: Record<string, string>;
 
     /**
-     * Module import mapping configuration.
-     * Key is local module identifier, value is remote module path.
-     * Mainly used for standard imports of third-party libraries.
+     * Import path mapping configuration with environment-specific support.
+     * Maps import identifiers to their actual module paths or package names.
+     *
+     * @remarks
+     * Supports both static mappings and environment-specific overrides.
+     * Environment-specific mappings take precedence over static mappings.
      *
      * @example
      * ```typescript
      * imports: {
+     *   // Standard import mapping
      *   'axios': 'shared-lib/axios',
-     *   'lodash': 'shared-lib/lodash'
+     *   'lodash': 'shared-lib/lodash',
+     *
+     *   // Environment-specific mapping
+     *   'storage': {
+     *     client: 'shared-lib/storage/client',
+     *     server: 'shared-lib/storage/server'
+     *   },
+     *   'config': {
+     *     client: 'shared-lib/config/browser',
+     *     server: 'shared-lib/config/node'
+     *   }
      * }
      * ```
      */
     imports?: Record<string, string | Record<BuildEnvironment, string>>;
 
     /**
-     * Module export configuration.
-     * Supports multiple configuration forms: mixed array and object.
+     * Module export configuration defining entry points and public API.
+     * Supports flexible export formats including npm packages and local files.
+     *
+     * @remarks
+     * Exports are defined as an array containing:
+     * - String values with prefixes (npm:, root:)
+     * - Object mappings with detailed configuration
      *
      * @example
      * ```typescript
-     * // Array form
-     * exports: ['npm:axios', 'root:src/utils/format.ts']
+     * exports: [
+     *   // Export npm package (no path rewriting)
+     *   'npm:axios',
+     *   'npm:lodash',
      *
-     * // Object form
-     * exports: {
-     *   'axios': 'axios',
-     *   'utils': './src/utils/index.ts'
-     * }
+     *   // Export local file (with path rewriting)
+     *   'root:src/utils/date-utils.ts',
+     *   'root:src/components/Chart.js',
+     *
+     *   // Detailed export configuration
+     *   {
+     *     'api': './src/api/index.ts',
+     *     'storage': {
+     *       files: {
+     *         client: './src/storage/browser.ts',
+     *         server: './src/storage/node.ts'
+     *       }
+     *     }
+     *   }
+     * ]
      * ```
      */
     exports?: ModuleConfigExportExports;
 }
 
 /**
- * Union type for export configuration.
- * Supports array form to provide flexibility for different configuration scenarios.
+ * Array type for export configuration.
+ * Contains string values or object mappings as array elements.
  */
 export type ModuleConfigExportExports = Array<
     string | Record<string, string | ModuleConfigExportObject>
@@ -93,7 +129,8 @@ export type ModuleConfigExportObject = {
      * Whether to rewrite import paths within modules.
      *
      * @default true
-     * @remarks Only needs to be false when exporting npm packages
+     * @remarks Set to false for npm packages to maintain standard import paths,
+     * or when path rewriting is not desired for specific exports.
      */
     rewrite?: boolean;
 };
