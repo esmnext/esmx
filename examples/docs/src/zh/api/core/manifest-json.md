@@ -55,7 +55,7 @@ interface ManifestJson {
 ```typescript
 interface ManifestJsonExport {
   name: string;
-  rewrite: boolean;
+  pkg: boolean;
   file: string;
   identifier: string;
 }
@@ -66,7 +66,7 @@ interface ManifestJsonExport {
 - **类型**: `string`
 - **描述**: 导出项名称
 
-#### rewrite
+#### pkg
 
 - **类型**: `boolean`
 - **描述**: 是否重写模块导入路径

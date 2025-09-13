@@ -8,13 +8,13 @@ describe('generateExports', () => {
             'src/entry.client': {
                 file: 'exports/src/entry.client.95f6085b.final.mjs',
                 name: 'src/entry.client',
-                rewrite: true,
+                pkg: true,
                 identifier: 'ssr-vue2-remote/src/entry.client'
             },
             'src/components/index': {
                 file: 'exports/src/components/index.a73d6772.final.mjs',
                 name: 'src/components/index',
-                rewrite: true,
+                pkg: true,
                 identifier: 'ssr-vue2-remote/src/components/index'
             }
         };
@@ -23,13 +23,13 @@ describe('generateExports', () => {
             'src/entry.server': {
                 file: 'exports/src/entry.server.b85ed2ff.final.mjs',
                 name: 'src/entry.server',
-                rewrite: true,
+                pkg: true,
                 identifier: 'ssr-vue2-remote/src/entry.server'
             },
             'src/components/index': {
                 file: 'exports/src/components/index.12b57db5.final.mjs',
                 name: 'src/components/index',
-                rewrite: true,
+                pkg: true,
                 identifier: 'ssr-vue2-remote/src/components/index'
             }
         };
@@ -58,7 +58,7 @@ describe('generateExports', () => {
             index: {
                 file: 'index.js',
                 name: 'index',
-                rewrite: true,
+                pkg: true,
                 identifier: 'index'
             }
         };
@@ -67,7 +67,7 @@ describe('generateExports', () => {
             index: {
                 file: 'index.js',
                 name: 'index',
-                rewrite: true,
+                pkg: true,
                 identifier: 'index'
             }
         };
@@ -108,7 +108,7 @@ describe('generateExports', () => {
             utils: {
                 file: 'utils.js',
                 name: 'utils',
-                rewrite: true,
+                pkg: true,
                 identifier: 'utils'
             }
         };
@@ -132,7 +132,7 @@ describe('generateExports', () => {
             api: {
                 file: 'api.js',
                 name: 'api',
-                rewrite: true,
+                pkg: true,
                 identifier: 'api'
             }
         };
@@ -152,7 +152,7 @@ describe('generateExports', () => {
             index: {
                 file: 'index.js',
                 name: 'index',
-                rewrite: true,
+                pkg: true,
                 identifier: 'index'
             }
         };
@@ -161,7 +161,7 @@ describe('generateExports', () => {
             index: {
                 file: 'index.js',
                 name: 'index',
-                rewrite: true,
+                pkg: true,
                 identifier: 'index'
             }
         };

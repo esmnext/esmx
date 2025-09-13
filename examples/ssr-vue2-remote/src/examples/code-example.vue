@@ -35,7 +35,7 @@
             <!-- 第三方依赖导出 -->
             <div class="export-method">
               <div class="method-header">
-                <code class="highlight">npm:package</code>
+                <code class="highlight">pkg:package</code>
                 <span class="method-name">导出第三方依赖</span>
               </div>
               <div class="method-content">
@@ -50,7 +50,7 @@
                       &nbsp;&nbsp;modules: {<br>
                       &nbsp;&nbsp;&nbsp;&nbsp;exports: [<br>
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #5c6370;">// 导出 Vue 实例</span><br>
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #98c379;">'npm:vue'</span><br>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #98c379;">'pkg:vue'</span><br>
                       &nbsp;&nbsp;&nbsp;&nbsp;]<br>
                       &nbsp;&nbsp;}<br>
                       }

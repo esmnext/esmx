@@ -11,6 +11,7 @@ function createOptions(
         deps: [],
         exports: {},
         imports: {},
+        scopes: {},
         injectChunkName: false,
         preEntries: [],
         ...options
@@ -37,7 +38,7 @@ describe('createExternals', () => {
                 exports: {
                     main: {
                         name: 'main',
-                        rewrite: false,
+                        pkg: true,
                         file: './src/main.ts',
                         identifier: 'test-module/main'
                     }
@@ -63,13 +64,13 @@ describe('createExternals', () => {
                 exports: {
                     main: {
                         name: 'main',
-                        rewrite: false,
+                        pkg: true,
                         file: './src/main.ts',
                         identifier: 'test-module/main'
                     },
                     utils: {
                         name: 'utils',
-                        rewrite: true,
+                        pkg: false,
                         file: './src/utils.ts',
                         identifier: 'test-module/utils'
                     }
@@ -132,7 +133,7 @@ describe('createExternals', () => {
                 exports: {
                     main: {
                         name: 'main',
-                        rewrite: false,
+                        pkg: true,
                         file: './src/main.ts',
                         identifier: 'test-module/main'
                     }
@@ -207,12 +208,12 @@ describe('createExternals', () => {
             expect(noMatchResult).toBeNull();
         });
 
-        it('should resolve path matches', async () => {
+        it('should resolve path matches during initialization', async () => {
             const opts = createOptions({
                 exports: {
                     main: {
                         name: 'main',
-                        rewrite: false,
+                        pkg: true,
                         file: './src/main.ts',
                         identifier: 'test-module/main'
                     }
@@ -221,13 +222,8 @@ describe('createExternals', () => {
 
             const mockResolvePath = vi
                 .fn()
-                .mockImplementation(async (request, context) => {
+                .mockImplementation(async (request) => {
                     if (request === './src/main.ts') {
-                        return '/resolved/path/main.ts';
-                    } else if (
-                        request === './local/module' &&
-                        context === '/app/src'
-                    ) {
                         return '/resolved/path/main.ts';
                     }
                     return null;
@@ -239,15 +235,11 @@ describe('createExternals', () => {
 
             expect(mockResolvePath).toHaveBeenCalledWith('./src/main.ts');
 
-            mockResolvePath.mockClear();
-
-            const pathResult = await match('./local/module', '/app/src');
-
-            expect(mockResolvePath).toHaveBeenCalledWith(
-                './local/module',
-                '/app/src'
+            const resolvedResult = await match(
+                '/resolved/path/main.ts',
+                '/some/context'
             );
-            expect(pathResult).toBe('main');
+            expect(resolvedResult).toBe('main');
         });
 
         it('should prioritize direct identifier match over path resolution', async () => {
@@ -258,7 +250,7 @@ describe('createExternals', () => {
                 exports: {
                     main: {
                         name: 'main',
-                        rewrite: false,
+                        pkg: true,
                         file: './src/main.ts',
                         identifier: 'test-module/main'
                     }
@@ -297,7 +289,7 @@ describe('createExternals', () => {
                 exports: {
                     'export-lib': {
                         name: 'export-lib',
-                        rewrite: true,
+                        pkg: false,
                         file: './src/export-lib.ts',
                         identifier: 'test-module/export-lib'
                     }

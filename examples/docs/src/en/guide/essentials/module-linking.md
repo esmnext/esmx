@@ -50,7 +50,7 @@ Assume we have a shared library application (shared-lib) and a business applicat
 export default {
   modules: {
     exports: [
-      'npm:axios',                    // Share HTTP client
+      'pkg:axios',                    // Share HTTP client
       'root:src/utils/format.ts'      // Share utility functions
     ]
   }
@@ -145,8 +145,8 @@ export default {
   modules: {
     exports: [
       // npm packages: maintain original import paths
-      'npm:axios',                    // Import: import axios from 'axios'
-      'npm:lodash',                   // Import: import { debounce } from 'lodash'
+      'pkg:axios',                    // Import: import axios from 'axios'
+      'pkg:lodash',                   // Import: import { debounce } from 'lodash'
       
       // Source modules: automatically rewrite to module paths
       'root:src/utils/date-utils.ts',     // Import: import { formatDate } from 'shared-lib/src/utils/date-utils'
@@ -157,7 +157,7 @@ export default {
         'api': './src/api.ts',        // Simple mapping
         'store': {                    // Complete configuration
           file: './src/store.ts',
-          rewrite: true
+          pkg: true
         }
       }
     ]
@@ -166,8 +166,8 @@ export default {
 ```
 
 **Prefix Processing**:
-- `npm:axios` → Equivalent to `{ 'axios': { file: 'axios', rewrite: false } }`
-- `root:src/utils/date-utils.ts` → Equivalent to `{ 'src/utils/date-utils': { file: './src/utils/date-utils', rewrite: true } }`
+- `pkg:axios` → Equivalent to `{ 'axios': { file: 'axios', pkg: false } }`
+- `root:src/utils/date-utils.ts` → Equivalent to `{ 'src/utils/date-utils': { file: './src/utils/date-utils', pkg: true } }`
 
 **File Extension Support**: Supports extensions like `.js`, `.mjs`, `.cjs`, `.jsx`, `.mjsx`, `.cjsx`, `.ts`, `.mts`, `.cts`, `.tsx`, `.mtsx`, `.ctsx`, which are automatically removed during configuration.
 
@@ -200,13 +200,13 @@ exports: [
 
 ```typescript
 exports: [
-  'npm:axios',
+  'pkg:axios',
   'root:src/utils/format.ts',
   {
     'api': './src/api/index.ts',
     'components': {
       file: './src/components/index.ts',
-      rewrite: true
+      pkg: true
     }
   },
   {

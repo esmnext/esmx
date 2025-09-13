@@ -52,7 +52,7 @@ Array type for export configuration, supporting mixed array (string and object) 
 type ModuleConfigExportObject = {
     file?: string;
     files?: Record<BuildEnvironment, string | false>;
-    rewrite?: boolean;
+    pkg?: boolean;
 };
 ```
 
@@ -66,7 +66,7 @@ type ModuleConfigExportObject = {
 - **Type**: `Record<BuildEnvironment, string | false>`
 - **Description**: Environment-specific input file configuration. Supports differentiated builds for client and server.
 
-#### rewrite
+#### pkg
 
 - **Type**: `boolean`
 - **Default**: `true`
@@ -118,7 +118,7 @@ interface ParsedModuleConfig {
 interface ParsedModuleConfigExport {
     name: string;
     file: string;
-    rewrite: boolean;
+    pkg: boolean;
 }
 ```
 
@@ -126,17 +126,17 @@ interface ParsedModuleConfigExport {
 
 The following prefixes are supported in string items of the `exports` array form:
 
-### npm: prefix
+### pkg: prefix
 
-- **Format**: `'npm:packageName'`
-- **Processing**: Automatically sets `rewrite: false`, preserving original import paths
-- **Example**: `'npm:axios'` → `{ file: 'axios', rewrite: false }`
+- **Format**: `'pkg:packageName'`
+- **Processing**: Automatically sets `pkg: false`, preserving original import paths
+- **Example**: `'pkg:axios'` → `{ file: 'axios', pkg: false }`
 
 ### root: prefix
 
 - **Format**: `'root:path/to/file.ext'`
-- **Processing**: Automatically sets `rewrite: true`, removes file extension, adds `./` prefix
-- **Example**: `'root:src/utils/format.ts'` → `{ file: './src/utils/format', rewrite: true }`
+- **Processing**: Automatically sets `pkg: true`, removes file extension, adds `./` prefix
+- **Example**: `'root:src/utils/format.ts'` → `{ file: './src/utils/format', pkg: true }`
 
 ## Default Export Items
 
@@ -173,7 +173,7 @@ export default {
       'axios': 'shared-lib/axios'
     },
     exports: [
-      'npm:axios',
+      'pkg:axios',
       'root:src/utils/format.ts'
     ]
   }
@@ -184,13 +184,13 @@ export default {
 
 ```typescript
 exports: [
-  'npm:axios',
+  'pkg:axios',
   'root:src/utils/format.ts',
   {
     'api-client': './src/api/client.ts',
     'utils': {
       file: './src/utils/index.ts',
-      rewrite: true
+      pkg: true
     }
   }
 ]
@@ -243,7 +243,7 @@ exports: [
   {
     'components': {
       file: './src/components/index.ts',
-      rewrite: true
+      pkg: true
     }
   }
 ]

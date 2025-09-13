@@ -28,7 +28,7 @@ export default {
          */
         exports: [
             // 导出 Vue 实例，确保 Host 和 Remote 使用相同版本
-            'npm:vue',
+            'pkg:vue',
             // UI 组件
             'root:src/components/index.ts',
             // 组合式函数

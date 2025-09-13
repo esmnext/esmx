@@ -14,14 +14,19 @@ export interface ManifestJson {
      */
     imports: Record<string, string>;
     /**
+     * Scope-specific import mappings
+     * Type: Record<scope name, import mappings within that scope>
+     */
+    scopes: Record<string, Record<string, string>>;
+    /**
      * Export item configuration
      * Type: Record<export path, export item information>
      */
     exports: ManifestJsonExports;
     /**
-     * Build output file list
+     * Build output files
      */
-    buildFiles: string[];
+    files: string[];
     /**
      * Compiled file information
      * Type: Record<source file, compilation information>
@@ -48,7 +53,7 @@ export interface ManifestJsonExport {
      * - true: Rewrite to '{serviceName}/{exportName}' format
      * - false: Maintain original import paths
      */
-    rewrite: boolean;
+    pkg: boolean;
     /**
      * File path corresponding to the export item
      */

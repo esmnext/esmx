@@ -1,0 +1,28 @@
+{
+    "name": "shared-modules",
+    "version": "1.0.0",
+    "description": "Shared modules for the project",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "esmx dev",
+        "build": "esmx build",
+        "preview": "esmx preview",
+        "start": "esmx start",
+        "lint:type": "tsc --noEmit",
+        "build:type": "tsc --declaration --emitDeclarationOnly --outDir dist/src && tsc-alias -p tsconfig.json --outDir dist/src"
+    },
+    "dependencies": {
+        "@esmx/core": "workspace:*"
+    },
+    "devDependencies": {
+        "vue": "^3.5.21",
+        "@esmx/router": "workspace:*",
+        "@esmx/router-vue": "workspace:*",
+        "vue2": "npm:vue@2.7.16",
+        "tsc-alias": "^1.8.16",
+        "@esmx/rspack": "workspace:*",
+        "@types/node": "^24.0.0",
+        "typescript": "5.8.3"
+    }
+}

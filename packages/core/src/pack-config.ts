@@ -25,8 +25,8 @@ import type { Esmx } from './core';
  *     exports: [
  *       'root:src/components/button.vue',
  *       'root:src/utils/format.ts',
- *       'npm:vue',
- *       'npm:vue-router'
+ *       'pkg:vue',
+ *       'pkg:vue-router'
  *     ]
  *   },
  *   // 打包配置

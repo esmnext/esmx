@@ -7,15 +7,21 @@ export {
     type ScopesMap,
     Esmx
 } from './core';
-export {
-    type ModuleConfig,
-    type ParsedModuleConfig,
-    parseModuleConfig
+export type {
+    ModuleConfig,
+    ModuleConfigImportMapping,
+    ModuleConfigExportExports,
+    ModuleConfigExportExport,
+    ModuleConfigExportObject,
+    ParsedModuleConfig,
+    ParsedModuleConfigExports,
+    ParsedModuleConfigExport,
+    ParsedModuleConfigEnvironment,
+    ParsedModuleConfigLink
 } from './module-config';
-export {
-    type PackConfig,
-    type ParsedPackConfig,
-    parsePackConfig
+export type {
+    PackConfig,
+    ParsedPackConfig
 } from './pack-config';
 export { type App, createApp } from './app';
 export {

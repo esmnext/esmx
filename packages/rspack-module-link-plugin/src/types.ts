@@ -22,9 +22,14 @@ export interface ModuleLinkPluginOptions {
      */
     imports?: Record<string, string>;
     /**
+     * Scope-specific import mappings
+     * Type: Record<scope name, import mappings within that scope>
+     */
+    scopes?: Record<string, Record<string, string>>;
+    /**
      * Export modules
      */
-    exports?: Record<string, { rewrite?: boolean; file: string }>;
+    exports?: Record<string, { pkg?: boolean; file: string }>;
     /**
      * Whether to inject chunk name, defaults to `false`. Usually only needs to be set to `true` when building server-side rendering artifacts
      * @default false
@@ -62,6 +67,11 @@ export interface ParsedModuleLinkPluginOptions {
      * Import mappings
      */
     imports: Record<string, string>;
+    /**
+     * Scope-specific import mappings
+     * Type: Record<scope name, import mappings within that scope>
+     */
+    scopes: Record<string, Record<string, string>>;
     /**
      * Whether to inject chunk name. Usually only needs to be set to `true` when building server-side rendering artifacts
      */
