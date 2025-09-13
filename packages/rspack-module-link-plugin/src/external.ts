@@ -24,9 +24,9 @@ export function createExternals(opts: ParsedModuleLinkPluginOptions) {
         initPromise = (async () => {
             await Promise.all(
                 Object.values(opts.exports).map(async (value) => {
-                    const identifier = value.rewrite
-                        ? value.identifier
-                        : value.name;
+                    const identifier = value.pkg
+                        ? value.name
+                        : value.identifier;
                     importMap.set(identifier, identifier);
                     importMap.set(value.name, identifier);
 

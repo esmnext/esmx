@@ -4,11 +4,9 @@ import type { EsmxOptions } from '@esmx/core';
 export default {
     modules: {
         exports: [
-            'npm:@esmx/router',
+            'pkg:@esmx/router',
             {
-                index: {
-                    file: './src/index.ts'
-                }
+                index: './src/index.ts'
             }
         ]
     },

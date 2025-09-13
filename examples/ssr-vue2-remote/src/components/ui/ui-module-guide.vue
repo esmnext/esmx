@@ -8,7 +8,7 @@
           &nbsp;&nbsp;modules: {<br>
           &nbsp;&nbsp;&nbsp;&nbsp;exports: [<br>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Vue 实例</span><br>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">'npm:vue'</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">'pkg:vue'</span><br>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// UI 组件</span><br>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">'root:src/components/index.ts'</span>,<br>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// 组合式函数</span><br>

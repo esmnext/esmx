@@ -29,7 +29,7 @@ export interface ModuleLinkPluginOptions {
     /**
      * Export modules
      */
-    exports?: Record<string, { rewrite?: boolean; file: string }>;
+    exports?: Record<string, { pkg?: boolean; file: string }>;
     /**
      * Whether to inject chunk name, defaults to `false`. Usually only needs to be set to `true` when building server-side rendering artifacts
      * @default false

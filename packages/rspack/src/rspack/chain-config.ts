@@ -124,14 +124,12 @@ function createModuleLinkConfig(
             name: esmx.name,
             exports: {
                 'src/entry.node': {
-                    rewrite: false,
+                    pkg: false,
                     file: './src/entry.node'
                 }
             }
         };
     }
-
-    const environmentConfig = esmx.moduleConfig.environments[buildTarget];
 
     const preEntries: string[] = [];
     if (isClient && !esmx.isProd) {
@@ -141,11 +139,10 @@ function createModuleLinkConfig(
     }
 
     return {
+        ...esmx.moduleConfig.environments[buildTarget],
         name: esmx.name,
         injectChunkName: isServer,
-        imports: environmentConfig.imports,
         deps: Object.keys(esmx.moduleConfig.links),
-        exports: environmentConfig.exports,
         preEntries
     };
 }

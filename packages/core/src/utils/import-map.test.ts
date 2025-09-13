@@ -28,19 +28,19 @@ test('should generate import map with remote exports and module scopes', async (
                 exports: {
                     'src/entry.server': {
                         name: 'src/entry.server',
-                        rewrite: true,
+                        pkg: false,
                         file: 'src/entry.server.mjs',
                         identifier: 'ssr-vue2-remote/src/entry.server'
                     },
                     vue: {
                         name: 'vue',
-                        rewrite: false,
+                        pkg: true,
                         file: 'vue.mjs',
                         identifier: 'ssr-vue2-remote/vue'
                     },
                     'src/components/index': {
                         name: 'src/components/index',
-                        rewrite: true,
+                        pkg: false,
                         file: 'src/components/index.mjs',
                         identifier: 'ssr-vue2-remote/src/components/index'
                     }
@@ -90,7 +90,7 @@ test('should generate import map with remote exports and module scopes', async (
                 exports: {
                     vue: {
                         name: 'vue',
-                        rewrite: false,
+                        pkg: true,
                         file: 'vue.mjs',
                         identifier: 'ssr-vue2-remote/vue'
                     }
@@ -129,7 +129,7 @@ test('should throw error when encountering legacy format manifests', async () =>
         exports: {
             'legacy-export': {
                 name: 'legacy-export',
-                rewrite: false,
+                pkg: true,
                 file: 'legacy-file.js',
                 identifier: 'legacy-module/legacy-export'
             }

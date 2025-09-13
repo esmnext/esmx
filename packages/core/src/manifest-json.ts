@@ -53,7 +53,7 @@ export interface ManifestJsonExport {
      * - true: Rewrite to '{serviceName}/{exportName}' format
      * - false: Maintain original import paths
      */
-    rewrite: boolean;
+    pkg: boolean;
     /**
      * File path corresponding to the export item
      */

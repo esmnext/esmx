@@ -11,7 +11,7 @@ export interface ImportMapManifest {
             name: string;
             file: string;
             identifier: string;
-            rewrite: boolean;
+            pkg: boolean;
         }
     >;
     scopes: Record<string, Record<string, string>>;
@@ -50,7 +50,7 @@ export function getImportMap({
         Object.entries(manifest.exports).forEach(([, exportItem]) => {
             const file = getFile(manifest.name, exportItem.file);
             imports[exportItem.identifier] = file;
-            if (!exportItem.rewrite) {
+            if (exportItem.pkg) {
                 scopeImports[exportItem.name] = file;
             }
         });

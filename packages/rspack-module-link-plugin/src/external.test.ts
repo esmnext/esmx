@@ -38,7 +38,7 @@ describe('createExternals', () => {
                 exports: {
                     main: {
                         name: 'main',
-                        rewrite: false,
+                        pkg: true,
                         file: './src/main.ts',
                         identifier: 'test-module/main'
                     }
@@ -64,13 +64,13 @@ describe('createExternals', () => {
                 exports: {
                     main: {
                         name: 'main',
-                        rewrite: false,
+                        pkg: true,
                         file: './src/main.ts',
                         identifier: 'test-module/main'
                     },
                     utils: {
                         name: 'utils',
-                        rewrite: true,
+                        pkg: false,
                         file: './src/utils.ts',
                         identifier: 'test-module/utils'
                     }
@@ -133,7 +133,7 @@ describe('createExternals', () => {
                 exports: {
                     main: {
                         name: 'main',
-                        rewrite: false,
+                        pkg: true,
                         file: './src/main.ts',
                         identifier: 'test-module/main'
                     }
@@ -213,7 +213,7 @@ describe('createExternals', () => {
                 exports: {
                     main: {
                         name: 'main',
-                        rewrite: false,
+                        pkg: true,
                         file: './src/main.ts',
                         identifier: 'test-module/main'
                     }
@@ -250,7 +250,7 @@ describe('createExternals', () => {
                 exports: {
                     main: {
                         name: 'main',
-                        rewrite: false,
+                        pkg: true,
                         file: './src/main.ts',
                         identifier: 'test-module/main'
                     }
@@ -289,7 +289,7 @@ describe('createExternals', () => {
                 exports: {
                     'export-lib': {
                         name: 'export-lib',
-                        rewrite: true,
+                        pkg: false,
                         file: './src/export-lib.ts',
                         identifier: 'test-module/export-lib'
                     }

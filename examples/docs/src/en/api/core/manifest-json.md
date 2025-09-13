@@ -55,7 +55,7 @@ interface ManifestJson {
 ```typescript
 interface ManifestJsonExport {
   name: string;
-  rewrite: boolean;
+  pkg: boolean;
   file: string;
   identifier: string;
 }
@@ -66,7 +66,7 @@ interface ManifestJsonExport {
 - **Type**: `string`
 - **Description**: Export item name
 
-#### rewrite
+#### pkg
 
 - **Type**: `boolean`
 - **Description**: Whether to rewrite module import paths

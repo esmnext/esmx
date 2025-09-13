@@ -55,7 +55,7 @@ describe('initEntry', () => {
             exports: {
                 main: {
                     name: 'main',
-                    rewrite: false,
+                    pkg: false,
                     file: './src/main.ts',
                     identifier: 'test/main'
                 }
@@ -78,13 +78,13 @@ describe('initEntry', () => {
             exports: {
                 main: {
                     name: 'main',
-                    rewrite: false,
+                    pkg: false,
                     file: './src/main.ts',
                     identifier: 'test/main'
                 },
                 admin: {
                     name: 'admin',
-                    rewrite: false,
+                    pkg: false,
                     file: './src/admin.ts',
                     identifier: 'test/admin'
                 }
@@ -117,7 +117,7 @@ describe('initEntry', () => {
             exports: {
                 main: {
                     name: 'main',
-                    rewrite: false,
+                    pkg: false,
                     file: './src/main.ts',
                     identifier: 'test/main'
                 }

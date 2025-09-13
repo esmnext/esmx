@@ -50,7 +50,7 @@ import { formatDate } from 'shared-lib/src/utils/date-utils.2d79c0c2.final.mjs';
 export default {
   modules: {
     exports: [
-      'npm:axios',                    // 共享 HTTP 客户端
+      'pkg:axios',                    // 共享 HTTP 客户端
       'root:src/utils/format.ts'      // 共享工具函数
     ]
   }
@@ -145,8 +145,8 @@ export default {
   modules: {
     exports: [
       // npm包：保持原始导入路径
-      'npm:axios',                    // 导入时: import axios from 'axios'
-      'npm:lodash',                   // 导入时: import { debounce } from 'lodash'
+      'pkg:axios',                    // 导入时: import axios from 'axios'
+      'pkg:lodash',                   // 导入时: import { debounce } from 'lodash'
       
       // 源码模块：自动重写为模块路径
       'root:src/utils/date-utils.ts',     // 导入时: import { formatDate } from 'shared-lib/src/utils/date-utils'
@@ -157,7 +157,7 @@ export default {
         'api': './src/api.ts',        // 简单映射
         'store': {                    // 完整配置
           file: './src/store.ts',
-          rewrite: true
+          pkg: true
         }
       }
     ]
@@ -166,8 +166,8 @@ export default {
 ```
 
 **前缀处理说明**：
-- `npm:axios` → 等价于 `{ 'axios': { file: 'axios', rewrite: false } }`
-- `root:src/utils/date-utils.ts` → 等价于 `{ 'src/utils/date-utils': { file: './src/utils/date-utils', rewrite: true } }`
+- `pkg:axios` → 等价于 `{ 'axios': { file: 'axios', pkg: false } }`
+- `root:src/utils/date-utils.ts` → 等价于 `{ 'src/utils/date-utils': { file: './src/utils/date-utils', pkg: true } }`
 
 **文件扩展名支持**：支持 `.js`, `.mjs`, `.cjs`, `.jsx`, `.mjsx`, `.cjsx`, `.ts`, `.mts`, `.cts`, `.tsx`, `.mtsx`, `.ctsx` 等扩展名，配置时会自动去除扩展名。
 
@@ -200,13 +200,13 @@ exports: [
 
 ```typescript
 exports: [
-  'npm:axios',
+  'pkg:axios',
   'root:src/utils/format.ts',
   {
     'api': './src/api/index.ts',
     'components': {
       file: './src/components/index.ts',
-      rewrite: true
+      pkg: true
     }
   },
   {

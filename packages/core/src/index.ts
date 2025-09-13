@@ -11,6 +11,7 @@ export type {
     ModuleConfig,
     ModuleConfigImportMapping,
     ModuleConfigExportExports,
+    ModuleConfigExportExport,
     ModuleConfigExportObject,
     ParsedModuleConfig,
     ParsedModuleConfigExports,

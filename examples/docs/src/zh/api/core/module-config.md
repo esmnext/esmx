@@ -52,7 +52,7 @@ type ModuleConfigExportExports = Array<string | Record<string, string | ModuleCo
 type ModuleConfigExportObject = {
     file?: string;
     files?: Record<BuildEnvironment, string | false>;
-    rewrite?: boolean;
+    pkg?: boolean;
 };
 ```
 
@@ -66,7 +66,7 @@ type ModuleConfigExportObject = {
 * **类型**: `Record<BuildEnvironment, string | false>`
 * **描述**: 环境特定的输入文件配置。支持客户端和服务端差异化构建。
 
-#### rewrite
+#### pkg
 
 * **类型**: `boolean`
 * **默认值**: `true`
@@ -118,7 +118,7 @@ interface ParsedModuleConfig {
 interface ParsedModuleConfigExport {
     name: string;
     file: string;
-    rewrite: boolean;
+    pkg: boolean;
 }
 ```
 
@@ -126,17 +126,17 @@ interface ParsedModuleConfigExport {
 
 在 `exports` 数组形式的字符串项中支持以下前缀：
 
-### npm: 前缀
+### pkg: 前缀
 
-* **格式**: `'npm:packageName'`
-* **处理**: 自动设置 `rewrite: false`，保持原始导入路径
-* **示例**: `'npm:axios'` → `{ file: 'axios', rewrite: false }`
+* **格式**: `'pkg:packageName'`
+* **处理**: 自动设置 `pkg: false`，保持原始导入路径
+* **示例**: `'pkg:axios'` → `{ file: 'axios', pkg: false }`
 
 ### root: 前缀  
 
 * **格式**: `'root:path/to/file.ext'`
-* **处理**: 自动设置 `rewrite: true`，去除文件扩展名，添加 `./` 前缀
-* **示例**: `'root:src/utils/format.ts'` → `{ file: './src/utils/format', rewrite: true }`
+* **处理**: 自动设置 `pkg: true`，去除文件扩展名，添加 `./` 前缀
+* **示例**: `'root:src/utils/format.ts'` → `{ file: './src/utils/format', pkg: true }`
 
 ## 默认导出项
 
@@ -173,7 +173,7 @@ export default {
       'axios': 'shared-lib/axios'
     },
     exports: [
-      'npm:axios',
+      'pkg:axios',
       'root:src/utils/format.ts'
     ]
   }
@@ -184,13 +184,13 @@ export default {
 
 ```typescript
 exports: [
-  'npm:axios',
+  'pkg:axios',
   'root:src/utils/format.ts',
   {
     'api-client': './src/api/client.ts',
     'utils': {
       file: './src/utils/index.ts',
-      rewrite: true
+      pkg: true
     }
   }
 ]
@@ -243,7 +243,7 @@ exports: [
   {
     'components': {
       file: './src/components/index.ts',
-      rewrite: true
+      pkg: true
     }
   }
 ]

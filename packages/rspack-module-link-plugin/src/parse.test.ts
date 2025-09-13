@@ -102,7 +102,7 @@ describe('parseOptions', () => {
             exports: {
                 main: {
                     file: './src/main.ts',
-                    rewrite: true
+                    pkg: true
                 }
             },
             injectChunkName: true,
@@ -122,7 +122,7 @@ describe('parseOptions', () => {
             exports: {
                 main: {
                     name: 'main',
-                    rewrite: true,
+                    pkg: true,
                     file: './src/main.ts',
                     identifier: 'test-module/main'
                 }
