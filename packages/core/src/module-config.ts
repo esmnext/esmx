@@ -52,8 +52,33 @@ export interface ModuleConfig {
      * }
      * ```
      */
-    imports?: Record<string, string | Record<BuildEnvironment, string>>;
+    imports?: ModuleConfigImportMapping;
 
+    /**
+     * Scope-specific import mapping configuration.
+     * Allows organizing imports by logical scopes or namespaces.
+     * Each scope contains its own import mappings with environment-specific support.
+     *
+     * @remarks
+     * Scopes provide a way to group related imports and avoid naming conflicts.
+     * Useful for organizing imports from different libraries or domains.
+     * Unlike global imports, scoped imports are namespaced under their scope name.
+     *
+     * @example
+     * ```typescript
+     * scopes: {
+     *   'shared': {
+     *     axios: 'shared-lib/axios',
+     *     lodash: { client: 'client-lib/lodash', server: 'server-lib/lodash' }
+     *   },
+     *   'ui': {
+     *     react: 'ui-lib/react',
+     *     'react-dom': 'ui-lib/react-dom'
+     *   }
+     * }
+     * ```
+     */
+    scopes?: Record<string, ModuleConfigImportMapping>;
     /**
      * Module export configuration defining entry points and public API.
      * Supports flexible export formats including npm packages and local files.
@@ -89,6 +114,16 @@ export interface ModuleConfig {
      */
     exports?: ModuleConfigExportExports;
 }
+
+/**
+ * Import mapping configuration type with environment-specific support.
+ * Maps import identifiers to their actual module paths or package names.
+ * Supports both static mappings and environment-specific overrides.
+ */
+export type ModuleConfigImportMapping = Record<
+    string,
+    string | Record<BuildEnvironment, string>
+>;
 
 /**
  * Array type for export configuration.
@@ -150,40 +185,14 @@ export interface ParsedModuleConfig {
      * Resolved link information for connected modules.
      * Contains absolute paths to client/server directories and manifest files.
      */
-    links: Record<
-        string,
-        {
-            /** Module name */
-            name: string;
-            /** Original root path (relative or absolute) */
-            root: string;
-            /** Absolute path to client build directory */
-            client: string;
-            /** Absolute path to client manifest.json */
-            clientManifestJson: string;
-            /** Absolute path to server build directory */
-            server: string;
-            /** Absolute path to server manifest.json */
-            serverManifestJson: string;
-        }
-    >;
+    links: Record<string, ParsedModuleConfigLink>;
 
     /** Environment-specific configuration */
     environments: {
         /** Client environment configuration */
-        client: {
-            /** Import mapping configuration (passed through as-is) */
-            imports: Record<string, string>;
-            /** Processed export configuration */
-            exports: ParsedModuleConfigExports;
-        };
+        client: ParsedModuleConfigEnvironment;
         /** Server environment configuration */
-        server: {
-            /** Import mapping configuration (passed through as-is) */
-            imports: Record<string, string>;
-            /** Processed export configuration */
-            exports: ParsedModuleConfigExports;
-        };
+        server: ParsedModuleConfigEnvironment;
     };
 }
 
@@ -209,6 +218,38 @@ export interface ParsedModuleConfigExport {
 
     /** Whether to rewrite import paths within this module */
     rewrite: boolean;
+}
+
+/**
+ * Environment-specific configuration for parsed module config.
+ * Contains processed imports, exports, and scopes for a specific build environment.
+ */
+export interface ParsedModuleConfigEnvironment {
+    /** Import mapping configuration (passed through as-is) */
+    imports: Record<string, string>;
+    /** Processed export configuration */
+    exports: ParsedModuleConfigExports;
+    /** Scope configuration */
+    scopes: Record<string, Record<string, string>>;
+}
+
+/**
+ * Link information for a connected module.
+ * Contains resolved paths to client/server directories and manifest files.
+ */
+export interface ParsedModuleConfigLink {
+    /** Module name */
+    name: string;
+    /** Original root path (relative or absolute) */
+    root: string;
+    /** Absolute path to client build directory */
+    client: string;
+    /** Absolute path to client manifest.json */
+    clientManifestJson: string;
+    /** Absolute path to server build directory */
+    server: string;
+    /** Absolute path to server manifest.json */
+    serverManifestJson: string;
 }
 
 /**
@@ -257,8 +298,12 @@ export function parseModuleConfig(
  *
  * @internal
  */
-function getLinks(name: string, root: string, config: ModuleConfig) {
-    const result: ParsedModuleConfig['links'] = {};
+export function getLinks(
+    name: string,
+    root: string,
+    config: ModuleConfig
+): Record<string, ParsedModuleConfigLink> {
+    const result: Record<string, ParsedModuleConfigLink> = {};
     Object.entries({
         [name]: path.resolve(root, 'dist'),
         ...config.links
@@ -293,7 +338,7 @@ function getLinks(name: string, root: string, config: ModuleConfig) {
  */
 export function getEnvironmentImports(
     environment: BuildEnvironment,
-    imports: Record<string, string | Record<BuildEnvironment, string>> = {}
+    imports: ModuleConfigImportMapping = {}
 ): Record<string, string> {
     const result: Record<string, string> = {};
 
@@ -312,77 +357,215 @@ export function getEnvironmentImports(
 }
 
 /**
- * Process and normalize module environment configuration.
- * Handles different export formats (array, object, object array) and
- * processes prefix syntactic sugar (npm:, root:).
- * Automatically adds default entry exports for client and server.
+ * Process environment-specific scope configuration.
+ * Resolves scope mappings for different build environments.
  *
- * @param config - Module configuration (optional)
+ * @param environment - Target build environment
+ * @param scopes - Raw scope configuration
+ * @returns Processed scope mappings for the specified environment
+ *
+ * @internal
+ */
+export function getEnvironmentScopes(
+    environment: BuildEnvironment,
+    scopes: Record<string, ModuleConfigImportMapping> = {}
+): Record<string, Record<string, string>> {
+    const result: Record<string, Record<string, string>> = {};
+
+    for (const [scopeName, scopeImports] of Object.entries(scopes)) {
+        result[scopeName] = getEnvironmentImports(environment, scopeImports);
+    }
+
+    return result;
+}
+
+/**
+ * Process and normalize module environment configuration.
+ * Combines imports, exports, and scopes for a specific build environment.
+ *
+ * @param config - Module configuration
+ * @param env - Target build environment
  * @returns Processed environment configuration
  *
  * @internal
  */
-function getEnvironments(config: ModuleConfig, env: BuildEnvironment) {
-    const exports: ParsedModuleConfigExports = {};
-
-    const applyExports = (
-        exportObject: Record<string, ModuleConfigExportObject | string>
-    ) => {
-        Object.keys(exportObject).forEach((name) => {
-            if (typeof exportObject[name] === 'string') {
-                const parsedValue = parsedExportValue(exportObject[name]);
-                exports[name] = {
-                    ...parsedValue,
-                    name
-                };
-                return;
-            }
-            let file =
-                exportObject[name].files?.[env] ??
-                exportObject[name].file ??
-                name;
-            if (file === false) {
-                file = '';
-            }
-            const parsedValue = parsedExportValue(file);
-            const rewrite: boolean =
-                exportObject[name].rewrite ?? parsedValue.rewrite;
-            exports[name] = {
-                name,
-                rewrite,
-                file: parsedValue.file
-            };
-        });
-    };
-    // Parse default entry exports first
-    applyExports({
-        'src/entry.client': {
-            files: {
-                client: './src/entry.client',
-                server: false
-            }
-        },
-        'src/entry.server': {
-            files: {
-                client: false,
-                server: './src/entry.server'
-            }
-        }
-    });
-
-    config.exports?.forEach((item) => {
-        if (typeof item === 'string') {
-            const parsedValue = parsedExportValue(item);
-            exports[parsedValue.name] = parsedValue;
-        } else {
-            applyExports(item);
-        }
-    });
-
+export function getEnvironments(
+    config: ModuleConfig,
+    env: BuildEnvironment
+): ParsedModuleConfigEnvironment {
     return {
         imports: getEnvironmentImports(env, config.imports),
-        exports
+        exports: getEnvironmentExports(config, env),
+        scopes: getEnvironmentScopes(env, config.scopes)
     };
+}
+
+/**
+ * Create default export entries for the specified environment.
+ * Always includes src/entry.client and src/entry.server with appropriate file paths.
+ *
+ * @param env - Target build environment
+ * @returns Default export configuration for the environment
+ *
+ * @internal
+ */
+export function createDefaultExports(
+    env: BuildEnvironment
+): ParsedModuleConfigExports {
+    const exports: ParsedModuleConfigExports = {};
+
+    if (env === 'client') {
+        exports['src/entry.client'] = {
+            name: 'src/entry.client',
+            file: './src/entry.client',
+            rewrite: true
+        };
+        exports['src/entry.server'] = {
+            name: 'src/entry.server',
+            file: '', // Client doesn't need server entry
+            rewrite: true
+        };
+    } else {
+        exports['src/entry.client'] = {
+            name: 'src/entry.client',
+            file: '', // Server doesn't need client entry
+            rewrite: true
+        };
+        exports['src/entry.server'] = {
+            name: 'src/entry.server',
+            file: './src/entry.server',
+            rewrite: true
+        };
+    }
+
+    return exports;
+}
+
+/**
+ * Process a string export configuration.
+ *
+ * @param exportString - Export string (e.g., 'npm:axios', 'root:src/utils.ts')
+ * @returns Processed export configuration
+ *
+ * @internal
+ */
+export function processStringExport(
+    exportString: string
+): ParsedModuleConfigExports {
+    const parsedValue = parsedExportValue(exportString);
+    return { [parsedValue.name]: parsedValue };
+}
+
+/**
+ * Process an object export configuration.
+ *
+ * @param exportObject - Export object configuration
+ * @param env - Target build environment
+ * @returns Processed export configuration
+ *
+ * @internal
+ */
+export function processObjectExport(
+    exportObject: Record<string, string | ModuleConfigExportObject>,
+    env: BuildEnvironment
+): ParsedModuleConfigExports {
+    const exports: ParsedModuleConfigExports = {};
+
+    Object.keys(exportObject).forEach((name) => {
+        if (typeof exportObject[name] === 'string') {
+            const parsedValue = parsedExportValue(exportObject[name] as string);
+            exports[name] = { ...parsedValue, name };
+            return;
+        }
+
+        const config = exportObject[name] as ModuleConfigExportObject;
+        const file = resolveExportFile(config, env, name);
+        const rewrite: boolean =
+            config.rewrite ?? parsedExportValue(file).rewrite;
+
+        exports[name] = {
+            name,
+            file,
+            rewrite
+        };
+    });
+
+    return exports;
+}
+
+/**
+ * Resolve the file path for an export configuration.
+ *
+ * @param config - Export configuration object
+ * @param env - Target build environment
+ * @param name - Export name (fallback if no file specified)
+ * @returns Resolved file path
+ *
+ * @internal
+ */
+export function resolveExportFile(
+    config: ModuleConfigExportObject,
+    env: BuildEnvironment,
+    name: string
+): string {
+    if (config.files?.[env] === false) return '';
+    if (config.files?.[env]) return config.files[env] as string;
+    if (config.file) return config.file;
+    return name;
+}
+
+/**
+ * Process an array of export configurations.
+ *
+ * @param exportArray - Array of export configurations
+ * @param env - Target build environment
+ * @returns Processed export configuration
+ *
+ * @internal
+ */
+export function processExportArray(
+    exportArray: ModuleConfigExportExports,
+    env: BuildEnvironment
+): ParsedModuleConfigExports {
+    const exports: ParsedModuleConfigExports = {};
+
+    exportArray.forEach((item) => {
+        if (typeof item === 'string') {
+            const itemExports = processStringExport(item);
+            Object.assign(exports, itemExports);
+        } else {
+            const itemExports = processObjectExport(item, env);
+            Object.assign(exports, itemExports);
+        }
+    });
+
+    return exports;
+}
+
+/**
+ * Process environment-specific export configuration.
+ * Resolves export mappings for different build environments.
+ *
+ * @param config - Module configuration
+ * @param env - Target build environment
+ * @returns Processed export mappings for the specified environment
+ *
+ * @internal
+ */
+export function getEnvironmentExports(
+    config: ModuleConfig,
+    env: BuildEnvironment
+): ParsedModuleConfigExports {
+    // Create default exports
+    const exports = createDefaultExports(env);
+
+    // Process user-defined exports
+    if (config.exports) {
+        const userExports = processExportArray(config.exports, env);
+        Object.assign(exports, userExports);
+    }
+
+    return exports;
 }
 
 /**

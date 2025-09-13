@@ -12,6 +12,7 @@ function createOptions(
         deps: [],
         exports: {},
         imports: {},
+        scopes: {},
         injectChunkName: false,
         preEntries: [],
         ...options
@@ -28,33 +29,26 @@ function createCompiler(
 
 describe('initEntry', () => {
     it('should throw error when entry is a function', () => {
-        // Arrange
         const compiler = createCompiler();
-        // Using type assertion to test the error case
         compiler.entry = (() =>
             Promise.resolve({})) as unknown as EntryNormalized;
         const opts = createOptions();
 
-        // Act & Assert
         expect(() => initEntry(compiler, opts)).toThrow(
             `'entry' option does not support functions`
         );
     });
 
     it('should reset entry when main entry is empty', () => {
-        // Arrange
         const compiler = createCompiler({ main: {} });
         const opts = createOptions();
 
-        // Act
         initEntry(compiler, opts);
 
-        // Assert
         expect(compiler.entry).toEqual({});
     });
 
     it('should add single entry with preEntries', () => {
-        // Arrange
         const compiler = createCompiler();
         const opts = createOptions({
             preEntries: ['./src/hot-client.ts'],
@@ -68,10 +62,8 @@ describe('initEntry', () => {
             }
         });
 
-        // Act
         initEntry(compiler, opts);
 
-        // Assert
         expect(compiler.entry).toEqual({
             main: {
                 import: ['./src/hot-client.ts', './src/main.ts']
@@ -80,7 +72,6 @@ describe('initEntry', () => {
     });
 
     it('should add multiple entries with preEntries', () => {
-        // Arrange
         const compiler = createCompiler();
         const opts = createOptions({
             preEntries: ['./src/hot-client.ts', './src/polyfills.ts'],
@@ -100,10 +91,8 @@ describe('initEntry', () => {
             }
         });
 
-        // Act
         initEntry(compiler, opts);
 
-        // Assert
         expect(compiler.entry).toEqual({
             main: {
                 import: [
@@ -123,7 +112,6 @@ describe('initEntry', () => {
     });
 
     it('should handle entries without preEntries', () => {
-        // Arrange
         const compiler = createCompiler();
         const opts = createOptions({
             exports: {
@@ -136,10 +124,8 @@ describe('initEntry', () => {
             }
         });
 
-        // Act
         initEntry(compiler, opts);
 
-        // Assert
         expect(compiler.entry).toEqual({
             main: {
                 import: ['./src/main.ts']
@@ -148,16 +134,13 @@ describe('initEntry', () => {
     });
 
     it('should handle empty exports', () => {
-        // Arrange
         const compiler = createCompiler();
         const opts = createOptions({
             preEntries: ['./src/hot-client.ts']
         });
 
-        // Act
         initEntry(compiler, opts);
 
-        // Assert
         expect(compiler.entry).toEqual({});
     });
 });

@@ -44,14 +44,16 @@ test('should generate import map with remote exports and module scopes', async (
                         file: 'src/components/index.mjs',
                         identifier: 'ssr-vue2-remote/src/components/index'
                     }
-                }
+                },
+                scopes: {}
             },
             {
                 name: 'ssr-vue2-host',
                 imports: {
                     vue: 'ssr-vue2-remote/vue'
                 },
-                exports: {}
+                exports: {},
+                scopes: {}
             }
         ],
         getScope(name) {
@@ -92,14 +94,16 @@ test('should generate import map with remote exports and module scopes', async (
                         file: 'vue.mjs',
                         identifier: 'ssr-vue2-remote/vue'
                     }
-                }
+                },
+                scopes: {}
             },
             {
                 name: 'ssr-vue2-host',
                 imports: {
                     vue: 'ssr-vue2-remote/vue3'
                 },
-                exports: {}
+                exports: {},
+                scopes: {}
             }
         ],
         getScope(name) {
@@ -119,17 +123,31 @@ test('should generate import map with remote exports and module scopes', async (
 });
 
 test('should throw error when encountering legacy format manifests', async () => {
-    // 模拟旧版本的清单格式，其中 exports 的值是字符串而不是对象
     const legacyManifest = {
         name: 'legacy-module',
         imports: {},
         exports: {
-            'legacy-export': 'legacy-module/legacy-file.js'
-        } as any
-    };
+            'legacy-export': {
+                name: 'legacy-export',
+                rewrite: false,
+                file: 'legacy-file.js',
+                identifier: 'legacy-module/legacy-export'
+            }
+        }
+    } as any;
 
     const expectedErrorMessage =
-        'Detected incompatible legacy manifest format in legacy-module. Please upgrade your ESMX dependencies first, then rebuild and redeploy your service.';
+        'Detected incompatible legacy manifest format in "legacy-module".\n\n' +
+        "Missing required field: 'scopes'\n" +
+        'Expected type: Record<string, Record<string, string>>\n\n' +
+        'Please upgrade your ESMX dependencies to the latest version and rebuild your service.\n\n' +
+        'Expected manifest format:\n' +
+        '{\n' +
+        '  "name": "module-name",\n' +
+        '  "imports": { ... },\n' +
+        '  "exports": { ... },\n' +
+        '  "scopes": { ... }\n' +
+        '}';
 
     expect(() => {
         getImportMap({

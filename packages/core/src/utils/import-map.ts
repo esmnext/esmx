@@ -14,6 +14,7 @@ export interface ImportMapManifest {
             rewrite: boolean;
         }
     >;
+    scopes: Record<string, Record<string, string>>;
 }
 
 export function getImportMap({
@@ -28,16 +29,25 @@ export function getImportMap({
     const imports: SpecifierMap = {};
     const scopes: ScopesMap = {};
     Object.values(manifests).forEach((manifest) => {
+        if (!manifest.scopes) {
+            throw new Error(
+                `Detected incompatible legacy manifest format in "${manifest.name}".\n\n` +
+                    `Missing required field: 'scopes'\n` +
+                    `Expected type: Record<string, Record<string, string>>\n\n` +
+                    `Please upgrade your ESMX dependencies to the latest version and rebuild your service.\n\n` +
+                    `Expected manifest format:\n` +
+                    `{\n` +
+                    `  "name": "module-name",\n` +
+                    `  "imports": { ... },\n` +
+                    `  "exports": { ... },\n` +
+                    `  "scopes": { ... }\n` +
+                    `}`
+            );
+        }
+
         const scopeImports: SpecifierMap = {};
 
-        Object.entries(manifest.exports).forEach(([key, exportItem]) => {
-            // Handle the case where exportItem is a string in legacy builds
-            if (typeof exportItem === 'string') {
-                throw new Error(
-                    `Detected incompatible legacy manifest format in ${manifest.name}. Please upgrade your ESMX dependencies first, then rebuild and redeploy your service.`
-                );
-            }
-
+        Object.entries(manifest.exports).forEach(([, exportItem]) => {
             const file = getFile(manifest.name, exportItem.file);
             imports[exportItem.identifier] = file;
             if (!exportItem.rewrite) {
