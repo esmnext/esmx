@@ -115,7 +115,7 @@ describe('createImportMapResolver', () => {
             const importMap: ImportMap = {
                 imports: {
                     'app/server/entry':
-                        'file:///opt/projects/example/server-app/dist/server/exports/src/entry.server.mjs'
+                        'file:///opt/projects/example/server-app/dist/server/src/entry.server.mjs'
                 },
                 scopes: {
                     'file:///opt/projects/example/server-app/dist/server/': {}
@@ -130,7 +130,7 @@ describe('createImportMapResolver', () => {
                     'file:///opt/projects/example/server-app/index.js'
                 )
             ).toBe(
-                'file:///opt/projects/example/server-app/dist/server/exports/src/entry.server.mjs'
+                'file:///opt/projects/example/server-app/dist/server/src/entry.server.mjs'
             );
 
             expect(
@@ -139,7 +139,7 @@ describe('createImportMapResolver', () => {
                     'file:///opt/projects/example/server-app/dist/server/main.js'
                 )
             ).toBe(
-                'file:///opt/projects/example/server-app/dist/server/exports/src/entry.server.mjs'
+                'file:///opt/projects/example/server-app/dist/server/src/entry.server.mjs'
             );
         });
     });

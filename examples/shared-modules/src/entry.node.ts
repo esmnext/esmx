@@ -14,12 +14,14 @@ export default {
                     client: 'pkg:vue/dist/vue.runtime.esm-browser.prod.js', // Vue 3 production
                     server: 'pkg:vue/dist/vue.runtime.esm-browser.js' // Vue 3 development
                 },
+                'vue/index': 'root:src/vue2/index.ts',
                 '@esmx/router-vue': 'pkg:@esmx/router-vue', // Vue 3 router
 
                 // ========== Vue2 framework configuration ==========
                 // Exported to vue2/ directory, version isolation via scope mapping
                 vue2: 'pkg:vue2/dist/vue.runtime.esm.js', // → vue2/vue.mjs
-                'vue2/@esmx/router-vue': 'pkg:@esmx/router-vue' // → vue2/@esmx/router-vue.mjs
+                'vue2/@esmx/router-vue': 'pkg:@esmx/router-vue', // → vue2/@esmx/router-vue.mjs,
+                'vue2/index': 'root:src/vue2/index.ts'
             }
         ],
 

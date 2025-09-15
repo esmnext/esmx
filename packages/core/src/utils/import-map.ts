@@ -19,7 +19,7 @@ export interface ImportMapManifest {
 
 export interface GetImportMapOptions {
     manifests: readonly ImportMapManifest[];
-    getScope: (name: string, path: string) => string;
+    getScope: (name: string, scope: string) => string;
     getFile: (name: string, file: string) => string;
 }
 
@@ -29,7 +29,6 @@ export function buildImportsMap(
 ): SpecifierMap {
     const imports: SpecifierMap = {};
 
-    // 1. Generate default import mappings from all exports
     manifests.forEach((manifest) => {
         Object.entries(manifest.exports).forEach(([, exportItem]) => {
             const file = getFile(manifest.name, exportItem.file);
@@ -37,7 +36,6 @@ export function buildImportsMap(
         });
     });
 
-    // 2. Apply user custom imports (overrides defaults)
     manifests.forEach((manifest) => {
         Object.entries(manifest.imports).forEach(([name, identifier]) => {
             const fullName = `${manifest.name}/${name}`;
@@ -45,11 +43,50 @@ export function buildImportsMap(
         });
     });
 
-    // 3. Create identifier aliases for /index suffixes
-    // Example: 'module/path/index' → creates 'module/path' alias
     pathWithoutIndex(imports);
 
     return imports;
+}
+
+export function buildScopesMap(
+    imports: SpecifierMap,
+    manifests: readonly ImportMapManifest[],
+    getScope: (name: string, scope: string) => string
+): ScopesMap {
+    const scopes: ScopesMap = {};
+
+    manifests.forEach((manifest) => {
+        if (!manifest.scopes) {
+            return;
+        }
+
+        Object.entries(manifest.scopes).forEach(([scopeName, specifierMap]) => {
+            const scopedImports: SpecifierMap = {};
+
+            Object.entries(specifierMap).forEach(
+                ([specifierName, identifier]) => {
+                    scopedImports[specifierName] =
+                        imports[identifier] ?? identifier;
+                }
+            );
+
+            const scopePath =
+                imports[`${manifest.name}/${scopeName}`] ?? `/${scopeName}`;
+
+            const scopeKey = getScope(manifest.name, scopePath);
+            scopes[scopeKey] = scopedImports;
+        });
+    });
+
+    // Sort the final scopes object by key length in descending order
+    const sortedScopes: ScopesMap = {};
+    Object.entries(scopes)
+        .sort((a, b) => b[0].length - a[0].length)
+        .forEach(([key, value]) => {
+            sortedScopes[key] = value;
+        });
+    console.log(sortedScopes);
+    return sortedScopes;
 }
 
 export function getImportMap({
@@ -57,45 +94,10 @@ export function getImportMap({
     getFile,
     getScope
 }: GetImportMapOptions): ImportMap {
-    const imports: SpecifierMap = {};
-    const scopes: ScopesMap = {};
-    Object.values(manifests).forEach((manifest) => {
-        if (!manifest.scopes) {
-            throw new Error(
-                `Detected incompatible legacy manifest format in "${manifest.name}".\n\n` +
-                    `Missing required field: 'scopes'\n` +
-                    `Expected type: Record<string, Record<string, string>>\n\n` +
-                    `Please upgrade your ESMX dependencies to the latest version and rebuild your service.\n\n` +
-                    `Expected manifest format:\n` +
-                    `{\n` +
-                    `  "name": "module-name",\n` +
-                    `  "imports": { ... },\n` +
-                    `  "exports": { ... },\n` +
-                    `  "scopes": { ... }\n` +
-                    `}`
-            );
-        }
+    const imports = buildImportsMap(manifests, getFile);
 
-        const scopeImports: SpecifierMap = {};
+    const scopes = buildScopesMap(imports, manifests, getScope);
 
-        Object.entries(manifest.exports).forEach(([, exportItem]) => {
-            const file = getFile(manifest.name, exportItem.file);
-            imports[exportItem.identifier] = file;
-            if (exportItem.pkg) {
-                scopeImports[exportItem.name] = file;
-            }
-        });
-        if (Object.keys(scopeImports).length || Object.keys(imports).length) {
-            scopes[getScope(manifest.name, '/')] = scopeImports;
-        }
-    });
-    pathWithoutIndex(imports);
-    Object.values(manifests).forEach((manifest) => {
-        Object.entries(manifest.imports).forEach(([name, identifier]) => {
-            scopes[getScope(manifest.name, '/')][name] =
-                imports[identifier] ?? identifier;
-        });
-    });
     return {
         imports,
         scopes

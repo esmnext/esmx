@@ -31,8 +31,8 @@ export function createChainConfig(
         .clean(esmx.isProd)
         .filename(
             !isNode && esmx.isProd
-                ? 'exports/[name].[contenthash:8].final.mjs'
-                : 'exports/[name].mjs'
+                ? '[name].[contenthash:8].final.mjs'
+                : '[name].mjs'
         )
         .chunkFilename(
             esmx.isProd
@@ -45,9 +45,7 @@ export function createChainConfig(
 
     config.output.set(
         'cssFilename',
-        esmx.isProd
-            ? 'exports/[name].[contenthash:8].final.css'
-            : 'exports/[name].css'
+        esmx.isProd ? '[name].[contenthash:8].final.css' : '[name].css'
     );
     config.output.set(
         'cssChunkFilename',
