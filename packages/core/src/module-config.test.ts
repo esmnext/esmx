@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
     type ModuleConfig,
+    addPackageExportsToScopes,
     createDefaultExports,
     getEnvironmentExports,
     getEnvironmentImports,
@@ -262,7 +263,7 @@ describe('Module Config Parser', () => {
                         }
                     }
                 };
-                const result = getEnvironments(config, 'client');
+                const result = getEnvironments(config, 'client', 'test-module');
                 expect(result.imports.react).toBe('react');
                 expect(result.scopes.utils.lodash).toBe('lodash');
                 expect(result.exports).toBeDefined();
@@ -274,10 +275,93 @@ describe('Module Config Parser', () => {
                         react: 'react'
                     }
                 };
-                const result = getEnvironments(config, 'client');
+                const result = getEnvironments(config, 'client', 'test-module');
                 expect(typeof result.imports).toBe('object');
                 expect(typeof result.exports).toBe('object');
                 expect(typeof result.scopes).toBe('object');
+            });
+
+            it('should add pkg exports to scopes with empty string key', () => {
+                const config: ModuleConfig = {
+                    exports: ['pkg:lodash', 'pkg:react', './src/component']
+                };
+                const result = getEnvironments(config, 'client', 'test-module');
+                const emptyScope = result.scopes[''];
+                expect(emptyScope).toBeDefined();
+                expect(emptyScope.lodash).toBe('test-module/lodash');
+                expect(emptyScope.react).toBe('test-module/react');
+                expect(emptyScope['./src/component']).toBeUndefined();
+            });
+
+            it('should not override existing empty string scope', () => {
+                const config: ModuleConfig = {
+                    exports: ['pkg:lodash'],
+                    scopes: {
+                        '': {
+                            existing: 'existing-value'
+                        }
+                    }
+                };
+                const result = getEnvironments(config, 'client', 'test-module');
+                const emptyScope = result.scopes[''];
+                expect(emptyScope).toBeDefined();
+                expect(emptyScope.existing).toBe('existing-value');
+                expect(emptyScope.lodash).toBe('test-module/lodash');
+            });
+        });
+
+        describe('addPackageExportsToScopes', () => {
+            it('should create scopes for pkg exports', () => {
+                const exports = {
+                    lodash: { name: 'lodash', file: 'lodash', pkg: true },
+                    react: { name: 'react', file: 'react', pkg: true },
+                    './src/component': {
+                        name: './src/component',
+                        file: './src/component',
+                        pkg: false
+                    }
+                };
+                const scopes: Record<string, Record<string, string>> = {};
+                const result = addPackageExportsToScopes(
+                    exports,
+                    scopes,
+                    'test-module'
+                );
+                const emptyScope = result[''];
+                expect(emptyScope).toBeDefined();
+                expect(emptyScope.lodash).toBe('test-module/lodash');
+                expect(emptyScope.react).toBe('test-module/react');
+                expect(emptyScope['./src/component']).toBeUndefined();
+            });
+
+            it('should not override existing empty string scope', () => {
+                const exports = {
+                    lodash: { name: 'lodash', file: 'lodash', pkg: true }
+                };
+                const scopes = {
+                    '': {
+                        existing: 'existing-value'
+                    }
+                };
+                const result = addPackageExportsToScopes(
+                    exports,
+                    scopes,
+                    'test-module'
+                );
+                const emptyScope = result[''];
+                expect(emptyScope.existing).toBe('existing-value');
+                expect(emptyScope.lodash).toBe('test-module/lodash');
+            });
+
+            it('should handle empty exports', () => {
+                const exports = {};
+                const scopes: Record<string, Record<string, string>> = {};
+                const result = addPackageExportsToScopes(
+                    exports,
+                    scopes,
+                    'test-module'
+                );
+                expect(Object.keys(result)).toHaveLength(0);
             });
         });
     });

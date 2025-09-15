@@ -71,8 +71,8 @@ export function parseModuleConfig(
         root,
         links: getLinks(name, root, config),
         environments: {
-            client: getEnvironments(config, 'client'),
-            server: getEnvironments(config, 'server')
+            client: getEnvironments(config, 'client', name),
+            server: getEnvironments(config, 'server', name)
         }
     };
 }
@@ -140,12 +140,17 @@ export function getEnvironmentScopes(
 
 export function getEnvironments(
     config: ModuleConfig,
-    env: BuildEnvironment
+    env: BuildEnvironment,
+    moduleName: string
 ): ParsedModuleConfigEnvironment {
+    const imports = getEnvironmentImports(env, config.imports);
+    const exports = getEnvironmentExports(config, env);
+    const scopes = getEnvironmentScopes(env, config.scopes);
+    addPackageExportsToScopes(exports, scopes, moduleName);
     return {
-        imports: getEnvironmentImports(env, config.imports),
-        exports: getEnvironmentExports(config, env),
-        scopes: getEnvironmentScopes(env, config.scopes)
+        imports,
+        exports,
+        scopes
     };
 }
 
@@ -259,6 +264,23 @@ export function getEnvironmentExports(
     }
 
     return exports;
+}
+
+export function addPackageExportsToScopes(
+    exports: ParsedModuleConfigExports,
+    scopes: Record<string, Record<string, string>>,
+    moduleName: string
+): Record<string, Record<string, string>> {
+    Object.entries(exports).forEach(([exportName, exportConfig]) => {
+        if (exportConfig.pkg) {
+            if (!scopes['']) {
+                scopes[''] = {};
+            }
+            scopes[''][exportName] = moduleName + '/' + exportName;
+        }
+    });
+
+    return scopes;
 }
 
 export function parsedExportValue(value: string): ParsedModuleConfigExport {
