@@ -29,13 +29,11 @@ export function buildImportsMap(
 ): SpecifierMap {
     const imports: SpecifierMap = {};
 
-    // 1. Generate default import mappings from non-package exports
+    // 1. Generate default import mappings from all exports
     manifests.forEach((manifest) => {
         Object.entries(manifest.exports).forEach(([, exportItem]) => {
-            if (!exportItem.pkg) {
-                const file = getFile(manifest.name, exportItem.file);
-                imports[exportItem.identifier] = file;
-            }
+            const file = getFile(manifest.name, exportItem.file);
+            imports[exportItem.identifier] = file;
         });
     });
 

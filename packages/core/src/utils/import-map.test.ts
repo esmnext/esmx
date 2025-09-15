@@ -8,7 +8,7 @@ describe('buildImportsMap', () => {
         assert.deepEqual(result, {});
     });
 
-    test('should only process non package exports', () => {
+    test('should process all exports including package exports', () => {
         const manifests: ImportMapManifest[] = [
             {
                 name: 'test-module',
@@ -37,7 +37,8 @@ describe('buildImportsMap', () => {
         );
 
         assert.deepEqual(result, {
-            'test-module/component': 'test-module/component.js'
+            'test-module/component': 'test-module/component.js',
+            'test-module/vue': 'test-module/vue.js'
         });
     });
 
