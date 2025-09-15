@@ -17,15 +17,48 @@ export interface ImportMapManifest {
     scopes: Record<string, Record<string, string>>;
 }
 
+export interface GetImportMapOptions {
+    manifests: readonly ImportMapManifest[];
+    getScope: (name: string, path: string) => string;
+    getFile: (name: string, file: string) => string;
+}
+
+export function buildImportsMap(
+    manifests: readonly ImportMapManifest[],
+    getFile: (name: string, file: string) => string
+): SpecifierMap {
+    const imports: SpecifierMap = {};
+
+    // 1. Generate default import mappings from non-package exports
+    manifests.forEach((manifest) => {
+        Object.entries(manifest.exports).forEach(([, exportItem]) => {
+            if (!exportItem.pkg) {
+                const file = getFile(manifest.name, exportItem.file);
+                imports[exportItem.identifier] = file;
+            }
+        });
+    });
+
+    // 2. Apply user custom imports (overrides defaults)
+    manifests.forEach((manifest) => {
+        Object.entries(manifest.imports).forEach(([name, identifier]) => {
+            const fullName = `${manifest.name}/${name}`;
+            imports[fullName] = imports[identifier] ?? identifier;
+        });
+    });
+
+    // 3. Create identifier aliases for /index suffixes
+    // Example: 'module/path/index' → creates 'module/path' alias
+    pathWithoutIndex(imports);
+
+    return imports;
+}
+
 export function getImportMap({
     manifests,
     getFile,
     getScope
-}: {
-    manifests: readonly ImportMapManifest[];
-    getScope: (name: string) => string;
-    getFile: (name: string, file: string) => string;
-}): ImportMap {
+}: GetImportMapOptions): ImportMap {
     const imports: SpecifierMap = {};
     const scopes: ScopesMap = {};
     Object.values(manifests).forEach((manifest) => {
@@ -55,13 +88,13 @@ export function getImportMap({
             }
         });
         if (Object.keys(scopeImports).length || Object.keys(imports).length) {
-            scopes[getScope(manifest.name)] = scopeImports;
+            scopes[getScope(manifest.name, '/')] = scopeImports;
         }
     });
     pathWithoutIndex(imports);
     Object.values(manifests).forEach((manifest) => {
         Object.entries(manifest.imports).forEach(([name, identifier]) => {
-            scopes[getScope(manifest.name)][name] =
+            scopes[getScope(manifest.name, '/')][name] =
                 imports[identifier] ?? identifier;
         });
     });
