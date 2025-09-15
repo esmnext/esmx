@@ -1,6 +1,6 @@
 import { assert, describe, test } from 'vitest';
-import { buildImportsMap } from './import-map';
-import type { ImportMapManifest } from './import-map';
+import { buildImportsMap, buildScopesMap, getImportMap } from './import-map';
+import type { GetImportMapOptions, ImportMapManifest } from './import-map';
 
 describe('buildImportsMap', () => {
     test('should return empty object for empty manifests', () => {
@@ -486,6 +486,757 @@ describe('buildImportsMap', () => {
                 'test-module/src/components/utils/index.js',
             'test-module/src/components/utils':
                 'test-module/src/components/utils/index.js'
+        });
+    });
+});
+
+describe('buildScopesMap', () => {
+    test('should return empty object for empty manifests', () => {
+        const imports = {};
+        const manifests: ImportMapManifest[] = [];
+        const result = buildScopesMap(
+            imports,
+            manifests,
+            (name, scope) => `${name}/${scope}`
+        );
+        assert.deepEqual(result, {});
+    });
+
+    test('should return empty object when manifests have no scopes', () => {
+        const imports = {
+            'test-module/component': 'test-module/component.js'
+        };
+        const manifests: ImportMapManifest[] = [
+            {
+                name: 'test-module',
+                imports: {},
+                exports: {
+                    component: {
+                        name: 'component',
+                        pkg: false,
+                        file: 'component.js',
+                        identifier: 'test-module/component'
+                    }
+                },
+                scopes: {}
+            }
+        ];
+        const result = buildScopesMap(
+            imports,
+            manifests,
+            (name, scope) => `${name}/${scope}`
+        );
+        assert.deepEqual(result, {});
+    });
+
+    test('should build scopes map with basic scope configuration', () => {
+        const imports = {
+            'test-module/component': 'test-module/component.js',
+            'test-module/utils': 'test-module/utils.js'
+        };
+        const manifests: ImportMapManifest[] = [
+            {
+                name: 'test-module',
+                imports: {},
+                exports: {
+                    component: {
+                        name: 'component',
+                        pkg: false,
+                        file: 'component.js',
+                        identifier: 'test-module/component'
+                    },
+                    utils: {
+                        name: 'utils',
+                        pkg: false,
+                        file: 'utils.js',
+                        identifier: 'test-module/utils'
+                    }
+                },
+                scopes: {
+                    node_modules: {
+                        react: 'test-module/component',
+                        lodash: 'test-module/utils'
+                    }
+                }
+            }
+        ];
+        const result = buildScopesMap(
+            imports,
+            manifests,
+            (name, scope) => `${name}/${scope}`
+        );
+        assert.deepEqual(result, {
+            'test-module//node_modules': {
+                react: 'test-module/component.js',
+                lodash: 'test-module/utils.js'
+            }
+        });
+    });
+
+    test('should handle scope with non-existent identifiers', () => {
+        const imports = {
+            'test-module/component': 'test-module/component.js'
+        };
+        const manifests: ImportMapManifest[] = [
+            {
+                name: 'test-module',
+                imports: {},
+                exports: {
+                    component: {
+                        name: 'component',
+                        pkg: false,
+                        file: 'component.js',
+                        identifier: 'test-module/component'
+                    }
+                },
+                scopes: {
+                    node_modules: {
+                        react: 'test-module/component',
+                        'non-existent': 'test-module/non-existent'
+                    }
+                }
+            }
+        ];
+        const result = buildScopesMap(
+            imports,
+            manifests,
+            (name, scope) => `${name}/${scope}`
+        );
+        assert.deepEqual(result, {
+            'test-module//node_modules': {
+                react: 'test-module/component.js',
+                'non-existent': 'test-module/non-existent'
+            }
+        });
+    });
+
+    test('should handle scope with external URLs', () => {
+        const imports = {
+            'test-module/component': 'test-module/component.js'
+        };
+        const manifests: ImportMapManifest[] = [
+            {
+                name: 'test-module',
+                imports: {},
+                exports: {
+                    component: {
+                        name: 'component',
+                        pkg: false,
+                        file: 'component.js',
+                        identifier: 'test-module/component'
+                    }
+                },
+                scopes: {
+                    node_modules: {
+                        react: 'https://cdn.com/react.js',
+                        'local-component': 'test-module/component'
+                    }
+                }
+            }
+        ];
+        const result = buildScopesMap(
+            imports,
+            manifests,
+            (name, scope) => `${name}/${scope}`
+        );
+        assert.deepEqual(result, {
+            'test-module//node_modules': {
+                react: 'https://cdn.com/react.js',
+                'local-component': 'test-module/component.js'
+            }
+        });
+    });
+
+    test('should use scope path from imports when available', () => {
+        const imports = {
+            'test-module/node_modules': 'test-module/node_modules/index.js',
+            'test-module/component': 'test-module/component.js'
+        };
+        const manifests: ImportMapManifest[] = [
+            {
+                name: 'test-module',
+                imports: {},
+                exports: {
+                    node_modules: {
+                        name: 'node_modules',
+                        pkg: false,
+                        file: 'node_modules/index.js',
+                        identifier: 'test-module/node_modules'
+                    },
+                    component: {
+                        name: 'component',
+                        pkg: false,
+                        file: 'component.js',
+                        identifier: 'test-module/component'
+                    }
+                },
+                scopes: {
+                    node_modules: {
+                        react: 'test-module/component'
+                    }
+                }
+            }
+        ];
+        const result = buildScopesMap(
+            imports,
+            manifests,
+            (name, scope) => `${name}/${scope}`
+        );
+        assert.deepEqual(result, {
+            'test-module/test-module/node_modules/index.js': {
+                react: 'test-module/component.js'
+            }
+        });
+    });
+
+    test('should fall back to scope path when not found in imports', () => {
+        const imports = {
+            'test-module/component': 'test-module/component.js'
+        };
+        const manifests: ImportMapManifest[] = [
+            {
+                name: 'test-module',
+                imports: {},
+                exports: {
+                    component: {
+                        name: 'component',
+                        pkg: false,
+                        file: 'component.js',
+                        identifier: 'test-module/component'
+                    }
+                },
+                scopes: {
+                    node_modules: {
+                        react: 'test-module/component'
+                    }
+                }
+            }
+        ];
+        const result = buildScopesMap(
+            imports,
+            manifests,
+            (name, scope) => `${name}/${scope}`
+        );
+        assert.deepEqual(result, {
+            'test-module//node_modules': {
+                react: 'test-module/component.js'
+            }
+        });
+    });
+
+    test('should handle multiple scopes in single manifest', () => {
+        const imports = {
+            'test-module/component': 'test-module/component.js',
+            'test-module/utils': 'test-module/utils.js'
+        };
+        const manifests: ImportMapManifest[] = [
+            {
+                name: 'test-module',
+                imports: {},
+                exports: {
+                    component: {
+                        name: 'component',
+                        pkg: false,
+                        file: 'component.js',
+                        identifier: 'test-module/component'
+                    },
+                    utils: {
+                        name: 'utils',
+                        pkg: false,
+                        file: 'utils.js',
+                        identifier: 'test-module/utils'
+                    }
+                },
+                scopes: {
+                    node_modules: {
+                        react: 'test-module/component'
+                    },
+                    vendor: {
+                        lodash: 'test-module/utils'
+                    }
+                }
+            }
+        ];
+        const result = buildScopesMap(
+            imports,
+            manifests,
+            (name, scope) => `${name}/${scope}`
+        );
+        assert.deepEqual(result, {
+            'test-module//node_modules': {
+                react: 'test-module/component.js'
+            },
+            'test-module//vendor': {
+                lodash: 'test-module/utils.js'
+            }
+        });
+    });
+
+    test('should handle multiple manifests with scopes', () => {
+        const imports = {
+            'module-a/component': 'module-a/component.js',
+            'module-b/utils': 'module-b/utils.js'
+        };
+        const manifests: ImportMapManifest[] = [
+            {
+                name: 'module-a',
+                imports: {},
+                exports: {
+                    component: {
+                        name: 'component',
+                        pkg: false,
+                        file: 'component.js',
+                        identifier: 'module-a/component'
+                    }
+                },
+                scopes: {
+                    node_modules: {
+                        react: 'module-a/component'
+                    }
+                }
+            },
+            {
+                name: 'module-b',
+                imports: {},
+                exports: {
+                    utils: {
+                        name: 'utils',
+                        pkg: false,
+                        file: 'utils.js',
+                        identifier: 'module-b/utils'
+                    }
+                },
+                scopes: {
+                    vendor: {
+                        lodash: 'module-b/utils'
+                    }
+                }
+            }
+        ];
+        const result = buildScopesMap(
+            imports,
+            manifests,
+            (name, scope) => `${name}/${scope}`
+        );
+        assert.deepEqual(result, {
+            'module-a//node_modules': {
+                react: 'module-a/component.js'
+            },
+            'module-b//vendor': {
+                lodash: 'module-b/utils.js'
+            }
+        });
+    });
+
+    test('should handle empty scope specifier map', () => {
+        const imports = {
+            'test-module/component': 'test-module/component.js'
+        };
+        const manifests: ImportMapManifest[] = [
+            {
+                name: 'test-module',
+                imports: {},
+                exports: {
+                    component: {
+                        name: 'component',
+                        pkg: false,
+                        file: 'component.js',
+                        identifier: 'test-module/component'
+                    }
+                },
+                scopes: {
+                    './node_modules': {}
+                }
+            }
+        ];
+        const result = buildScopesMap(
+            imports,
+            manifests,
+            (name, scope) => `${name}/${scope}`
+        );
+        assert.deepEqual(result, {
+            'test-module//./node_modules': {}
+        });
+    });
+
+    test('should handle undefined scopes property', () => {
+        const imports = {
+            'test-module/component': 'test-module/component.js'
+        };
+        const manifests: ImportMapManifest[] = [
+            {
+                name: 'test-module',
+                imports: {},
+                exports: {
+                    component: {
+                        name: 'component',
+                        pkg: false,
+                        file: 'component.js',
+                        identifier: 'test-module/component'
+                    }
+                },
+                scopes: undefined as any
+            }
+        ];
+        const result = buildScopesMap(
+            imports,
+            manifests,
+            (name, scope) => `${name}/${scope}`
+        );
+        assert.deepEqual(result, {});
+    });
+});
+
+describe('getImportMap', () => {
+    test('should return empty import map for empty manifests', () => {
+        const options: GetImportMapOptions = {
+            manifests: [],
+            getFile: (name, file) => `${name}/${file}`,
+            getScope: (name, scope) => `${name}/${scope}`
+        };
+        const result = getImportMap(options);
+        assert.deepEqual(result, {
+            imports: {},
+            scopes: {}
+        });
+    });
+
+    test('should build complete import map with imports and scopes', () => {
+        const options: GetImportMapOptions = {
+            manifests: [
+                {
+                    name: 'test-module',
+                    imports: {
+                        'custom-react': 'test-module/component'
+                    },
+                    exports: {
+                        component: {
+                            name: 'component',
+                            pkg: false,
+                            file: 'component.js',
+                            identifier: 'test-module/component'
+                        },
+                        utils: {
+                            name: 'utils',
+                            pkg: false,
+                            file: 'utils.js',
+                            identifier: 'test-module/utils'
+                        }
+                    },
+                    scopes: {
+                        node_modules: {
+                            react: 'test-module/component',
+                            lodash: 'test-module/utils'
+                        }
+                    }
+                }
+            ],
+            getFile: (name, file) => `${name}/${file}`,
+            getScope: (name, scope) => `${name}/${scope}`
+        };
+        const result = getImportMap(options);
+        assert.deepEqual(result, {
+            imports: {
+                'test-module/component': 'test-module/component.js',
+                'test-module/utils': 'test-module/utils.js',
+                'test-module/custom-react': 'test-module/component.js'
+            },
+            scopes: {
+                'test-module//node_modules': {
+                    react: 'test-module/component.js',
+                    lodash: 'test-module/utils.js'
+                }
+            }
+        });
+    });
+
+    test('should handle complex multi-module scenario', () => {
+        const options: GetImportMapOptions = {
+            manifests: [
+                {
+                    name: 'module-a',
+                    imports: {},
+                    exports: {
+                        utils: {
+                            name: 'utils',
+                            pkg: false,
+                            file: 'utils.js',
+                            identifier: 'module-a/utils'
+                        }
+                    },
+                    scopes: {
+                        node_modules: {
+                            react: 'module-a/utils'
+                        }
+                    }
+                },
+                {
+                    name: 'module-b',
+                    imports: {
+                        shared: 'module-a/utils'
+                    },
+                    exports: {
+                        component: {
+                            name: 'component',
+                            pkg: false,
+                            file: 'component.js',
+                            identifier: 'module-b/component'
+                        }
+                    },
+                    scopes: {
+                        vendor: {
+                            lodash: 'module-a/utils'
+                        }
+                    }
+                }
+            ],
+            getFile: (name, file) => `${name}/${file}`,
+            getScope: (name, scope) => `${name}/${scope}`
+        };
+        const result = getImportMap(options);
+        assert.deepEqual(result, {
+            imports: {
+                'module-a/utils': 'module-a/utils.js',
+                'module-b/component': 'module-b/component.js',
+                'module-b/shared': 'module-a/utils.js'
+            },
+            scopes: {
+                'module-a//node_modules': {
+                    react: 'module-a/utils.js'
+                },
+                'module-b//vendor': {
+                    lodash: 'module-a/utils.js'
+                }
+            }
+        });
+    });
+
+    test('should handle manifests with only exports', () => {
+        const options: GetImportMapOptions = {
+            manifests: [
+                {
+                    name: 'test-module',
+                    imports: {},
+                    exports: {
+                        component: {
+                            name: 'component',
+                            pkg: false,
+                            file: 'component.js',
+                            identifier: 'test-module/component'
+                        }
+                    },
+                    scopes: {}
+                }
+            ],
+            getFile: (name, file) => `${name}/${file}`,
+            getScope: (name, scope) => `${name}/${scope}`
+        };
+        const result = getImportMap(options);
+        assert.deepEqual(result, {
+            imports: {
+                'test-module/component': 'test-module/component.js'
+            },
+            scopes: {}
+        });
+    });
+
+    test('should handle manifests with only imports', () => {
+        const options: GetImportMapOptions = {
+            manifests: [
+                {
+                    name: 'test-module',
+                    imports: {
+                        external: 'https://cdn.com/lib.js'
+                    },
+                    exports: {},
+                    scopes: {}
+                }
+            ],
+            getFile: (name, file) => `${name}/${file}`,
+            getScope: (name, scope) => `${name}/${scope}`
+        };
+        const result = getImportMap(options);
+        assert.deepEqual(result, {
+            imports: {
+                'test-module/external': 'https://cdn.com/lib.js'
+            },
+            scopes: {}
+        });
+    });
+
+    test('should handle manifests with only scopes', () => {
+        const options: GetImportMapOptions = {
+            manifests: [
+                {
+                    name: 'test-module',
+                    imports: {},
+                    exports: {},
+                    scopes: {
+                        node_modules: {
+                            react: 'https://cdn.com/react.js'
+                        }
+                    }
+                }
+            ],
+            getFile: (name, file) => `${name}/${file}`,
+            getScope: (name, scope) => `${name}/${scope}`
+        };
+        const result = getImportMap(options);
+        assert.deepEqual(result, {
+            imports: {},
+            scopes: {
+                'test-module//node_modules': {
+                    react: 'https://cdn.com/react.js'
+                }
+            }
+        });
+    });
+
+    test('should handle custom getFile and getScope functions', () => {
+        const options: GetImportMapOptions = {
+            manifests: [
+                {
+                    name: 'test-module',
+                    imports: {},
+                    exports: {
+                        component: {
+                            name: 'component',
+                            pkg: false,
+                            file: 'component.js',
+                            identifier: 'test-module/component'
+                        }
+                    },
+                    scopes: {
+                        node_modules: {
+                            react: 'test-module/component'
+                        }
+                    }
+                }
+            ],
+            getFile: (name, file) => `/custom/path/${name}/${file}`,
+            getScope: (name, scope) => `custom-scope-${name}-${scope}`
+        };
+        const result = getImportMap(options);
+        assert.deepEqual(result, {
+            imports: {
+                'test-module/component': '/custom/path/test-module/component.js'
+            },
+            scopes: {
+                'custom-scope-test-module-/node_modules': {
+                    react: '/custom/path/test-module/component.js'
+                }
+            }
+        });
+    });
+
+    test('should handle edge case with undefined scopes in manifests', () => {
+        const options: GetImportMapOptions = {
+            manifests: [
+                {
+                    name: 'test-module',
+                    imports: {},
+                    exports: {
+                        component: {
+                            name: 'component',
+                            pkg: false,
+                            file: 'component.js',
+                            identifier: 'test-module/component'
+                        }
+                    },
+                    scopes: undefined as any
+                }
+            ],
+            getFile: (name, file) => `${name}/${file}`,
+            getScope: (name, scope) => `${name}/${scope}`
+        };
+        const result = getImportMap(options);
+        assert.deepEqual(result, {
+            imports: {
+                'test-module/component': 'test-module/component.js'
+            },
+            scopes: {}
+        });
+    });
+
+    test('should handle mixed scenarios with external URLs and local modules', () => {
+        const options: GetImportMapOptions = {
+            manifests: [
+                {
+                    name: 'test-module',
+                    imports: {
+                        'external-react': 'https://cdn.com/react.js',
+                        'local-alias': 'test-module/component'
+                    },
+                    exports: {
+                        component: {
+                            name: 'component',
+                            pkg: false,
+                            file: 'component.js',
+                            identifier: 'test-module/component'
+                        }
+                    },
+                    scopes: {
+                        node_modules: {
+                            'external-lib': 'https://cdn.com/lodash.js',
+                            'local-lib': 'test-module/component'
+                        }
+                    }
+                }
+            ],
+            getFile: (name, file) => `${name}/${file}`,
+            getScope: (name, scope) => `${name}/${scope}`
+        };
+        const result = getImportMap(options);
+        assert.deepEqual(result, {
+            imports: {
+                'test-module/component': 'test-module/component.js',
+                'test-module/external-react': 'https://cdn.com/react.js',
+                'test-module/local-alias': 'test-module/component.js'
+            },
+            scopes: {
+                'test-module//node_modules': {
+                    'external-lib': 'https://cdn.com/lodash.js',
+                    'local-lib': 'test-module/component.js'
+                }
+            }
+        });
+    });
+
+    test('should handle index path aliases in complete import map', () => {
+        const options: GetImportMapOptions = {
+            manifests: [
+                {
+                    name: 'test-module',
+                    imports: {},
+                    exports: {
+                        'src/index': {
+                            name: 'src/index',
+                            pkg: false,
+                            file: 'src/index.js',
+                            identifier: 'test-module/src/index'
+                        }
+                    },
+                    scopes: {
+                        src: {
+                            main: 'test-module/src/index'
+                        }
+                    }
+                }
+            ],
+            getFile: (name, file) => `${name}/${file}`,
+            getScope: (name, scope) => `${name}/${scope}`
+        };
+        const result = getImportMap(options);
+        assert.deepEqual(result, {
+            imports: {
+                'test-module/src/index': 'test-module/src/index.js',
+                'test-module/src': 'test-module/src/index.js'
+            },
+            scopes: {
+                'test-module/test-module/src/index.js': {
+                    main: 'test-module/src/index.js'
+                }
+            }
         });
     });
 });

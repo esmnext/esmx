@@ -78,15 +78,7 @@ export function buildScopesMap(
         });
     });
 
-    // Sort the final scopes object by key length in descending order
-    const sortedScopes: ScopesMap = {};
-    Object.entries(scopes)
-        .sort((a, b) => b[0].length - a[0].length)
-        .forEach(([key, value]) => {
-            sortedScopes[key] = value;
-        });
-    console.log(sortedScopes);
-    return sortedScopes;
+    return scopes;
 }
 
 export function getImportMap({
