@@ -23,10 +23,7 @@ export class RouteTaskController {
     }
 
     shouldCancel(name: string): boolean {
-        if (this._aborted) {
-            return true;
-        }
-        return false;
+        return this._aborted;
     }
 }
 

@@ -5,6 +5,12 @@ import {
     createRouteTask
 } from './route-task';
 import type { Router } from './router';
+import {
+    getSavedScrollPosition,
+    saveScrollPosition,
+    scrollToPosition,
+    winScrollPos
+} from './scroll';
 import { RouteType } from './types';
 
 import type {
@@ -15,6 +21,7 @@ import type {
     RouteNotifyHook
 } from './types';
 import {
+    isBrowser,
     isRouteMatched,
     isUrlEqual,
     isValidConfirmHookResult,
@@ -173,6 +180,46 @@ export const ROUTE_TRANSITION_HOOKS = {
                 return result;
             }
         }
+
+        if (isBrowser && 'scrollRestoration' in window.history)
+            window.history.scrollRestoration = 'manual';
+        // handle scroll position
+        if (from && isBrowser && !router.isLayer)
+            switch (to.type) {
+                case RouteType.push:
+                case RouteType.replace: {
+                    if (!to.keepScrollPosition) {
+                        saveScrollPosition(from.url.href);
+                        scrollToPosition({ left: 0, top: 0 });
+                    } else {
+                        to.applyNavigationState({
+                            __keepScrollPosition: to.keepScrollPosition
+                        });
+                    }
+                    break;
+                }
+                case RouteType.go:
+                case RouteType.forward:
+                case RouteType.back:
+                // for popstate
+                case RouteType.unknown: {
+                    saveScrollPosition(from.url.href);
+                    setTimeout(async () => {
+                        const state = window.history.state;
+                        if (state?.__keepScrollPosition) {
+                            return;
+                        }
+                        const savedPosition = getSavedScrollPosition(
+                            to.url.href,
+                            { left: 0, top: 0 }
+                        );
+                        if (!savedPosition) return;
+                        await router.parsedOptions.nextTick();
+                        scrollToPosition(savedPosition);
+                    });
+                    break;
+                }
+            }
 
         switch (to.type) {
             case RouteType.push:

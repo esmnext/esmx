@@ -19,7 +19,8 @@
                     </button>
                     <RouterLink :to="{
                         path: `/news/${id}`,
-                        state: { id }
+                        state: { id },
+                        keepScrollPosition: true
                     }" class="card-link">
                         查看详情
                         <span class="link-icon">→</span>

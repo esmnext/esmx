@@ -5,7 +5,7 @@
 
 import { Router, RouterInstance } from '@esmx/router';
 import { RouterPlugin, RouterView, useProvideRouter } from '@esmx/router-vue';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { routes } from './routes';
 
 const isBrowser = typeof window === 'object' && typeof document === 'object';
@@ -27,6 +27,7 @@ export async function createApp({
         root: '#root',
         base: new URL(base),
         routes,
+        nextTick: nextTick,
         apps(router) {
             const app = new Vue({
                 setup() {
