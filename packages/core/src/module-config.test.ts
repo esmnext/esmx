@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
     type ModuleConfig,
@@ -134,13 +135,14 @@ describe('Module Config Parser', () => {
         it('should generate client and server manifest paths', () => {
             const result = getLinks('test-module', '/test/root', {});
             const link = result['test-module'];
-            expect(link.client).toBe('/test/root/dist/client');
+            const expectedRoot = path.resolve('/test/root', 'dist');
+            expect(link.client).toBe(path.resolve(expectedRoot, 'client'));
             expect(link.clientManifestJson).toBe(
-                '/test/root/dist/client/manifest.json'
+                path.resolve(expectedRoot, 'client/manifest.json')
             );
-            expect(link.server).toBe('/test/root/dist/server');
+            expect(link.server).toBe(path.resolve(expectedRoot, 'server'));
             expect(link.serverManifestJson).toBe(
-                '/test/root/dist/server/manifest.json'
+                path.resolve(expectedRoot, 'server/manifest.json')
             );
         });
 
@@ -154,14 +156,15 @@ describe('Module Config Parser', () => {
         it('should handle Unix path separators', () => {
             const result = getLinks('test-module', '/test/root', {});
             const link = result['test-module'];
-            expect(link.client).toBe('/test/root/dist/client');
-            expect(link.server).toBe('/test/root/dist/server');
+            const expectedRoot = path.resolve('/test/root', 'dist');
+            expect(link.client).toBe(path.resolve(expectedRoot, 'client'));
+            expect(link.server).toBe(path.resolve(expectedRoot, 'server'));
         });
 
         it('should handle paths with special characters', () => {
             const result = getLinks('test-module', '/test/root@1.0.0', {});
             const link = result['test-module'];
-            expect(link.root).toBe('/test/root@1.0.0/dist');
+            expect(link.root).toBe(path.resolve('/test/root@1.0.0', 'dist'));
         });
 
         it('should handle paths with spaces', () => {
@@ -171,7 +174,9 @@ describe('Module Config Parser', () => {
                 {}
             );
             const link = result['test-module'];
-            expect(link.root).toBe('/test/root with spaces/dist');
+            expect(link.root).toBe(
+                path.resolve('/test/root with spaces', 'dist')
+            );
         });
     });
 
