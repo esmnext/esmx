@@ -555,6 +555,9 @@ importers:
       '@esmx/router':
         specifier: workspace:*
         version: link:../../../packages/router
+      '@esmx/router-vue':
+        specifier: workspace:*
+        version: link:../../../packages/router-vue
       '@esmx/rspack':
         specifier: workspace:*
         version: link:../../../packages/rspack
@@ -567,6 +570,12 @@ importers:
       typescript:
         specifier: 5.8.3
         version: 5.8.3
+      vue:
+        specifier: ^3.5.21
+        version: 3.5.21(typescript@5.8.3)
+      vue2:
+        specifier: npm:vue@2.7.16
+        version: vue@2.7.16
 
   examples/templates/vue-csr:
     dependencies:

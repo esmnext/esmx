@@ -73,7 +73,7 @@ async function checkAndUpdateEntryNodeFile(projectPath) {
 }
 
 async function exportTemplatesToExamplesDir() {
-    const rootDir = resolve(__dirname, '../../..');
+    const rootDir = resolve(__dirname, '../../../');
     const examplesTemplatesDir = join(rootDir, 'examples/templates');
 
     await mkdir(examplesTemplatesDir, { recursive: true });
@@ -91,9 +91,15 @@ async function exportTemplatesToExamplesDir() {
         const projectPath = join(examplesTemplatesDir, projectName);
 
         console.log(`Exporting template ${projectName} to ${projectPath}`);
-
         await cli({
-            argv: [projectPath, '--template', template.folder, '--force'],
+            argv: [
+                projectPath,
+                '--template',
+                projectName,
+                '--name',
+                `${projectName}-demo`,
+                '--force'
+            ],
             cwd: rootDir,
             userAgent: 'npm/test',
             version: 'workspace:*'

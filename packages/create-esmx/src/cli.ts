@@ -150,7 +150,17 @@ export async function cli(options: CliOptions = {}): Promise<void> {
         return;
     }
 
-    const { name, root } = formatProjectName(projectNameInput, workingDir);
+    let name: string;
+    let root: string;
+
+    if (parsedArgs.name && parsedArgs._[0]) {
+        name = parsedArgs.name;
+        root = formatProjectName(parsedArgs._[0], workingDir).root;
+    } else {
+        const result = formatProjectName(projectNameInput, workingDir);
+        name = result.name;
+        root = result.root;
+    }
 
     const templateType = await getTemplateType(parsedArgs.template);
     if (isCancel(templateType)) {
