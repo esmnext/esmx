@@ -8,10 +8,5 @@
         "type": "dir",
         "name": "essentials",
         "label": "Essentials"
-    },
-    {
-        "type": "dir",
-        "name": "frameworks",
-        "label": "Frameworks"
     }
 ]

@@ -51,7 +51,7 @@ head:
 ### 启用兼容支持
 
 ::: warning 重要提示
-虽然框架默认使用兼容模式构建，但要实现对旧版浏览器的完整支持，您需要在项目中添加 [es-module-shims](https://github.com/guybedford/es-module-shims) 依赖。
+Esmx 默认采用兼容模式构建，以支持更广泛的浏览器。但要实现对旧版浏览器的完整支持，您仍需要在项目中添加 [es-module-shims](https://github.com/guybedford/es-module-shims) 依赖。
 :::
 
 在 HTML 文件中添加以下脚本：

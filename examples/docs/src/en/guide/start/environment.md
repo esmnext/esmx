@@ -51,7 +51,7 @@ According to [Can I Use](https://caniuse.com/?search=importmap) statistics, brow
 ### Enabling Compatibility Support
 
 ::: warning Important Note
-While the framework defaults to compatibility mode builds, to achieve full support for older browsers, you need to add the [es-module-shims](https://github.com/guybedford/es-module-shims) dependency to your project.
+Esmx defaults to compatibility mode builds to support a wider range of browsers. However, to achieve full support for older browsers, you still need to add the [es-module-shims](https://github.com/guybedford/es-module-shims) dependency to your project.
 :::
 
 Add the following script to your HTML file:
