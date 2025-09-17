@@ -19,8 +19,9 @@ head:
 interface ManifestJson {
   name: string;
   imports: Record<string, string>;
+  scopes: Record<string, Record<string, string>>;
   exports: ManifestJsonExports;
-  buildFiles: string[];
+  files: string[];
   chunks: ManifestJsonChunks;
 }
 ```
@@ -28,34 +29,47 @@ interface ManifestJson {
 #### name
 
 - **类型**: `string`
-- **描述**: 服务名称，来自于模块配置中的名称
+- **描述**: 模块名称，来自于模块配置中的名称
 
 #### imports
 
 - **类型**: `Record<string, string>`
 - **描述**: 导入映射配置，key为本地导入名，value为对应的构建文件路径
 
+#### scopes
+
+- **类型**: `Record<string, Record<string, string>>`
+- **描述**: 作用域特定的导入映射，key为作用域名称，value为该作用域内的导入映射
+
 #### exports
 
 - **类型**: `ManifestJsonExports`
-- **描述**: 导出配置映射，包含详细的导出项信息
+- **描述**: 导出项配置映射，key为导出路径，value为导出项信息
 
-#### buildFiles
+#### files
 
 - **类型**: `string[]`
-- **描述**: 构建产物的完整文件清单，包含所有生成的文件路径
+- **描述**: 构建输出文件的完整清单，包含所有生成的文件路径
 
 #### chunks
 
-- **类型**: `Record<string, ManifestJsonChunk>`
-- **描述**: 源文件与编译产物的对应关系，key为源文件标识符，value为编译信息
+- **类型**: `ManifestJsonChunks`
+- **描述**: 编译文件信息，key为源文件，value为编译信息
+
+### ManifestJsonExports
+
+```typescript
+type ManifestJsonExports = Record<string, ManifestJsonExport>;
+```
+
+导出项配置映射，key为导出路径，value为导出项信息。
 
 ### ManifestJsonExport
 
 ```typescript
 interface ManifestJsonExport {
   name: string;
-  rewrite: boolean;
+  pkg: boolean;
   file: string;
   identifier: string;
 }
@@ -66,10 +80,10 @@ interface ManifestJsonExport {
 - **类型**: `string`
 - **描述**: 导出项名称
 
-#### rewrite
+#### pkg
 
 - **类型**: `boolean`
-- **描述**: 是否重写模块导入路径
+- **描述**: 是否是一个软件包
 
 #### file
 
@@ -80,6 +94,14 @@ interface ManifestJsonExport {
 
 - **类型**: `string`
 - **描述**: 导出项的唯一标识符
+
+### ManifestJsonChunks
+
+```typescript
+type ManifestJsonChunks = Record<string, ManifestJsonChunk>;
+```
+
+编译文件信息映射，key为源文件，value为编译信息。
 
 ### ManifestJsonChunk
 

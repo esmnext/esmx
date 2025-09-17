@@ -31,8 +31,8 @@ export function createChainConfig(
         .clean(esmx.isProd)
         .filename(
             !isNode && esmx.isProd
-                ? 'exports/[name].[contenthash:8].final.mjs'
-                : 'exports/[name].mjs'
+                ? '[name].[contenthash:8].final.mjs'
+                : '[name].mjs'
         )
         .chunkFilename(
             esmx.isProd
@@ -45,9 +45,7 @@ export function createChainConfig(
 
     config.output.set(
         'cssFilename',
-        esmx.isProd
-            ? 'exports/[name].[contenthash:8].final.css'
-            : 'exports/[name].css'
+        esmx.isProd ? '[name].[contenthash:8].final.css' : '[name].css'
     );
     config.output.set(
         'cssChunkFilename',
@@ -124,14 +122,12 @@ function createModuleLinkConfig(
             name: esmx.name,
             exports: {
                 'src/entry.node': {
-                    rewrite: false,
+                    pkg: false,
                     file: './src/entry.node'
                 }
             }
         };
     }
-
-    const environmentConfig = esmx.moduleConfig.environments[buildTarget];
 
     const preEntries: string[] = [];
     if (isClient && !esmx.isProd) {
@@ -141,11 +137,10 @@ function createModuleLinkConfig(
     }
 
     return {
+        ...esmx.moduleConfig.environments[buildTarget],
         name: esmx.name,
         injectChunkName: isServer,
-        imports: environmentConfig.imports,
         deps: Object.keys(esmx.moduleConfig.links),
-        exports: environmentConfig.exports,
         preEntries
     };
 }

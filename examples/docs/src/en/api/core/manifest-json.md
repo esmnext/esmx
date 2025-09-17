@@ -1,6 +1,6 @@
 ---
-titleSuffix: Esmx Framework Manifest File Reference
-description: Detailed documentation of Esmx Framework's build manifest file (manifest.json) structure, including build artifact management, export file mapping, and resource statistics functionality to help developers understand and use the build system.
+titleSuffix: Esmx Framework Build Manifest File Reference
+description: Detailed introduction to the structure of Esmx framework's build manifest file (manifest.json), including build artifact management, export file mapping, and resource statistics functionality, helping developers understand and use the build system.
 head:
   - - meta
     - property: keywords
@@ -19,8 +19,9 @@ head:
 interface ManifestJson {
   name: string;
   imports: Record<string, string>;
+  scopes: Record<string, Record<string, string>>;
   exports: ManifestJsonExports;
-  buildFiles: string[];
+  files: string[];
   chunks: ManifestJsonChunks;
 }
 ```
@@ -28,34 +29,47 @@ interface ManifestJson {
 #### name
 
 - **Type**: `string`
-- **Description**: Service name, derived from the name in module configuration
+- **Description**: Module name, from the name in module configuration
 
 #### imports
 
 - **Type**: `Record<string, string>`
-- **Description**: Import mapping configuration, key is the local import name, value is the corresponding build file path
+- **Description**: Import mapping configuration, key is local import name, value is corresponding build file path
+
+#### scopes
+
+- **Type**: `Record<string, Record<string, string>>`
+- **Description**: Scope-specific import mappings, key is scope name, value is import mappings within that scope
 
 #### exports
 
 - **Type**: `ManifestJsonExports`
-- **Description**: Export configuration mapping, containing detailed export item information
+- **Description**: Export item configuration mapping, key is export path, value is export item information
 
-#### buildFiles
+#### files
 
 - **Type**: `string[]`
-- **Description**: Complete file list of build artifacts, containing all generated file paths
+- **Description**: Complete list of build output files, containing all generated file paths
 
 #### chunks
 
-- **Type**: `Record<string, ManifestJsonChunk>`
-- **Description**: Correspondence between source files and compiled artifacts, key is the source file identifier, value is compilation information
+- **Type**: `ManifestJsonChunks`
+- **Description**: Compiled file information, key is source file, value is compilation information
+
+### ManifestJsonExports
+
+```typescript
+type ManifestJsonExports = Record<string, ManifestJsonExport>;
+```
+
+Export item configuration mapping, key is export path, value is export item information.
 
 ### ManifestJsonExport
 
 ```typescript
 interface ManifestJsonExport {
   name: string;
-  rewrite: boolean;
+  pkg: boolean;
   file: string;
   identifier: string;
 }
@@ -66,10 +80,10 @@ interface ManifestJsonExport {
 - **Type**: `string`
 - **Description**: Export item name
 
-#### rewrite
+#### pkg
 
 - **Type**: `boolean`
-- **Description**: Whether to rewrite module import paths
+- **Description**: Whether it is a software package
 
 #### file
 
@@ -80,6 +94,14 @@ interface ManifestJsonExport {
 
 - **Type**: `string`
 - **Description**: Unique identifier of the export item
+
+### ManifestJsonChunks
+
+```typescript
+type ManifestJsonChunks = Record<string, ManifestJsonChunk>;
+```
+
+Compiled file information mapping, key is source file, value is compilation information.
 
 ### ManifestJsonChunk
 

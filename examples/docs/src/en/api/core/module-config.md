@@ -1,10 +1,10 @@
 ---
 titleSuffix: Esmx Module Configuration API Reference
-description: Detailed explanation of the ModuleConfig interface, including type definitions, configuration options, parsing mechanisms, and usage examples to help developers deeply understand the core configuration of the Esmx module system.
+description: Detailed explanation of ModuleConfig interface, including type definitions, configuration options, resolution mechanisms, and usage examples, helping developers deeply understand the core configuration of Esmx module system.
 head:
   - - meta
     - property: keywords
-      content: Esmx, ModuleConfig, Module Configuration, API Reference, Module Import Export, Type Definitions, Configuration Interface
+      content: Esmx, ModuleConfig, Module Configuration, API Reference, Module Import/Export, Type Definitions, Configuration Interface
 ---
 
 # ModuleConfig
@@ -16,61 +16,82 @@ The core configuration interface for the module system.
 ```typescript
 interface ModuleConfig {
     links?: Record<string, string>;
-    imports?: Record<string, string | Record<BuildEnvironment, string>>;
+    imports?: ModuleConfigImportMapping;
+    scopes?: Record<string, ModuleConfigImportMapping>;
     exports?: ModuleConfigExportExports;
 }
 ```
 
 ### links
 
-- **Type**: `Record<string, string>`
-- **Description**: Module link configuration. Key is the remote module name, value is the module build artifact directory path.
+* **Type**: `Record<string, string>`
+* **Description**: Module linking configuration. Key is remote module name, value is module build artifact directory path.
 
-### imports
+### imports  
 
-- **Type**: `Record<string, string | Record<BuildEnvironment, string>>`
-- **Description**: Module import mapping configuration. Key is the local module identifier, value is the remote module path. Supports environment-specific configuration.
+* **Type**: `ModuleConfigImportMapping`
+* **Description**: Module import mapping configuration. Key is local module identifier, value is remote module path. Supports environment-specific configurations.
+
+### scopes
+
+* **Type**: `Record<string, ModuleConfigImportMapping>`
+* **Description**: Module scope mapping configuration. Key is directory path prefix, value is import mapping configuration within that scope.
 
 ### exports
 
-- **Type**: `ModuleConfigExportExports`
-- **Description**: Module export configuration. Supports multiple configuration forms.
+* **Type**: `ModuleConfigExportExports`
+* **Description**: Module export configuration. Supports multiple configuration forms.
 
 ## Type Definitions
+
+### ModuleConfigImportMapping
+
+```typescript
+type ModuleConfigImportMapping = Record<
+    string,
+    string | Record<BuildEnvironment, string>
+>;
+```
+
+Import mapping configuration type, supporting strings and environment-specific configurations.
 
 ### ModuleConfigExportExports
 
 ```typescript
-type ModuleConfigExportExports = Array<string | Record<string, string | ModuleConfigExportObject>>;
+type ModuleConfigExportExports = ModuleConfigExportExport[];
 ```
 
-Array type for export configuration, supporting mixed array (string and object) forms.
+Array type for export configuration, supporting mixed arrays of strings and export objects.
+
+### ModuleConfigExportExport
+
+```typescript
+type ModuleConfigExportExport = string | ModuleConfigExportObject;
+```
+
+Export configuration item type, supporting both string and export object forms.
 
 ### ModuleConfigExportObject
 
 ```typescript
-type ModuleConfigExportObject = {
-    file?: string;
-    files?: Record<BuildEnvironment, string | false>;
-    rewrite?: boolean;
-};
+type ModuleConfigExportObject = Record<
+    string,
+    ModuleConfigExportObjectValue
+>;
 ```
 
-#### file
+Export object configuration type, key is export name, value is export configuration value.
 
-- **Type**: `string`
-- **Description**: Input file path, relative to the project root directory.
+### ModuleConfigExportObjectValue
 
-#### files
+```typescript
+type ModuleConfigExportObjectValue =
+    | string
+    | Record<BuildEnvironment, string | boolean>;
+```
 
-- **Type**: `Record<BuildEnvironment, string | false>`
-- **Description**: Environment-specific input file configuration. Supports differentiated builds for client and server.
+Export configuration value type, supporting strings and environment-specific configurations.
 
-#### rewrite
-
-- **Type**: `boolean`
-- **Default**: `true`
-- **Description**: Whether to rewrite import paths within the module.
 
 ### BuildEnvironment
 
@@ -80,7 +101,7 @@ type BuildEnvironment = 'client' | 'server';
 
 Build target environment type.
 
-## Parsed Interface
+## Resolved Interfaces
 
 ### ParsedModuleConfig
 
@@ -88,29 +109,47 @@ Build target environment type.
 interface ParsedModuleConfig {
     name: string;
     root: string;
-    links: Record<
-        string,
-        {
-            name: string;
-            root: string;
-            client: string;
-            clientManifestJson: string;
-            server: string;
-            serverManifestJson: string;
-        }
-    >;
+    links: Record<string, ParsedModuleConfigLink>;
     environments: {
-        client: {
-            imports: Record<string, string>;
-            exports: ParsedModuleConfigExports;
-        };
-        server: {
-            imports: Record<string, string>;
-            exports: ParsedModuleConfigExports;
-        };
+        client: ParsedModuleConfigEnvironment;
+        server: ParsedModuleConfigEnvironment;
     };
 }
 ```
+
+### ParsedModuleConfigEnvironment
+
+```typescript
+interface ParsedModuleConfigEnvironment {
+    imports: Record<string, string>;
+    exports: ParsedModuleConfigExports;
+    scopes: Record<string, Record<string, string>>;
+}
+```
+
+### ParsedModuleConfigLink
+
+```typescript
+interface ParsedModuleConfigLink {
+    name: string;
+    root: string;
+    client: string;
+    clientManifestJson: string;
+    server: string;
+    serverManifestJson: string;
+}
+```
+
+### ParsedModuleConfigExports
+
+```typescript
+type ParsedModuleConfigExports = Record<
+    string,
+    ParsedModuleConfigExport
+>;
+```
+
+Resolved export configuration record type, key is export name, value is export configuration object.
 
 ### ParsedModuleConfigExport
 
@@ -118,132 +157,5 @@ interface ParsedModuleConfig {
 interface ParsedModuleConfigExport {
     name: string;
     file: string;
-    rewrite: boolean;
+    pkg: boolean;
 }
-```
-
-## Prefix Syntax Sugar
-
-The following prefixes are supported in string items of the `exports` array form:
-
-### npm: prefix
-
-- **Format**: `'npm:packageName'`
-- **Processing**: Automatically sets `rewrite: false`, preserving original import paths
-- **Example**: `'npm:axios'` → `{ file: 'axios', rewrite: false }`
-
-### root: prefix
-
-- **Format**: `'root:path/to/file.ext'`
-- **Processing**: Automatically sets `rewrite: true`, removes file extension, adds `./` prefix
-- **Example**: `'root:src/utils/format.ts'` → `{ file: './src/utils/format', rewrite: true }`
-
-## Default Export Items
-
-The framework automatically adds the following default export items for each module:
-
-```typescript
-{
-  'src/entry.client': {
-    files: {
-      client: './src/entry.client',
-      server: false
-    }
-  },
-  'src/entry.server': {
-    files: {
-      client: false,
-      server: './src/entry.server'
-    }
-  }
-}
-```
-
-## Examples
-
-### Basic Configuration
-
-```typescript
-export default {
-  modules: {
-    links: {
-      'shared-lib': '../shared-lib/dist'
-    },
-    imports: {
-      'axios': 'shared-lib/axios'
-    },
-    exports: [
-      'npm:axios',
-      'root:src/utils/format.ts'
-    ]
-  }
-} satisfies EsmxOptions;
-```
-
-### Array Form (Recommended)
-
-```typescript
-exports: [
-  'npm:axios',
-  'root:src/utils/format.ts',
-  {
-    'api-client': './src/api/client.ts',
-    'utils': {
-      file: './src/utils/index.ts',
-      rewrite: true
-    }
-  }
-]
-```
-
-### Environment-Specific Import Configuration
-
-```typescript
-imports: {
-  // Standard import mapping (applies to both environments)
-  'axios': 'shared-lib/axios',
-  
-  // Environment-specific import mapping
-  'storage': {
-    client: 'shared-lib/storage/client',
-    server: 'shared-lib/storage/server'
-  },
-  
-  // Another environment-specific example
-  'config': {
-    client: 'shared-lib/config/browser',
-    server: 'shared-lib/config/node'
-  }
-}
-```
-
-### Environment-Specific Export Configuration
-
-```typescript
-exports: [
-  {
-    'storage': {
-      files: {
-        client: './src/storage/indexedDB.ts',
-        server: './src/storage/filesystem.ts'
-      }
-    }
-  }
-]
-```
-
-### Object Form (Object Elements in Array)
-
-```typescript
-exports: [
-  {
-    'utils': './src/utils.ts',
-    'api': './src/api.ts'
-  },
-  {
-    'components': {
-      file: './src/components/index.ts',
-      rewrite: true
-    }
-  }
-]

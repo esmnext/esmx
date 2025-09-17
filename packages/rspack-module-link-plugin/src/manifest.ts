@@ -19,7 +19,8 @@ export function intiManifestJson(
             imports: {},
             name: opts.name,
             exports: {},
-            buildFiles: [],
+            scopes: opts.scopes,
+            files: [],
             chunks: {}
         };
         compilation.hooks.processAssets.tap(
@@ -41,7 +42,8 @@ export function intiManifestJson(
                     imports: opts.imports,
                     name: opts.name,
                     exports: exports,
-                    buildFiles: resources,
+                    scopes: opts.scopes,
+                    files: resources,
                     chunks: getChunks(opts, compilation)
                 };
                 const { RawSource } = compiler.rspack.sources;

@@ -8,7 +8,7 @@ import type { EsmxOptions } from '@esmx/core';
 
 export default {
     modules: {
-        exports: ['npm:vue', 'npm:@esmx/router', 'npm:@esmx/router-vue']
+        exports: ['pkg:vue', 'pkg:@esmx/router', 'pkg:@esmx/router-vue']
     },
     async devApp(esmx) {
         return import('@esmx/rspack-vue').then((m) =>

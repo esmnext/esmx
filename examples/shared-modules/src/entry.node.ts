@@ -28,10 +28,10 @@ export default {
         scopes: {
             // ========== Vue2 shared module scope mapping ==========
             // Directory scope mapping: Only affects shared modules in vue2/ directory
-            // Business code in vue2/ directory: import Vue from 'vue' → {{projectName}}/vue2 (version-isolated)
+            // Business code in vue2/ directory: import Vue from 'vue' → shared-modules/vue2 (version-isolated)
             // Business code in other directories: import Vue from 'vue' → Vue 3 (shared from common modules)
             'vue2/': {
-                vue: '{{projectName}}/vue2'
+                vue: 'shared-modules/vue2'
             }
 
             // Package scope mapping: Affects dependencies within shared module packages
@@ -44,11 +44,17 @@ export default {
     async devApp(esmx) {
         return import('@esmx/rspack').then((m) =>
             m.createRspackHtmlApp(esmx, {
+                minimize: false,
                 chain(context) {
                     // Custom Rspack configuration
                 }
             })
         );
+    },
+
+    async postBuild(esmx) {
+        const rc = await esmx.render();
+        esmx.writeSync(esmx.resolvePath('dist/client', 'index.html'), rc.html);
     },
     async server(esmx) {
         const server = http.createServer((req, res) => {

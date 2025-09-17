@@ -3,7 +3,7 @@ import type { EsmxOptions } from '@esmx/core';
 
 export default {
     modules: {
-        exports: ['npm:vue']
+        exports: ['pkg:vue']
     },
     async devApp(esmx) {
         return import('@esmx/rspack-vue').then((m) =>

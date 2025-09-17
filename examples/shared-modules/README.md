@@ -1,4 +1,4 @@
-# {{projectName}}
+# shared-modules
 
 An Esmx project demonstrating Shared Modules solution for micro-frontend architecture.
 
@@ -59,7 +59,7 @@ pnpm lint:type
 ## 📁 Project Structure
 
 ```
-{{projectName}}/
+shared-modules/
 ├── src/
 │   ├── entry.client.ts     # Client-side entry
 │   ├── entry.node.ts       # Node.js environment entry point

@@ -14,19 +14,16 @@ export function createExternals(opts: ParsedModuleLinkPluginOptions) {
     const importMap = new Map<string, string>();
 
     let initPromise: Promise<void> | null = null;
-    let savedResolvePath: ResolvePath | null = null;
 
     const init = (resolvePath: ResolvePath): Promise<void> => {
         if (initPromise) return initPromise;
 
-        savedResolvePath = resolvePath;
-
         initPromise = (async () => {
             await Promise.all(
                 Object.values(opts.exports).map(async (value) => {
-                    const identifier = value.rewrite
-                        ? value.identifier
-                        : value.name;
+                    const identifier = value.pkg
+                        ? value.name
+                        : value.identifier;
                     importMap.set(identifier, identifier);
                     importMap.set(value.name, identifier);
 
@@ -47,7 +44,8 @@ export function createExternals(opts: ParsedModuleLinkPluginOptions) {
 
     const match = async (
         request: string,
-        context: string
+        context: string,
+        resolvePath: ResolvePath
     ): Promise<string | null> => {
         if (!request) return null;
 
@@ -60,15 +58,9 @@ export function createExternals(opts: ParsedModuleLinkPluginOptions) {
             }
         }
 
-        if (!savedResolvePath) {
-            throw new Error(
-                'External handler not initialized. Call init() first.'
-            );
-        }
-
         let importName = importMap.get(request);
         if (!importName) {
-            const resolvedPath = await savedResolvePath(request, context);
+            const resolvedPath = await resolvePath(request, context);
             if (resolvedPath) {
                 importName = importMap.get(resolvedPath);
             }
@@ -113,7 +105,11 @@ export function initExternal(
         };
 
         await init(resolvePath);
-        const matchedIdentifier = await match(data.request, data.context);
+        const matchedIdentifier = await match(
+            data.request,
+            data.context,
+            resolvePath
+        );
 
         if (matchedIdentifier) {
             return `module-import ${matchedIdentifier}`;

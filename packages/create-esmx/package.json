@@ -23,6 +23,9 @@
         "picocolors": "^1.0.0"
     },
     "devDependencies": {
+        "@esmx/core": "workspace:*",
+        "@esmx/rspack": "workspace:*",
+        "@esmx/rspack-vue": "workspace:*",
         "@biomejs/biome": "1.9.4",
         "@types/minimist": "^1.2.5",
         "@types/node": "^24.0.0",

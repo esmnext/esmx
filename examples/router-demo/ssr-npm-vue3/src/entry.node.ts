@@ -9,16 +9,13 @@ export default {
             '@esmx/router': 'ssr-npm-base/@esmx/router'
         },
         exports: [
-            'npm:vue',
-            'npm:@esmx/router-vue',
+            'pkg:vue',
+            'pkg:@esmx/router-vue',
             'root:src/app-creator.ts',
             {
                 'src/render-to-str': {
-                    input: './src/render-to-str.ts',
-                    files: {
-                        client: false,
-                        server: './src/render-to-str.ts'
-                    }
+                    client: false,
+                    server: './src/render-to-str.ts'
                 }
             }
         ]

@@ -1,6 +1,6 @@
 ---
-titleSuffix: Esmx Inter-Module Code Sharing
-description: "Esmx Module Linking: Zero-runtime Micro-frontend Code Sharing Solution Based on ESM Standards"
+titleSuffix: Esmx Code Sharing Between Modules
+description: "Esmx Module Linking: A zero-runtime micro-frontend code sharing solution based on ESM standards"
 head:
   - - meta
     - property: keywords
@@ -9,68 +9,49 @@ head:
 
 # Module Linking
 
-Module Linking is Esmx's cross-application code sharing mechanism, based on ECMAScript module standards, achieving micro-frontend architecture with zero runtime overhead.
+Module Linking is a **cross-application code sharing solution** provided by Esmx. It's based on the browser's native ESM (ECMAScript Modules) standard, allowing multiple applications to share code modules without additional runtime libraries.
 
-## Overview
+## Core Advantages
 
-In micro-frontend architectures, multiple independent applications often need to use the same third-party libraries (such as HTTP clients, utility libraries, UI component libraries) and shared components. Traditional approaches have the following issues:
+- **Zero Runtime Overhead**: Direct use of browser's native ESM loader, without introducing any proxy or wrapper layers
+- **Efficient Sharing**: Dependencies are resolved at build time through Import Maps, loaded directly at runtime
+- **Version Isolation**: Supports different applications using different versions of the same module, avoiding conflicts
+- **Simple and Easy to Use**: Intuitive configuration, fully compatible with native ESM syntax
 
-- **Resource Duplication**: Each application bundles the same dependencies independently, causing users to download duplicate code
-- **Version Inconsistency**: Different applications using different versions of the same library may cause compatibility issues  
-- **Memory Waste**: Multiple instances of the same library exist in the browser, occupying additional memory
-- **Cache Invalidation**: Different bundled versions of the same library cannot share browser cache
-
-Module Linking solves these problems through the ECMAScript module system and Import Maps specification, enabling multiple applications to safely and efficiently share code modules.
-
-### How It Works
-
-Module Linking is based on technology standards natively supported by modern browsers:
-
-**Shared Module Provider**: One application acts as a **module provider**, responsible for building and exposing shared third-party libraries and components. Other applications act as **module consumers**, using these shared modules through standard ESM import syntax.
-
-**Import Maps Resolution**: Browsers use Import Maps to map module import statements to actual file paths:
-
-```javascript
-import axios from 'axios';
-import { formatDate } from 'shared-lib/src/utils/date-utils';
-
-// Import Maps resolves them to
-import axios from 'shared-lib/axios.389c4cab.final.mjs';
-import { formatDate } from 'shared-lib/src/utils/date-utils.2d79c0c2.final.mjs';
-```
+Simply put, Module Linking is a "module sharing manager" that enables different applications to share code safely and efficiently, as simple as using local modules.
 
 ## Quick Start
 
 ### Basic Example
 
-Assume we have a shared library application (shared-lib) and a business application (business-app):
+Suppose we have a shared module application (shared-modules) and a business application (business-app):
 
 ```typescript
-// shared-lib/entry.node.ts - Provide shared modules
+// shared-modules/entry.node.ts - providing shared modules
 export default {
   modules: {
     exports: [
-      'npm:axios',                    // Share HTTP client
-      'root:src/utils/format.ts'      // Share utility functions
+      'pkg:axios',                    // shared HTTP client
+      'root:src/utils/format.ts'      // shared utility functions
     ]
   }
 } satisfies EsmxOptions;
 
-// business-app/entry.node.ts - Use shared modules
+// business-app/entry.node.ts - using shared modules
 export default {
   modules: {
-    links: { 'shared-lib': '../shared-lib/dist' },
-    imports: { 'axios': 'shared-lib/axios' }
+    links: { 'shared-modules': '../shared-modules/dist' },
+    imports: { 'axios': 'shared-modules/axios' }
   }
 } satisfies EsmxOptions;
 ```
 
-Using in business application:
+Using in the business application:
 
 ```typescript
 // business-app/src/api/orders.ts
-import axios from 'axios';  // Use shared axios instance
-import { formatDate } from 'shared-lib/src/utils/format';  // Use shared utility functions
+import axios from 'axios';  // using shared axios instance
+import { formatDate } from 'shared-modules/src/utils/format';  // using shared utility functions
 
 export async function fetchOrders() {
   const response = await axios.get('/api/orders');
@@ -83,11 +64,11 @@ export async function fetchOrders() {
 
 ## Core Configuration
 
-Module Linking configuration is located in the `modules` field of the `entry.node.ts` file, containing three core configuration items:
+Module linking configuration is located in the `modules` field of the `entry.node.ts` file, containing four core configuration items:
 
 ### Module Links (links)
 
-`links` configuration specifies paths where the current module links to other modules:
+The `links` configuration specifies the paths for linking the current module to other modules:
 
 ```typescript
 // business-app/entry.node.ts
@@ -96,8 +77,8 @@ import type { EsmxOptions } from '@esmx/core';
 export default {
   modules: {
     links: {
-      'shared-lib': '../shared-lib/dist',     // Relative path
-      'api-utils': '/var/www/api-utils/dist'  // Absolute path
+      'shared-modules': '../shared-modules/dist',     // relative path
+      'api-utils': '/var/www/api-utils/dist'  // absolute path
     }
   }
 } satisfies EsmxOptions;
@@ -105,30 +86,70 @@ export default {
 
 ### Module Imports (imports)
 
-`imports` configuration maps local module names to remote module identifiers, supporting standard imports and environment-specific configurations:
+The `imports` configuration maps local module names to remote module identifiers, supporting standard imports and environment-specific configurations:
 
 ```typescript
 // business-app/entry.node.ts
-import type { EsmxOptions } from '@esmx/core';
-
 export default {
   modules: {
     links: {
-      'shared-lib': '../shared-lib/dist'
+      'shared-modules': '../shared-modules/dist'
     },
     imports: {
-      // Standard import mapping (applies to both environments)
-      'axios': 'shared-lib/axios',
-      'lodash': 'shared-lib/lodash',
+      // standard import mapping
+      'axios': 'shared-modules/axios',
+      'lodash': 'shared-modules/lodash',
       
-      // Environment-specific import mapping
+      // environment-specific configuration
       'storage': {
-        client: 'shared-lib/storage/client',
-        server: 'shared-lib/storage/server'
-      },
-      'config': {
-        client: 'shared-lib/config/browser',
-        server: 'shared-lib/config/node'
+        client: 'shared-modules/storage/client',
+        server: 'shared-modules/storage/server'
+      }
+    }
+  }
+} satisfies EsmxOptions;
+```
+
+### Scope Mapping (scopes)
+
+The `scopes` configuration defines import mappings for specific directory scopes or package scopes, achieving version isolation and dependency replacement. Supports two types: directory scope mapping and package scope mapping.
+
+#### Directory Scope Mapping
+
+Directory scope mapping only affects module imports within specific directories, achieving version isolation between different directories.
+
+The following example shows how to use `scopes` configuration to specify different Vue versions for modules under the `vue2/` directory:
+
+```typescript
+// shared-modules/entry.node.ts  
+export default {
+  modules: {
+    scopes: {
+      // Vue2 directory scope mapping: only affects imports under vue2/ directory
+      // Business code in vue2/ directory: import Vue from 'vue' → shared-modules/vue2 (version isolation)
+      // Business code in other directories: import Vue from 'vue' → Vue 3 (common module)
+      'vue2/': {
+        'vue': 'shared-modules/vue2',
+        'vue-router': 'shared-modules/vue2-router'
+      }
+    }
+  }
+} satisfies EsmxOptions;
+```
+
+#### Package Scope Mapping
+
+Package scope mapping affects dependency resolution within specific packages, used for dependency replacement and version management:
+
+```typescript
+// shared-modules/entry.node.ts
+export default {
+  modules: {
+    scopes: {
+      // Package scope mapping: affects dependency resolution within vue package
+      // When vue package depends on @vue/shared, use the specified replacement version
+      'vue': {
+        '@vue/shared': 'shared-modules/@vue/shared'
       }
     }
   }
@@ -137,60 +158,53 @@ export default {
 
 ### Module Exports (exports)
 
-`exports` configuration defines content that modules expose externally, supporting only array format:
+The `exports` configuration defines the content provided by the module to the outside, only supporting array format:
 
 ```typescript
-// shared-lib/entry.node.ts
+// shared-modules/entry.node.ts
 export default {
   modules: {
     exports: [
-      // npm packages: maintain original import paths
-      'npm:axios',                    // Import: import axios from 'axios'
-      'npm:lodash',                   // Import: import { debounce } from 'lodash'
+      // npm packages: maintain original import path
+      'pkg:axios',                    // when importing: import axios from 'axios'
+      'pkg:lodash',                   // when importing: import { debounce } from 'lodash'
       
-      // Source modules: automatically rewrite to module paths
-      'root:src/utils/date-utils.ts',     // Import: import { formatDate } from 'shared-lib/src/utils/date-utils'
-      'root:src/components/Chart.js',     // Import: import Chart from 'shared-lib/src/components/Chart'
+      // source modules: automatically rewritten to module paths
+      'root:src/utils/date-utils.ts',     // when importing: import { formatDate } from 'shared-modules/src/utils/date-utils'
+      'root:src/components/Chart.js',     // when importing: import Chart from 'shared-modules/src/components/Chart'
       
-      // Object form - complex configurations
+      // object form - complex configuration
       {
-        'api': './src/api.ts',        // Simple mapping
-        'store': {                    // Complete configuration
-          file: './src/store.ts',
-          rewrite: true
-        }
+        'api': './src/api.ts',        // simple mapping
+        'store': './src/store.ts'     // string value
       }
     ]
   }
 } satisfies EsmxOptions;
 ```
 
-**Prefix Processing**:
-- `npm:axios` → Equivalent to `{ 'axios': { file: 'axios', rewrite: false } }`
-- `root:src/utils/date-utils.ts` → Equivalent to `{ 'src/utils/date-utils': { file: './src/utils/date-utils', rewrite: true } }`
+**Prefix Handling Notes**:
+- `pkg:axios` → maintains original package name import, suitable for third-party npm packages
+- `root:src/utils/date-utils.ts` → converted to module relative path, suitable for project internal source code modules
 
-**File Extension Support**: Supports extensions like `.js`, `.mjs`, `.cjs`, `.jsx`, `.mjsx`, `.cjsx`, `.ts`, `.mts`, `.cts`, `.tsx`, `.mtsx`, `.ctsx`, which are automatically removed during configuration.
+**File Extension Support**: For `root:` prefix configurations, supports extensions like `.js`, `.mjs`, `.cjs`, `.jsx`, `.mjsx`, `.cjsx`, `.ts`, `.mts`, `.cts`, `.tsx`, `.mtsx`, `.ctsx`, extensions are automatically removed during configuration. For `pkg:` prefix and plain string configurations, extensions are not removed.
 
 ## Advanced Configuration
 
-### Environment Differentiated Builds
+### Environment-Differentiated Builds
 
 ```typescript
 exports: [
   {
     'src/storage/db': {
-      files: {
-        client: './src/storage/indexedDB',  // Client uses IndexedDB
-        server: './src/storage/mongoAdapter' // Server uses MongoDB adapter
-      }
+      client: './src/storage/indexedDB',  // client uses IndexedDB
+      server: './src/storage/mongoAdapter' // server uses MongoDB adapter
     }
   },
   {
     'src/client-only': {
-      files: {
-        client: './src/client-feature',  // Only available on client
-        server: false                    // Not available on server
-      }
+      client: './src/client-feature',  // client-only available
+      server: false                    // server will not build
     }
   }
 ]
@@ -200,65 +214,123 @@ exports: [
 
 ```typescript
 exports: [
-  'npm:axios',
+  'pkg:axios',
   'root:src/utils/format.ts',
   {
-    'api': './src/api/index.ts',
-    'components': {
-      file: './src/components/index.ts',
-      rewrite: true
-    }
+    'api': './src/api/index.ts'
+  },
+  {
+    'components': './src/components/index.ts'
   },
   {
     'storage': {
-      files: {
-        client: './src/storage/browser.ts',
-        server: './src/storage/node.ts'
-      }
+      client: './src/storage/browser.ts',
+      server: './src/storage/node.ts'
     }
   }
 ]
 ```
 
-## Best Practices
+## Complete Example
 
-### Use Case Evaluation
+A complete example based on actual project structure:
 
-**Suitable Cases**:
-- Multiple applications using the same third-party libraries (axios, lodash, moment, etc.)
-- Need to share business component libraries or utility functions
-- Want to reduce application size and improve loading performance
-- Need to ensure library version consistency across multiple applications
+### Shared Modules (shared-modules)
 
-**Not Suitable Cases**:
-- Single application projects (no sharing needs)
-- Frequently changing experimental code
-- Scenarios requiring extremely low coupling between applications
-
-### Import Guidelines
-
-**Third-party Library Imports**:
 ```typescript
-// ✅ Recommended - Use standard library names, conforming to ecosystem standards
-import axios from 'axios';
-import { debounce } from 'lodash';
+// shared-modules/entry.node.ts
+import type { EsmxOptions } from '@esmx/core';
 
-// ❌ Not Recommended - Violates module ecosystem standards, not conducive to library replacement and maintenance
-import axios from 'shared-lib/axios';
+export default {
+  modules: {
+    exports: [
+      'pkg:@esmx/router',
+      {
+        vue: 'pkg:vue/dist/vue.runtime.esm-browser.js',
+        '@esmx/router-vue': 'pkg:@esmx/router-vue',
+        vue2: 'pkg:vue2/dist/vue.runtime.esm.js',
+        'vue2/@esmx/router-vue': 'pkg:@esmx/router-vue'
+      }
+    ],
+    scopes: {
+      'vue2/': {
+        vue: 'shared-modules/vue2'
+      }
+    }
+  }
+} satisfies EsmxOptions;
 ```
 
-**Custom Module Imports**:
-```typescript
-// ✅ Recommended - Directly use module linking paths, clearly indicating dependency source
-import { formatDate } from 'shared-lib/src/utils/date-utils';
+### Vue3 Application (vue3-app)
 
-// ❌ Invalid Configuration - imports does not support path prefix functionality
-imports: { 'components': 'shared-lib/src/components' }
-import Chart from 'components/Chart';  // This import cannot be resolved
+```typescript
+// vue3-app/entry.node.ts
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+  modules: {
+    links: {
+      'shared-modules': '../shared-modules/dist'
+    },
+    imports: {
+      'vue': 'shared-modules/vue',
+      '@esmx/router': 'shared-modules/@esmx/router',
+      '@esmx/router-vue': 'shared-modules/@esmx/router-vue'
+    },
+    exports: [
+      'root:src/routes.ts'
+    ]
+  }
+} satisfies EsmxOptions;
 ```
 
-### Configuration Principles
+### Vue2 Application (vue2-app)
 
-1. **Third-party Libraries**: Must configure `imports` mapping, use standard names for importing
-2. **Custom Modules**: Directly use complete module linking paths  
-3. **imports Purpose**: Only for third-party library standard name mapping, not directory aliases
+```typescript
+// vue2-app/entry.node.ts
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+  modules: {
+    links: {
+      'shared-modules': '../shared-modules/dist'
+    },
+    imports: {
+      'vue': 'shared-modules/vue2',
+      '@esmx/router': 'shared-modules/vue2/@esmx/router',
+      '@esmx/router-vue': 'shared-modules/vue2/@esmx/router-vue'
+    },
+    exports: [
+      'root:src/routes.ts'
+    ]
+  }
+} satisfies EsmxOptions;
+```
+
+### Aggregated Application (business-app)
+
+```typescript
+// business-app/entry.node.ts
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+  modules: {
+    links: {
+      'shared-modules': '../shared-modules/dist',
+      'vue2-app': '../vue2-app/dist',
+      'vue3-app': '../vue3-app/dist'
+    },
+    imports: {
+      '@esmx/router': 'shared-modules/vue2/@esmx/router'
+    }
+  }
+} satisfies EsmxOptions;
+```
+
+This configuration approach demonstrates:
+- **Shared Modules**: Provides multi-version framework support, achieving version isolation through scope mapping
+- **Vue3 Application**: Business application using Vue 3, only exports route configuration
+- **Vue2 Dedicated Application**: Business application dedicated to Vue 2, only exports route configuration
+- **Aggregated Application**: Unified entry point, coordinating different versions of sub-applications, including complete Vue module imports
+
+Each module's configuration conforms to actual project usage scenarios, with clear dependency relationships, distinct functional responsibilities, and accurate technical implementation.

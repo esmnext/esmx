@@ -11,7 +11,7 @@ export function parseOptions(
         for (const [name, item] of Object.entries(options.exports)) {
             exports[name] = {
                 name,
-                rewrite: !!item.rewrite,
+                pkg: !!item.pkg,
                 file: item.file,
                 identifier: `${options.name}/${name}`
             };
@@ -23,6 +23,7 @@ export function parseOptions(
         ext: options.ext ? `.${options.ext}` : '.mjs',
         exports,
         imports: options.imports ?? {},
+        scopes: options.scopes ?? {},
         injectChunkName: options.injectChunkName ?? false,
         preEntries: options.preEntries ?? [],
         deps
