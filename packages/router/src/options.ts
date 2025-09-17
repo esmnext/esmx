@@ -83,6 +83,7 @@ export function parsedOptions(
         matcher: createMatcher(routes, compiledRoutes),
         normalizeURL: options.normalizeURL ?? ((url) => url),
         fallback: options.fallback ?? fallback,
+        nextTick: options.nextTick ?? (() => {}),
         handleBackBoundary: options.handleBackBoundary ?? (() => {}),
         handleLayerClose: options.handleLayerClose ?? (() => {})
     });

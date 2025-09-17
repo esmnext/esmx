@@ -91,6 +91,7 @@ export interface RouteLocation {
     queryArray?: Record<string, string[] | undefined>;
     hash?: string;
     state?: RouteState;
+    /** When `true`, maintains current scroll position after navigation (default behavior scrolls to top) */
     keepScrollPosition?: boolean;
     statusCode?: number | null;
     layer?: RouteLayerOptions | null;
@@ -266,6 +267,7 @@ export interface RouterOptions {
     apps?: RouterMicroApp;
     normalizeURL?: (to: URL, from: URL | null) => URL;
     fallback?: RouteHandleHook;
+    nextTick?: () => Awaitable<void>;
 
     rootStyle?: Partial<CSSStyleDeclaration> | false | null;
     layer?: boolean;
