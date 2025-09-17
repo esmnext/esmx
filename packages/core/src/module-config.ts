@@ -295,11 +295,10 @@ export function parsedExportValue(value: string): ParsedModuleConfigExport {
             file: item
         };
     } else if (value.startsWith('root:')) {
-        const item = value
-            .substring('root:'.length)
-            .replace(FILE_EXT_REGEX, '');
+        const item = value.substring('root:'.length);
+        const name = item.replace(FILE_EXT_REGEX, '');
         return {
-            name: item,
+            name: name,
             pkg: false,
             file: './' + item
         };

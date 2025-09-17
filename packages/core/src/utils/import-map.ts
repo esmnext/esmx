@@ -89,7 +89,6 @@ export function getImportMap({
     const imports = buildImportsMap(manifests, getFile);
 
     const scopes = buildScopesMap(imports, manifests, getScope);
-
     return {
         imports,
         scopes

@@ -34,7 +34,7 @@
     "devDependencies": {
         "@biomejs/biome": "1.9.4",
         "@esmx/core": "workspace:*",
-        "@rspack/core": "1.5.3",
+        "@rspack/core": "1.5.4",
         "@types/node": "^24.0.0",
         "@vitest/coverage-v8": "3.2.4",
         "typescript": "5.9.2",

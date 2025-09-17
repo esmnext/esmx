@@ -16,7 +16,8 @@ head:
 ```typescript
 interface ModuleConfig {
     links?: Record<string, string>;
-    imports?: Record<string, string | Record<BuildEnvironment, string>>;
+    imports?: ModuleConfigImportMapping;
+    scopes?: Record<string, ModuleConfigImportMapping>;
     exports?: ModuleConfigExportExports;
 }
 ```
@@ -28,8 +29,13 @@ interface ModuleConfig {
 
 ### imports  
 
-* **类型**: `Record<string, string | Record<BuildEnvironment, string>>`
+* **类型**: `ModuleConfigImportMapping`
 * **描述**: 模块导入映射配置。键为本地模块标识符，值为远程模块路径。支持环境特定的配置。
+
+### scopes
+
+* **类型**: `Record<string, ModuleConfigImportMapping>`
+* **描述**: 模块范围映射配置。键为目录路径前缀，值为该范围内的导入映射配置。
 
 ### exports
 
@@ -38,39 +44,54 @@ interface ModuleConfig {
 
 ## 类型定义
 
+### ModuleConfigImportMapping
+
+```typescript
+type ModuleConfigImportMapping = Record<
+    string,
+    string | Record<BuildEnvironment, string>
+>;
+```
+
+导入映射配置类型，支持字符串和环境特定的配置。
+
 ### ModuleConfigExportExports
 
 ```typescript
-type ModuleConfigExportExports = Array<string | Record<string, string | ModuleConfigExportObject>>;
+type ModuleConfigExportExports = ModuleConfigExportExport[];
 ```
 
-导出配置的数组类型，支持混合数组（字符串和对象）形式。
+导出配置的数组类型，支持字符串和导出对象的混合数组。
+
+### ModuleConfigExportExport
+
+```typescript
+type ModuleConfigExportExport = string | ModuleConfigExportObject;
+```
+
+导出配置项类型，支持字符串和导出对象两种形式。
 
 ### ModuleConfigExportObject
 
 ```typescript
-type ModuleConfigExportObject = {
-    file?: string;
-    files?: Record<BuildEnvironment, string | false>;
-    pkg?: boolean;
-};
+type ModuleConfigExportObject = Record<
+    string,
+    ModuleConfigExportObjectValue
+>;
 ```
 
-#### file
+导出对象配置类型，键为导出名称，值为导出配置值。
 
-* **类型**: `string`
-* **描述**: 输入文件路径，相对于项目根目录。
+### ModuleConfigExportObjectValue
 
-#### files
+```typescript
+type ModuleConfigExportObjectValue =
+    | string
+    | Record<BuildEnvironment, string | boolean>;
+```
 
-* **类型**: `Record<BuildEnvironment, string | false>`
-* **描述**: 环境特定的输入文件配置。支持客户端和服务端差异化构建。
+导出配置值类型，支持字符串和环境特定的配置。
 
-#### pkg
-
-* **类型**: `boolean`
-* **默认值**: `true`
-* **描述**: 是否重写模块内的导入路径。
 
 ### BuildEnvironment
 
@@ -88,29 +109,47 @@ type BuildEnvironment = 'client' | 'server';
 interface ParsedModuleConfig {
     name: string;
     root: string;
-    links: Record<
-        string,
-        {
-            name: string;
-            root: string;
-            client: string;
-            clientManifestJson: string;
-            server: string;
-            serverManifestJson: string;
-        }
-    >;
+    links: Record<string, ParsedModuleConfigLink>;
     environments: {
-        client: {
-            imports: Record<string, string>;
-            exports: ParsedModuleConfigExports;
-        };
-        server: {
-            imports: Record<string, string>;
-            exports: ParsedModuleConfigExports;
-        };
+        client: ParsedModuleConfigEnvironment;
+        server: ParsedModuleConfigEnvironment;
     };
 }
 ```
+
+### ParsedModuleConfigEnvironment
+
+```typescript
+interface ParsedModuleConfigEnvironment {
+    imports: Record<string, string>;
+    exports: ParsedModuleConfigExports;
+    scopes: Record<string, Record<string, string>>;
+}
+```
+
+### ParsedModuleConfigLink
+
+```typescript
+interface ParsedModuleConfigLink {
+    name: string;
+    root: string;
+    client: string;
+    clientManifestJson: string;
+    server: string;
+    serverManifestJson: string;
+}
+```
+
+### ParsedModuleConfigExports
+
+```typescript
+type ParsedModuleConfigExports = Record<
+    string,
+    ParsedModuleConfigExport
+>;
+```
+
+解析后的导出配置记录类型，键为导出名称，值为导出配置对象。
 
 ### ParsedModuleConfigExport
 
@@ -120,131 +159,4 @@ interface ParsedModuleConfigExport {
     file: string;
     pkg: boolean;
 }
-```
-
-## 前缀语法糖
-
-在 `exports` 数组形式的字符串项中支持以下前缀：
-
-### pkg: 前缀
-
-* **格式**: `'pkg:packageName'`
-* **处理**: 自动设置 `pkg: false`，保持原始导入路径
-* **示例**: `'pkg:axios'` → `{ file: 'axios', pkg: false }`
-
-### root: 前缀  
-
-* **格式**: `'root:path/to/file.ext'`
-* **处理**: 自动设置 `pkg: true`，去除文件扩展名，添加 `./` 前缀
-* **示例**: `'root:src/utils/format.ts'` → `{ file: './src/utils/format', pkg: true }`
-
-## 默认导出项
-
-框架自动为每个模块添加以下默认导出项：
-
-```typescript
-{
-  'src/entry.client': {
-    files: {
-      client: './src/entry.client',
-      server: false
-    }
-  },
-  'src/entry.server': {
-    files: {
-      client: false,
-      server: './src/entry.server'
-    }
-  }
-}
-```
-
-## 示例
-
-### 基础配置
-
-```typescript
-export default {
-  modules: {
-    links: {
-      'shared-lib': '../shared-lib/dist'
-    },
-    imports: {
-      'axios': 'shared-lib/axios'
-    },
-    exports: [
-      'pkg:axios',
-      'root:src/utils/format.ts'
-    ]
-  }
-} satisfies EsmxOptions;
-```
-
-### 数组形式（推荐）
-
-```typescript
-exports: [
-  'pkg:axios',
-  'root:src/utils/format.ts',
-  {
-    'api-client': './src/api/client.ts',
-    'utils': {
-      file: './src/utils/index.ts',
-      pkg: true
-    }
-  }
-]
-```
-
-### 环境特定的导入配置
-
-```typescript
-imports: {
-  // 标准导入映射（适用于两个环境）
-  'axios': 'shared-lib/axios',
-  
-  // 环境特定的导入映射
-  'storage': {
-    client: 'shared-lib/storage/client',
-    server: 'shared-lib/storage/server'
-  },
-  
-  // 另一个环境特定的示例
-  'config': {
-    client: 'shared-lib/config/browser',
-    server: 'shared-lib/config/node'
-  }
-}
-```
-
-### 环境特定的导出配置
-
-```typescript
-exports: [
-  {
-    'storage': {
-      files: {
-        client: './src/storage/indexedDB.ts',
-        server: './src/storage/filesystem.ts'
-      }
-    }
-  }
-]
-```
-
-### 对象形式（数组中的对象元素）
-
-```typescript
-exports: [
-  {
-    'utils': './src/utils.ts',
-    'api': './src/api.ts'
-  },
-  {
-    'components': {
-      file: './src/components/index.ts',
-      pkg: true
-    }
-  }
-]
 ```

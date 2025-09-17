@@ -605,7 +605,7 @@ describe('Module Config Parser', () => {
             const result = parsedExportValue('root:src/component.tsx');
             expect(result.name).toBe('src/component');
             expect(result.pkg).toBe(false);
-            expect(result.file).toBe('./src/component');
+            expect(result.file).toBe('./src/component.tsx');
         });
 
         it('should process regular file exports', () => {
@@ -626,7 +626,7 @@ describe('Module Config Parser', () => {
             const result = parsedExportValue('root:src/component.tsx');
             expect(result.name).toBe('src/component');
             expect(result.pkg).toBe(false);
-            expect(result.file).toBe('./src/component');
+            expect(result.file).toBe('./src/component.tsx');
         });
 
         it('should handle root: prefixed values without extensions', () => {
@@ -665,7 +665,7 @@ describe('Module Config Parser', () => {
         it('should handle file extensions correctly in root: prefix', () => {
             const result = parsedExportValue('root:src/component.tsx');
             expect(result.name).toBe('src/component');
-            expect(result.file).toBe('./src/component');
+            expect(result.file).toBe('./src/component.tsx');
         });
 
         it('should handle nested paths in pkg: prefix', () => {

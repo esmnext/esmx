@@ -10,7 +10,7 @@ export function initConfig(options: RspackOptionsNormalized) {
         chunkLoading: 'import',
         workerChunkLoading: 'import',
         library: {
-            type: 'module'
+            type: isProduction ? 'modern-module' : 'module'
         }
     };
     options.experiments = {
@@ -33,12 +33,21 @@ export function initConfig(options: RspackOptionsNormalized) {
         }
     };
     options.optimization = {
-        ...options.optimization,
+        ...options.optimization
         // See detail: https://github.com/web-infra-dev/rspack/issues/11578
         // runtimeChunk: 'single',
         // splitChunks: {
         //     chunks: 'all'
         // },
-        avoidEntryIife: isProduction
     };
+    if (options.mode === 'production') {
+        options.output.library = {
+            type: 'modern-module'
+        };
+        options.optimization.avoidEntryIife = true;
+    } else {
+        options.output.library = {
+            type: 'module'
+        };
+    }
 }

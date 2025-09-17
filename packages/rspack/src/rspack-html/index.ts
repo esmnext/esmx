@@ -183,7 +183,7 @@ export interface RspackHtmlAppOptions extends RspackAppOptions {
      * // Per-build-target configuration
      * target: {
      *   client: 'modern',
-     *   server: ['node>=18']
+     *   server: ['node>=24']
      * }
      * ```
      */
@@ -293,6 +293,7 @@ function configureTypeScriptRule(
     buildTarget: BuildTarget,
     options: RspackHtmlAppOptions
 ): void {
+    const targets = getTargetSetting(options?.target, buildTarget);
     chain.module
         .rule('typescript')
         .test(/\.(ts|mts)$/i)
@@ -302,7 +303,7 @@ function configureTypeScriptRule(
         )
         .options({
             env: {
-                targets: getTargetSetting(options?.target, buildTarget),
+                targets,
                 ...options?.swcLoader?.env
             },
             jsc: {
@@ -382,7 +383,7 @@ function configureCssRules(
         configureCssInJS(chain, esmx, options);
         return;
     }
-    configureCssExtract(chain, esmx, options);
+    configureCssExtract(chain, options);
 }
 
 function configureCssInJS(
@@ -454,7 +455,6 @@ function configureCssInJS(
 
 function configureCssExtract(
     chain: RspackChain,
-    esmx: Esmx,
     options: RspackHtmlAppOptions
 ): void {
     chain.set('experiments', {

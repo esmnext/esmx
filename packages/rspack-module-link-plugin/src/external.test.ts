@@ -88,18 +88,25 @@ describe('createExternals', () => {
             const { init, match } = createExternals(opts);
 
             await init(mockResolvePath);
-            const mainResult = await match('main', '/some/context');
+            const mainResult = await match(
+                'main',
+                '/some/context',
+                mockResolvePath
+            );
             const mainResolvedResult = await match(
                 '/resolved/path/main.ts',
-                '/some/context'
+                '/some/context',
+                mockResolvePath
             );
             const utilsResult = await match(
                 'test-module/utils',
-                '/some/context'
+                '/some/context',
+                mockResolvePath
             );
             const utilsResolvedResult = await match(
                 '/resolved/path/utils.ts',
-                '/some/context'
+                '/some/context',
+                mockResolvePath
             );
 
             expect(mockResolvePath).toHaveBeenCalledTimes(2);
@@ -121,8 +128,16 @@ describe('createExternals', () => {
             const { init, match } = createExternals(opts);
 
             await init(mockResolvePath);
-            const reactResult = await match('react', '/some/context');
-            const vueResult = await match('vue', '/some/context');
+            const reactResult = await match(
+                'react',
+                '/some/context',
+                mockResolvePath
+            );
+            const vueResult = await match(
+                'vue',
+                '/some/context',
+                mockResolvePath
+            );
 
             expect(reactResult).toBe('react');
             expect(vueResult).toBe('vue');
@@ -146,10 +161,15 @@ describe('createExternals', () => {
             await init(mockResolvePath);
             mockResolvePath.mockClear();
 
-            const mainResult = await match('main', '/some/context');
+            const mainResult = await match(
+                'main',
+                '/some/context',
+                mockResolvePath
+            );
             const notFoundResult = await match(
                 '/resolved/path/main.ts',
-                '/some/context'
+                '/some/context',
+                mockResolvePath
             );
 
             expect(mockResolvePath).toHaveBeenCalledTimes(1);
@@ -159,14 +179,21 @@ describe('createExternals', () => {
     });
 
     describe('match function', () => {
-        it('should throw error when match is called before initialization', async () => {
+        it('should work without initialization when resolvePath is provided', async () => {
             const opts = createOptions();
             const { match } = createExternals(opts);
+            const mockResolvePath = vi.fn().mockResolvedValue(null);
 
-            await expect(
-                match('some-request', '/some/context')
-            ).rejects.toThrow(
-                'External handler not initialized. Call init() first.'
+            const result = await match(
+                'some-request',
+                '/some/context',
+                mockResolvePath
+            );
+
+            expect(result).toBeNull();
+            expect(mockResolvePath).toHaveBeenCalledWith(
+                'some-request',
+                '/some/context'
             );
         });
 
@@ -176,7 +203,7 @@ describe('createExternals', () => {
             const { init, match } = createExternals(opts);
 
             await init(mockResolvePath);
-            const result = await match('', '/some/context');
+            const result = await match('', '/some/context', mockResolvePath);
 
             expect(result).toBeNull();
         });
@@ -192,15 +219,18 @@ describe('createExternals', () => {
             await init(mockResolvePath);
             const exactMatchResult = await match(
                 'dependency-a',
-                '/some/context'
+                '/some/context',
+                mockResolvePath
             );
             const prefixMatchResult = await match(
                 'dependency-b/sub/module',
-                '/some/context'
+                '/some/context',
+                mockResolvePath
             );
             const noMatchResult = await match(
                 'other-dependency',
-                '/some/context'
+                '/some/context',
+                mockResolvePath
             );
 
             expect(exactMatchResult).toBe('dependency-a');
@@ -237,7 +267,8 @@ describe('createExternals', () => {
 
             const resolvedResult = await match(
                 '/resolved/path/main.ts',
-                '/some/context'
+                '/some/context',
+                mockResolvePath
             );
             expect(resolvedResult).toBe('main');
         });
@@ -272,7 +303,11 @@ describe('createExternals', () => {
             await init(mockResolvePath);
             mockResolvePath.mockClear();
 
-            const directResult = await match('direct-match', '/some/context');
+            const directResult = await match(
+                'direct-match',
+                '/some/context',
+                mockResolvePath
+            );
 
             expect(directResult).toBe('direct-match');
             expect(mockResolvePath).not.toHaveBeenCalled();
@@ -310,15 +345,36 @@ describe('createExternals', () => {
 
             await init(mockResolvePath);
 
-            const depResult = await match('external-dep', '/context');
-            const depSubResult = await match('external-dep/sub', '/context');
-            const importResult = await match('import-lib', '/context');
+            const depResult = await match(
+                'external-dep',
+                '/context',
+                mockResolvePath
+            );
+            const depSubResult = await match(
+                'external-dep/sub',
+                '/context',
+                mockResolvePath
+            );
+            const importResult = await match(
+                'import-lib',
+                '/context',
+                mockResolvePath
+            );
             const exportResult = await match(
                 'test-module/export-lib',
-                '/context'
+                '/context',
+                mockResolvePath
             );
-            const resolvedResult = await match('relative/path', '/context');
-            const notFoundResult = await match('unknown-module', '/context');
+            const resolvedResult = await match(
+                'relative/path',
+                '/context',
+                mockResolvePath
+            );
+            const notFoundResult = await match(
+                'unknown-module',
+                '/context',
+                mockResolvePath
+            );
 
             expect(depResult).toBe('external-dep');
             expect(depSubResult).toBe('external-dep/sub');
