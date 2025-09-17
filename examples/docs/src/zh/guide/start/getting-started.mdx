@@ -1,79 +1,98 @@
 ---
 titleSuffix: Esmx 框架快速入门指南
-description: Esmx 框架快速入门指南，帮助你从零开始搭建项目，包括项目初始化、框架版本选择以及 AI 辅助开发等内容。
+description: 使用 create-esmx 快速创建 Esmx 项目，支持多种 Vue 技术栈模板的一键初始化。
 head:
   - - meta
     - name: keywords
-      content: Esmx框架, 快速开始, 项目初始化, Vue开发, HTML开发, AI辅助
+      content: Esmx, 快速开始, create-esmx, 项目创建, Vue, 微前端
 ---
+
+import { PackageManagerTabs } from '@theme';
 
 # 快速开始
 
-## 项目初始化
+## 创建项目
 
-创建并初始化一个新的 Esmx 项目，请按照以下步骤操作：
+运行以下命令创建 Esmx 项目：
+
+<PackageManagerTabs command="create esmx my-app" />
+
+## 选择模板
+
+运行命令后，你会看到模板选择界面：
+
+### 可用模板
+
+| 模板 | 描述 |
+|------|------|
+| **shared-modules** | 微前端共享模块解决方案 |
+| **vue-csr** | Vue 3 客户端渲染 |
+| **vue-ssr** | Vue 3 服务端渲染 |
+| **vue2-csr** | Vue 2.7 客户端渲染 |
+| **vue2-ssr** | Vue 2.7 服务端渲染 |
+
+## 指定模板
+
+你也可以通过 `-t` 或 `--template` 选项直接指定模板，跳过交互式选择：
 
 ```bash
-mkdir your-app-name
-cd your-app-name
+npm create esmx my-app --template vue-csr
 ```
 
-## 框架版本选择
+## 启动开发服务器
 
-Esmx 框架提供了多个技术栈版本，每个版本都针对不同的应用场景进行了优化。请根据项目需求选择合适的版本：
+创建项目后，进入目录启动开发服务器：
 
-### HTML
+```bash
+cd my-app
+npm install
+npm run dev
+```
 
-适用于追求极简架构的项目：
+开发服务器将在 `http://localhost:3000` 启动。
 
-- 零外部依赖，启动即用
-- 原生 JavaScript 开发体验
-- 适合构建静态网站和轻量级应用
-- 支持渐进式功能扩展
+## 生产环境构建
 
-[查看 HTML 版本详细文档](../frameworks/html.md)
+构建生产环境版本：
 
-### Vue2
+```bash
+npm run build
+npm run start
+```
 
-适用于企业级应用开发：
+## 项目结构
 
-- 完整的 TypeScript 支持
-- 丰富的第三方组件生态
-- 成熟的开发工具链
-- 经过生产环境验证的稳定性
+创建的项目结构如下：
 
-[查看 Vue2 版本详细文档](../frameworks/vue2.md)
+```text
+my-app/
+├── src/                            # 源代码
+│   ├── app.vue                     # 应用组件
+│   ├── create-app.ts               # 应用创建函数
+│   ├── entry.client.ts             # 客户端入口
+│   ├── entry.node.ts               # 开发服务器入口
+│   ├── entry.server.ts             # 服务端渲染入口
+│   └── components/                 # 组件目录
+│       └── hello-world.vue
+├── tsconfig.json                   # TypeScript 配置
+├── package.json                    # 项目依赖和脚本
+└── README.md                       # 项目说明
+```
 
-### Vue3
+## 高级选项
 
-适用于现代化 Web 应用开发：
+### 覆盖现有目录
 
-- 基于 Proxy 的响应式系统
-- 组合式 API 支持
-- 更优的运行时性能
-- 更小的打包体积
+使用 `--force` 或 `-f` 选项强制覆盖现有目录：
 
-[查看 Vue3 版本详细文档](../frameworks/vue3.md)
+```bash
+npm create esmx my-app --force
+```
 
-### Preact+HTM
+### 指定项目名称
 
-适用于追求轻量级和高性能的项目：
+使用 `--name` 或 `-n` 选项指定项目名称：
 
-- 极小的运行时体积（3KB）
-- 原生 JavaScript 模板语法
-- 与 React 兼容的 API
-- 优秀的性能表现
-
-[查看 Preact+HTM 版本详细文档](../frameworks/preact-htm.md)
-
-## AI 辅助开发
-
-Esmx 框架提供了 AI 辅助开发能力，可以显著提升开发效率：
-
-1. 选择适合的框架版本文档
-2. 将文档内容提供给 AI 助手
-3. AI 将自动生成项目骨架和配置文件
-
-:::tip 提示
-AI 辅助开发不仅能加快项目初始化速度，还能确保项目结构符合最佳实践。
-:::
+```bash
+npm create esmx my-app --name my-project
+```

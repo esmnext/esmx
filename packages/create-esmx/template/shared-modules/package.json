@@ -1,7 +1,7 @@
 {
     "name": "{{projectName}}",
     "version": "1.0.0",
-    "description": "Shared modules for the project",
+    "description": "Shared modules solution for micro-frontend architecture",
     "type": "module",
     "private": true,
     "scripts": {

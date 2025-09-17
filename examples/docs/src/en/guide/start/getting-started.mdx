@@ -1,79 +1,97 @@
 ---
 titleSuffix: Esmx Framework Quick Start Guide
-description: Esmx Framework Quick Start Guide to help you build projects from scratch, including project initialization, framework version selection, and AI-assisted development.
+description: Quickly create Esmx projects using create-esmx, supporting one-click initialization for various Vue technology stack templates.
 head:
   - - meta
     - name: keywords
-      content: Esmx framework, Quick start, Project initialization, Vue development, HTML development, AI assistance
+      content: Esmx, Quick Start, create-esmx, Project Creation, Vue, Micro Frontend
 ---
+
+import { PackageManagerTabs } from '@theme';
 
 # Quick Start
 
-## Project Initialization
+## Create Project
 
-To create and initialize a new Esmx project, follow these steps:
+Run the following command to create an Esmx project:
+
+<PackageManagerTabs command="create esmx my-app" />
+
+## Select Template
+
+After running the command, you will see the template selection interface:
+
+### Available Templates
+
+| Template | Description |
+|----------|-------------|
+| **shared-modules** | Micro frontend shared modules solution |
+| **vue-csr** | Vue 3 Client-Side Rendering |
+| **vue-ssr** | Vue 3 Server-Side Rendering |
+| **vue2-csr** | Vue 2.7 Client-Side Rendering |
+| **vue2-ssr** | Vue 2.7 Server-Side Rendering |
+
+## Specify Template
+
+You can also directly specify a template using the `-t` or `--template` option to skip the interactive selection:
 
 ```bash
-mkdir your-app-name
-cd your-app-name
+npm create esmx my-app --template vue-csr
 ```
 
-## Framework Version Selection
+## Start Development Server
 
-The Esmx framework provides multiple technology stack versions, each optimized for different application scenarios. Choose the appropriate version based on your project requirements:
+After creating the project, navigate to the directory and start the development server:
 
-### HTML
+```bash
+cd my-app
+npm install
+npm run dev
+```
 
-Ideal for projects pursuing minimal architecture:
+The development server will start at `http://localhost:3000`.
 
-- Zero external dependencies, ready to use immediately
-- Native JavaScript development experience
-- Suitable for building static websites and lightweight applications
-- Supports progressive feature expansion
+## Production Build
 
-[View HTML version detailed documentation](../frameworks/html.md)
+Build the production version:
 
-### Vue2
+```bash
+npm run build
+npm run start
+```
 
-Designed for enterprise application development:
+## Project Structure
 
-- Full TypeScript support
-- Rich third-party component ecosystem
-- Mature development toolchain
-- Production-proven stability
+The created project structure is as follows:
 
-[View Vue2 version detailed documentation](../frameworks/vue2.md)
+```text
+my-app/
+├── src/                            # Source code
+│   ├── app.vue                     # App component
+│   ├── create-app.ts               # App creation function
+│   ├── entry.client.ts             # Client entry
+│   ├── entry.node.ts               # Development server entry
+│   ├── entry.server.ts             # Server-side rendering entry
+│   └── components/                 # Components directory
+│       └── hello-world.vue
+├── tsconfig.json                   # TypeScript configuration
+├── package.json                    # Project dependencies and scripts
+└── README.md                       # Project description
+```
 
-### Vue3
+## Advanced Options
 
-Optimized for modern web applications:
+### Override Existing Directory
 
-- Proxy-based reactivity system
-- Composition API support
-- Improved runtime performance
-- Smaller bundle size
+Use the `--force` or `-f` option to force override an existing directory:
 
-[View Vue3 version detailed documentation](../frameworks/vue3.md)
+```bash
+npm create esmx my-app --force
+```
 
-### Preact+HTM
+### Specify Project Name
 
-Perfect for lightweight and high-performance projects:
+Use the `--name` or `-n` option to specify the project name:
 
-- Minimal runtime footprint (3KB)
-- Native JavaScript template syntax
-- React-compatible API
-- Excellent performance
-
-[View Preact+HTM version detailed documentation](../frameworks/preact-htm.md)
-
-## AI-Assisted Development
-
-The Esmx framework provides AI-assisted development capabilities to significantly improve efficiency:
-
-1. Select the appropriate framework version documentation
-2. Provide the documentation content to the AI assistant
-3. The AI will automatically generate project skeletons and configuration files
-
-:::tip Tip
-AI-assisted development not only accelerates project initialization but also ensures the project structure follows best practices.
-:::
+```bash
+npm create esmx my-app --name my-project
