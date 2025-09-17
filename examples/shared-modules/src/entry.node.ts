@@ -44,7 +44,6 @@ export default {
     async devApp(esmx) {
         return import('@esmx/rspack').then((m) =>
             m.createRspackHtmlApp(esmx, {
-                minimize: false,
                 chain(context) {
                     // Custom Rspack configuration
                 }
