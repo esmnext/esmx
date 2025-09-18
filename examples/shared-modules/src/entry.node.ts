@@ -11,8 +11,8 @@ export default {
                 // ========== Vue framework shared module configuration ==========
                 // Business code: import Vue from 'vue' (defaults to Vue 3, shared from common modules)
                 vue: {
-                    client: 'pkg:vue/dist/vue.runtime.esm-browser.js', // Vue 3 production
-                    server: 'pkg:vue/dist/vue.runtime.esm-browser.prod.js' // Vue 3 development
+                    client: 'pkg:vue/dist/vue.runtime.esm-browser.prod.js', // Vue 3 production
+                    server: 'pkg:vue/dist/vue.runtime.esm-browser.js' // Vue 3 development
                 },
                 'vue/index': 'root:src/vue/index.ts',
                 '@esmx/router-vue': 'pkg:@esmx/router-vue', // Vue 3 router
