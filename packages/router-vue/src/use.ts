@@ -294,7 +294,7 @@ export function useProvideRouter(router: Router): void {
  * <template>
  *   <a
  *     v-bind="link.attributes"
- *     v-on="link.getEventHandlers()"
+ *     v-on="link.createEventHandlers()"
  *     :class="{ active: link.isActive }"
  *   >
  *     Home

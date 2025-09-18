@@ -1,9 +1,4 @@
-import type {
-    RouteLayerOptions,
-    RouteLocationInput,
-    RouteMatchType,
-    RouterLinkType
-} from '@esmx/router';
+import type { RouterLinkProps } from '@esmx/router';
 import { type PropType, defineComponent, h } from 'vue';
 import { useLink } from './use';
 import { isVue3 } from './util';
@@ -66,7 +61,7 @@ export const RouterLink = defineComponent({
          * @example '/home' | { path: '/user', query: { id: '123' } }
          */
         to: {
-            type: [String, Object] as PropType<RouteLocationInput>,
+            type: [String, Object] as PropType<RouterLinkProps['to']>,
             required: true
         },
         /**
@@ -74,12 +69,18 @@ export const RouterLink = defineComponent({
          * @default 'push'
          * @example 'push' | 'replace' | 'pushWindow' | 'replaceWindow' | 'pushLayer'
          */
-        type: { type: String as PropType<RouterLinkType>, default: 'push' },
+        type: {
+            type: String as PropType<RouterLinkProps['type']>,
+            default: 'push'
+        },
         /**
          * @deprecated Use 'type="replace"' instead
          * @example :replace={true} → type="replace"
          */
-        replace: { type: Boolean, default: false },
+        replace: {
+            type: Boolean as PropType<RouterLinkProps['replace']>,
+            default: false
+        },
         /**
          * How to match the active state.
          * - 'include': Match if current route includes this path
@@ -87,19 +88,24 @@ export const RouterLink = defineComponent({
          * - 'route': Match based on route configuration
          * @default 'include'
          */
-        exact: { type: String as PropType<RouteMatchType>, default: 'include' },
+        exact: {
+            type: String as PropType<RouterLinkProps['exact']>,
+            default: 'include'
+        },
         /**
          * CSS class to apply when link is active (route matches).
          * @example 'nav-active' | 'selected'
          */
-        activeClass: { type: String },
+        activeClass: {
+            type: String as PropType<RouterLinkProps['activeClass']>
+        },
         /**
          * Event(s) that trigger navigation. Can be string or array of strings.
          * @default 'click'
          * @example 'click' | ['click', 'mouseenter']
          */
         event: {
-            type: [String, Array] as PropType<string | string[]>,
+            type: [String, Array] as PropType<RouterLinkProps['event']>,
             default: 'click'
         },
         /**
@@ -107,41 +113,23 @@ export const RouterLink = defineComponent({
          * @default 'a'
          * @example 'button' | 'div' | 'span'
          */
-        tag: { type: String, default: 'a' },
+        tag: { type: String as PropType<RouterLinkProps['tag']>, default: 'a' },
         /**
          * Layer options for layer-based navigation.
          * Only used when type='pushLayer'.
          * @example { zIndex: 1000, autoPush: false, routerOptions: { mode: 'memory' } }
          */
-        layerOptions: { type: Object as PropType<RouteLayerOptions> },
+        layerOptions: {
+            type: Object as PropType<RouterLinkProps['layerOptions']>
+        },
         /**
-         * Custom event handler to control navigation behavior.
-         * Should return `true` to allow router to navigate, otherwise to prevent it.
+         * Custom navigation handler called before navigation.
+         * Receives the event object and the event name that triggered navigation.
          *
          * @Note you need to call `e.preventDefault()` to prevent default browser navigation.
-         * @default
-         *
-         * (event: Event & Partial<MouseEvent>): boolean => {
-         *   // don't redirect with control keys
-         *   if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) return false;
-         *   // don't redirect when preventDefault called
-         *   if (e.defaultPrevented) return false;
-         *   // don't redirect on right click
-         *   if (e.button !== undefined && e.button !== 0) return false;
-         *   // don't redirect if `target="_blank"`
-         *   const target = e.currentTarget?.getAttribute?.('target') ?? '';
-         *   if (/\b_blank\b/i.test(target)) return false;
-         *   // Prevent default browser navigation to enable SPA routing
-         *   // Note: this may be a Weex event which doesn't have this method
-         *   if (e.preventDefault) e.preventDefault();
-         *
-         *  return true;
-         * }
          */
-        eventHandler: {
-            type: Function as PropType<
-                (event: Event) => boolean | undefined | void
-            >
+        beforeNavigate: {
+            type: Function as PropType<RouterLinkProps['beforeNavigate']>
         }
     },
 
@@ -155,7 +143,7 @@ export const RouterLink = defineComponent({
                     {
                         ...link.attributes,
                         ...context.attrs,
-                        ...link.getEventHandlers(
+                        ...link.createEventHandlers(
                             (name) =>
                                 `on${name.charAt(0).toUpperCase()}${name.slice(1)}`
                         )
@@ -174,7 +162,7 @@ export const RouterLink = defineComponent({
                         ...context.attrs
                     },
                     class: className,
-                    on: link.getEventHandlers()
+                    on: link.createEventHandlers()
                 },
                 context.slots.default?.()
             );

@@ -236,7 +236,7 @@ describe('router-link.ts - RouterLink DOM Environment Tests', () => {
             };
 
             const result = createLinkResolver(router, props);
-            const handlers = result.getEventHandlers();
+            const handlers = result.createEventHandlers();
 
             expect(handlers).toHaveProperty('click');
             expect(typeof handlers.click).toBe('function');
@@ -249,7 +249,7 @@ describe('router-link.ts - RouterLink DOM Environment Tests', () => {
             };
 
             const result = createLinkResolver(router, props);
-            const handlers = result.getEventHandlers();
+            const handlers = result.createEventHandlers();
 
             expect(handlers).toHaveProperty('mousedown');
             expect(typeof handlers.mousedown).toBe('function');
@@ -262,7 +262,7 @@ describe('router-link.ts - RouterLink DOM Environment Tests', () => {
             };
 
             const result = createLinkResolver(router, props);
-            const handlers = result.getEventHandlers();
+            const handlers = result.createEventHandlers();
 
             expect(handlers).toHaveProperty('click');
             expect(handlers).toHaveProperty('keydown');
@@ -277,7 +277,7 @@ describe('router-link.ts - RouterLink DOM Environment Tests', () => {
             };
 
             const result = createLinkResolver(router, props);
-            const handlers = result.getEventHandlers();
+            const handlers = result.createEventHandlers();
 
             expect(Object.keys(handlers)).toEqual(['click', 'keydown']);
         });
@@ -289,7 +289,7 @@ describe('router-link.ts - RouterLink DOM Environment Tests', () => {
             };
 
             const result = createLinkResolver(router, props);
-            const handlers = result.getEventHandlers(
+            const handlers = result.createEventHandlers(
                 (eventType) =>
                     `on${eventType.charAt(0).toUpperCase() + eventType.slice(1)}`
             );
@@ -306,7 +306,7 @@ describe('router-link.ts - RouterLink DOM Environment Tests', () => {
             };
 
             const result = createLinkResolver(router, props);
-            const handlers = result.getEventHandlers();
+            const handlers = result.createEventHandlers();
 
             expect(Object.keys(handlers)).toEqual(['click']);
         });
@@ -318,7 +318,7 @@ describe('router-link.ts - RouterLink DOM Environment Tests', () => {
             };
             const result = createLinkResolver(router, props);
 
-            const handlers = result.getEventHandlers(
+            const handlers = result.createEventHandlers(
                 (type) => `on${type.charAt(0).toUpperCase()}${type.slice(1)}`
             );
 
@@ -335,7 +335,7 @@ describe('router-link.ts - RouterLink DOM Environment Tests', () => {
             };
             const result = createLinkResolver(router, props);
 
-            const handlers = result.getEventHandlers(); // Default transform
+            const handlers = result.createEventHandlers(); // Default transform
 
             expect(handlers).toHaveProperty('click');
             expect(handlers).toHaveProperty('mouseenter');
@@ -774,7 +774,7 @@ describe('router-link.ts - RouterLink DOM Environment Tests', () => {
             };
 
             const result = createLinkResolver(router, props);
-            const handlers = result.getEventHandlers(
+            const handlers = result.createEventHandlers(
                 (name) => `on${name.charAt(0).toUpperCase() + name.slice(1)}`
             );
 
@@ -865,7 +865,7 @@ describe('router-link.ts - RouterLink DOM Environment Tests', () => {
             };
 
             const result = createLinkResolver(router, props);
-            const handlers = result.getEventHandlers();
+            const handlers = result.createEventHandlers();
 
             expect(result.tag).toBe('a'); // Default value
             expect(Object.keys(handlers)).toEqual(['click']); // Default event
@@ -899,7 +899,7 @@ describe('router-link.ts - RouterLink DOM Environment Tests', () => {
             };
 
             const result = createLinkResolver(router, props);
-            const handlers = result.getEventHandlers();
+            const handlers = result.createEventHandlers();
 
             expect(Object.keys(handlers)).toHaveLength(100);
             expect(handlers).toHaveProperty('event0');
@@ -946,5 +946,536 @@ describe('router-link.ts - RouterLink DOM Environment Tests', () => {
 
     afterEach(() => {
         router.destroy();
+    });
+
+    describe('🎯 beforeNavigate Callback', () => {
+        it('should call beforeNavigate with event and eventType', async () => {
+            const beforeNavigateSpy = vi.fn();
+            const props: RouterLinkProps = {
+                to: '/about',
+                beforeNavigate: beforeNavigateSpy
+            };
+
+            const result = createLinkResolver(router, props);
+            const handlers = result.createEventHandlers();
+            const event = new MouseEvent('click');
+
+            await handlers.click(event);
+
+            expect(beforeNavigateSpy).toHaveBeenCalledWith(event, 'click');
+        });
+
+        it('should call beforeNavigate with correct eventName parameter', async () => {
+            const beforeNavigateSpy = vi.fn();
+            const props: RouterLinkProps = {
+                to: '/about',
+                event: 'keydown',
+                beforeNavigate: beforeNavigateSpy
+            };
+
+            const result = createLinkResolver(router, props);
+            const handlers = result.createEventHandlers();
+            const event = new MouseEvent('keydown');
+
+            await handlers.keydown(event);
+
+            expect(beforeNavigateSpy).toHaveBeenCalledWith(event, 'keydown');
+        });
+
+        it('should not call beforeNavigate when using navigate function directly', async () => {
+            const beforeNavigateSpy = vi.fn();
+            const props: RouterLinkProps = {
+                to: '/about',
+                beforeNavigate: beforeNavigateSpy
+            };
+
+            const result = createLinkResolver(router, props);
+            const event = new MouseEvent('click');
+
+            await result.navigate(event);
+
+            expect(beforeNavigateSpy).not.toHaveBeenCalled();
+        });
+
+        it('should not navigate if beforeNavigate calls preventDefault', async () => {
+            const routerPushSpy = vi
+                .spyOn(router, 'push')
+                .mockResolvedValue(router.route);
+            const props: RouterLinkProps = {
+                to: '/about',
+                beforeNavigate: (e) => e.preventDefault()
+            };
+
+            const result = createLinkResolver(router, props);
+            const handlers = result.createEventHandlers();
+            const event = new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true
+            });
+
+            await handlers.click(event);
+
+            expect(routerPushSpy).not.toHaveBeenCalled();
+            routerPushSpy.mockRestore();
+        });
+
+        it('should navigate normally if beforeNavigate does not call preventDefault', async () => {
+            const routerPushSpy = vi
+                .spyOn(router, 'push')
+                .mockResolvedValue(router.route);
+            const props: RouterLinkProps = {
+                to: '/about',
+                beforeNavigate: () => {}
+            };
+
+            const result = createLinkResolver(router, props);
+            const handlers = result.createEventHandlers();
+            const event = new MouseEvent('click');
+
+            await handlers.click(event);
+
+            expect(routerPushSpy).toHaveBeenCalledWith('/about');
+            routerPushSpy.mockRestore();
+        });
+
+        it('should propagate beforeNavigate errors to event handler caller', async () => {
+            const error = new Error('Navigation cancelled');
+            const props: RouterLinkProps = {
+                to: '/about',
+                beforeNavigate: () => {
+                    throw error;
+                }
+            };
+
+            const result = createLinkResolver(router, props);
+            const handlers = result.createEventHandlers();
+            const event = new MouseEvent('click');
+
+            try {
+                await handlers.click(event);
+                expect.fail('Expected error to be thrown');
+            } catch (e) {
+                expect(e).toBe(error);
+            }
+        });
+    });
+
+    describe('🎯 exact Property Behavior', () => {
+        it('should handle exact=true for parent routes', async () => {
+            await router.push('/user/123/profile');
+
+            const props: RouterLinkProps = {
+                to: '/user/123',
+                exact: 'exact'
+            };
+
+            const result = createLinkResolver(router, props);
+
+            expect(result.isActive).toBe(false);
+            expect(result.isExactActive).toBe(false);
+        });
+
+        it('should handle exact=false for parent routes', async () => {
+            await router.push('/user/123/profile');
+
+            const props: RouterLinkProps = {
+                to: '/user/123',
+                exact: 'route'
+            };
+
+            const result = createLinkResolver(router, props);
+
+            expect(result.isActive).toBe(false);
+            expect(result.isExactActive).toBe(false);
+        });
+
+        it('should handle exact=undefined (default behavior)', async () => {
+            await router.push('/user/123/profile');
+
+            const props: RouterLinkProps = {
+                to: '/user/123'
+            };
+
+            const result = createLinkResolver(router, props);
+
+            expect(result.isActive).toBe(true);
+            expect(result.isExactActive).toBe(false);
+        });
+    });
+
+    describe('🎯 Event Type Edge Cases', () => {
+        it('should trim whitespace from event types', () => {
+            const props: RouterLinkProps = {
+                to: '/about',
+                event: [' click ', '  keydown  ', 'touchstart  ']
+            };
+
+            const result = createLinkResolver(router, props);
+            const handlers = result.createEventHandlers();
+
+            expect(Object.keys(handlers)).toEqual([
+                'click',
+                'keydown',
+                'touchstart'
+            ]);
+        });
+
+        it('should deduplicate duplicate event types', () => {
+            const props: RouterLinkProps = {
+                to: '/about',
+                event: ['click', 'click', 'keydown', 'click']
+            };
+
+            const result = createLinkResolver(router, props);
+            const handlers = result.createEventHandlers();
+
+            expect(Object.keys(handlers)).toEqual(['click', 'keydown']);
+        });
+
+        it('should handle mixed valid and invalid event types', () => {
+            const props: RouterLinkProps = {
+                to: '/about',
+                event: [
+                    'click',
+                    null,
+                    undefined,
+                    '',
+                    '  ',
+                    'keydown',
+                    123
+                ] as any[]
+            };
+
+            const result = createLinkResolver(router, props);
+            const handlers = result.createEventHandlers();
+
+            expect(Object.keys(handlers)).toEqual(['click', 'keydown']);
+        });
+    });
+
+    describe('🎯 Non-Mouse Event Handling', () => {
+        it('should handle keyboard events correctly', async () => {
+            const routerPushSpy = vi
+                .spyOn(router, 'push')
+                .mockResolvedValue(router.route);
+            const props: RouterLinkProps = {
+                to: '/about',
+                event: 'keydown'
+            };
+
+            const result = createLinkResolver(router, props);
+            const handlers = result.createEventHandlers();
+            const event = new KeyboardEvent('keydown', { key: 'Enter' });
+
+            handlers.keydown(event);
+
+            expect(routerPushSpy).toHaveBeenCalledWith('/about');
+            routerPushSpy.mockRestore();
+        });
+
+        it('should handle touch events correctly', async () => {
+            const routerPushSpy = vi
+                .spyOn(router, 'push')
+                .mockResolvedValue(router.route);
+            const props: RouterLinkProps = {
+                to: '/about',
+                event: 'touchstart'
+            };
+
+            const result = createLinkResolver(router, props);
+            const handlers = result.createEventHandlers();
+            const event = new TouchEvent('touchstart');
+
+            await handlers.touchstart(event);
+
+            expect(routerPushSpy).toHaveBeenCalledWith('/about');
+            routerPushSpy.mockRestore();
+        });
+
+        it('should handle custom events correctly', async () => {
+            const routerPushSpy = vi
+                .spyOn(router, 'push')
+                .mockResolvedValue(router.route);
+            const props: RouterLinkProps = {
+                to: '/about',
+                event: 'customEvent'
+            };
+
+            const result = createLinkResolver(router, props);
+            const handlers = result.createEventHandlers();
+            const event = new CustomEvent('customEvent');
+
+            await handlers.customevent(event);
+
+            expect(routerPushSpy).toHaveBeenCalledWith('/about');
+            routerPushSpy.mockRestore();
+        });
+    });
+
+    describe('🎯 CSS Class Generation Edge Cases', () => {
+        it('should handle empty string activeClass', async () => {
+            await router.push('/about');
+            const props: RouterLinkProps = {
+                to: '/about',
+                activeClass: ''
+            };
+
+            const result = createLinkResolver(router, props);
+
+            expect(result.attributes.class).toBe(
+                'router-link router-link-active router-link-exact-active'
+            );
+        });
+
+        it('should handle activeClass with multiple classes', async () => {
+            await router.push('/about');
+            const props: RouterLinkProps = {
+                to: '/about',
+                activeClass: 'active highlighted'
+            };
+
+            const result = createLinkResolver(router, props);
+
+            expect(result.attributes.class).toBe(
+                'router-link active highlighted router-link-exact-active'
+            );
+        });
+
+        it('should handle activeClass with special characters', async () => {
+            await router.push('/about');
+            const props: RouterLinkProps = {
+                to: '/about',
+                activeClass: 'my-active_class@123'
+            };
+
+            const result = createLinkResolver(router, props);
+
+            expect(result.attributes.class).toBe(
+                'router-link my-active_class@123 router-link-exact-active'
+            );
+        });
+    });
+
+    describe('🎯 rel Attribute Combinations', () => {
+        it('should combine window navigation and external rel attributes correctly', () => {
+            const props: RouterLinkProps = {
+                to: 'https://external.com',
+                type: 'pushWindow'
+            };
+
+            const result = createLinkResolver(router, props);
+
+            expect(result.attributes.rel).toBe(
+                'noopener noreferrer external nofollow'
+            );
+        });
+
+        it('should handle rel attribute with only external links', () => {
+            const props: RouterLinkProps = {
+                to: 'https://external.com'
+            };
+
+            const result = createLinkResolver(router, props);
+
+            expect(result.attributes.rel).toBe('external nofollow');
+        });
+
+        it('should handle rel attribute with only window navigation', () => {
+            const props: RouterLinkProps = {
+                to: '/about',
+                type: 'pushWindow'
+            };
+
+            const result = createLinkResolver(router, props);
+
+            expect(result.attributes.rel).toBe('noopener noreferrer');
+        });
+    });
+
+    describe('🎯 Navigation Function Async Handling', () => {
+        it('should handle navigation function rejection', async () => {
+            const error = new Error('Navigation failed');
+            vi.spyOn(router, 'push').mockRejectedValue(error);
+
+            const props: RouterLinkProps = {
+                to: '/about'
+            };
+
+            const result = createLinkResolver(router, props);
+
+            await expect(
+                result.navigate(new MouseEvent('click'))
+            ).rejects.toThrow(error);
+        });
+
+        it('should handle sequential navigation calls', async () => {
+            const routerPushSpy = vi
+                .spyOn(router, 'push')
+                .mockResolvedValue(router.route);
+            const props: RouterLinkProps = {
+                to: '/about'
+            };
+
+            const result = createLinkResolver(router, props);
+
+            await result.navigate(new MouseEvent('click'));
+            await result.navigate(new MouseEvent('click'));
+
+            expect(routerPushSpy).toHaveBeenCalledTimes(2);
+            routerPushSpy.mockRestore();
+        });
+
+        it('should handle navigation with complex route objects', async () => {
+            const routerPushSpy = vi
+                .spyOn(router, 'push')
+                .mockResolvedValue(router.route);
+            const props: RouterLinkProps = {
+                to: {
+                    path: '/user/123',
+                    query: { tab: 'profile', mode: 'edit' },
+                    hash: 'section',
+                    state: { from: 'dashboard' }
+                }
+            };
+
+            const result = createLinkResolver(router, props);
+
+            await result.navigate(new MouseEvent('click'));
+
+            expect(routerPushSpy).toHaveBeenCalledWith({
+                path: '/user/123',
+                query: { tab: 'profile', mode: 'edit' },
+                hash: 'section',
+                state: { from: 'dashboard' }
+            });
+            routerPushSpy.mockRestore();
+        });
+    });
+
+    describe('🎯 Event Handler Generator Edge Cases', () => {
+        it('should handle empty format function', () => {
+            const props: RouterLinkProps = {
+                to: '/about',
+                event: ['click', 'keydown']
+            };
+
+            const result = createLinkResolver(router, props);
+            const handlers = result.createEventHandlers(() => '');
+
+            expect(Object.keys(handlers)).toEqual(['']);
+        });
+
+        it('should handle format function returning empty strings', () => {
+            const props: RouterLinkProps = {
+                to: '/about',
+                event: ['click', 'keydown']
+            };
+
+            const result = createLinkResolver(router, props);
+            const handlers = result.createEventHandlers(() => '');
+
+            expect(handlers).toHaveProperty('');
+            expect(typeof handlers['']).toBe('function');
+        });
+
+        it('should handle format function throwing errors', () => {
+            const props: RouterLinkProps = {
+                to: '/about',
+                event: ['click']
+            };
+
+            const result = createLinkResolver(router, props);
+
+            expect(() => {
+                result.createEventHandlers(() => {
+                    throw new Error('Format error');
+                });
+            }).toThrow('Format error');
+        });
+    });
+
+    describe('🎯 Route Resolution Edge Cases', () => {
+        it('should handle route with empty path', () => {
+            const props: RouterLinkProps = {
+                to: ''
+            };
+
+            const result = createLinkResolver(router, props);
+
+            expect(result.route.path).toBe('/');
+            expect(result.attributes.href).toBe('https://example.com/');
+        });
+
+        it('should handle route with only query parameters', () => {
+            const props: RouterLinkProps = {
+                to: { query: { tab: 'profile', page: '1' } }
+            };
+
+            const result = createLinkResolver(router, props);
+
+            expect(result.route.query.tab).toBe('profile');
+            expect(result.route.query.page).toBe('1');
+            expect(result.attributes.href).toBe(
+                'https://example.com/?tab=profile&page=1'
+            );
+        });
+
+        it('should handle route with only hash', () => {
+            const props: RouterLinkProps = {
+                to: { hash: 'section1' }
+            };
+
+            const result = createLinkResolver(router, props);
+
+            expect(result.route.url.hash).toBe('#section1');
+            expect(result.attributes.href).toBe(
+                'https://example.com/#section1'
+            );
+        });
+    });
+
+    describe('🎯 Attribute Computation Edge Cases', () => {
+        it('should compute attributes with all possible combinations', async () => {
+            await router.push('/about');
+            const props: RouterLinkProps = {
+                to: 'https://external.com',
+                type: 'pushWindow',
+                activeClass: 'custom-active'
+            };
+
+            const result = createLinkResolver(router, props);
+
+            expect(result.attributes.href).toBe('https://external.com/');
+            expect(result.attributes.target).toBe('_blank');
+            expect(result.attributes.rel).toBe(
+                'noopener noreferrer external nofollow'
+            );
+            expect(result.attributes.class).toBe('router-link custom-active');
+        });
+
+        it('should handle undefined navigation type', () => {
+            const props: RouterLinkProps = {
+                to: '/about',
+                type: undefined
+            };
+
+            const result = createLinkResolver(router, props);
+
+            expect(result.type).toBe('push');
+        });
+
+        it('should handle boolean exact property', async () => {
+            await router.push('/user/123/profile');
+
+            const props: RouterLinkProps = {
+                to: '/user/123',
+                exact: 'exact'
+            };
+
+            const result = createLinkResolver(router, props);
+
+            expect(result.isActive).toBe(false);
+            expect(result.isExactActive).toBe(false);
+        });
     });
 });

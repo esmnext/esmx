@@ -308,10 +308,6 @@ export interface RouterLinkAttributes {
     rel?: string;
 }
 
-export type RouterLinkEventHandler = <E extends Event = MouseEvent>(
-    event: E
-) => boolean | void;
-
 /**
  * Framework-agnostic link configuration interface
  */
@@ -327,7 +323,15 @@ export interface RouterLinkProps {
     event?: string | string[];
     tag?: string;
     layerOptions?: RouteLayerOptions;
-    eventHandler?: RouterLinkEventHandler;
+    /**
+     * Hook function called before navigation occurs
+     * @param event - The DOM event that triggered the navigation
+     * @param eventName - The name of the event that triggered navigation
+     *
+     * Can prevent default event to block the default navigation handling logic.
+     * Call event.preventDefault() to stop the navigation from proceeding.
+     */
+    beforeNavigate?: (event: Event, eventName: string) => void;
 }
 
 /**
@@ -346,10 +350,10 @@ export interface RouterLinkResolved {
     attributes: RouterLinkAttributes;
 
     // Navigation function
-    navigate: (e?: Event) => Promise<void>;
+    navigate: (e: Event) => Promise<void>;
 
     // Event handling
-    getEventHandlers: (
-        nameTransform?: (eventType: string) => string
-    ) => Record<string, (e: Event) => Promise<void> | undefined>;
+    createEventHandlers: (
+        format?: (eventType: string) => string
+    ) => Record<string, (e: Event) => Promise<void>>;
 }
