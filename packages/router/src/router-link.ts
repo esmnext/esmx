@@ -41,29 +41,22 @@ function getEventTypeList(eventType: unknown | unknown[]): string[] {
 }
 
 /**
- * Event guard check - determines if the router should handle the navigation
+ * Navigation event handler called before navigation - determines if the router should handle the navigation
  *
- * Returns !0: Let browser handle default behavior (normal link navigation)
- * Returns 0: Router takes over navigation, prevents default browser behavior
+ * Returns false: Let browser handle default behavior (normal link navigation)
+ * Returns true: Router takes over navigation, prevents default browser behavior
  *
  * This function intelligently decides when to let the browser handle clicks
  * (like Ctrl+click for new tabs) vs when to use SPA routing
  */
-function guardEvent(e?: Event & Partial<MouseEvent>): true | undefined {
-    if (!e) return;
-    // don't redirect with control keys
-    if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) return;
-    // don't redirect when preventDefault called
-    if (e.defaultPrevented) return;
-    // don't redirect on right click
-    if (e.button !== undefined && e.button !== 0) return;
-    // don't redirect if `target="_blank"`
-    // @ts-expect-error getAttribute exists
-    const target = e.currentTarget?.getAttribute?.('target') ?? '';
-    if (/\b_blank\b/i.test(target)) return;
-    // Prevent default browser navigation to enable SPA routing
-    // Note: this may be a Weex event which doesn't have this method
-    if (e.preventDefault) e.preventDefault();
+function shouldHandleNavigation(e: Event): boolean {
+    if (e.defaultPrevented) return false;
+    if (e instanceof MouseEvent) {
+        if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) return false;
+        if (e.button !== undefined && e.button !== 0) return false;
+    }
+
+    e.preventDefault?.();
 
     return true;
 }
@@ -112,12 +105,11 @@ function createNavigateFunction(
     router: Router,
     props: RouterLinkProps,
     navigationType: RouterLinkType
-): (e?: Event) => Promise<void> {
-    return async (e?: Event): Promise<void> => {
-        const eventHandler = props.eventHandler ?? guardEvent;
-        if (!eventHandler(e!)) return;
-
-        await executeNavigation(router, props, navigationType);
+): RouterLinkResolved['navigate'] {
+    return async (e: Event): Promise<void> => {
+        if (shouldHandleNavigation(e)) {
+            await executeNavigation(router, props, navigationType);
+        }
     };
 }
 
@@ -173,18 +165,21 @@ function computeAttributes(
  * Create event handlers generator function
  */
 function createEventHandlersGenerator(
-    navigate: (e: Event) => Promise<void>,
+    router: Router,
+    props: RouterLinkProps,
+    navigationType: RouterLinkType,
     eventTypes: string[]
-): (
-    nameTransform?: (eventType: string) => string
-) => Record<string, (e: Event) => Promise<void>> {
-    return (nameTransform?: (eventType: string) => string) => {
+): RouterLinkResolved['createEventHandlers'] {
+    return (format?: (eventType: string) => string) => {
         const handlers: Record<string, (e: Event) => Promise<void>> = {};
+        const navigate = createNavigateFunction(router, props, navigationType);
 
         eventTypes.forEach((eventType) => {
-            const eventName =
-                nameTransform?.(eventType) ?? eventType.toLowerCase();
-            handlers[eventName] = navigate;
+            const eventName = format?.(eventType) ?? eventType.toLowerCase();
+            handlers[eventName] = (event) => {
+                props.beforeNavigate?.(event, eventType);
+                return navigate(event);
+            };
         });
 
         return handlers;
@@ -210,8 +205,6 @@ export function createLinkResolver(
     const isExactActive = router.isRouteMatched(route, 'exact');
     const isExternal = route.url.origin !== router.route.url.origin;
 
-    const navigate = createNavigateFunction(router, props, type);
-
     const attributes = computeAttributes(
         href,
         type,
@@ -222,7 +215,14 @@ export function createLinkResolver(
     );
 
     const eventTypes = getEventTypeList(props.event || 'click');
-    const getEventHandlers = createEventHandlersGenerator(navigate, eventTypes);
+    const createEventHandlers = createEventHandlersGenerator(
+        router,
+        props,
+        type,
+        eventTypes
+    );
+
+    const navigate = createNavigateFunction(router, props, type);
 
     return {
         route,
@@ -233,6 +233,6 @@ export function createLinkResolver(
         tag: props.tag || 'a',
         attributes,
         navigate,
-        getEventHandlers
+        createEventHandlers
     };
 }

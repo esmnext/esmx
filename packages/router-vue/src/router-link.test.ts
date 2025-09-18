@@ -367,8 +367,9 @@ describe('router-link.ts - RouterLink Component', () => {
             expect(router.route.query.tab).toBe('info');
         });
 
-        it('should handle custom event handler', async () => {
+        it('should handle custom navigation handler', async () => {
             let customHandlerCalled = false;
+            let receivedEventName = '';
             const TestApp = defineComponent({
                 setup() {
                     useProvideRouter(router);
@@ -377,10 +378,13 @@ describe('router-link.ts - RouterLink Component', () => {
                             RouterLink,
                             {
                                 to: '/about',
-                                eventHandler: (event: Event) => {
+                                beforeNavigate: (
+                                    event: Event,
+                                    eventName: string
+                                ) => {
                                     customHandlerCalled = true;
+                                    receivedEventName = eventName;
                                     event.preventDefault();
-                                    return true;
                                 }
                             },
                             () => 'Custom Handler Link'
@@ -399,8 +403,9 @@ describe('router-link.ts - RouterLink Component', () => {
             linkElement?.click();
             await nextTick();
 
-            // Check if custom handler was called
+            // Check if custom handler was called with correct event name
             expect(customHandlerCalled).toBe(true);
+            expect(receivedEventName).toBe('click');
         });
     });
 

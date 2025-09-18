@@ -225,7 +225,7 @@ export class Router {
      * linkData.navigate(); // Programmatic navigation
      *
      * // Get event handlers for React
-     * const handlers = linkData.getEventHandlers(name => `on${name.charAt(0).toUpperCase() + name.slice(1)}`);
+     * const handlers = linkData.createEventHandlers(name => `on${name.charAt(0).toUpperCase() + name.slice(1)}`);
      * // handlers.onClick for React
      * ```
      */

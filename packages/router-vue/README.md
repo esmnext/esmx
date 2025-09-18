@@ -350,7 +350,7 @@ const link = useLink({
 <template>
   <a 
     v-bind="link.attributes"
-    v-on="link.getEventHandlers()"
+    v-on="link.createEventHandlers()"
     :class="{ active: link.isActive }"
   >
     Custom Link
@@ -460,7 +460,7 @@ const link = useLink(props).value;
 <template>
   <button
     v-bind="link.attributes"
-    v-on="link.getEventHandlers()"
+    v-on="link.createEventHandlers()"
     :class="{ 
       active: link.isActive,
       disabled: disabled 
