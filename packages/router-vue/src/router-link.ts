@@ -146,69 +146,38 @@ export const RouterLink = defineComponent({
     },
 
     setup(props, context) {
-        const { slots, attrs } = context;
-        const link = useLink(props);
+        const link = useLink(props).value;
 
-        const wrapHandler = (
-            externalHandler: Function,
-            internalHandler: Function | undefined
-        ) =>
-            !internalHandler
-                ? (externalHandler as (e: Event) => Promise<void>)
-                : async (e: Event) => {
-                      try {
-                          await externalHandler(e);
-                      } finally {
-                          await internalHandler(e);
-                      }
-                  };
-
-        const vue3renderer = () => {
-            const data = link.value;
-            const genEventName = (name: string): string =>
-                `on${name.charAt(0).toUpperCase()}${name.slice(1)}`;
-
-            const eventHandlers = data.getEventHandlers(genEventName);
-            Object.entries(attrs).forEach(([key, listener]) => {
-                // In Vue 3, external event handlers are in attrs with 'on' prefix
-                if (!key.startsWith('on') || typeof listener !== 'function')
-                    return;
-                eventHandlers[key] = wrapHandler(listener, eventHandlers[key]);
-            });
-
+        if (isVue3) {
+            return () => {
+                return h(
+                    link.tag,
+                    {
+                        ...link.attributes,
+                        ...context.attrs,
+                        ...link.getEventHandlers(
+                            (name) =>
+                                `on${name.charAt(0).toUpperCase()}${name.slice(1)}`
+                        )
+                    },
+                    context.slots.default?.()
+                );
+            };
+        }
+        return () => {
+            const { class: className, ...attributes } = link.attributes;
             return h(
-                data.tag,
+                link.tag,
                 {
-                    ...data.attributes,
-                    ...eventHandlers
-                },
-                slots.default?.()
-            );
-        };
-
-        const vue2renderer = () => {
-            const data = link.value;
-
-            const eventHandlers = data.getEventHandlers();
-            // Vue 2: get external listeners from context
-            const $listeners = (context as any).listeners || {};
-            Object.entries($listeners).forEach(([key, listener]) => {
-                if (typeof listener !== 'function') return;
-                eventHandlers[key] = wrapHandler(listener, eventHandlers[key]);
-            });
-
-            const { class: className, ...attrs } = data.attributes;
-            return h(
-                data.tag,
-                {
-                    attrs,
+                    attrs: {
+                        ...attributes,
+                        ...context.attrs
+                    },
                     class: className,
-                    on: eventHandlers
+                    on: link.getEventHandlers()
                 },
-                slots.default?.()
+                context.slots.default?.()
             );
         };
-
-        return isVue3 ? vue3renderer : vue2renderer;
     }
 });

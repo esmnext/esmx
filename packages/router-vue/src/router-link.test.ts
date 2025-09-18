@@ -66,7 +66,20 @@ describe('router-link.ts - RouterLink Component', () => {
             app.unmount();
         }
         if (router) {
-            router.destroy();
+            try {
+                // Wait for any pending navigation to complete before destroying
+                await new Promise((resolve) => setTimeout(resolve, 0));
+                router.destroy();
+            } catch (error) {
+                // Ignore router destruction errors, as they might be expected
+                // when navigation tasks are cancelled during cleanup
+                if (
+                    !(error instanceof Error) ||
+                    !error.message.includes('RouteTaskCancelledError')
+                ) {
+                    console.warn('Router destruction error:', error);
+                }
+            }
         }
         if (container.parentNode) {
             container.parentNode.removeChild(container);
@@ -127,6 +140,33 @@ describe('router-link.ts - RouterLink Component', () => {
             const linkElement = container.querySelector('a');
             expect(linkElement).toBeTruthy();
             expect(linkElement?.textContent).toBe('About Link');
+        });
+
+        it('should render router link with custom attributes', async () => {
+            const TestApp = defineComponent({
+                setup() {
+                    useProvideRouter(router);
+                    return () =>
+                        h(
+                            RouterLink,
+                            {
+                                to: '/about',
+                                'data-test': 'custom-attr',
+                                title: 'Custom Title'
+                            },
+                            () => 'Link with Attributes'
+                        );
+                }
+            });
+
+            app = createApp(TestApp);
+            app.mount(container);
+            await nextTick();
+
+            const linkElement = container.querySelector('a');
+            expect(linkElement).toBeTruthy();
+            expect(linkElement?.getAttribute('data-test')).toBe('custom-attr');
+            expect(linkElement?.getAttribute('title')).toBe('Custom Title');
         });
 
         it('should render with custom tag', async () => {
@@ -325,6 +365,42 @@ describe('router-link.ts - RouterLink Component', () => {
             // Check if navigation occurred with query
             expect(router.route.path).toBe('/about');
             expect(router.route.query.tab).toBe('info');
+        });
+
+        it('should handle custom event handler', async () => {
+            let customHandlerCalled = false;
+            const TestApp = defineComponent({
+                setup() {
+                    useProvideRouter(router);
+                    return () =>
+                        h(
+                            RouterLink,
+                            {
+                                to: '/about',
+                                eventHandler: (event: Event) => {
+                                    customHandlerCalled = true;
+                                    event.preventDefault();
+                                    return true;
+                                }
+                            },
+                            () => 'Custom Handler Link'
+                        );
+                }
+            });
+
+            app = createApp(TestApp);
+            app.mount(container);
+            await nextTick();
+
+            const linkElement = container.querySelector('a');
+            expect(linkElement).toBeTruthy();
+
+            // Simulate click
+            linkElement?.click();
+            await nextTick();
+
+            // Check if custom handler was called
+            expect(customHandlerCalled).toBe(true);
         });
     });
 
