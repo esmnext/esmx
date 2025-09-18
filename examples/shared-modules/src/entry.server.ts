@@ -314,7 +314,6 @@ export default async (rc: RenderContext) => {
     <script async src="https://ga.jspm.io/npm:es-module-shims@2.6.2/dist/es-module-shims.js"></script>
     ${rc.importmap()}
     ${rc.moduleEntry()}
-    ${rc.modulePreload()}
 </body>
 </html>
 `;
