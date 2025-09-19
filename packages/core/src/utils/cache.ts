@@ -1,21 +1,21 @@
 /**
- * 缓存处理函数的类型定义
+ * Type definition for cache handling function
  *
- * @template T - 缓存数据的类型
- * @param name - 缓存项的唯一标识符
- * @param fetch - 获取数据的异步函数
- * @returns 返回缓存的数据或新获取的数据
+ * @template T - Type of cached data
+ * @param name - Unique identifier for the cache item
+ * @param fetch - Asynchronous function to fetch data
+ * @returns Returns cached data or newly fetched data
  *
  * @example
  * ```ts
  * const cache = createCache(true);
  *
- * // 第一次调用会执行 fetch 函数
+ * // First call will execute the fetch function
  * const data1 = await cache('key', async () => {
  *   return await fetchSomeData();
  * });
  *
- * // 第二次调用会直接返回缓存的结果
+ * // Second call will directly return the cached result
  * const data2 = await cache('key', async () => {
  *   return await fetchSomeData();
  * });
@@ -27,24 +27,24 @@ export type CacheHandle = <T>(
 ) => Promise<T>;
 
 /**
- * 创建一个缓存处理函数
+ * Create a cache handling function
  *
- * @param enable - 是否启用缓存功能
- * @returns 返回一个缓存处理函数
+ * @param enable - Whether to enable caching functionality
+ * @returns Returns a cache handling function
  *
  * @description
- * 当 enable 为 true 时，会创建一个带有内存缓存的处理函数，相同的 name 只会执行一次 fetch。
- * 当 enable 为 false 时，每次调用都会执行 fetch 函数，不会缓存结果。
+ * When enable is true, it creates a processing function with memory cache, the same name will only execute fetch once.
+ * When enable is false, each call will execute the fetch function and will not cache the result.
  *
  * @example
  * ```ts
- * // 创建一个启用缓存的处理函数
+ * // Create a cache-enabled processing function
  * const cacheEnabled = createCache(true);
  *
- * // 创建一个禁用缓存的处理函数
+ * // Create a cache-disabled processing function
  * const cacheDisabled = createCache(false);
  *
- * // 使用缓存处理函数
+ * // Use the cache processing function
  * const result = await cacheEnabled('userProfile', async () => {
  *   return await fetchUserProfile(userId);
  * });

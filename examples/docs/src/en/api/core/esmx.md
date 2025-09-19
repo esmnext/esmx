@@ -110,7 +110,7 @@ Environment flag:
 #### basePathPlaceholder
 
 - **Type**: `string | false`
-- **Default**: `'[[[___GEZ_DYNAMIC_BASE___]]]'`
+- **Default**: `'[[[___ESMX_DYNAMIC_BASE___]]]'`
 
 Base path placeholder configuration. Used for runtime dynamic replacement of asset base paths. Set to `false` to disable this feature.
 

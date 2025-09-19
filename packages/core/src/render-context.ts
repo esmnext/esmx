@@ -3,107 +3,107 @@ import serialize from 'serialize-javascript';
 import type { Esmx } from './core';
 
 /**
- * RenderContext 的配置选项接口
+ * Configuration options interface for RenderContext
  *
  * @description
- * RenderContextOptions 用于配置 RenderContext 实例的行为，包括基础路径、入口名称、参数和导入映射模式等。
+ * RenderContextOptions is used to configure the behavior of RenderContext instances, including base path, entry name, parameters, and import map mode.
  *
  * @example
  * ```ts
- * // 1. 基础路径配置示例
- * // 支持将静态资源部署到不同的路径下
+ * // 1. Base path configuration example
+ * // Supports deploying static assets to different paths
  * const rc = await esmx.render({
- *   // 设置基础路径为 /esmx，所有静态资源都会基于此路径加载
+ *   // Set base path to /esmx, all static assets will be loaded based on this path
  *   base: '/esmx',
- *   // 其他配置...
+ *   // Other configurations...
  * });
  *
- * // 2. 多语言站点部署示例
- * // 通过不同的基础路径支持多语言站点
+ * // 2. Multi-language site deployment example
+ * // Support multi-language sites through different base paths
  * const rc = await esmx.render({
- *   base: '/cn',  // 中文站点
+ *   base: '/cn',  // Chinese site
  *   params: { lang: 'zh-CN' }
  * });
  *
- * // 3. 导入映射模式配置示例
+ * // 3. Import map mode configuration example
  * const rc = await esmx.render({
- *   // 使用内联模式，适合小型应用
+ *   // Use inline mode, suitable for small applications
  *   importmapMode: 'inline',
- *   // 其他配置...
+ *   // Other configurations...
  * });
  * ```
  */
 export interface RenderContextOptions {
     /**
-     * 静态资源的基础路径
+     * Base path for static assets
      * @description
-     * - 默认为空字符串
-     * - 所有静态资源（JS、CSS、图片等）都会基于此路径加载
-     * - 支持运行时动态配置，无需重新构建
-     * - 常用于多语言站点、微前端应用等场景
+     * - Defaults to empty string
+     * - All static assets (JS, CSS, images, etc.) will be loaded based on this path
+     * - Supports runtime dynamic configuration without rebuilding
+     * - Commonly used for multi-language sites, micro-frontends, and other scenarios
      */
     base?: string;
 
     /**
-     * 服务端渲染入口名称
+     * Server-side rendering entry name
      * @description
-     * - 默认为 'default'
-     * - 用于指定服务端渲染时使用的入口函数
-     * - 当一个模块导出多个渲染函数时使用
+     * - Defaults to 'default'
+     * - Used to specify the entry function used during server-side rendering
+     * - Used when a module exports multiple rendering functions
      */
     entryName?: string;
 
     /**
-     * 渲染参数
+     * Rendering parameters
      * @description
-     * - 可以传递任意类型的参数给渲染函数
-     * - 常用于传递请求信息（URL、query 参数等）
-     * - 在服务端渲染过程中可以通过 rc.params 访问
+     * - Can pass parameters of any type to the rendering function
+     * - Commonly used to pass request information (URL, query parameters, etc.)
+     * - Can be accessed through rc.params during server-side rendering
      */
     params?: Record<string, any>;
 
     /**
-     * 定义 importmap 的生成模式
+     * Define the generation mode for importmap
      *
      * @description
-     * ImportmapMode 用于控制 importmap 的生成方式，支持两种模式：
-     * - `inline`: 将 importmap 内容直接内联到 HTML 中（默认值），适用于以下场景：
-     *   - 需要减少 HTTP 请求数量
-     *   - importmap 内容较小
-     *   - 对首屏加载性能要求较高
-     * - `js`: 将 importmap 内容生成为独立的 JS 文件，适用于以下场景：
-     *   - importmap 内容较大
-     *   - 需要利用浏览器缓存机制
-     *   - 多个页面共享相同的 importmap
+     * ImportmapMode is used to control the generation method of importmap, supporting two modes:
+     * - `inline`: Inline importmap content directly into HTML (default value), suitable for the following scenarios:
+     *   - Need to reduce the number of HTTP requests
+     *   - Importmap content is small
+     *   - High requirements for first-screen loading performance
+     * - `js`: Generate importmap content as an independent JS file, suitable for the following scenarios:
+     *   - Importmap content is large
+     *   - Need to utilize browser caching mechanisms
+     *   - Multiple pages share the same importmap
      *
-     * 默认值选择 'inline' 的原因：
-     * 1. 简单直接
-     *    - 减少额外的 HTTP 请求
-     *    - 无需额外的资源管理
-     *    - 适合大多数应用场景
-     * 2. 首屏性能
-     *    - 避免额外的网络请求
-     *    - 确保导入映射立即可用
-     *    - 减少页面加载时间
-     * 3. 易于调试
-     *    - 导入映射直接可见
-     *    - 便于问题诊断
-     *    - 简化开发流程
+     * Reasons for choosing 'inline' as the default value:
+     * 1. Simple and direct
+     *    - Reduce additional HTTP requests
+     *    - No additional resource management required
+     *    - Suitable for most application scenarios
+     * 2. First-screen performance
+     *    - Avoid additional network requests
+     *    - Ensure import maps are immediately available
+     *    - Reduce page loading time
+     * 3. Easy to debug
+     *    - Import maps are directly visible
+     *    - Facilitate problem diagnosis
+     *    - Simplify development process
      *
      * @example
      * ```ts
-     * // 使用内联模式（默认）
+     * // Use inline mode (default)
      * const rc = await esmx.render({
      *   params: { url: req.url }
      * });
      *
-     * // 显式指定内联模式
+     * // Explicitly specify inline mode
      * const rc = await esmx.render({
      *   importmapMode: 'inline',
      *   params: { url: req.url }
      * });
      *
-     * // 使用 JS 文件模式
+     * // Use JS file mode
      * const rc = await esmx.render({
      *   importmapMode: 'js',
      *   params: { url: req.url }
@@ -114,48 +114,48 @@ export interface RenderContextOptions {
 }
 
 /**
- * 服务端渲染函数
+ * Server-side rendering function
  */
 export type ServerRenderHandle = (rc: RenderContext) => Promise<void>;
 
 /**
- * 渲染资源文件列表接口
+ * Render resource file list interface
  * @description
- * RenderFiles 接口定义了服务端渲染过程中收集的各类静态资源：
+ * The RenderFiles interface defines various static assets collected during the server-side rendering process:
  *
- * 1. **资源类型**
- *    - css: 样式表文件列表
- *    - modulepreload: 需要预加载的 ESM 模块列表
- *    - js: JavaScript 文件列表
- *    - resources: 其他资源文件列表
+ * 1. **Resource Types**
+ *    - css: List of stylesheet files
+ *    - modulepreload: List of ESM modules that need to be preloaded
+ *    - js: List of JavaScript files
+ *    - resources: List of other resource files
  *
- * 2. **使用场景**
- *    - 在 commit() 方法中自动收集
- *    - 通过 preload()、css() 等方法注入
- *    - 支持基础路径配置
+ * 2. **Use Cases**
+ *    - Automatically collected in the commit() method
+ *    - Injected through methods like preload(), css(), etc.
+ *    - Supports base path configuration
  *
  * @example
  * ```ts
- * // 1. 资源收集
+ * // 1. Resource collection
  * await rc.commit();
  *
- * // 2. 资源注入
+ * // 2. Resource injection
  * rc.html = `
  *   <!DOCTYPE html>
  *   <html>
  *   <head>
- *     <!-- 预加载资源 -->
+ *     <!-- Preload resources -->
  *     ${rc.preload()}
- *     <!-- 注入样式表 -->
+ *     <!-- Inject stylesheets -->
  *     ${rc.css()}
  *   </head>
  *   <body>
  *     ${html}
- *     <!-- 注入导入映射 -->
+ *     <!-- Inject import map -->
  *     ${rc.importmap()}
- *     <!-- 注入客户端入口 -->
+ *     <!-- Inject client entry -->
  *     ${rc.moduleEntry()}
- *     <!-- 预加载模块 -->
+ *     <!-- Preload modules -->
  *     ${rc.modulePreload()}
  *   </body>
  *   </html>
@@ -164,65 +164,65 @@ export type ServerRenderHandle = (rc: RenderContext) => Promise<void>;
  */
 export interface RenderFiles {
     /**
-     * JavaScript 文件列表
+     * List of JavaScript files
      */
     js: string[];
     /**
-     * CSS 文件列表
+     * List of CSS files
      */
     css: string[];
     /**
-     * 需要预加载的 ESM 模块列表
+     * List of ESM modules that need to be preloaded
      */
     modulepreload: string[];
     /**
-     * 其他资源文件列表（图片、字体等）
+     * List of other resource files (images, fonts, etc.)
      */
     resources: string[];
 }
 
 /**
- * 定义 importmap 的生成模式
+ * Define the generation mode for importmap
  *
  * @description
- * ImportmapMode 用于控制 importmap 的生成方式，支持两种模式：
- * - `inline`: 将 importmap 内容直接内联到 HTML 中（默认值），适用于以下场景：
- *   - 需要减少 HTTP 请求数量
- *   - importmap 内容较小
- *   - 对首屏加载性能要求较高
- * - `js`: 将 importmap 内容生成为独立的 JS 文件，适用于以下场景：
- *   - importmap 内容较大
- *   - 需要利用浏览器缓存机制
- *   - 多个页面共享相同的 importmap
+ * ImportmapMode is used to control the generation method of importmap, supporting two modes:
+ * - `inline`: Inline importmap content directly into HTML (default value), suitable for the following scenarios:
+ *   - Need to reduce the number of HTTP requests
+ *   - Importmap content is small
+ *   - High requirements for first-screen loading performance
+ * - `js`: Generate importmap content as an independent JS file, suitable for the following scenarios:
+ *   - Importmap content is large
+ *   - Need to utilize browser caching mechanisms
+ *   - Multiple pages share the same importmap
  *
- * 默认值选择 'inline' 的原因：
- * 1. 简单直接
- *    - 减少额外的 HTTP 请求
- *    - 无需额外的资源管理
- *    - 适合大多数应用场景
- * 2. 首屏性能
- *    - 避免额外的网络请求
- *    - 确保导入映射立即可用
- *    - 减少页面加载时间
- * 3. 易于调试
- *    - 导入映射直接可见
- *    - 便于问题诊断
- *    - 简化开发流程
+ * Reasons for choosing 'inline' as the default value:
+ * 1. Simple and direct
+ *    - Reduce additional HTTP requests
+ *    - No additional resource management required
+ *    - Suitable for most application scenarios
+ * 2. First-screen performance
+ *    - Avoid additional network requests
+ *    - Ensure import maps are immediately available
+ *    - Reduce page loading time
+ * 3. Easy to debug
+ *    - Import maps are directly visible
+ *    - Facilitate problem diagnosis
+ *    - Simplify development process
  *
  * @example
  * ```ts
- * // 使用内联模式（默认）
+ * // Use inline mode (default)
  * const rc = await esmx.render({
  *   params: { url: req.url }
  * });
  *
- * // 显式指定内联模式
+ * // Explicitly specify inline mode
  * const rc = await esmx.render({
  *   importmapMode: 'inline',
  *   params: { url: req.url }
  * });
  *
- * // 使用 JS 文件模式
+ * // Use JS file mode
  * const rc = await esmx.render({
  *   importmapMode: 'js',
  *   params: { url: req.url }
@@ -232,59 +232,59 @@ export interface RenderFiles {
 export type ImportmapMode = 'inline' | 'js';
 
 /**
- * RenderContext 是 Esmx 框架中的核心类，负责服务端渲染（SSR）过程中的资源管理和 HTML 生成
+ * RenderContext is the core class in the Esmx framework, responsible for resource management and HTML generation during server-side rendering (SSR)
  *
  * @description
- * RenderContext 具有以下核心特点：
- * 1. **基于 ESM 的模块系统**
- *    - 采用现代的 ECMAScript Modules 标准
- *    - 支持原生的模块导入导出
- *    - 实现了更好的代码分割和按需加载
+ * RenderContext has the following core features:
+ * 1. **ESM-based module system**
+ *    - Adopts modern ECMAScript Modules standard
+ *    - Supports native module imports and exports
+ *    - Implements better code splitting and on-demand loading
  *
- * 2. **智能依赖收集**
- *    - 基于实际渲染路径动态收集依赖
- *    - 避免不必要的资源加载
- *    - 支持异步组件和动态导入
+ * 2. **Intelligent dependency collection**
+ *    - Dynamically collects dependencies based on actual rendering paths
+ *    - Avoids unnecessary resource loading
+ *    - Supports async components and dynamic imports
  *
- * 3. **精确的资源注入**
- *    - 严格控制资源加载顺序
- *    - 优化首屏加载性能
- *    - 确保客户端激活（Hydration）的可靠性
+ * 3. **Precise resource injection**
+ *    - Strictly controls resource loading order
+ *    - Optimizes first-screen loading performance
+ *    - Ensures reliability of client-side hydration
  *
- * 4. **灵活的配置机制**
- *    - 支持动态基础路径配置
- *    - 提供多种导入映射模式
- *    - 适应不同的部署场景
+ * 4. **Flexible configuration mechanism**
+ *    - Supports dynamic base path configuration
+ *    - Provides multiple import map modes
+ *    - Adapts to different deployment scenarios
  *
  * @example
  * ```ts
  * export default async (rc: RenderContext) => {
- *     // 1. 渲染页面内容并收集依赖
+ *     // 1. Render page content and collect dependencies
  *     const app = createApp();
  *     const html = await renderToString(app, {
  *         importMetaSet: rc.importMetaSet
  *     });
  *
- *     // 2. 提交依赖收集
+ *     // 2. Commit dependency collection
  *     await rc.commit();
  *
- *     // 3. 生成完整 HTML
+ *     // 3. Generate complete HTML
  *     rc.html = `
  *         <!DOCTYPE html>
  *         <html>
  *         <head>
- *             <!-- 预加载 CSS 和 JS 资源，提前开始加载以优化性能 -->
+ *             <!-- Preload CSS and JS resources to start loading early for performance optimization -->
  *             ${rc.preload()}
- *             <!-- 注入首屏样式表，避免页面闪烁 -->
+ *             <!-- Inject first-screen stylesheets to avoid page flickering -->
  *             ${rc.css()}
  *         </head>
  *         <body>
  *             ${html}
- *             <!-- 注入模块导入映射，定义 ESM 模块的路径解析规则 -->
+ *             <!-- Inject module import map to define path resolution rules for ESM modules -->
  *             ${rc.importmap()}
- *             <!-- 注入客户端入口模块，必须在 importmap 之后执行 -->
+ *             <!-- Inject client entry module, must be executed after importmap -->
  *             ${rc.moduleEntry()}
- *             <!-- 预加载模块依赖，基于实际渲染收集的依赖进行优化加载 -->
+ *             <!-- Preload module dependencies, optimized loading based on dependencies collected during actual rendering -->
  *             ${rc.modulePreload()}
  *         </body>
  *         </html>
@@ -295,35 +295,35 @@ export type ImportmapMode = 'inline' | 'js';
 export class RenderContext {
     public esmx: Esmx;
     /**
-     * 重定向地址
+     * Redirect address
      * @description
-     * - 默认为 null，表示不进行重定向
-     * - 设置后，服务端可以根据此值进行 HTTP 重定向
-     * - 常用于登录验证、权限控制等场景
+     * - Defaults to null, indicating no redirect
+     * - When set, the server can perform HTTP redirection based on this value
+     * - Commonly used for scenarios like login verification, permission control, etc.
      *
      * @example
      * ```ts
-     * // 1. 登录验证示例
+     * // 1. Login verification example
      * export default async (rc: RenderContext) => {
      *   if (!isLoggedIn()) {
      *     rc.redirect = '/login';
      *     rc.status = 302;
      *     return;
      *   }
-     *   // 继续渲染页面...
+     *   // Continue rendering page...
      * };
      *
-     * // 2. 权限控制示例
+     * // 2. Permission control example
      * export default async (rc: RenderContext) => {
      *   if (!hasPermission()) {
      *     rc.redirect = '/403';
      *     rc.status = 403;
      *     return;
      *   }
-     *   // 继续渲染页面...
+     *   // Continue rendering page...
      * };
      *
-     * // 3. 服务端处理示例
+     * // 3. Server-side processing example
      * app.use(async (req, res) => {
      *   const rc = await esmx.render({
      *     params: {
@@ -331,7 +331,7 @@ export class RenderContext {
      *     }
      *   });
      *
-     *   // 处理重定向
+     *   // Handle redirect
      *   if (rc.redirect) {
      *     res.statusCode = rc.status || 302;
      *     res.setHeader('Location', rc.redirect);
@@ -339,12 +339,12 @@ export class RenderContext {
      *     return;
      *   }
      *
-     *   // 设置状态码
+     *   // Set status code
      *   if (rc.status) {
      *     res.statusCode = rc.status;
      *   }
      *
-     *   // 响应 HTML 内容
+     *   // Respond with HTML content
      *   res.end(rc.html);
      * });
      * ```
@@ -352,37 +352,37 @@ export class RenderContext {
     public redirect: string | null = null;
 
     /**
-     * HTTP 响应状态码
+     * HTTP response status code
      * @description
-     * - 默认为 null，表示使用 200 状态码
-     * - 可以设置任意有效的 HTTP 状态码
-     * - 常用于错误处理、重定向等场景
-     * - 通常与 redirect 属性配合使用
+     * - Defaults to null, indicating use of 200 status code
+     * - Can set any valid HTTP status code
+     * - Commonly used for scenarios like error handling, redirection, etc.
+     * - Usually used in conjunction with the redirect property
      *
      * @example
      * ```ts
-     * // 1. 404 错误处理示例
+     * // 1. 404 error handling example
      * export default async (rc: RenderContext) => {
      *   const page = await findPage(rc.params.url);
      *   if (!page) {
      *     rc.status = 404;
-     *     // 渲染 404 页面...
+     *     // Render 404 page...
      *     return;
      *   }
-     *   // 继续渲染页面...
+     *   // Continue rendering page...
      * };
      *
-     * // 2. 临时重定向示例
+     * // 2. Temporary redirect example
      * export default async (rc: RenderContext) => {
      *   if (needMaintenance()) {
      *     rc.redirect = '/maintenance';
-     *     rc.status = 307; // 临时重定向，保持请求方法不变
+     *     rc.status = 307; // Temporary redirect, keep request method unchanged
      *     return;
      *   }
-     *   // 继续渲染页面...
+     *   // Continue rendering page...
      * };
      *
-     * // 3. 服务端处理示例
+     * // 3. Server-side processing example
      * app.use(async (req, res) => {
      *   const rc = await esmx.render({
      *     params: {
@@ -390,7 +390,7 @@ export class RenderContext {
      *     }
      *   });
      *
-     *   // 处理重定向
+     *   // Handle redirect
      *   if (rc.redirect) {
      *     res.statusCode = rc.status || 302;
      *     res.setHeader('Location', rc.redirect);
@@ -398,12 +398,12 @@ export class RenderContext {
      *     return;
      *   }
      *
-     *   // 设置状态码
+     *   // Set status code
      *   if (rc.status) {
      *     res.statusCode = rc.status;
      *   }
      *
-     *   // 响应 HTML 内容
+     *   // Respond with HTML content
      *   res.end(rc.html);
      * });
      * ```
@@ -411,80 +411,80 @@ export class RenderContext {
     public status: number | null = null;
     private _html = '';
     /**
-     * 静态资源的基础路径
+     * Base path for static assets
      * @description
-     * base 属性用于控制静态资源的加载路径，是 Esmx 框架动态基础路径配置的核心：
+     * The base property is used to control the loading path of static assets and is the core of Esmx framework's dynamic base path configuration:
      *
-     * 1. **构建时处理**
-     *    - 静态资源路径使用特殊占位符标记：`[[[___GEZ_DYNAMIC_BASE___]]]/your-app-name/`
-     *    - 占位符会被注入到所有静态资源的引用路径中
-     *    - 支持 CSS、JavaScript、图片等各类静态资源
+     * 1. **Build-time Processing**
+     *    - Static asset paths are marked with special placeholders: `[[[___ESMX_DYNAMIC_BASE___]]]/your-app-name/`
+     *    - Placeholders are injected into all static asset reference paths
+     *    - Supports various static assets like CSS, JavaScript, images, etc.
      *
-     * 2. **运行时替换**
-     *    - 通过 `esmx.render()` 的 `base` 参数设置实际基础路径
-     *    - RenderContext 自动将 HTML 中的占位符替换为实际路径
+     * 2. **Runtime Replacement**
+     *    - Set the actual base path through the `base` parameter of `esmx.render()`
+     *    - RenderContext automatically replaces placeholders in HTML with actual paths
      *
-     * 3. **技术优势**
-     *    - 部署灵活：同一套构建产物可部署到任意路径
-     *    - 性能优化：保持静态资源的最佳缓存策略
-     *    - 开发友好：简化多环境配置管理
+     * 3. **Technical Advantages**
+     *    - Deployment flexibility: The same set of build artifacts can be deployed to any path
+     *    - Performance optimization: Maintain the best caching strategy for static assets
+     *    - Development-friendly: Simplify multi-environment configuration management
      *
      * @example
      * ```ts
-     * // 1. 基础用法
+     * // 1. Basic usage
      * const rc = await esmx.render({
-     *   base: '/esmx',  // 设置基础路径
+     *   base: '/esmx',  // Set base path
      *   params: { url: req.url }
      * });
      *
-     * // 2. 多语言站点示例
+     * // 2. Multi-language site example
      * const rc = await esmx.render({
-     *   base: '/cn',  // 中文站点
+     *   base: '/cn',  // Chinese site
      *   params: { lang: 'zh-CN' }
      * });
      *
-     * // 3. 微前端应用示例
+     * // 3. Micro-frontend application example
      * const rc = await esmx.render({
-     *   base: '/app1',  // 子应用1
+     *   base: '/app1',  // Sub-application 1
      *   params: { appId: 1 }
      * });
      * ```
      */
     public readonly base: string;
     /**
-     * 服务端渲染入口函数名称
+     * Server-side rendering entry function name
      * @description
-     * entryName 属性用于指定服务端渲染时使用的入口函数：
+     * The entryName property is used to specify the entry function used during server-side rendering:
      *
-     * 1. **基本用途**
-     *    - 默认值为 'default'
-     *    - 用于从 entry.server.ts 中选择要使用的渲染函数
-     *    - 支持一个模块导出多个渲染函数的场景
+     * 1. **Basic Usage**
+     *    - Default value is 'default'
+     *    - Used to select the rendering function to use from entry.server.ts
+     *    - Supports scenarios where a module exports multiple rendering functions
      *
-     * 2. **使用场景**
-     *    - 多模板渲染：不同页面使用不同的渲染模板
-     *    - A/B 测试：同一页面使用不同的渲染逻辑
-     *    - 特殊渲染：某些页面需要自定义的渲染流程
+     * 2. **Use Cases**
+     *    - Multi-template rendering: Different pages use different rendering templates
+     *    - A/B testing: The same page uses different rendering logic
+     *    - Special rendering: Some pages need custom rendering processes
      *
      * @example
      * ```ts
-     * // 1. 默认入口函数
+     * // 1. Default entry function
      * // entry.server.ts
      * export default async (rc: RenderContext) => {
-     *   // 默认渲染逻辑
+     *   // Default rendering logic
      * };
      *
-     * // 2. 多个入口函数
+     * // 2. Multiple entry functions
      * // entry.server.ts
      * export const mobile = async (rc: RenderContext) => {
-     *   // 移动端渲染逻辑
+     *   // Mobile rendering logic
      * };
      *
      * export const desktop = async (rc: RenderContext) => {
-     *   // 桌面端渲染逻辑
+     *   // Desktop rendering logic
      * };
      *
-     * // 3. 根据设备类型选择入口函数
+     * // 3. Select entry function based on device type
      * const rc = await esmx.render({
      *   entryName: isMobile ? 'mobile' : 'desktop',
      *   params: { url: req.url }
@@ -494,29 +494,29 @@ export class RenderContext {
     public readonly entryName: string;
 
     /**
-     * 渲染参数
+     * Rendering parameters
      * @description
-     * params 属性用于在服务端渲染过程中传递和访问参数：
+     * The params property is used to pass and access parameters during the server-side rendering process:
      *
-     * 1. **参数类型**
-     *    - 支持任意类型的键值对
-     *    - 通过 Record<string, any> 类型定义
-     *    - 在整个渲染生命周期中保持不变
+     * 1. **Parameter Types**
+     *    - Supports key-value pairs of any type
+     *    - Defined through Record<string, any> type
+     *    - Remains unchanged throughout the entire rendering lifecycle
      *
-     * 2. **常见使用场景**
-     *    - 传递请求信息（URL、query 参数等）
-     *    - 设置页面配置（语言、主题等）
-     *    - 注入环境变量（API 地址、版本号等）
-     *    - 共享服务端状态（用户信息、权限等）
+     * 2. **Common Use Cases**
+     *    - Pass request information (URL, query parameters, etc.)
+     *    - Set page configuration (language, theme, etc.)
+     *    - Inject environment variables (API address, version number, etc.)
+     *    - Share server-side state (user information, permissions, etc.)
      *
-     * 3. **访问方式**
-     *    - 在服务端渲染函数中通过 rc.params 访问
-     *    - 可以解构获取特定参数
-     *    - 支持设置默认值
+     * 3. **Access Methods**
+     *    - Accessed through rc.params in server-side rendering functions
+     *    - Can destructure to get specific parameters
+     *    - Supports setting default values
      *
      * @example
      * ```ts
-     * // 1. 基础用法 - 传递 URL 和语言设置
+     * // 1. Basic usage - Pass URL and language settings
      * const rc = await esmx.render({
      *   params: {
      *     url: req.url,
@@ -524,7 +524,7 @@ export class RenderContext {
      *   }
      * });
      *
-     * // 2. 页面配置 - 设置主题和布局
+     * // 2. Page configuration - Set theme and layout
      * const rc = await esmx.render({
      *   params: {
      *     theme: 'dark',
@@ -532,7 +532,7 @@ export class RenderContext {
      *   }
      * });
      *
-     * // 3. 环境配置 - 注入 API 地址
+     * // 3. Environment configuration - Inject API address
      * const rc = await esmx.render({
      *   params: {
      *     apiBaseUrl: process.env.API_BASE_URL,
@@ -540,17 +540,17 @@ export class RenderContext {
      *   }
      * });
      *
-     * // 4. 在渲染函数中使用
+     * // 4. Use in rendering function
      * export default async (rc: RenderContext) => {
-     *   // 解构获取参数
+     *   // Destructure to get parameters
      *   const { url, lang = 'en' } = rc.params;
      *
-     *   // 根据参数执行不同逻辑
+     *   // Execute different logic based on parameters
      *   if (lang === 'zh-CN') {
-     *     // 中文版本处理...
+     *     // Chinese version processing...
      *   }
      *
-     *   // 传递参数到组件
+     *   // Pass parameters to component
      *   const html = await renderToString(createApp({
      *     props: {
      *       currentUrl: url,
@@ -558,7 +558,7 @@ export class RenderContext {
      *     }
      *   }));
      *
-     *   // 设置 HTML
+     *   // Set HTML
      *   rc.html = `
      *     <!DOCTYPE html>
      *     <html lang="${lang}">
@@ -570,50 +570,50 @@ export class RenderContext {
      */
     public readonly params: Record<string, any>;
     /**
-     * 模块依赖收集集合
+     * Module dependency collection set
      * @description
-     * importMetaSet 是 Esmx 框架智能依赖收集机制的核心，用于在服务端渲染过程中追踪和记录模块依赖：
+     * importMetaSet is the core of Esmx framework's intelligent dependency collection mechanism, used to track and record module dependencies during the server-side rendering process:
      *
-     * 1. **按需收集**
-     *    - 在组件实际渲染过程中自动追踪和记录模块依赖
-     *    - 只收集当前页面渲染时真正使用到的资源
-     *    - 精确记录每个组件的模块依赖关系
+     * 1. **On-demand Collection**
+     *    - Automatically tracks and records module dependencies during the actual component rendering process
+     *    - Only collects resources actually used during the current page rendering
+     *    - Precisely records the module dependency relationships of each component
      *
-     * 2. **性能优化**
-     *    - 避免加载未使用的模块，显著减少首屏加载时间
-     *    - 精确控制资源加载顺序，优化页面渲染性能
-     *    - 自动生成最优的导入映射（Import Map）
+     * 2. **Performance Optimization**
+     *    - Avoids loading unused modules, significantly reducing first-screen loading time
+     *    - Precisely controls resource loading order, optimizing page rendering performance
+     *    - Automatically generates optimal import maps
      *
-     * 3. **使用方式**
-     *    - 在渲染函数中传递给 renderToString
-     *    - 框架自动收集依赖，无需手动处理
-     *    - 支持异步组件和动态导入的依赖收集
+     * 3. **Usage**
+     *    - Passed to renderToString in the rendering function
+     *    - Framework automatically collects dependencies, no manual handling required
+     *    - Supports dependency collection for async components and dynamic imports
      *
      * @example
      * ```ts
-     * // 1. 基础用法
+     * // 1. Basic usage
      * const renderToString = (app: any, context: { importMetaSet: Set<ImportMeta> }) => {
-     *   // 在渲染过程中自动收集模块依赖
-     *   // 框架会在组件渲染时自动调用 context.importMetaSet.add(import.meta)
-     *   // 开发者无需手动处理依赖收集
+     *   // Automatically collect module dependencies during the rendering process
+     *   // Framework will automatically call context.importMetaSet.add(import.meta) during component rendering
+     *   // Developers do not need to manually handle dependency collection
      *   return '<div id="app">Hello World</div>';
      * };
      *
-     * // 使用示例
+     * // Usage example
      * const app = createApp();
      * const html = await renderToString(app, {
      *   importMetaSet: rc.importMetaSet
      * });
      *
-     * // 2. 提交依赖
+     * // 2. Commit dependencies
      * await rc.commit();
      *
-     * // 3. 生成 HTML
+     * // 3. Generate HTML
      * rc.html = `
      *   <!DOCTYPE html>
      *   <html>
      *   <head>
-     *     <!-- 基于收集的依赖自动注入资源 -->
+     *     <!-- Automatically inject resources based on collected dependencies -->
      *     ${rc.preload()}
      *     ${rc.css()}
      *   </head>
@@ -629,35 +629,35 @@ export class RenderContext {
      */
     public importMetaSet = new Set<ImportMeta>();
     /**
-     * 资源文件列表
+     * Resource file list
      * @description
-     * files 属性存储了在服务端渲染过程中收集到的所有静态资源文件路径：
+     * The files property stores all static resource file paths collected during the server-side rendering process:
      *
-     * 1. **资源类型**
-     *    - js: JavaScript 文件列表，包含所有脚本和模块
-     *    - css: 样式表文件列表
-     *    - modulepreload: 需要预加载的 ESM 模块列表
-     *    - importmap: 导入映射文件列表
-     *    - resources: 其他资源文件列表（图片、字体等）
+     * 1. **Resource Types**
+     *    - js: List of JavaScript files, containing all scripts and modules
+     *    - css: List of stylesheet files
+     *    - modulepreload: List of ESM modules that need to be preloaded
+     *    - importmap: List of import map files
+     *    - resources: List of other resource files (images, fonts, etc.)
      *
-     * 2. **使用场景**
-     *    - 在 commit() 方法中自动收集和分类资源
-     *    - 通过 preload()、css() 等方法注入资源到 HTML
-     *    - 支持基础路径配置，实现资源的动态加载
+     * 2. **Use Cases**
+     *    - Automatically collect and categorize resources in the commit() method
+     *    - Inject resources into HTML through methods like preload(), css(), etc.
+     *    - Supports base path configuration, implementing dynamic loading of resources
      *
      * @example
      * ```ts
-     * // 1. 资源收集
+     * // 1. Resource collection
      * await rc.commit();
      *
-     * // 2. 资源注入
+     * // 2. Resource injection
      * rc.html = `
      *   <!DOCTYPE html>
      *   <html>
      *   <head>
-     *     <!-- 预加载资源 -->
+     *     <!-- Preload resources -->
      *     ${rc.preload()}
-     *     <!-- 注入样式表 -->
+     *     <!-- Inject stylesheets -->
      *     ${rc.css()}
      *   </head>
      *   <body>
@@ -681,47 +681,47 @@ export class RenderContext {
         code: ''
     };
     /**
-     * 定义 importmap 的生成模式
+     * Define the generation mode for importmap
      *
      * @description
-     * ImportmapMode 用于控制 importmap 的生成方式，支持两种模式：
-     * - `inline`: 将 importmap 内容直接内联到 HTML 中（默认值），适用于以下场景：
-     *   - 需要减少 HTTP 请求数量
-     *   - importmap 内容较小
-     *   - 对首屏加载性能要求较高
-     * - `js`: 将 importmap 内容生成为独立的 JS 文件，适用于以下场景：
-     *   - importmap 内容较大
-     *   - 需要利用浏览器缓存机制
-     *   - 多个页面共享相同的 importmap
+     * ImportmapMode is used to control the generation method of importmap, supporting two modes:
+     * - `inline`: Inline importmap content directly into HTML (default value), suitable for the following scenarios:
+     *   - Need to reduce the number of HTTP requests
+     *   - Importmap content is small
+     *   - High requirements for first-screen loading performance
+     * - `js`: Generate importmap content as an independent JS file, suitable for the following scenarios:
+     *   - Importmap content is large
+     *   - Need to utilize browser caching mechanisms
+     *   - Multiple pages share the same importmap
      *
-     * 默认值选择 'inline' 的原因：
-     * 1. 简单直接
-     *    - 减少额外的 HTTP 请求
-     *    - 无需额外的资源管理
-     *    - 适合大多数应用场景
-     * 2. 首屏性能
-     *    - 避免额外的网络请求
-     *    - 确保导入映射立即可用
-     *    - 减少页面加载时间
-     * 3. 易于调试
-     *    - 导入映射直接可见
-     *    - 便于问题诊断
-     *    - 简化开发流程
+     * Reasons for choosing 'inline' as the default value:
+     * 1. Simple and direct
+     *    - Reduce additional HTTP requests
+     *    - No additional resource management required
+     *    - Suitable for most application scenarios
+     * 2. First-screen performance
+     *    - Avoid additional network requests
+     *    - Ensure import maps are immediately available
+     *    - Reduce page loading time
+     * 3. Easy to debug
+     *    - Import maps are directly visible
+     *    - Facilitate problem diagnosis
+     *    - Simplify development process
      *
      * @example
      * ```ts
-     * // 使用内联模式（默认）
+     * // Use inline mode (default)
      * const rc = await esmx.render({
      *   params: { url: req.url }
      * });
      *
-     * // 显式指定内联模式
+     * // Explicitly specify inline mode
      * const rc = await esmx.render({
      *   importmapMode: 'inline',
      *   params: { url: req.url }
      * });
      *
-     * // 使用 JS 文件模式
+     * // Use JS file mode
      * const rc = await esmx.render({
      *   importmapMode: 'js',
      *   params: { url: req.url }
@@ -730,25 +730,25 @@ export class RenderContext {
      */
     public importmapMode: ImportmapMode;
     /**
-     * HTML 内容
+     * HTML content
      * @description
-     * html 属性用于设置和获取最终生成的 HTML 内容：
+     * The html property is used to set and get the final generated HTML content:
      *
-     * 1. **基础路径替换**
-     *    - 在设置 HTML 时自动处理基础路径占位符
-     *    - 将 `[[[___GEZ_DYNAMIC_BASE___]]]/your-app-name/` 替换为实际的 base 路径
-     *    - 确保所有静态资源的引用路径正确
+     * 1. **Base Path Replacement**
+     *    - Automatically handles base path placeholders when setting HTML
+     *    - Replaces `[[[___ESMX_DYNAMIC_BASE___]]]/your-app-name/` with the actual base path
+     *    - Ensures all static asset reference paths are correct
      *
-     * 2. **使用场景**
-     *    - 设置服务端渲染生成的 HTML 内容
-     *    - 支持动态基础路径配置
-     *    - 自动处理静态资源的引用路径
+     * 2. **Use Cases**
+     *    - Set HTML content generated by server-side rendering
+     *    - Support dynamic base path configuration
+     *    - Automatically handle static asset reference paths
      *
      * @example
      * ```ts
-     * // 1. 基础用法
+     * // 1. Basic usage
      * export default async (rc: RenderContext) => {
-     *   // 设置 HTML 内容
+     *   // Set HTML content
      *   rc.html = `
      *     <!DOCTYPE html>
      *     <html>
@@ -766,15 +766,15 @@ export class RenderContext {
      *   `;
      * };
      *
-     * // 2. 动态基础路径
+     * // 2. Dynamic base path
      * const rc = await esmx.render({
-     *   base: '/app',  // 设置基础路径
+     *   base: '/app',  // Set base path
      *   params: { url: req.url }
      * });
      *
-     * // HTML 中的占位符会被自动替换：
-     * // [[[___GEZ_DYNAMIC_BASE___]]]/your-app-name/css/style.css
-     * // 替换为：
+     * // Placeholders in HTML will be automatically replaced:
+     * // [[[___ESMX_DYNAMIC_BASE___]]]/your-app-name/css/style.css
+     * // Replaced with:
      * // /app/your-app-name/css/style.css
      * ```
      */
@@ -795,23 +795,23 @@ export class RenderContext {
         this.importmapMode = options.importmapMode ?? 'inline';
     }
     /**
-     * 将 JavaScript 对象序列化为字符串
+     * Serialize JavaScript object to string
      * @description
-     * serialize 方法用于在服务端渲染过程中将状态数据序列化，以便传递到客户端：
+     * The serialize method is used to serialize state data during the server-side rendering process for passing to the client:
      *
-     * 1. **主要用途**
-     *    - 序列化服务端状态数据
-     *    - 确保数据可以安全地嵌入到 HTML 中
-     *    - 支持复杂的数据结构（如 Date、RegExp 等）
+     * 1. **Main Uses**
+     *    - Serialize server-side state data
+     *    - Ensure data can be safely embedded in HTML
+     *    - Support complex data structures (such as Date, RegExp, etc.)
      *
-     * 2. **安全处理**
-     *    - 自动转义特殊字符
-     *    - 防止 XSS 攻击
-     *    - 保持数据类型的完整性
+     * 2. **Security Handling**
+     *    - Automatically escape special characters
+     *    - Prevent XSS attacks
+     *    - Maintain data type integrity
      *
      * @example
      * ```ts
-     * // 1. 基础用法 - 序列化状态数据
+     * // 1. Basic usage - Serialize state data
      * export default async (rc: RenderContext) => {
      *   const state = {
      *     user: { id: 1, name: 'Alice' },
@@ -824,7 +824,7 @@ export class RenderContext {
      *     <html>
      *     <head>
      *       <script>
-     *         // 将序列化后的状态注入到全局变量
+     *         // Inject serialized state into global variable
      *         window.__INITIAL_STATE__ = ${rc.serialize(state)};
      *       </script>
      *     </head>
@@ -833,17 +833,17 @@ export class RenderContext {
      *   `;
      * };
      *
-     * // 2. 自定义序列化选项
+     * // 2. Custom serialization options
      * const state = { sensitive: 'data' };
      * const serialized = rc.serialize(state, {
-     *   isJSON: true,  // 使用 JSON 兼容模式
-     *   unsafe: false  // 禁用不安全的序列化
+     *   isJSON: true,  // Use JSON compatible mode
+     *   unsafe: false  // Disable unsafe serialization
      * });
      * ```
      *
-     * @param {any} input - 要序列化的输入数据
-     * @param {serialize.SerializeJSOptions} [options] - 序列化选项
-     * @returns {string} 序列化后的字符串
+     * @param {any} input - Input data to be serialized
+     * @param {serialize.SerializeJSOptions} [options] - Serialization options
+     * @returns {string} Serialized string
      */
     public serialize(
         input: any,
@@ -852,27 +852,27 @@ export class RenderContext {
         return serialize(input, options);
     }
     /**
-     * 将状态数据序列化并注入到 HTML 中
+     * Serialize state data and inject it into HTML
      * @description
-     * state 方法用于在服务端渲染时将状态数据序列化并注入到 HTML 中，以便客户端可以在激活时恢复这些状态：
+     * The state method is used to serialize state data and inject it into HTML during server-side rendering, so that the client can restore these states when activating:
      *
-     * 1. **序列化机制**
-     *    - 使用安全的序列化方法处理数据
-     *    - 支持复杂的数据结构（对象、数组等）
-     *    - 自动处理特殊字符和 XSS 防护
+     * 1. **Serialization Mechanism**
+     *    - Use safe serialization methods to process data
+     *    - Support complex data structures (objects, arrays, etc.)
+     *    - Automatically handle special characters and XSS protection
      *
-     * 2. **使用场景**
-     *    - 服务端状态同步到客户端
-     *    - 初始化客户端应用状态
-     *    - 实现无缝的服务端渲染到客户端激活
+     * 2. **Use Cases**
+     *    - Synchronize server-side state to client
+     *    - Initialize client application state
+     *    - Implement seamless server-side rendering to client activation
      *
-     * @param varName 全局变量名，用于在客户端访问注入的数据
-     * @param data 需要序列化的数据对象
-     * @returns 包含序列化数据的 script 标签字符串
+     * @param varName Global variable name, used to access injected data on the client
+     * @param data Data object that needs to be serialized
+     * @returns Script tag string containing serialized data
      *
      * @example
      * ```ts
-     * // 1. 基础用法 - 注入用户信息
+     * // 1. Basic usage - Inject user information
      * export default async (rc: RenderContext) => {
      *   const userInfo = {
      *     id: 1,
@@ -893,12 +893,12 @@ export class RenderContext {
      *   `;
      * };
      *
-     * // 2. 客户端使用
-     * // 在客户端可以直接访问注入的数据
+     * // 2. Client-side usage
+     * // Can directly access injected data on the client
      * const userInfo = window.__USER__;
-     * console.log(userInfo.name); // 输出: 'John'
+     * console.log(userInfo.name); // Output: 'John'
      *
-     * // 3. 复杂数据结构
+     * // 3. Complex data structures
      * export default async (rc: RenderContext) => {
      *   const appState = {
      *     user: {
@@ -932,42 +932,42 @@ export class RenderContext {
         return `<script>window[${serialize(varName)}] = ${serialize(data, { isJSON: true })};</script>`;
     }
     /**
-     * 提交依赖收集并更新资源列表
+     * Commit dependency collection and update resource list
      * @description
-     * commit 方法是 RenderContext 依赖收集机制的核心，负责处理所有收集到的模块依赖并更新文件资源列表：
+     * The commit method is the core of RenderContext's dependency collection mechanism, responsible for handling all collected module dependencies and updating the file resource list:
      *
-     * 1. **依赖处理流程**
-     *    - 从 importMetaSet 中收集所有使用到的模块
-     *    - 基于 manifest 文件解析每个模块的具体资源
-     *    - 处理 JS、CSS、资源文件等不同类型的依赖
-     *    - 自动处理模块预加载和导入映射
+     * 1. **Dependency Processing Flow**
+     *    - Collect all used modules from importMetaSet
+     *    - Parse specific resources for each module based on manifest files
+     *    - Handle different types of dependencies such as JS, CSS, resource files, etc.
+     *    - Automatically handle module preloading and import maps
      *
-     * 2. **资源分类**
-     *    - js: JavaScript 文件，包含所有脚本和模块
-     *    - css: 样式表文件
-     *    - modulepreload: 需要预加载的 ESM 模块
-     *    - importmap: 导入映射文件
-     *    - resources: 其他资源文件（图片、字体等）
+     * 2. **Resource Classification**
+     *    - js: JavaScript files, containing all scripts and modules
+     *    - css: Stylesheet files
+     *    - modulepreload: ESM modules that need to be preloaded
+     *    - importmap: Import map files
+     *    - resources: Other resource files (images, fonts, etc.)
      *
-     * 3. **路径处理**
-     *    - 自动添加基础路径前缀
-     *    - 确保资源路径的正确性
-     *    - 支持多应用场景的资源隔离
+     * 3. **Path Processing**
+     *    - Automatically add base path prefix
+     *    - Ensure the correctness of resource paths
+     *    - Support resource isolation for multi-application scenarios
      *
      * @example
      * ```ts
-     * // 1. 基础用法
+     * // 1. Basic usage
      * export default async (rc: RenderContext) => {
-     *   // 渲染页面并收集依赖
+     *   // Render page and collect dependencies
      *   const app = createApp();
      *   const html = await renderToString(app, {
      *     importMetaSet: rc.importMetaSet
      *   });
      *
-     *   // 提交依赖收集
+     *   // Commit dependency collection
      *   await rc.commit();
      *
-     *   // 生成 HTML
+     *   // Generate HTML
      *   rc.html = `
      *     <!DOCTYPE html>
      *     <html>
@@ -985,18 +985,18 @@ export class RenderContext {
      *   `;
      * };
      *
-     * // 2. 多应用场景
+     * // 2. Multi-application scenario
      * const rc = await esmx.render({
-     *   base: '/app1',  // 设置基础路径
+     *   base: '/app1',  // Set base path
      *   params: { appId: 1 }
      * });
      *
-     * // 渲染并提交依赖
+     * // Render and commit dependencies
      * const html = await renderApp(rc);
      * await rc.commit();
      *
-     * // 资源路径会自动添加基础路径前缀
-     * // 例如：/app1/your-app-name/js/main.js
+     * // Resource paths will automatically add base path prefix
+     * // For example: /app1/your-app-name/js/main.js
      * ```
      */
     public async commit() {
@@ -1052,37 +1052,37 @@ export class RenderContext {
         this._importMap = await esmx.getImportMapClientInfo(this.importmapMode);
     }
     /**
-     * 生成资源预加载标签
+     * Generate resource preload tags
      * @description
-     * preload() 方法用于生成资源预加载标签，通过提前加载关键资源来优化页面性能：
+     * The preload() method is used to generate resource preload tags, optimizing page performance by loading critical resources in advance:
      *
-     * 1. **资源类型**
-     *    - CSS 文件：使用 `as="style"` 预加载样式表
-     *    - JS 文件：使用 `as="script"` 预加载导入映射脚本
+     * 1. **Resource Types**
+     *    - CSS files: Use `as="style"` to preload stylesheets
+     *    - JS files: Use `as="script"` to preload import map scripts
      *
-     * 2. **性能优化**
-     *    - 提前发现并加载关键资源
-     *    - 与 HTML 解析并行加载
-     *    - 优化资源加载顺序
-     *    - 减少页面渲染阻塞
+     * 2. **Performance Optimization**
+     *    - Discover and load critical resources in advance
+     *    - Load in parallel with HTML parsing
+     *    - Optimize resource loading order
+     *    - Reduce page rendering blocking
      *
-     * 3. **最佳实践**
-     *    - 在 head 中尽早使用
-     *    - 只预加载当前页面必需的资源
-     *    - 与其他资源加载方法配合使用
+     * 3. **Best Practices**
+     *    - Use as early as possible in the head
+     *    - Only preload resources necessary for the current page
+     *    - Use in conjunction with other resource loading methods
      *
-     * @returns 返回包含所有预加载标签的 HTML 字符串
+     * @returns Returns HTML string containing all preload tags
      *
      * @example
      * ```ts
-     * // 在 HTML head 中使用
+     * // Use in HTML head
      * rc.html = `
      *   <!DOCTYPE html>
      *   <html>
      *   <head>
-     *     <!-- 预加载关键资源 -->
+     *     <!-- Preload critical resources -->
      *     ${rc.preload()}
-     *     <!-- 注入样式表 -->
+     *     <!-- Inject stylesheets -->
      *     ${rc.css()}
      *   </head>
      *   <body>
@@ -1108,34 +1108,34 @@ export class RenderContext {
         return list.join('');
     }
     /**
-     * 注入首屏样式表
+     * Inject first-screen stylesheets
      * @description
-     * css() 方法用于注入页面所需的样式表资源：
+     * The css() method is used to inject stylesheet resources required by the page:
      *
-     * 1. **注入位置**
-     *    - 必须在 head 标签中注入
-     *    - 避免页面闪烁（FOUC）和重排
-     *    - 确保样式在内容渲染时就位
+     * 1. **Injection Position**
+     *    - Must be injected in the head tag
+     *    - Avoid page flickering (FOUC) and reflow
+     *    - Ensure styles are in place when content is rendered
      *
-     * 2. **性能优化**
-     *    - 支持关键 CSS 提取
-     *    - 自动处理样式依赖关系
-     *    - 利用浏览器并行加载能力
+     * 2. **Performance Optimization**
+     *    - Support critical CSS extraction
+     *    - Automatically handle style dependency relationships
+     *    - Utilize browser parallel loading capabilities
      *
-     * 3. **使用场景**
-     *    - 注入首屏必需的样式
-     *    - 处理组件级别的样式
-     *    - 支持主题切换和动态样式
+     * 3. **Use Cases**
+     *    - Inject styles necessary for the first screen
+     *    - Handle component-level styles
+     *    - Support theme switching and dynamic styles
      *
      * @example
      * ```ts
-     * // 1. 基础用法
+     * // 1. Basic usage
      * rc.html = `
      *   <!DOCTYPE html>
      *   <html>
      *   <head>
-     *     ${rc.preload()}  <!-- 预加载资源 -->
-     *     ${rc.css()}      <!-- 注入样式表 -->
+     *     ${rc.preload()}  <!-- Preload resources -->
+     *     ${rc.css()}      <!-- Inject stylesheets -->
      *   </head>
      *   <body>
      *     <div id="app">Hello World</div>
@@ -1143,13 +1143,13 @@ export class RenderContext {
      *   </html>
      * `;
      *
-     * // 2. 与其他资源配合使用
+     * // 2. Use in conjunction with other resources
      * rc.html = `
      *   <!DOCTYPE html>
      *   <html>
      *   <head>
-     *     ${rc.preload()}  <!-- 预加载资源 -->
-     *     ${rc.css()}      <!-- 注入样式表 -->
+     *     ${rc.preload()}  <!-- Preload resources -->
+     *     ${rc.css()}      <!-- Inject stylesheets -->
      *   </head>
      *   <body>
      *     ${html}
@@ -1167,35 +1167,35 @@ export class RenderContext {
             .join('');
     }
     /**
-     * 注入模块导入映射
+     * Inject module import map
      * @description
-     * importmap() 方法用于注入 ESM 模块的路径解析规则：
+     * The importmap() method is used to inject path resolution rules for ESM modules:
      *
-     * 1. **注入位置**
-     *    - 必须在 body 中注入
-     *    - 必须在 moduleEntry 之前执行
-     *    - 避免阻塞页面首次渲染
+     * 1. **Injection Position**
+     *    - Must be injected in the body
+     *    - Must be executed before moduleEntry
+     *    - Avoid blocking the first page render
      *
-     * 2. **导入映射模式**
-     *    - 内联模式（inline）：
-     *      - 将映射内容直接内联到 HTML 中
-     *      - 适合映射内容较小的场景
-     *      - 减少 HTTP 请求数量
-     *    - JS 文件模式（js）：
-     *      - 生成独立的 JS 文件
-     *      - 适合映射内容较大的场景
-     *      - 可以利用浏览器缓存机制
+     * 2. **Import Map Modes**
+     *    - Inline mode (inline):
+     *      - Inline map content directly into HTML
+     *      - Suitable for scenarios with smaller map content
+     *      - Reduce the number of HTTP requests
+     *    - JS file mode (js):
+     *      - Generate independent JS files
+     *      - Suitable for scenarios with larger map content
+     *      - Can utilize browser caching mechanisms
      *
-     * 3. **技术原因**
-     *    - 定义了 ESM 模块的路径解析规则
-     *    - 客户端入口模块和其依赖都需要使用这些映射
-     *    - 确保在执行模块代码前已正确设置映射
+     * 3. **Technical Reasons**
+     *    - Define path resolution rules for ESM modules
+     *    - Client entry modules and their dependencies need to use these maps
+     *    - Ensure the map is correctly set before executing module code
      *
      * @example
      * ```ts
-     * // 1. 基础用法 - 内联模式
+     * // 1. Basic usage - Inline mode
      * const rc = await esmx.render({
-     *   importmapMode: 'inline'  // 默认模式
+     *   importmapMode: 'inline'  // Default mode
      * });
      *
      * rc.html = `
@@ -1207,16 +1207,16 @@ export class RenderContext {
      *   </head>
      *   <body>
      *     ${html}
-     *     ${rc.importmap()}    <!-- 注入导入映射 -->
-     *     ${rc.moduleEntry()}  <!-- 在导入映射之后执行 -->
+     *     ${rc.importmap()}    <!-- Inject import map -->
+     *     ${rc.moduleEntry()}  <!-- Execute after import map -->
      *     ${rc.modulePreload()}
      *   </body>
      *   </html>
      * `;
      *
-     * // 2. JS 文件模式 - 适合大型应用
+     * // 2. JS file mode - Suitable for large applications
      * const rc = await esmx.render({
-     *   importmapMode: 'js'  // 使用 JS 文件模式
+     *   importmapMode: 'js'  // Use JS file mode
      * });
      * ```
      */
@@ -1224,27 +1224,27 @@ export class RenderContext {
         return this._importMap.code;
     }
     /**
-     * 注入客户端入口模块
+     * Inject client entry module
      * @description
-     * moduleEntry() 方法用于注入客户端的入口模块：
-     * 1. **注入位置**
-     *    - 必须在 importmap 之后执行
-     *    - 确保在执行模块代码前已正确设置导入映射
-     *    - 控制客户端激活（Hydration）的开始时机
+     * The moduleEntry() method is used to inject the client's entry module:
+     * 1. **Injection Position**
+     *    - Must be executed after importmap
+     *    - Ensure the import map is correctly set before executing module code
+     *    - Control the start timing of client activation (Hydration)
      *
-     * 2. **技术原因**
-     *    - 作为客户端代码的入口点
-     *    - 需要等待基础设施（如导入映射）就绪
-     *    - 确保正确的模块路径解析
+     * 2. **Technical Reasons**
+     *    - Serve as the entry point for client code
+     *    - Need to wait for infrastructure (such as import maps) to be ready
+     *    - Ensure correct module path resolution
      *
-     * 3. **使用场景**
-     *    - 启动客户端应用
-     *    - 执行客户端激活
-     *    - 初始化客户端状态
+     * 3. **Use Cases**
+     *    - Start the client application
+     *    - Execute client activation
+     *    - Initialize client state
      *
      * @example
      * ```ts
-     * // 1. 基础用法
+     * // 1. Basic usage
      * rc.html = `
      *   <!DOCTYPE html>
      *   <html>
@@ -1254,16 +1254,16 @@ export class RenderContext {
      *   </head>
      *   <body>
      *     ${html}
-     *     ${rc.importmap()}    <!-- 先注入导入映射 -->
-     *     ${rc.moduleEntry()}  <!-- 再注入入口模块 -->
+     *     ${rc.importmap()}    <!-- Inject import map first -->
+     *     ${rc.moduleEntry()}  <!-- Then inject entry module -->
      *     ${rc.modulePreload()}
      *   </body>
      *   </html>
      * `;
      *
-     * // 2. 多入口配置
+     * // 2. Multiple entry configuration
      * const rc = await esmx.render({
-     *   entryName: 'mobile',  // 指定入口名称
+     *   entryName: 'mobile',  // Specify entry name
      *   params: { device: 'mobile' }
      * });
      * ```
@@ -1273,28 +1273,28 @@ export class RenderContext {
     }
 
     /**
-     * 预加载模块依赖
+     * Preload module dependencies
      * @description
-     * modulePreload() 方法用于预加载后续可能用到的模块：
+     * The modulePreload() method is used to preload modules that may be needed later:
      *
-     * 1. **注入位置**
-     *    - 必须在 importmap 和 moduleEntry 之后
-     *    - 确保使用正确的模块路径映射
-     *    - 避免与首屏渲染竞争资源
+     * 1. **Injection Position**
+     *    - Must be after importmap and moduleEntry
+     *    - Ensure the correct module path mapping is used
+     *    - Avoid competing with first-screen rendering for resources
      *
-     * 2. **性能优化**
-     *    - 预加载后续可能用到的模块
-     *    - 提升运行时性能
-     *    - 优化按需加载体验
+     * 2. **Performance Optimization**
+     *    - Preload modules that may be needed later
+     *    - Improve runtime performance
+     *    - Optimize on-demand loading experience
      *
-     * 3. **技术原因**
-     *    - 需要正确的路径解析规则
-     *    - 避免重复加载
-     *    - 控制加载优先级
+     * 3. **Technical Reasons**
+     *    - Need correct path resolution rules
+     *    - Avoid duplicate loading
+     *    - Control loading priority
      *
      * @example
      * ```ts
-     * // 1. 基础用法
+     * // 1. Basic usage
      * rc.html = `
      *   <!DOCTYPE html>
      *   <html>
@@ -1306,16 +1306,16 @@ export class RenderContext {
      *     ${html}
      *     ${rc.importmap()}
      *     ${rc.moduleEntry()}
-     *     ${rc.modulePreload()}  <!-- 预加载模块依赖 -->
+     *     ${rc.modulePreload()}  <!-- Preload module dependencies -->
      *   </body>
      *   </html>
      * `;
      *
-     * // 2. 与异步组件配合使用
+     * // 2. Use with async components
      * const AsyncComponent = defineAsyncComponent(() =>
      *   import('./components/AsyncComponent.vue')
      * );
-     * // modulePreload 会自动收集并预加载异步组件的依赖
+     * // modulePreload will automatically collect and preload dependencies of async components
      * ```
      */
     public modulePreload() {

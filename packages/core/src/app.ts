@@ -9,21 +9,21 @@ import {
 import { type Middleware, createMiddleware } from './utils/middleware';
 
 /**
- * 应用程序实例接口。
+ * Application instance interface.
  *
- * App 是 Esmx 框架的应用抽象，提供了统一的接口来管理应用的生命周期、
- * 静态资源和服务端渲染。
+ * App is the application abstraction of the Esmx framework, providing a unified interface
+ * to manage application lifecycle, static assets, and server-side rendering.
  *
  * @example
  * ```ts
  * // entry.node.ts
  * export default {
- *   // 开发环境配置
+ *   // Development environment configuration
  *   async devApp(esmx) {
  *     return import('@esmx/rspack').then((m) =>
  *       m.createRspackHtmlApp(esmx, {
  *         config(rc) {
- *           // 自定义 Rspack 配置
+ *           // Custom Rspack configuration
  *         }
  *       })
  *     );
@@ -33,17 +33,17 @@ import { type Middleware, createMiddleware } from './utils/middleware';
  */
 export interface App {
     /**
-     * 静态资源处理中间件。
+     * Static asset processing middleware.
      *
-     * 开发环境：
-     * - 处理源码的静态资源请求
-     * - 支持实时编译和热更新
-     * - 使用 no-cache 缓存策略
+     * Development environment:
+     * - Handles static asset requests from source code
+     * - Supports real-time compilation and hot reloading
+     * - Uses no-cache strategy
      *
-     * 生产环境：
-     * - 处理构建后的静态资源
-     * - 支持不可变文件的长期缓存（.final.xxx）
-     * - 优化的资源加载策略
+     * Production environment:
+     * - Handles built static assets
+     * - Supports long-term caching for immutable files (.final.xxx)
+     * - Optimized asset loading strategy
      *
      * @example
      * ```ts
@@ -53,14 +53,14 @@ export interface App {
     middleware: Middleware;
 
     /**
-     * 服务端渲染函数。
+     * Server-side rendering function.
      *
-     * 根据运行环境提供不同实现：
-     * - 生产环境（start）：加载构建后的服务端入口文件（entry.server）执行渲染
-     * - 开发环境（dev）：加载源码中的服务端入口文件执行渲染
+     * Provides different implementations based on the runtime environment:
+     * - Production environment (start): Loads the built server entry file (entry.server) to execute rendering
+     * - Development environment (dev): Loads the server entry file from source code to execute rendering
      *
-     * @param options - 渲染选项
-     * @returns 返回渲染上下文，包含渲染结果
+     * @param options - Rendering options
+     * @returns Returns the rendering context containing the rendering result
      *
      * @example
      * ```ts
@@ -73,30 +73,30 @@ export interface App {
     render: (options?: RenderContextOptions) => Promise<RenderContext>;
 
     /**
-     * 生产环境构建函数。
-     * 用于资源打包和优化。
+     * Production environment build function.
+     * Used for asset packaging and optimization.
      *
-     * @returns 构建成功返回 true，失败返回 false
+     * @returns Returns true for successful build, false for failed build
      */
     build?: () => Promise<boolean>;
 
     /**
-     * 资源清理函数。
-     * 用于关闭服务器、断开连接等。
+     * Resource cleanup function.
+     * Used for shutting down servers, disconnecting connections, etc.
      *
-     * @returns 清理成功返回 true，失败返回 false
+     * @returns Returns true for successful cleanup, false for failed cleanup
      */
     destroy?: () => Promise<boolean>;
 }
 
 /**
- * 创建生产环境的应用程序实例，开发环境不可用。
+ * Create an application instance for production environment, not available in development environment.
  */
 export async function createApp(esmx: Esmx, command: COMMAND): Promise<App> {
     const render =
         command === esmx.COMMAND.start
-            ? await createStartRender(esmx) // 提供实际的渲染函数
-            : createErrorRender(esmx); // 提供错误提示渲染函数
+            ? await createStartRender(esmx) // Provides actual rendering function
+            : createErrorRender(esmx); // Provides error prompt rendering function
     return {
         middleware: createMiddleware(esmx),
         render
@@ -104,16 +104,16 @@ export async function createApp(esmx: Esmx, command: COMMAND): Promise<App> {
 }
 
 /**
- * 创建生产环境渲染函数。
- * 加载构建后的服务端入口文件（entry.server）执行渲染。
+ * Create production environment rendering function.
+ * Loads the built server entry file (entry.server) to execute rendering.
  *
- * @param esmx - Esmx 实例
- * @returns 返回渲染函数
+ * @param esmx - Esmx instance
+ * @returns Returns the rendering function
  * @internal
  *
  * @example
  * ```ts
- * // 服务端入口文件 (entry.server)
+ * // Server entry file (entry.server)
  * export default async function render(rc: RenderContext) {
  *   rc.html = '<html>...</html>';
  * }

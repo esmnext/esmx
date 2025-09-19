@@ -80,7 +80,7 @@ export default async (rc: RenderContext) => {
         }
 
         .version-card.vue2 {
-            border-top: 4px solid #34495e;
+            border-top: 4px solid #42b883;
         }
 
         .version-card h3 {
@@ -177,28 +177,6 @@ export default async (rc: RenderContext) => {
             100% { transform: rotate(360deg); }
         }
 
-        .consistency-animation {
-            animation: highlight 2s ease-in-out;
-        }
-
-        @keyframes highlight {
-            0%, 100% { 
-                background: white; 
-                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            }
-            25% { 
-                background: #d4edda; 
-                box-shadow: 0 10px 30px rgba(40, 167, 69, 0.4);
-            }
-            50% { 
-                background: white; 
-                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            }
-            75% { 
-                background: #d4edda; 
-                box-shadow: 0 10px 30px rgba(40, 167, 69, 0.4);
-            }
-        }
 
         .tech-info {
             background: white;
@@ -279,7 +257,7 @@ export default async (rc: RenderContext) => {
 
             <div class="version-card vue2" id="vue2-card">
                 <h3>
-                    <span style="color: #34495e;">●</span>
+                    <span style="color: #42b883;">●</span>
                     Vue 2 Module
                 </h3>
                 <div class="version-info">
