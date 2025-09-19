@@ -1,18 +1,18 @@
 import type { Esmx } from './core';
 
 /**
- * 软件包打包配置接口。
- * 用于将服务的构建产物打包成标准的 npm .tgz 格式软件包。
+ * Package configuration interface.
+ * Used to package build artifacts into standard npm .tgz format packages.
  *
- * 特点：
- * - **标准化**：使用 npm 标准的 .tgz 打包格式
- * - **完整性**：包含模块的源代码、类型声明和配置文件等所有必要文件
- * - **兼容性**：与 npm 生态系统完全兼容，支持标准的包管理工作流
+ * Features:
+ * - **Standardization**: Uses npm standard .tgz packaging format
+ * - **Completeness**: Contains all necessary files including module source code, type declarations, and configuration files
+ * - **Compatibility**: Fully compatible with npm ecosystem, supporting standard package management workflows
  *
- * 使用场景：
- * - 模块打包发布
- * - 版本发布管理
- * - CI/CD 流程集成
+ * Use Cases:
+ * - Module packaging and publishing
+ * - Version release management
+ * - CI/CD process integration
  *
  * @example
  * ```ts
@@ -21,7 +21,7 @@ import type { Esmx } from './core';
  *
  * export default {
  *   modules: {
- *     // 配置需要导出的模块
+ *     // Configure modules to export
  *     exports: [
  *       'root:src/components/button.vue',
  *       'root:src/utils/format.ts',
@@ -29,22 +29,22 @@ import type { Esmx } from './core';
  *       'pkg:vue-router'
  *     ]
  *   },
- *   // 打包配置
+ *   // Packaging configuration
  *   pack: {
- *     // 启用打包功能
+ *     // Enable packaging functionality
  *     enable: true,
  *
- *     // 同时输出多个版本
+ *     // Output multiple versions simultaneously
  *     outputs: [
  *       'dist/versions/latest.tgz',
  *       'dist/versions/1.0.0.tgz'
  *     ],
  *
- *     // 自定义 package.json
+ *     // Customize package.json
  *     packageJson: async (esmx, pkg) => {
  *       pkg.name = '@your-scope/your-app';
  *       pkg.version = '1.0.0';
- *       // 添加构建脚本
+ *       // Add build scripts
  *       pkg.scripts = {
  *         "prepare": "npm run build",
  *         "build": "npm run build:dts && npm run build:ssr",
@@ -54,21 +54,21 @@ import type { Esmx } from './core';
  *       return pkg;
  *     },
  *
- *     // 打包前准备
+ *     // Pre-packaging preparation
  *     onBefore: async (esmx, pkg) => {
- *       // 添加必要文件
- *       await fs.writeFile('dist/README.md', '# Your App\n\n模块导出说明...');
- *       // 执行类型检查
+ *       // Add necessary files
+ *       await fs.writeFile('dist/README.md', '# Your App\n\nModule export description...');
+ *       // Execute type checking
  *       await runTypeCheck();
  *     },
  *
- *     // 打包后处理
+ *     // Post-packaging processing
  *     onAfter: async (esmx, pkg, file) => {
- *       // 发布到私有 npm 镜像源
+ *       // Publish to private npm registry
  *       await publishToRegistry(file, {
  *         registry: 'https://npm.your-registry.com/'
  *       });
- *       // 或部署到静态服务器
+ *       // Or deploy to static server
  *       await uploadToServer(file, 'https://static.example.com/packages');
  *     }
  *   }
@@ -77,31 +77,31 @@ import type { Esmx } from './core';
  */
 export interface PackConfig {
     /**
-     * 是否启用打包功能。
-     * 启用后会将构建产物打包成标准的 npm .tgz 格式软件包。
+     * Whether to enable packaging functionality.
+     * When enabled, build artifacts will be packaged into standard npm .tgz format packages.
      * @default false
      */
     enable?: boolean;
 
     /**
-     * 指定输出的软件包文件路径。
-     * 支持以下配置方式：
-     * - string: 单个输出路径，如 'dist/versions/my-app.tgz'
-     * - string[]: 多个输出路径，用于同时生成多个版本
-     * - boolean: true 时使用默认路径 'dist/client/versions/latest.tgz'
+     * Specify the output package file path.
+     * Supports the following configuration methods:
+     * - string: Single output path, e.g., 'dist/versions/my-app.tgz'
+     * - string[]: Multiple output paths for generating multiple versions simultaneously
+     * - boolean: When true, uses default path 'dist/client/versions/latest.tgz'
      *
      * @example
      * ```ts
-     * // 单个输出
+     * // Single output
      * outputs: 'dist/app.tgz'
      *
-     * // 多个版本
+     * // Multiple versions
      * outputs: [
      *   'dist/versions/latest.tgz',
      *   'dist/versions/1.0.0.tgz'
      * ]
      *
-     * // 使用默认路径
+     * // Use default path
      * outputs: true
      * ```
      *
@@ -110,34 +110,34 @@ export interface PackConfig {
     outputs?: string | string[] | boolean;
 
     /**
-     * package.json 处理函数。
-     * 在打包前调用，用于自定义 package.json 的内容。
+     * package.json processing function.
+     * Called before packaging to customize the content of package.json.
      *
-     * 常见用途：
-     * - 修改包名和版本号
-     * - 添加或更新依赖项
-     * - 添加自定义字段
-     * - 配置发布相关信息
+     * Common use cases:
+     * - Modify package name and version
+     * - Add or update dependencies
+     * - Add custom fields
+     * - Configure publishing related information
      *
-     * @param esmx - Esmx 实例
-     * @param pkgJson - 原始的 package.json 内容
-     * @returns 处理后的 package.json 内容
+     * @param esmx - Esmx instance
+     * @param pkgJson - Original package.json content
+     * @returns Processed package.json content
      *
      * @example
      * ```ts
      * packageJson: async (esmx, pkg) => {
-     *   // 设置包信息
+     *   // Set package information
      *   pkg.name = 'my-app';
      *   pkg.version = '1.0.0';
-     *   pkg.description = '我的应用';
+     *   pkg.description = 'My Application';
      *
-     *   // 添加依赖
+     *   // Add dependencies
      *   pkg.dependencies = {
      *     'vue': '^3.0.0',
      *     'express': '^4.17.1'
      *   };
      *
-     *   // 添加发布配置
+     *   // Add publishing configuration
      *   pkg.publishConfig = {
      *     registry: 'https://registry.example.com'
      *   };
@@ -152,29 +152,29 @@ export interface PackConfig {
     ) => Promise<Record<string, any>>;
 
     /**
-     * 打包前的钩子函数。
-     * 在生成 .tgz 文件之前调用，用于执行准备工作。
+     * Pre-packaging hook function.
+     * Called before generating .tgz file to execute preparation work.
      *
-     * 常见用途：
-     * - 添加额外的文件（README、LICENSE 等）
-     * - 执行测试或构建验证
-     * - 生成文档或元数据
-     * - 清理临时文件
+     * Common use cases:
+     * - Add additional files (README, LICENSE, etc.)
+     * - Execute tests or build validation
+     * - Generate documentation or metadata
+     * - Clean up temporary files
      *
-     * @param esmx - Esmx 实例
-     * @param pkgJson - 处理后的 package.json 内容
+     * @param esmx - Esmx instance
+     * @param pkgJson - Processed package.json content
      *
      * @example
      * ```ts
      * onBefore: async (esmx, pkg) => {
-     *   // 添加文档
+     *   // Add documentation
      *   await fs.writeFile('dist/README.md', '# My App');
      *   await fs.writeFile('dist/LICENSE', 'MIT License');
      *
-     *   // 执行测试
+     *   // Execute tests
      *   await runTests();
      *
-     *   // 生成文档
+     *   // Generate documentation
      *   await generateDocs();
      * }
      * ```
@@ -182,34 +182,34 @@ export interface PackConfig {
     onBefore?: (esmx: Esmx, pkgJson: Record<string, any>) => Promise<void>;
 
     /**
-     * 打包后的钩子函数。
-     * 在 .tgz 文件生成后调用，用于处理打包产物。
+     * Post-packaging hook function.
+     * Called after .tgz file is generated to handle packaging artifacts.
      *
-     * 常见用途：
-     * - 发布到 npm 仓库（公共或私有）
-     * - 上传到静态资源服务器
-     * - 执行版本管理
-     * - 触发 CI/CD 流程
+     * Common use cases:
+     * - Publish to npm registry (public or private)
+     * - Upload to static asset server
+     * - Execute version management
+     * - Trigger CI/CD processes
      *
-     * @param esmx - Esmx 实例
-     * @param pkgJson - 最终的 package.json 内容
-     * @param file - 生成的 .tgz 文件内容
+     * @param esmx - Esmx instance
+     * @param pkgJson - Final package.json content
+     * @param file - Generated .tgz file content
      *
      * @example
      * ```ts
      * onAfter: async (esmx, pkg, file) => {
-     *   // 发布到 npm 私有仓库
+     *   // Publish to npm private registry
      *   await publishToRegistry(file, {
      *     registry: 'https://registry.example.com'
      *   });
      *
-     *   // 上传到静态资源服务器
+     *   // Upload to static asset server
      *   await uploadToServer(file, 'https://assets.example.com/packages');
      *
-     *   // 创建版本标签
+     *   // Create version tag
      *   await createGitTag(pkg.version);
      *
-     *   // 触发部署流程
+     *   // Trigger deployment process
      *   await triggerDeploy(pkg.version);
      * }
      * ```
@@ -222,34 +222,34 @@ export interface PackConfig {
 }
 
 /**
- * PackConfig 配置解析后的内部接口。
- * 将用户配置标准化，设置默认值，便于框架内部使用。
+ * Internal interface after PackConfig configuration is parsed.
+ * Standardizes user configuration, sets default values, for internal framework use.
  *
- * 主要处理：
- * - 确保所有可选字段都有默认值
- * - 统一输出路径格式
- * - 标准化回调函数
+ * Main processing:
+ * - Ensure all optional fields have default values
+ * - Unify output path format
+ * - Standardize callback functions
  */
 export interface ParsedPackConfig {
     /**
-     * 是否启用打包功能。
-     * 解析后总是有确定的布尔值。
+     * Whether to enable packaging functionality.
+     * Always has a definite boolean value after parsing.
      * @default false
      */
     enable: boolean;
 
     /**
-     * 解析后的输出文件路径列表。
-     * 将所有输出格式统一转换为字符串数组：
-     * - 布尔值 true → ['dist/client/versions/latest.tgz']
-     * - 字符串 → [输入的字符串]
-     * - 字符串数组 → 保持不变
+     * Parsed output file path list.
+     * Converts all output formats uniformly to string arrays:
+     * - Boolean true → ['dist/client/versions/latest.tgz']
+     * - String → [input string]
+     * - String array → remains unchanged
      */
     outputs: string[];
 
     /**
-     * 标准化的 package.json 处理函数。
-     * 未配置时使用默认函数，保持原始内容不变。
+     * Standardized package.json processing function.
+     * Uses default function when not configured, keeping original content unchanged.
      */
     packageJson: (
         esmx: Esmx,
@@ -257,14 +257,14 @@ export interface ParsedPackConfig {
     ) => Promise<Record<string, any>>;
 
     /**
-     * 标准化的打包前钩子函数。
-     * 未配置时使用空函数。
+     * Standardized pre-packaging hook function.
+     * Uses empty function when not configured.
      */
     onBefore: (esmx: Esmx, pkgJson: Record<string, any>) => Promise<void>;
 
     /**
-     * 标准化的打包后钩子函数。
-     * 未配置时使用空函数。
+     * Standardized post-packaging hook function.
+     * Uses empty function when not configured.
      */
     onAfter: (
         esmx: Esmx,

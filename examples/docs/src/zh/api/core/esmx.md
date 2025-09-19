@@ -110,7 +110,7 @@ interface EsmxOptions {
 #### basePathPlaceholder
 
 - **类型**: `string | false`
-- **默认值**: `'[[[___GEZ_DYNAMIC_BASE___]]]'`
+- **默认值**: `'[[[___ESMX_DYNAMIC_BASE___]]]'`
 
 基础路径占位符配置。用于运行时动态替换资源的基础路径。设置为 `false` 可以禁用此功能。
 
