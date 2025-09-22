@@ -1036,7 +1036,7 @@ document.head.appendChild(script);
                 return {
                     src: null,
                     filepath: null,
-                    code: `<script type="importmap">${serialize(importmap, { isJSON: true })}</script>`
+                    code: `<script type="importmap">${serialize(importmap, { isJSON: true, unsafe: true })}</script>`
                 };
             }
         );
