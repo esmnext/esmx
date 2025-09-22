@@ -270,7 +270,7 @@ const rc = await esmx.render({
 });
 
 // HTML 中的占位符会被自动替换：
-// [[[___GEZ_DYNAMIC_BASE___]]]/your-app-name/css/style.css
+// [[[___ESMX_DYNAMIC_BASE___]]]/your-app-name/css/style.css
 // 替换为：
 // /app/your-app-name/css/style.css
 ```

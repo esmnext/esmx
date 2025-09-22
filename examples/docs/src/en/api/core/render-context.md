@@ -270,7 +270,7 @@ const rc = await esmx.render({
 });
 
 // Placeholders in HTML are automatically replaced:
-// [[[___GEZ_DYNAMIC_BASE___]]]/your-app-name/css/style.css
+// [[[___ESMX_DYNAMIC_BASE___]]]/your-app-name/css/style.css
 // Becomes:
 // /app/your-app-name/css/style.css
 ```

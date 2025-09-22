@@ -28,105 +28,105 @@ import { type ProjectPath, resolvePath } from './utils/resolve-path';
 import { getImportPreloadInfo as getStaticImportPaths } from './utils/static-import-lexer';
 
 /**
- * Esmx 框架的核心配置选项接口
+ * Core configuration options interface for the Esmx framework
  */
 export interface EsmxOptions {
     /**
-     * 项目根目录路径
-     * - 可以是绝对路径或相对路径
-     * - 默认为当前工作目录 (process.cwd())
+     * Project root directory path
+     * - Can be absolute or relative path
+     * - Defaults to current working directory (process.cwd())
      */
     root?: string;
 
     /**
-     * 是否为生产环境
-     * - true: 生产环境
-     * - false: 开发环境
-     * - 默认根据 process.env.NODE_ENV === 'production' 判断
+     * Whether it is production environment
+     * - true: Production environment
+     * - false: Development environment
+     * - Defaults to process.env.NODE_ENV === 'production'
      */
     isProd?: boolean;
 
     /**
-     * 基础路径占位符配置
-     * - string: 自定义占位符
-     * - false: 禁用占位符
-     * - 默认值为 '[[[___GEZ_DYNAMIC_BASE___]]]'
-     * - 用于运行时动态替换资源的基础路径
+     * Base path placeholder configuration
+     * - string: Custom placeholder
+     * - false: Disable placeholder
+     * - Default value is '[[[___ESMX_DYNAMIC_BASE___]]]'
+     * - Used for dynamically replacing the base path of assets at runtime
      */
     basePathPlaceholder?: string | false;
 
     /**
-     * 模块配置选项
-     * - 用于配置项目的模块解析规则
-     * - 包括模块别名、外部依赖等配置
+     * Module configuration options
+     * - Used to configure module resolution rules for the project
+     * - Includes module aliases, external dependencies, etc.
      */
     modules?: ModuleConfig;
 
     /**
-     * 打包配置选项
-     * - 用于将构建产物打包成标准的 npm .tgz 格式软件包
-     * - 包括输出路径、package.json 处理、打包钩子等配置
+     * Package configuration options
+     * - Used to package build artifacts into standard npm .tgz format packages
+     * - Includes output path, package.json handling, packaging hooks, etc.
      */
     packs?: PackConfig;
 
     /**
-     * 开发环境应用创建函数
-     * - 仅在开发环境中使用
-     * - 用于创建开发服务器的应用实例
-     * @param esmx Esmx实例
+     * Development environment application creation function
+     * - Only used in development environment
+     * - Used to create application instance for development server
+     * @param esmx Esmx instance
      */
     devApp?: (esmx: Esmx) => Promise<App>;
 
     /**
-     * 服务器启动配置函数
-     * - 用于配置和启动 HTTP 服务器
-     * - 在开发环境和生产环境中都可使用
-     * @param esmx Esmx实例
+     * Server startup configuration function
+     * - Used to configure and start HTTP server
+     * - Can be used in both development and production environments
+     * @param esmx Esmx instance
      */
     server?: (esmx: Esmx) => Promise<void>;
 
     /**
-     * 构建后置处理函数
-     * - 在项目构建完成后执行
-     * - 可用于执行额外的资源处理、部署等操作
-     * @param esmx Esmx实例
+     * Post-build processing function
+     * - Executed after project build is completed
+     * - Can be used to perform additional resource processing, deployment, etc.
+     * @param esmx Esmx instance
      */
     postBuild?: (esmx: Esmx) => Promise<void>;
 }
 
 /**
- * 应用程序构建目标类型。
- * - client: 客户端构建目标，用于生成浏览器端运行的代码
- * - server: 服务端构建目标，用于生成 Node.js 环境运行的代码
+ * Application build target types.
+ * - client: Client build target, used to generate code that runs in the browser
+ * - server: Server build target, used to generate code that runs in Node.js environment
  */
 export type BuildEnvironment = 'client' | 'server';
 
 /**
- * Esmx 框架的命令枚举。
- * 用于控制框架的运行模式和生命周期。
+ * Command enumeration for the Esmx framework.
+ * Used to control the runtime mode and lifecycle of the framework.
  */
 export enum COMMAND {
     /**
-     * 开发模式
-     * 启动开发服务器并支持热更新
+     * Development mode
+     * Starts development server with hot reload support
      */
     dev = 'dev',
 
     /**
-     * 构建模式
-     * 生成生产环境构建产物
+     * Build mode
+     * Generates production build artifacts
      */
     build = 'build',
 
     /**
-     * 预览模式
-     * 预览构建产物
+     * Preview mode
+     * Preview build artifacts
      */
     preview = 'preview',
 
     /**
-     * 启动模式
-     * 启动生产环境服务器
+     * Start mode
+     * Starts production environment server
      */
     start = 'start'
 }
@@ -134,32 +134,32 @@ export enum COMMAND {
 export type { ImportMap, SpecifierMap, ScopesMap };
 
 /**
- * Esmx 框架实例的初始化状态接口
- * @internal 仅供框架内部使用
+ * Initialization status interface for Esmx framework instance
+ * @internal For framework internal use only
  *
  * @description
- * 该接口定义了框架实例初始化后的状态数据，包含：
- * - 应用实例：处理请求和渲染
- * - 当前命令：控制运行模式
- * - 模块配置：解析后的模块设置
- * - 打包配置：解析后的构建设置
- * - 缓存处理：框架内部缓存机制
+ * This interface defines the status data after framework instance initialization, including:
+ * - Application instance: Handles requests and rendering
+ * - Current command: Controls runtime mode
+ * - Module configuration: Parsed module settings
+ * - Package configuration: Parsed build settings
+ * - Cache handling: Framework internal caching mechanism
  */
 interface Readied {
-    /** 应用程序实例，提供中间件和渲染功能 */
+    /** Application instance, providing middleware and rendering functionality */
     app: App;
-    /** 当前执行的框架命令 */
+    /** Currently executing framework command */
     command: COMMAND;
-    /** 解析后的模块配置信息 */
+    /** Parsed module configuration information */
     moduleConfig: ParsedModuleConfig;
-    /** 解析后的打包配置信息 */
+    /** Parsed package configuration information */
     packConfig: ParsedPackConfig;
-    /** 缓存处理器 */
+    /** Cache handler */
     cache: CacheHandle;
 }
 
 export class Esmx {
-    // 基础属性和构造函数
+    // Basic properties and constructor
     private readonly _options: EsmxOptions;
     private _readied: Readied | null = null;
     private _importmapHash: string | null = null;
@@ -172,27 +172,27 @@ export class Esmx {
     }
 
     /**
-     * 获取模块名称
-     * @returns {string} 当前模块的名称，来源于模块配置
-     * @throws {NotReadyError} 在框架实例未初始化时抛出错误
+     * Get module name
+     * @returns {string} The name of the current module, sourced from module configuration
+     * @throws {NotReadyError} Throws error when framework instance is not initialized
      */
     public get name(): string {
         return this.moduleConfig.name;
     }
 
     /**
-     * 获取模块变量名
-     * @returns {string} 基于模块名称生成的合法 JavaScript 变量名
-     * @throws {NotReadyError} 在框架实例未初始化时抛出错误
+     * Get module variable name
+     * @returns {string} A valid JavaScript variable name generated based on the module name
+     * @throws {NotReadyError} Throws error when framework instance is not initialized
      */
     public get varName(): string {
         return '__' + this.name.replace(/[^a-zA-Z]/g, '_') + '__';
     }
 
     /**
-     * 获取项目根目录的绝对路径
-     * @returns {string} 项目根目录的绝对路径
-     * 如果配置的 root 为相对路径，则基于当前工作目录解析为绝对路径
+     * Get the absolute path of the project root directory
+     * @returns {string} The absolute path of the project root directory
+     * If the configured root is a relative path, it is resolved to an absolute path based on the current working directory
      */
     public get root(): string {
         const { root = cwd() } = this._options;
@@ -203,83 +203,84 @@ export class Esmx {
     }
 
     /**
-     * 判断当前是否为生产环境
-     * @returns {boolean} 环境标识
-     * 优先使用配置项中的 isProd，若未配置则根据 process.env.NODE_ENV 判断
+     * Determine if currently in production environment
+     * @returns {boolean} Environment flag
+     * Prioritizes the isProd in configuration, if not configured, judges based on process.env.NODE_ENV
      */
     public get isProd(): boolean {
         return this._options?.isProd ?? process.env.NODE_ENV === 'production';
     }
 
     /**
-     * 获取模块的基础路径
-     * @returns {string} 以斜杠开头和结尾的模块基础路径
-     * 用于构建模块资源的访问路径
+     * Get the base path of the module
+     * @returns {string} The base path of the module starting and ending with a slash
+     * Used to construct the access path for module assets
      */
     public get basePath(): string {
         return `/${this.name}/`;
     }
 
     /**
-     * 获取基础路径占位符
-     * @returns {string} 基础路径占位符或空字符串
-     * 用于运行时动态替换模块的基础路径，可通过配置禁用
+     * Get the base path placeholder
+     * @returns {string} Base path placeholder or empty string
+     * Used for dynamically replacing the base path of the module at runtime, can be disabled through configuration
      */
     public get basePathPlaceholder(): string {
         const varName = this._options.basePathPlaceholder;
         if (varName === false) {
             return '';
         }
-        return varName ?? '[[[___GEZ_DYNAMIC_BASE___]]]';
+        return varName ?? '[[[___ESMX_DYNAMIC_BASE___]]]';
     }
 
     /**
-     * 获取当前执行的命令
-     * @returns {COMMAND} 当前正在执行的命令枚举值
-     * @throws {NotReadyError} 在框架实例未初始化时调用此方法会抛出错误
+     * Get the currently executing command
+     * @returns {COMMAND} The command enumeration value currently being executed
+     * @throws {NotReadyError} Throws error when calling this method if the framework instance is not initialized
      */
     public get command(): COMMAND {
         return this.readied.command;
     }
 
     /**
-     * 获取命令枚举类型
-     * @returns {typeof COMMAND} 命令枚举类型定义
+     * Get the command enumeration type
+     * @returns {typeof COMMAND} Command enumeration type definition
      */
     public get COMMAND(): typeof COMMAND {
         return COMMAND;
     }
 
     /**
-     * 获取模块配置信息
-     * @returns {ParsedModuleConfig} 当前模块的完整配置信息
+     * Get module configuration information
+     * @returns {ParsedModuleConfig} Complete configuration information of the current module
      */
     public get moduleConfig(): ParsedModuleConfig {
         return this.readied.moduleConfig;
     }
 
     /**
-     * 获取打包配置信息
-     * @returns {ParsedPackConfig} 当前模块的打包相关配置
+     * Get package configuration information
+     * @returns {ParsedPackConfig} Package-related configuration of the current module
      */
     public get packConfig(): ParsedPackConfig {
         return this.readied.packConfig;
     }
 
     /**
-     * 获取应用程序的静态资源处理中间件。
+     * Get the static asset processing middleware for the application.
      *
-     * 该中间件负责处理应用程序的静态资源请求，根据运行环境提供不同的实现：
-     * - 开发环境：支持源码的实时编译、热更新，使用 no-cache 缓存策略
-     * - 生产环境：处理构建后的静态资源，支持不可变文件的长期缓存
+     * This middleware is responsible for handling static asset requests for the application,
+     * providing different implementations based on the runtime environment:
+     * - Development environment: Supports real-time compilation and hot reloading of source code, uses no-cache strategy
+     * - Production environment: Handles built static assets, supports long-term caching for immutable files
      *
-     * @returns {Middleware} 返回静态资源处理中间件函数
-     * @throws {NotReadyError} 在框架实例未初始化时调用此方法会抛出错误
+     * @returns {Middleware} Returns the static asset processing middleware function
+     * @throws {NotReadyError} Throws error when calling this method if the framework instance is not initialized
      *
      * @example
      * ```ts
      * const server = http.createServer((req, res) => {
-     *     // 使用中间件处理静态资源请求
+     *     // Use middleware to handle static asset requests
      *     esmx.middleware(req, res, async () => {
      *         const rc = await esmx.render({ url: req.url });
      *         res.end(rc.html);
@@ -292,28 +293,29 @@ export class Esmx {
     }
 
     /**
-     * 获取应用程序的服务端渲染函数。
+     * Get the server-side rendering function for the application.
      *
-     * 该函数负责执行服务端渲染，根据运行环境提供不同的实现：
-     * - 开发环境：加载源码中的服务端入口文件，支持热更新和实时预览
-     * - 生产环境：加载构建后的服务端入口文件，提供优化的渲染性能
+     * This function is responsible for executing server-side rendering,
+     * providing different implementations based on the runtime environment:
+     * - Development environment: Loads server entry file from source code, supports hot reloading and real-time preview
+     * - Production environment: Loads built server entry file, provides optimized rendering performance
      *
-     * @returns {(options?: RenderContextOptions) => Promise<RenderContext>} 返回服务端渲染函数
-     * @throws {NotReadyError} 在框架实例未初始化时调用此方法会抛出错误
+     * @returns {(options?: RenderContextOptions) => Promise<RenderContext>} Returns the server-side rendering function
+     * @throws {NotReadyError} Throws error when calling this method if the framework instance is not initialized
      *
      * @example
      * ```ts
-     * // 基本用法
+     * // Basic usage
      * const rc = await esmx.render({
      *     params: { url: req.url }
      * });
      * res.end(rc.html);
      *
-     * // 高级配置
+     * // Advanced configuration
      * const rc = await esmx.render({
-     *     base: '',           // 设置基础路径
-     *     importmapMode: 'inline',    // 设置导入映射模式
-     *     entryName: 'default',    // 指定渲染入口
+     *     base: '',           // Set base path
+     *     importmapMode: 'inline',    // Set import map mode
+     *     entryName: 'default',    // Specify render entry
      *     params: {
      *         url: req.url,
      *         state: { user: 'admin' }
@@ -330,21 +332,21 @@ export class Esmx {
         this._options = options;
     }
     /**
-     * 初始化 Esmx 框架实例。
+     * Initialize the Esmx framework instance.
      *
-     * 该方法执行以下核心初始化流程：
-     * 1. 解析项目配置（package.json、模块配置、打包配置等）
-     * 2. 创建应用实例（开发环境或生产环境）
-     * 3. 根据命令执行相应的生命周期方法
+     * This method executes the following core initialization process:
+     * 1. Parse project configuration (package.json, module configuration, package configuration, etc.)
+     * 2. Create application instance (development or production environment)
+     * 3. Execute corresponding lifecycle methods based on the command
      *
-     * @param command - 框架运行命令
-     *   - dev: 启动开发服务器，支持热更新
-     *   - build: 构建生产环境产物
-     *   - preview: 预览构建产物
-     *   - start: 启动生产环境服务器
+     * @param command - Framework running command
+     *   - dev: Start development server with hot reload support
+     *   - build: Build production artifacts
+     *   - preview: Preview build artifacts
+     *   - start: Start production environment server
      *
-     * @returns 初始化成功返回 true
-     * @throws {Error} 重复初始化时抛出错误
+     * @returns Returns true for successful initialization
+     * @throws {Error} Throws error when initializing repeatedly
      *
      * @example
      * ```ts
@@ -352,32 +354,32 @@ export class Esmx {
      * import type { EsmxOptions } from '@esmx/core';
      *
      * export default {
-     *   // 开发环境配置
+     *   // Development environment configuration
      *   async devApp(esmx) {
      *     return import('@esmx/rspack').then((m) =>
      *       m.createRspackHtmlApp(esmx, {
      *         config(context) {
-     *           // 自定义 Rspack 配置
+     *           // Custom Rspack configuration
      *         }
      *       })
      *     );
      *   },
      *
-     *   // HTTP 服务器配置
+     *   // HTTP server configuration
      *   async server(esmx) {
      *     const server = http.createServer((req, res) => {
-     *       // 静态文件处理
+     *       // Static file handling
      *       esmx.middleware(req, res, async () => {
-     *         // 传入渲染的参数
+     *         // Pass rendering parameters
      *         const render = await esmx.render({
      *           params: { url: req.url }
      *         });
-     *         // 响应 HTML 内容
+     *         // Respond with HTML content
      *         res.end(render.html);
      *       });
      *     });
      *
-     *     // 监听端口
+     *     // Listen to port
      *     server.listen(3000, () => {
      *       console.log('http://localhost:3000');
      *     });
@@ -435,25 +437,25 @@ export class Esmx {
     }
 
     /**
-     * 销毁 Esmx 框架实例，执行资源清理和连接关闭等操作。
+     * Destroy the Esmx framework instance, performing resource cleanup and connection closing operations.
      *
-     * 该方法主要用于开发环境下的资源清理，包括：
-     * - 关闭开发服务器（如 Rspack Dev Server）
-     * - 清理临时文件和缓存
-     * - 释放系统资源
+     * This method is mainly used for resource cleanup in development environment, including:
+     * - Closing development servers (such as Rspack Dev Server)
+     * - Cleaning up temporary files and cache
+     * - Releasing system resources
      *
-     * 注意：一般情况下，框架会自动处理资源的释放，用户无需手动调用此方法。
-     * 仅在需要自定义资源清理逻辑时才需要使用。
+     * Note: In general, the framework automatically handles resource release, users do not need to manually call this method.
+     * Only use it when custom resource cleanup logic is needed.
      *
-     * @returns 返回一个 Promise，resolve 为 boolean 值
-     *   - true: 清理成功或无需清理
-     *   - false: 清理失败
+     * @returns Returns a Promise that resolves to a boolean value
+     *   - true: Cleanup successful or no cleanup needed
+     *   - false: Cleanup failed
      *
      * @example
      * ```ts
-     * // 在需要自定义清理逻辑时使用
+     * // Use when custom cleanup logic is needed
      * process.once('SIGTERM', async () => {
-     *   await esmx.destroy(); // 清理资源
+     *   await esmx.destroy(); // Clean up resources
      *   process.exit(0);
      * });
      * ```
@@ -467,21 +469,21 @@ export class Esmx {
     }
 
     /**
-     * 执行应用程序的构建流程。
+     * Execute the application's build process.
      *
-     * 该方法负责执行整个应用的构建过程，包括：
-     * - 编译源代码
-     * - 生成生产环境的构建产物
-     * - 优化和压缩代码
-     * - 生成资源清单
+     * This method is responsible for executing the entire application build process, including:
+     * - Compiling source code
+     * - Generating production build artifacts
+     * - Optimizing and compressing code
+     * - Generating asset manifests
      *
-     * 构建过程会打印开始和结束时间，以及总耗时等信息。
+     * The build process prints start and end times, as well as total duration and other information.
      *
-     * @returns 返回一个 Promise，resolve 为 boolean 值
-     *   - true: 构建成功或构建方法未实现
-     *   - false: 构建失败
+     * @returns Returns a Promise that resolves to a boolean value
+     *   - true: Build successful or build method not implemented
+     *   - false: Build failed
      *
-     * @throws {NotReadyError} 在框架实例未初始化时调用此方法会抛出错误
+     * @throws {NotReadyError} Throws error when calling this method if the framework instance is not initialized
      *
      * @example
      * ```ts
@@ -489,20 +491,20 @@ export class Esmx {
      * import type { EsmxOptions } from '@esmx/core';
      *
      * export default {
-     *   // 开发环境配置
+     *   // Development environment configuration
      *   async devApp(esmx) {
      *     return import('@esmx/rspack').then((m) =>
      *       m.createRspackHtmlApp(esmx, {
      *         config(context) {
-     *           // 自定义 Rspack 配置
+     *           // Custom Rspack configuration
      *         }
      *       })
      *     );
      *   },
      *
-     *   // 构建后处理
+     *   // Post-build processing
      *   async postBuild(esmx) {
-     *     // 构建完成后生成静态 HTML
+     *     // Generate static HTML after build completion
      *     const render = await esmx.render({
      *       params: { url: '/' }
      *     });
@@ -532,21 +534,21 @@ export class Esmx {
     }
 
     /**
-     * 启动 HTTP 服务器并配置服务器实例。
+     * Start HTTP server and configure server instance.
      *
-     * 该方法在框架的以下生命周期中被调用：
-     * - 开发环境（dev）：启动开发服务器，提供热更新等功能
-     * - 生产环境（start）：启动生产服务器，提供生产级性能
+     * This method is called in the following lifecycle of the framework:
+     * - Development environment (dev): Start development server, providing features like hot reload
+     * - Production environment (start): Start production server, providing production-grade performance
      *
-     * 服务器的具体实现由用户通过 EsmxOptions 的 server 配置函数提供。
-     * 该函数负责：
-     * - 创建 HTTP 服务器实例
-     * - 配置中间件和路由
-     * - 处理请求和响应
-     * - 启动服务器监听
+     * The specific implementation of the server is provided by the user through the server configuration function in EsmxOptions.
+     * This function is responsible for:
+     * - Creating HTTP server instance
+     * - Configuring middleware and routes
+     * - Handling requests and responses
+     * - Starting server listening
      *
-     * @returns 返回一个 Promise，在服务器启动完成后 resolve
-     * @throws {NotReadyError} 在框架实例未初始化时调用此方法会抛出错误
+     * @returns Returns a Promise that resolves when the server startup is complete
+     * @throws {NotReadyError} Throws error when calling this method if the framework instance is not initialized
      *
      * @example
      * ```ts
@@ -555,12 +557,12 @@ export class Esmx {
      * import type { EsmxOptions } from '@esmx/core';
      *
      * export default {
-     *   // 服务器配置
+     *   // Server configuration
      *   async server(esmx) {
      *     const server = http.createServer((req, res) => {
-     *       // 处理静态资源
+     *       // Handle static assets
      *       esmx.middleware(req, res, async () => {
-     *         // 服务端渲染
+     *         // Server-side rendering
      *         const render = await esmx.render({
      *           params: { url: req.url }
      *         });
@@ -568,7 +570,7 @@ export class Esmx {
      *       });
      *     });
      *
-     *     // 启动服务器
+     *     // Start server
      *     server.listen(3000, () => {
      *       console.log('Server running at http://localhost:3000');
      *     });
@@ -581,19 +583,19 @@ export class Esmx {
     }
 
     /**
-     * 执行构建后的处理逻辑。
+     * Execute post-build processing logic.
      *
-     * 该方法在应用构建完成后被调用，用于执行额外的资源处理，如：
-     * - 生成静态 HTML 文件
-     * - 处理构建产物
-     * - 执行部署任务
-     * - 发送构建通知
+     * This method is called after the application build is completed, used to perform additional resource processing, such as:
+     * - Generating static HTML files
+     * - Processing build artifacts
+     * - Executing deployment tasks
+     * - Sending build notifications
      *
-     * 方法会自动捕获并处理执行过程中的异常，确保不会影响主构建流程。
+     * The method automatically captures and handles exceptions during execution, ensuring it does not affect the main build process.
      *
-     * @returns 返回一个 Promise，resolve 为 boolean 值
-     *   - true: 后处理成功或无需处理
-     *   - false: 后处理失败
+     * @returns Returns a Promise that resolves to a boolean value
+     *   - true: Post-processing successful or no processing needed
+     *   - false: Post-processing failed
      *
      * @example
      * ```ts
@@ -601,9 +603,9 @@ export class Esmx {
      * import type { EsmxOptions } from '@esmx/core';
      *
      * export default {
-     *   // 构建后处理
+     *   // Post-build processing
      *   async postBuild(esmx) {
-     *     // 生成多个页面的静态 HTML
+     *     // Generate static HTML for multiple pages
      *     const pages = ['/', '/about', '/404'];
      *
      *     for (const url of pages) {
@@ -611,7 +613,7 @@ export class Esmx {
      *         params: { url }
      *       });
      *
-     *       // 写入静态 HTML 文件
+     *       // Write static HTML file
      *       esmx.writeSync(
      *         esmx.resolvePath('dist/client', url.substring(1), 'index.html'),
      *         render.html
@@ -631,18 +633,18 @@ export class Esmx {
         }
     }
     /**
-     * 解析项目相对路径为绝对路径
+     * Resolve project relative path to absolute path
      *
-     * @param projectPath - 项目路径类型，如 'dist/client'、'dist/server' 等
-     * @param args - 需要拼接的路径片段
-     * @returns 解析后的绝对路径
+     * @param projectPath - Project path type, such as 'dist/client', 'dist/server', etc.
+     * @param args - Path segments to be concatenated
+     * @returns Resolved absolute path
      *
      * @example
      * ```ts
-     * // 在 entry.node.ts 中使用
+     * // Used in entry.node.ts
      * async postBuild(esmx) {
      *   const outputPath = esmx.resolvePath('dist/client', 'index.html');
-     *   // 输出: /project/root/dist/client/index.html
+     *   // Output: /project/root/dist/client/index.html
      * }
      * ```
      */
@@ -651,15 +653,15 @@ export class Esmx {
     }
 
     /**
-     * 同步写入文件内容
+     * Write file content synchronously
      *
-     * @param filepath - 文件的绝对路径
-     * @param data - 要写入的数据，可以是字符串、Buffer 或对象
-     * @returns 写入是否成功
+     * @param filepath - Absolute path of the file
+     * @param data - Data to be written, can be string, Buffer or object
+     * @returns Whether the write was successful
      *
      * @example
      * ```ts
-     * // 在 entry.node.ts 中使用
+     * // Used in entry.node.ts
      * async postBuild(esmx) {
      *   const htmlPath = esmx.resolvePath('dist/client', 'index.html');
      *   const success = esmx.writeSync(htmlPath, '<html>...</html>');
@@ -668,9 +670,9 @@ export class Esmx {
      */
     public writeSync(filepath: string, data: any): boolean {
         try {
-            // 确保目标目录存在
+            // Ensure the target directory exists
             fs.mkdirSync(path.dirname(filepath), { recursive: true });
-            // 写入文件
+            // Write file
             fs.writeFileSync(filepath, data);
             return true;
         } catch {
@@ -679,15 +681,15 @@ export class Esmx {
     }
 
     /**
-     * 异步写入文件内容
+     * Write file content asynchronously
      *
-     * @param filepath - 文件的绝对路径
-     * @param data - 要写入的数据，可以是字符串、Buffer 或对象
-     * @returns Promise<boolean> 写入是否成功
+     * @param filepath - Absolute path of the file
+     * @param data - Data to be written, can be string, Buffer or object
+     * @returns Promise<boolean> Whether the write was successful
      *
      * @example
      * ```ts
-     * // 在 entry.node.ts 中使用
+     * // Used in entry.node.ts
      * async postBuild(esmx) {
      *   const htmlPath = esmx.resolvePath('dist/client', 'index.html');
      *   const success = await esmx.write(htmlPath, '<html>...</html>');
@@ -696,9 +698,9 @@ export class Esmx {
      */
     public async write(filepath: string, data: any): Promise<boolean> {
         try {
-            // 确保目标目录存在
+            // Ensure the target directory exists
             await fsp.mkdir(path.dirname(filepath), { recursive: true });
-            // 写入文件
+            // Write file
             await fsp.writeFile(filepath, data);
             return true;
         } catch {
@@ -707,19 +709,19 @@ export class Esmx {
     }
 
     /**
-     * 同步读取并解析 JSON 文件
+     * Read and parse JSON file synchronously
      *
-     * @template T - 期望返回的JSON对象类型
-     * @param filename - JSON 文件的绝对路径
-     * @returns {T} 解析后的 JSON 对象
-     * @throws 当文件不存在或 JSON 格式错误时抛出异常
+     * @template T - Expected JSON object type to return
+     * @param filename - Absolute path of the JSON file
+     * @returns {T} Parsed JSON object
+     * @throws Throws exception when file does not exist or JSON format is incorrect
      *
      * @example
      * ```ts
-     * // 在 entry.node.ts 中使用
+     * // Used in entry.node.ts
      * async server(esmx) {
      *   const manifest = esmx.readJsonSync<Manifest>(esmx.resolvePath('dist/client', 'manifest.json'));
-     *   // 使用 manifest 对象
+     *   // Use manifest object
      * }
      * ```
      */
@@ -728,19 +730,19 @@ export class Esmx {
     }
 
     /**
-     * 异步读取并解析 JSON 文件
+     * Read and parse JSON file asynchronously
      *
-     * @template T - 期望返回的JSON对象类型
-     * @param filename - JSON 文件的绝对路径
-     * @returns {Promise<T>} 解析后的 JSON 对象
-     * @throws 当文件不存在或 JSON 格式错误时抛出异常
+     * @template T - Expected JSON object type to return
+     * @param filename - Absolute path of the JSON file
+     * @returns {Promise<T>} Parsed JSON object
+     * @throws Throws exception when file does not exist or JSON format is incorrect
      *
      * @example
      * ```ts
-     * // 在 entry.node.ts 中使用
+     * // Used in entry.node.ts
      * async server(esmx) {
      *   const manifest = await esmx.readJson<Manifest>(esmx.resolvePath('dist/client', 'manifest.json'));
-     *   // 使用 manifest 对象
+     *   // Use manifest object
      * }
      * ```
      */
@@ -749,36 +751,36 @@ export class Esmx {
     }
 
     /**
-     * 获取构建清单列表
+     * Get build manifest list
      *
      * @description
-     * 该方法用于获取指定目标环境的构建清单列表，包含以下功能：
-     * 1. **缓存管理**
-     *    - 使用内部缓存机制避免重复加载
-     *    - 返回不可变的清单列表
+     * This method is used to get the build manifest list for the specified target environment, including the following features:
+     * 1. **Cache Management**
+     *    - Uses internal caching mechanism to avoid repeated loading
+     *    - Returns immutable manifest list
      *
-     * 2. **环境适配**
-     *    - 支持客户端和服务端两种环境
-     *    - 根据目标环境返回对应的清单信息
+     * 2. **Environment Adaptation**
+     *    - Supports both client and server environments
+     *    - Returns corresponding manifest information based on the target environment
      *
-     * 3. **模块映射**
-     *    - 包含模块导出信息
-     *    - 记录资源依赖关系
+     * 3. **Module Mapping**
+     *    - Contains module export information
+     *    - Records resource dependency relationships
      *
-     * @param env - 目标环境类型
-     *   - 'client': 客户端环境
-     *   - 'server': 服务端环境
-     * @returns 返回只读的构建清单列表
-     * @throws {NotReadyError} 在框架实例未初始化时调用此方法会抛出错误
+     * @param env - Target environment type
+     *   - 'client': Client environment
+     *   - 'server': Server environment
+     * @returns Returns read-only build manifest list
+     * @throws {NotReadyError} Throws error when calling this method if the framework instance is not initialized
      *
      * @example
      * ```ts
-     * // 在 entry.node.ts 中使用
+     * // Used in entry.node.ts
      * async server(esmx) {
-     *   // 获取客户端构建清单
+     *   // Get client build manifest
      *   const manifests = await esmx.getManifestList('client');
      *
-     *   // 查找特定模块的构建信息
+     *   // Find build information for a specific module
      *   const appModule = manifests.find(m => m.name === 'my-app');
      *   if (appModule) {
      *     console.log('App exports:', appModule.exports);
@@ -796,37 +798,37 @@ export class Esmx {
     }
 
     /**
-     * 获取导入映射对象
+     * Get import map object
      *
      * @description
-     * 该方法用于生成 ES 模块导入映射（Import Map），具有以下特点：
-     * 1. **模块解析**
-     *    - 基于构建清单生成模块映射
-     *    - 支持客户端和服务端两种环境
-     *    - 自动处理模块路径解析
+     * This method is used to generate ES module import maps with the following features:
+     * 1. **Module Resolution**
+     *    - Generate module mappings based on build manifests
+     *    - Support both client and server environments
+     *    - Automatically handle module path resolution
      *
-     * 2. **缓存优化**
-     *    - 使用内部缓存机制
-     *    - 返回不可变的映射对象
+     * 2. **Cache Optimization**
+     *    - Use internal caching mechanism
+     *    - Return immutable mapping objects
      *
-     * 3. **路径处理**
-     *    - 自动处理模块路径
-     *    - 支持动态基础路径
+     * 3. **Path Handling**
+     *    - Automatically handle module paths
+     *    - Support dynamic base paths
      *
-     * @param env - 目标环境类型
-     *   - 'client': 生成浏览器环境的导入映射
-     *   - 'server': 生成服务端环境的导入映射
-     * @returns 返回只读的导入映射对象
-     * @throws {NotReadyError} 在框架实例未初始化时调用此方法会抛出错误
+     * @param env - Target environment type
+     *   - 'client': Generate import map for browser environment
+     *   - 'server': Generate import map for server environment
+     * @returns Returns read-only import map object
+     * @throws {NotReadyError} Throws error when calling this method if the framework instance is not initialized
      *
      * @example
      * ```ts
-     * // 在 entry.node.ts 中使用
+     * // Used in entry.node.ts
      * async server(esmx) {
-     *   // 获取客户端导入映射
+     *   // Get client import map
      *   const importmap = await esmx.getImportMap('client');
      *
-     *   // 自定义 HTML 模板
+     *   // Custom HTML template
      *   const html = `
      *     <!DOCTYPE html>
      *     <html>
@@ -836,7 +838,7 @@ export class Esmx {
      *       </script>
      *     </head>
      *     <body>
-     *       <!-- 页面内容 -->
+     *       <!-- Page content -->
      *     </body>
      *     </html>
      *   `;
@@ -894,44 +896,44 @@ export class Esmx {
     }
 
     /**
-     * 获取客户端导入映射信息
+     * Get client import map information
      *
      * @description
-     * 该方法用于生成客户端环境的导入映射代码，支持两种模式：
-     * 1. **内联模式 (inline)**
-     *    - 将导入映射直接内联到 HTML 中
-     *    - 减少额外的网络请求
-     *    - 适合导入映射较小的场景
+     * This method is used to generate import map code for client environment, supporting two modes:
+     * 1. **Inline Mode (inline)**
+     *    - Inline import map directly into HTML
+     *    - Reduce additional network requests
+     *    - Suitable for scenarios with smaller import maps
      *
-     * 2. **JS 文件模式 (js)**
-     *    - 生成独立的 JS 文件
-     *    - 支持浏览器缓存
-     *    - 适合导入映射较大的场景
+     * 2. **JS File Mode (js)**
+     *    - Generate standalone JS file
+     *    - Support browser caching
+     *    - Suitable for scenarios with larger import maps
      *
-     * 核心功能：
-     * - 自动处理动态基础路径
-     * - 支持模块路径运行时替换
-     * - 优化缓存策略
-     * - 确保模块加载顺序
+     * Core Features:
+     * - Automatically handle dynamic base paths
+     * - Support module path runtime replacement
+     * - Optimize caching strategy
+     * - Ensure module loading order
      *
-     * @param mode - 导入映射模式
-     *   - 'inline': 内联模式，返回 HTML script 标签
-     *   - 'js': JS 文件模式，返回带有文件路径的信息
-     * @returns 返回导入映射的相关信息
-     *   - src: JS 文件的 URL（仅在 js 模式下）
-     *   - filepath: JS 文件的本地路径（仅在 js 模式下）
-     *   - code: HTML script 标签内容
-     * @throws {NotReadyError} 在框架实例未初始化时调用此方法会抛出错误
+     * @param mode - Import map mode
+     *   - 'inline': Inline mode, returns HTML script tag
+     *   - 'js': JS file mode, returns information with file path
+     * @returns Returns import map related information
+     *   - src: URL of the JS file (only in js mode)
+     *   - filepath: Local path of the JS file (only in js mode)
+     *   - code: HTML script tag content
+     * @throws {NotReadyError} Throws error when calling this method if the framework instance is not initialized
      *
      * @example
      * ```ts
-     * // 在 entry.node.ts 中使用
+     * // Used in entry.node.ts
      * async server(esmx) {
      *   const server = express();
      *   server.use(esmx.middleware);
      *
      *   server.get('*', async (req, res) => {
-     *     // 使用 JS 文件模式
+     *     // Use JS file mode
      *     const result = await esmx.render({
      *       importmapMode: 'js',
      *       params: { url: req.url }
@@ -939,7 +941,7 @@ export class Esmx {
      *     res.send(result.html);
      *   });
      *
-     *   // 或者使用内联模式
+     *   // Or use inline mode
      *   server.get('/inline', async (req, res) => {
      *     const result = await esmx.render({
      *       importmapMode: 'inline',
@@ -1041,16 +1043,16 @@ document.head.appendChild(script);
     }
 
     /**
-     * 获取模块的静态导入路径列表。
+     * Get the list of static import paths for a module.
      *
-     * @param env - 构建目标（'client' | 'server'）
-     * @param specifier - 模块标识符
-     * @returns 返回静态导入路径列表，如果未找到则返回 null
-     * @throws {NotReadyError} 在框架实例未初始化时调用此方法会抛出错误
+     * @param env - Build target ('client' | 'server')
+     * @param specifier - Module specifier
+     * @returns Returns the list of static import paths, returns null if not found
+     * @throws {NotReadyError} Throws error when calling this method if the framework instance is not initialized
      *
      * @example
      * ```ts
-     * // 获取客户端入口模块的静态导入路径
+     * // Get static import paths for client entry module
      * const paths = await esmx.getStaticImportPaths(
      *   'client',
      *   `your-app-name/src/entry.client`
@@ -1079,18 +1081,18 @@ document.head.appendChild(script);
 }
 
 /**
- * 默认的开发环境应用创建函数
+ * Default development environment application creation function
  *
  * @description
- * 这是一个默认的占位函数，用于在未配置开发环境应用创建函数时抛出错误。
- * 实际使用时应当通过 EsmxOptions.devApp 配置实际的应用创建函数。
+ * This is a default placeholder function that throws an error when the development environment application creation function is not configured.
+ * In actual use, the actual application creation function should be configured through EsmxOptions.devApp.
  *
- * @throws {Error} 当未配置 devApp 时抛出错误，提示用户需要设置开发环境应用创建函数
- * @returns {Promise<App>} 不会真正返回，总是抛出错误
+ * @throws {Error} Throws an error when devApp is not configured, prompting the user to set up the development environment application creation function
+ * @returns {Promise<App>} Will not actually return, always throws an error
  *
  * @example
  * ```ts
- * // 正确的使用方式是在配置中提供 devApp
+ * // Correct usage is to provide devApp in the configuration
  * const options: EsmxOptions = {
  *   devApp: async (esmx) => {
  *     return import('@esmx/rspack').then(m =>
@@ -1105,13 +1107,13 @@ async function defaultDevApp(): Promise<App> {
 }
 
 /**
- * Esmx 框架未初始化错误
+ * Esmx framework not initialized error
  *
  * @description
- * 该错误在以下情况下抛出：
- * - 在调用 init() 之前访问需要初始化的方法或属性
- * - 在框架未完全初始化时尝试使用核心功能
- * - 在销毁实例后继续使用框架功能
+ * This error is thrown in the following situations:
+ * - Accessing methods or properties that require initialization before calling init()
+ * - Attempting to use core functionality when the framework is not fully initialized
+ * - Continuing to use framework functionality after destroying the instance
  *
  * @extends Error
  *
@@ -1119,7 +1121,7 @@ async function defaultDevApp(): Promise<App> {
  * ```ts
  * const esmx = new Esmx();
  * try {
- *   // 这会抛出 NotReadyError，因为还未初始化
+ *   // This will throw NotReadyError because it's not initialized yet
  *   await esmx.render();
  * } catch (e) {
  *   if (e instanceof NotReadyError) {
@@ -1135,27 +1137,27 @@ class NotReadyError extends Error {
 }
 
 /**
- * 计算内容的 SHA-256 哈希值
+ * Calculate SHA-256 hash value of content
  *
  * @description
- * 该函数用于：
- * - 生成文件内容的唯一标识符
- * - 用于缓存失效判断
- * - 生成具有内容哈希的文件名
+ * This function is used for:
+ * - Generating unique identifiers for file content
+ * - Cache invalidation judgment
+ * - Generating filenames with content hash
  *
- * 特点：
- * - 使用 SHA-256 算法确保哈希值的唯一性
- * - 截取前 12 位以平衡唯一性和长度
- * - 适用于缓存控制和文件版本管理
+ * Features:
+ * - Uses SHA-256 algorithm to ensure hash uniqueness
+ * - Truncates to first 12 characters to balance uniqueness and length
+ * - Suitable for cache control and file version management
  *
- * @param {string} text - 要计算哈希的文本内容
- * @returns {string} 返回 12 位的十六进制哈希字符串
+ * @param {string} text - Text content to calculate hash for
+ * @returns {string} Returns 12-character hexadecimal hash string
  *
  * @example
  * ```ts
  * const content = 'some content';
  * const hash = contentHash(content);
- * // 输出类似：'a1b2c3d4e5f6'
+ * // Output similar to: 'a1b2c3d4e5f6'
  * ```
  */
 function contentHash(text: string) {
