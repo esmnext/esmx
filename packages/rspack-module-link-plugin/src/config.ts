@@ -8,10 +8,7 @@ export function initConfig(options: RspackOptionsNormalized) {
         module: true,
         chunkFormat: 'module',
         chunkLoading: 'import',
-        workerChunkLoading: 'import',
-        library: {
-            type: isProduction ? 'modern-module' : 'module'
-        }
+        workerChunkLoading: 'import'
     };
     options.experiments = {
         ...options.experiments,
