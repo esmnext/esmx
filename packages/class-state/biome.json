@@ -34,7 +34,8 @@
             "**/i18n/**",
             "**/svg-icons.ts",
             "build.config.ts",
-            "*.min.js"
+            "*.min.js",
+            "*.g.ts"
         ]
     },
     "formatter": {
