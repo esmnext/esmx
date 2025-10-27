@@ -110,55 +110,31 @@ export function buildScopesMap(
  * @see https://issues.chromium.org/issues/453147451
  */
 export function fixNestedScopesResolution(
-    importMap: Required<ImportMap>,
-    manifests: readonly ImportMapManifest[],
-    getScope: (name: string, scope: string) => string
+    importMap: Required<ImportMap>
 ): Required<ImportMap> {
-    manifests.forEach((manifest) => {
-        if (!manifest.scopes) {
-            return;
-        }
-
-        const sortedScopes = Object.entries(manifest.scopes).sort(
-            ([scopeA], [scopeB]) => {
-                const depthA = scopeA.split('/').length;
-                const depthB = scopeB.split('/').length;
-                return depthA - depthB;
-            }
-        );
-
-        sortedScopes.forEach(([scopeName, specifierMap]) => {
-            const scopedImports: SpecifierMap = {};
-
-            Object.entries(specifierMap).forEach(
-                ([specifierName, identifier]) => {
-                    scopedImports[specifierName] =
-                        importMap.imports[identifier] ?? identifier;
-                }
+    Object.entries(importMap.scopes)
+        .filter(([scopePath]) => {
+            return (
+                scopePath.startsWith('/') &&
+                scopePath.endsWith('/') &&
+                scopePath.split('/').length >= 4
             );
-
-            if (!scopeName.endsWith('/')) return;
-            let has = false;
-            Object.keys(importMap.imports).forEach((identifier) => {
-                if (identifier.startsWith(`${manifest.name}/${scopeName}`)) {
-                    const scopeKey = getScope(
-                        manifest.name,
-                        importMap.imports[identifier]
-                    );
-                    importMap.scopes[scopeKey] = scopedImports;
-                    has = true;
+        })
+        .sort(([pathA], [pathB]) => {
+            const depthA = pathA.split('/').length;
+            const depthB = pathB.split('/').length;
+            return depthA - depthB;
+        })
+        .forEach(([scopePath, scopeMappings]) => {
+            Object.values(importMap.imports).forEach((importPath) => {
+                if (importPath.startsWith(scopePath)) {
+                    importMap.scopes[importPath] = {
+                        ...importMap.scopes[importPath],
+                        ...scopeMappings
+                    };
                 }
             });
-            if (has) {
-                const scopePath =
-                    importMap.imports[`${manifest.name}/${scopeName}`] ??
-                    `/${scopeName}`;
-
-                const scopeKey = getScope(manifest.name, scopePath);
-                delete importMap.scopes[scopeKey];
-            }
         });
-    });
 
     return importMap;
 }

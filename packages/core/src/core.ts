@@ -863,11 +863,7 @@ export class Esmx {
                             getFile(name, file) {
                                 return `/${name}/${file}`;
                             }
-                        }),
-                        manifests,
-                        (name, scope) => {
-                            return `/${name}${scope}`;
-                        }
+                        })
                     );
                     break;
                 }
