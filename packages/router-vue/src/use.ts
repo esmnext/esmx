@@ -259,7 +259,7 @@ export function useRoute(): Route {
 export function useProvideRouter(router: Router): void {
     const proxy = getCurrentProxy('useProvideRouter');
 
-    const dep = ref(false);
+    const dep = ref(0);
 
     const proxiedRouter = createDependentProxy(router, dep);
     const proxiedRoute = createDependentProxy(router.route, dep);
@@ -275,7 +275,7 @@ export function useProvideRouter(router: Router): void {
     const unwatch = router.afterEach((to: Route) => {
         if (router.route === to) {
             to.syncTo(proxiedRoute);
-            dep.value = !dep.value;
+            dep.value++;
         }
     });
 

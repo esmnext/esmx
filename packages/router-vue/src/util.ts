@@ -16,7 +16,7 @@ export function createSymbolProperty<T>(symbol: symbol) {
 
 export function createDependentProxy<T extends object>(
     obj: T,
-    dep: Ref<boolean>
+    dep: Ref<any>
 ): T {
     return new Proxy(obj, {
         get(target, prop, receiver) {
