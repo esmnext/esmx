@@ -10,6 +10,7 @@ export default defineBuildConfig({
             ext: 'mjs',
             cleanDist: true,
             declaration: true,
+            loaders: ['js'],
             esbuild: {
                 target: 'node24'
             }
