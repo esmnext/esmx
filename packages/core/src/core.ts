@@ -22,7 +22,7 @@ import {
 import type { ImportmapMode } from './render-context';
 import type { RenderContext, RenderContextOptions } from './render-context';
 import { type CacheHandle, createCache } from './utils/cache';
-import { getImportMap } from './utils/import-map';
+import { fixNestedScopesResolution, getImportMap } from './utils/import-map';
 import type { Middleware } from './utils/middleware';
 import { type ProjectPath, resolvePath } from './utils/resolve-path';
 import { getImportPreloadInfo as getStaticImportPaths } from './utils/static-import-lexer';
@@ -853,17 +853,24 @@ export class Esmx {
             const manifests = await this.getManifestList(env);
             let json: ImportMap = {};
             switch (env) {
-                case 'client':
-                    json = getImportMap({
+                case 'client': {
+                    json = fixNestedScopesResolution(
+                        getImportMap({
+                            manifests,
+                            getScope(name, scope) {
+                                return `/${name}${scope}`;
+                            },
+                            getFile(name, file) {
+                                return `/${name}/${file}`;
+                            }
+                        }),
                         manifests,
-                        getScope(name, scope) {
+                        (name, scope) => {
                             return `/${name}${scope}`;
-                        },
-                        getFile(name, file) {
-                            return `/${name}/${file}`;
                         }
-                    });
+                    );
                     break;
+                }
                 case 'server':
                     json = getImportMap({
                         manifests,
