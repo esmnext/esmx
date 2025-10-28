@@ -124,7 +124,7 @@ const Features = () => html`
 export const App = () => html`
     <div class="container">
         <h1>
-            <img src="https://www.esmnext.com/logo.svg" alt="Esmx Logo" class="logo" />
+            <img src="https://esmx.dev/logo.svg" alt="Esmx Logo" class="logo" />
             Esmx + Preact + HTM 示例
         </h1>
         <${Counter} />

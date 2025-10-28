@@ -38,8 +38,7 @@ export default defineConfig({
             {
                 icon: 'github',
                 mode: 'link',
-                content:
-                    'https://github.com/esmnext/esmx?utm_source=www.esmnext.com'
+                content: 'https://github.com/esmnext/esmx?utm_source=esmx.dev'
             }
         ]
     },

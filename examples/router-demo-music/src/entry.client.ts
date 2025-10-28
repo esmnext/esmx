@@ -6,8 +6,8 @@
 import { createApp } from './create-app';
 
 const base =
-    location.origin === 'https://www.esmnext.com'
-        ? 'https://www.esmnext.com/router-demo-music/'
+    location.origin === 'https://esmx.dev'
+        ? 'https://esmx.dev/router-demo-music/'
         : location.origin;
 
 createApp({

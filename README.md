@@ -1,11 +1,11 @@
 <div align="center">
-  <img src="https://www.esmnext.com/logo.svg?t=2025" width="180" alt="Esmx Logo" />
+  <img src="https://esmx.dev/logo.svg?t=2025" width="180" alt="Esmx Logo" />
   <h1>Esmx</h1>
   
   <div>
     <a href="https://www.npmjs.com/package/@esmx/core"><img src="https://img.shields.io/npm/v/@esmx/core.svg" alt="npm version" /></a>
     <a href="https://github.com/esmnext/esmx/actions/workflows/build.yml"><img src="https://github.com/esmnext/esmx/actions/workflows/build.yml/badge.svg" alt="Build" /></a>
-    <a href="https://www.esmnext.com/coverage/"><img src="https://img.shields.io/badge/coverage-live%20report-brightgreen" alt="Coverage Report" /></a>
+    <a href="https://esmx.dev/coverage/"><img src="https://img.shields.io/badge/coverage-live%20report-brightgreen" alt="Coverage Report" /></a>
     <a href="https://nodejs.org/"><img src="https://img.shields.io/node/v/@esmx/core.svg" alt="node version" /></a>
     <a href="https://bundlephobia.com/package/@esmx/core"><img src="https://img.shields.io/bundlephobia/minzip/@esmx/core" alt="size" /></a>
   </div>
@@ -43,7 +43,7 @@
 npx create-esmx@latest my-app
 ```
 
-📖 [Documentation](https://www.esmnext.com/guide/start/getting-started.html)
+📖 [Documentation](https://esmx.dev/guide/start/getting-started.html)
 
 ## 📦 Core Packages
 
@@ -59,10 +59,10 @@ npx create-esmx@latest my-app
 
 | Project Name | Tech Stack | Live Preview |
 |-------------|------------|--------------|
-| [**ssr-html**](https://github.com/esmnext/esmx/tree/master/examples/ssr-html) | Native HTML + TypeScript | [Preview](https://www.esmnext.com/ssr-html/) |
-| [**ssr-vue2-host**](https://github.com/esmnext/esmx/tree/master/examples/ssr-vue2-host) | Vue 2.7 + SSR | [Preview](https://www.esmnext.com/ssr-vue2-host/) |
-| [**ssr-vue2-remote**](https://github.com/esmnext/esmx/tree/master/examples/ssr-vue2-remote) | Vue 2.7 | [Preview](https://www.esmnext.com/ssr-vue2-remote/) |
-| [**ssr-preact-htm**](https://github.com/esmnext/esmx/tree/master/examples/ssr-preact-htm) | Preact + HTM | [Preview](https://www.esmnext.com/ssr-preact-htm/) |
+| [**ssr-html**](https://github.com/esmnext/esmx/tree/master/examples/ssr-html) | Native HTML + TypeScript | [Preview](https://esmx.dev/ssr-html/) |
+| [**ssr-vue2-host**](https://github.com/esmnext/esmx/tree/master/examples/ssr-vue2-host) | Vue 2.7 + SSR | [Preview](https://esmx.dev/ssr-vue2-host/) |
+| [**ssr-vue2-remote**](https://github.com/esmnext/esmx/tree/master/examples/ssr-vue2-remote) | Vue 2.7 | [Preview](https://esmx.dev/ssr-vue2-remote/) |
+| [**ssr-preact-htm**](https://github.com/esmnext/esmx/tree/master/examples/ssr-preact-htm) | Preact + HTM | [Preview](https://esmx.dev/ssr-preact-htm/) |
 
 ---
 

@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <h1><a href="https://www.esmnext.com/guide/frameworks/vue2.html" target="_blank">Esmx 快速开始</a></h1>
+        <h1><a href="https://esmx.dev/guide/frameworks/vue2.html" target="_blank">Esmx 快速开始</a></h1>
         <time :datetime="time">{{ time }}</time>
     </div>
 </template>

@@ -4,7 +4,7 @@
       <div class="footer-content">
         <div class="footer-info">
           <div class="footer-brand">
-            <img src="https://www.esmnext.com/logo.svg" alt="Esmx Logo" class="footer-logo" />
+            <img src="https://esmx.dev/logo.svg" alt="Esmx Logo" class="footer-logo" />
             <span class="footer-title">Esmx</span>
           </div>
           <div class="source-links">

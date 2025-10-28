@@ -36,7 +36,7 @@ function getBaseUrl(options: RouterOptions): URL {
 
         sourceUrl = `${protocol}://${host}${port ? `:${port}` : ''}${path}`;
     } else {
-        sourceUrl = 'https://www.esmnext.com/';
+        sourceUrl = 'https://esmx.dev/';
     }
 
     // Parse the URL, falling back to a default on failure.
@@ -46,9 +46,9 @@ function getBaseUrl(options: RouterOptions): URL {
         base = new URL('.', sourceUrl);
     } catch (e) {
         console.warn(
-            `Failed to parse base URL '${sourceUrl}', using default: https://www.esmnext.com/`
+            `Failed to parse base URL '${sourceUrl}', using default: https://esmx.dev/`
         );
-        base = new URL('https://www.esmnext.com/');
+        base = new URL('https://esmx.dev/');
     }
 
     // Clean up and return

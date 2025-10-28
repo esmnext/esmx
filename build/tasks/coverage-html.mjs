@@ -63,14 +63,14 @@ export function generateCoverageHTML(packageCoverageData) {
     <meta property="og:description" content="Live test coverage statistics for Esmx framework - the next generation ESM-based micro frontend framework with zero runtime overhead.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="${config.coverageUrl}">
-    <meta property="og:image" content="https://www.esmnext.com/logo.svg">
+    <meta property="og:image" content="https://esmx.dev/logo.svg">
     <meta property="og:site_name" content="Esmx Framework">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Esmx Test Coverage Report">
     <meta name="twitter:description" content="Real-time test coverage report for Esmx - ESM Next Generation Framework">
-    <meta name="twitter:image" content="https://www.esmnext.com/logo.svg">
+    <meta name="twitter:image" content="https://esmx.dev/logo.svg">
     <link rel="canonical" href="${config.coverageUrl}">
-    <link rel="icon" type="image/svg+xml" href="https://www.esmnext.com/logo.svg">
+    <link rel="icon" type="image/svg+xml" href="https://esmx.dev/logo.svg">
     <style>
         :root {
             --esmx-primary: #FFA726;
@@ -136,7 +136,7 @@ export function generateCoverageHTML(packageCoverageData) {
         .logo {
             width: 100%;
             height: 100%;
-            background: url('https://www.esmnext.com/logo.svg') no-repeat center;
+            background: url('https://esmx.dev/logo.svg') no-repeat center;
             background-size: contain;
         }
         
