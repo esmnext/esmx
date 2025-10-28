@@ -134,6 +134,7 @@ export function fixNestedScopesResolution(
                     };
                 }
             });
+            Reflect.deleteProperty(importMap.scopes, scopePath);
         });
 
     return importMap;
