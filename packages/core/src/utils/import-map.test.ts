@@ -556,7 +556,10 @@ describe('fixNestedScopesResolution', () => {
                 'shared-modules/vue': '/shared-modules/vue.m3n4o5p6.final.mjs'
             },
             scopes: {
-                '/shared-modules/': {
+                '/shared-modules/vue.m3n4o5p6.final.mjs': {
+                    vue: '/shared-modules/vue.m3n4o5p6.final.mjs'
+                },
+                '/shared-modules/vue2.a1b2c3d4.final.mjs': {
                     vue: '/shared-modules/vue.m3n4o5p6.final.mjs'
                 },
                 '/shared-modules/vue2/@esmx/router-vue.e5f6g7h8.final.mjs': {
@@ -611,11 +614,17 @@ describe('fixNestedScopesResolution', () => {
                 'shared-modules/vue': '/shared-modules/vue.g3h4i5j6.final.mjs'
             },
             scopes: {
-                '/shared-modules/': {
+                '/shared-modules/vue.g3h4i5j6.final.mjs': {
+                    vue: '/shared-modules/vue.g3h4i5j6.final.mjs'
+                },
+                '/shared-modules/vue2.q7r8s9t0.final.mjs': {
                     vue: '/shared-modules/vue.g3h4i5j6.final.mjs'
                 },
                 '/shared-modules/vue2/component.u1v2w3x4.final.mjs': {
                     vue: '/shared-modules/vue2.q7r8s9t0.final.mjs'
+                },
+                '/shared-modules/vue3.y5z6a7b8.final.mjs': {
+                    vue: '/shared-modules/vue.g3h4i5j6.final.mjs'
                 },
                 '/shared-modules/vue3/component.c9d0e1f2.final.mjs': {
                     vue: '/shared-modules/vue3.y5z6a7b8.final.mjs'
@@ -786,7 +795,12 @@ describe('fixNestedScopesResolution', () => {
                 'shared-modules/vue': '/shared-modules/vue.i9j0k1l2.final.mjs'
             },
             scopes: {
-                '/shared-modules/': {
+                '/shared-modules/vue.i9j0k1l2.final.mjs': {
+                    vue: '/shared-modules/vue.i9j0k1l2.final.mjs',
+                    'vue-router':
+                        '/shared-modules/@esmx/router.m3n4o5p6.final.mjs'
+                },
+                '/shared-modules/vue2.c7d8e9f0.final.mjs': {
                     vue: '/shared-modules/vue.i9j0k1l2.final.mjs',
                     'vue-router':
                         '/shared-modules/@esmx/router.m3n4o5p6.final.mjs'
@@ -918,7 +932,7 @@ describe('fixNestedScopesResolution', () => {
                     '/shared-modules/vue2/test/unit/component.x9y0z1a2.final.mjs'
             },
             scopes: {
-                '/shared-modules/': {
+                '/shared-modules/vue2.l7m8n9o0.final.mjs': {
                     vue: '/shared-modules/vue.b3c4d5e6.final.mjs'
                 },
                 '/shared-modules/vue2/test.p1q2r3s4.final.mjs': {
@@ -1017,8 +1031,8 @@ describe('fixNestedScopesResolution', () => {
         });
     });
 
-    describe('scope path filtering logic', () => {
-        test('should only process scope paths that start with slash, end with slash, and have depth >= 4', () => {
+    describe('scope path processing logic', () => {
+        test('should process all scope paths regardless of format', () => {
             const importMap = {
                 imports: {
                     'shared/modules/vue2':
@@ -1048,13 +1062,10 @@ describe('fixNestedScopesResolution', () => {
                     'shared/vue': '/shared/vue.e5f6g7h8.final.mjs'
                 },
                 scopes: {
-                    'shared/modules/vue2/': {
+                    '/shared/modules/vue2.a1b2c3d4.final.mjs': {
                         vue: '/shared/modules/vue2.a1b2c3d4.final.mjs'
                     },
-                    '/shared/modules/vue2': {
-                        vue: '/shared/modules/vue2.a1b2c3d4.final.mjs'
-                    },
-                    '/shared/': {
+                    '/shared/vue.e5f6g7h8.final.mjs': {
                         vue: '/shared/vue.e5f6g7h8.final.mjs'
                     }
                 }
@@ -1064,7 +1075,7 @@ describe('fixNestedScopesResolution', () => {
             assert.deepEqual(result, expected);
         });
 
-        test('should handle scope paths with exactly minimum depth (4 segments)', () => {
+        test('should handle scope paths with any depth', () => {
             const importMap = {
                 imports: {
                     'a/b/c': '/a/b/c.a1b2c3d4.final.mjs'
@@ -1110,7 +1121,7 @@ describe('fixNestedScopesResolution', () => {
             assert.deepEqual(result, expected);
         });
 
-        test('should not create file-level scopes for invalid scope paths', () => {
+        test('should create file-level scopes for all scope paths', () => {
             const importMap = {
                 imports: {
                     'modules/vue': '/modules/vue.a1b2c3d4.final.mjs',
@@ -1132,10 +1143,10 @@ describe('fixNestedScopesResolution', () => {
                     'shared/vue': '/shared/vue.e5f6g7h8.final.mjs'
                 },
                 scopes: {
-                    '/modules/': {
+                    '/modules/vue.a1b2c3d4.final.mjs': {
                         vue: '/modules/vue.a1b2c3d4.final.mjs'
                     },
-                    '/shared/': {
+                    '/shared/vue.e5f6g7h8.final.mjs': {
                         vue: '/shared/vue.e5f6g7h8.final.mjs'
                     }
                 }
@@ -1145,7 +1156,7 @@ describe('fixNestedScopesResolution', () => {
             assert.deepEqual(result, expected);
         });
 
-        test('should process multiple valid scope paths in correct order', () => {
+        test('should process multiple scope paths in correct order by depth', () => {
             const importMap = {
                 imports: {
                     'shared/modules/vue2':

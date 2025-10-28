@@ -113,13 +113,6 @@ export function fixNestedScopesResolution(
     importMap: Required<ImportMap>
 ): Required<ImportMap> {
     Object.entries(importMap.scopes)
-        .filter(([scopePath]) => {
-            return (
-                scopePath.startsWith('/') &&
-                scopePath.endsWith('/') &&
-                scopePath.split('/').length >= 4
-            );
-        })
         .sort(([pathA], [pathB]) => {
             const depthA = pathA.split('/').length;
             const depthB = pathB.split('/').length;
