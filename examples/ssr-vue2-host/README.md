@@ -51,11 +51,11 @@ src/
 
 ## 在线预览
 
-访问 [在线示例](https://www.esmnext.com/ssr-vue2-host/) 查看运行效果。
+访问 [在线示例](https://esmx.dev/ssr-vue2-host/) 查看运行效果。
 
 ## 相关链接
 
-- [项目文档](https://www.esmnext.com/)
+- [项目文档](https://esmx.dev/)
 - [GitHub 仓库](https://github.com/esmnext/esmx)
 
 ## 许可证

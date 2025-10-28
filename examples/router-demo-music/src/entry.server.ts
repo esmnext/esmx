@@ -9,7 +9,7 @@ const renderer = createRenderer();
 export default async (rc: RenderContext) => {
     const req = rc.params.req as IncomingMessage | undefined;
     const protocol = req?.headers['x-forwarded-proto'] || 'https';
-    const host = req?.headers.host || 'www.esmnext.com/router-demo-music/';
+    const host = req?.headers.host || 'esmx.dev/router-demo-music/';
     const ssrCtx: Record<string, any> = {
         importMetaSet: rc.importMetaSet
     };

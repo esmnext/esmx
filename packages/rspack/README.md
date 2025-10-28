@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://www.esmnext.com/logo.svg?t=2025" width="120" alt="Esmx Logo" />
+  <img src="https://esmx.dev/logo.svg?t=2025" width="120" alt="Esmx Logo" />
   <h1>@esmx/rspack</h1>
   
   <div>
@@ -9,7 +9,7 @@
     <a href="https://github.com/esmnext/esmx/actions/workflows/build.yml">
       <img src="https://github.com/esmnext/esmx/actions/workflows/build.yml/badge.svg" alt="Build" />
     </a>
-    <a href="https://www.esmnext.com/coverage/">
+    <a href="https://esmx.dev/coverage/">
       <img src="https://img.shields.io/badge/coverage-live%20report-brightgreen" alt="Coverage Report" />
     </a>
     <a href="https://nodejs.org/">
@@ -43,7 +43,7 @@ npm install @esmx/rspack -D
 
 ## 📚 Documentation
 
-Visit the [official documentation](https://www.esmnext.com/api/app/rspack.html) for detailed usage guides and API reference.
+Visit the [official documentation](https://esmx.dev/api/app/rspack.html) for detailed usage guides and API reference.
 
 ## 📄 License
 

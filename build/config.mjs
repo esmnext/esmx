@@ -11,6 +11,6 @@ export const config = {
     coverageDir: resolve(rootDir, 'dist', 'coverage'),
 
     // URLs
-    baseUrl: 'https://www.esmnext.com',
-    coverageUrl: 'https://www.esmnext.com/coverage/'
+    baseUrl: 'https://esmx.dev',
+    coverageUrl: 'https://esmx.dev/coverage/'
 };

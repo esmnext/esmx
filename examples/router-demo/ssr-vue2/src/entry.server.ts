@@ -6,7 +6,7 @@ import { createApp } from './create-app';
 export default async (rc: RenderContext) => {
     const req = rc.params.req as IncomingMessage | undefined;
     const protocol = req?.headers['x-forwarded-proto'] || 'https';
-    const host = req?.headers.host || 'www.esmnext.com/router-demo/ssr-vue2/';
+    const host = req?.headers.host || 'esmx.dev/router-demo/ssr-vue2/';
     const ssrCtx: Record<string, any> = {
         importMetaSet: rc.importMetaSet
     };

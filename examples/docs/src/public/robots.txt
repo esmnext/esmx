@@ -1,3 +1,3 @@
 User-agent: *
 Disallow: 
-Sitemap: https://www.esmnext.com/sitemap.xml
+Sitemap: https://esmx.dev/sitemap.xml

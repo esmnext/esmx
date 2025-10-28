@@ -42,7 +42,7 @@ export function layout(slot: string, options: LayoutOptions = {}) {
 <div class="layout">
     <header class="header">
         <div class="container">
-            <h1><img src="https://www.esmnext.com/logo.svg" alt="Esmx Logo" width="48" height="48"></h1>
+            <h1><img src="https://esmx.dev/logo.svg" alt="Esmx Logo" width="48" height="48"></h1>
             <nav class="nav">
                 <a href="${resolvePath('/')} " class="${isActive('/')}">首页</a>
                 <a href="${resolvePath('about')}" class="${isActive('/about')}">关于我们</a>

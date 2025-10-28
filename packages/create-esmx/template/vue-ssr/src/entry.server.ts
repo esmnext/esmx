@@ -14,7 +14,7 @@ export default async (rc: RenderContext) => {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Vue with Server-Side Rendering powered by Esmx framework">
     <meta name="keywords" content="Vue, SSR, Server-Side Rendering, Esmx, Vue.js, JavaScript, TypeScript, Rspack">
-    <link rel="icon" href="https://www.esmnext.com/logo.svg" type="image/svg+xml">
+    <link rel="icon" href="https://esmx.dev/logo.svg" type="image/svg+xml">
     ${rc.preload()}
     <title>Vue SSR Demo | Powered by Esmx</title>
     ${rc.css()}

@@ -29,9 +29,7 @@ describe('options.ts - Node.js Environment Tests', () => {
         it('should use default URL and NOT warn when in a non-browser environment without request context', async () => {
             const router = createRouter({});
 
-            expect(router.parsedOptions.base.href).toBe(
-                'https://www.esmnext.com/'
-            );
+            expect(router.parsedOptions.base.href).toBe('https://esmx.dev/');
 
             expect(consoleSpy).not.toHaveBeenCalled();
 
@@ -40,7 +38,7 @@ describe('options.ts - Node.js Environment Tests', () => {
 
         it('should handle complex server environment scenarios', async () => {
             const testCases = [
-                { options: {}, expectedUrl: 'https://www.esmnext.com/' },
+                { options: {}, expectedUrl: 'https://esmx.dev/' },
                 {
                     options: { base: new URL('https://custom.com') },
                     expectedUrl: 'https://custom.com/'
@@ -244,9 +242,7 @@ describe('options.ts - Node.js Environment Tests', () => {
 
         it('should use default URL when no req provided in server environment', async () => {
             const router = createRouter({});
-            expect(router.parsedOptions.base.href).toBe(
-                'https://www.esmnext.com/'
-            );
+            expect(router.parsedOptions.base.href).toBe('https://esmx.dev/');
             router.destroy();
         });
     });

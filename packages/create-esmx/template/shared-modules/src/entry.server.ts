@@ -13,7 +13,7 @@ export default async (rc: RenderContext) => {
     <meta name="description" content="Esmx Shared Modules - A comprehensive micro-frontend solution for sharing modules across multiple framework versions, built on native ESM technology with zero runtime overhead">
     <meta name="keywords" content="Esmx,Shared Modules,Module Sharing,Micro-frontend,ESM Modules,JavaScript Modules,TypeScript,Rspack,Multi-framework,Vue2,Vue3,Code Reuse,Frontend Architecture">
     <meta name="generator" content="Esmx Framework">
-    <link rel="icon" href="https://www.esmnext.com/logo.svg" type="image/svg+xml">
+    <link rel="icon" href="https://esmx.dev/logo.svg" type="image/svg+xml">
     ${rc.preload()}
     <title>Esmx Shared Modules - Multi-version Module Sharing Solution</title>
     ${rc.css()}

@@ -3,7 +3,7 @@
         <nav class="esmx-nav">
             <div class="nav-content">
                 <div class="nav-brand">
-                    <img class="esmx-logo" src="https://www.esmnext.com/logo.svg" alt="Esmx Logo" width="32" height="32" />
+                    <img class="esmx-logo" src="https://esmx.dev/logo.svg" alt="Esmx Logo" width="32" height="32" />
                     <span class="brand-text">Esmx</span>
                     <span class="brand-subtitle">Router</span>
                 </div>

@@ -6,8 +6,8 @@
 import { createApp } from './create-app';
 
 const base =
-    location.origin === 'https://www.esmnext.com'
-        ? 'https://www.esmnext.com/router-demo/ssr-vue2/'
+    location.origin === 'https://esmx.dev'
+        ? 'https://esmx.dev/router-demo/ssr-vue2/'
         : location.origin;
 
 createApp({

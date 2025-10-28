@@ -8,9 +8,9 @@ const title = ref<string>('Vue SSR Demo');
 <template>
 	<div class="container">
 		<div class="logo-container">
-			<a href="https://www.esmnext.com" target="_blank" class="logo-link">
+			<a href="https://esmx.dev" target="_blank" class="logo-link">
 				<div class="logo-wrapper esmx">
-					<img src="https://www.esmnext.com/logo.svg" class="logo" alt="Esmx logo" />
+					<img src="https://esmx.dev/logo.svg" class="logo" alt="Esmx logo" />
 				</div>
 			</a>
 			<a href="https://vuejs.org/" target="_blank" class="logo-link">
