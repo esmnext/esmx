@@ -79,6 +79,7 @@ describe('index.ts - Package Entry Point', () => {
                 // Components
                 'RouterLink',
                 'RouterView',
+                'RouterViewDepth',
                 // Plugin
                 'RouterPlugin'
             ];
@@ -102,6 +103,7 @@ describe('index.ts - Package Entry Point', () => {
                 'getRoute',
                 'RouterLink',
                 'RouterView',
+                'RouterViewDepth',
                 'RouterPlugin'
             ];
 

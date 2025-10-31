@@ -11,6 +11,6 @@ export {
 } from './use';
 
 export { RouterLink } from './router-link';
-export { RouterView } from './router-view';
+export { RouterView, RouterViewDepth } from './router-view';
 
 export { RouterPlugin } from './plugin';
