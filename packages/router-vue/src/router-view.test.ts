@@ -231,13 +231,13 @@ describe('router-view.ts - RouterView Component', () => {
             let injectedDepth: number | undefined;
 
             // Use the same symbol key that RouterView uses internally
-            const RouterViewDepthKey = Symbol('RouterViewDepth');
+            const RouterViewDepth = Symbol('RouterViewDepth');
 
             // Create a custom RouterView component that can capture the injected depth
             const TestRouterView = defineComponent({
                 name: 'TestRouterView',
                 setup() {
-                    injectedDepth = inject(RouterViewDepthKey, -1);
+                    injectedDepth = inject(RouterViewDepth, -1);
                     return () => h(RouterView);
                 }
             });
@@ -263,13 +263,13 @@ describe('router-view.ts - RouterView Component', () => {
             let parentDepth: number | undefined;
             let childDepth: number | undefined;
 
-            const RouterViewDepthKey = Symbol('RouterViewDepth');
+            const RouterViewDepth = Symbol('RouterViewDepth');
 
             const ParentTestComponent = defineComponent({
                 name: 'ParentTestComponent',
                 setup() {
-                    parentDepth = inject(RouterViewDepthKey, -1);
-                    provide(RouterViewDepthKey, 0); // Simulate parent RouterView
+                    parentDepth = inject(RouterViewDepth, -1);
+                    provide(RouterViewDepth, 0); // Simulate parent RouterView
                     return () =>
                         h('div', [h('span', 'Parent'), h(ChildTestComponent)]);
                 }
@@ -278,7 +278,7 @@ describe('router-view.ts - RouterView Component', () => {
             const ChildTestComponent = defineComponent({
                 name: 'ChildTestComponent',
                 setup() {
-                    childDepth = inject(RouterViewDepthKey, -1);
+                    childDepth = inject(RouterViewDepth, -1);
                     return () => h('div', 'Child');
                 }
             });
@@ -362,14 +362,14 @@ describe('router-view.ts - RouterView Component', () => {
 
     describe('Edge Cases and Error Handling', () => {
         it('should render null when no route matches at current depth', async () => {
-            const RouterViewDepthKey = Symbol('RouterViewDepth');
+            const RouterViewDepth = Symbol('RouterViewDepth');
 
             const DeepRouterView = defineComponent({
                 name: 'DeepRouterView',
                 setup() {
                     // Inject depth 0 from parent RouterView and provide depth 1
-                    const currentDepth = inject(RouterViewDepthKey, 0);
-                    provide(RouterViewDepthKey, currentDepth + 1);
+                    const currentDepth = inject(RouterViewDepth, 0);
+                    provide(RouterViewDepth, currentDepth + 1);
                     return () => h(RouterView);
                 }
             });

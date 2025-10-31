@@ -2,7 +2,7 @@ import { defineComponent, h, inject, provide } from 'vue';
 import { useRoute } from './use';
 import { resolveComponent } from './util';
 
-const RouterViewDepthKey = Symbol('RouterViewDepth');
+export const RouterViewDepth = Symbol('RouterViewDepth');
 
 /**
  * RouterView component for rendering matched route components.
@@ -39,11 +39,11 @@ export const RouterView = defineComponent({
 
         // Get current RouterView depth from parent RouterView (if any)
         // This enables proper nested routing by tracking how deep we are in the component tree
-        const depth = inject(RouterViewDepthKey, 0);
+        const depth = inject(RouterViewDepth, 0);
 
         // Provide depth + 1 to child RouterView components
         // This ensures each nested RouterView renders the correct route component
-        provide(RouterViewDepthKey, depth + 1);
+        provide(RouterViewDepth, depth + 1);
 
         return () => {
             // Get the matched route configuration at current depth
