@@ -4,7 +4,6 @@ import type { ImportMap, ScopesMap, SpecifierMap } from '@esmx/import';
 
 export interface ImportMapManifest {
     name: string;
-    imports: Record<string, string>;
     exports: Record<
         string,
         {
@@ -33,13 +32,6 @@ export function buildImportsMap(
         Object.entries(manifest.exports).forEach(([, exportItem]) => {
             const file = getFile(manifest.name, exportItem.file);
             imports[exportItem.identifier] = file;
-        });
-    });
-
-    manifests.forEach((manifest) => {
-        Object.entries(manifest.imports).forEach(([name, identifier]) => {
-            const fullName = `${manifest.name}/${name}`;
-            imports[fullName] = imports[identifier] ?? identifier;
         });
     });
 
