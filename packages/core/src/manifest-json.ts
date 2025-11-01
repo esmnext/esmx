@@ -10,10 +10,6 @@ export interface ManifestJson {
      */
     name: string;
     /**
-     * Import mappings
-     */
-    imports: Record<string, string>;
-    /**
      * Scope-specific import mappings
      * Type: Record<scope name, import mappings within that scope>
      */

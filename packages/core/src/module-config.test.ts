@@ -313,6 +313,37 @@ describe('Module Config Parser', () => {
                 expect(emptyScope.existing).toBe('existing-value');
                 expect(emptyScope.lodash).toBe('test-module/lodash');
             });
+
+            it('should verify the specific scopes merging logic with imports', () => {
+                const config: ModuleConfig = {
+                    imports: {
+                        react: 'react',
+                        vue: 'vue'
+                    },
+                    scopes: {
+                        utils: {
+                            lodash: 'lodash'
+                        },
+                        '': {
+                            existing: 'existing-value'
+                        }
+                    }
+                };
+                const result = getEnvironments(config, 'client', 'test-module');
+
+                // 验证核心逻辑：imports 被合并到空字符串 scope 中
+                expect(result.scopes['']).toBeDefined();
+                expect(result.scopes[''].existing).toBe('existing-value'); // 保留现有内容
+                expect(result.scopes[''].react).toBe('react'); // 合并 imports
+                expect(result.scopes[''].vue).toBe('vue'); // 合并 imports
+
+                // 验证其他 scopes 不受影响
+                expect(result.scopes.utils.lodash).toBe('lodash');
+
+                // 验证 result.imports 也包含相同的 imports
+                expect(result.imports.react).toBe('react');
+                expect(result.imports.vue).toBe('vue');
+            });
         });
 
         describe('addPackageExportsToScopes', () => {

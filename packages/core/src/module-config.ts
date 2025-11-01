@@ -145,7 +145,13 @@ export function getEnvironments(
 ): ParsedModuleConfigEnvironment {
     const imports = getEnvironmentImports(env, config.imports);
     const exports = getEnvironmentExports(config, env);
-    const scopes = getEnvironmentScopes(env, config.scopes);
+    const scopes = getEnvironmentScopes(env, {
+        ...config.scopes,
+        '': {
+            ...config.scopes?.[''],
+            ...imports
+        }
+    });
     addPackageExportsToScopes(exports, scopes, moduleName);
     return {
         imports,

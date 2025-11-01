@@ -16,7 +16,6 @@ export function intiManifestJson(
     const { Compilation } = compiler.rspack;
     compiler.hooks.thisCompilation.tap(RSPACK_PLUGIN_NAME, (compilation) => {
         let manifestJson: ManifestJson = {
-            imports: {},
             name: opts.name,
             exports: {},
             scopes: opts.scopes,
@@ -39,7 +38,6 @@ export function intiManifestJson(
                     .map(transFileName)
                     .filter((file) => !file.includes('hot-update'));
                 manifestJson = {
-                    imports: opts.imports,
                     name: opts.name,
                     exports: exports,
                     scopes: opts.scopes,
