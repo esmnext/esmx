@@ -73,13 +73,13 @@ describe('index.ts - Package Entry Point', () => {
                 'useRoute',
                 'useProvideRouter',
                 'useLink',
+                'useRouterViewDepth',
                 // Options API
                 'getRouter',
                 'getRoute',
                 // Components
                 'RouterLink',
                 'RouterView',
-                'RouterViewDepth',
                 // Plugin
                 'RouterPlugin'
             ];
@@ -99,11 +99,11 @@ describe('index.ts - Package Entry Point', () => {
                 'useRoute',
                 'useProvideRouter',
                 'useLink',
+                'useRouterViewDepth',
                 'getRouter',
                 'getRoute',
                 'RouterLink',
                 'RouterView',
-                'RouterViewDepth',
                 'RouterPlugin'
             ];
 

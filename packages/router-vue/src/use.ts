@@ -1,6 +1,5 @@
 import type { Route, Router, RouterLinkProps } from '@esmx/router';
 import {
-    type Ref,
     computed,
     getCurrentInstance,
     inject,
@@ -23,6 +22,7 @@ interface RouterContext {
 
 const ROUTER_CONTEXT_KEY = Symbol('router-context');
 const ROUTER_INJECT_KEY = Symbol('router-inject');
+const ROUTER_VIEW_DEPTH_KEY = Symbol('router-view-depth');
 
 const ERROR_MESSAGES = {
     SETUP_ONLY: (fnName: string) =>
@@ -280,6 +280,78 @@ export function useProvideRouter(router: Router): void {
     });
 
     onBeforeUnmount(unwatch);
+}
+
+/**
+ * Get the current RouterView depth in nested routing scenarios.
+ * Returns the depth of the current RouterView component in the component tree.
+ * Useful for advanced routing scenarios where you need to know the nesting level.
+ *
+ * @param isRender - Whether this is used in a RouterView component that needs to provide depth for children (default: false)
+ * @returns Current RouterView depth (0 for root level, 1 for first nested level, etc.)
+ * @throws {Error} If called outside setup()
+ *
+ * @example
+ * ```vue
+ * <template>
+ *   <div>
+ *     <p>Current RouterView depth: {{ depth }}</p>
+ *     <RouterView />
+ *   </div>
+ * </template>
+ *
+ * <script setup lang="ts">
+ * import { useRouterViewDepth } from '@esmx/router-vue';
+ *
+ * // Get current depth without providing for children
+ * const depth = useRouterViewDepth();
+ * console.log('Current RouterView depth:', depth); // 0, 1, 2, etc.
+ *
+ * // Get current depth and provide depth + 1 for children (used in RouterView component)
+ * const depth = useRouterViewDepth(true);
+ * </script>
+ * ```
+ */
+export function _useRouterViewDepth(isRender?: boolean): number {
+    // Get current RouterView depth from parent RouterView (if any)
+    // Default to 0 if no parent RouterView is found
+    const depth = inject(ROUTER_VIEW_DEPTH_KEY, 0);
+
+    if (isRender) {
+        // Provide depth + 1 to child RouterView components
+        provide(ROUTER_VIEW_DEPTH_KEY, depth + 1);
+    }
+
+    return depth;
+}
+/**
+ * Get the current RouterView depth in nested routing scenarios.
+ * Returns the depth of the current RouterView component in the component tree.
+ * Useful for advanced routing scenarios where you need to know the nesting level.
+ *
+ * @returns Current RouterView depth (0 for root level, 1 for first nested level, etc.)
+ * @throws {Error} If called outside setup()
+ *
+ * @example
+ * ```vue
+ * <template>
+ *   <div>
+ *     <p>Current RouterView depth: {{ depth }}</p>
+ *     <RouterView />
+ *   </div>
+ * </template>
+ *
+ * <script setup lang="ts">
+ * import { useRouterViewDepth } from '@esmx/router-vue';
+ *
+ * // Get current depth without providing for children
+ * const depth = useRouterViewDepth();
+ * console.log('Current RouterView depth:', depth); // 0, 1, 2, etc.
+ * </script>
+ * ```
+ */
+export function useRouterViewDepth(): number {
+    return _useRouterViewDepth();
 }
 
 /**
