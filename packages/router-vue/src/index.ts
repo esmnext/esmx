@@ -6,11 +6,12 @@ export {
     useRoute,
     useProvideRouter,
     useLink,
+    useRouterViewDepth,
     getRoute,
     getRouter
 } from './use';
 
 export { RouterLink } from './router-link';
-export { RouterView, RouterViewDepth } from './router-view';
+export { RouterView } from './router-view';
 
 export { RouterPlugin } from './plugin';
