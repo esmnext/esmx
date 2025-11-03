@@ -292,7 +292,7 @@ export class Router {
         await router.replace(toInput);
 
         router.afterEach((to, from) => {
-            if (layerOptions.shouldClose) {
+            if (layerOptions.shouldClose && to.type !== RouteType.pushWindow) {
                 const result = layerOptions.shouldClose(to, from, router);
                 if (result === true) {
                     router.destroy();
