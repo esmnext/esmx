@@ -294,10 +294,13 @@ export class Router {
         router.afterEach((to, from) => {
             if (
                 layerOptions.shouldClose &&
-                to.type !== RouteType.pushWindow &&
-                to.type !== RouteType.replaceWindow &&
-                to.type !== RouteType.replace &&
-                to.type !== RouteType.restartApp
+                ![
+                    RouteType.pushWindow,
+                    RouteType.replaceWindow,
+                    RouteType.replace,
+                    RouteType.restartApp,
+                    RouteType.pushLayer
+                ].includes(to.type)
             ) {
                 const result = layerOptions.shouldClose(to, from, router);
                 if (result === true) {
