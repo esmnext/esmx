@@ -22,7 +22,7 @@ export interface GetImportMapOptions {
     getFile: (name: string, file: string) => string;
 }
 
-export function buildImportsMap(
+export function createImportsMap(
     manifests: readonly ImportMapManifest[],
     getFile: (name: string, file: string) => string
 ): SpecifierMap {
@@ -40,7 +40,7 @@ export function buildImportsMap(
     return imports;
 }
 
-export function buildScopesMap(
+export function createScopesMap(
     imports: SpecifierMap,
     manifests: readonly ImportMapManifest[],
     getScope: (name: string, scope: string) => string
@@ -73,18 +73,19 @@ export function buildScopesMap(
     return scopes;
 }
 /**
- * Fixes Chrome's nested scope resolution bug in import maps.
+ * Fixes the nested scope resolution issue in import maps across all browsers.
  *
- * Chrome has a bug where nested scopes in import maps are not resolved correctly.
+ * Import Maps have a cross-browser issue where nested scopes are not resolved correctly.
  * For example, when you have both "/shared-modules/" and "/shared-modules/vue2/" scopes,
- * Chrome fails to properly apply the more specific nested scope.
+ * browsers fail to properly apply the more specific nested scope.
  *
- * This function works around the bug by:
+ * This function works around the issue by:
  * 1. Sorting scopes by path depth (shallow paths first, deeper paths last)
  * 2. Manually applying scopes to matching imports in the correct order
+ * 3. Converting pattern-based scopes to concrete path scopes
  *
  * @example
- * Problematic import map that fails in Chrome:
+ * Problematic import map that fails in browsers:
  * ```json
  * {
  *   "scopes": {
@@ -101,7 +102,7 @@ export function buildScopesMap(
  * @see https://github.com/guybedford/es-module-shims/issues/529
  * @see https://issues.chromium.org/issues/453147451
  */
-export function fixNestedScopesResolution(
+export function fixImportMapNestedScopes(
     importMap: Required<ImportMap>
 ): Required<ImportMap> {
     Object.entries(importMap.scopes)
@@ -125,14 +126,14 @@ export function fixNestedScopesResolution(
     return importMap;
 }
 
-export function getImportMap({
+export function createImportMap({
     manifests,
     getFile,
     getScope
 }: GetImportMapOptions): Required<ImportMap> {
-    const imports = buildImportsMap(manifests, getFile);
+    const imports = createImportsMap(manifests, getFile);
 
-    const scopes = buildScopesMap(imports, manifests, getScope);
+    const scopes = createScopesMap(imports, manifests, getScope);
     return {
         imports,
         scopes

@@ -1,15 +1,15 @@
 import { assert, describe, test } from 'vitest';
 import {
-    buildImportsMap,
-    buildScopesMap,
-    fixNestedScopesResolution,
-    getImportMap
+    createImportMap,
+    createImportsMap,
+    createScopesMap,
+    fixImportMapNestedScopes
 } from './import-map';
 import type { GetImportMapOptions, ImportMapManifest } from './import-map';
 
-describe('buildImportsMap', () => {
+describe('createImportsMap', () => {
     test('should return empty object for empty manifests', () => {
-        const result = buildImportsMap([], (name, file) => `${name}/${file}`);
+        const result = createImportsMap([], (name, file) => `${name}/${file}`);
         assert.deepEqual(result, {});
     });
 
@@ -35,7 +35,7 @@ describe('buildImportsMap', () => {
             }
         ];
 
-        const result = buildImportsMap(
+        const result = createImportsMap(
             manifests,
             (name, file) => `${name}/${file}`
         );
@@ -62,7 +62,7 @@ describe('buildImportsMap', () => {
             }
         ];
 
-        const result = buildImportsMap(
+        const result = createImportsMap(
             manifests,
             (name, file) => `${name}/${file}`
         );
@@ -94,7 +94,7 @@ describe('buildImportsMap', () => {
             }
         ];
 
-        const result = buildImportsMap(
+        const result = createImportsMap(
             manifests,
             (name, file) => `${name}/${file}`
         );
@@ -113,7 +113,7 @@ describe('buildImportsMap', () => {
             }
         ];
 
-        const result = buildImportsMap(
+        const result = createImportsMap(
             manifests,
             (name, file) => `${name}/${file}`
         );
@@ -137,7 +137,7 @@ describe('buildImportsMap', () => {
             }
         ];
 
-        const result = buildImportsMap(
+        const result = createImportsMap(
             manifests,
             (name, file) => `${name}/${file}`
         );
@@ -177,7 +177,7 @@ describe('buildImportsMap', () => {
             }
         ];
 
-        const result = buildImportsMap(
+        const result = createImportsMap(
             manifests,
             (name, file) => `${name}/${file}`
         );
@@ -204,7 +204,7 @@ describe('buildImportsMap', () => {
             }
         ];
 
-        const result = buildImportsMap(
+        const result = createImportsMap(
             manifests,
             (name, file) => `${name}/${file}`
         );
@@ -218,7 +218,7 @@ describe('buildImportsMap', () => {
     });
 });
 
-describe('fixNestedScopesResolution', () => {
+describe('fixImportMapNestedScopes', () => {
     test('should return unchanged import map for empty scopes', () => {
         const importMap = {
             imports: {
@@ -227,7 +227,7 @@ describe('fixNestedScopesResolution', () => {
             scopes: {}
         };
 
-        const result = fixNestedScopesResolution(importMap);
+        const result = fixImportMapNestedScopes(importMap);
         assert.deepEqual(result, importMap);
     });
 
@@ -243,7 +243,7 @@ describe('fixNestedScopesResolution', () => {
             }
         };
 
-        const result = fixNestedScopesResolution(importMap);
+        const result = fixImportMapNestedScopes(importMap);
         assert.deepEqual(result, importMap);
     });
 
@@ -294,7 +294,7 @@ describe('fixNestedScopesResolution', () => {
             }
         };
 
-        const result = fixNestedScopesResolution(importMap);
+        const result = fixImportMapNestedScopes(importMap);
         assert.deepEqual(result, expected);
     });
 
@@ -355,7 +355,7 @@ describe('fixNestedScopesResolution', () => {
             }
         };
 
-        const result = fixNestedScopesResolution(importMap);
+        const result = fixImportMapNestedScopes(importMap);
         assert.deepEqual(result, expected);
     });
 
@@ -391,7 +391,7 @@ describe('fixNestedScopesResolution', () => {
             }
         };
 
-        const result = fixNestedScopesResolution(importMap);
+        const result = fixImportMapNestedScopes(importMap);
         assert.deepEqual(result, expected);
     });
 
@@ -420,7 +420,7 @@ describe('fixNestedScopesResolution', () => {
             }
         };
 
-        const result = fixNestedScopesResolution(importMap);
+        const result = fixImportMapNestedScopes(importMap);
         assert.deepEqual(result, expected);
     });
 
@@ -439,7 +439,7 @@ describe('fixNestedScopesResolution', () => {
             scopes: {}
         };
 
-        const result = fixNestedScopesResolution(importMap);
+        const result = fixImportMapNestedScopes(importMap);
         assert.deepEqual(result, expected);
     });
 
@@ -460,7 +460,7 @@ describe('fixNestedScopesResolution', () => {
             }
         };
 
-        const result = fixNestedScopesResolution(importMap);
+        const result = fixImportMapNestedScopes(importMap);
 
         assert.deepEqual(result.imports, importMap.imports);
         assert.deepEqual(
@@ -543,7 +543,7 @@ describe('fixNestedScopesResolution', () => {
             }
         };
 
-        const result = fixNestedScopesResolution(importMap);
+        const result = fixImportMapNestedScopes(importMap);
         assert.deepEqual(result, expected);
     });
 
@@ -607,7 +607,7 @@ describe('fixNestedScopesResolution', () => {
             }
         };
 
-        const result = fixNestedScopesResolution(importMap);
+        const result = fixImportMapNestedScopes(importMap);
         assert.deepEqual(result, expected);
     });
 
@@ -674,7 +674,7 @@ describe('fixNestedScopesResolution', () => {
             }
         };
 
-        const result = fixNestedScopesResolution(importMap);
+        const result = fixImportMapNestedScopes(importMap);
         assert.deepEqual(result, expected);
     });
 
@@ -717,7 +717,7 @@ describe('fixNestedScopesResolution', () => {
             }
         };
 
-        const result = fixNestedScopesResolution(importMap);
+        const result = fixImportMapNestedScopes(importMap);
         assert.deepEqual(result, expected);
 
         assert.equal(
@@ -746,11 +746,11 @@ describe('fixNestedScopesResolution', () => {
             }
         };
 
-        const result = fixNestedScopesResolution(importMap);
+        const result = fixImportMapNestedScopes(importMap);
         assert.deepEqual(result.imports, importMap.imports);
         assert.isUndefined(result.scopes['/shared/modules/vue2/']);
         assert.doesNotThrow(() => {
-            fixNestedScopesResolution(importMap);
+            fixImportMapNestedScopes(importMap);
         });
     });
 
@@ -794,7 +794,7 @@ describe('fixNestedScopesResolution', () => {
                 }
             };
 
-            const result = fixNestedScopesResolution(importMap);
+            const result = fixImportMapNestedScopes(importMap);
             assert.deepEqual(result, expected);
         });
 
@@ -817,7 +817,7 @@ describe('fixNestedScopesResolution', () => {
                 scopes: {}
             };
 
-            const result = fixNestedScopesResolution(importMap);
+            const result = fixImportMapNestedScopes(importMap);
             assert.deepEqual(result, expected);
         });
 
@@ -840,7 +840,7 @@ describe('fixNestedScopesResolution', () => {
                 scopes: {}
             };
 
-            const result = fixNestedScopesResolution(importMap);
+            const result = fixImportMapNestedScopes(importMap);
             assert.deepEqual(result, expected);
         });
 
@@ -875,7 +875,7 @@ describe('fixNestedScopesResolution', () => {
                 }
             };
 
-            const result = fixNestedScopesResolution(importMap);
+            const result = fixImportMapNestedScopes(importMap);
             assert.deepEqual(result, expected);
         });
 
@@ -919,17 +919,17 @@ describe('fixNestedScopesResolution', () => {
                 }
             };
 
-            const result = fixNestedScopesResolution(importMap);
+            const result = fixImportMapNestedScopes(importMap);
             assert.deepEqual(result, expected);
         });
     });
 });
 
-describe('buildScopesMap', () => {
+describe('createScopesMap', () => {
     test('should return empty object for empty manifests', () => {
         const imports = {};
         const manifests: ImportMapManifest[] = [];
-        const result = buildScopesMap(
+        const result = createScopesMap(
             imports,
             manifests,
             (name, scope) => `${name}/${scope}`
@@ -955,7 +955,7 @@ describe('buildScopesMap', () => {
                 scopes: {}
             }
         ];
-        const result = buildScopesMap(
+        const result = createScopesMap(
             imports,
             manifests,
             (name, scope) => `${name}/${scope}`
@@ -993,7 +993,7 @@ describe('buildScopesMap', () => {
                 }
             }
         ];
-        const result = buildScopesMap(
+        const result = createScopesMap(
             imports,
             manifests,
             (name, scope) => `${name}/${scope}`
@@ -1029,7 +1029,7 @@ describe('buildScopesMap', () => {
                 }
             }
         ];
-        const result = buildScopesMap(
+        const result = createScopesMap(
             imports,
             manifests,
             (name, scope) => `${name}/${scope}`
@@ -1065,7 +1065,7 @@ describe('buildScopesMap', () => {
                 }
             }
         ];
-        const result = buildScopesMap(
+        const result = createScopesMap(
             imports,
             manifests,
             (name, scope) => `${name}/${scope}`
@@ -1107,7 +1107,7 @@ describe('buildScopesMap', () => {
                 }
             }
         ];
-        const result = buildScopesMap(
+        const result = createScopesMap(
             imports,
             manifests,
             (name, scope) => `${name}/${scope}`
@@ -1141,7 +1141,7 @@ describe('buildScopesMap', () => {
                 }
             }
         ];
-        const result = buildScopesMap(
+        const result = createScopesMap(
             imports,
             manifests,
             (name, scope) => `${name}/${scope}`
@@ -1185,7 +1185,7 @@ describe('buildScopesMap', () => {
                 }
             }
         ];
-        const result = buildScopesMap(
+        const result = createScopesMap(
             imports,
             manifests,
             (name, scope) => `${name}/${scope}`
@@ -1239,7 +1239,7 @@ describe('buildScopesMap', () => {
                 }
             }
         ];
-        const result = buildScopesMap(
+        const result = createScopesMap(
             imports,
             manifests,
             (name, scope) => `${name}/${scope}`
@@ -1274,7 +1274,7 @@ describe('buildScopesMap', () => {
                 }
             }
         ];
-        const result = buildScopesMap(
+        const result = createScopesMap(
             imports,
             manifests,
             (name, scope) => `${name}/${scope}`
@@ -1302,7 +1302,7 @@ describe('buildScopesMap', () => {
                 scopes: undefined as any
             }
         ];
-        const result = buildScopesMap(
+        const result = createScopesMap(
             imports,
             manifests,
             (name, scope) => `${name}/${scope}`
@@ -1311,14 +1311,14 @@ describe('buildScopesMap', () => {
     });
 });
 
-describe('getImportMap', () => {
+describe('createImportMap', () => {
     test('should return empty import map for empty manifests', () => {
         const options: GetImportMapOptions = {
             manifests: [],
             getFile: (name, file) => `${name}/${file}`,
             getScope: (name, scope) => `${name}/${scope}`
         };
-        const result = getImportMap(options);
+        const result = createImportMap(options);
         assert.deepEqual(result, {
             imports: {},
             scopes: {}
@@ -1355,7 +1355,7 @@ describe('getImportMap', () => {
             getFile: (name, file) => `${name}/${file}`,
             getScope: (name, scope) => `${name}/${scope}`
         };
-        const result = getImportMap(options);
+        const result = createImportMap(options);
         assert.deepEqual(result, {
             imports: {
                 'test-module/component': 'test-module/component.js',
@@ -1409,7 +1409,7 @@ describe('getImportMap', () => {
             getFile: (name, file) => `${name}/${file}`,
             getScope: (name, scope) => `${name}/${scope}`
         };
-        const result = getImportMap(options);
+        const result = createImportMap(options);
         assert.deepEqual(result, {
             imports: {
                 'module-a/utils': 'module-a/utils.js',
@@ -1445,7 +1445,7 @@ describe('getImportMap', () => {
             getFile: (name, file) => `${name}/${file}`,
             getScope: (name, scope) => `${name}/${scope}`
         };
-        const result = getImportMap(options);
+        const result = createImportMap(options);
         assert.deepEqual(result, {
             imports: {
                 'test-module/component': 'test-module/component.js'
@@ -1470,7 +1470,7 @@ describe('getImportMap', () => {
             getFile: (name, file) => `${name}/${file}`,
             getScope: (name, scope) => `${name}/${scope}`
         };
-        const result = getImportMap(options);
+        const result = createImportMap(options);
         assert.deepEqual(result, {
             imports: {},
             scopes: {
@@ -1504,7 +1504,7 @@ describe('getImportMap', () => {
             getFile: (name, file) => `/custom/path/${name}/${file}`,
             getScope: (name, scope) => `custom-scope-${name}-${scope}`
         };
-        const result = getImportMap(options);
+        const result = createImportMap(options);
         assert.deepEqual(result, {
             imports: {
                 'test-module/component': '/custom/path/test-module/component.js'
@@ -1536,7 +1536,7 @@ describe('getImportMap', () => {
             getFile: (name, file) => `${name}/${file}`,
             getScope: (name, scope) => `${name}/${scope}`
         };
-        const result = getImportMap(options);
+        const result = createImportMap(options);
         assert.deepEqual(result, {
             imports: {
                 'test-module/component': 'test-module/component.js'
@@ -1569,7 +1569,7 @@ describe('getImportMap', () => {
             getFile: (name, file) => `${name}/${file}`,
             getScope: (name, scope) => `${name}/${scope}`
         };
-        const result = getImportMap(options);
+        const result = createImportMap(options);
         assert.deepEqual(result, {
             imports: {
                 'test-module/component': 'test-module/component.js'
@@ -1606,7 +1606,7 @@ describe('getImportMap', () => {
             getFile: (name, file) => `${name}/${file}`,
             getScope: (name, scope) => `${name}/${scope}`
         };
-        const result = getImportMap(options);
+        const result = createImportMap(options);
         assert.deepEqual(result, {
             imports: {
                 'test-module/src/index': 'test-module/src/index.js',
