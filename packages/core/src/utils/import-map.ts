@@ -127,7 +127,7 @@ export function fixImportMapNestedScopes(
 }
 
 export function compressImportMap(importMap: Required<ImportMap>): ImportMap {
-    const compressed: ImportMap = {
+    const compressed: Required<ImportMap> = {
         imports: { ...importMap.imports },
         scopes: {}
     };
@@ -177,10 +177,8 @@ export function compressImportMap(importMap: Required<ImportMap>): ImportMap {
         }
     });
 
-    if (Object.keys(compressed.scopes ?? {}).length === 0) {
-        Reflect.deleteProperty(compressed, 'scopes');
-    }
-    return compressed;
+    const hasScopes = Object.keys(compressed.scopes).length > 0;
+    return hasScopes ? compressed : { imports: compressed.imports };
 }
 
 export function createImportMap({
