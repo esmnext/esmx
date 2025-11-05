@@ -45,7 +45,7 @@ describe('plugin.ts - RouterPlugin', () => {
         router = new Router({
             mode: RouterMode.memory,
             routes,
-            base: new URL('http://localhost:3000/')
+            base: new URL('http://localhost:8000/')
         });
 
         await router.replace('/');

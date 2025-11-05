@@ -80,7 +80,7 @@ describe('router-view.ts - RouterView Component', () => {
             root: '#test-app',
             routes,
             mode: RouterMode.memory,
-            base: new URL('http://localhost:3000/')
+            base: new URL('http://localhost:8000/')
         });
 
         // Initialize router to root path and wait for it to be ready
@@ -201,7 +201,7 @@ describe('router-view.ts - RouterView Component', () => {
                 root: '#test-app',
                 routes,
                 mode: RouterMode.memory,
-                base: new URL('http://localhost:3000/')
+                base: new URL('http://localhost:8000/')
             });
 
             // Initialize the router and wait for it to be ready
@@ -334,7 +334,7 @@ describe('router-view.ts - RouterView Component', () => {
                 root: '#test-app',
                 routes: nestedRoutes,
                 mode: RouterMode.memory,
-                base: new URL('http://localhost:3000/')
+                base: new URL('http://localhost:8000/')
             });
 
             // Initialize the router and wait for it to be ready
@@ -411,7 +411,7 @@ describe('router-view.ts - RouterView Component', () => {
                 root: '#test-app',
                 routes: routesWithNull,
                 mode: RouterMode.memory,
-                base: new URL('http://localhost:3000/')
+                base: new URL('http://localhost:8000/')
             });
 
             // Initialize the router and wait for it to be ready
@@ -451,7 +451,7 @@ describe('router-view.ts - RouterView Component', () => {
                     }
                 ],
                 mode: RouterMode.memory,
-                base: new URL('http://localhost:3000/')
+                base: new URL('http://localhost:8000/')
             });
 
             // Initialize router with root path
@@ -504,7 +504,7 @@ describe('router-view.ts - RouterView Component', () => {
                 root: '#test-app',
                 routes: malformedRoutes,
                 mode: RouterMode.memory,
-                base: new URL('http://localhost:3000/')
+                base: new URL('http://localhost:8000/')
             });
 
             // Initialize the router and wait for it to be ready

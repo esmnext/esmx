@@ -129,8 +129,6 @@ export function fixImportMapNestedScopes(
 export function compressImportMap(
     importMap: Required<ImportMap>
 ): Required<ImportMap> {
-    const minOccurrences = 2;
-
     const compressed: Required<ImportMap> = {
         imports: { ...importMap.imports },
         scopes: {}
@@ -160,7 +158,7 @@ export function compressImportMap(
                 secondBestCount = Math.max(secondBestCount, c);
             }
         }
-        if (best && best[1] >= minOccurrences && best[1] > secondBestCount) {
+        if (best && best[1] > secondBestCount) {
             compressed.imports[specifier] = best[0];
         }
     });
@@ -196,4 +194,12 @@ export function createImportMap({
         imports,
         scopes
     };
+}
+
+export function createClientImportMap(
+    options: GetImportMapOptions
+): Required<ImportMap> {
+    const base = createImportMap(options);
+    const fixed = fixImportMapNestedScopes(base);
+    return compressImportMap(fixed);
 }

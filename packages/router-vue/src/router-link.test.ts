@@ -52,7 +52,7 @@ describe('router-link.ts - RouterLink Component', () => {
             root: '#test-app',
             routes,
             mode: RouterMode.memory,
-            base: new URL('http://localhost:3000/')
+            base: new URL('http://localhost:8000/')
         });
 
         // Initialize router and wait for it to be ready
