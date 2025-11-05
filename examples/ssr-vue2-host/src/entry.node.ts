@@ -27,7 +27,6 @@ export default {
         server.get('*', async (req, res) => {
             res.setHeader('Content-Type', 'text/html;charset=UTF-8');
             const result = await esmx.render({
-                importmapMode: 'js',
                 params: { url: req.url }
             });
             res.send(result.html);
