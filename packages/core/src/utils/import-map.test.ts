@@ -1638,8 +1638,7 @@ describe('compressImportMap', () => {
 
         const result = compressImportMap(importMap);
         assert.deepEqual(result, {
-            imports: { vue: '/a/vue.final.mjs' },
-            scopes: {}
+            imports: { vue: '/a/vue.final.mjs' }
         });
     });
 
@@ -1672,8 +1671,7 @@ describe('compressImportMap', () => {
             imports: {
                 vue: '/shared/vue.final.mjs',
                 lodash: '/a/lodash.final.mjs'
-            },
-            scopes: {}
+            }
         };
         assert.deepEqual(result, expected);
     });
@@ -1689,8 +1687,7 @@ describe('compressImportMap', () => {
 
         const result = compressImportMap(importMap);
         assert.deepEqual(result, {
-            imports: { vue: '/shared/vue.final.mjs' },
-            scopes: {}
+            imports: { vue: '/shared/vue.final.mjs' }
         });
     });
 
@@ -1704,8 +1701,7 @@ describe('compressImportMap', () => {
         };
         const result = compressImportMap(importMap);
         assert.deepEqual(result, {
-            imports: { vue: '/x/vue.final.mjs' },
-            scopes: {}
+            imports: { vue: '/x/vue.final.mjs' }
         });
     });
 
