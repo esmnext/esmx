@@ -126,6 +126,64 @@ export function fixImportMapNestedScopes(
     return importMap;
 }
 
+export function compressImportMap(
+    importMap: Required<ImportMap>
+): Required<ImportMap> {
+    const minOccurrences = 2;
+
+    const compressed: Required<ImportMap> = {
+        imports: { ...importMap.imports },
+        scopes: {}
+    };
+
+    const counts: Record<string, Record<string, number>> = {};
+    Object.values(importMap.scopes).forEach((scopeMappings) => {
+        Object.entries(scopeMappings).forEach(([specifier, target]) => {
+            if (Object.hasOwn(importMap.imports, specifier)) return;
+            counts[specifier] ??= {};
+            counts[specifier][target] = (counts[specifier][target] ?? 0) + 1;
+        });
+    });
+
+    Object.entries(counts).forEach(([specifier, targetCounts]) => {
+        const entries = Object.entries(targetCounts);
+
+        let best: [string, number] | null = null;
+        let secondBestCount = 0;
+        for (const [t, c] of entries) {
+            if (!best || c > best[1]) {
+                secondBestCount = best
+                    ? Math.max(secondBestCount, best[1])
+                    : secondBestCount;
+                best = [t, c];
+            } else {
+                secondBestCount = Math.max(secondBestCount, c);
+            }
+        }
+        if (best && best[1] >= minOccurrences && best[1] > secondBestCount) {
+            compressed.imports[specifier] = best[0];
+        }
+    });
+
+    Object.entries(importMap.scopes).forEach(([scopePath, scopeMappings]) => {
+        const filtered: SpecifierMap = {};
+
+        Object.entries(scopeMappings).forEach(([specifier, target]) => {
+            const globalTarget = compressed.imports[specifier];
+            if (globalTarget === target) {
+                return;
+            }
+            filtered[specifier] = target;
+        });
+
+        if (Object.keys(filtered).length > 0) {
+            compressed.scopes[scopePath] = filtered;
+        }
+    });
+
+    return compressed;
+}
+
 export function createImportMap({
     manifests,
     getFile,
