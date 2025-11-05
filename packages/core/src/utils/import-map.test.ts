@@ -1,5 +1,6 @@
 import { assert, describe, test } from 'vitest';
 import {
+    compressImportMap,
     createImportMap,
     createImportsMap,
     createScopesMap,
@@ -1617,6 +1618,163 @@ describe('createImportMap', () => {
                     main: 'test-module/src/index.js'
                 }
             }
+        });
+    });
+});
+
+describe('compressImportMap', () => {
+    test('does not promote when no global exists; keeps scopes intact', () => {
+        const importMap = {
+            imports: {},
+            scopes: {
+                '/a/': {
+                    vue: '/a/vue.final.mjs'
+                },
+                '/b/': {
+                    vue: '/a/vue.final.mjs'
+                }
+            }
+        };
+
+        const result = compressImportMap(importMap);
+        assert.deepEqual(result, {
+            imports: { vue: '/a/vue.final.mjs' },
+            scopes: {}
+        });
+    });
+
+    test('does not promote when scoped mappings conflict across scopes', () => {
+        const importMap = {
+            imports: {},
+            scopes: {
+                '/a/': { vue: '/a/vue.final.mjs' },
+                '/b/': { vue: '/b/vue.final.mjs' }
+            }
+        };
+
+        const result = compressImportMap(importMap);
+        assert.deepEqual(result, importMap);
+    });
+
+    test('removes scoped entries that equal global mapping', () => {
+        const importMap = {
+            imports: { vue: '/shared/vue.final.mjs' },
+            scopes: {
+                '/a/': {
+                    vue: '/shared/vue.final.mjs',
+                    lodash: '/a/lodash.final.mjs'
+                }
+            }
+        };
+
+        const result = compressImportMap(importMap);
+        assert.deepEqual(result.imports, importMap.imports);
+        assert.deepEqual(result.scopes, {
+            '/a/': { lodash: '/a/lodash.final.mjs' }
+        });
+    });
+
+    test('promotes to global when global matches single unique target across scopes', () => {
+        const importMap = {
+            imports: { vue: '/shared/vue.final.mjs' },
+            scopes: {
+                '/a/': { vue: '/shared/vue.final.mjs' },
+                '/b/': { vue: '/shared/vue.final.mjs' }
+            }
+        };
+
+        const result = compressImportMap(importMap);
+        assert.deepEqual(result, {
+            imports: { vue: '/shared/vue.final.mjs' },
+            scopes: {}
+        });
+    });
+
+    test('promotes to global when no global exists and targets are consistent across scopes (promote mode)', () => {
+        const importMap = {
+            imports: {},
+            scopes: {
+                '/a/': { vue: '/x/vue.final.mjs' },
+                '/b/': { vue: '/x/vue.final.mjs' }
+            }
+        };
+        const result = compressImportMap(importMap);
+        assert.deepEqual(result, {
+            imports: { vue: '/x/vue.final.mjs' },
+            scopes: {}
+        });
+    });
+
+    test('promotes dominant target and keeps exceptions in scopes (promote mode)', () => {
+        const importMap = {
+            imports: {},
+            scopes: {
+                '/a/': { vue: '/x/vue.final.mjs' },
+                '/b/': { vue: '/x/vue.final.mjs' },
+                '/c/': { vue: '/y/vue2.final.mjs' }
+            }
+        };
+        const result = compressImportMap(importMap);
+        assert.deepEqual(result, {
+            imports: { vue: '/x/vue.final.mjs' },
+            scopes: {
+                '/c/': { vue: '/y/vue2.final.mjs' }
+            }
+        });
+    });
+
+    test('does not promote when no global exists; keeps scopes intact', () => {
+        const importMap = {
+            imports: {},
+            scopes: {
+                '/a/': { vue: '/shared/vue.final.mjs' },
+                '/b/': { vue: '/shared/vue.final.mjs' },
+                '/c/': { vue: '/c/vue2.final.mjs' }
+            }
+        };
+        const result = compressImportMap(importMap);
+        assert.deepEqual(result, {
+            imports: { vue: '/shared/vue.final.mjs' },
+            scopes: { '/c/': { vue: '/c/vue2.final.mjs' } }
+        });
+    });
+
+    test('aggressive default does not override different existing global', () => {
+        const importMap = {
+            imports: { vue: '/global/vue.final.mjs' },
+            scopes: {
+                '/a/': { vue: '/shared/vue.final.mjs' },
+                '/b/': { vue: '/shared/vue.final.mjs' }
+            }
+        };
+        const result = compressImportMap(importMap);
+        assert.deepEqual(result, {
+            imports: { vue: '/global/vue.final.mjs' },
+            scopes: {
+                '/a/': { vue: '/shared/vue.final.mjs' },
+                '/b/': { vue: '/shared/vue.final.mjs' }
+            }
+        });
+    });
+
+    test('returns new object and keeps input unchanged', () => {
+        const original = {
+            imports: {},
+            scopes: {
+                '/a/': { vue: '/x/vue.final.mjs' },
+                '/b/': { vue: '/x/vue.final.mjs' },
+                '/c/': { vue: '/y/vue2.final.mjs' }
+            }
+        };
+        const importMap = JSON.parse(JSON.stringify(original));
+        const result = compressImportMap(importMap);
+        assert.notStrictEqual(result, importMap);
+        assert.notStrictEqual(result.imports, importMap.imports);
+        assert.notStrictEqual(result.scopes, importMap.scopes);
+        assert.deepEqual(importMap, original);
+        assert.deepEqual(result, {
+            imports: { vue: '/x/vue.final.mjs' },
+            scopes: { '/c/': { vue: '/y/vue2.final.mjs' } }
         });
     });
 });
