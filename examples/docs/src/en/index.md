@@ -1,49 +1,40 @@
 ---
-pageType: home
-titleSuffix: ESM-based High-Performance Server-Side Rendering Framework
-description: Esmx is a high-performance server-side rendering framework based on ESM, providing complete SSR capabilities, intelligent rendering context, and an innovative module linking system, suitable for large-scale web application development.
+pageType: "home"
+titleSuffix: "ESM-based universal rendering (CSR/SSR) and module linking"
+description: "Esmx is built on ECMAScript Modules (ESM) and Import Maps, supports both Client-Side Rendering (CSR) and Server-Side Rendering (SSR), and provides module linking capabilities for engineering large-scale Web applications."
 head:
-  - - meta
-    - property: keywords
-      content: Esmx, SSR, ESM, Server-Side Rendering, Module Linking, Vue, React, TypeScript, Micro Frontends
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, CSR, SSR, ESM, Client-side Rendering, Server-side Rendering, Module Linking, Vue, React, TypeScript, Micro Frontends"
 hero:
-  name: Esmx
-  text: ESM-based Server-Side Rendering Framework
-  tagline: High-performance, scalable Module Linking system
+  name: "Esmx"
+  text: "Native ESM-powered CSR/SSR and module linking"
+  tagline: "Standardized capabilities for engineering practice"
   actions:
-    - theme: brand
-      text: Get Started
-      link: /guide/start/getting-started
-    - theme: alt
-      text: GitHub
-      link: https://github.com/esmnext/esmx
+    - theme: "brand"
+      text: "Get Started"
+      link: "/guide/start/getting-started"
+    - theme: "alt"
+      text: "GitHub"
+      link: "https://github.com/esmnext/esmx"
 
 features:
-  - icon: ⚡️
-    title: Core Engine
-    details: High-performance SSR engine based on ESM Import Maps, supporting mainstream frameworks like Vue and React, with complete server-side rendering capabilities.
-  - icon: 🎯
-    title: Rendering Context
-    details: Intelligent RenderContext system providing precise resource injection, state synchronization, and client-side hydration for optimal rendering performance.
-  - icon: 🔗
-    title: Module Linking
-    details: Innovative module linking system supporting runtime dynamic loading, enabling precise dependency management and resource optimization.
-  - icon: 📦
-    title: Build System
-    details: Flexible build configuration supporting multi-version output, pre-processing and post-processing hooks for one-time build, multi-environment deployment.
-  - icon: 🌍
-    title: Deployment Solutions
-    details: Supports multilingual sites, dynamic base path configuration, micro frontends architecture - same build artifacts deployable to any path.
-  - icon: 🛠️
-    title: Developer Experience
-    details: Full TypeScript support, built-in HMR and incremental builds, with rich debugging tools and performance optimization guides.
-  - icon: 💻
-    title: Enterprise Applications
-    details: Ideal for large-scale web apps, multilingual sites, microservices architecture, supporting team collaboration and modular development.
-  - icon: 🚀
-    title: Performance Scenarios
-    details: Optimized for performance-sensitive scenarios like e-commerce and media sites, with SEO and first-load optimizations.
-  - icon: 🌐
-    title: Environment Support
-    details: Supports Node.js 24+ and modern browsers, with full ESM dynamic import and import.meta compatibility.
+  - icon: "⚙️"
+    title: "Server-Side Rendering"
+    details: "SSR implemented with native ESM and Import Maps, providing clear resource injection order and minimal examples."
+  - icon: "🔗"
+    title: "Module Linking"
+    details: "Manage cross-package dependencies and versions via Import Maps, supporting runtime linking and scoped mapping."
+  - icon: "🧩"
+    title: "Framework Agnostic"
+    details: "Compatible with Vue/React and more, keeping components and builds independent of any specific framework."
+  - icon: "🧱"
+    title: "Build and Deploy"
+    details: "Pre/post hooks and base path configuration for multi-language sites and micro frontend deployments."
+  - icon: "🔒"
+    title: "Dependency Isolation"
+    details: "Isolation through ESM scopes and Import Maps to reduce conflicts and coupling."
+  - icon: "🧪"
+    title: "Engineering Conventions"
+    details: "Unified terminology and API presentation, sample code without comments, consistent with packages."
 ---

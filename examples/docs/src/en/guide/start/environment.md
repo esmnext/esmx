@@ -1,76 +1,59 @@
 ---
-titleSuffix: Esmx Framework Compatibility Guide
-description: Detailed introduction to Esmx framework's environmental requirements, including Node.js version requirements and browser compatibility instructions, helping developers properly configure their development environment.
+titleSuffix: "Environment and Compatibility"
+description: "Environment requirements and compatibility for Esmx across Node.js and browsers, covering prerequisites and strategy choices."
 head:
-  - - meta
-    - property: keywords
-      content: Esmx, Node.js, Browser Compatibility, TypeScript, es-module-shims, Environment Configuration
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, Node.js, Browser Compatibility, TypeScript, es-module-shims, Environment Config"
 ---
 
-# Environmental Requirements
+# Environment Requirements
 
-This document outlines the environmental requirements for using this framework, including Node.js environment and browser compatibility.
+This document describes the required environment for using the framework, including Node.js and browser compatibility.
 
-## Node.js Environment
+## Node.js
 
-The framework requires Node.js version >= 24, primarily to support TypeScript type imports (via the `--experimental-strip-types` flag) without additional compilation steps.
+Node.js `>= 24` is required to support type imports and runtime features, reducing extra compilation steps.
 
 ## Browser Compatibility
 
-The framework defaults to compatibility mode builds to support a wider range of browsers. However, note that to achieve full browser compatibility support, you need to manually add the [es-module-shims](https://github.com/guybedford/es-module-shims) dependency.
+Two modes are supported:
+- Compatibility mode: backward compatibility for dynamic imports and `import.meta` via es-module-shims.
+- Native Import Maps mode: relies on native Import Maps support in browsers.
 
-### Compatibility Mode (Default)
+### Compatibility Mode (default)
 
-| Browser | Minimum Version |
-|---------|----------------|
-| 🌐 Chrome | >= 64 |
-| 🌊 Edge | >= 79 |
-| 🦊 Firefox | >= 67 |
-| 🧭 Safari | >= 11.1 |
+| Browser | Min Version |
+|-------|----------|
+| Chrome | >= 64 |
+| Edge   | >= 79 |
+| Firefox| >= 67 |
+| Safari | >= 11.1 |
 
-Compatibility mode requires browsers to support both **Dynamic Import** and **import.meta** features.
+Source: Can I Use (Dynamic Import and `import.meta`), retrieved November 2025.
 
-According to [Can I Use](https://caniuse.com/?search=dynamic%20import) statistics, browser coverage in compatibility mode reaches **95.59%**.
+### Native Import Maps Mode
 
-### Native Support Mode
+| Browser | Min Version |
+|-------|----------|
+| Chrome | >= 89 |
+| Edge   | >= 89 |
+| Firefox| >= 108 |
+| Safari | >= 16.4 |
 
-| Browser | Minimum Version |
-|---------|----------------|
-| 🌐 Chrome | >= 89 |
-| 🌊 Edge | >= 89 |
-| 🦊 Firefox | >= 108 |
-| 🧭 Safari | >= 16.4 |
+Source: Can I Use (Import Maps), retrieved November 2025.
 
-Native support mode offers the following advantages:
-1. Zero runtime overhead, no additional module loader required
-2. Native browser parsing for faster execution
-3. Better code splitting and on-demand loading capabilities
+### Enable Compatibility Support
 
-According to [Can I Use](https://caniuse.com/?search=importmap) statistics, browser coverage in native support mode reaches **93.5%**.
-
-### Enabling Compatibility Support
-
-::: warning Important Note
-Esmx defaults to compatibility mode builds to support a wider range of browsers. However, to achieve full support for older browsers, you still need to add the [es-module-shims](https://github.com/guybedford/es-module-shims) dependency to your project.
+::: warning
+To support older browsers, add [es-module-shims](https://github.com/guybedford/es-module-shims) to the project.
 :::
 
-Add the following script to your HTML file:
-
 ```html
-<!-- Development environment -->
 <script async src="https://ga.jspm.io/npm:es-module-shims@2.0.10/dist/es-module-shims.js"></script>
-
-<!-- Production environment -->
-<script async src="/path/to/es-module-shims.js"></script>
 ```
 
-::: tip Best Practices
-1. Production environment recommendations:
-   - Deploy es-module-shims to your own server
-   - Ensure resource loading stability and access speed
-   - Avoid potential security risks
-2. Performance considerations:
-   - Compatibility mode introduces minor performance overhead
-   - Decision to enable can be based on target user base's browser distribution
-
+::: tip
+- Deploy the script to your own server in production.
+- Decide whether to enable compatibility mode based on target user browser distribution.
 :::

@@ -1,10 +1,10 @@
 ---
-titleSuffix: Esmx 框架应用抽象接口
-description: 详细介绍 Esmx 框架的 App 接口，包括应用生命周期管理、静态资源处理和服务端渲染功能，帮助开发者理解和使用应用核心功能。
+titleSuffix: "Esmx 框架应用抽象接口"
+description: "详细介绍 Esmx 框架的 App 接口，包括应用生命周期管理、静态资源处理和服务端渲染功能，帮助开发者理解和使用应用核心功能。"
 head:
-  - - meta
-    - property: keywords
-      content: Esmx, App, 应用抽象, 生命周期, 静态资源, 服务端渲染, API
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, App, 应用抽象, 生命周期, 静态资源, 服务端渲染, API"
 ---
 
 # App
@@ -13,12 +13,10 @@ head:
 
 ```ts title="entry.node.ts"
 export default {
-  // 开发环境配置
   async devApp(esmx) {
     return import('@esmx/rspack').then((m) =>
       m.createRspackHtmlApp(esmx, {
         config(rc) {
-          // 自定义 Rspack 配置
         }
       })
     );

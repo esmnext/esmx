@@ -1,10 +1,10 @@
 ---
-titleSuffix: Esmx 框架静态资源路径配置指南
-description: 详细介绍 Esmx 框架的基础路径配置，包括多环境部署、CDN 分发和资源访问路径设置，帮助开发者实现灵活的静态资源管理。
+titleSuffix: "Esmx 框架静态资源路径配置指南"
+description: "详细介绍 Esmx 框架的基础路径配置，包括多环境部署、CDN 分发和资源访问路径设置，帮助开发者实现灵活的静态资源管理。"
 head:
-  - - meta
-    - property: keywords
-      content: Esmx, 基础路径, Base Path, CDN, 静态资源, 多环境部署, 资源管理
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, 基础路径, Base Path, CDN, 静态资源, 多环境部署, 资源管理"
 ---
 
 # 基础路径
@@ -57,7 +57,7 @@ Esmx 采用基于服务名的自动路径生成机制。默认情况下，框架
 
 ```ts
 const render = await esmx.render({
-    base: '/cn',  // 设置基础路径
+    base: '/cn',
     params: {
         url: req.url
     }

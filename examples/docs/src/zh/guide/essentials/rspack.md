@@ -1,10 +1,10 @@
 ---
-titleSuffix: Esmx 框架高性能构建引擎
-description: 深入解析 Esmx 框架的 Rspack 构建系统，包括高性能编译、多环境构建、资源优化等核心特性，助力开发者构建高效、可靠的现代 Web 应用。
+titleSuffix: "Esmx 框架高性能构建引擎"
+description: "深入解析 Esmx 框架的 Rspack 构建系统，包括高性能编译、多环境构建、资源优化等核心特性，助力开发者构建高效、可靠的现代 Web 应用。"
 head:
-  - - meta
-    - property: keywords
-      content: Esmx, Rspack, 构建系统, 高性能编译, 热更新, 多环境构建, Tree Shaking, 代码分割, SSR, 资源优化, 开发效率, 构建工具
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, Rspack, 构建系统, 高性能编译, 热更新, 多环境构建, Tree Shaking, 代码分割, SSR, 资源优化, 开发效率, 构建工具"
 ---
 
 # Rspack
@@ -90,7 +90,6 @@ export default {
             m.createRspackHtmlApp(esmx, {
                 // 自定义构建配置
                 config({ config }) {
-                    // 在此处添加自定义的 Rspack 配置
                 }
             })
         );

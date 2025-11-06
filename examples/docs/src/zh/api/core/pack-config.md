@@ -1,10 +1,10 @@
 ---
-titleSuffix: Esmx 框架打包配置 API 参考
-description: 详细介绍 Esmx 框架的 PackConfig 配置接口，包括软件包打包规则、输出配置和生命周期钩子，帮助开发者实现标准化的构建流程。
+titleSuffix: "Esmx 框架打包配置 API 参考"
+description: "详细介绍 Esmx 框架的 PackConfig 配置接口，包括软件包打包规则、输出配置和生命周期钩子，帮助开发者实现标准化的构建流程。"
 head:
-  - - meta
-    - property: keywords
-      content: Esmx, PackConfig, 软件包打包, 构建配置, 生命周期钩子, 打包配置, Web 应用框架
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, PackConfig, 软件包打包, 构建配置, 生命周期钩子, 打包配置, Web 应用框架"
 ---
 
 # PackConfig
@@ -49,8 +49,8 @@ interface PackConfig {
 
 - 参数：
   - `esmx: Esmx` - Esmx 实例
-  - `pkg: any` - 原始的 package.json 内容
-- 返回值：`Promise<any>` - 修改后的 package.json 内容
+  - `pkg: Record<string, any>` - 原始的 package.json 内容
+- 返回值：`Promise<Record<string, any>>` - 修改后的 package.json 内容
 
 常见用途：
 - 修改包名和版本号
@@ -61,18 +61,15 @@ interface PackConfig {
 示例：
 ```ts
 packageJson: async (esmx, pkg) => {
-  // 设置包信息
   pkg.name = 'my-app';
   pkg.version = '1.0.0';
   pkg.description = '我的应用';
 
-  // 添加依赖
   pkg.dependencies = {
     'vue': '^3.0.0',
     'express': '^4.17.1'
   };
 
-  // 添加发布配置
   pkg.publishConfig = {
     registry: 'https://registry.example.com'
   };
@@ -99,17 +96,13 @@ packageJson: async (esmx, pkg) => {
 示例：
 ```ts
 onBefore: async (esmx, pkg) => {
-  // 添加文档
   await fs.writeFile('dist/README.md', '# My App');
   await fs.writeFile('dist/LICENSE', 'MIT License');
 
-  // 执行测试
   await runTests();
 
-  // 生成文档
   await generateDocs();
 
-  // 清理临时文件
   await cleanupTempFiles();
 }
 ```
@@ -133,18 +126,14 @@ onBefore: async (esmx, pkg) => {
 示例：
 ```ts
 onAfter: async (esmx, pkg, file) => {
-  // 发布到 npm 私有仓库
   await publishToRegistry(file, {
     registry: 'https://registry.example.com'
   });
 
-  // 上传到静态资源服务器
   await uploadToServer(file, 'https://assets.example.com/packages');
 
-  // 创建版本标签
   await createGitTag(pkg.version);
 
-  // 触发部署流程
   await triggerDeploy(pkg.version);
 }
 ```
@@ -156,7 +145,6 @@ import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
-    // 配置需要导出的模块
     exports: [
       'root:src/components/button.vue',
       'root:src/utils/format.ts',
@@ -164,38 +152,28 @@ export default {
       'pkg:vue-router'
     ]
   },
-  // 打包配置
-  pack: {
-    // 启用打包功能
+  packs: {
     enable: true,
 
-    // 同时输出多个版本
     outputs: [
       'dist/versions/latest.tgz',
       'dist/versions/1.0.0.tgz'
     ],
 
-    // 自定义 package.json
     packageJson: async (esmx, pkg) => {
       pkg.version = '1.0.0';
       return pkg;
     },
 
-    // 打包前准备
     onBefore: async (esmx, pkg) => {
-      // 添加必要文件
       await fs.writeFile('dist/README.md', '# Your App\n\n模块导出说明...');
-      // 执行类型检查
       await runTypeCheck();
     },
 
-    // 打包后处理
     onAfter: async (esmx, pkg, file) => {
-      // 发布到私有 npm 镜像源
       await publishToRegistry(file, {
         registry: 'https://npm.your-registry.com/'
       });
-      // 或部署到静态服务器
       await uploadToServer(file, 'https://static.example.com/packages');
     }
   }

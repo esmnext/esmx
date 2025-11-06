@@ -24,10 +24,13 @@ export default defineConfig({
             title: 'Esmx'
         }
     ],
-    icon: '/logo.ico',
+    icon: '/favicon.ico',
     base: '/',
     logo: '/logo.svg',
     builderConfig: {
+        performance: {
+            buildCache: false
+        },
         html: {
             template: './src/index.html'
         }

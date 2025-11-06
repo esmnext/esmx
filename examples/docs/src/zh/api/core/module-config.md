@@ -1,10 +1,10 @@
 ---
-titleSuffix: Esmx 模块配置 API 参考
-description: ModuleConfig 接口详细说明，包括类型定义、配置选项、解析机制和使用示例，帮助开发者深入理解 Esmx 模块系统的核心配置。
+titleSuffix: "Esmx 模块配置 API 参考"
+description: "ModuleConfig 接口详细说明，包括类型定义、配置选项、解析机制和使用示例，帮助开发者深入理解 Esmx 模块系统的核心配置。"
 head:
-  - - meta
-    - property: keywords
-      content: Esmx, ModuleConfig, 模块配置, API 参考, 模块导入导出, 类型定义, 配置接口
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, ModuleConfig, 模块配置, API 参考, 模块导入导出, 类型定义, 配置接口"
 ---
 
 # ModuleConfig

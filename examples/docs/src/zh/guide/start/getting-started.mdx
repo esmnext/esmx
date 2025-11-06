@@ -1,10 +1,10 @@
 ---
-titleSuffix: Esmx 框架快速入门指南
-description: 使用 create-esmx 快速创建 Esmx 项目，支持多种 Vue 技术栈模板的一键初始化。
+titleSuffix: "Esmx 框架快速入门指南"
+description: "使用 create-esmx 快速创建 Esmx 项目，支持多种 Vue 技术栈模板的一键初始化。"
 head:
-  - - meta
-    - name: keywords
-      content: Esmx, 快速开始, create-esmx, 项目创建, Vue, 微前端
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, 快速开始, create-esmx, 项目创建, Vue, 微前端"
 ---
 
 import { PackageManagerTabs } from '@theme';
@@ -39,6 +39,12 @@ import { PackageManagerTabs } from '@theme';
 npm create esmx my-app --template vue-csr
 ```
 
+### 组合参数示例
+
+```bash
+npm create esmx my-app --template vue-ssr --name my-project --force
+```
+
 ## 启动开发服务器
 
 创建项目后，进入目录启动开发服务器：
@@ -59,6 +65,12 @@ npm run dev
 npm run build
 npm run start
 ```
+
+## 故障排查
+
+- Node.js 版本应为 `>= 24`。
+- 若端口占用，修改 `npm run dev` 配置或调整端口环境变量。
+- 如安装失败，检查代理或使用国内镜像源。
 
 ## 项目结构
 

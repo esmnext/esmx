@@ -1,24 +1,22 @@
 ---
-titleSuffix: Esmx Framework Application Abstraction Interface
-description: Detailed introduction to the App interface in the Esmx framework, covering application lifecycle management, static asset handling, and server-side rendering capabilities to help developers understand and utilize core application functionalities.
+titleSuffix: "Esmx Framework App Interface"
+description: "Detailed reference for the Esmx App interface covering lifecycle, static assets handling, and server-side rendering to help developers use core app features."
 head:
-  - - meta
-    - property: keywords
-      content: Esmx, App, Application Abstraction, Lifecycle, Static Assets, Server-Side Rendering, API
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, App, lifecycle, static assets, SSR, API"
 ---
 
 # App
 
-`App` is the application abstraction in the Esmx framework, providing a unified interface for managing application lifecycle, static assets, and server-side rendering.
+`App` is the application abstraction in Esmx, providing a unified interface for lifecycle management, static assets, and server-side rendering.
 
 ```ts title="entry.node.ts"
 export default {
-  // Development environment configuration
   async devApp(esmx) {
     return import('@esmx/rspack').then((m) =>
       m.createRspackHtmlApp(esmx, {
         config(rc) {
-          // Custom Rspack configuration
         }
       })
     );
@@ -40,17 +38,17 @@ interface App {
 
 #### middleware
 
-- **Type**: `Middleware`
+- Type: `Middleware`
 
-Static asset handling middleware.
+Static assets middleware.
 
-Development environment:
-- Processes static asset requests for source code
-- Supports real-time compilation and hot module replacement
-- Uses no-cache policy
+Development:
+- Serves static assets from source
+- Supports on-demand compilation and HMR
+- Uses no-cache strategy
 
-Production environment:
-- Handles built static assets
+Production:
+- Serves built static assets
 - Supports long-term caching for immutable files (.final.xxx)
 - Optimized asset loading strategy
 
@@ -60,11 +58,11 @@ server.use(esmx.middleware);
 
 #### render
 
-- **Type**: `(options?: RenderContextOptions) => Promise<RenderContext>`
+- Type: `(options?: RenderContextOptions) => Promise<RenderContext>`
 
-Server-side rendering function. Provides different implementations based on environment:
-- Production (start): Loads and executes the built server entry file (entry.server) for rendering
-- Development (dev): Loads and executes the source server entry file for rendering
+Server-side rendering function with environment-specific behavior:
+- Production (start): loads built server entry (entry.server) for rendering
+- Development (dev): loads server entry from source
 
 ```ts
 const rc = await esmx.render({
@@ -75,12 +73,12 @@ res.end(rc.html);
 
 #### build
 
-- **Type**: `() => Promise<boolean>`
+- Type: `() => Promise<boolean>`
 
-Production build function. Used for asset bundling and optimization. Returns true on successful build, false on failure.
+Production build. Handles bundling and optimizations. Resolves to `true` on success, `false` on failure.
 
 #### destroy
 
-- **Type**: `() => Promise<boolean>`
+- Type: `() => Promise<boolean>`
 
-Resource cleanup function. Used for server shutdown, connection termination, etc. Returns true on successful cleanup, false on failure.
+Resource cleanup. Closes servers and disconnects. Resolves to `true` on success, `false` on failure.

@@ -1,17 +1,17 @@
 ---
-titleSuffix: Esmx Module Configuration API Reference
-description: Detailed explanation of ModuleConfig interface, including type definitions, configuration options, resolution mechanisms, and usage examples, helping developers deeply understand the core configuration of Esmx module system.
+titleSuffix: "Esmx Module Configuration API Reference"
+description: "Detailed specification of the ModuleConfig interface, including type definitions, options, resolution, and usage to understand the core module system configuration."
 head:
-  - - meta
-    - property: keywords
-      content: Esmx, ModuleConfig, Module Configuration, API Reference, Module Import/Export, Type Definitions, Configuration Interface
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, ModuleConfig, module configuration, API, imports, exports, types"
 ---
 
 # ModuleConfig
 
-The core configuration interface for the module system.
+Core configuration interface for the module system.
 
-## Interface Definition
+## Interface
 
 ```typescript
 interface ModuleConfig {
@@ -24,23 +24,23 @@ interface ModuleConfig {
 
 ### links
 
-* **Type**: `Record<string, string>`
-* **Description**: Module linking configuration. Key is remote module name, value is module build artifact directory path.
+- Type: `Record<string, string>`
+- Description: Remote module links. Key is remote module name, value is the path to its build output directory.
 
 ### imports  
 
-* **Type**: `ModuleConfigImportMapping`
-* **Description**: Module import mapping configuration. Key is local module identifier, value is remote module path. Supports environment-specific configurations.
+- Type: `ModuleConfigImportMapping`
+- Description: Import specifier mapping. Key is local specifier, value is remote path. Supports environment-specific configuration.
 
 ### scopes
 
-* **Type**: `Record<string, ModuleConfigImportMapping>`
-* **Description**: Module scope mapping configuration. Key is directory path prefix, value is import mapping configuration within that scope.
+- Type: `Record<string, ModuleConfigImportMapping>`
+- Description: Scope-based import mapping. Key is a path prefix, value is the import mapping for that scope.
 
 ### exports
 
-* **Type**: `ModuleConfigExportExports`
-* **Description**: Module export configuration. Supports multiple configuration forms.
+- Type: `ModuleConfigExportExports`
+- Description: Export configuration supporting multiple forms.
 
 ## Type Definitions
 
@@ -53,7 +53,7 @@ type ModuleConfigImportMapping = Record<
 >;
 ```
 
-Import mapping configuration type, supporting strings and environment-specific configurations.
+Import mapping type supporting plain strings and environment-specific mappings.
 
 ### ModuleConfigExportExports
 
@@ -61,7 +61,7 @@ Import mapping configuration type, supporting strings and environment-specific c
 type ModuleConfigExportExports = ModuleConfigExportExport[];
 ```
 
-Array type for export configuration, supporting mixed arrays of strings and export objects.
+Array of export definitions supporting a mix of strings and objects.
 
 ### ModuleConfigExportExport
 
@@ -69,7 +69,7 @@ Array type for export configuration, supporting mixed arrays of strings and expo
 type ModuleConfigExportExport = string | ModuleConfigExportObject;
 ```
 
-Export configuration item type, supporting both string and export object forms.
+Single export entry, either a string or an object definition.
 
 ### ModuleConfigExportObject
 
@@ -80,7 +80,7 @@ type ModuleConfigExportObject = Record<
 >;
 ```
 
-Export object configuration type, key is export name, value is export configuration value.
+Object form where keys are export names and values are export configuration values.
 
 ### ModuleConfigExportObjectValue
 
@@ -90,7 +90,7 @@ type ModuleConfigExportObjectValue =
     | Record<BuildEnvironment, string | boolean>;
 ```
 
-Export configuration value type, supporting strings and environment-specific configurations.
+Export value that supports plain strings and environment-specific configuration.
 
 
 ### BuildEnvironment
@@ -101,7 +101,7 @@ type BuildEnvironment = 'client' | 'server';
 
 Build target environment type.
 
-## Resolved Interfaces
+## Parsed Interfaces
 
 ### ParsedModuleConfig
 
@@ -149,7 +149,7 @@ type ParsedModuleConfigExports = Record<
 >;
 ```
 
-Resolved export configuration record type, key is export name, value is export configuration object.
+Record of parsed export configurations where keys are export names and values are parsed export objects.
 
 ### ParsedModuleConfigExport
 
@@ -159,3 +159,4 @@ interface ParsedModuleConfigExport {
     file: string;
     pkg: boolean;
 }
+```
