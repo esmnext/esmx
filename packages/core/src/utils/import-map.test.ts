@@ -462,20 +462,17 @@ describe('fixImportMapNestedScopes', () => {
         };
 
         const result = fixImportMapNestedScopes(importMap);
-
-        assert.deepEqual(result.imports, importMap.imports);
-        assert.deepEqual(
-            result.scopes['/shared-modules/vue2/'],
-            importMap.scopes['/shared-modules/vue2/']
-        );
-
-        assert.deepEqual(
-            result.scopes['/shared-modules/vue2/component.u5v4w3x2.final.mjs'],
-            {
-                vue: '/shared-modules/vue2.q9r8s7t6.final.mjs',
-                'vue-router': '/shared-modules/vue2/router.y1z0a9b8.final.mjs'
+        const expected = {
+            imports: importMap.imports,
+            scopes: {
+                '/shared-modules/vue2/component.u5v4w3x2.final.mjs': {
+                    vue: '/shared-modules/vue2.q9r8s7t6.final.mjs',
+                    'vue-router':
+                        '/shared-modules/vue2/router.y1z0a9b8.final.mjs'
+                }
             }
-        );
+        };
+        assert.deepEqual(result, expected);
     });
 
     test('should handle complex priority scenarios with multiple nested levels', () => {
@@ -748,8 +745,11 @@ describe('fixImportMapNestedScopes', () => {
         };
 
         const result = fixImportMapNestedScopes(importMap);
-        assert.deepEqual(result.imports, importMap.imports);
-        assert.isUndefined(result.scopes['/shared/modules/vue2/']);
+        const expected = {
+            imports: importMap.imports,
+            scopes: {}
+        };
+        assert.deepEqual(result, expected);
         assert.doesNotThrow(() => {
             fixImportMapNestedScopes(importMap);
         });
@@ -1638,8 +1638,7 @@ describe('compressImportMap', () => {
 
         const result = compressImportMap(importMap);
         assert.deepEqual(result, {
-            imports: { vue: '/a/vue.final.mjs' },
-            scopes: {}
+            imports: { vue: '/a/vue.final.mjs' }
         });
     });
 
@@ -1668,10 +1667,13 @@ describe('compressImportMap', () => {
         };
 
         const result = compressImportMap(importMap);
-        assert.deepEqual(result.imports, importMap.imports);
-        assert.deepEqual(result.scopes, {
-            '/a/': { lodash: '/a/lodash.final.mjs' }
-        });
+        const expected = {
+            imports: {
+                vue: '/shared/vue.final.mjs',
+                lodash: '/a/lodash.final.mjs'
+            }
+        };
+        assert.deepEqual(result, expected);
     });
 
     test('promotes to global when global matches single unique target across scopes', () => {
@@ -1685,8 +1687,7 @@ describe('compressImportMap', () => {
 
         const result = compressImportMap(importMap);
         assert.deepEqual(result, {
-            imports: { vue: '/shared/vue.final.mjs' },
-            scopes: {}
+            imports: { vue: '/shared/vue.final.mjs' }
         });
     });
 
@@ -1700,8 +1701,7 @@ describe('compressImportMap', () => {
         };
         const result = compressImportMap(importMap);
         assert.deepEqual(result, {
-            imports: { vue: '/x/vue.final.mjs' },
-            scopes: {}
+            imports: { vue: '/x/vue.final.mjs' }
         });
     });
 

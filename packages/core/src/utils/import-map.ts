@@ -126,11 +126,7 @@ export function fixImportMapNestedScopes(
     return importMap;
 }
 
-export function compressImportMap(
-    importMap: Required<ImportMap>
-): Required<ImportMap> {
-    const minOccurrences = 2;
-
+export function compressImportMap(importMap: Required<ImportMap>): ImportMap {
     const compressed: Required<ImportMap> = {
         imports: { ...importMap.imports },
         scopes: {}
@@ -160,7 +156,7 @@ export function compressImportMap(
                 secondBestCount = Math.max(secondBestCount, c);
             }
         }
-        if (best && best[1] >= minOccurrences && best[1] > secondBestCount) {
+        if (best && best[1] > secondBestCount) {
             compressed.imports[specifier] = best[0];
         }
     });
@@ -181,7 +177,8 @@ export function compressImportMap(
         }
     });
 
-    return compressed;
+    const hasScopes = Object.keys(compressed.scopes).length > 0;
+    return hasScopes ? compressed : { imports: compressed.imports };
 }
 
 export function createImportMap({
@@ -196,4 +193,10 @@ export function createImportMap({
         imports,
         scopes
     };
+}
+
+export function createClientImportMap(options: GetImportMapOptions): ImportMap {
+    const base = createImportMap(options);
+    const fixed = fixImportMapNestedScopes(base);
+    return compressImportMap(fixed);
 }

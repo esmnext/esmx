@@ -22,7 +22,7 @@ describe('Router Vue Integration', () => {
                 { path: '/user/:id', component: {} },
                 { path: '/new-path', component: {} }
             ],
-            base: new URL('http://localhost:3000/')
+            base: new URL('http://localhost:8000/')
         });
 
         // Ensure navigation to initial route is complete
