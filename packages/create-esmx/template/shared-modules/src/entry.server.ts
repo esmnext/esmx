@@ -11,7 +11,7 @@ export default async (rc: RenderContext) => {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Esmx Shared Modules - A comprehensive micro-frontend solution for sharing modules across multiple framework versions, built on native ESM technology with zero runtime overhead">
-    <meta name="keywords" content="Esmx,Shared Modules,Module Sharing,Micro-frontend,ESM Modules,JavaScript Modules,TypeScript,Rspack,Multi-framework,Vue2,Vue3,Code Reuse,Frontend Architecture">
+    <meta name="keywords" content="Esmx,Shared Modules,Module Sharing,Micro-frontend,ESM Modules,JavaScript Modules,TypeScript,Rspack,Multi-framework,Vue 2, Vue 3, Code Reuse, Frontend Architecture">
     <meta name="generator" content="Esmx Framework">
     <link rel="icon" href="https://esmx.dev/logo.svg" type="image/svg+xml">
     ${rc.preload()}
@@ -281,11 +281,11 @@ export default async (rc: RenderContext) => {
                 <h2>Shared Modules Features</h2>
                 <ul>
                     <li>📦 Shared module system across different framework versions</li>
-                    <li>⚡ Zero runtime overhead, based on native ESM + ImportMap</li>
+                    <li>⚡ Zero runtime overhead, based on native ESM + Import Maps</li>
                     <li>🚀 High-performance build and module sharing, powered by Rspack</li>
                     <li>🔄 Complete SSR support with shared module consistency</li>
                     <li>📝 Standard ESM syntax, no framework-specific APIs required</li>
-                    <li>🔧 Multi-framework module sharing: Vue2, Vue3, React, Preact, etc.</li>
+                    <li>🔧 Multi-framework module sharing: Vue 2, Vue 3, React, Preact, etc.</li>
                 </ul>
             </div>
     </div>

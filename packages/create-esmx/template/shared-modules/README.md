@@ -4,7 +4,7 @@ An Esmx project demonstrating Shared Modules solution for micro-frontend archite
 
 ## 📦 Tech Stack
 
-- **Framework**: [Esmx](https://esmnext.com) - Next generation micro-frontend framework based on native ESM
+- **Framework**: [Esmx](https://esmx.dev) - Next generation micro-frontend framework based on native ESM
 - **Solution Focus**: Shared Modules for multi-framework environments
 - **Build Tool**: Rspack
 - **Type Checking**: TypeScript
@@ -21,13 +21,13 @@ An Esmx project demonstrating Shared Modules solution for micro-frontend archite
 ### Install Dependencies
 
 ```bash
-pnpm install
+{{installCommand}}
 ```
 
 ### Development Environment
 
 ```bash
-pnpm dev
+{{devCommand}}
 ```
 
 Visit http://localhost:3000 to see the development environment.
@@ -35,25 +35,25 @@ Visit http://localhost:3000 to see the development environment.
 ### Production Build
 
 ```bash
-pnpm build
+{{buildCommand}}
 ```
 
 ### Start Production Server
 
 ```bash
-pnpm start
+{{startCommand}}
 ```
 
 ### Type Generation
 
 ```bash
-pnpm build:type
+{{buildTypeCommand}}
 ```
 
 ### Type Checking
 
 ```bash
-pnpm lint:type
+{{lintTypeCommand}}
 ```
 
 ## 📁 Project Structure
@@ -81,5 +81,5 @@ pnpm lint:type
 
 ## 📚 Additional Resources
 
-- [Esmx Official Documentation](https://esmnext.com)
+- [Esmx Official Documentation](https://esmx.dev)
 - [TypeScript Documentation](https://www.typescriptlang.org)

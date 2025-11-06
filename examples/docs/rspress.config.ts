@@ -24,7 +24,7 @@ export default defineConfig({
             title: 'Esmx'
         }
     ],
-    icon: '/logo.svg',
+    icon: '/logo.ico',
     base: '/',
     logo: '/logo.svg',
     builderConfig: {

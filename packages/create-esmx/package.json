@@ -23,6 +23,7 @@
         "picocolors": "^1.0.0"
     },
     "devDependencies": {
+        "vue": "^3.5.23",
         "@biomejs/biome": "1.9.4",
         "@esmx/core": "workspace:*",
         "@esmx/rspack": "workspace:*",
