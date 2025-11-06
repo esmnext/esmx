@@ -29,7 +29,7 @@
 
 
 
-## Features
+## 🚀 Features
 
 ✨ **Universal Vue Support** - Works with both Vue 2.7+ and Vue 3  
 🎯 **Composition API First** - Built for modern Vue development  
@@ -38,13 +38,20 @@
 ⚡ **High Performance** - Optimized for production use  
 🔄 **SSR Compatible** - Server-side rendering support  
 
-## Installation
+## 📦 Installation
 
 ```bash
+# npm
 npm install @esmx/router @esmx/router-vue
+
+# pnpm
+pnpm add @esmx/router @esmx/router-vue
+
+# yarn
+yarn add @esmx/router @esmx/router-vue
 ```
 
-## Quick Start
+## 🚀 Quick Start
 
 ### Vue 3
 
@@ -189,7 +196,7 @@ export default defineComponent({
 </script>
 ```
 
-## API Reference
+## 📚 API Reference
 
 ### Components
 
@@ -553,7 +560,7 @@ app.use(RouterPlugin);
 
 We welcome contributions! Please feel free to submit issues and pull requests.
 
-## License
+## 📄 License
 
 MIT © [Esmx Team](https://github.com/esmnext/esmx)
 

@@ -29,7 +29,7 @@
 
 
 
-## 特性
+## 🚀 特性
 
 ✨ **通用 Vue 支持** - 同时支持 Vue 2.7+ 和 Vue 3  
 🎯 **组合式 API 优先** - 为现代 Vue 开发而构建  
@@ -38,13 +38,20 @@
 ⚡ **高性能** - 为生产环境优化  
 🔄 **SSR 兼容** - 支持服务端渲染  
 
-## 安装
+## 📦 安装
 
 ```bash
+# npm
 npm install @esmx/router @esmx/router-vue
+
+# pnpm
+pnpm add @esmx/router @esmx/router-vue
+
+# yarn
+yarn add @esmx/router @esmx/router-vue
 ```
 
-## 快速开始
+## 🚀 快速开始
 
 ### Vue 3
 
@@ -189,7 +196,7 @@ export default defineComponent({
 </script>
 ```
 
-## API 参考
+## 📚 API 参考
 
 ### 组件
 
@@ -553,7 +560,7 @@ app.use(RouterPlugin);
 
 我们欢迎贡献！请随时提交 issues 和 pull requests。
 
-## 许可证
+## 📄 许可证
 
 MIT © [Esmx 团队](https://github.com/esmnext/esmx)
 

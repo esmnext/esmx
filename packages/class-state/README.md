@@ -39,7 +39,14 @@
 ## 📦 Installation
 
 ```bash
+# npm
 npm install @esmx/class-state
+
+# pnpm
+pnpm add @esmx/class-state
+
+# yarn
+yarn add @esmx/class-state
 ```
 
 ## 📚 Documentation

@@ -20,7 +20,7 @@
     </a>
   </div>
   
-  <p>支持 Vue、React、Preact、Solid、Svelte 的高性能微前端框架，具备 SSR 和模块联邦能力</p>
+  <p>支持 Vue、React、Preact、Solid、Svelte 的高性能微前端框架，具备 SSR 和模块链接能力</p>
   
   <p>
     <a href="https://github.com/esmnext/esmx/blob/master/packages/core/README.md">English</a> | 中文
@@ -38,16 +38,19 @@
 ## 📦 安装
 
 ```bash
+# npm
 npm install @esmx/core
+
+# pnpm
+pnpm add @esmx/core
+
+# yarn
+yarn add @esmx/core
 ```
 
 ## 🚀 快速开始
 
-```bash
-npm install @esmx/core
-```
-
-详细的使用示例和配置选项，请访问[官方文档](https://esmx.dev)。
+查看快速开始指南：https://esmx.dev/zh-CN/guide/start/getting-started.html
 
 ## 📚 文档
 

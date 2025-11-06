@@ -4,7 +4,7 @@ description: "An in-depth exploration of Esmx framework's journey from tradition
 head:
   - - meta
     - property: keywords
-      content: "Esmx, Micro-Frontend Framework, ESM, Import Maps, Rspack, Module Federation, Dependency Management, Performance Optimization, Technical Evolution, Server-Side Rendering"
+      content: "Esmx, Micro-Frontend Framework, ESM, Import Maps, Rspack, Module Linking, Module Federation, Dependency Management, Performance Optimization, Technical Evolution, Server-Side Rendering"
 sidebar: false
 ---
 

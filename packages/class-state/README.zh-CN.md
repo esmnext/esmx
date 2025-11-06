@@ -39,7 +39,14 @@
 ## 📦 安装
 
 ```bash
+# npm
 npm install @esmx/class-state
+
+# pnpm
+pnpm add @esmx/class-state
+
+# yarn
+yarn add @esmx/class-state
 ```
 
 ## 📚 文档

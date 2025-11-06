@@ -20,7 +20,7 @@
     </a>
   </div>
   
-  <p>A high-performance Rspack integration for Esmx microfrontend framework, providing module federation and SSR capabilities</p>
+  <p>A high-performance Rspack integration for Esmx microfrontend framework, providing SSR and Module Linking capabilities</p>
   
   <p>
     English | <a href="https://github.com/esmnext/esmx/blob/master/packages/rspack/README.zh-CN.md">中文</a>
@@ -38,7 +38,14 @@
 ## 📦 Installation
 
 ```bash
+# npm
 npm install @esmx/rspack -D
+
+# pnpm
+pnpm add @esmx/rspack -D
+
+# yarn
+yarn add @esmx/rspack -D
 ```
 
 ## 📚 Documentation

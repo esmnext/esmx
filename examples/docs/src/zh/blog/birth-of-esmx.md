@@ -4,7 +4,7 @@ description: 深入探讨 Esmx 框架从传统微前端架构的困境到基于 
 head:
   - - meta
     - property: keywords
-      content: Esmx, 微前端框架, ESM, Import Maps, Rspack, 模块联邦, 依赖管理, 性能优化, 技术演进, 服务端渲染
+      content: Esmx, 微前端框架, ESM, Import Maps, Rspack, 模块链接, 模块联邦, 依赖管理, 性能优化, 技术演进, 服务端渲染
 sidebar: false
 ---
 

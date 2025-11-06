@@ -1,6 +1,6 @@
 {
     "name": "@esmx/rspack-vue",
-    "description": "A high-performance Vue integration for Esmx microfrontend framework, providing Vue 2/3 support with SSR and Module Federation capabilities.",
+    "description": "A high-performance Vue integration for Esmx microfrontend framework, providing Vue 2/3 support with SSR and Module Linking capabilities.",
     "contributors": [
         {
             "name": "lzxb",
@@ -36,7 +36,7 @@
         "Vue 3",
         "Rspack",
         "SSR",
-        "Module Federation",
+        "Module Linking",
         "High Performance",
         "Build Tool",
         "Development Experience",

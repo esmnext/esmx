@@ -39,7 +39,14 @@
 ## 📦 安装
 
 ```bash
+# npm
 npm install @esmx/router
+
+# pnpm
+pnpm add @esmx/router
+
+# yarn
+yarn add @esmx/router
 ```
 
 ## 🚀 快速开始

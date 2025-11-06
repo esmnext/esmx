@@ -4,7 +4,7 @@ description: Esmx is an ESM-based micro-frontend framework providing high-perfor
 head:
   - - meta
     - property: keywords
-      content: Esmx, micro-frontend, ESM, server-side rendering, SSR, module linking, module federation
+      content: Esmx, micro-frontend, ESM, server-side rendering, SSR, module linking
 ---
 
 # Introduction

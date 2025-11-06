@@ -4,7 +4,7 @@ description: Esmx 是基于 ESM 的微前端框架，支持高性能服务端渲
 head:
   - - meta
     - property: keywords
-      content: Esmx, 微前端, ESM, 服务端渲染, SSR, 模块链接, 模块联邦
+      content: Esmx, 微前端, ESM, 服务端渲染, SSR, 模块链接
 ---
 
 # 介绍

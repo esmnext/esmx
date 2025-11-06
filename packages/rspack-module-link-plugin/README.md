@@ -20,7 +20,7 @@
     </a>
   </div>
   
-  <p>Rspack plugin for advanced Module Linking and federation capabilities in Esmx framework</p>
+  <p>Rspack plugin for advanced Module Linking in Esmx framework</p>
   
   <p>
     English | <a href="https://github.com/esmnext/esmx/blob/master/packages/rspack-module-link-plugin/README.zh-CN.md">中文</a>
@@ -29,7 +29,7 @@
 
 ## 🚀 Features
 
-- **Module Federation** - Advanced module federation capabilities for microfrontend architecture
+- **Module Linking** - Advanced module linking capabilities for microfrontend architecture
 - **Dynamic Linking** - Runtime Module Linking and resolution
 - **Performance Optimized** - Optimized for production use with minimal overhead
 - **TypeScript Support** - Full TypeScript support with type safety
@@ -39,7 +39,14 @@
 ## 📦 Installation
 
 ```bash
+# npm
 npm install @esmx/rspack-module-link-plugin -D
+
+# pnpm
+pnpm add @esmx/rspack-module-link-plugin -D
+
+# yarn
+yarn add @esmx/rspack-module-link-plugin -D
 ```
 
 ## 📚 Documentation
