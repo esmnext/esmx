@@ -13,13 +13,19 @@ async function getSrcOptions(): Promise<EsmxOptions> {
 
 async function getDistOptions(): Promise<EsmxOptions> {
     try {
-        return import(
-            resolveImportPath(process.cwd(), './dist/index.mjs')
-        ).then((m) => m.default);
-    } catch (e) {
-        throw new Error(
-            `Failed to load configuration from dist/index.mjs. Please make sure you have run 'esmx build' first.\n${e}`
+        const m = await import(
+            resolveImportPath(process.cwd(), './dist/node/src/entry.node.mjs')
         );
+        return m.default;
+    } catch (e) {
+        console.error(
+            styleText(
+                'red',
+                'Failed to load dist entry: dist/node/src/entry.node.mjs'
+            )
+        );
+        console.error(styleText('yellow', 'Run `esmx build` and try again.'));
+        process.exit(17);
     }
 }
 
