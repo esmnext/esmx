@@ -5,18 +5,13 @@
             <div class="btns">
                 <button class="layer-back" @click="routerAct('back')" v-if="len > 1">←</button>
                 <RouterLink
-                    v-for="[k, v] in Object.entries({
-                        up: '☝︎',
-                        right: '☞',
-                        down: '☟',
-                        left: '☜',
-                    })"
-                    :key="k"
-                    :to="toSame(k)"
+                    v-for="entry in Object.entries({ up: '☝︎', right: '☞', down: '☟', left: '☜' })"
+                    :key="entry[0]"
+                    :to="toSame(entry[0])"
                     type="pushLayer"
-                    v-if="$router.context.layerSlideDir !== k"
-                    :title="`Slide from ${k}`"
-                >{{ v }}</RouterLink>
+                    v-if="$router.context.layerSlideDir !== entry[0]"
+                    :title="`Slide from ${entry[0]}`"
+                >{{ entry[1] }}</RouterLink>
                 <button title="Current Route" @click="showRouteInfo = true">ℹ</button>
                 <button @click="routerAct('closeLayer')">×</button>
             </div>

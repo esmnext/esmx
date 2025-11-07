@@ -21,8 +21,8 @@
         "ssr-share": "workspace:*",
         "ssr-npm-base": "workspace:*",
         "ssr-npm-vue2": "workspace:*",
-        "@types/node": "^24.0.10",
-        "typescript": "^5.8.3",
+        "@types/node": "^24.10.0",
+        "typescript": "^5.9.3",
         "vue": "^2.7.16",
         "vue-tsc": "^3.0.5"
     }

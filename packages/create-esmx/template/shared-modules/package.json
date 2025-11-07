@@ -16,13 +16,13 @@
         "@esmx/core": "{{esmxVersion}}"
     },
     "devDependencies": {
-        "vue": "^3.5.21",
+        "vue": "^3.5.23",
         "@esmx/router": "{{esmxVersion}}",
         "@esmx/router-vue": "{{esmxVersion}}",
         "vue2": "npm:vue@2.7.16",
         "tsc-alias": "^1.8.16",
         "@esmx/rspack": "{{esmxVersion}}",
-        "@types/node": "^24.0.0",
-        "typescript": "5.8.3"
+        "@types/node": "^24.10.0",
+        "typescript": "5.9.3"
     }
 }
