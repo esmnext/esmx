@@ -588,7 +588,7 @@ importers:
         version: link:../../../packages/rspack-vue
       '@types/node':
         specifier: ^24.0.0
-        version: 24.0.12
+        version: 24.10.0
       tsc-alias:
         specifier: ^1.8.16
         version: 1.8.16
@@ -613,7 +613,7 @@ importers:
         version: link:../../../packages/rspack-vue
       '@types/node':
         specifier: ^24.0.0
-        version: 24.0.12
+        version: 24.10.0
       '@vue/server-renderer':
         specifier: 3.5.18
         version: 3.5.18(vue@3.5.18(typescript@5.8.3))
@@ -641,7 +641,7 @@ importers:
         version: link:../../../packages/rspack-vue
       '@types/node':
         specifier: ^24.0.0
-        version: 24.0.12
+        version: 24.10.0
       tsc-alias:
         specifier: ^1.8.16
         version: 1.8.16
@@ -666,7 +666,7 @@ importers:
         version: link:../../../packages/rspack-vue
       '@types/node':
         specifier: ^24.0.0
-        version: 24.0.12
+        version: 24.10.0
       tsc-alias:
         specifier: ^1.8.16
         version: 1.8.16
