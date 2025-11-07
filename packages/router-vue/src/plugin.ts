@@ -71,6 +71,10 @@ export const RouterPlugin = {
      * @param app Vue application instance (Vue 3) or Vue constructor (Vue 2)
      */
     install(app: unknown): void {
+        if (!app) {
+            throw new Error('[@esmx/router-vue] Invalid Vue app instance');
+        }
+
         const vueApp = app as VueApp;
         const target = vueApp.config?.globalProperties || vueApp.prototype;
 
