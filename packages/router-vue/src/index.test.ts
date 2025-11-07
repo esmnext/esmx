@@ -25,6 +25,16 @@ describe('index.ts - Package Entry Point', () => {
             expect(RouterVueModule.useLink).toBeDefined();
             expect(typeof RouterVueModule.useLink).toBe('function');
         });
+
+        it('should export useRouterViewDepth function', () => {
+            expect(RouterVueModule.useRouterViewDepth).toBeDefined();
+            expect(typeof RouterVueModule.useRouterViewDepth).toBe('function');
+        });
+
+        it('should export getRouterViewDepth function', () => {
+            expect(RouterVueModule.getRouterViewDepth).toBeDefined();
+            expect(typeof RouterVueModule.getRouterViewDepth).toBe('function');
+        });
     });
 
     describe('Options API Exports', () => {
@@ -74,6 +84,7 @@ describe('index.ts - Package Entry Point', () => {
                 'useProvideRouter',
                 'useLink',
                 'useRouterViewDepth',
+                'getRouterViewDepth',
                 // Options API
                 'getRouter',
                 'getRoute',
@@ -100,6 +111,7 @@ describe('index.ts - Package Entry Point', () => {
                 'useProvideRouter',
                 'useLink',
                 'useRouterViewDepth',
+                'getRouterViewDepth',
                 'getRouter',
                 'getRoute',
                 'RouterLink',
@@ -217,6 +229,8 @@ describe('index.ts - Package Entry Point', () => {
                 'useRoute',
                 'useProvideRouter',
                 'useLink',
+                'useRouterViewDepth',
+                'getRouterViewDepth',
                 'getRouter',
                 'getRoute'
             ];

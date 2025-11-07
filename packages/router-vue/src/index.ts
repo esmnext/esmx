@@ -7,6 +7,7 @@ export {
     useProvideRouter,
     useLink,
     useRouterViewDepth,
+    getRouterViewDepth,
     getRoute,
     getRouter
 } from './use';
