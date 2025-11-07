@@ -1,10 +1,10 @@
 ---
-titleSuffix: Esmx 框架构建清单文件参考
-description: 详细介绍 Esmx 框架的构建清单文件（manifest.json）结构，包括构建产物管理、导出文件映射和资源统计功能，帮助开发者理解和使用构建系统。
+titleSuffix: "Esmx 框架构建清单文件参考"
+description: "详细介绍 Esmx 框架的构建清单文件（manifest.json）结构，包括构建产物管理、导出文件映射和资源统计功能，帮助开发者理解和使用构建系统。"
 head:
-  - - meta
-    - property: keywords
-      content: Esmx, ManifestJson, 构建清单, 资源管理, 构建产物, 文件映射, API
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, ManifestJson, 构建清单, 资源管理, 构建产物, 文件映射, API"
 ---
 
 # ManifestJson
@@ -18,7 +18,6 @@ head:
 ```typescript
 interface ManifestJson {
   name: string;
-  imports: Record<string, string>;
   scopes: Record<string, Record<string, string>>;
   exports: ManifestJsonExports;
   files: string[];
@@ -31,15 +30,10 @@ interface ManifestJson {
 - **类型**: `string`
 - **描述**: 模块名称，来自于模块配置中的名称
 
-#### imports
-
-- **类型**: `Record<string, string>`
-- **描述**: 导入映射配置，key为本地导入名，value为对应的构建文件路径
-
 #### scopes
 
 - **类型**: `Record<string, Record<string, string>>`
-- **描述**: 作用域特定的导入映射，key为作用域名称，value为该作用域内的导入映射
+- **描述**: ImportMap 的作用域映射，key 为作用域前缀，value 为该作用域下的 `specifier -> resolved` 映射，用于运行时基于路径前缀匹配并解析依赖。
 
 #### exports
 

@@ -20,7 +20,7 @@
     </a>
   </div>
   
-  <p>为 Esmx 微前端框架提供的高性能 Rspack 集成，具备模块联邦和 SSR 能力</p>
+  <p>为 Esmx 微前端框架提供的高性能 Rspack 集成，具备 SSR 和模块链接能力</p>
   
   <p>
     <a href="https://github.com/esmnext/esmx/blob/master/packages/rspack/README.md">English</a> | 中文
@@ -38,7 +38,14 @@
 ## 📦 安装
 
 ```bash
+# npm
 npm install @esmx/rspack -D
+
+# pnpm
+pnpm add @esmx/rspack -D
+
+# yarn
+yarn add @esmx/rspack -D
 ```
 
 ## 📚 文档

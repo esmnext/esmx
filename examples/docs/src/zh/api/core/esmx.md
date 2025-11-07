@@ -1,10 +1,10 @@
 ---
-titleSuffix: 框架核心类 API 参考
-description: 详细介绍 Esmx 框架的核心类 API，包括应用生命周期管理、静态资源处理和服务端渲染能力，帮助开发者深入理解框架的核心功能。
+titleSuffix: "框架核心类 API 参考"
+description: "详细介绍 Esmx 框架的核心类 API，包括应用生命周期管理、静态资源处理和服务端渲染能力，帮助开发者深入理解框架的核心功能。"
 head:
-  - - meta
-    - property: keywords
-      content: Esmx, API, 生命周期管理, 静态资源, 服务端渲染, Rspack, Web 应用框架
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, API, 生命周期管理, 静态资源, 服务端渲染, Rspack, Web 应用框架"
 ---
 
 # Esmx
@@ -137,9 +137,7 @@ export default {
   async devApp(esmx) {
     return import('@esmx/rspack').then((m) =>
       m.createRspackHtmlApp(esmx, {
-        config(context) {
-          // 自定义 Rspack 配置
-        }
+        config(context) {}
       })
     )
   }
@@ -252,19 +250,17 @@ const server = http.createServer((req, res) => {
 - 生产环境：提供优化的渲染性能
 
 ```ts
-// 基本用法
 const rc = await esmx.render({
   params: { url: req.url }
 });
 
-// 高级配置
 const rc = await esmx.render({
-  base: '',                    // 基础路径
-  importmapMode: 'inline',     // 导入映射模式
-  entryName: 'default',        // 渲染入口
+  base: '',
+  importmapMode: 'inline',
+  entryName: 'default',
   params: {
     url: req.url,
-    state: { user: 'admin' }   // 状态数据
+    state: { user: 'admin' }
   }
 });
 ```
@@ -372,7 +368,6 @@ process.once('SIGTERM', async () => {
 export default {
   async postBuild(esmx) {
     await esmx.build();
-    // 构建完成后生成静态 HTML
     const render = await esmx.render({
       params: { url: '/' }
     });
@@ -397,9 +392,7 @@ export default {
 export default {
   async server(esmx) {
     const server = http.createServer((req, res) => {
-      // 处理静态资源
       esmx.middleware(req, res, async () => {
-        // 服务端渲染
         const render = await esmx.render({
           params: { url: req.url }
         });
@@ -427,7 +420,6 @@ export default {
 ```ts title="entry.node.ts"
 export default {
   async postBuild(esmx) {
-    // 生成多个页面的静态 HTML
     const pages = ['/', '/about', '/404'];
 
     for (const url of pages) {
@@ -455,7 +447,6 @@ export default {
 
 - **示例**:
 ```ts
-// 解析静态资源路径
 const htmlPath = esmx.resolvePath('dist/client', 'index.html');
 ```
 
@@ -473,7 +464,7 @@ const htmlPath = esmx.resolvePath('dist/client', 'index.html');
 
 async postBuild(esmx) {
   const htmlPath = esmx.resolvePath('dist/client', 'index.html');
-  const success = await esmx.write(htmlPath, '<html>...</html>');
+  const success = esmx.writeSync(htmlPath, '<html>...</html>');
 }
 ```
 
@@ -491,7 +482,6 @@ async postBuild(esmx) {
 ```ts title="src/entry.node.ts"
 async server(esmx) {
   const manifest = esmx.readJsonSync(esmx.resolvePath('dist/client', 'manifest.json'));
-  // 使用 manifest 对象
 }
 ```
 
@@ -509,7 +499,6 @@ async server(esmx) {
 ```ts title="src/entry.node.ts"
 async server(esmx) {
   const manifest = await esmx.readJson(esmx.resolvePath('dist/client', 'manifest.json'));
-  // 使用 manifest 对象
 }
 ```
 
@@ -541,10 +530,8 @@ async server(esmx) {
 - **示例**:
 ```ts title="src/entry.node.ts"
 async server(esmx) {
-  // 获取客户端构建清单
   const manifests = await esmx.getManifestList('client');
 
-  // 查找特定模块的构建信息
   const appModule = manifests.find(m => m.name === 'my-app');
   if (appModule) {
     console.log('App exports:', appModule.exports);
@@ -582,10 +569,8 @@ async server(esmx) {
 - **示例**:
 ```ts title="src/entry.node.ts"
 async server(esmx) {
-  // 获取客户端导入映射
   const importmap = await esmx.getImportMap('client');
 
-  // 自定义 HTML 模板
   const html = `
     <!DOCTYPE html>
     <html>
@@ -595,7 +580,6 @@ async server(esmx) {
       </script>
     </head>
     <body>
-      <!-- 页面内容 -->
     </body>
     </html>
   `;
@@ -615,9 +599,9 @@ async server(esmx) {
   - JS 文件模式:
     ```ts
     {
-      src: string;      // JS 文件的 URL
-      filepath: string;  // JS 文件的本地路径
-      code: string;      // HTML script 标签内容
+      src: string;
+      filepath: string;
+      code: string;
     }
     ```
   - 内联模式:
@@ -625,7 +609,7 @@ async server(esmx) {
     {
       src: null;
       filepath: null;
-      code: string;      // HTML script 标签内容
+      code: string;
     }
     ```
 
@@ -655,7 +639,6 @@ async server(esmx) {
   server.use(esmx.middleware);
 
   server.get('*', async (req, res) => {
-    // 使用 JS 文件模式
     const result = await esmx.render({
       importmapMode: 'js',
       params: { url: req.url }
@@ -663,7 +646,6 @@ async server(esmx) {
     res.send(result.html);
   });
 
-  // 或者使用内联模式
   server.get('/inline', async (req, res) => {
     const result = await esmx.render({
       importmapMode: 'inline',
@@ -689,7 +671,6 @@ async server(esmx) {
 
 - **示例**:
 ```ts
-// 获取客户端入口模块的静态导入路径
 const paths = await esmx.getStaticImportPaths(
   'client',
   `your-app-name/src/entry.client`

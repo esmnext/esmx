@@ -20,7 +20,7 @@
     </a>
   </div>
   
-  <p>A high-performance microfrontend framework supporting Vue, React, Preact, Solid, and Svelte with SSR and Module Federation capabilities</p>
+  <p>A high-performance microfrontend framework supporting Vue, React, Preact, Solid, and Svelte with SSR and Module Linking capabilities</p>
   
   <p>
     English | <a href="https://github.com/esmnext/esmx/blob/master/packages/core/README.zh-CN.md">中文</a>
@@ -38,16 +38,19 @@
 ## 📦 Installation
 
 ```bash
+# npm
 npm install @esmx/core
+
+# pnpm
+pnpm add @esmx/core
+
+# yarn
+yarn add @esmx/core
 ```
 
 ## 🚀 Quick Start
 
-```bash
-npm install @esmx/core
-```
-
-For detailed usage examples and configuration options, please visit the [official documentation](https://esmx.dev).
+See Quick Start guide: https://esmx.dev/guide/start/getting-started.html
 
 ## 📚 Documentation
 

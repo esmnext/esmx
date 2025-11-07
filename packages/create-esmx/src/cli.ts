@@ -45,7 +45,7 @@ ${getAvailableTemplates()
     .map((t) => `  ${t.folder.padEnd(25)} ${t.description}`)
     .join('\n')}
 
-For more information, visit: ${color.cyan('https://esmnext.com')}
+For more information, visit: ${color.cyan('https://esmx.dev')}
 `);
 }
 

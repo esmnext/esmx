@@ -20,7 +20,7 @@
     </a>
   </div>
   
-  <p>为 Esmx 框架提供高级模块链接和联邦能力的 Rspack 插件</p>
+  <p>为 Esmx 框架提供高级模块链接能力的 Rspack 插件</p>
   
   <p>
     <a href="https://github.com/esmnext/esmx/blob/master/packages/rspack-module-link-plugin/README.md">English</a> | 中文
@@ -29,7 +29,7 @@
 
 ## 🚀 特性
 
-- **模块联邦** - 为微前端架构提供高级模块联邦能力
+- **模块链接** - 为微前端架构提供高级模块链接能力
 - **动态链接** - 运行时模块链接和解析
 - **性能优化** - 为生产环境优化，开销最小
 - **TypeScript 支持** - 完整的 TypeScript 支持，类型安全
@@ -39,7 +39,14 @@
 ## 📦 安装
 
 ```bash
+# npm
 npm install @esmx/rspack-module-link-plugin -D
+
+# pnpm
+pnpm add @esmx/rspack-module-link-plugin -D
+
+# yarn
+yarn add @esmx/rspack-module-link-plugin -D
 ```
 
 ## 📚 文档

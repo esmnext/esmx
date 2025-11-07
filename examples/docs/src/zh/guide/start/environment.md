@@ -1,10 +1,10 @@
 ---
-titleSuffix: Esmx 框架兼容性指南
-description: 详细介绍 Esmx 框架的环境要求，包括 Node.js 版本要求和浏览器兼容性说明，帮助开发者正确配置开发环境。
+titleSuffix: "环境与兼容性"
+description: "Esmx 的环境要求与兼容性说明，覆盖 Node.js 与浏览器两端的前提条件与选择策略。"
 head:
-  - - meta
-    - property: keywords
-      content: Esmx, Node.js, 浏览器兼容性, TypeScript, es-module-shims, 环境配置
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, Node.js, 浏览器兼容性, TypeScript, es-module-shims, 环境配置"
 ---
 
 # 环境要求
@@ -13,64 +13,51 @@ head:
 
 ## Node.js 环境
 
-框架要求 Node.js 版本 >= 24，主要用于支持 TypeScript 类型导入（通过 `--experimental-strip-types` 标志），无需额外编译步骤。
+要求 Node.js 版本 `>= 24`，以支持类型导入与运行时能力，减少额外编译步骤。
 
 ## 浏览器兼容性
 
-框架默认采用兼容模式构建，以支持更广泛的浏览器。但需要注意，要实现完整的浏览器兼容支持，需要手动添加 [es-module-shims](https://github.com/guybedford/es-module-shims) 依赖。
+兼容性策略分为两种模式：
+- 兼容模式：通过 es-module-shims 提供对动态导入与 `import.meta` 的向后兼容。
+- 原生 Import Maps 模式：依赖浏览器原生 Import Maps 能力。
 
 ### 兼容模式（默认）
 
-| 浏览器 | 最低版本要求 |
-|-------|------------|
-| 🌐 Chrome | >= 64 |
-| 🌊 Edge | >= 79 |
-| 🦊 Firefox | >= 67 |
-| 🧭 Safari | >= 11.1 |
+| 浏览器 | 最低版本 |
+|-------|----------|
+| Chrome | >= 64 |
+| Edge   | >= 79 |
+| Firefox| >= 67 |
+| Safari | >= 11.1 |
 
-兼容模式要求浏览器同时支持**动态导入**（Dynamic Import）和 **import.meta** 特性。
+数据来源：Can I Use（Dynamic Import 与 `import.meta`），检索日期：2025-11。
 
-根据 [Can I Use](https://caniuse.com/?search=dynamic%20import) 的统计数据，兼容模式下的浏览器覆盖率达到 **95.59%**。
+### 原生 Import Maps 模式
 
-### 原生支持模式
+| 浏览器 | 最低版本 |
+|-------|----------|
+| Chrome | >= 89 |
+| Edge   | >= 89 |
+| Firefox| >= 108 |
+| Safari | >= 16.4 |
 
-| 浏览器 | 最低版本要求 |
-|-------|------------|
-| 🌐 Chrome | >= 89 |
-| 🌊 Edge | >= 89 |
-| 🦊 Firefox | >= 108 |
-| 🧭 Safari | >= 16.4 |
-
-原生支持模式具有以下优势：
-1. 零运行时开销，无需额外的模块加载器
-2. 浏览器原生解析，更快的执行速度
-3. 更好的代码分割和按需加载能力
-
-根据 [Can I Use](https://caniuse.com/?search=importmap) 的统计数据，原生支持模式下的浏览器覆盖率达到 **93.5%**。
+数据来源：Can I Use（Import Maps），检索日期：2025-11。
 
 ### 启用兼容支持
 
-::: warning 重要提示
-Esmx 默认采用兼容模式构建，以支持更广泛的浏览器。但要实现对旧版浏览器的完整支持，您仍需要在项目中添加 [es-module-shims](https://github.com/guybedford/es-module-shims) 依赖。
+::: warning 注意
+
+要支持旧版浏览器，请在项目中添加 [es-module-shims](https://github.com/guybedford/es-module-shims)。
+
 :::
 
-在 HTML 文件中添加以下脚本：
-
 ```html
-<!-- 开发环境 -->
 <script async src="https://ga.jspm.io/npm:es-module-shims@2.0.10/dist/es-module-shims.js"></script>
-
-<!-- 生产环境 -->
-<script async src="/path/to/es-module-shims.js"></script>
 ```
 
-::: tip 最佳实践
-1. 生产环境建议：
-   - 将 es-module-shims 部署到自有服务器
-   - 确保资源加载的稳定性和访问速度
-   - 避免潜在的安全风险
-2. 性能考虑：
-   - 兼容模式会带来少量性能开销
-   - 可以根据目标用户群的浏览器分布决定是否启用
+::: tip 建议
+
+- 生产环境将脚本部署到自有服务器。
+- 根据目标用户的浏览器分布决定是否启用兼容模式。
 
 :::

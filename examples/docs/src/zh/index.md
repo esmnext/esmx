@@ -1,49 +1,40 @@
 ---
-pageType: home
-titleSuffix: 基于 ESM 的高性能服务端渲染框架
-description: Esmx 是一个基于 ESM 的高性能服务端渲染框架，提供完整的 SSR 能力、智能的渲染上下文和创新的模块链接系统，适用于大型 Web 应用开发。
+pageType: "home"
+titleSuffix: "基于 ESM 的通用渲染（CSR/SSR）与模块链接框架"
+description: "Esmx 基于 ECMAScript Modules（ESM）与 Import Maps（导入映射），同时支持客户端渲染（CSR）与服务端渲染（SSR），并提供模块链接能力，适用于大型 Web 应用的工程化开发。"
 head:
-  - - meta
-    - property: keywords
-      content: Esmx, SSR, ESM, 服务端渲染, 模块链接, Vue, React, TypeScript, 微前端
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, CSR, SSR, ESM, 客户端渲染, 服务端渲染, 模块链接, Vue, React, TypeScript, 微前端"
 hero:
-  name: Esmx
-  text: 基于 ESM 的服务端渲染框架
-  tagline: 高性能、可扩展的模块链接系统
+  name: "Esmx"
+  text: "原生 ESM 驱动的 CSR/SSR 与模块链接"
+  tagline: "面向工程实践的标准化能力集合"
   actions:
-    - theme: brand
-      text: 快速开始
-      link: /guide/start/getting-started
-    - theme: alt
-      text: GitHub
-      link: https://github.com/esmnext/esmx
+    - theme: "brand"
+      text: "快速开始"
+      link: "/guide/start/getting-started"
+    - theme: "alt"
+      text: "GitHub"
+      link: "https://github.com/esmnext/esmx"
 
 features:
-  - icon: ⚡️
-    title: 核心引擎
-    details: 基于 ESM Import Maps 实现的高性能 SSR 引擎，支持 Vue 和 React 等主流框架，提供完整的服务端渲染能力。
-  - icon: 🎯
-    title: 渲染上下文
-    details: 智能的 RenderContext 系统，提供精确的资源注入、状态同步和客户端激活机制，确保最佳的渲染性能。
-  - icon: 🔗
-    title: 模块链接
-    details: 创新的模块链接系统，支持运行时动态加载，实现精确的依赖管理和资源优化。
-  - icon: 📦
-    title: 构建系统
-    details: 灵活的构建配置，支持多版本输出、预处理和后处理钩子，一次构建多处部署。
-  - icon: 🌍
-    title: 部署方案
-    details: 支持多语言站点、动态基础路径配置、微前端架构，同一构建产物可部署到任意路径。
-  - icon: 🛠️
-    title: 开发体验
-    details: 完整的 TypeScript 支持，内置热更新和增量构建，提供丰富的调试工具和性能优化指南。
-  - icon: 💻
-    title: 企业应用
-    details: 适用于大型 Web 应用、多语言站点、微服务架构，支持团队协作和模块化开发。
-  - icon: 🚀
-    title: 性能场景
-    details: 为电商网站、新闻媒体等性能敏感场景提供优化，支持 SEO 和首屏加载优化。
-  - icon: 🌐
-    title: 环境支持
-    details: 支持 Node.js 24+ 和现代浏览器，完整支持 ESM dynamic import 和 import.meta。
+  - icon: "⚙️"
+    title: "服务端渲染"
+    details: "基于原生 ESM 与导入映射实现 SSR，提供明确的资源注入顺序与最小示例。"
+  - icon: "🔗"
+    title: "模块链接"
+    details: "以 Import Maps 管理跨包依赖与版本，支持运行时链接与作用域映射。"
+  - icon: "🧩"
+    title: "框架中立"
+    details: "兼容 Vue/React 等技术栈，保持组件与构建的框架无关设计。"
+  - icon: "🧱"
+    title: "构建与部署"
+    details: "提供预处理/后处理钩子与基础路径配置，适配多语言站点与微前端部署。"
+  - icon: "🔒"
+    title: "依赖隔离"
+    details: "通过 ESM 作用域与导入映射实现依赖隔离，减少冲突与耦合。"
+  - icon: "🧪"
+    title: "工程规范"
+    details: "统一术语与 API 呈现，示例代码无注释，与 packages 保持一致。"
 ---

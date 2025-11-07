@@ -1,51 +1,48 @@
 ---
-titleSuffix: Esmx Framework Client-Side Rendering Implementation Guide
-description: Detailed explanation of the client-side rendering mechanism in the Esmx framework, including static build, deployment strategies, and best practices to help developers achieve efficient frontend rendering in serverless environments.
+titleSuffix: "Client-Side Rendering (CSR)"
+description: "CSR mechanism and build artifact generation in Esmx, suitable for scenarios where a server-side deployment is not available."
 head:
-  - - meta
-    - property: keywords
-      content: Esmx, Client-Side Rendering, CSR, Static Build, Frontend Rendering, Serverless Deployment, Performance Optimization
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, Client-side Rendering, CSR, Static Build, Frontend Rendering, Serverless, Performance Optimization"
 ---
 
 # Client-Side Rendering
 
-Client-Side Rendering (CSR) is a technical solution that executes page rendering in the browser. In Esmx, when your application cannot deploy a Node.js server instance, you can choose to generate a static `index.html` file during the build phase to achieve pure client-side rendering.
+Client-Side Rendering (CSR) renders pages in the user's browser. When Node.js services are not available, generate a static `index.html` at build time to enable pure client-side rendering.
 
-## Use Cases
+## When to Use
 
-The following scenarios recommend using client-side rendering:
+Recommended scenarios:
 
-- **Static Hosting Environments**: Such as GitHub Pages, CDN, and other hosting services that do not support server-side rendering
-- **Simple Applications**: Small applications with low requirements for first-screen loading speed and SEO
-- **Development Environments**: For quickly previewing and debugging applications during the development phase
+- **Static hosting**: GitHub Pages, CDNs, and other hosts without SSR
+- **Simple apps**: small apps with low first-paint and SEO requirements
+- **Development**: quick preview and debugging during development
 
-## Configuration Instructions
+## Configuration
 
-### HTML Template Configuration
+### HTML Template
 
-In client-side rendering mode, you need to configure a universal HTML template. This template will serve as the container for your application, including necessary resource references and mounting points.
+The template should inject resources in order: `preload` and `css` in `head`, `importmap`, `moduleEntry`, and `modulePreload` in `body`.
 
 ```ts title="src/entry.server.ts"
 import type { RenderContext } from '@esmx/core';
 
 export default async (rc: RenderContext) => {
-    // Commit dependency collection
     await rc.commit();
-    
-    // Configure HTML template
     rc.html = `
 <!DOCTYPE html>
 <html>
 <head>
-    ${rc.preload()}           // Preload resources
+    ${rc.preload()}
     <title>Esmx</title>
-    ${rc.css()}               // Inject styles
+    ${rc.css()}
 </head>
 <body>
     <div id="app"></div>
-    ${rc.importmap()}         // Import map
-    ${rc.moduleEntry()}       // Entry module
-    ${rc.modulePreload()}     // Module preloading
+    ${rc.importmap()}
+    ${rc.moduleEntry()}
+    ${rc.modulePreload()}
 </body>
 </html>
 `;
@@ -54,16 +51,14 @@ export default async (rc: RenderContext) => {
 
 ### Static HTML Generation
 
-To use client-side rendering in a production environment, you need to generate a static HTML file during the build phase. Esmx provides a `postBuild` hook function to achieve this:
+Generate static HTML files during the build with a `postBuild` hook:
 
 ```ts title="src/entry.node.ts"
 import type { EsmxOptions } from '@esmx/core';
 
 export default {
     async postBuild(esmx) {
-        // Generate static HTML file
         const rc = await esmx.render();
-        // Write HTML file
         esmx.writeSync(
             esmx.resolvePath('dist/client', 'index.html'),
             rc.html

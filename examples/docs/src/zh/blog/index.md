@@ -1,10 +1,10 @@
 ---
-titleSuffix: Esmx 团队博客
-description: Esmx 团队的技术博客，分享框架开发经验、最佳实践和技术创新。
+titleSuffix: "Esmx 团队博客"
+description: "Esmx 团队的技术博客，分享框架开发经验、最佳实践和技术创新。"
 head:
-  - - meta
-    - property: keywords
-      content: Esmx, 团队博客, 技术分享, 最佳实践, 开发经验
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, 团队博客, 技术分享, 最佳实践, 开发经验"
 sidebar: false
 ---
 

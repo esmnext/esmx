@@ -1,6 +1,6 @@
 {
     "name": "@esmx/rspack",
-    "description": "A high-performance Rspack integration for Esmx microfrontend framework, providing module federation and SSR capabilities.",
+    "description": "A high-performance Rspack integration for Esmx microfrontend framework, providing Module Linking and SSR capabilities.",
     "contributors": [
         {
             "name": "lzxb",
@@ -38,7 +38,7 @@
         "Less",
         "High Performance",
         "Build Tool",
-        "Module Federation",
+        "Module Linking",
         "SSR",
         "Development Experience"
     ],

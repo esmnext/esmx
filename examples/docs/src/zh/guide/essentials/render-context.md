@@ -1,52 +1,29 @@
 ---
-titleSuffix: Esmx 框架服务端渲染核心机制
-description: 详细介绍 Esmx 框架的渲染上下文（RenderContext）机制，包括资源管理、HTML 生成和 ESM 模块系统，帮助开发者理解和使用服务端渲染功能。
+titleSuffix: "渲染上下文（RenderContext）"
+description: "RenderContext 的资源管理与 HTML 生成机制，涵盖依赖收集与注入顺序。"
 head:
-  - - meta
-    - property: keywords
-      content: Esmx, 渲染上下文, RenderContext, SSR, 服务端渲染, ESM, 资源管理
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, 渲染上下文, RenderContext, SSR, 服务端渲染, ESM, 资源管理"
 ---
 
 # 渲染上下文
 
-RenderContext 是 Esmx 框架中的一个核心类，主要负责服务端渲染（SSR）过程中的资源管理和 HTML 生成。它具有以下核心特点：
-
-1. **基于 ESM 的模块系统**
-   - 采用现代的 ECMAScript Modules 标准
-   - 支持原生的模块导入导出
-   - 实现了更好的代码分割和按需加载
-
-2. **智能依赖收集**
-   - 基于实际渲染路径动态收集依赖
-   - 避免不必要的资源加载
-   - 支持异步组件和动态导入
-
-3. **精确的资源注入**
-   - 严格控制资源加载顺序
-   - 优化首屏加载性能
-   - 确保客户端激活（Hydration）的可靠性
-
-4. **灵活的配置机制**
-   - 支持动态基础路径配置
-   - 提供多种导入映射模式
-   - 适应不同的部署场景
+RenderContext 负责服务端渲染过程中的资源管理与 HTML 生成，提供模块依赖收集与资源注入顺序约束。
 
 ## 使用方式
 
-在 Esmx 框架中，开发者通常不需要直接创建 RenderContext 实例，而是通过 `esmx.render()` 方法来获取实例：
+通过 `esmx.render()` 获取实例：
 
 ```ts title="src/entry.node.ts"
 async server(esmx) {
     const server = http.createServer((req, res) => {
-        // 静态文件处理
         esmx.middleware(req, res, async () => {
-            // 通过 esmx.render() 获取 RenderContext 实例
             const rc = await esmx.render({
                 params: {
                     url: req.url
                 }
             });
-            // 响应 HTML 内容
             res.end(rc.html);
         });
     });
@@ -57,7 +34,7 @@ async server(esmx) {
 
 ### 依赖收集
 
-RenderContext 实现了一套智能的依赖收集机制，它基于实际渲染的组件来动态收集依赖，而不是简单地预加载所有可能用到的资源：
+RenderContext 在组件渲染过程中收集模块与资源依赖，避免预加载所有资源。
 
 #### 按需收集
 - 在组件实际渲染过程中自动追踪和记录模块依赖
@@ -102,20 +79,15 @@ RenderContext 严格控制资源注入顺序，这种顺序设计是基于浏览
 
 ## 完整渲染流程
 
-一个典型的 RenderContext 使用流程如下：
+一个典型流程如下：
 
 ```ts title="src/entry.server.ts"
 export default async (rc: RenderContext) => {
-    // 1. 渲染页面内容并收集依赖
     const app = createApp();
     const html = await renderToString(app, {
        importMetaSet: rc.importMetaSet
     });
-
-    // 2. 提交依赖收集
     await rc.commit();
-    
-    // 3. 生成完整 HTML
     rc.html = `
         <!DOCTYPE html>
         <html>
@@ -142,7 +114,7 @@ RenderContext 提供了一个灵活的动态基础路径配置机制，支持在
 
 ```ts title="src/entry.node.ts"
 const rc = await esmx.render({
-    base: '/esmx',  // 设置基础路径
+    base: '/esmx',
     params: {
         url: req.url
     }
@@ -180,7 +152,7 @@ RenderContext 提供了两种导入映射（Import Map）模式：
 
 ```ts title="src/entry.node.ts"
 const rc = await esmx.render({
-    importmapMode: 'js',  // 'inline' | 'js'
+    importmapMode: 'js',
     params: {
         url: req.url
     }
@@ -193,7 +165,7 @@ RenderContext 支持通过 `entryName` 配置来指定服务端渲染的入口�
 
 ```ts title="src/entry.node.ts"
 const rc = await esmx.render({
-    entryName: 'mobile',  // 指定使用移动端入口函数
+    entryName: 'mobile',
     params: {
         url: req.url
     }
@@ -203,17 +175,12 @@ const rc = await esmx.render({
 这种机制特别适用于以下场景：
 
 1. **多模板渲染**
-   ```ts title="src/entry.server.ts"
+```ts title="src/entry.server.ts"
    // 移动端入口函数
-   export const mobile = async (rc: RenderContext) => {
-       // 移动端特定的渲染逻辑
-   };
+   export const mobile = async (rc: RenderContext) => {};
 
-   // 桌面端入口函数
-   export const desktop = async (rc: RenderContext) => {
-       // 桌面端特定的渲染逻辑
-   };
-   ```
+   export const desktop = async (rc: RenderContext) => {};
+```
 
 2. **A/B 测试**
    - 支持同一页面使用不同的渲染逻辑

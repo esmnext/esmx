@@ -1,47 +1,53 @@
 ---
-titleSuffix: Esmx Framework Quick Start Guide
-description: Quickly create Esmx projects using create-esmx, supporting one-click initialization for various Vue technology stack templates.
+titleSuffix: "Esmx Quick Start Guide"
+description: "Use create-esmx to quickly scaffold an Esmx project with one-click initialization for multiple Vue stack templates."
 head:
-  - - meta
-    - name: keywords
-      content: Esmx, Quick Start, create-esmx, Project Creation, Vue, Micro Frontend
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, Quick Start, create-esmx, Project Creation, Vue, Micro Frontends"
 ---
 
 import { PackageManagerTabs } from '@theme';
 
-# Quick Start
+# Get Started
 
-## Create Project
+## Create a Project
 
 Run the following command to create an Esmx project:
 
 <PackageManagerTabs command="create esmx my-app" />
 
-## Select Template
+## Choose a Template
 
-After running the command, you will see the template selection interface:
+After running the command, you will see the template selection screen:
 
 ### Available Templates
 
 | Template | Description |
-|----------|-------------|
+|------|------|
 | **shared-modules** | Micro frontend shared modules solution |
-| **vue-csr** | Vue 3 Client-Side Rendering |
-| **vue-ssr** | Vue 3 Server-Side Rendering |
-| **vue2-csr** | Vue 2.7 Client-Side Rendering |
-| **vue2-ssr** | Vue 2.7 Server-Side Rendering |
+| **vue-csr** | Vue 3 client-side rendering |
+| **vue-ssr** | Vue 3 server-side rendering |
+| **vue2-csr** | Vue 2.7 client-side rendering |
+| **vue2-ssr** | Vue 2.7 server-side rendering |
 
-## Specify Template
+## Specify a Template
 
-You can also directly specify a template using the `-t` or `--template` option to skip the interactive selection:
+You can directly specify a template via `-t` or `--template` and skip interactive selection:
 
 ```bash
 npm create esmx my-app --template vue-csr
 ```
 
-## Start Development Server
+### Combined Parameters Example
 
-After creating the project, navigate to the directory and start the development server:
+```bash
+npm create esmx my-app --template vue-ssr --name my-project --force
+```
+
+## Start the Dev Server
+
+After creation, enter the directory and start the dev server:
 
 ```bash
 cd my-app
@@ -49,49 +55,56 @@ npm install
 npm run dev
 ```
 
-The development server will start at `http://localhost:3000`.
+The dev server starts at `http://localhost:3000`.
 
 ## Production Build
 
-Build the production version:
+Build for production:
 
 ```bash
 npm run build
 npm run start
 ```
 
+## Troubleshooting
+
+- Node.js version should be `>= 24`.
+- If the port is in use, update `npm run dev` config or adjust the port env.
+- If installation fails, check proxy settings or use a domestic mirror source.
+
 ## Project Structure
 
-The created project structure is as follows:
+The generated project structure:
 
 ```text
 my-app/
-├── src/                            # Source code
-│   ├── app.vue                     # App component
-│   ├── create-app.ts               # App creation function
-│   ├── entry.client.ts             # Client entry
-│   ├── entry.node.ts               # Development server entry
-│   ├── entry.server.ts             # Server-side rendering entry
-│   └── components/                 # Components directory
+├── src/
+│   ├── app.vue
+│   ├── create-app.ts
+│   ├── entry.client.ts
+│   ├── entry.node.ts
+│   ├── entry.server.ts
+│   └── components/
 │       └── hello-world.vue
-├── tsconfig.json                   # TypeScript configuration
-├── package.json                    # Project dependencies and scripts
-└── README.md                       # Project description
+├── tsconfig.json
+├── package.json
+└── README.md
 ```
 
 ## Advanced Options
 
-### Override Existing Directory
+### Overwrite Existing Directory
 
-Use the `--force` or `-f` option to force override an existing directory:
+Use `--force` or `-f` to overwrite an existing directory:
 
 ```bash
 npm create esmx my-app --force
 ```
 
-### Specify Project Name
+### Set Project Name
 
-Use the `--name` or `-n` option to specify the project name:
+Use `--name` or `-n` to set a project name:
 
 ```bash
 npm create esmx my-app --name my-project
+```

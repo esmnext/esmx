@@ -1,10 +1,10 @@
 ---
-titleSuffix: Esmx 框架模块导入路径映射指南
-description: 详细介绍 Esmx 框架的路径别名机制，包括简化导入路径、避免深层嵌套、类型安全和模块解析优化等特性，帮助开发者提升代码可维护性。
+titleSuffix: "Esmx 框架模块导入路径映射指南"
+description: "详细介绍 Esmx 框架的路径别名机制，包括简化导入路径、避免深层嵌套、类型安全和模块解析优化等特性，帮助开发者提升代码可维护性。"
 head:
-  - - meta
-    - property: keywords
-      content: Esmx, 路径别名, Path Alias, TypeScript, 模块导入, 路径映射, 代码可维护性
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, 路径别名, Path Alias, TypeScript, 模块导入, 路径映射, 代码可维护性"
 ---
 
 # 路径别名
@@ -61,20 +61,14 @@ Esmx 采用基于服务名（Service Name）的自动别名机制，这种约定
 ### 导入服务内部模块
 
 ```ts
-// 使用别名导入
 import { MyComponent } from 'your-app-name/src/components';
-
-// 等效的相对路径导入
-import { MyComponent } from '../components';
+import { MyComponent as Rel } from '../components';
 ```
 
 ### 导入其他服务模块
 
 ```ts
-// 导入其他服务的组件
 import { SharedComponent } from 'other-service/src/components';
-
-// 导入其他服务的工具函数
 import { utils } from 'other-service/src/utils';
 ```
 
@@ -86,15 +80,10 @@ import { utils } from 'other-service/src/utils';
 :::
 
 ``` ts
-// 导入组件
 import { Button } from 'your-app-name/src/components';
 import { Layout } from 'your-app-name/src/components/layout';
-
-// 导入工具函数
 import { formatDate } from 'your-app-name/src/utils';
 import { request } from 'your-app-name/src/utils/request';
-
-// 导入类型定义
 import type { UserInfo } from 'your-app-name/src/types';
 ```
 
@@ -103,10 +92,7 @@ import type { UserInfo } from 'your-app-name/src/types';
 当配置了模块链接后，可以使用相同的方式导入其他服务的模块：
 
 ```ts
-// 导入远程服务的组件
 import { Header } from 'remote-service/src/components';
-
-// 导入远程服务的工具函数
 import { logger } from 'remote-service/src/utils';
 ```
 
@@ -123,9 +109,7 @@ export default {
                     ...buildContext.config.resolve,
                     alias: {
                         ...buildContext.config.resolve?.alias,
-                        // 为 Vue 配置特定的构建版本
                         'vue$': 'vue/dist/vue.esm.js',
-                        // 为常用目录配置简短别名
                         '@': './src',
                         '@components': './src/components'
                     }

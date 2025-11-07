@@ -1,6 +1,6 @@
 {
     "name": "@esmx/core",
-    "description": "A high-performance microfrontend framework supporting Vue, React, Preact, Solid, and Svelte with SSR and Module Federation capabilities.",
+    "description": "A high-performance microfrontend framework supporting Vue, React, Preact, Solid, and Svelte with SSR and Module Linking capabilities.",
     "contributors": [
         {
             "name": "lzxb",
@@ -39,7 +39,7 @@
         "Microfrontend",
         "SSR",
         "Rspack",
-        "Module Federation",
+        "Module Linking",
         "High Performance",
         "TypeScript"
     ],

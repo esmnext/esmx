@@ -56,7 +56,7 @@ export function generateCoverageHTML(packageCoverageData) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Esmx - Test Coverage Report | ESM Next Generation Framework</title>
     <meta name="description" content="Comprehensive test coverage report for Esmx framework packages. Real-time coverage statistics for statements, branches, functions, and lines across all Esmx modules including core, router, router-vue, fetch, and class-state.">
-    <meta name="keywords" content="Esmx, ESM, test coverage, code coverage, JavaScript, TypeScript, framework, module federation, micro frontend, coverage report, vitest, testing, quality assurance, CI/CD">
+    <meta name="keywords" content="Esmx, ESM, test coverage, code coverage, JavaScript, TypeScript, framework, module linking, micro frontend, coverage report, vitest, testing, quality assurance, CI/CD">
     <meta name="author" content="Esmx Framework Team">
     <meta name="robots" content="index, follow">
     <meta property="og:title" content="Esmx Test Coverage Report - ESM Next Generation Framework">

@@ -1,10 +1,10 @@
 ---
-titleSuffix: Esmx 模块间代码共享
+titleSuffix: "Esmx 模块间代码共享"
 description: "Esmx 模块链接：基于 ESM 标准的零运行时微前端代码共享解决方案"
 head:
-  - - meta
-    - property: keywords
-      content: Esmx, 模块链接, Module Linking, ESM, 代码共享, 微前端
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, 模块链接, Module Linking, ESM, 代码共享, 微前端"
 ---
 
 # 模块链接
@@ -27,17 +27,15 @@ head:
 假设我们有一个共享模块应用（shared-modules）和一个业务应用（business-app）：
 
 ```typescript
-// shared-modules/entry.node.ts - 提供共享模块
 export default {
   modules: {
     exports: [
-      'pkg:axios',                    // 共享 HTTP 客户端
-      'root:src/utils/format.ts'      // 共享工具函数
+      'pkg:axios',
+      'root:src/utils/format.ts'
     ]
   }
 } satisfies EsmxOptions;
 
-// business-app/entry.node.ts - 使用共享模块
 export default {
   modules: {
     links: { 'shared-modules': '../shared-modules/dist' },
@@ -50,8 +48,8 @@ export default {
 
 ```typescript
 // business-app/src/api/orders.ts
-import axios from 'axios';  // 使用共享的 axios 实例
-import { formatDate } from 'shared-modules/src/utils/format';  // 使用共享工具函数
+import axios from 'axios';
+import { formatDate } from 'shared-modules/src/utils/format';
 
 export async function fetchOrders() {
   const response = await axios.get('/api/orders');
@@ -77,8 +75,8 @@ import type { EsmxOptions } from '@esmx/core';
 export default {
   modules: {
     links: {
-      'shared-modules': '../shared-modules/dist',     // 相对路径
-      'api-utils': '/var/www/api-utils/dist'  // 绝对路径
+      'shared-modules': '../shared-modules/dist',
+      'api-utils': '/var/www/api-utils/dist'
     }
   }
 } satisfies EsmxOptions;
@@ -96,11 +94,8 @@ export default {
       'shared-modules': '../shared-modules/dist'
     },
     imports: {
-      // 标准导入映射
       'axios': 'shared-modules/axios',
       'lodash': 'shared-modules/lodash',
-      
-      // 环境特定配置
       'storage': {
         client: 'shared-modules/storage/client',
         server: 'shared-modules/storage/server'
@@ -125,9 +120,6 @@ export default {
 export default {
   modules: {
     scopes: {
-      // Vue2 目录范围映射：只影响 vue2/ 目录下的导入
-      // 业务代码在 vue2/ 目录：import Vue from 'vue' → shared-modules/vue2 (版本隔离)
-      // 业务代码在其他目录：import Vue from 'vue' → Vue 3 (通用模块)
       'vue2/': {
         'vue': 'shared-modules/vue2',
         'vue-router': 'shared-modules/vue2-router'
@@ -146,8 +138,6 @@ export default {
 export default {
   modules: {
     scopes: {
-      // 包范围映射：影响 vue 包内部的依赖解析
-      // 当 vue 包依赖 @vue/shared 时，使用指定的替换版本
       'vue': {
         '@vue/shared': 'shared-modules/@vue/shared'
       }
@@ -165,18 +155,13 @@ export default {
 export default {
   modules: {
     exports: [
-      // npm包：保持原始导入路径
-      'pkg:axios',                    // 导入时: import axios from 'axios'
-      'pkg:lodash',                   // 导入时: import { debounce } from 'lodash'
-      
-      // 源码模块：自动重写为模块路径
-      'root:src/utils/date-utils.ts',     // 导入时: import { formatDate } from 'shared-modules/src/utils/date-utils'
-      'root:src/components/Chart.js',     // 导入时: import Chart from 'shared-modules/src/components/Chart'
-      
-      // 对象形式 - 复杂配置
+      'pkg:axios',
+      'pkg:lodash',
+      'root:src/utils/date-utils.ts',
+      'root:src/components/Chart.js',
       {
-        'api': './src/api.ts',        // 简单映射
-        'store': './src/store.ts'     // 字符串值
+        'api': './src/api.ts',
+        'store': './src/store.ts'
       }
     ]
   }
@@ -197,14 +182,14 @@ export default {
 exports: [
   {
     'src/storage/db': {
-      client: './src/storage/indexedDB',  // 客户端使用 IndexedDB
-      server: './src/storage/mongoAdapter' // 服务端使用 MongoDB 适配器
+      client: './src/storage/indexedDB',
+      server: './src/storage/mongoAdapter'
     }
   },
   {
     'src/client-only': {
-      client: './src/client-feature',  // 仅客户端可用
-      server: false                    // 服务端不会构建
+      client: './src/client-feature',
+      server: false
     }
   }
 ]

@@ -1,98 +1,92 @@
 ---
-titleSuffix: "From Micro-Frontend Challenges to ESM Innovation: The Evolution Path of Esmx Framework"
-description: "An in-depth exploration of Esmx framework's journey from traditional micro-frontend architecture challenges to ESM-based innovation breakthroughs, sharing technical practices in performance optimization, dependency management, and build tool selection."
+titleSuffix: "From Micro-frontend Challenges to ESM Innovation: Esmx’s Evolution"
+description: "Deep dive into Esmx’s evolution from traditional micro-frontend limitations to ESM-driven breakthroughs, covering performance, dependency management, and build tooling."
 head:
-  - - meta
-    - property: keywords
-      content: "Esmx, Micro-Frontend Framework, ESM, Import Maps, Rspack, Module Federation, Dependency Management, Performance Optimization, Technical Evolution, Server-Side Rendering"
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, micro-frontend, ESM, Import Maps, Rspack, module linking, Module Federation, dependency management, performance, SSR"
 sidebar: false
 ---
 
-# From Component Sharing to Native Modularization: The Evolution Path of Esmx Micro-Frontend Framework
+# From Component Sharing to Native Modularization: The Evolution of Esmx Micro-frontend Framework
 
-## Project Background
+## Background
 
-Over the past few years, micro-frontend architecture has been searching for the right path. However, what we've witnessed are various complex technical solutions that simulate an ideal micro-frontend world through layers of wrapping and artificial isolation. These solutions bring heavy performance burdens, complicate simple development, and obscure standard processes.
+Micro-frontend architectures have searched for the right path for years. Many solutions simulate an ideal world through layered wrappers and manual isolation, adding overhead, complicating development, and obscuring standard processes.
 
-### Limitations of Traditional Solutions
+### Limitations of Traditional Approaches
 
-In practicing micro-frontend architecture, we've deeply experienced the many constraints of traditional approaches:
+- Performance overhead from runtime injection and JS sandbox proxies
+- Fragile isolation compared to native browser capabilities
+- Build complexity from tool customization to handle dependencies
+- Custom deployment and runtime rules diverging from modern standards
+- Ecosystem constraints from framework coupling and bespoke APIs
 
-- **Performance Overhead**: Runtime dependency injection, JS sandbox proxies - every operation consumes precious performance
-- **Fragile Isolation**: Manually created sandbox environments can never match browser-native isolation capabilities
-- **Build Complexity**: To handle dependencies, build tools must be heavily modified, making simple projects difficult to maintain
-- **Custom Rules**: Special deployment strategies and runtime processing deviate from standard modern development workflows
-- **Ecosystem Lock-in**: Framework coupling and custom APIs force technology choices to be bound to specific ecosystems
-
-These issues were particularly evident in a 2019 enterprise project we worked on. A large product was split into over a dozen independent business subsystems that needed to share a set of base components and business components. The initial npm-based component sharing solution revealed serious maintenance efficiency problems: when shared components were updated, all dependent subsystems required full rebuilds and redeployments.
+In a 2019 enterprise project, a large product was split into 10+ subsystems sharing base and business components. Npm-based sharing caused maintenance inefficiency: when shared components updated, every dependent subsystem needed full rebuild and redeploy.
 
 ## Technical Evolution
 
-### v1.0: Exploring Remote Components
+### v1.0: Remote Components
 
-To solve component sharing efficiency issues, Esmx v1.0 introduced the RemoteView component mechanism based on HTTP protocol. This solution achieved on-demand code assembly between services through runtime dynamic requests, successfully addressing long build dependency chains. However, due to the lack of standardized runtime communication mechanisms, state synchronization and event passing between services still suffered from efficiency bottlenecks.
+Introduced HTTP-based RemoteView for on-demand assembly of service code. It reduced long build chains but lacked standardized runtime communication, leaving state sync and event passing as bottlenecks.
 
-### v2.0: Module Federation Experiment
+### v2.0: Module Federation
 
-In v2.0, we adopted [Webpack 5.0](https://webpack.js.org/)'s [Module Federation](https://webpack.js.org/concepts/module-federation/) technology. This technology significantly improved service collaboration efficiency through unified module loading mechanisms and runtime containers. But in large-scale practice, Module Federation's closed implementation introduced new challenges: precise dependency version management became difficult, especially when unifying shared dependencies across multiple services, often leading to version conflicts and runtime exceptions.
+Adopted Webpack 5 Module Federation. Unified module loading and runtime containers improved collaboration, but closed implementation made precise version management difficult in large scale, causing conflicts and runtime errors.
 
 ## Embracing the ESM Era
 
-When planning v3.0, we closely observed frontend ecosystem trends and found that advancements in browser-native capabilities opened new possibilities for micro-frontend architecture:
-
 ### Standardized Module System
 
-With the widespread support for [ES Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) in mainstream browsers and the maturation of the [Import Maps](https://github.com/WICG/import-maps) specification, front-end development has entered a true modular era. According to [Can I Use](https://caniuse.com/?search=importmap) statistics, native ESM support in major browsers (Chrome >= 89, Edge >= 89, Firefox >= 108, Safari >= 16.4) has reached 93.5%, providing these advantages:
+With broad browser support for ES Modules and the maturity of Import Maps, front-end development entered true modularization. Current support (Chrome >= 89, Edge >= 89, Firefox >= 108, Safari >= 16.4) covers ~93.5%. Advantages:
 
-- **Standardized Dependency Management**: Import Maps provide browser-level module dependency resolution without complex runtime injection
-- **Resource Loading Optimization**: Browser-native module caching significantly improves resource loading efficiency
-- **Simplified Build Process**: ESM-based development makes build processes more consistent between development and production environments
+- Standardized dependency management via Import Maps without runtime injection
+- Optimized resource loading through native module caching
+- Simplified build flows aligned across dev and prod
 
-With compatibility mode support (Chrome >= 64, Edge >= 79, Firefox >= 67, Safari >= 11.1), browser coverage can be further increased to 95.59%, allowing us to maintain high performance without sacrificing support for older browsers.
+With compatibility support (Chrome >= 64, Edge >= 79, Firefox >= 67, Safari >= 11.1), coverage reaches ~95.59% while keeping performance high.
 
-### Breakthroughs in Performance and Isolation
+### Performance and Isolation
 
-The native module system brings not just standardization, but qualitative improvements in performance and isolation:
+- Zero runtime overhead compared to sandboxed micro-frontends
+- Reliable isolation from strict ESM scopes
+- Precise dependency management through static import analysis
 
-- **Zero Runtime Overhead**: Eliminates JavaScript sandbox proxies and runtime injection from traditional micro-frontend solutions
-- **Reliable Isolation**: ESM's strict module scope naturally provides the most reliable isolation
-- **Precise Dependency Management**: Static import analysis makes dependencies clearer and version control more precise
+### Build Tooling Choices
 
-### Build Tool Selection
+After research and practice:
 
-Choosing the right build tool was a critical decision in implementing this technical solution. After nearly a year of research and practice, our selection evolved as follows:
+1. Vite exploration
+   - Pros: ESM-based dev server with excellent DX
+   - Challenges: differences between dev and prod builds
 
-1. **Vite Exploration**
-   - Advantage: ESM-based development server provides excellent developer experience
-   - Challenge: Differences between development and production builds introduced some uncertainty
+2. Rspack adoption
+   - Performance: Rust-based high-performance compiler
+   - Ecosystem: strong compatibility with Webpack
+   - ESM: proven reliability through Rslib practices
 
-2. **[Rspack](https://www.rspack.dev/) Adoption**
-   - Performance Advantage: Rust-based high-performance compilation significantly improves build speed
-   - Ecosystem Support: High compatibility with Webpack ecosystem reduces migration costs
-   - ESM Support: Verified reliability in ESM builds through Rslib project practice
+ESM + Rspack delivered a high-performance, low-intrusion micro-frontend solution.
 
-This decision allowed us to maintain development experience while gaining more stable production environment support. The combination of ESM and Rspack ultimately enabled us to build a high-performance, low-intrusion micro-frontend solution.
+## Outlook
 
-## Future Outlook
+### Import Maps Optimization
 
-In future development, Esmx framework will focus on three key directions:
+- Dynamic dependency management across apps
+- Route-aware smart preloading
+- Auto-generated optimal Import Maps
 
-### Deep Optimization of Import Maps
+### Framework-agnostic Routing
 
-- **Dynamic Dependency Management**: Implement intelligent runtime dependency version scheduling to resolve conflicts between multiple applications
-- **Preloading Strategy**: Intelligent preloading based on route analysis to improve resource loading efficiency
-- **Build Optimization**: Automatically generate optimal Import Maps configurations to reduce manual configuration effort
+- Unified routing interfaces for Vue, React, etc.
+- Micro-app routing linkage keeping URL and state consistent
+- Extensible middleware for permissions and transitions
 
-### Framework-Agnostic Routing Solution
+### Cross-framework Communication
 
-- **Unified Routing Abstraction**: Design framework-agnostic routing interfaces supporting Vue, React and other mainstream frameworks
-- **Micro-App Routing**: Implement coordinated routing between applications to maintain URL and application state consistency
-- **Routing Middleware**: Provide extensible middleware mechanisms supporting features like permission control and page transitions
+- Complete examples across Vue, React, Preact
 
-### Cross-Framework Communication Best Practices
+- Lightweight state sharing via ESM
 
-- **Example Applications**: Provide complete cross-framework communication examples covering Vue, React, Preact and other mainstream frameworks
-- **State Synchronization**: Lightweight state sharing solution based on ESM
-- **Event Bus**: Standardized event communication mechanism supporting decoupled communication between applications
+- Standardized event bus for decoupled communication
 
-Through these optimizations and extensions, we aim to make Esmx a more complete and user-friendly micro-frontend solution, providing developers with better experience and higher efficiency.
+Esmx aims to provide a more complete and efficient micro-frontend solution with better developer experience.

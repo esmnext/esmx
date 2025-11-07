@@ -14,14 +14,28 @@ function checkVersionConsistency() {
         const status = document.getElementById(`${name}-status`);
         const card = document.getElementById(`${name}-card`);
 
-        document.getElementById(`${name}-client-version`)!.textContent =
-            clientVersion;
+        const clientVersionEl = document.getElementById(
+            `${name}-client-version`
+        );
+        if (clientVersionEl) clientVersionEl.textContent = clientVersion;
 
         if (!status || !card) return;
 
         const isConsistent = clientVersion === serverVersion;
-        status.className = `status-indicator status-${isConsistent ? 'consistent' : 'inconsistent'}`;
-        status.innerHTML = `<span class="icon ${isConsistent ? 'success' : 'error'}">${isConsistent ? '✓' : '✗'}</span><span>Module versions ${isConsistent ? 'consistent' : 'inconsistent'}</span>`;
+        status.className = `status-indicator status-${
+            isConsistent ? 'consistent' : 'inconsistent'
+        }`;
+        const icon = status.querySelector('.icon');
+        const text = status.querySelector('span:not(.icon)');
+        if (icon) {
+            icon.className = `icon ${isConsistent ? 'success' : 'error'}`;
+            icon.textContent = isConsistent ? '✓' : '✗';
+        }
+        if (text) {
+            text.textContent = `Module versions ${
+                isConsistent ? 'consistent' : 'inconsistent'
+            }`;
+        }
 
         if (isConsistent) {
             card.classList.add('consistency-animation');

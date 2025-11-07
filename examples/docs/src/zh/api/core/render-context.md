@@ -1,10 +1,10 @@
 ---
-titleSuffix: Esmx 框架渲染上下文 API 参考
-description: 详细介绍 Esmx 框架的 RenderContext 核心类，包括渲染控制、资源管理、状态同步和路由控制等功能，帮助开发者实现高效的服务端渲染。
+titleSuffix: "Esmx 框架渲染上下文 API 参考"
+description: "详细介绍 Esmx 框架的 RenderContext 核心类，包括渲染控制、资源管理、状态同步和路由控制等功能，帮助开发者实现高效的服务端渲染。"
 head:
-  - - meta
-    - property: keywords
-      content: Esmx, RenderContext, SSR, 服务端渲染, 渲染上下文, 状态同步, 资源管理, Web 应用框架
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, RenderContext, SSR, 服务端渲染, 渲染上下文, 状态同步, 资源管理, Web 应用框架"
 ---
 
 # RenderContext
@@ -23,21 +23,19 @@ RenderContext 是 Esmx 框架中的核心类，负责管理服务端渲染（SSR
 服务端渲染处理函数的类型定义。
 
 ```ts
-type ServerRenderHandle = (rc: RenderContext) => Promise<void> | void;
+type ServerRenderHandle = (rc: RenderContext) => Promise<void>;
 ```
 
 服务端渲染处理函数是一个异步或同步函数，接收 RenderContext 实例作为参数，用于处理服务端渲染逻辑。
 
 ```ts title="entry.node.ts"
-// 1. 异步处理函数
 export default async (rc: RenderContext) => {
   const app = createApp();
   const html = await renderToString(app);
   rc.html = html;
 };
 
-// 2. 同步处理函数
-export const simple = (rc: RenderContext) => {
+export const simple = async (rc: RenderContext) => {
   rc.html = '<h1>Hello World</h1>';
 };
 ```
@@ -61,7 +59,6 @@ interface RenderFiles {
 - **resources**: 其他资源文件列表（图片、字体等）
 
 ```ts
-// 资源文件列表示例
 rc.files = {
   js: [
     '/assets/entry-client.js',
@@ -132,11 +129,9 @@ interface RenderContextOptions {
 
 ```ts title="src/entry.server.ts"
 export const mobile = async (rc: RenderContext) => {
-  // 移动端渲染逻辑
 };
 
 export const desktop = async (rc: RenderContext) => {
-  // 桌面端渲染逻辑
 };
 ```
 
@@ -184,24 +179,20 @@ Esmx 实例引用。用于访问框架核心功能和配置信息。
 重定向地址。设置后，服务端可以根据此值进行 HTTP 重定向，常用于登录验证、权限控制等场景。
 
 ```ts title="entry.node.ts"
-// 登录验证示例
 export default async (rc: RenderContext) => {
   if (!isLoggedIn()) {
     rc.redirect = '/login';
     rc.status = 302;
     return;
   }
-  // 继续渲染页面...
 };
 
-// 权限控制示例
 export default async (rc: RenderContext) => {
   if (!hasPermission()) {
     rc.redirect = '/403';
     rc.status = 403;
     return;
   }
-  // 继续渲染页面...
 };
 ```
 
@@ -213,25 +204,20 @@ export default async (rc: RenderContext) => {
 HTTP 响应状态码。可以设置任意有效的 HTTP 状态码，常用于错误处理、重定向等场景。
 
 ```ts title="entry.node.ts"
-// 404 错误处理示例
 export default async (rc: RenderContext) => {
   const page = await findPage(rc.params.url);
   if (!page) {
     rc.status = 404;
-    // 渲染 404 页面...
     return;
   }
-  // 继续渲染页面...
 };
 
-// 临时重定向示例
 export default async (rc: RenderContext) => {
   if (needMaintenance()) {
     rc.redirect = '/maintenance';
-    rc.status = 307; // 临时重定向，保持请求方法不变
+    rc.status = 307;
     return;
   }
-  // 继续渲染页面...
 };
 ```
 
@@ -243,9 +229,7 @@ export default async (rc: RenderContext) => {
 HTML 内容。用于设置和获取最终生成的 HTML 内容，在设置时自动处理基础路径占位符。
 
 ```ts title="entry.node.ts"
-// 基础用法
 export default async (rc: RenderContext) => {
-  // 设置 HTML 内容
   rc.html = `
     <!DOCTYPE html>
     <html>
@@ -263,16 +247,11 @@ export default async (rc: RenderContext) => {
   `;
 };
 
-// 动态基础路径
 const rc = await esmx.render({
-  base: '/app',  // 设置基础路径
+  base: '/app',
   params: { url: req.url }
 });
 
-// HTML 中的占位符会被自动替换：
-// [[[___ESMX_DYNAMIC_BASE___]]]/your-app-name/css/style.css
-// 替换为：
-// /app/your-app-name/css/style.css
 ```
 
 ### base
@@ -284,21 +263,18 @@ const rc = await esmx.render({
 静态资源的基础路径。所有静态资源（JS、CSS、图片等）都会基于此路径加载，支持运行时动态配置。
 
 ```ts
-// 基础用法
 const rc = await esmx.render({
-  base: '/esmx',  // 设置基础路径
+  base: '/esmx',
   params: { url: req.url }
 });
 
-// 多语言站点示例
 const rc = await esmx.render({
-  base: '/cn',  // 中文站点
+  base: '/cn',
   params: { lang: 'zh-CN' }
 });
 
-// 微前端应用示例
 const rc = await esmx.render({
-  base: '/app1',  // 子应用1
+  base: '/app1',
   params: { appId: 1 }
 });
 ```
@@ -312,21 +288,15 @@ const rc = await esmx.render({
 服务端渲染入口函数名称。用于从 entry.server.ts 中选择要使用的渲染函数。
 
 ```ts title="entry.node.ts"
-// 默认入口函数
 export default async (rc: RenderContext) => {
-  // 默认渲染逻辑
 };
 
-// 多个入口函数
 export const mobile = async (rc: RenderContext) => {
-  // 移动端渲染逻辑
 };
 
 export const desktop = async (rc: RenderContext) => {
-  // 桌面端渲染逻辑
 };
 
-// 根据设备类型选择入口函数
 const rc = await esmx.render({
   entryName: isMobile ? 'mobile' : 'desktop',
   params: { url: req.url }
@@ -342,7 +312,6 @@ const rc = await esmx.render({
 渲染参数。可以在服务端渲染过程中传递和访问参数，常用于传递请求信息、页面配置等。
 
 ```ts
-// 基础用法 - 传递 URL 和语言设置
 const rc = await esmx.render({
   params: {
     url: req.url,
@@ -350,7 +319,6 @@ const rc = await esmx.render({
   }
 });
 
-// 页面配置 - 设置主题和布局
 const rc = await esmx.render({
   params: {
     theme: 'dark',
@@ -358,7 +326,6 @@ const rc = await esmx.render({
   }
 });
 
-// 环境配置 - 注入 API 地址
 const rc = await esmx.render({
   params: {
     apiBaseUrl: process.env.API_BASE_URL,
@@ -374,15 +341,10 @@ const rc = await esmx.render({
 模块依赖收集集合。在组件渲染过程中自动追踪和记录模块依赖，只收集当前页面渲染时真正使用到的资源。
 
 ```ts
-// 基础用法
 const renderToString = (app: any, context: { importMetaSet: Set<ImportMeta> }) => {
-  // 在渲染过程中自动收集模块依赖
-  // 框架会在组件渲染时自动调用 context.importMetaSet.add(import.meta)
-  // 开发者无需手动处理依赖收集
   return '<div id="app">Hello World</div>';
 };
 
-// 使用示例
 const app = createApp();
 const html = await renderToString(app, {
   importMetaSet: rc.importMetaSet
@@ -400,17 +362,13 @@ const html = await renderToString(app, {
 - resources: 其他资源文件列表（图片、字体等）
 
 ```ts
-// 资源收集
 await rc.commit();
 
-// 资源注入
 rc.html = `
   <!DOCTYPE html>
   <html>
   <head>
-    <!-- 预加载资源 -->
     ${rc.preload()}
-    <!-- 注入样式表 -->
     ${rc.css()}
   </head>
   <body>
@@ -487,12 +445,10 @@ rc.html = `
 提交依赖收集并更新资源列表。从 importMetaSet 中收集所有使用到的模块，基于 manifest 文件解析每个模块的具体资源。
 
 ```ts
-// 渲染并提交依赖
 const html = await renderToString(app, {
   importMetaSet: rc.importMetaSet
 });
 
-// 提交依赖收集
 await rc.commit();
 ```
 
@@ -508,7 +464,7 @@ rc.html = `
   <html>
   <head>
     ${rc.preload()}
-    ${rc.css()}  <!-- 注入样式表 -->
+    ${rc.css()}
   </head>
   <body>
     ${html}
@@ -529,7 +485,7 @@ rc.html = `
 ```ts
 rc.html = `
   <head>
-    ${rc.css()}  <!-- 注入所有收集到的样式表 -->
+    ${rc.css()}
   </head>
 `;
 ```
@@ -543,7 +499,7 @@ rc.html = `
 ```ts
 rc.html = `
   <head>
-    ${rc.importmap()}  <!-- 注入导入映射 -->
+    ${rc.importmap()}
   </head>
 `;
 ```
@@ -559,7 +515,7 @@ rc.html = `
   <body>
     ${html}
     ${rc.importmap()}
-    ${rc.moduleEntry()}  <!-- 注入客户端入口模块 -->
+    ${rc.moduleEntry()}
   </body>
 `;
 ```
@@ -576,7 +532,7 @@ rc.html = `
     ${html}
     ${rc.importmap()}
     ${rc.moduleEntry()}
-    ${rc.modulePreload()}  <!-- 预加载模块依赖 -->
+    ${rc.modulePreload()}
   </body>
 `;
 ```

@@ -1,11 +1,11 @@
 # {{projectName}}
 
-An Esmx project with Vue2 and Server-Side Rendering.
+An Esmx project with Vue 2 and Server-Side Rendering.
 
 ## 📦 Tech Stack
 
-- **Framework**: [Esmx](https://esmnext.com) - Next generation micro-frontend framework based on native ESM
-- **UI Framework**: Vue2 with Composition API
+- **Framework**: [Esmx](https://esmx.dev) - Next generation micro-frontend framework based on native ESM
+- **UI Framework**: Vue 2 with Composition API
 - **Build Tool**: Rspack
 - **Type Checking**: TypeScript
 - **Rendering Mode**: Server-Side Rendering (SSR)
@@ -75,6 +75,6 @@ Visit http://localhost:3000 to see the development environment.
 
 ## 📚 Additional Resources
 
-- [Esmx Official Documentation](https://esmnext.com)
-- [Vue2 Documentation](https://v2.vuejs.org)
+- [Esmx Official Documentation](https://esmx.dev)
+- [Vue 2 Documentation](https://v2.vuejs.org)
 - [TypeScript Documentation](https://www.typescriptlang.org)

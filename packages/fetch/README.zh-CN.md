@@ -39,7 +39,14 @@
 ## 📦 安装
 
 ```bash
+# npm
 npm install @esmx/fetch
+
+# pnpm
+pnpm add @esmx/fetch
+
+# yarn
+yarn add @esmx/fetch
 ```
 
 ## 📚 文档

@@ -1,11 +1,11 @@
 # {{projectName}}
 
-An Esmx project with Vue and Client-Side Rendering.
+An Esmx project with Vue 3 and Client-Side Rendering.
 
 ## 📦 Tech Stack
 
-- **Framework**: [Esmx](https://esmnext.com) - Next generation micro-frontend framework based on native ESM
-- **UI Framework**: Vue
+- **Framework**: [Esmx](https://esmx.dev) - Next generation micro-frontend framework based on native ESM
+- **UI Framework**: Vue 3
 - **Build Tool**: Rspack
 - **Type Checking**: TypeScript
 - **Rendering Mode**: Client-Side Rendering (CSR)
@@ -61,7 +61,7 @@ Visit http://localhost:3000 to see the development environment.
 │   ├── create-app.ts       # Vue instance creation
 │   ├── entry.client.ts     # Client-side entry
 │   ├── entry.node.ts       # Node.js environment entry point
-│   └── entry.server.ts     # Server-side rendering functions
+│   └── entry.server.ts     # CSR HTML shell (no SSR)
 ├── package.json
 ├── tsconfig.json
 └── README.md
@@ -70,11 +70,11 @@ Visit http://localhost:3000 to see the development environment.
 ## 🔧 Configuration Details
 
 - `entry.client.ts` - Responsible for client-side interaction and dynamic updates
-- `entry.node.ts` - Handles server-side rendering and development server configuration
-- `entry.server.ts` - Manages server-side rendering process and HTML generation
+- `entry.node.ts` - Handles development environment setup and tooling
+- `entry.server.ts` - Generates the HTML shell for CSR (no SSR)
 
 ## 📚 Additional Resources
 
-- [Esmx Official Documentation](https://esmnext.com)
+- [Esmx Official Documentation](https://esmx.dev)
 - [Vue Documentation](https://vuejs.org)
 - [TypeScript Documentation](https://www.typescriptlang.org)

@@ -4,7 +4,7 @@ An Esmx project demonstrating Shared Modules solution for micro-frontend archite
 
 ## 📦 Tech Stack
 
-- **Framework**: [Esmx](https://esmnext.com) - Next generation micro-frontend framework based on native ESM
+- **Framework**: [Esmx](https://esmx.dev) - Next generation micro-frontend framework based on native ESM
 - **Solution Focus**: Shared Modules for multi-framework environments
 - **Build Tool**: Rspack
 - **Type Checking**: TypeScript
@@ -81,5 +81,5 @@ shared-modules/
 
 ## 📚 Additional Resources
 
-- [Esmx Official Documentation](https://esmnext.com)
+- [Esmx Official Documentation](https://esmx.dev)
 - [TypeScript Documentation](https://www.typescriptlang.org)

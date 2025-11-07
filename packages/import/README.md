@@ -39,7 +39,14 @@
 ## 📦 Installation
 
 ```bash
+# npm
 npm install @esmx/import
+
+# pnpm
+pnpm add @esmx/import
+
+# yarn
+yarn add @esmx/import
 ```
 
 ## 🚀 Quick Start
