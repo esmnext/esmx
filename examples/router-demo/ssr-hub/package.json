@@ -23,7 +23,7 @@
         "ssr-npm-base": "workspace:*",
         "ssr-npm-vue2": "workspace:*",
         "ssr-npm-vue3": "workspace:*",
-        "@types/node": "^24.0.10",
-        "typescript": "^5.8.3"
+        "@types/node": "^24.10.0",
+        "typescript": "^5.9.3"
     }
 }

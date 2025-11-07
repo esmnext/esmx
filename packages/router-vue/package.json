@@ -54,12 +54,12 @@
     },
     "devDependencies": {
         "@biomejs/biome": "1.9.4",
-        "@types/node": "^24.0.0",
+        "@types/node": "^24.10.0",
         "@vitest/coverage-v8": "3.2.4",
-        "typescript": "5.9.2",
-        "unbuild": "3.6.0",
+        "typescript": "5.9.3",
+        "unbuild": "3.6.1",
         "vitest": "3.2.4",
-        "vue": "3.5.13",
+        "vue": "3.5.23",
         "vue2": "npm:vue@2.7.16"
     },
     "version": "3.0.0-rc.70",

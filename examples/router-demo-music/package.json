@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "NODE_ENV=development esmx dev",
-    "build": "npm run build:dts && npm run build:ssr",
+    "build": "npm run build:ssr",
     "build:ssr": "esmx build",
     "preview": "esmx preview",
     "start": "esmx start",
@@ -18,8 +18,8 @@
     "@esmx/rspack-vue": "workspace:*",
     "@esmx/router": "workspace:*",
     "@esmx/router-vue": "workspace:*",
-    "@types/node": "^24.0.10",
-    "typescript": "^5.8.3",
+    "@types/node": "^24.10.0",
+    "typescript": "^5.9.3",
     "vue": "^2.7.16",
     "vue-server-renderer": "^2.7.16",
     "vue-tsc": "^3.0.5"

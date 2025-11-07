@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://esmx.dev/logo.svg?t=2025" width="180" alt="Esmx Logo" />
+  <img src="https://esmx.dev/logo.svg?t=202511" width="180" alt="Esmx Logo" />
   <h1>Esmx</h1>
   
   <div>
