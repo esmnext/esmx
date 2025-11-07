@@ -56,4 +56,5 @@ To support older browsers, add [es-module-shims](https://github.com/guybedford/e
 ::: tip
 - Deploy the script to your own server in production.
 - Decide whether to enable compatibility mode based on target user browser distribution.
+
 :::
