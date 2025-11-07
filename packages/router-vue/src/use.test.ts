@@ -4,8 +4,15 @@ import { type Route, Router, RouterMode } from '@esmx/router';
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { nextTick } from 'vue';
-import { createApp, h } from 'vue';
-import { useProvideRouter, useRoute, useRouter } from './use';
+import { createApp, defineComponent, getCurrentInstance, h } from 'vue';
+import { RouterView } from './router-view';
+import {
+    getRouterViewDepth,
+    useProvideRouter,
+    useRoute,
+    useRouter,
+    useRouterViewDepth
+} from './use';
 
 describe('Router Vue Integration', () => {
     let app: ReturnType<typeof createApp>;
@@ -212,6 +219,261 @@ describe('Router Vue Integration', () => {
             // Both parent and child components should see updates
             expect(parentRoute?.path).toBe('/new-path');
             expect(childRoute?.path).toBe('/new-path');
+        });
+    });
+
+    describe('RouterView Depth', () => {
+        it('should get depth in single RouterView', async () => {
+            let observedDepth: number | undefined;
+
+            const LeafProbe = defineComponent({
+                setup() {
+                    const p = getCurrentInstance()!.proxy as any;
+                    observedDepth = getRouterViewDepth(p);
+                    return () => h('div');
+                }
+            });
+
+            const Level1 = defineComponent({
+                setup() {
+                    return () => h('div', [h(LeafProbe)]);
+                }
+            });
+
+            router = new Router({
+                mode: RouterMode.memory,
+                routes: [{ path: '/level1', component: Level1 }],
+                base: new URL('http://localhost:8000/')
+            });
+
+            await router.replace('/level1');
+
+            const TestApp = defineComponent({
+                setup() {
+                    useProvideRouter(router);
+                    return () => h('div', [h(RouterView)]);
+                }
+            });
+
+            app = createApp(TestApp);
+            app.mount('#app');
+            await nextTick();
+
+            expect(observedDepth).toBe(1);
+        });
+
+        it('should get depth in nested RouterView', async () => {
+            let observedDepth: number | undefined;
+
+            const LeafProbe = defineComponent({
+                setup() {
+                    const p = getCurrentInstance()!.proxy as any;
+                    observedDepth = getRouterViewDepth(p);
+                    return () => h('div');
+                }
+            });
+
+            const Level1 = defineComponent({
+                setup() {
+                    return () => h('div', [h(RouterView)]);
+                }
+            });
+
+            const Leaf = defineComponent({
+                setup() {
+                    return () => h('div', [h(LeafProbe)]);
+                }
+            });
+
+            router = new Router({
+                mode: RouterMode.memory,
+                routes: [
+                    {
+                        path: '/level1',
+                        component: Level1,
+                        children: [{ path: 'leaf', component: Leaf }]
+                    }
+                ],
+                base: new URL('http://localhost:8000/')
+            });
+
+            await router.replace('/level1/leaf');
+
+            const TestApp = defineComponent({
+                setup() {
+                    useProvideRouter(router);
+                    return () => h('div', [h(RouterView)]);
+                }
+            });
+
+            app = createApp(TestApp);
+            app.mount('#app');
+            await nextTick();
+
+            expect(observedDepth).toBe(2);
+        });
+
+        it('should get depth in double-nested RouterViews', async () => {
+            let observedDepth: number | undefined;
+
+            const LeafProbe = defineComponent({
+                setup() {
+                    const p = getCurrentInstance()!.proxy as any;
+                    observedDepth = getRouterViewDepth(p);
+                    return () => h('div');
+                }
+            });
+
+            const Level1 = defineComponent({
+                setup() {
+                    return () => h('div', [h(RouterView)]);
+                }
+            });
+
+            const Level2 = defineComponent({
+                setup() {
+                    return () => h('div', [h(RouterView)]);
+                }
+            });
+
+            const Leaf = defineComponent({
+                setup() {
+                    return () => h('div', [h(LeafProbe)]);
+                }
+            });
+
+            router = new Router({
+                mode: RouterMode.memory,
+                routes: [
+                    {
+                        path: '/level1',
+                        component: Level1,
+                        children: [
+                            {
+                                path: 'level2',
+                                component: Level2,
+                                children: [{ path: 'leaf', component: Leaf }]
+                            }
+                        ]
+                    }
+                ],
+                base: new URL('http://localhost:8000/')
+            });
+
+            await router.replace('/level1/level2/leaf');
+
+            const TestApp = defineComponent({
+                setup() {
+                    useProvideRouter(router);
+                    return () => h('div', [h(RouterView)]);
+                }
+            });
+
+            app = createApp(TestApp);
+            app.mount('#app');
+            await nextTick();
+
+            expect(observedDepth).toBe(3);
+        });
+
+        it('should throw when no RouterView ancestor exists', async () => {
+            let callDepth: (() => void) | undefined;
+
+            const Probe = defineComponent({
+                setup() {
+                    const p = getCurrentInstance()!.proxy as any;
+                    callDepth = () => getRouterViewDepth(p);
+                    return () => h('div');
+                }
+            });
+
+            const TestApp = defineComponent({
+                setup() {
+                    useProvideRouter(router);
+                    return () => h(Probe);
+                }
+            });
+
+            app = createApp(TestApp);
+            app.mount('#app');
+            await nextTick();
+
+            expect(() => callDepth!()).toThrow(
+                new Error(
+                    '[@esmx/router-vue] RouterView depth not found. Please ensure a RouterView exists in ancestor components.'
+                )
+            );
+        });
+
+        it('should return 0 for useRouterViewDepth without RouterView', async () => {
+            let observed = -1;
+
+            const Probe = defineComponent({
+                setup() {
+                    observed = useRouterViewDepth();
+                    return () => h('div');
+                }
+            });
+
+            const TestApp = defineComponent({
+                setup() {
+                    useProvideRouter(router);
+                    return () => h(Probe);
+                }
+            });
+
+            app = createApp(TestApp);
+            app.mount('#app');
+            await nextTick();
+
+            expect(observed).toBe(0);
+        });
+
+        it('should reflect depth via useRouterViewDepth at each level', async () => {
+            let level1Depth = -1;
+            let level2Depth = -1;
+
+            const Level2 = defineComponent({
+                setup() {
+                    level2Depth = useRouterViewDepth();
+                    return () => h('div');
+                }
+            });
+
+            const Level1 = defineComponent({
+                setup() {
+                    level1Depth = useRouterViewDepth();
+                    return () => h('div', [h(RouterView)]);
+                }
+            });
+
+            router = new Router({
+                mode: RouterMode.memory,
+                routes: [
+                    {
+                        path: '/level1',
+                        component: Level1,
+                        children: [{ path: 'level2', component: Level2 }]
+                    }
+                ],
+                base: new URL('http://localhost:8000/')
+            });
+
+            await router.replace('/level1/level2');
+
+            const TestApp = defineComponent({
+                setup() {
+                    useProvideRouter(router);
+                    return () => h('div', [h(RouterView)]);
+                }
+            });
+
+            app = createApp(TestApp);
+            app.mount('#app');
+            await nextTick();
+
+            expect(level1Depth).toBe(1);
+            expect(level2Depth).toBe(2);
         });
     });
 });

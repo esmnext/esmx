@@ -88,13 +88,13 @@ describe('plugin.ts - RouterPlugin', () => {
         it('should throw error for null app instance', () => {
             expect(() => {
                 RouterPlugin.install(null);
-            }).toThrow();
+            }).toThrow('[@esmx/router-vue] Invalid Vue app instance');
         });
 
         it('should throw error for undefined app instance', () => {
             expect(() => {
                 RouterPlugin.install(undefined);
-            }).toThrow();
+            }).toThrow('[@esmx/router-vue] Invalid Vue app instance');
         });
     });
 

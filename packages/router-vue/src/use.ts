@@ -24,21 +24,19 @@ const ROUTER_CONTEXT_KEY = Symbol('router-context');
 const ROUTER_INJECT_KEY = Symbol('router-inject');
 const ROUTER_VIEW_DEPTH_KEY = Symbol('router-view-depth');
 
-const ERROR_MESSAGES = {
-    SETUP_ONLY: (fnName: string) =>
-        `[@esmx/router-vue] ${fnName}() can only be called during setup()`,
-    CONTEXT_NOT_FOUND:
-        '[@esmx/router-vue] Router context not found. ' +
-        'Please ensure useProvideRouter() is called in a parent component.'
-} as const;
-
 const routerContextProperty =
     createSymbolProperty<RouterContext>(ROUTER_CONTEXT_KEY);
 
-function getCurrentProxy(functionName: string): VueInstance {
+const routerViewDepthProperty = createSymbolProperty<number>(
+    ROUTER_VIEW_DEPTH_KEY
+);
+
+function getCurrentProxy(): VueInstance {
     const instance = getCurrentInstance();
     if (!instance || !instance.proxy) {
-        throw new Error(ERROR_MESSAGES.SETUP_ONLY(functionName));
+        throw new Error(
+            '[@esmx/router-vue] Must be used within setup() or other composition functions'
+        );
     }
     return instance.proxy;
 }
@@ -46,7 +44,7 @@ function getCurrentProxy(functionName: string): VueInstance {
 function findRouterContext(vm?: VueInstance): RouterContext {
     // If no vm provided, try to get current instance
     if (!vm) {
-        vm = getCurrentProxy('findRouterContext');
+        vm = getCurrentProxy();
     }
 
     let context = routerContextProperty.get(vm);
@@ -64,7 +62,9 @@ function findRouterContext(vm?: VueInstance): RouterContext {
         current = current.$parent;
     }
 
-    throw new Error(ERROR_MESSAGES.CONTEXT_NOT_FOUND);
+    throw new Error(
+        '[@esmx/router-vue] Router context not found. Please ensure useProvideRouter() is called in a parent component.'
+    );
 }
 
 /**
@@ -143,7 +143,7 @@ export function getRoute(instance?: VueInstance): Route {
  * Get router context using the optimal method available.
  * First tries provide/inject (works in setup), then falls back to hierarchy traversal.
  */
-function useRouterContext(functionName: string): RouterContext {
+function useRouterContext(): RouterContext {
     // First try to get context from provide/inject (works in setup)
     const injectedContext = inject<RouterContext>(ROUTER_INJECT_KEY);
     if (injectedContext) {
@@ -151,7 +151,7 @@ function useRouterContext(functionName: string): RouterContext {
     }
 
     // Fallback to component hierarchy traversal (works after mount)
-    const proxy = getCurrentProxy(functionName);
+    const proxy = getCurrentProxy();
     return findRouterContext(proxy);
 }
 
@@ -188,7 +188,7 @@ function useRouterContext(functionName: string): RouterContext {
  * ```
  */
 export function useRouter(): Router {
-    return useRouterContext('useRouter').router;
+    return useRouterContext().router;
 }
 
 /**
@@ -224,7 +224,7 @@ export function useRouter(): Router {
  * ```
  */
 export function useRoute(): Route {
-    return useRouterContext('useRoute').route;
+    return useRouterContext().route;
 }
 
 /**
@@ -257,7 +257,7 @@ export function useRoute(): Route {
  * ```
  */
 export function useProvideRouter(router: Router): void {
-    const proxy = getCurrentProxy('useProvideRouter');
+    const proxy = getCurrentProxy();
 
     const dep = ref(0);
 
@@ -313,13 +313,12 @@ export function useProvideRouter(router: Router): void {
  * ```
  */
 export function _useRouterViewDepth(isRender?: boolean): number {
-    // Get current RouterView depth from parent RouterView (if any)
-    // Default to 0 if no parent RouterView is found
     const depth = inject(ROUTER_VIEW_DEPTH_KEY, 0);
 
     if (isRender) {
-        // Provide depth + 1 to child RouterView components
         provide(ROUTER_VIEW_DEPTH_KEY, depth + 1);
+        const proxy = getCurrentProxy();
+        routerViewDepthProperty.set(proxy, depth + 1);
     }
 
     return depth;
@@ -352,6 +351,26 @@ export function _useRouterViewDepth(isRender?: boolean): number {
  */
 export function useRouterViewDepth(): number {
     return _useRouterViewDepth();
+}
+
+/**
+ * Get injected RouterView depth from a Vue instance's ancestors.
+ * Traverses parent chain to find the value provided under ROUTER_VIEW_DEPTH_KEY.
+ *
+ * @param instance - Vue component instance to start from
+ * @returns Injected RouterView depth value from nearest ancestor
+ * @throws {Error} If no ancestor provided ROUTER_VIEW_DEPTH_KEY
+ */
+export function getRouterViewDepth(instance: VueInstance): number {
+    let current = instance.$parent;
+    while (current) {
+        const value = routerViewDepthProperty.get(current);
+        if (typeof value === 'number') return value;
+        current = current.$parent;
+    }
+    throw new Error(
+        '[@esmx/router-vue] RouterView depth not found. Please ensure a RouterView exists in ancestor components.'
+    );
 }
 
 /**

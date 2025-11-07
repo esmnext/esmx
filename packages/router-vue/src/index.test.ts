@@ -121,11 +121,15 @@ describe('index.ts - Package Entry Point', () => {
             // These should throw expected errors when called without proper context
             expect(() => {
                 RouterVueModule.useRouter();
-            }).toThrow('useRouter() can only be called during setup()');
+            }).toThrow(
+                '[@esmx/router-vue] Must be used within setup() or other composition functions'
+            );
 
             expect(() => {
                 RouterVueModule.useRoute();
-            }).toThrow('useRoute() can only be called during setup()');
+            }).toThrow(
+                '[@esmx/router-vue] Must be used within setup() or other composition functions'
+            );
 
             expect(() => {
                 RouterVueModule.useLink({
@@ -133,31 +137,23 @@ describe('index.ts - Package Entry Point', () => {
                     type: 'push',
                     exact: 'include'
                 });
-            }).toThrow('useRouter() can only be called during setup()');
+            }).toThrow(
+                '[@esmx/router-vue] Must be used within setup() or other composition functions'
+            );
         });
 
         it('should have correct function signatures for Options API', () => {
             expect(() => {
-                try {
-                    RouterVueModule.getRouter({} as Record<string, unknown>);
-                } catch (error: unknown) {
-                    // Expected to throw context error when called without router
-                    expect((error as Error).message).toContain(
-                        'Router context not found'
-                    );
-                }
-            }).not.toThrow();
+                RouterVueModule.getRouter({} as Record<string, unknown>);
+            }).toThrow(
+                '[@esmx/router-vue] Router context not found. Please ensure useProvideRouter() is called in a parent component.'
+            );
 
             expect(() => {
-                try {
-                    RouterVueModule.getRoute({} as Record<string, unknown>);
-                } catch (error: unknown) {
-                    // Expected to throw context error when called without router
-                    expect((error as Error).message).toContain(
-                        'Router context not found'
-                    );
-                }
-            }).not.toThrow();
+                RouterVueModule.getRoute({} as Record<string, unknown>);
+            }).toThrow(
+                '[@esmx/router-vue] Router context not found. Please ensure useProvideRouter() is called in a parent component.'
+            );
         });
     });
 
@@ -200,7 +196,7 @@ describe('index.ts - Package Entry Point', () => {
             // Test plugin install signature - should throw for null input
             expect(() => {
                 RouterPlugin.install(null);
-            }).toThrow();
+            }).toThrow('[@esmx/router-vue] Invalid Vue app instance');
         });
     });
 
