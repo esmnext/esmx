@@ -1,81 +1,81 @@
 ---
 titleSuffix: "Overview"
-description: "Esmx is built on ECMAScript Modules (ESM) and Import Maps, supports both Client-Side Rendering (CSR) and Server-Side Rendering (SSR), and provides module linking capabilities."
+description: "Esmx is based on ECMAScript Modules (ESM) and Import Maps, supporting both Client-Side Rendering (CSR) and Server-Side Rendering (SSR), while providing module linking capabilities."
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, Micro Frontends, ESM, Client-side Rendering, CSR, Server-side Rendering, SSR, Module Linking"
+      content: "Esmx, micro-frontend, ESM, client-side rendering, CSR, server-side rendering, SSR, module linking"
 ---
 
 # Introduction
 
 ## What is Esmx?
 
-A framework built on ESM and Import Maps, supporting CSR/SSR and module linking; framework-agnostic and adaptable to multiple stacks.
+An engineering framework built on ESM and Import Maps, supporting both CSR/SSR and module linking capabilities. It's framework-agnostic and adaptable to multiple technology stacks.
 
-**Core capabilities:**
-- Module system built on native ESM
+**Core Capabilities:**
+- Native ESM-based module system
 - Import Maps for dependency and version management
-- RenderContext for resource injection and order constraints
-- SSR and CSR practices for frameworks such as Vue/React
+- RenderContext for resource injection and ordering constraints
+- SSR and CSR support for Vue/React and other frameworks
 
-## Why Esmx?
+## Why Choose Esmx?
 
 ### Native Standards
-- Use standard ESM syntax
-- Define path resolution via Import Maps
-- Isolation and version coexistence via standard mechanisms
+- Uses standard ESM syntax
+- Path resolution defined through Import Maps
+- Dependency isolation and version coexistence via standard mechanisms
 
 ### Framework Agnostic
 - Compatible with Vue, React, Preact, Solid, Svelte, and more
-- Components and builds remain framework-independent
-- Rendering entry points can be switched per scenario
+- Framework-agnostic design for components and builds
+- Flexible rendering entry points for different scenarios
 
 ### Build and Deployment
-- Support base path configuration and hook mechanisms
-- Adapt to multi-language sites and micro frontend deployments
-- Engineering workflow integrated with Rspack
+- Base path configuration and hook mechanisms
+- Multi-language site and micro-frontend deployment support
+- Integrated engineering workflow with Rspack
 
 ## Core Concepts
 
 ### ESM Module System
-- Use standard `import`/`export` syntax
-- Support static analysis and on-demand loading
-- Natively handle circular references
+- Standard `import`/`export` syntax
+- Static analysis and on-demand loading support
+- Native circular reference handling
 
 ### Import Maps
-- Map module identifiers to URLs
-- Support scopes and version coexistence
-- Provide backward compatibility via es-module-shims when needed
+- Module specifier to URL mapping
+- Scoping and version coexistence support
+- Backward compatibility via es-module-shims
 
 ### Module Linking
 - Cross-package sharing and runtime linking
-- Collaboration across build time and runtime
-- Maintain type safety and engineering constraints
+- Build-time and runtime collaboration
+- Type safety and engineering constraints maintained
 
 ### Application Isolation
 - Module scoping
 - Style and state isolation
 - Error boundaries
 
-## Problems Addressed
+## Problems Solved
 
-### Pain Points of Traditional Micro Frontends
-- Runtime injection introduces extra overhead
-- Isolation depends on custom sandboxes
-- Strong coupling with build tools
+### Traditional Micro-Frontend Pain Points
+- Runtime injection overhead
+- Isolation relying on custom sandboxes
+- Tightly coupled build tools
 - Complex deployment strategies
 
-### Esmx Solutions
-- Manage dependencies using ESM and Import Maps
-- Achieve isolation through module scopes
-- Framework-neutral rendering and build process
+### Esmx's Solution
+- ESM and Import Maps for dependency management
+- Isolation through module scoping
+- Framework-agnostic rendering and building
 
 ### Comparison
 
-| Dimension | Traditional | Esmx |
-|------|----------|------|
-| Runtime | Injection/Sandbox | Native ESM |
-| Isolation | Custom sandbox | Module scope |
-| Build | Special configuration | Standard workflow |
-| Learning | Framework-specific APIs | Standard syntax |
+| Dimension | Traditional Solutions | Esmx |
+|-----------|----------------------|------|
+| Runtime | Dependency Injection/Sandbox | Native ESM |
+| Isolation | Custom Sandbox | Module Scoping |
+| Build | Special Configuration | Standard Process |
+| Learning | Framework-specific APIs | Standard Syntax |

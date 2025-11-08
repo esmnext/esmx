@@ -1,34 +1,34 @@
 ---
 titleSuffix: "Framework Core Class API Reference"
-description: "Detailed introduction to the Esmx framework’s core class API, including application lifecycle management, static asset handling, and server-side rendering capabilities, helping developers understand the core features."
+description: "Detailed introduction to Esmx framework's core class API, including application lifecycle management, static resource handling, and server-side rendering capabilities, helping developers deeply understand the framework's core functionality."
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, API, lifecycle management, static assets, server-side rendering, Rspack, Web application framework"
+      content: "Esmx, API, lifecycle management, static resources, server-side rendering, Rspack, Web application framework"
 ---
 
 # Esmx
 
 ## Introduction
 
-Esmx is a high-performance web application framework built on Rspack. It provides complete application lifecycle management, static asset handling, and server-side rendering capabilities.
+Esmx is a high-performance web application framework based on Rspack, providing complete application lifecycle management, static resource handling, and server-side rendering capabilities.
 
 ## Type Definitions
 
 ### BuildEnvironment
 
-- Type:
+- **Type Definition**:
 ```ts
 type BuildEnvironment = 'client' | 'server'
 ```
 
-Runtime environment type:
-- `client`: runs in the browser, supports DOM operations and browser APIs
-- `server`: runs in Node.js, supports file system and server-side features
+Application runtime environment types:
+- `client`: Runs in the browser environment, supporting DOM operations and browser APIs
+- `server`: Runs in the Node.js environment, supporting file system and server-side functionality
 
 ### ImportMap
 
-- Type:
+- **Type Definition**:
 ```ts
 type ImportMap = {
   imports?: SpecifierMap
@@ -36,29 +36,29 @@ type ImportMap = {
 }
 ```
 
-ES module import map type.
+ES module import mapping type.
 
 #### SpecifierMap
 
-- Type:
+- **Type Definition**:
 ```ts
 type SpecifierMap = Record<string, string>
 ```
 
-Module specifier mapping type that defines import path mappings.
+Module specifier mapping type, used to define module import path mappings.
 
 #### ScopesMap
 
-- Type:
+- **Type Definition**:
 ```ts
 type ScopesMap = Record<string, SpecifierMap>
 ```
 
-Scope mapping type that defines module import mappings under specific scopes.
+Scope mapping type, used to define module import mappings within specific scopes.
 
 ### COMMAND
 
-- Type:
+- **Type Definition**:
 ```ts
 enum COMMAND {
     dev = 'dev',
@@ -68,11 +68,11 @@ enum COMMAND {
 }
 ```
 
-Command type enum:
-- `dev`: development command, starts the dev server with HMR
-- `build`: build command, produces production build outputs
-- `preview`: preview command, starts a local preview server
-- `start`: start command, runs the production server
+Command type enumeration:
+- `dev`: Development environment command, starts the development server with hot reload support
+- `build`: Build command, generates production build artifacts
+- `preview`: Preview command, starts a local preview server
+- `start`: Start command, runs the production environment server
 
 ## Instance Options
 
@@ -93,44 +93,44 @@ interface EsmxOptions {
 
 #### root
 
-- Type: `string`
-- Default: `process.cwd()`
+- **Type**: `string`
+- **Default**: `process.cwd()`
 
-Project root directory path. Can be absolute or relative; relative paths are resolved against the current working directory.
+Project root directory path. Can be an absolute or relative path; relative paths are resolved based on the current working directory.
 
 #### isProd
 
-- Type: `boolean`
-- Default: `process.env.NODE_ENV === 'production'`
+- **Type**: `boolean`
+- **Default**: `process.env.NODE_ENV === 'production'`
 
-Environment flag.
-- `true`: production environment
-- `false`: development environment
+Environment identifier.
+- `true`: Production environment
+- `false`: Development environment
 
 #### basePathPlaceholder
 
-- Type: `string | false`
-- Default: `'[[[___ESMX_DYNAMIC_BASE___]]]'`
+- **Type**: `string | false`
+- **Default**: `'[[[___ESMX_DYNAMIC_BASE___]]]'`
 
-Base path placeholder configuration. Used to dynamically replace the base path for assets at runtime. Set to `false` to disable.
+Base path placeholder configuration. Used for runtime dynamic replacement of resource base paths. Set to `false` to disable this feature.
 
 #### modules
 
-- Type: `ModuleConfig`
+- **Type**: `ModuleConfig`
 
-Module configuration options. Configure module resolution rules such as aliases and external dependencies.
+Module configuration options. Used to configure project module resolution rules, including module aliases, external dependencies, etc.
 
 #### packs
 
-- Type: `PackConfig`
+- **Type**: `PackConfig`
 
-Packaging configuration options. Packages build outputs into standard npm `.tgz` packages.
+Packaging configuration options. Used to package build artifacts into standard npm .tgz format packages.
 
 #### devApp
 
-- Type: `(esmx: Esmx) => Promise<App>`
+- **Type**: `(esmx: Esmx) => Promise<App>`
 
-Development environment app creation function. Used only in development to create the dev server app instance.
+Development environment application creation function. Only used in the development environment to create development server application instances.
 
 ```ts title="entry.node.ts"
 export default {
@@ -146,9 +146,9 @@ export default {
 
 #### server
 
-- Type: `(esmx: Esmx) => Promise<void>`
+- **Type**: `(esmx: Esmx) => Promise<void>`
 
-Server startup configuration function. Configures and starts an HTTP server, usable in both development and production.
+Server startup configuration function. Used to configure and start the HTTP server, available in both development and production environments.
 
 ```ts title="entry.node.ts"
 export default {
@@ -169,67 +169,67 @@ export default {
 
 #### postBuild
 
-- Type: `(esmx: Esmx) => Promise<void>`
+- **Type**: `(esmx: Esmx) => Promise<void>`
 
-Post-build handler executed after the project build completes. Useful for:
-- extra asset processing
-- deployment operations
-- generating static files
-- sending build notifications
+Post-build processing function. Executed after project build completion, can be used for:
+- Executing additional resource processing
+- Deployment operations
+- Generating static files
+- Sending build notifications
 
 ## Instance Properties
 
 ### name
 
-- Type: `string`
-- Readonly: `true`
+- **Type**: `string`
+- **Read-only**: `true`
 
-Current module name from the module configuration.
+Current module name, sourced from the module configuration.
 
 ### varName
 
-- Type: `string`
-- Readonly: `true`
+- **Type**: `string`
+- **Read-only**: `true`
 
-Valid JavaScript variable name derived from the module name.
+Legal JavaScript variable name generated based on the module name.
 
 ### root
 
-- Type: `string`
-- Readonly: `true`
+- **Type**: `string`
+- **Read-only**: `true`
 
-Absolute path to the project root. If `root` is relative, it is resolved from the current working directory.
+Absolute path of the project root directory. If the configured `root` is a relative path, it's resolved based on the current working directory.
 
 ### isProd
 
-- Type: `boolean`
-- Readonly: `true`
+- **Type**: `boolean`
+- **Read-only**: `true`
 
-Indicates whether the current environment is production. Prefers the `isProd` option; otherwise derives from `process.env.NODE_ENV`.
+Determines if the current environment is production. Prioritizes `isProd` from the configuration; if not configured, determines based on `process.env.NODE_ENV`.
 
 ### basePath
 
-- Type: `string`
-- Readonly: `true`
-- Throws: `NotReadyError` when the framework is not initialized
+- **Type**: `string`
+- **Read-only**: `true`
+- **Throws**: `NotReadyError` - When framework is not initialized
 
-Returns the module base path that begins and ends with a slash. The format is `/${name}/` where `name` comes from the module configuration.
+Gets the module base path starting and ending with slashes. Returns format `/${name}/`, where name comes from the module configuration.
 
 ### basePathPlaceholder
 
-- Type: `string`
-- Readonly: `true`
+- **Type**: `string`
+- **Read-only**: `true`
 
-Returns the base path placeholder used for runtime replacement. Can be disabled via configuration.
+Gets the base path placeholder for runtime dynamic replacement. Can be disabled through configuration.
 
 ### middleware
 
-- Type: `Middleware`
-- Readonly: `true`
+- **Type**: `Middleware`
+- **Read-only**: `true`
 
-Returns the static asset handling middleware. Provides different implementations for each environment:
-- development: supports source compilation and HMR
-- production: supports long-term caching of static assets
+Gets the static resource handling middleware. Provides different implementations based on the environment:
+- Development environment: Supports source code real-time compilation and hot reloading
+- Production environment: Supports long-term caching of static resources
 
 ```ts
 const server = http.createServer((req, res) => {
@@ -242,12 +242,12 @@ const server = http.createServer((req, res) => {
 
 ### render
 
-- Type: `(options?: RenderContextOptions) => Promise<RenderContext>`
-- Readonly: `true`
+- **Type**: `(options?: RenderContextOptions) => Promise<RenderContext>`
+- **Read-only**: `true`
 
-Returns the server-side rendering function. Environment-specific behaviors:
-- development: supports HMR and live preview
-- production: optimized rendering performance
+Gets the server-side rendering function. Provides different implementations based on the environment:
+- Development environment: Supports hot reloading and real-time preview
+- Production environment: Provides optimized rendering performance
 
 ```ts
 const rc = await esmx.render({
@@ -267,36 +267,36 @@ const rc = await esmx.render({
 
 ### COMMAND
 
-- Type: `typeof COMMAND`
-- Readonly: `true`
+- **Type**: `typeof COMMAND`
+- **Read-only**: `true`
 
-Provides the command enum type definition.
+Gets the command enumeration type definition.
 
 ### moduleConfig
 
-- Type: `ParsedModuleConfig`
-- Readonly: `true`
-- Throws: `NotReadyError` when the framework is not initialized
+- **Type**: `ParsedModuleConfig`
+- **Read-only**: `true`
+- **Throws**: `NotReadyError` - When framework is not initialized
 
-Returns the full module configuration, including resolution rules and alias settings.
+Gets complete configuration information of the current module, including module resolution rules, alias configuration, etc.
 
 ### packConfig
 
-- Type: `ParsedPackConfig`
-- Readonly: `true`
-- Throws: `NotReadyError` when the framework is not initialized
+- **Type**: `ParsedPackConfig`
+- **Read-only**: `true`
+- **Throws**: `NotReadyError` - When framework is not initialized
 
-Returns the packaging-related configuration, including output paths and `package.json` processing.
+Gets packaging-related configuration of the current module, including output paths, package.json processing, etc.
 
 ## Instance Methods
 
 ### constructor()
 
-- Parameters:
-  - `options?: EsmxOptions` – framework configuration options
-- Returns: `Esmx`
+- **Parameters**: 
+  - `options?: EsmxOptions` - Framework configuration options
+- **Returns**: `Esmx`
 
-Creates an Esmx framework instance.
+Create Esmx framework instance.
 
 ```ts
 const esmx = new Esmx({
@@ -307,21 +307,22 @@ const esmx = new Esmx({
 
 ### init()
 
-- Parameters: `command: COMMAND`
-- Returns: `Promise<boolean>`
-- Throws:
-  - `Error`: when initialized repeatedly
-  - `NotReadyError`: when accessing an uninitialized instance
+- **Parameters**: `command: COMMAND`
+- **Returns**: `Promise<boolean>`
+- **Throws**:
+  - `Error`: When initialized repeatedly
+  - `NotReadyError`: When accessing uninitialized instance
 
-Initializes the Esmx framework instance. Performs the following core steps:
+Initializes the Esmx framework instance. Executes the following core initialization process:
 
-1. Parse project configuration (`package.json`, module config, pack config)
-2. Create the app instance (development or production)
-3. Execute lifecycle functions according to the command
+1. Parse project configuration (package.json, module configuration, packaging configuration, etc.)
+2. Create application instance (development environment or production environment)
+3. Execute corresponding lifecycle methods based on command
 
 ::: warning Note
-- Throws an error on repeated initialization
+- Throws an error when initialized repeatedly
 - Throws `NotReadyError` when accessing an uninitialized instance
+
 :::
 
 ```ts
@@ -335,12 +336,12 @@ await esmx.init(COMMAND.dev);
 
 ### destroy()
 
-- Returns: `Promise<boolean>`
+- **Returns**: `Promise<boolean>`
 
-Destroys the Esmx framework instance, performing resource cleanup and connection shutdown. Commonly used for:
-- closing the dev server
-- cleaning temporary files and caches
-- releasing system resources
+Destroys the Esmx framework instance, executing resource cleanup and connection closing operations. Mainly used for:
+- Closing the development server
+- Cleaning temporary files and cache
+- Releasing system resources
 
 ```ts
 process.once('SIGTERM', async () => {
@@ -351,16 +352,16 @@ process.once('SIGTERM', async () => {
 
 ### build()
 
-- Returns: `Promise<boolean>`
+- **Returns**: `Promise<boolean>`
 
 Executes the application build process, including:
-- compiling source code
-- producing production build outputs
-- optimizing and minifying code
-- generating resource manifests
+- Compiling source code
+- Generating production environment build artifacts
+- Optimizing and compressing code
+- Generating resource manifest
 
 ::: warning Note
-Throws `NotReadyError` if called before the framework is initialized.
+Throws `NotReadyError` when called on uninitialized framework instance
 :::
 
 ```ts title="entry.node.ts"
@@ -380,12 +381,12 @@ export default {
 
 ### server()
 
-- Returns: `Promise<void>`
-- Throws: `NotReadyError` when the framework is not initialized
+- **Returns**: `Promise<void>`
+- **Throws**: `NotReadyError` - When framework is not initialized
 
-Starts the HTTP server and configures the server instance. Invoked in these lifecycles:
-- development (`dev`): starts the dev server with HMR
-- production (`start`): starts the production server with production-grade performance
+Starts the HTTP server and configures the server instance. Called in the following lifecycles:
+- Development environment (dev): Starts the development server, provides hot reloading
+- Production environment (start): Starts the production server, provides production-level performance
 
 ```ts title="entry.node.ts"
 export default {
@@ -408,13 +409,13 @@ export default {
 
 ### postBuild()
 
-- Returns: `Promise<boolean>`
+- **Returns**: `Promise<boolean>`
 
-Executes post-build logic, useful for:
-- generating static HTML files
-- processing build outputs
-- running deployment tasks
-- sending build notifications
+Executes post-build processing logic, used for:
+- Generating static HTML files
+- Processing build artifacts
+- Executing deployment tasks
+- Sending build notifications
 
 ```ts title="entry.node.ts"
 export default {
@@ -437,28 +438,28 @@ export default {
 
 ### resolvePath
 
-Resolves project paths, converting relative paths to absolute ones.
+Resolves project paths, converting relative paths to absolute paths.
 
-- Parameters:
-  - `projectPath: ProjectPath` – project path type
-  - `...args: string[]` – path segments
-- Returns: `string` – resolved absolute path
+- **Parameters**:
+  - `projectPath: ProjectPath` - Project path type
+  - `...args: string[]` - Path fragments
+- **Returns**: `string` - Resolved absolute path
 
-- Example:
+- **Example**:
 ```ts
 const htmlPath = esmx.resolvePath('dist/client', 'index.html');
 ```
 
 ### writeSync()
 
-Synchronously writes file contents.
+Synchronously writes file content.
 
-- Parameters:
-  - `filepath`: `string` – absolute file path
-  - `data`: `any` – data to write, string, Buffer, or object
-- Returns: `boolean` – whether the write succeeded
+- **Parameters**:
+  - `filepath`: `string` - Absolute path of file
+  - `data`: `any` - Data to write, can be string, Buffer, or object
+- **Returns**: `boolean` - Whether write was successful
 
-- Example:
+- **Example**:
 ```ts title="src/entry.node.ts"
 
 async postBuild(esmx) {
@@ -469,15 +470,15 @@ async postBuild(esmx) {
 
 ### readJsonSync()
 
-Synchronously reads and parses a JSON file.
+Synchronously reads and parses JSON files.
 
-- Parameters:
-  - `filename`: `string` – absolute path to the JSON file
+- **Parameters**:
+  - `filename`: `string` - Absolute path of JSON file
 
-- Returns: `any` – parsed JSON object
-- Exceptions: throws when the file does not exist or JSON is invalid
+- **Returns**: `any` - Parsed JSON object
+- **Exception**: Throws exception when file doesn't exist or JSON format is invalid
 
-- Example:
+- **Example**:
 ```ts title="src/entry.node.ts"
 async server(esmx) {
   const manifest = esmx.readJsonSync(esmx.resolvePath('dist/client', 'manifest.json'));
@@ -486,15 +487,15 @@ async server(esmx) {
 
 ### readJson()
 
-Asynchronously reads and parses a JSON file.
+Asynchronously reads and parses JSON files.
 
-- Parameters:
-  - `filename`: `string` – absolute path to the JSON file
+- **Parameters**:
+  - `filename`: `string` - Absolute path of JSON file
 
-- Returns: `Promise<any>` – parsed JSON object
-- Exceptions: throws when the file does not exist or JSON is invalid
+- **Returns**: `Promise<any>` - Parsed JSON object
+- **Exception**: Throws exception when file doesn't exist or JSON format is invalid
 
-- Example:
+- **Example**:
 ```ts title="src/entry.node.ts"
 async server(esmx) {
   const manifest = await esmx.readJson(esmx.resolvePath('dist/client', 'manifest.json'));
@@ -503,28 +504,30 @@ async server(esmx) {
 
 ### getManifestList()
 
-Retrieves the build manifest list.
+Get build manifest list.
 
-- Parameters:
-  - `target`: `BuildEnvironment` – target environment
-    - `'client'`: client environment
-    - `'server'`: server environment
+- **Parameters**:
+  - `target`: `BuildEnvironment` - Target environment type
+    - `'client'`: Client environment
+    - `'server'`: Server environment
 
-- Returns: `Promise<readonly ManifestJson[]>` – read-only build manifest list
-- Exceptions: throws `NotReadyError` when the framework is not initialized
+- **Returns**: `Promise<readonly ManifestJson[]>` - Read-only build manifest list
+- **Exception**: Throws `NotReadyError` when framework instance is not initialized
 
-Features:
-1. Caching
-   - uses internal caching to avoid duplicate loads
-   - returns immutable manifest lists
-2. Environment adaptation
-   - supports both client and server environments
-   - returns environment-specific manifest information
-3. Module mapping
-   - includes module export information
-   - records resource dependency relations
+This method gets build manifest list for specified target environment, includes following features:
+1. **Cache Management**
+   - Uses internal cache mechanism to avoid repeated loading
+   - Returns immutable manifest list
 
-- Example:
+2. **Environment Adaptation**
+   - Supports both client and server environments
+   - Returns corresponding manifest information based on target environment
+
+3. **Module Mapping**
+   - Contains module export information
+   - Records resource dependency relationships
+
+- **Example**:
 ```ts title="src/entry.node.ts"
 async server(esmx) {
   const manifests = await esmx.getManifestList('client');
@@ -539,29 +542,31 @@ async server(esmx) {
 
 ### getImportMap()
 
-Retrieves the import map object.
+Get import mapping object.
 
-- Parameters:
-  - `target`: `BuildEnvironment` – target environment
-    - `'client'`: generates an import map for the browser environment
-    - `'server'`: generates an import map for the server environment
+- **Parameters**:
+  - `target`: `BuildEnvironment` - Target environment type
+    - `'client'`: Generate import map for browser environment
+    - `'server'`: Generate import map for server environment
 
-- Returns: `Promise<Readonly<ImportMap>>` – read-only import map
-- Exceptions: throws `NotReadyError` when the framework is not initialized
+- **Returns**: `Promise<Readonly<ImportMap>>` - Read-only import mapping object
+- **Exception**: Throws `NotReadyError` when framework instance is not initialized
 
-Features:
-1. Module resolution
-   - generates module mappings from build manifests
-   - supports both client and server environments
-   - automatically resolves module paths
-2. Cache optimization
-   - uses internal caching
-   - returns immutable map objects
-3. Path handling
-   - automatically processes module paths
-   - supports dynamic base paths
+This method generates ES module import maps (Import Maps), with the following characteristics:
+1. **Module Resolution**
+   - Generates module mappings based on build manifests
+   - Supports both client and server environments
+   - Automatically handles module path resolution
 
-- Example:
+2. **Cache Optimization**
+   - Uses an internal cache mechanism
+   - Returns an immutable mapping object
+
+3. **Path Handling**
+   - Automatically handles module paths
+   - Supports dynamic base paths
+
+- **Example**:
 ```ts title="src/entry.node.ts"
 async server(esmx) {
   const importmap = await esmx.getImportMap('client');
@@ -583,14 +588,14 @@ async server(esmx) {
 
 ### getImportMapClientInfo()
 
-Retrieves client-side import map information.
+Get client import map information.
 
-- Parameters:
-  - `mode`: `ImportmapMode` – import map mode
-    - `'inline'`: inline mode, returns HTML script tag code
-    - `'js'`: JS file mode, returns file path info
+- **Parameters**:
+  - `mode`: `ImportmapMode` - Import map mode
+    - `'inline'`: Inline mode, returns HTML script tag
+    - `'js'`: JS file mode, returns information with file path
 
-- Returns:
+- **Returns**: 
   - JS file mode:
     ```ts
     {
@@ -608,25 +613,26 @@ Retrieves client-side import map information.
     }
     ```
 
-- Exceptions: throws `NotReadyError` when the framework is not initialized
+- **Exception**: Throws `NotReadyError` when framework instance is not initialized
 
-Supports two modes for generating client import map code:
-1. Inline mode
-   - inlines the import map directly into HTML
-   - reduces extra network requests
-   - suitable when the import map is small
-2. JS file mode
-   - generates a standalone JS file
-   - benefits from browser caching
-   - suitable when the import map is large
+This method generates import map code for the client environment, supporting two modes:
+1. **Inline Mode (inline)**
+   - Embeds the import map directly into HTML
+   - Reduces additional network requests
+   - Suitable for scenarios with small import maps
+
+2. **JS File Mode (js)**
+   - Generates an independent JS file
+   - Supports browser caching
+   - Suitable for scenarios with large import maps
 
 Core features:
-- handles dynamic base paths
-- supports runtime replacement of module paths
-- optimizes caching strategies
-- ensures module load order
+- Automatically handles dynamic base paths
+- Supports runtime replacement of module paths
+- Optimizes caching strategies
+- Ensures module loading order
 
-- Example:
+- **Example**:
 ```ts title="src/entry.node.ts"
 async server(esmx) {
   const server = express();
@@ -652,21 +658,20 @@ async server(esmx) {
 
 ### getStaticImportPaths()
 
-Retrieves the list of static import paths for a module.
+Gets the module's static import path list.
 
-- Parameters:
-  - `target`: `BuildEnvironment` – build target
-    - `'client'`: client environment
-    - `'server'`: server environment
-  - `specifier`: `string` – module specifier
+- **Parameters**:
+  - `target`: `BuildEnvironment` - Build target
+    - `'client'`: Client environment
+    - `'server'`: Server environment
+  - `specifier`: `string` - Module specifier
 
-- Returns: `Promise<readonly string[] | null>` – static import paths, or `null` if not found
-- Exceptions: throws `NotReadyError` when the framework is not initialized
+- **Returns**: `Promise<readonly string[] | null>` - Returns static import path list, returns null if not found
+- **Exception**: Throws `NotReadyError` when framework instance is not initialized
 
-- Example:
+- **Example**:
 ```ts
 const paths = await esmx.getStaticImportPaths(
   'client',
   `your-app-name/src/entry.client`
 );
-```
