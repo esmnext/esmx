@@ -1,5 +1,5 @@
 import type { RspackOptionsNormalized } from '@rspack/core';
-import type { ParsedModuleLinkPluginOptions } from './types';
+import type { ParsedModuleLinkPluginOptions } from '../types';
 
 export function initEntry(
     options: RspackOptionsNormalized,
