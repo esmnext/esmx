@@ -1,21 +1,21 @@
 ---
-titleSuffix: "Esmx Vue Build Tool"
-description: "Vue-focused build tool for Esmx, providing complete support for Vue 2/3 apps including component development and SSR."
+titleSuffix: "Esmx Framework Vue Build Tool"
+description: "Esmx framework's Vue-specific build tool, providing complete Vue 2/3 application build support, including component development, SSR rendering, and performance optimization."
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, Rspack, Vue, Vue2, Vue3, SSR, build tool, component, server-side rendering, performance"
+      content: "Esmx, Rspack, Vue, Vue2, Vue3, SSR, build tool, component development, server-side rendering, performance optimization"
 ---
 
 import { PackageManagerTabs } from '@theme';
 
 # @esmx/rspack-vue
 
-The Rspack Vue package provides APIs to create and configure Rspack apps based on Vue, supporting component development, builds, and server-side rendering.
+The Rspack Vue package provides a set of APIs for creating and configuring Vue-based Rspack applications, supporting Vue component development, building, and server-side rendering.
 
-## Install
+## Installation
 
-Install `@esmx/rspack-vue` as a dev dependency:
+Use package manager to install `@esmx/rspack-vue` as a development dependency:
 
 <PackageManagerTabs command="install @esmx/rspack-vue -D" />
 
@@ -27,10 +27,10 @@ Install `@esmx/rspack-vue` as a dev dependency:
 type BuildTarget = 'node' | 'client' | 'server'
 ```
 
-Target environment type used to configure build-specific optimizations:
-- `node`: code for Node.js runtime
-- `client`: code for browsers
-- `server`: code for server runtimes
+Build target environment type that defines the target environment for application builds, used to configure specific optimizations and features in the build process:
+- `node`: Build code to run in Node.js environment
+- `client`: Build code to run in browser environment
+- `server`: Build code to run in server environment
 
 ### RspackAppConfigContext
 
@@ -43,11 +43,11 @@ interface RspackAppConfigContext {
 }
 ```
 
-Context available within configuration hooks:
-- `esmx`: Esmx instance
-- `buildTarget`: current target (client/server/node)
+Rspack application configuration context interface provides context information accessible in configuration hook functions:
+- `esmx`: Esmx framework instance
+- `buildTarget`: Current build target (client/server/node)
 - `config`: Rspack configuration object
-- `options`: app options
+- `options`: Application configuration options
 
 ### RspackAppOptions
 
@@ -68,18 +68,18 @@ interface RspackAppOptions {
 }
 ```
 
-Options for Rspack apps:
-- `css`: output mode ('css' for separate files, 'js' inline). Defaults to 'css' in production; 'js' in development for HMR
-- `loaders`: custom loader configuration
-- `styleLoader`: options for style-loader
-- `cssLoader`: options for css-loader
-- `target`: compatibility targets
-- `definePlugin`: global constant definitions
-- `config`: configuration hook
+Rspack application configuration options interface:
+- `css`: CSS output method, optional 'css' (separate file) or 'js' (bundled into JS), defaults to automatic selection based on environment: production uses 'css' to optimize caching and parallel loading, development uses 'js' to support HMR
+- `loaders`: Custom loader configuration
+- `styleLoader`: style-loader configuration options
+- `cssLoader`: css-loader configuration options
+- `target`: Build target compatibility configuration
+- `definePlugin`: Global constant definitions
+- `config`: Configuration hook function
 
 ### RspackHtmlAppOptions
 
-Extends `RspackAppOptions` with HTML-app specific options.
+Inherits from `RspackAppOptions`, used to configure specific options for HTML applications.
 
 ## Function Exports
 
@@ -89,14 +89,14 @@ Extends `RspackAppOptions` with HTML-app specific options.
 function createRspackApp(esmx: Esmx, options?: RspackAppOptions): Promise<App>
 ```
 
-Creates a standard Rspack app instance.
+Creates a standard Rspack application instance.
 
-Parameters:
-- `esmx`: Esmx instance
-- `options`: Rspack app options
+**Parameters:**
+- `esmx`: Esmx framework instance
+- `options`: Rspack application configuration options
 
-Returns:
-- `Promise<App>` resolving to the created app
+**Returns:**
+- Returns a Promise that resolves to the created application instance
 
 ### createRspackHtmlApp
 
@@ -104,14 +104,14 @@ Returns:
 function createRspackHtmlApp(esmx: Esmx, options?: RspackHtmlAppOptions): Promise<App>
 ```
 
-Creates an HTML-type Rspack app instance.
+Creates an HTML-type Rspack application instance.
 
-Parameters:
-- `esmx`: Esmx instance
-- `options`: HTML app options
+**Parameters:**
+- `esmx`: Esmx framework instance
+- `options`: HTML application configuration options
 
-Returns:
-- `Promise<App>` resolving to the created app
+**Returns:**
+- Returns a Promise that resolves to the created HTML application instance
 
 ## Constant Exports
 ### RSPACK_LOADER
@@ -128,16 +128,17 @@ const RSPACK_LOADER: Record<string, string> = {
 }
 ```
 
-Loader identifier map for commonly used loaders:
-- `builtinSwcLoader`: SWC loader for TS/JS files
-- `lightningcssLoader`: high-performance CSS compiler
-- `styleLoader`: injects CSS into the DOM
-- `cssLoader`: parses CSS and handles CSS modules
-- `lessLoader`: compiles Less to CSS
-- `styleResourcesLoader`: auto-imports global style resources (variables, mixins)
-- `workerRspackLoader`: handles Web Worker files
+Rspack built-in loader identifier mapping object that provides commonly used loader name constants:
 
-Example:
+- `builtinSwcLoader`: Rspack built-in SWC loader for processing TypeScript/JavaScript files
+- `lightningcssLoader`: Rspack built-in lightningcss loader, a high-performance compiler for processing CSS files
+- `styleLoader`: Loader that injects CSS into the DOM
+- `cssLoader`: Loader that parses CSS files and handles CSS modularization
+- `lessLoader`: Loader that compiles Less files to CSS
+- `styleResourcesLoader`: Loader that automatically imports global style resources (variables, mixins, etc.)
+- `workerRspackLoader`: Loader for processing Web Worker files
+
+Using these constants can reference built-in loaders in configuration, avoiding manual string input:
 
 ```ts title="src/entry.node.ts"
 import { RSPACK_LOADER } from '@esmx/rspack';
@@ -147,6 +148,7 @@ export default {
     return import('@esmx/rspack').then((m) =>
       m.createRspackHtmlApp(esmx, {
         loaders: {
+          // Use constants to reference loaders
           styleLoader: RSPACK_LOADER.styleLoader,
           cssLoader: RSPACK_LOADER.cssLoader,
           lightningcssLoader: RSPACK_LOADER.lightningcssLoader
@@ -157,8 +159,13 @@ export default {
 };
 ```
 
+**Notes:**
+- These loaders are already built into Rspack, requiring no additional installation
+- When customizing loader configuration, these constants can be used to replace default loader implementations
+- Some loaders (such as `builtinSwcLoader`) have specific configuration options; please refer to the corresponding configuration documentation
+
 ## Module Exports
 
 ### rspack
 
-Re-exports everything from `@rspack/core` to provide full Rspack capabilities.
+Re-exports all contents from `@rspack/core` package, providing complete Rspack core functionality.

@@ -1,18 +1,18 @@
 ---
 titleSuffix: "Esmx Team Blog"
-description: "Technical blog from the Esmx team sharing framework development experience, best practices, and innovations."
+description: "Esmx team's technical blog sharing framework development experience, best practices, and technical innovations."
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, team blog, tech sharing, best practices, development experience"
+      content: "Esmx, team blog, technical sharing, best practices, development experience"
 sidebar: false
 ---
 
 # Team Blog
 
-Welcome to the Esmx team blog! Here we share experiences from framework development, technical innovations, and best practices.
+Welcome to the Esmx team's technical blog! Here we share experiences, technical innovations, and best practices from our framework development process.
 
 ## Latest Articles
 
-- 2025-02-25 [From Component Sharing to Native Modularization: The Evolution of Esmx Micro-frontend Framework](./birth-of-esmx.md)
-  > Exploring Esmx’s journey from traditional component sharing to native ESM modularization, with practices in performance optimization, dependency management, and build tooling.
+- 2025-02-25 [From Component Sharing to Native Modularization: The Evolution of Esmx Micro-Frontend Framework](./birth-of-esmx.md)
+  > Explore the evolution of the Esmx framework from traditional component sharing to native modularization based on ESM, sharing technical insights and practical experiences in performance optimization, dependency management, and build tool selection.

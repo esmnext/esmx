@@ -1,23 +1,23 @@
 ---
-titleSuffix: "Static Asset Base Path Configuration"
-description: "Configure Esmx base paths for multi-env deployment, CDN distribution, and resource access, enabling flexible static asset management."
+titleSuffix: "Esmx Framework Static Resource Path Configuration Guide"
+description: "Detailed introduction to Esmx framework's base path configuration, including multi-environment deployment, CDN distribution, and resource access path settings, helping developers achieve flexible static resource management."
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, Base Path, CDN, Static Assets, Multi-env Deployment, Resource Management"
+      content: "Esmx, base path, Base Path, CDN, static resources, multi-environment deployment, resource management"
 ---
 
 # Base Path
 
-The base path is the prefix for static asset URLs (JavaScript, CSS, images). Proper base path configuration is vital for:
+Base Path refers to the access path prefix for static resources (such as JavaScript, CSS, images, etc.) in an application. In Esmx, proper base path configuration is crucial for the following scenarios:
 
-- **Multi-env deployment**: dev, test, prod resource access
-- **Multi-region deployment**: clusters across different regions or countries
-- **CDN distribution**: global distribution and acceleration
+- **Multi-Environment Deployment**: Supports resource access in different environments like development, testing, and production
+- **Multi-Region Deployment**: Adapts to cluster deployment needs in different regions or countries
+- **CDN Distribution**: Achieves global distribution and acceleration of static resources
 
 ## Default Path Mechanism
 
-Esmx auto-generates base paths from the service name. By default, it reads `package.json:name` and sets `/your-app-name/`.
+Esmx adopts an automatic path generation mechanism based on the service name. By default, the framework reads the `name` field in the project's `package.json` to generate the base path for static resources: `/your-app-name/`.
 
 ```json title="package.json"
 {
@@ -25,35 +25,35 @@ Esmx auto-generates base paths from the service name. By default, it reads `pack
 }
 ```
 
-Benefits:
+This convention-over-configuration design has the following advantages:
 
-- **Consistency**: unified access paths for assets
-- **Predictability**: infer paths from `name` field
-- **Maintainability**: no extra config needed
+- **Consistency**: Ensures all static resources use unified access paths
+- **Predictability**: Resource access paths can be inferred through the `name` field in `package.json`
+- **Maintainability**: No additional configuration needed, reducing maintenance costs
 
 ## Dynamic Path Configuration
 
-Deploy the same codebase across environments or regions by setting a dynamic base path.
+In real-world projects, we often need to deploy the same codebase to different environments or regions. Esmx provides support for dynamic base paths, enabling applications to adapt to various deployment scenarios.
 
-### Scenarios
+### Usage Scenarios
 
-#### Sub-directory deployment
+#### Secondary Directory Deployment
 ```
-- example.com      -> default site
+- example.com      -> Default main site
 - example.com/cn/  -> Chinese site
 - example.com/en/  -> English site
 ```
 
-#### Separate domain deployment
+#### Independent Domain Deployment
 ```
-- example.com    -> default site
+- example.com    -> Default main site
 - cn.example.com -> Chinese site
 - en.example.com -> English site
 ```
 
-### Configuration
+### Configuration Method
 
-Set the base path via `esmx.render()` based on the request context:
+You can dynamically set the base path based on the request context through the `base` parameter of the `esmx.render()` method:
 
 ```ts
 const render = await esmx.render({
@@ -62,4 +62,3 @@ const render = await esmx.render({
         url: req.url
     }
 });
-```

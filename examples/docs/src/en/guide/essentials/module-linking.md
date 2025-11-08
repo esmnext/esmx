@@ -1,28 +1,32 @@
 ---
-titleSuffix: "Module Linking"
-description: "Module Linking in Esmx: a zero-runtime micro frontend code sharing solution based on ESM standards."
+titleSuffix: "Esmx Inter-Module Code Sharing"
+description: "Esmx Module Linking: Zero-runtime micro-frontend code sharing solution based on ESM standards"
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, Module Linking, ESM, Code Sharing, Micro Frontends"
+      content: "Esmx, module linking, Module Linking, ESM, code sharing, micro-frontend"
 ---
 
 # Module Linking
 
-Module Linking is Esmx’s cross-application code sharing solution. It relies on native ESM so multiple apps can share modules without extra runtime libraries.
+Module Linking is a **cross-application code sharing solution** provided by Esmx. It is based on browser-native ESM (ECMAScript Modules) standards, allowing multiple applications to share code modules without requiring additional runtime libraries.
 
-## Key Advantages
+## Core Advantages
 
-- Zero runtime overhead
-- Efficient sharing via Import Maps
-- Version isolation across apps
-- Simple configuration compatible with native ESM
+- **Zero Runtime Overhead**: Directly uses browser-native ESM loader, without introducing any proxy or wrapper layer
+- **Efficient Sharing**: Resolves dependencies at compile time through Import Maps, with direct loading at runtime
+- **Version Isolation**: Supports different applications using different versions of the same module, avoiding conflicts
+- **Simple and Easy to Use**: Intuitive configuration, fully compatible with native ESM syntax
+
+In simple terms, module linking is a "module sharing manager" that allows different applications to safely and efficiently share code, as simple as using local modules.
 
 ## Quick Start
 
 ### Basic Example
 
-```ts
+Assume we have a shared module application (shared-modules) and a business application (business-app):
+
+```typescript
 export default {
   modules: {
     exports: [
@@ -40,9 +44,10 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-Usage:
+Usage in the business application:
 
-```ts
+```typescript
+// business-app/src/api/orders.ts
 import axios from 'axios';
 import { formatDate } from 'shared-modules/src/utils/format';
 
@@ -57,11 +62,16 @@ export async function fetchOrders() {
 
 ## Core Configuration
 
-Configuration lives under `modules` in `entry.node.ts`.
+Module linking configuration is located in the `modules` field of the `entry.node.ts` file, containing four core configuration items:
 
-### links
+### Module Linking (links)
 
-```ts
+`links` configuration specifies the paths where the current module links to other modules:
+
+```typescript
+// business-app/entry.node.ts
+import type { EsmxOptions } from '@esmx/core';
+
 export default {
   modules: {
     links: {
@@ -72,9 +82,12 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-### imports
+### Module Imports (imports)
 
-```ts
+`imports` configuration maps local module names to remote module identifiers, supporting standard imports and environment-specific configuration:
+
+```typescript
+// business-app/entry.node.ts
 export default {
   modules: {
     links: {
@@ -92,11 +105,18 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-### scopes
+### Scope Mapping (scopes)
 
-#### Directory scope mapping
+`scopes` configuration defines import mappings for specific directory scopes or package scopes, achieving version isolation and dependency replacement. Supports directory scope mapping and package scope mapping.
 
-```ts
+#### Directory Scope Mapping
+
+Directory scope mapping only affects module imports under specific directories, achieving version isolation between different directories.
+
+The following example shows how to use `scopes` configuration to specify different Vue versions for modules under the `vue2/` directory:
+
+```typescript
+// shared-modules/entry.node.ts  
 export default {
   modules: {
     scopes: {
@@ -109,9 +129,12 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-#### Package scope mapping
+#### Package Scope Mapping
 
-```ts
+Package scope mapping affects dependency resolution within specific packages, used for dependency replacement and version management:
+
+```typescript
+// shared-modules/entry.node.ts
 export default {
   modules: {
     scopes: {
@@ -123,9 +146,12 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-### exports
+### Module Exports (exports)
 
-```ts
+`exports` configuration defines what the module provides externally, only supports array format:
+
+```typescript
+// shared-modules/entry.node.ts
 export default {
   modules: {
     exports: [
@@ -142,17 +168,17 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-Prefix behavior:
-- `pkg:axios` keeps original package imports
-- `root:src/utils/date-utils.ts` rewrites to module-relative path
+**Prefix Processing Instructions**:
+- `pkg:axios` → Keeps original package name import, suitable for third-party npm packages
+- `root:src/utils/date-utils.ts` → Converts to module-relative path, suitable for project internal source modules
 
-`root:` supports `.js`, `.mjs`, `.cjs`, `.jsx`, `.mjsx`, `.cjsx`, `.ts`, `.mts`, `.cts`, `.tsx`, `.mtsx`, `.ctsx`. Extensions are removed; `pkg:` and bare strings keep extensions.
+**File Extension Support**: For `root:` prefix configuration, supports extensions like `.js`, `.mjs`, `.cjs`, `.jsx`, `.mjsx`, `.cjsx`, `.ts`, `.mts`, `.cts`, `.tsx`, `.mtsx`, `.ctsx`. Extensions are automatically removed during configuration. For `pkg:` prefix and normal string configuration, extensions are not removed.
 
-## Advanced
+## Advanced Configuration
 
-### Environment-differentiated builds
+### Environment-Differentiated Build
 
-```ts
+```typescript
 exports: [
   {
     'src/storage/db': {
@@ -169,14 +195,18 @@ exports: [
 ]
 ```
 
-### Mixed formats
+### Mixed Configuration Format
 
-```ts
+```typescript
 exports: [
   'pkg:axios',
   'root:src/utils/format.ts',
-  { 'api': './src/api/index.ts' },
-  { 'components': './src/components/index.ts' },
+  {
+    'api': './src/api/index.ts'
+  },
+  {
+    'components': './src/components/index.ts'
+  },
   {
     'storage': {
       client: './src/storage/browser.ts',
@@ -188,9 +218,12 @@ exports: [
 
 ## Complete Example
 
-### shared-modules
+Complete example based on actual project structure:
 
-```ts
+### Shared Module (shared-modules)
+
+```typescript
+// shared-modules/entry.node.ts
 import type { EsmxOptions } from '@esmx/core';
 
 export default {
@@ -213,9 +246,10 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-### vue3-app
+### Vue3 Application (vue3-app)
 
-```ts
+```typescript
+// vue3-app/entry.node.ts
 import type { EsmxOptions } from '@esmx/core';
 
 export default {
@@ -235,9 +269,10 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-### vue2-app
+### Vue2 Application (vue2-app)
 
-```ts
+```typescript
+// vue2-app/entry.node.ts
 import type { EsmxOptions } from '@esmx/core';
 
 export default {
@@ -257,9 +292,10 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-### business-app
+### Aggregation Application (business-app)
 
-```ts
+```typescript
+// business-app/entry.node.ts
 import type { EsmxOptions } from '@esmx/core';
 
 export default {
@@ -276,8 +312,10 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-This composition demonstrates:
-- **Shared modules**: provide multi-version framework support with version isolation via scope mappings
-- **Vue3 app**: uses Vue 3 and exports only route configuration
-- **Vue2 app**: dedicated Vue 2 app that exports only route configuration
-- **Aggregator app**: unified entry orchestrating different versions and coordinating imports
+This configuration demonstrates:
+- **Shared Module**: Provides multi-version framework support, achieves version isolation through scope mapping
+- **Vue3 Application**: Business application using Vue 3, only exports route configuration
+- **Vue2-Specific Application**: Business application specifically using Vue 2, only exports route configuration
+- **Aggregation Application**: Unified entry, coordinates sub-applications of different versions, includes complete Vue module imports
+
+Each module's configuration conforms to actual project usage scenarios, with clear dependency relationships, clear functional responsibilities, and accurate technical implementation.

@@ -1,66 +1,68 @@
 ---
 titleSuffix: "Glossary"
-description: "Core terms and unified translations for Esmx, consistent with packages."
+description: "Core terminology and unified translations for Esmx, ensuring consistency with packages."
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, Glossary, Module Linking, Micro Frontends, ESM, Import Maps"
+      content: "Esmx, glossary, Module Linking, micro-frontend, ESM, import map"
 ---
 
 # Glossary
 
+
+
 ## Module Linking
 
-Link multiple packages or modules at runtime using native ESM and Import Maps to achieve decoupling and collaboration.
+Uses native ESM and Import Maps to link multiple packages or modules at runtime, enabling decoupling and collaboration.
 
 ## ESM (ECMAScript Modules)
 
-Native module system for browsers and Node.js using `import`/`export` syntax.
+Native module mechanism for browsers and Node.js, using `import`/`export` syntax.
 
 ## Import Maps
 
-Native browser mechanism that controls path mapping and scoping for ESM modules.
+Native browser mechanism for controlling ESM module path mapping and scoping.
 
 ## Hydration
 
-Client-side activation after SSR to enable page interactivity.
+The process of activating page interactions on the client side after SSR.
 
 ## Middleware
 
-Abstraction for static assets and request handling.
+Abstract interface for static resource and request processing.
 
 ## Dependency Isolation
 
-Avoid dependency conflicts via Import Maps and module scoping to improve stability.
+Prevents dependency conflicts through Import Maps and module scoping, improving stability.
 
 ## Multi-Framework Integration
 
-Integrate multiple front-end frameworks in one project while keeping a framework-agnostic design.
+Integrates multiple frontend frameworks within the same project while maintaining a framework-agnostic design.
 
 ## Package Collaboration / Module Decoupling
 
-Enable independent development and runtime collaboration across packages via module linking.
+Enables independent package development and runtime collaboration through module linking.
 
 ## Micro Frontends
 
-Architecture that supports independent development and integration across multiple teams.
+Frontend architecture pattern supporting independent development and integration by multiple teams.
 
 ## Host Application
 
-Primary application that loads and schedules remote apps or modules.
+Core application that loads and orchestrates remote applications or modules.
 
 ## Remote Application/Module
 
-Sub-app or module loaded dynamically by the host.
+Sub-applications or modules that are dynamically loaded by the host application.
 
 ## Application
 
-Front-end subsystem that can run and be deployed independently.
+Frontend subsystem that can run and be deployed independently.
 
 ## Module
 
-Reusable functional unit that can be linked, such as component libraries and utility libraries.
+Functional unit that can be linked and reused, such as component libraries and utility libraries.
 
 ## Package
 
-npm package or monorepo subpackage, emphasizing publication units and physical structure.
+NPM package or Monorepo sub-package, emphasizing the publishing unit and physical structure.

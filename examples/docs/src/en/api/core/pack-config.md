@@ -1,19 +1,19 @@
 ---
 titleSuffix: "Esmx Framework Packaging Configuration API Reference"
-description: "PackConfig interface for packaging build outputs into npm .tgz, including outputs, package.json hook, lifecycle hooks, and usage to standardize builds."
+description: "Detailed introduction to Esmx framework's PackConfig configuration interface, including software package packaging rules, output configuration, and lifecycle hooks, helping developers implement standardized build processes."
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, PackConfig, package, build config, lifecycle hooks, packaging"
+      content: "Esmx, PackConfig, software package packaging, build configuration, lifecycle hooks, packaging configuration, Web application framework"
 ---
 
 # PackConfig
 
-`PackConfig` is the package configuration interface used to bundle build outputs into a standard npm `.tgz` package.
+`PackConfig` is the software package packaging configuration interface, used to package service build artifacts into standard npm .tgz format packages.
 
-- Standardized: uses npm-standard `.tgz` packaging
-- Complete: includes source, type declarations, and necessary config files
-- Compatible: fully compatible with the npm ecosystem and workflows
+- **Standardization**: Uses npm standard .tgz packaging format
+- **Completeness**: Contains all necessary files including module source code, type declarations, and configuration files
+- **Compatibility**: Fully compatible with npm ecosystem, supports standard package management workflows
 
 ## Type Definition
 
@@ -31,39 +31,39 @@ interface PackConfig {
 
 #### enable
 
-Whether to enable packaging. When enabled, build outputs are bundled into npm `.tgz` packages.
+Enables or disables packaging functionality. When enabled, build artifacts will be packaged into standard npm .tgz format packages.
 
 - Type: `boolean`
 - Default: `false`
 
 #### outputs
 
-Configure output package file paths:
-- `string`: single output path, e.g. `dist/versions/my-app.tgz`
-- `string[]`: multiple output paths for multiple versions
-- `boolean`: when `true`, uses default `dist/client/versions/latest.tgz`
+Specifies the output package file path. Supports the following configuration methods:
+- `string`: Single output path, e.g., 'dist/versions/my-app.tgz'
+- `string[]`: Multiple output paths, for generating multiple versions simultaneously
+- `boolean`: true uses the default path 'dist/client/versions/latest.tgz'
 
 #### packageJson
 
-Hook to customize `package.json` before packaging.
+Callback function to customize package.json content. Called before packaging, used to customize the package.json content.
 
-- Params:
-  - `esmx: Esmx` – Esmx instance
-  - `pkg: Record<string, any>` – original `package.json`
-- Returns: `Promise<Record<string, any>>` – modified `package.json`
+- Parameters:
+  - `esmx: Esmx` - Esmx instance
+  - `pkg: Record<string, any>` - Original package.json content
+- Returns: `Promise<Record<string, any>>` - Modified package.json content
 
 Common use cases:
-- Modify name and version
+- Modify package name and version
 - Add or update dependencies
 - Add custom fields
-- Configure publish-related info
+- Configure publishing-related information
 
 Example:
 ```ts
 packageJson: async (esmx, pkg) => {
   pkg.name = 'my-app';
   pkg.version = '1.0.0';
-  pkg.description = 'My application';
+  pkg.description = 'My App';
 
   pkg.dependencies = {
     'vue': '^3.0.0',
@@ -80,18 +80,18 @@ packageJson: async (esmx, pkg) => {
 
 #### onBefore
 
-Pre-packaging preparation hook.
+Pre-packaging preparation callback function.
 
-- Params:
-  - `esmx: Esmx`
-  - `pkg: Record<string, any>` – package.json content
+- Parameters:
+  - `esmx: Esmx` - Esmx instance
+  - `pkg: Record<string, any>` - package.json content
 - Returns: `Promise<void>`
 
 Common use cases:
-- Add extra files (README, LICENSE)
-- Run tests or build validations
-- Generate docs or metadata
-- Cleanup temporary files
+- Add additional files (README, LICENSE, etc.)
+- Execute tests or build validation
+- Generate documentation or metadata
+- Clean temporary files
 
 Example:
 ```ts
@@ -109,19 +109,19 @@ onBefore: async (esmx, pkg) => {
 
 #### onAfter
 
-Post-packaging hook. Called after `.tgz` is generated to handle the artifact.
+Post-packaging processing callback function. Called after .tgz file generation, used to process packaging artifacts.
 
-- Params:
-  - `esmx: Esmx`
-  - `pkg: Record<string, any>`
-  - `file: Buffer` – packaged file content
+- Parameters:
+  - `esmx: Esmx` - Esmx instance
+  - `pkg: Record<string, any>` - package.json content
+  - `file: Buffer` - Packaged file content
 - Returns: `Promise<void>`
 
 Common use cases:
 - Publish to npm registry (public or private)
-- Upload to static asset server
-- Perform version management
-- Trigger CI/CD pipelines
+- Upload to static resource server
+- Execute version management
+- Trigger CI/CD processes
 
 Example:
 ```ts
@@ -138,7 +138,7 @@ onAfter: async (esmx, pkg, file) => {
 }
 ```
 
-## Usage Example
+## Usage Examples
 
 ```ts title="entry.node.ts"
 import type { EsmxOptions } from '@esmx/core';
@@ -166,7 +166,7 @@ export default {
     },
 
     onBefore: async (esmx, pkg) => {
-      await fs.writeFile('dist/README.md', '# Your App\n\nModule export notes...');
+      await fs.writeFile('dist/README.md', '# Your App\n\nModule export instructions...');
       await runTypeCheck();
     },
 
@@ -178,4 +178,3 @@ export default {
     }
   }
 } satisfies EsmxOptions;
-```

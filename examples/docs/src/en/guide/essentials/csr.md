@@ -1,29 +1,29 @@
 ---
 titleSuffix: "Client-Side Rendering (CSR)"
-description: "CSR mechanism and build artifact generation in Esmx, suitable for scenarios where a server-side deployment is not available."
+description: "Esmx's client-side rendering mechanism and build artifact generation method, suitable for scenarios where server-side deployment is not possible."
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, Client-side Rendering, CSR, Static Build, Frontend Rendering, Serverless, Performance Optimization"
+      content: "Esmx, client-side rendering, CSR, static build, frontend rendering, serverless deployment, performance optimization"
 ---
 
 # Client-Side Rendering
 
-Client-Side Rendering (CSR) renders pages in the user's browser. When Node.js services are not available, generate a static `index.html` at build time to enable pure client-side rendering.
+Client-Side Rendering (CSR) executes page rendering in the browser. When a Node.js service cannot be deployed, static `index.html` can be generated during the build phase to achieve pure client-side rendering.
 
-## When to Use
+## Usage Scenarios
 
-Recommended scenarios:
+The following scenarios are recommended for using client-side rendering:
 
-- **Static hosting**: GitHub Pages, CDNs, and other hosts without SSR
-- **Simple apps**: small apps with low first-paint and SEO requirements
-- **Development**: quick preview and debugging during development
+- **Static Hosting Environments**: Hosting services that don't support server-side rendering, such as GitHub Pages, CDNs, etc.
+- **Simple Applications**: Small applications with minimal requirements for first-screen loading speed and SEO
+- **Development Environment**: Quickly preview and debug applications during development
 
-## Configuration
+## Configuration Instructions
 
-### HTML Template
+### HTML Template Configuration
 
-The template should inject resources in order: `preload` and `css` in `head`, `importmap`, `moduleEntry`, and `modulePreload` in `body`.
+The template should include resource injection and entry order: `preload` and `css` in `head`, while `importmap`, `moduleEntry`, and `modulePreload` should be in `body`.
 
 ```ts title="src/entry.server.ts"
 import type { RenderContext } from '@esmx/core';
@@ -51,7 +51,7 @@ export default async (rc: RenderContext) => {
 
 ### Static HTML Generation
 
-Generate static HTML files during the build with a `postBuild` hook:
+Static HTML files can be generated during the build phase through the `postBuild` hook:
 
 ```ts title="src/entry.node.ts"
 import type { EsmxOptions } from '@esmx/core';
@@ -65,4 +65,3 @@ export default {
         );
     }
 } satisfies EsmxOptions;
-```

@@ -66,7 +66,7 @@ sidebar: false
    - 优势：基于 ESM 的开发服务器，提供极致的开发体验
    - 挑战：开发环境和生产环境的构建差异，带来了一定的不确定性
 
-2. **[Rspack](https://rspack.dev/) 确立**
+2. **[Rspack](https://rspack.dev/) 确认**
    - 性能优势：基于 [Rust](https://www.rust-lang.org/) 的高性能编译，显著提升了构建速度
    - 生态支持：与 Webpack 生态的高度兼容性，降低了迁移成本
    - ESM 支持：通过 Rslib 项目的实践，验证了其在 ESM 构建方面的可靠性

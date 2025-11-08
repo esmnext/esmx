@@ -1,32 +1,32 @@
 ---
-titleSuffix: "Esmx Framework Render Context API Reference"
-description: "Detailed introduction to Esmx’s RenderContext core class, including rendering control, resource management, state synchronization, and routing control, helping developers implement efficient server-side rendering."
+titleSuffix: "Esmx Framework RenderContext API Reference"
+description: "Detailed introduction to Esmx framework's RenderContext core class, including rendering control, resource management, state synchronization, and routing control, helping developers implement efficient server-side rendering."
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, RenderContext, SSR, server-side rendering, render context, state synchronization, resource management, Web application framework"
+      content: "Esmx, RenderContext, SSR, server-side rendering, rendering context, state synchronization, resource management, Web application framework"
 ---
 
 # RenderContext
 
-RenderContext is a core class in the Esmx framework, responsible for managing the full lifecycle of server-side rendering (SSR). It provides a complete API to handle rendering context, resource management, state synchronization, and more:
+RenderContext is a core class in the Esmx framework, responsible for managing the complete lifecycle of server-side rendering (SSR). It provides a comprehensive API to handle rendering contexts, resource management, state synchronization, and other key tasks:
 
-- Rendering control: manages SSR flows, supports multi-entry and conditional rendering
-- Resource management: intelligently collects and injects static resources like JS and CSS to optimize load performance
-- State synchronization: serializes server-side state to ensure correct client hydration
-- Routing control: supports server-side redirects and status code settings
+- **Rendering Control**: Manages the server-side rendering flow, supporting multi-entry rendering, conditional rendering, and other scenarios
+- **Resource Management**: Intelligently collects and injects JS, CSS, and other static resources, optimizing loading performance
+- **State Synchronization**: Handles server-side state serialization, ensuring proper client-side hydration
+- **Routing Control**: Supports advanced features like server-side redirects and status code setting
 
 ## Type Definitions
 
 ### ServerRenderHandle
 
-Type definition for a server-side rendering handler.
+Type definition for server-side rendering handler function.
 
 ```ts
 type ServerRenderHandle = (rc: RenderContext) => Promise<void>;
 ```
 
-The server rendering handler is an async or sync function that receives a RenderContext instance to perform SSR logic.
+The server-side rendering handler function is an async or sync function that receives a RenderContext instance as a parameter, used to handle server-side rendering logic.
 
 ```ts title="entry.node.ts"
 export default async (rc: RenderContext) => {
@@ -42,7 +42,7 @@ export const simple = async (rc: RenderContext) => {
 
 ### RenderFiles
 
-Type definition for the list of resource files collected during rendering.
+Type definition for resource file list collected during rendering process.
 
 ```ts
 interface RenderFiles {
@@ -53,10 +53,10 @@ interface RenderFiles {
 }
 ```
 
-- js: JavaScript file list
-- css: stylesheet file list
-- modulepreload: ESM modules to preload
-- resources: other asset files (images, fonts, etc.)
+- **js**: JavaScript file list
+- **css**: Stylesheet file list
+- **modulepreload**: ESM module list that needs preloading
+- **resources**: Other resource file list (images, fonts, etc.)
 
 ```ts
 rc.files = {
@@ -81,26 +81,25 @@ rc.files = {
 
 ### ImportmapMode
 
-Defines the generation mode of the import map.
+Defines the generation mode for importmap.
 
 ```ts
 type ImportmapMode = 'inline' | 'js';
 ```
 
-- `inline`: inline the import map directly into HTML, suitable when:
-  - reducing HTTP requests is desired
-  - the import map is small
-  - first-screen performance is critical
-- `js`: generate the import map as a separate JS file, suitable when:
-  - the import map is large
-  - leveraging browser cache is preferred
-  - multiple pages share the same import map
+- `inline`: Embeds importmap content directly into HTML, suitable for:
+  - Reducing HTTP request count
+  - Small importmap content
+  - High requirements for first-screen loading performance
+- `js`: Generates importmap content as an independent JS file, suitable for:
+  - Large importmap content
+  - Utilizing browser caching mechanisms
+  - Multiple pages sharing the same importmap
 
-Rendering context class, responsible for resource management and HTML generation during SSR.
-
+Rendering context class, responsible for resource management and HTML generation in the server-side rendering (SSR) process.
 ## Instance Options
 
-Defines configuration options for the rendering context.
+Defines configuration options for rendering context.
 
 ```ts
 interface RenderContextOptions {
@@ -113,20 +112,20 @@ interface RenderContextOptions {
 
 #### base
 
-- Type: `string`
-- Default: `''`
+- **Type**: `string`
+- **Default**: `''`
 
-Base path for static assets.
-- all static resources (JS, CSS, images, etc.) load relative to this path
-- supports runtime dynamic configuration without rebuilding
-- commonly used in multilingual sites and micro-frontend applications
+Base path for static resources.
+- All static resources (JS, CSS, images, etc.) will be loaded based on this path
+- Supports runtime dynamic configuration without rebuilding
+- Commonly used in multi-language sites, micro-frontend applications, and other scenarios
 
 #### entryName
 
-- Type: `string`
-- Default: `'default'`
+- **Type**: `string`
+- **Default**: `'default'`
 
-Server-side render entry function name. Used when a module exports multiple rendering functions.
+Server-side rendering entry function name. Used to specify the entry function for server-side rendering, utilized when a module exports multiple rendering functions.
 
 ```ts title="src/entry.server.ts"
 export const mobile = async (rc: RenderContext) => {
@@ -138,10 +137,10 @@ export const desktop = async (rc: RenderContext) => {
 
 #### params
 
-- Type: `Record<string, any>`
-- Default: `{}`
+- **Type**: `Record<string, any>`
+- **Default**: `{}`
 
-Rendering parameters. Arbitrary data can be passed to the rendering function, commonly request info such as URL and query.
+Rendering parameters. Can pass parameters of any type to the rendering function, commonly used to pass request information (URL, query parameters, etc.).
 
 ```ts
 const rc = await esmx.render({
@@ -155,28 +154,29 @@ const rc = await esmx.render({
 
 #### importmapMode
 
-- Type: `'inline' | 'js'`
-- Default: `'inline'`
+- **Type**: `'inline' | 'js'`
+- **Default**: `'inline'`
 
 Import map generation mode:
-- `inline`: inline the import map into HTML
-- `js`: generate as a separate JS file
+- `inline`: Embeds importmap content directly into HTML
+- `js`: Generates importmap content as independent JS file
+
 
 ## Instance Properties
 
 ### esmx
 
-- Type: `Esmx`
-- Readonly: `true`
+- **Type**: `Esmx`
+- **Read-only**: `true`
 
-Reference to the Esmx instance. Provides access to core framework features and configuration.
+Reference to the Esmx instance. Used to access framework core functionality and configuration information.
 
 ### redirect
 
-- Type: `string | null`
-- Default: `null`
+- **Type**: `string | null`
+- **Default**: `null`
 
-Redirect location. When set, the server can perform an HTTP redirect. Common in login checks and access control.
+Redirect address. When set, the server can perform HTTP redirects based on this value, commonly used in login verification, permission control, and other scenarios.
 
 ```ts title="entry.node.ts"
 export default async (rc: RenderContext) => {
@@ -198,10 +198,10 @@ export default async (rc: RenderContext) => {
 
 ### status
 
-- Type: `number | null`
-- Default: `null`
+- **Type**: `number | null`
+- **Default**: `null`
 
-HTTP response status code. Set any valid HTTP status code, commonly for errors and redirects.
+HTTP response status code. Can set any valid HTTP status code, commonly used in error handling, redirects, and other scenarios.
 
 ```ts title="entry.node.ts"
 export default async (rc: RenderContext) => {
@@ -223,10 +223,10 @@ export default async (rc: RenderContext) => {
 
 ### html
 
-- Type: `string`
-- Default: `''`
+- **Type**: `string`
+- **Default**: `''`
 
-HTML content. Sets and retrieves the final generated HTML. When setting, the base path placeholder is handled automatically.
+HTML content. Used to set and get the final generated HTML content, automatically handling base path placeholders when setting.
 
 ```ts title="entry.node.ts"
 export default async (rc: RenderContext) => {
@@ -251,15 +251,16 @@ const rc = await esmx.render({
   base: '/app',
   params: { url: req.url }
 });
+
 ```
 
 ### base
 
-- Type: `string`
-- Readonly: `true`
-- Default: `''`
+- **Type**: `string`
+- **Read-only**: `true`
+- **Default**: `''`
 
-Base path for static assets. All static resources (JS, CSS, images, etc.) load based on this path and can be configured at runtime.
+Base path for static resources. All static resources (JS, CSS, images, etc.) will be loaded based on this path, supporting runtime dynamic configuration.
 
 ```ts
 const rc = await esmx.render({
@@ -280,13 +281,13 @@ const rc = await esmx.render({
 
 ### entryName
 
-- Type: `string`
-- Readonly: `true`
-- Default: `'default'`
+- **Type**: `string`
+- **Read-only**: `true`
+- **Default**: `'default'`
 
-Server-side render entry function name. Selects which function in `entry.server.ts` to use.
+Server-side rendering entry function name. Used to select which rendering function to use from entry.server.ts.
 
-```ts title="entry.node.ts"
+```ts title="src/entry.node.ts"
 export default async (rc: RenderContext) => {
 };
 
@@ -304,11 +305,11 @@ const rc = await esmx.render({
 
 ### params
 
-- Type: `Record<string, any>`
-- Readonly: `true`
-- Default: `{}`
+- **Type**: `Record<string, any>`
+- **Read-only**: `true`
+- **Default**: `{}`
 
-Rendering parameters. Can be passed and accessed during SSR, commonly request info and page configuration.
+Rendering parameters. Can pass and access parameters during the server-side rendering process, commonly used to pass request information, page configuration, etc.
 
 ```ts
 const rc = await esmx.render({
@@ -335,9 +336,9 @@ const rc = await esmx.render({
 
 ### importMetaSet
 
-- Type: `Set<ImportMeta>`
+- **Type**: `Set<ImportMeta>`
 
-Module dependency collection set. Automatically tracks and records module dependencies during component rendering, collecting only resources actually used for the current page render.
+Module dependency collection set. Automatically tracks and records module dependencies during component rendering, only collecting resources actually used in the current page rendering.
 
 ```ts
 const renderToString = (app: any, context: { importMetaSet: Set<ImportMeta> }) => {
@@ -352,13 +353,13 @@ const html = await renderToString(app, {
 
 ### files
 
-- Type: `RenderFiles`
+- **Type**: `RenderFiles`
 
 Resource file list:
-- js: JavaScript files
-- css: stylesheet files
-- modulepreload: ESM modules to preload
-- resources: other resources
+- js: JavaScript file list
+- css: Stylesheet file list
+- modulepreload: ESM module list that needs preloading
+- resources: Other resource file list (images, fonts, etc.)
 
 ```ts
 await rc.commit();
@@ -382,23 +383,24 @@ rc.html = `
 
 ### importmapMode
 
-- Type: `'inline' | 'js'`
-- Default: `'inline'`
+- **Type**: `'inline' | 'js'`
+- **Default**: `'inline'`
 
 Import map generation mode:
-- `inline`: inline the import map into HTML
-- `js`: generate as a JS file
+- `inline`: Embeds importmap content directly into HTML
+- `js`: Generates importmap content as an independent JS file
+
 
 ## Instance Methods
 
 ### serialize()
 
-- Parameters:
-  - `input: any`
-  - `options?: serialize.SerializeJSOptions`
-- Returns: `string`
+- **Parameters**: 
+  - `input: any` - Data to serialize
+  - `options?: serialize.SerializeJSOptions` - Serialization options
+- **Returns**: `string`
 
-Serializes a JavaScript object to a string. Used to safely embed state data into HTML during SSR.
+Serializes a JavaScript object to string. Used to serialize state data during server-side rendering, ensuring data can be safely embedded into HTML.
 
 ```ts
 const state = {
@@ -415,12 +417,12 @@ rc.html = `
 
 ### state()
 
-- Parameters:
-  - `varName: string`
-  - `data: Record<string, any>`
-- Returns: `string`
+- **Parameters**: 
+  - `varName: string` - Variable name
+  - `data: Record<string, any>` - State data
+- **Returns**: `string`
 
-Serializes and injects state data into HTML using a safe serialization method.
+Serializes state data and injects it into HTML. Uses a safe serialization method to handle data, supporting complex data structures.
 
 ```ts
 const userInfo = {
@@ -438,9 +440,9 @@ rc.html = `
 
 ### commit()
 
-- Returns: `Promise<void>`
+- **Returns**: `Promise<void>`
 
-Commits dependency collection and updates the resource lists. Collects all used modules from `importMetaSet` and resolves concrete resources via the manifest.
+Commits dependency collection and updates the resource list. Collects all used modules from importMetaSet, resolving specific resources for each module based on manifest files.
 
 ```ts
 const html = await renderToString(app, {
@@ -452,9 +454,9 @@ await rc.commit();
 
 ### preload()
 
-- Returns: `string`
+- **Returns**: `string`
 
-Generates resource preload tags for CSS and JavaScript with priority support and base path handling.
+Generates resource preload tags. Used to preload CSS and JavaScript resources, supports priority configuration, and automatically handles base paths.
 
 ```ts
 rc.html = `
@@ -476,9 +478,9 @@ rc.html = `
 
 ### css()
 
-- Returns: `string`
+- **Returns**: `string`
 
-Generates CSS link tags, injecting collected stylesheets in the correct order.
+Generates CSS stylesheet tags. Injects collected CSS files, ensuring stylesheets load in the correct order.
 
 ```ts
 rc.html = `
@@ -490,9 +492,9 @@ rc.html = `
 
 ### importmap()
 
-- Returns: `string`
+- **Returns**: `string`
 
-Generates the import map tag as configured by `importmapMode` (inline or external).
+Generates import map tags. Generates inline or external import maps based on the importmapMode configuration.
 
 ```ts
 rc.html = `
@@ -504,9 +506,9 @@ rc.html = `
 
 ### moduleEntry()
 
-- Returns: `string`
+- **Returns**: `string`
 
-Generates the client entry module tag. Must be injected after the import map.
+Generates client entry module tags. Injects the client entry module, must be executed after importmap.
 
 ```ts
 rc.html = `
@@ -520,9 +522,9 @@ rc.html = `
 
 ### modulePreload()
 
-- Returns: `string`
+- **Returns**: `string`
 
-Generates module preload tags to optimize first-screen load.
+Generates module preload tags. Preloads collected ESM modules, optimizing first-screen loading performance.
 
 ```ts
 rc.html = `
@@ -533,4 +535,3 @@ rc.html = `
     ${rc.modulePreload()}
   </body>
 `;
-```
