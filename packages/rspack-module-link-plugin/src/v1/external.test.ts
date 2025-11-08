@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
+import type { ParsedModuleLinkPluginOptions } from '../types';
 import { createExternals } from './external';
-import type { ParsedModuleLinkPluginOptions } from './types';
 
 function createOptions(
     options: Partial<ParsedModuleLinkPluginOptions> = {}

@@ -3,7 +3,7 @@ import type {
     ExternalItem,
     ExternalItemFunctionData
 } from '@rspack/core';
-import type { ParsedModuleLinkPluginOptions } from './types';
+import type { ParsedModuleLinkPluginOptions } from '../types';
 
 type ResolvePath = (
     request: string,

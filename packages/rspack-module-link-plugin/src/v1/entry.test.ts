@@ -1,7 +1,7 @@
 import type { EntryNormalized, RspackOptionsNormalized } from '@rspack/core';
 import { describe, expect, it } from 'vitest';
+import type { ParsedModuleLinkPluginOptions } from '../types';
 import { initEntry } from './entry';
-import type { ParsedModuleLinkPluginOptions } from './types';
 
 function createOptions(
     options: Partial<ParsedModuleLinkPluginOptions> = {}
