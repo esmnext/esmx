@@ -38,7 +38,7 @@ Basic build module, providing the following core capabilities:
 Vue framework-specific build module, providing:
 
 - **Vue Component Compilation**: Supports efficient compilation of Vue 2/3 components
-- **SSR Optimization**: Specific optimizations for server-side rendering scenarios
+- **SSR Optimization**: Specific optimizations for Server-Side Rendering scenarios
 - **Development Enhancements**: Specific feature enhancements for Vue development environment
 
 ## Build Process

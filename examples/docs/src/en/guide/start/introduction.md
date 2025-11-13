@@ -4,7 +4,7 @@ description: "Esmx is based on ECMAScript Modules (ESM) and Import Maps, support
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, micro-frontend, ESM, client-side rendering, CSR, server-side rendering, SSR, module linking"
+      content: "Esmx, Micro-Frontend, ESM, Client-Side Rendering, CSR, Server-Side Rendering, SSR, module linking"
 ---
 
 # Introduction
@@ -26,14 +26,14 @@ An engineering framework built on ESM and Import Maps, supporting both CSR/SSR a
 - Path resolution defined through Import Maps
 - Dependency isolation and version coexistence via standard mechanisms
 
-### Framework Agnostic
+### Framework-Agnostic
 - Compatible with Vue, React, Preact, Solid, Svelte, and more
 - Framework-agnostic design for components and builds
 - Flexible rendering entry points for different scenarios
 
 ### Build and Deployment
 - Base path configuration and hook mechanisms
-- Multi-language site and micro-frontend deployment support
+- Multi-language site and Micro-Frontend deployment support
 - Integrated engineering workflow with Rspack
 
 ## Core Concepts

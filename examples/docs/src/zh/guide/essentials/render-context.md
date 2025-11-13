@@ -9,7 +9,7 @@ head:
 
 # 渲染上下文
 
-RenderContext 负责服务端渲染过程中的资源管理与 HTML 生成，提供模块依赖收集与资源注入顺序约束。
+RenderContext 负责服务端渲染（SSR）过程中的资源管理与 HTML 生成，提供模块依赖收集与资源注入顺序约束。
 
 ## 使用方式
 
@@ -51,7 +51,7 @@ RenderContext 在组件渲染过程中收集模块与资源依赖，避免预加
 #### 性能优化
 - 避免加载未使用的模块，显著减少首屏加载时间
 - 精确控制资源加载顺序，优化页面渲染性能
-- 自动生成最优的导入映射（Import Map）
+- 自动生成最优的导入映射（Import Maps）
 - 支持资源预加载和按需加载策略
 
 ### 资源注入
@@ -59,9 +59,9 @@ RenderContext 在组件渲染过程中收集模块与资源依赖，避免预加
 RenderContext 提供了多个方法来注入不同类型的资源，每个方法都经过精心设计以优化资源加载性能：
 
 - `preload()`：预加载 CSS 和 JS 资源，支持优先级配置
-- `css()`：注入首屏样式表，支持关键 CSS 提取
-- `importmap()`：注入模块导入映射，支持动态路径解析
-- `moduleEntry()`：注入客户端入口模块，支持多入口配置
+ - `css()`：注入首屏样式表，支持关键 CSS 提取
+ - `importmap()`：注入模块导入映射（Import Maps），支持动态路径解析
+ - `moduleEntry()`：注入客户端入口模块，支持多入口配置
 - `modulePreload()`：预加载模块依赖，支持按需加载策略
 
 ### 资源注入顺序
@@ -136,7 +136,7 @@ const rc = await esmx.render({
 
 ### 导入映射模式
 
-RenderContext 提供了两种导入映射（Import Map）模式：
+RenderContext 提供了两种导入映射（Import Maps）模式：
 
 1. **Inline 模式**（默认）
    - 将导入映射直接内联到 HTML 中

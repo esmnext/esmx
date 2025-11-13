@@ -4,7 +4,7 @@ description: "Deep dive into Esmx framework's evolution from traditional micro-f
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, micro-frontend framework, ESM, Import Maps, Rspack, module linking, module federation, dependency management, performance optimization, technical evolution, server-side rendering"
+      content: "Esmx, micro-frontend framework, ESM, Import Maps, Rspack, module linking, module federation, dependency management, performance optimization, technical evolution, Server-Side Rendering"
 sidebar: false
 ---
 
@@ -38,11 +38,11 @@ In version 2.0, we adopted [Webpack 5.0](https://webpack.js.org/)'s [Module Fede
 
 ## Embracing the ESM New Era
 
-When planning version 3.0, we closely observed front-end ecosystem development trends and discovered that advances in browser native capabilities opened new possibilities for micro-frontend architecture:
+When planning version 3.0, we closely observed front-end ecosystem development trends and discovered that advances in browser native capabilities opened new possibilities for Micro-Frontend architecture:
 
 ### Standardized Module System
 
-With comprehensive support for ES Modules across mainstream browsers and the maturation of the Import Maps specification, frontend development has entered a true modular era. According to Can I Use statistics, native ESM support in mainstream browsers (Chrome >= 89, Edge >= 89, Firefox >= 108, Safari >= 16.4) has reached 93.5%, providing us with several key advantages:
+With comprehensive support for ECMAScript Modules (ESM) across mainstream browsers and the maturation of the Import Maps specification, frontend development has entered a true modular era. According to Can I Use statistics, native ESM support in mainstream browsers (Chrome >= 89, Edge >= 89, Firefox >= 108, Safari >= 16.4) has reached 93.5%, providing us with several key advantages:
 
 - **Standardized Dependency Management**: Import Maps provide browser-level module dependency resolution, eliminating the need for complex runtime injection
 - **Optimized Resource Loading**: Browser-native module caching mechanisms significantly improve resource loading efficiency
@@ -54,7 +54,7 @@ At the same time, through compatibility mode support (Chrome >= 64, Edge >= 79, 
 
 The native module system brings not only standardization, but more importantly, substantial improvements in both performance and isolation:
 
-- **Zero Runtime Overhead**: Eliminates JavaScript sandbox proxies and runtime injection found in traditional micro-frontend solutions
+- **Zero Runtime Overhead**: Eliminates JavaScript sandbox proxies and runtime injection found in traditional Micro-Frontend solutions
 - **Reliable Isolation**: ESM's strict module scope naturally provides the most robust isolation capabilities
 - **Precise Dependency Management**: Static import analysis makes dependency relationships clearer and version control more accurate
 
@@ -71,7 +71,7 @@ In the implementation process of the technical solution, the selection of build 
    - Ecosystem: High compatibility with the Webpack ecosystem reduces migration costs
    - ESM Support: Proven reliability in ESM builds through the Rslib project
 
-This decision enabled us to achieve more stable production environment support while maintaining an excellent development experience. By combining ESM with Rspack, we ultimately built a high-performance, minimally intrusive micro-frontend solution.
+This decision enabled us to achieve more stable production environment support while maintaining an excellent development experience. By combining ESM with Rspack, we ultimately built a high-performance, minimally intrusive Micro-Frontend solution.
 
 ## Future Outlook
 

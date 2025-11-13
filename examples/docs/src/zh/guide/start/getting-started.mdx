@@ -15,7 +15,9 @@ import { PackageManagerTabs } from '@theme';
 
 运行以下命令创建 Esmx 项目：
 
-<PackageManagerTabs command="create esmx my-app" />
+<PackageManagerTabs command="create esmx@latest my-app" />
+
+注：命令会根据你使用的包管理器自动适配；以下示例使用 npm 格式。
 
 ## 选择模板
 
@@ -36,13 +38,13 @@ import { PackageManagerTabs } from '@theme';
 你也可以通过 `-t` 或 `--template` 选项直接指定模板，跳过交互式选择：
 
 ```bash
-npm create esmx my-app --template vue-csr
+npm create esmx@latest my-app --template vue-csr
 ```
 
 ### 组合参数示例
 
 ```bash
-npm create esmx my-app --template vue-ssr --name my-project --force
+npm create esmx@latest my-app --template vue-ssr --name my-project --force
 ```
 
 ## 启动开发服务器
@@ -98,7 +100,7 @@ my-app/
 使用 `--force` 或 `-f` 选项强制覆盖现有目录：
 
 ```bash
-npm create esmx my-app --force
+npm create esmx@latest my-app --force
 ```
 
 ### 指定项目名称
@@ -106,5 +108,5 @@ npm create esmx my-app --force
 使用 `--name` 或 `-n` 选项指定项目名称：
 
 ```bash
-npm create esmx my-app --name my-project
+npm create esmx@latest my-app --name my-project
 ```

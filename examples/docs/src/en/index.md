@@ -5,7 +5,7 @@ description: "Esmx is based on ECMAScript Modules (ESM) and Import Maps, support
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, CSR, SSR, ESM, client-side rendering, server-side rendering, module linking, Vue, React, TypeScript, micro-frontend"
+      content: "Esmx, CSR, SSR, ESM, Client-Side Rendering, Server-Side Rendering, Module Linking, Vue, React, TypeScript, Micro-Frontend"
 hero:
   name: "Esmx"
   text: "Native ESM-Powered CSR/SSR and Module Linking"
@@ -26,7 +26,7 @@ features:
     title: "Module Linking"
     details: "Manage cross-package dependencies and versions with Import Maps, supporting runtime linking and scope mapping."
   - icon: "🧩"
-    title: "Framework Agnostic"
+    title: "Framework-Agnostic"
     details: "Compatible with Vue/React and other tech stacks, maintaining framework-agnostic design for components and builds."
   - icon: "🧱"
     title: "Build and Deployment"

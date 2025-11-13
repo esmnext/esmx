@@ -4,12 +4,12 @@ description: "RenderContext's resource management and HTML generation mechanism,
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, rendering context, RenderContext, SSR, server-side rendering, ESM, resource management"
+      content: "Esmx, rendering context, RenderContext, SSR, Server-Side Rendering, ESM, resource management"
 ---
 
-# Rendering Context
+# RenderContext
 
-RenderContext is responsible for resource management and HTML generation during server-side rendering, providing module dependency collection and resource injection order constraints.
+RenderContext is responsible for resource management and HTML generation during Server-Side Rendering, providing module dependency collection and resource injection order constraints.
 
 ## Usage
 
@@ -136,7 +136,7 @@ This mechanism is particularly suitable for the following scenarios:
 
 ### Import Map Mode
 
-RenderContext provides two import map modes:
+RenderContext provides two Import Map modes:
 
 1. **Inline Mode** (default)
    - Embeds import map directly into HTML
@@ -161,7 +161,7 @@ const rc = await esmx.render({
 
 ### Entry Function Configuration
 
-RenderContext supports specifying the server-side rendering entry function through the `entryName` configuration:
+RenderContext supports specifying the Server-Side Rendering entry function through the `entryName` configuration:
 
 ```ts title="src/entry.node.ts"
 const rc = await esmx.render({

@@ -1,17 +1,17 @@
 ---
 titleSuffix: "Esmx Framework RenderContext API Reference"
-description: "Detailed introduction to Esmx framework's RenderContext core class, including rendering control, resource management, state synchronization, and routing control, helping developers implement efficient server-side rendering."
+description: "Detailed introduction to Esmx framework's RenderContext core class, including rendering control, resource management, state synchronization, and routing control, helping developers implement efficient Server-Side Rendering."
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, RenderContext, SSR, server-side rendering, rendering context, state synchronization, resource management, Web application framework"
+      content: "Esmx, RenderContext, SSR, Server-Side Rendering, rendering context, state synchronization, resource management, Web application framework"
 ---
 
 # RenderContext
 
-RenderContext is a core class in the Esmx framework, responsible for managing the complete lifecycle of server-side rendering (SSR). It provides a comprehensive API to handle rendering contexts, resource management, state synchronization, and other key tasks:
+RenderContext is a core class in the Esmx framework, responsible for managing the complete lifecycle of Server-Side Rendering (SSR). It provides a comprehensive API to handle rendering contexts, resource management, state synchronization, and other key tasks:
 
-- **Rendering Control**: Manages the server-side rendering flow, supporting multi-entry rendering, conditional rendering, and other scenarios
+- **Rendering Control**: Manages the Server-Side Rendering flow, supporting multi-entry rendering, conditional rendering, and other scenarios
 - **Resource Management**: Intelligently collects and injects JS, CSS, and other static resources, optimizing loading performance
 - **State Synchronization**: Handles server-side state serialization, ensuring proper client-side hydration
 - **Routing Control**: Supports advanced features like server-side redirects and status code setting
@@ -20,13 +20,13 @@ RenderContext is a core class in the Esmx framework, responsible for managing th
 
 ### ServerRenderHandle
 
-Type definition for server-side rendering handler function.
+Type definition for Server-Side Rendering handler function.
 
 ```ts
 type ServerRenderHandle = (rc: RenderContext) => Promise<void>;
 ```
 
-The server-side rendering handler function is an async or sync function that receives a RenderContext instance as a parameter, used to handle server-side rendering logic.
+The Server-Side Rendering handler function is an async or sync function that receives a RenderContext instance as a parameter, used to handle Server-Side Rendering logic.
 
 ```ts title="entry.node.ts"
 export default async (rc: RenderContext) => {
@@ -96,7 +96,7 @@ type ImportmapMode = 'inline' | 'js';
   - Utilizing browser caching mechanisms
   - Multiple pages sharing the same importmap
 
-Rendering context class, responsible for resource management and HTML generation in the server-side rendering (SSR) process.
+Rendering context class, responsible for resource management and HTML generation in the Server-Side Rendering (SSR) process.
 ## Instance Options
 
 Defines configuration options for rendering context.
@@ -125,7 +125,7 @@ Base path for static resources.
 - **Type**: `string`
 - **Default**: `'default'`
 
-Server-side rendering entry function name. Used to specify the entry function for server-side rendering, utilized when a module exports multiple rendering functions.
+Server-Side Rendering entry function name. Used to specify the entry function for Server-Side Rendering, utilized when a module exports multiple rendering functions.
 
 ```ts title="src/entry.server.ts"
 export const mobile = async (rc: RenderContext) => {
@@ -285,7 +285,7 @@ const rc = await esmx.render({
 - **Read-only**: `true`
 - **Default**: `'default'`
 
-Server-side rendering entry function name. Used to select which rendering function to use from entry.server.ts.
+Server-Side Rendering entry function name. Used to select which rendering function to use from entry.server.ts.
 
 ```ts title="src/entry.node.ts"
 export default async (rc: RenderContext) => {
@@ -309,7 +309,7 @@ const rc = await esmx.render({
 - **Read-only**: `true`
 - **Default**: `{}`
 
-Rendering parameters. Can pass and access parameters during the server-side rendering process, commonly used to pass request information, page configuration, etc.
+Rendering parameters. Can pass and access parameters during the Server-Side Rendering process, commonly used to pass request information, page configuration, etc.
 
 ```ts
 const rc = await esmx.render({
@@ -400,7 +400,7 @@ Import map generation mode:
   - `options?: serialize.SerializeJSOptions` - Serialization options
 - **Returns**: `string`
 
-Serializes a JavaScript object to string. Used to serialize state data during server-side rendering, ensuring data can be safely embedded into HTML.
+Serializes a JavaScript object to string. Used to serialize state data during Server-Side Rendering, ensuring data can be safely embedded into HTML.
 
 ```ts
 const state = {

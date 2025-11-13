@@ -1,21 +1,21 @@
 ---
 titleSuffix: "Client-Side Rendering (CSR)"
-description: "Esmx's client-side rendering mechanism and build artifact generation method, suitable for scenarios where server-side deployment is not possible."
+description: "Esmx's Client-Side Rendering mechanism and build artifact generation method, suitable for scenarios where server-side deployment is not possible."
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, client-side rendering, CSR, static build, frontend rendering, serverless deployment, performance optimization"
+      content: "Esmx, Client-Side Rendering, CSR, static build, frontend rendering, serverless deployment, performance optimization"
 ---
 
 # Client-Side Rendering
 
-Client-Side Rendering (CSR) executes page rendering in the browser. When a Node.js service cannot be deployed, static `index.html` can be generated during the build phase to achieve pure client-side rendering.
+Client-Side Rendering (CSR) executes page rendering in the browser. When a Node.js service cannot be deployed, static `index.html` can be generated during the build phase to achieve pure Client-Side Rendering.
 
 ## Usage Scenarios
 
-The following scenarios are recommended for using client-side rendering:
+The following scenarios are recommended for using Client-Side Rendering:
 
-- **Static Hosting Environments**: Hosting services that don't support server-side rendering, such as GitHub Pages, CDNs, etc.
+- **Static Hosting Environments**: Hosting services that don't support Server-Side Rendering, such as GitHub Pages, CDNs, etc.
 - **Simple Applications**: Small applications with minimal requirements for first-screen loading speed and SEO
 - **Development Environment**: Quickly preview and debug applications during development
 

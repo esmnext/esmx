@@ -4,7 +4,7 @@ description: "Esmx 的核心术语与统一译法，确保与 packages 保持一
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, 术语表, 模块链接（Module Linking）, 微前端, ESM, import map"
+      content: "Esmx, 术语表, 模块链接（Module Linking）, 微前端, ESM, Import Maps"
 ---
 
 # 术语表
@@ -35,7 +35,7 @@ SSR 后在客户端激活页面交互的过程。
 
 通过 Import Maps 与模块作用域避免依赖冲突，提升稳定性。
 
-## 多框架混合
+## 多框架混合（框架无关）
 
 在同一项目中集成多种前端框架，保持框架中立设计。
 
@@ -43,7 +43,7 @@ SSR 后在客户端激活页面交互的过程。
 
 通过模块链接实现包独立开发与运行时协同。
 
-## 微前端（Micro Frontends）
+## 微前端（Micro-Frontends）
 
 支持多团队独立开发与集成的前端架构模式。
 
@@ -65,4 +65,4 @@ SSR 后在客户端激活页面交互的过程。
 
 ## 包（Package）
 
-NPM 包或 Monorepo 子包，强调发布单元与物理结构。
+npm 包或 Monorepo 子包，强调发布单元与物理结构。

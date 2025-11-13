@@ -32,8 +32,8 @@ interface ManifestJson {
 
 #### scopes
 
-- **类型**: `Record<string, Record<string, string>>`
-- **描述**: ImportMap 的作用域映射，key 为作用域前缀，value 为该作用域下的 `specifier -> resolved` 映射，用于运行时基于路径前缀匹配并解析依赖。
+- **类型**: `Record<string, Record<string, string>`
+- **描述**: 导入映射（Import Maps）的作用域映射，key 为作用域前缀，value 为该作用域下的 `specifier -> resolved` 映射，用于运行时基于路径前缀匹配并解析依赖。
 
 #### exports
 

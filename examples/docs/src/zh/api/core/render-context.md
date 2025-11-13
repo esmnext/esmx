@@ -81,7 +81,7 @@ rc.files = {
 
 ### ImportmapMode
 
-定义 importmap 的生成模式。
+定义导入映射（Import Maps）的生成模式。
 
 ```ts
 type ImportmapMode = 'inline' | 'js';
@@ -157,7 +157,7 @@ const rc = await esmx.render({
 - **类型**: `'inline' | 'js'`
 - **默认值**: `'inline'`
 
-导入映射（Import Map）的生成模式：
+导入映射（Import Maps）的生成模式：
 - `inline`: 将 importmap 内容直接内联到 HTML 中
 - `js`: 将 importmap 内容生成为独立的 JS 文件
 
