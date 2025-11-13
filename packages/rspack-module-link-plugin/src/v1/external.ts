@@ -86,9 +86,16 @@ export function initExternal(
     const { init, match } = createExternals(opts);
     const defaultContext = compiler.options.context ?? process.cwd();
 
+    const FILE_EXT_REGEX =
+        /\.worker\.(js|mjs|cjs|jsx|mjsx|cjsx|ts|mts|cts|tsx|mtsx|ctsx)$/i;
     externals.push(async (data: ExternalItemFunctionData) => {
-        if (!data.request || !data.context || !data.contextInfo?.issuer) return;
-
+        if (
+            !data.request ||
+            !data.context ||
+            !data.contextInfo?.issuer ||
+            FILE_EXT_REGEX.test(data.contextInfo.issuer)
+        )
+            return;
         const resolvePath: ResolvePath = async (
             request: string,
             context = defaultContext
