@@ -13,7 +13,11 @@ This document describes the environment requirements for using this framework, i
 
 ## Node.js Environment
 
-Requires Node.js version `>= 24` to support type imports and runtime capabilities, reducing additional compilation steps.
+Requires Node.js version `>= 24`.
+
+::: warning Note
+Lower versions (< 24) are not supported. Installing dependencies will fail.
+:::
 
 ## Browser Compatibility
 

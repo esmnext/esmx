@@ -1,15 +1,15 @@
 ---
 titleSuffix: "Esmx Framework Application Abstract Interface"
-description: "Detailed introduction to Esmx framework's App interface, including application lifecycle management, static resource handling, and server-side rendering functionality, helping developers understand and use the core application features."
+description: "Detailed introduction to Esmx framework's App interface, including application lifecycle management, static resource handling, and Server-Side Rendering functionality, helping developers understand and use the core application features."
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, App, application abstraction, lifecycle, static resources, server-side rendering, API"
+      content: "Esmx, App, application abstraction, lifecycle, static resources, Server-Side Rendering, API"
 ---
 
 # App
 
-`App` is the application abstraction for the Esmx framework, providing a unified interface to manage application lifecycle, static resources, and server-side rendering.
+`App` is the application abstraction for the Esmx framework, providing a unified interface to manage application lifecycle, static resources, and Server-Side Rendering.
 
 ```ts title="entry.node.ts"
 export default {
@@ -60,7 +60,7 @@ server.use(esmx.middleware);
 
 - **Type**: `(options?: RenderContextOptions) => Promise<RenderContext>`
 
-Server-side rendering function. Provides different implementations based on the runtime environment:
+Server-Side Rendering function. Provides different implementations based on the runtime environment:
 - Production environment (start): Loads the built server entry file (entry.server) to execute rendering
 - Development environment (dev): Loads the server entry file from source code to execute rendering
 

@@ -1,17 +1,17 @@
 ---
 titleSuffix: "Framework Core Class API Reference"
-description: "Detailed introduction to Esmx framework's core class API, including application lifecycle management, static resource handling, and server-side rendering capabilities, helping developers deeply understand the framework's core functionality."
+description: "Detailed introduction to Esmx framework's core class API, including application lifecycle management, static resource handling, and Server-Side Rendering capabilities, helping developers deeply understand the framework's core functionality."
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, API, lifecycle management, static resources, server-side rendering, Rspack, Web application framework"
+      content: "Esmx, API, lifecycle management, static resources, Server-Side Rendering, Rspack, Web application framework"
 ---
 
 # Esmx
 
 ## Introduction
 
-Esmx is a high-performance web application framework based on Rspack, providing complete application lifecycle management, static resource handling, and server-side rendering capabilities.
+Esmx is a high-performance web application framework based on Rspack, providing complete application lifecycle management, static resource handling, and Server-Side Rendering capabilities.
 
 ## Type Definitions
 
@@ -245,7 +245,7 @@ const server = http.createServer((req, res) => {
 - **Type**: `(options?: RenderContextOptions) => Promise<RenderContext>`
 - **Read-only**: `true`
 
-Gets the server-side rendering function. Provides different implementations based on the environment:
+Gets the Server-Side Rendering function. Provides different implementations based on the environment:
 - Development environment: Supports hot reloading and real-time preview
 - Production environment: Provides optimized rendering performance
 

@@ -4,7 +4,7 @@ description: "Core terminology and unified translations for Esmx, ensuring consi
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, glossary, Module Linking, micro-frontend, ESM, import map"
+      content: "Esmx, glossary, Module Linking, Micro-Frontend, ESM, Import Maps"
 ---
 
 # Glossary
@@ -43,7 +43,7 @@ Integrates multiple frontend frameworks within the same project while maintainin
 
 Enables independent package development and runtime collaboration through module linking.
 
-## Micro Frontends
+## Micro-Frontends
 
 Frontend architecture pattern supporting independent development and integration by multiple teams.
 
@@ -65,4 +65,4 @@ Functional unit that can be linked and reused, such as component libraries and u
 
 ## Package
 
-NPM package or Monorepo sub-package, emphasizing the publishing unit and physical structure.
+npm package or Monorepo sub-package, emphasizing the publishing unit and physical structure.

@@ -1,10 +1,10 @@
 ---
 titleSuffix: "Esmx Inter-Module Code Sharing"
-description: "Esmx Module Linking: Zero-runtime micro-frontend code sharing solution based on ESM standards"
+description: "Esmx Module Linking: Zero-runtime Micro-Frontend code sharing solution based on ESM standards"
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, module linking, Module Linking, ESM, code sharing, micro-frontend"
+      content: "Esmx, module linking, Module Linking, ESM, code sharing, Micro-Frontend"
 ---
 
 # Module Linking

@@ -17,6 +17,8 @@ Run the following command to create an Esmx project:
 
 <PackageManagerTabs command="create esmx@latest my-app" />
 
+Note: Commands adapt to your package manager automatically. Examples below use npm format.
+
 ## Select Template
 
 After running the command, you'll see a template selection prompt:
@@ -25,7 +27,7 @@ After running the command, you'll see a template selection prompt:
 
 | Template | Description |
 |----------|-------------|
-| **shared-modules** | Micro-frontend shared module solution |
+| **shared-modules** | Micro-Frontend shared module solution |
 | **vue-csr** | Vue 3 Client-Side Rendering |
 | **vue-ssr** | Vue 3 Server-Side Rendering |
 | **vue2-csr** | Vue 2.7 Client-Side Rendering |
@@ -36,13 +38,13 @@ After running the command, you'll see a template selection prompt:
 You can also specify a template directly using the `-t` or `--template` option to skip interactive selection:
 
 ```bash
-npm create esmx my-app --template vue-csr
+npm create esmx@latest my-app --template vue-csr
 ```
 
 ### Combined Parameters Example
 
 ```bash
-npm create esmx my-app --template vue-ssr --name my-project --force
+npm create esmx@latest my-app --template vue-ssr --name my-project --force
 ```
 
 ## Start Development Server
@@ -83,7 +85,7 @@ my-app/
 │   ├── create-app.ts               # Application creation function
 │   ├── entry.client.ts             # Client entry
 │   ├── entry.node.ts               # Development server entry
-│   ├── entry.server.ts             # Server-side rendering entry
+│   ├── entry.server.ts             # Server-Side Rendering entry
 │   └── components/                 # Components directory
 │       └── hello-world.vue
 ├── tsconfig.json                   # TypeScript configuration
@@ -98,7 +100,7 @@ my-app/
 Use the `--force` or `-f` option to force overwrite an existing directory:
 
 ```bash
-npm create esmx my-app --force
+npm create esmx@latest my-app --force
 ```
 
 ### Specify Project Name
@@ -106,4 +108,5 @@ npm create esmx my-app --force
 Use the `--name` or `-n` option to specify the project name:
 
 ```bash
-npm create esmx my-app --name my-project
+npm create esmx@latest my-app --name my-project
+```
