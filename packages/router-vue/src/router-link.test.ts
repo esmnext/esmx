@@ -4,7 +4,7 @@ import { Router, RouterMode } from '@esmx/router';
  * @vitest-environment happy-dom
  */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { createApp, defineComponent, h, nextTick } from 'vue';
+import { createApp, defineComponent, h, nextTick, ref } from 'vue';
 import { RouterLink } from './router-link';
 import { useProvideRouter } from './use';
 
@@ -645,6 +645,186 @@ describe('router-link.ts - RouterLink Component', () => {
             expect(linkElement?.classList.contains('include-active')).toBe(
                 true
             );
+        });
+    });
+
+    describe('Reactivity', () => {
+        it('should update active class when route changes', async () => {
+            await router.replace('/');
+            await nextTick();
+
+            const TestApp = defineComponent({
+                setup() {
+                    useProvideRouter(router);
+                    return () =>
+                        h(
+                            RouterLink,
+                            {
+                                to: '/about',
+                                activeClass: 'active-link'
+                            },
+                            () => 'About'
+                        );
+                }
+            });
+
+            app = createApp(TestApp);
+            app.mount(container);
+            await nextTick();
+
+            const linkElement = container.querySelector('a');
+            expect(linkElement?.classList.contains('active-link')).toBe(false);
+
+            const toAbout = new Promise<void>((resolve) => {
+                router.afterEach(() => resolve());
+            });
+            await router.push('/about');
+            await toAbout;
+            await nextTick();
+            expect(linkElement?.classList.contains('active-link')).toBe(true);
+
+            const toContact = new Promise<void>((resolve) => {
+                router.afterEach(() => resolve());
+            });
+            await router.push('/contact');
+            await toContact;
+            await nextTick();
+            expect(linkElement?.classList.contains('active-link')).toBe(false);
+        });
+
+        it('should update rendering when props.to changes', async () => {
+            await router.replace('/about');
+            await nextTick();
+
+            const toProp = ref('/about');
+
+            const TestApp = defineComponent({
+                setup() {
+                    useProvideRouter(router);
+                    return () =>
+                        h(
+                            RouterLink,
+                            {
+                                to: toProp.value,
+                                activeClass: 'active-link'
+                            },
+                            () => 'Dynamic To'
+                        );
+                }
+            });
+
+            app = createApp(TestApp);
+            app.mount(container);
+            await nextTick();
+
+            const linkElement = container.querySelector('a');
+            expect(linkElement?.classList.contains('active-link')).toBe(true);
+
+            toProp.value = '/contact';
+            await nextTick();
+            expect(linkElement?.classList.contains('active-link')).toBe(false);
+
+            const toContact = new Promise<void>((resolve) => {
+                router.afterEach(() => resolve());
+            });
+            await router.push('/contact');
+            await toContact;
+            await nextTick();
+            expect(linkElement?.classList.contains('active-link')).toBe(true);
+        });
+
+        it('should update event handlers when props.event changes', async () => {
+            await router.replace('/');
+            await nextTick();
+
+            const eventProp = ref<'click' | 'mouseenter'>('click');
+
+            const TestApp = defineComponent({
+                setup() {
+                    useProvideRouter(router);
+                    return () =>
+                        h(
+                            RouterLink,
+                            {
+                                to: '/about',
+                                event: eventProp.value
+                            },
+                            () => 'Event Link'
+                        );
+                }
+            });
+
+            app = createApp(TestApp);
+            app.mount(container);
+            await nextTick();
+
+            const linkElement = container.querySelector('a');
+            expect(linkElement).toBeTruthy();
+
+            const clickNav = new Promise<void>((resolve) => {
+                router.afterEach(() => resolve());
+            });
+            linkElement?.click();
+            await clickNav;
+            await nextTick();
+            expect(router.route.path).toBe('/about');
+
+            const backNav = new Promise<void>((resolve) => {
+                router.afterEach(() => resolve());
+            });
+            await router.replace('/');
+            await backNav;
+            await nextTick();
+
+            eventProp.value = 'mouseenter';
+            await nextTick();
+
+            linkElement?.click();
+            await nextTick();
+            expect(router.route.path).toBe('/');
+
+            const hoverNav = new Promise<void>((resolve) => {
+                router.afterEach(() => resolve());
+            });
+            const event = new MouseEvent('mouseenter', { bubbles: true });
+            linkElement?.dispatchEvent(event);
+            await hoverNav;
+            await nextTick();
+            expect(router.route.path).toBe('/about');
+        });
+
+        it('should re-render when tag prop changes', async () => {
+            const tagProp = ref<'a' | 'button'>('a');
+
+            const TestApp = defineComponent({
+                setup() {
+                    useProvideRouter(router);
+                    return () =>
+                        h(
+                            RouterLink,
+                            {
+                                to: '/about',
+                                tag: tagProp.value
+                            },
+                            () => 'Tag Link'
+                        );
+                }
+            });
+
+            app = createApp(TestApp);
+            app.mount(container);
+            await nextTick();
+
+            const anchorElement = container.querySelector('a');
+            expect(anchorElement).toBeTruthy();
+
+            tagProp.value = 'button';
+            await nextTick();
+
+            const buttonElement = container.querySelector('button');
+            const oldAnchor = container.querySelector('a');
+            expect(buttonElement).toBeTruthy();
+            expect(oldAnchor).toBeFalsy();
         });
     });
 });

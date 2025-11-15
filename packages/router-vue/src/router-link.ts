@@ -134,16 +134,16 @@ export const RouterLink = defineComponent({
     },
 
     setup(props, context) {
-        const link = useLink(props).value;
+        const link = useLink(props);
 
         if (isVue3) {
             return () => {
                 return h(
-                    link.tag,
+                    link.value.tag,
                     {
-                        ...link.attributes,
+                        ...link.value.attributes,
                         ...context.attrs,
-                        ...link.createEventHandlers(
+                        ...link.value.createEventHandlers(
                             (name) =>
                                 `on${name.charAt(0).toUpperCase()}${name.slice(1)}`
                         )
@@ -153,16 +153,16 @@ export const RouterLink = defineComponent({
             };
         }
         return () => {
-            const { class: className, ...attributes } = link.attributes;
+            const { class: className, ...attributes } = link.value.attributes;
             return h(
-                link.tag,
+                link.value.tag,
                 {
                     attrs: {
                         ...attributes,
                         ...context.attrs
                     },
                     class: className,
-                    on: link.createEventHandlers()
+                    on: link.value.createEventHandlers()
                 },
                 context.slots.default?.()
             );
