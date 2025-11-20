@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, test } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import type { Route } from '../src/route';
 import { Router } from '../src/router';
 import { RouteType, RouterMode } from '../src/types';
@@ -67,7 +67,9 @@ describe('Route Transition Tests', () => {
             });
 
             await errorRouter.replace('/');
-            await expect(errorRouter.push('/error')).rejects.toThrow();
+            await expect(errorRouter.push('/error')).rejects.toThrow(
+                "Async component '/error' is not a valid component. Original error: Loading failed"
+            );
 
             errorRouter.destroy();
         });
