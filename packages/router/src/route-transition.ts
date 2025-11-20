@@ -66,9 +66,11 @@ export const ROUTE_TRANSITION_HOOKS = {
                     try {
                         const result = await asyncComponent();
                         matched.component = result;
-                    } catch {
+                    } catch (e) {
+                        const error =
+                            e instanceof Error ? e : new Error(String(e));
                         throw new Error(
-                            `Async component '${matched.compilePath}' is not a valid component.`
+                            `Async component '${matched.compilePath}' is not a valid component. Original error: ${error.message}`
                         );
                     }
                 }
