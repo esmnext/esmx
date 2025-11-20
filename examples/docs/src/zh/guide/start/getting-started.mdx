@@ -27,13 +27,17 @@ import { PackageManagerTabs } from '@theme';
 
 | 模板 | 描述 |
 |------|------|
-| **shared-modules** | 微前端共享模块解决方案 |
+| **shared-modules** | 用于创建跨项目共享的微前端模块 |
 | **vue-csr** | Vue 3 客户端渲染 |
 | **vue-ssr** | Vue 3 服务端渲染 |
 | **vue2-csr** | Vue 2.7 客户端渲染 |
 | **vue2-ssr** | Vue 2.7 服务端渲染 |
 
-## 指定模板
+## 命令行选项
+
+本脚手架支持通过命令行参数直接指定模板或配置项目，以跳过交互式选择。
+
+### 指定模板
 
 你也可以通过 `-t` 或 `--template` 选项直接指定模板，跳过交互式选择：
 
@@ -41,7 +45,25 @@ import { PackageManagerTabs } from '@theme';
 npm create esmx@latest my-app --template vue-csr
 ```
 
-### 组合参数示例
+### 指定项目名称
+
+使用 `--name` 或 `-n` 选项指定项目名称：
+
+```bash
+npm create esmx@latest my-app --name my-project
+```
+
+### 强制覆盖
+
+使用 `--force` 或 `-f` 选项强制覆盖现有目录：
+
+```bash
+npm create esmx@latest my-app --force
+```
+
+### 组合使用
+
+可以将多个选项组合使用：
 
 ```bash
 npm create esmx@latest my-app --template vue-ssr --name my-project --force
@@ -93,20 +115,4 @@ my-app/
 └── README.md                       # 项目说明
 ```
 
-## 高级选项
 
-### 覆盖现有目录
-
-使用 `--force` 或 `-f` 选项强制覆盖现有目录：
-
-```bash
-npm create esmx@latest my-app --force
-```
-
-### 指定项目名称
-
-使用 `--name` 或 `-n` 选项指定项目名称：
-
-```bash
-npm create esmx@latest my-app --name my-project
-```

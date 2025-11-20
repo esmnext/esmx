@@ -36,6 +36,19 @@ head:
 
 数据来源：Can I Use（Dynamic Import 与 `import.meta`），检索日期：2025-11。
 
+要启用兼容模式，需要在 HTML 中添加 [es-module-shims](https://github.com/guybedford/es-module-shims) 脚本。它会 Polyfill 动态导入与 `import.meta` 等特性。
+
+```html
+<script async src="https://unpkg.com/es-module-shims/dist/es-module-shims.js"></script>
+```
+
+::: tip 建议
+
+- 为保证生产环境的稳定性，建议将此脚本下载并部署到您自己的服务器或 CDN。
+- 根据目标用户的浏览器分布，综合考虑兼容性成本与收益，再决定是否启用此模式。
+
+:::
+
 ### 原生 Import Maps 模式
 
 | 浏览器 | 最低版本 |
@@ -46,22 +59,3 @@ head:
 | Safari | >= 16.4 |
 
 数据来源：Can I Use（Import Maps），检索日期：2025-11。
-
-### 启用兼容支持
-
-::: warning 注意
-
-要支持旧版浏览器，请在项目中添加 [es-module-shims](https://github.com/guybedford/es-module-shims)。
-
-:::
-
-```html
-<script async src="https://ga.jspm.io/npm:es-module-shims@2.0.10/dist/es-module-shims.js"></script>
-```
-
-::: tip 建议
-
-- 生产环境将脚本部署到自有服务器。
-- 根据目标用户的浏览器分布决定是否启用兼容模式。
-
-:::

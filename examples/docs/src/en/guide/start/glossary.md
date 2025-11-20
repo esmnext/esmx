@@ -1,68 +1,63 @@
 ---
 titleSuffix: "Glossary"
-description: "Core terminology and unified translations for Esmx, ensuring consistency with packages."
+description: "A glossary of core Esmx framework terminology, covering everything from underlying technologies to high-level architecture, aiming to help developers accurately understand and use Esmx's capabilities."
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, glossary, Module Linking, Micro-Frontend, ESM, Import Maps"
+      content: "Esmx, glossary, module linking, micro-frontends, ESM, Import Maps, builder, dependency isolation"
 ---
 
 # Glossary
 
+## Core Technologies
 
+### ESM (ECMAScript Modules)
+The native module mechanism in browsers and Node.js, using `import`/`export` syntax.
 
-## Module Linking
+### Import Maps
+A native browser mechanism that controls the path mapping and scope of ESM modules.
 
-Uses native ESM and Import Maps to link multiple packages or modules at runtime, enabling decoupling and collaboration.
+## Architecture and Patterns
 
-## ESM (ECMAScript Modules)
+### Module Linking
+Utilizes native ESM and Import Maps to link multiple packages or modules at runtime, achieving decoupling and collaboration.
 
-Native module mechanism for browsers and Node.js, using `import`/`export` syntax.
+### Micro-Frontends
+A front-end architectural pattern that supports independent development and integration by multiple teams.
 
-## Import Maps
+### Dependency Isolation
+Avoids dependency conflicts and improves stability through Import Maps and module scoping.
 
-Native browser mechanism for controlling ESM module path mapping and scoping.
+### Framework Agnostic
+Integrates multiple front-end frameworks within the same project, maintaining a framework-neutral design.
 
-## Hydration
+## Roles and Units
 
-The process of activating page interactions on the client side after SSR.
+### Host
+The core application that loads and orchestrates remote applications or modules.
 
-## Middleware
+### Remote
+A sub-application or module dynamically loaded by the host application.
 
-Abstract interface for static resource and request processing.
+### Application
+A front-end subsystem that can be run and deployed independently.
 
-## Dependency Isolation
+### Module
+An independent, reusable unit of code that encapsulates specific functionality or data. In modern JavaScript (ESM), this usually refers to a file that interacts with other modules via `import` and `export`.
 
-Prevents dependency conflicts through Import Maps and module scoping, improving stability.
+### Package
+A collection of one or more modules, distributed and versioned as a single unit. In the Node.js ecosystem, this usually refers to a directory containing a `package.json` file, which can be published and installed via package managers like npm.
 
-## Multi-Framework Integration
+## Build and Render
 
-Integrates multiple frontend frameworks within the same project while maintaining a framework-agnostic design.
+### Builder
+An encapsulation layer in Esmx used to simplify build configurations, providing out-of-the-box best practices for specific application types (e.g., HTML, Vue).
 
-## Package Collaboration / Module Decoupling
+### Hydration
+The process of associating server-side rendered (SSR) static HTML with client-side JavaScript, attaching event listeners, and restoring application state to make it fully interactive.
 
-Enables independent package development and runtime collaboration through module linking.
+### Middleware
+Functions or modules used to insert custom logic into the server-side request handling flow, often used for serving static assets, authentication, or adding logging.
 
-## Micro-Frontends
-
-Frontend architecture pattern supporting independent development and integration by multiple teams.
-
-## Host Application
-
-Core application that loads and orchestrates remote applications or modules.
-
-## Remote Application/Module
-
-Sub-applications or modules that are dynamically loaded by the host application.
-
-## Application
-
-Frontend subsystem that can run and be deployed independently.
-
-## Module
-
-Functional unit that can be linked and reused, such as component libraries and utility libraries.
-
-## Package
-
-npm package or Monorepo sub-package, emphasizing the publishing unit and physical structure.
+### RenderContext
+The core object in Esmx for managing the rendering process, responsible for injecting resources, constraining module loading order, and passing contextual data in both CSR and SSR scenarios.
