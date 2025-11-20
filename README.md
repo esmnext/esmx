@@ -6,8 +6,8 @@
     <a href="https://www.npmjs.com/package/@esmx/core"><img src="https://img.shields.io/npm/v/@esmx/core.svg" alt="npm version" /></a>
     <a href="https://github.com/esmnext/esmx/actions/workflows/build.yml"><img src="https://github.com/esmnext/esmx/actions/workflows/build.yml/badge.svg" alt="Build" /></a>
     <a href="https://esmx.dev/coverage/"><img src="https://img.shields.io/badge/coverage-live%20report-brightgreen" alt="Coverage Report" /></a>
-    <a href="https://nodejs.org/"><img src="https://img.shields.io/node/v/@esmx/core.svg" alt="node version" /></a>
-    <a href="https://bundlephobia.com/package/@esmx/core"><img src="https://img.shields.io/bundlephobia/minzip/@esmx/core" alt="size" /></a>
+    <a href="https://nodejs.org/"><img src="https://img.shields.io/node/v/@esmx/core.svg" alt="Node.js version" /></a>
+    <a href="https://bundlephobia.com/package/@esmx/core"><img src="https://img.shields.io/bundlephobia/minzip/@esmx/core" alt="Bundle size" /></a>
   </div>
   
   <h3>Next-generation micro-frontend framework based on ESM with zero runtime overhead, supporting sandbox-free multi-framework hybrid development</h3>
@@ -66,7 +66,7 @@ npx create-esmx@latest my-app
 
 ---
 
-> 💡 **Development**: First run `pnpm build` to build all packages and examples, then `cd` to specific project directory to start development
+> 💡 **Development**: Run `pnpm build` to build all packages and examples, then `cd` into a specific project directory to start development
 
 ## 📈 Star History
 
