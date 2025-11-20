@@ -1,102 +1,116 @@
 ---
-titleSuffix: "Esmx Framework High-Performance Build Engine"
-description: "Deep dive into Esmx framework's Rspack build system, including high-performance compilation, multi-environment builds, resource optimization, and other core features to help developers build efficient and reliable modern Web applications."
+title: "Rspack"
+description: "Learn how to use the Rspack builder encapsulated by Esmx to quickly create HTML and Vue applications, and how to support any front-end framework like React, Svelte, etc. by extending the configuration."
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, Rspack, build system, high-performance compilation, hot reload, multi-environment builds, Tree Shaking, code splitting, SSR, resource optimization, development efficiency, build tool"
+      content: "Esmx,Rspack,build system,HTML application,standard application,multi-target build,SSR,HMR,SWC,LightningCSS,Loader,DefinePlugin,ImportMap,Module Link,external,content hash,performance optimization"
 ---
 
 # Rspack
 
-Esmx is implemented based on the [Rspack](https://rspack.dev/) build system, fully utilizing Rspack's high-performance build capabilities. This document introduces Rspack's positioning and core features in the Esmx framework.
+Esmx uses [Rspack](https://www.rspack.dev/) as its default high-performance build engine. Developed in Rust, Rspack offers excellent build performance and a Webpack-compatible ecosystem, providing Esmx applications with an extremely fast development experience and efficient packaging capabilities.
 
-## Features
+To simplify the build configuration for different types of applications, Esmx provides a series of encapsulated Rspack builders. The following is a detailed introduction to these builders and their use cases.
 
-Rspack is the core build system of the Esmx framework, providing the following key features:
+## Builders
 
-- **High-Performance Builds**: Build engine based on Rust implementation, providing extremely fast compilation performance, significantly improving build speed for large projects
-- **Development Experience Optimization**: Supports modern development features like hot reload (HMR) and incremental compilation, providing a smooth development experience
-- **Multi-Environment Builds**: Unified build configuration supports client, server, and Node.js environments, simplifying multi-end development workflows
-- **Resource Optimization**: Built-in resource processing and optimization capabilities, supporting features like code splitting, Tree Shaking, and resource compression
+Esmx provides a series of hierarchical builders for users to choose and extend according to their needs:
+- `createRspackApp`: The most basic builder, providing the core Rspack configuration.
+- `createRspackHtmlApp`: Inherits from `createRspackApp`, specifically for building traditional HTML applications, with built-in HTML generation and resource injection capabilities.
+- `createRspackVue2App` / `createRspackVue3App`: Inherit from `createRspackHtmlApp`, used for building Vue 2 and Vue 3 applications respectively, integrating Vue loader, HMR, and SSR support.
 
-## Building Applications
+For detailed API of the builders, please refer to [Rspack Build API](/api/app/rspack).
 
-Esmx's Rspack build system adopts a modular design, mainly including the following core modules:
+## HTML
 
-### @esmx/rspack
-
-Basic build module, providing the following core capabilities:
-
-- **Unified Build Configuration**: Provides standardized build configuration management, supporting multi-environment configuration
-- **Resource Processing**: Built-in processing capabilities for TypeScript, CSS, images, and other resources
-- **Build Optimization**: Provides performance optimization features like code splitting and Tree Shaking
-- **Development Server**: Integrated high-performance development server, supporting HMR
-
-### @esmx/rspack-vue
-
-Vue framework-specific build module, providing:
-
-- **Vue Component Compilation**: Supports efficient compilation of Vue 2/3 components
-- **SSR Optimization**: Specific optimizations for Server-Side Rendering scenarios
-- **Development Enhancements**: Specific feature enhancements for Vue development environment
-
-## Build Process
-
-Esmx's build process mainly includes the following stages:
-
-1. **Configuration Initialization**
-   - Load project configuration
-   - Merge default and user configurations
-   - Adjust configuration based on environment variables
-
-2. **Resource Compilation**
-   - Parse source code dependencies
-   - Transform various resources (TypeScript, CSS, etc.)
-   - Handle module imports and exports
-
-3. **Optimization Processing**
-   - Execute code splitting
-   - Apply Tree Shaking
-   - Compress code and resources
-
-4. **Output Generation**
-   - Generate target files
-   - Output resource mappings
-   - Generate build reports
-
-## Best Practices
-
-### Development Environment Optimization
-
-- **Incremental Compilation Configuration**: Properly configure `cache` option, utilize caching to speed up builds
-- **HMR Optimization**: Targetedly configure hot reload scope, avoid unnecessary module updates
-- **Resource Processing Optimization**: Use appropriate loader configuration, avoid duplicate processing
-
-### Production Environment Optimization
-
-- **Code Splitting Strategy**: Properly configure `splitChunks`, optimize resource loading
-- **Resource Compression**: Enable appropriate compression configuration, balance build time and artifact size
-- **Caching Optimization**: Utilize content hashing and long-term caching strategies to improve loading performance
-
-## Configuration Example
+- Used for building traditional multi-page (MPA) or single-page applications (SPA) with HTML as the entry point.
 
 ```ts title="src/entry.node.ts"
 import type { EsmxOptions } from '@esmx/core';
 
 export default {
-    async devApp(esmx) {
-        return import('@esmx/rspack').then((m) =>
-            m.createRspackHtmlApp(esmx, {
-                // Custom build configuration
-                config({ config }) {
-                }
-            })
-        );
-    },
+  async devApp(esmx) {
+    return import('@esmx/rspack').then(m =>
+      m.createRspackHtmlApp(esmx, {
+        chain({ chain }) {
+          // Customize Rspack configuration here through the chain object
+        }
+      })
+    );
+  }
 } satisfies EsmxOptions;
 ```
 
-::: tip
-For more detailed API instructions and configuration options, please refer to [Rspack API Documentation](/api/app/rspack.html).
-:::
+## Vue
+
+Esmx provides first-class out-of-the-box support for the Vue ecosystem. Whether it is Vue 2 or Vue 3, developers can get a complete build experience including CSR and SSR.
+
+### Vue 3
+
+- Used for quickly building Vue 3 applications, with complete built-in support for CSR and SSR.
+
+```ts title="src/entry.node.ts"
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rspack-vue').then(m =>
+      m.createRspackVue3App(esmx, {
+        chain({ chain }) {
+          // Customize Rspack configuration here through the chain object
+        }
+      })
+    );
+  }
+} satisfies EsmxOptions;
+```
+
+### Vue 2.7
+
+- Used for quickly building Vue 2.7 applications, with complete built-in support for CSR and SSR.
+
+```ts title="src/entry.node.ts"
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rspack-vue').then(m =>
+      m.createRspackVue2App(esmx, {
+        chain({ chain }) {
+          // Customize Rspack configuration here through the chain object
+        }
+      })
+    );
+  }
+} satisfies EsmxOptions;
+```
+
+## Adapting to Front-end Frameworks
+
+Esmx's builders are highly extensible. Developers can easily integrate various front-end frameworks such as React, Solid, and Svelte by configuring the corresponding compilers (such as Babel Loader or framework-specific loaders) based on `createRspackHtmlApp`.
+
+The integration of all frameworks can be done uniformly through the `chain` function. The following example shows the entry point for custom configuration:
+
+```ts title="src/entry.node.ts"
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then(m =>
+      m.createRspackHtmlApp(esmx, {
+        chain({ chain }) {
+          // Customize Rspack configuration here through the chain object
+          // to meet the build requirements of a specific framework.
+        }
+      })
+    );
+  }
+} satisfies EsmxOptions;
+```
+
+## Decoupling of Build Tools
+
+Esmx implements the decoupling of build tools. Whether using Rspack, Webpack, Vite, or esbuild, as long as its build output contains a resource manifest that complies with the [ManifestJson specification](/api/core/manifest-json), Esmx can recognize and link these modules.
+
+This design gives developers full freedom of technology selection, allowing them to choose the most suitable build solution for different scenarios without being locked into a specific toolchain.

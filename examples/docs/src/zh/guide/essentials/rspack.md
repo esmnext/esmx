@@ -1,102 +1,119 @@
 ---
-titleSuffix: "Esmx 框架高性能构建引擎"
-description: "深入解析 Esmx 框架的 Rspack 构建系统，包括高性能编译、多环境构建、资源优化等核心特性，助力开发者构建高效、可靠的现代 Web 应用。"
+title: "Rspack"
+description: "了解如何使用 Esmx 封装的 Rspack 构建器，快速创建 HTML、Vue 应用，并学习如何通过扩展配置来支持 React、Svelte 等任意前端框架。"
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, Rspack, 构建系统, 高性能编译, 热更新, 多环境构建, Tree Shaking, 代码分割, SSR, 资源优化, 开发效率, 构建工具"
+      content: "Esmx,Rspack,构建系统,HTML应用,标准应用,多目标构建,SSR,HMR,SWC,LightningCSS,Loader,DefinePlugin,ImportMap,Module Link,外部化,内容哈希,性能优化"
 ---
 
 # Rspack
 
-Esmx 基于 [Rspack](https://rspack.dev/) 构建系统实现，充分利用了 Rspack 的高性能构建能力。本文档将介绍 Rspack 在 Esmx 框架中的定位和核心功能。
+Esmx 采用 [Rspack](https://www.rspack.dev/) 作为其默认的高性能构建引擎。Rspack 基于 Rust 开发，拥有卓越的构建性能和与 Webpack 兼容的生态系统，能够为 Esmx 应用提供极速的开发体验和高效的打包能力。
 
-## 特性
+为了简化不同类型应用的构建配置，Esmx 提供了一系列封装好的 Rspack 构建器。以下将详细介绍这些构建器及其使用场景。
 
-Rspack 是 Esmx 框架的核心构建系统，它提供了以下关键特性：
+ 
 
-- **高性能构建**：基于 Rust 实现的构建引擎，提供极速的编译性能，显著提升大型项目的构建速度
-- **开发体验优化**：支持热更新（HMR）、增量编译等现代开发特性，提供流畅的开发体验
-- **多环境构建**：统一的构建配置支持客户端（client）、服务端（server）和 Node.js（node）环境，简化多端开发流程
-- **资源优化**：内置的资源处理和优化能力，支持代码分割、Tree Shaking、资源压缩等特性
 
-## 构建应用
+## 构建器
 
-Esmx 的 Rspack 构建系统采用模块化设计，主要包含以下核心模块：
+Esmx 提供了一系列层次化的构建器，以便用户根据需求选择和扩展：
+- `createRspackApp`：最基础的构建器，提供了核心的 Rspack 配置。
+- `createRspackHtmlApp`：继承自 `createRspackApp`，专门用于构建传统的 HTML 应用，内置了 HTML 生成和资源注入能力。
+- `createRspackVue2App` / `createRspackVue3App`：继承自 `createRspackHtmlApp`，分别用于构建 Vue 2 和 Vue 3 应用，集成了 Vue 加载器、HMR 和 SSR 支持。
 
-### @esmx/rspack
+关于构建器的详细 API，请参阅 [Rspack 构建 API](/api/app/rspack)。
 
-基础构建模块，提供以下核心能力：
+## HTML
 
-- **统一构建配置**：提供标准化的构建配置管理，支持多环境配置
-- **资源处理**：内置对 TypeScript、CSS、图片等资源的处理能力
-- **构建优化**：提供代码分割、Tree Shaking 等性能优化特性
-- **开发服务器**：集成高性能的开发服务器，支持 HMR
-
-### @esmx/rspack-vue
-
-Vue 框架专用构建模块，提供：
-
-- **Vue 组件编译**：支持 Vue 2/3 组件的高效编译
-- **SSR 优化**：针对服务端渲染场景的特定优化
-- **开发增强**：Vue 开发环境的特定功能增强
-
-## 构建流程
-
-Esmx 的构建流程主要分为以下几个阶段：
-
-1. **配置初始化**
-   - 加载项目配置
-   - 合并默认配置和用户配置
-   - 根据环境变量调整配置
-
-2. **资源编译**
-   - 解析源代码依赖
-   - 转换各类资源（TypeScript、CSS 等）
-   - 处理模块导入导出
-
-3. **优化处理**
-   - 执行代码分割
-   - 应用 Tree Shaking
-   - 压缩代码和资源
-
-4. **输出生成**
-   - 生成目标文件
-   - 输出资源映射
-   - 生成构建报告
-
-## 最佳实践
-
-### 开发环境优化
-
-- **增量编译配置**：合理配置 `cache` 选项，利用缓存加快构建速度
-- **HMR 优化**：针对性配置热更新范围，避免不必要的模块更新
-- **资源处理优化**：使用适当的 loader 配置，避免重复处理
-
-### 生产环境优化
-
-- **代码分割策略**：合理配置 `splitChunks`，优化资源加载
-- **资源压缩**：启用适当的压缩配置，平衡构建时间和产物大小
-- **缓存优化**：利用内容哈希和长期缓存策略，提升加载性能
-
-## 配置示例
+- 用于构建以 HTML 为入口的传统多页（MPA）或单页应用（SPA）。
 
 ```ts title="src/entry.node.ts"
 import type { EsmxOptions } from '@esmx/core';
 
 export default {
-    async devApp(esmx) {
-        return import('@esmx/rspack').then((m) =>
-            m.createRspackHtmlApp(esmx, {
-                // 自定义构建配置
-                config({ config }) {
-                }
-            })
-        );
-    },
+  async devApp(esmx) {
+    return import('@esmx/rspack').then(m =>
+      m.createRspackHtmlApp(esmx, {
+        chain({ chain }) {
+          // 在此通过 chain 对象自定义 Rspack 配置
+        }
+      })
+    );
+  }
 } satisfies EsmxOptions;
 ```
 
-::: tip
-更多详细的 API 说明和配置选项，请参考 [Rspack API 文档](/api/app/rspack.html)。
-:::
+## Vue
+
+Esmx 为 Vue 生态提供了开箱即用的一流支持。无论是 Vue 2 还是 Vue 3，开发者都能获得包含 CSR 与 SSR 在内的完整构建体验。
+
+### Vue 3
+
+- 用于快速构建 Vue 3 应用，内置 CSR 与 SSR 的完整支持。
+
+```ts title="src/entry.node.ts"
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rspack-vue').then(m =>
+      m.createRspackVue3App(esmx, {
+        chain({ chain }) {
+          // 在此通过 chain 对象自定义 Rspack 配置
+        }
+      })
+    );
+  }
+} satisfies EsmxOptions;
+```
+
+### Vue 2.7
+
+- 用于快速构建 Vue 2.7 应用，内置 CSR 与 SSR 的完整支持。
+
+```ts title="src/entry.node.ts"
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rspack-vue').then(m =>
+      m.createRspackVue2App(esmx, {
+        chain({ chain }) {
+          // 在此通过 chain 对象自定义 Rspack 配置
+        }
+      })
+    );
+  }
+} satisfies EsmxOptions;
+```
+
+## 适配前端框架
+
+Esmx 的构建器具有很强的扩展性。开发者可以基于 `createRspackHtmlApp`，通过配置相应的编译器（如 Babel Loader 或特定框架的加载器），轻松集成 React、Solid、Svelte 等各类前端框架。
+
+所有框架的集成都可以通过 `chain` 函数统一完成，下面的示例展示了进行自定义配置的入口点：
+
+```ts title="src/entry.node.ts"
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then(m =>
+      m.createRspackHtmlApp(esmx, {
+        chain({ chain }) {
+          // 在此通过 chain 对象自定义 Rspack 配置，
+          // 以适配特定框架的构建需求。
+        }
+      })
+    );
+  }
+} satisfies EsmxOptions;
+```
+
+## 构建工具解耦
+
+Esmx 实现了构建工具的解耦。无论是使用 Rspack、Webpack、Vite 还是 esbuild，只要其构建产物中包含一份符合 [ManifestJson 规范](/api/core/manifest-json) 的资源清单，Esmx 就能识别并链接这些模块。
+
+这种设计赋予了开发者充分的技术选型自由，可以为不同场景选择最适合的构建方案，而无需锁定在特定工具链上。
