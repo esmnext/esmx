@@ -1,5 +1,5 @@
 ---
-titleSuffix: "Esmx Framework Packaging Configuration API Reference"
+titleSuffix: "PackConfig Packaging Configuration API"
 description: "Detailed introduction to Esmx framework's PackConfig configuration interface, including software package packaging rules, output configuration, and lifecycle hooks, helping developers implement standardized build processes."
 head:
   - - "meta"

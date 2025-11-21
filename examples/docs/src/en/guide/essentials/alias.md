@@ -1,5 +1,5 @@
 ---
-titleSuffix: "Esmx Framework Module Import Path Mapping Guide"
+titleSuffix: "Simplifying Imports with Path Aliases"
 description: "Detailed introduction to Esmx framework's path alias mechanism, including simplifying import paths, avoiding deep nesting, type safety, and module resolution optimization, helping developers improve code maintainability."
 head:
   - - "meta"

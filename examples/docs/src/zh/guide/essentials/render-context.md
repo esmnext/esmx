@@ -1,5 +1,5 @@
 ---
-titleSuffix: "渲染上下文（RenderContext）"
+titleSuffix: "在 SSR 中使用渲染上下文"
 description: "RenderContext 的资源管理与 HTML 生成机制，涵盖依赖收集与注入顺序。"
 head:
   - - "meta"

@@ -1,5 +1,5 @@
 ---
-titleSuffix: "Esmx 团队博客"
+titleSuffix: "Esmx 官方博客"
 description: "Esmx 团队的技术博客，分享框架开发经验、最佳实践和技术创新。"
 head:
   - - "meta"

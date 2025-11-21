@@ -1,5 +1,5 @@
 ---
-titleSuffix: "Esmx Framework Build Manifest Reference"
+titleSuffix: "manifest.json Build Manifest Reference"
 description: "Detailed introduction to Esmx framework's build manifest file (manifest.json) structure, including build artifact management, export file mapping, and resource statistics functionality, helping developers understand and use the build system."
 head:
   - - "meta"

@@ -1,5 +1,5 @@
 ---
-titleSuffix: "Esmx 模块间代码共享"
+titleSuffix: "零运行时代码共享方案"
 description: "Esmx 模块链接：基于 ESM 标准的零运行时微前端代码共享解决方案"
 head:
   - - "meta"

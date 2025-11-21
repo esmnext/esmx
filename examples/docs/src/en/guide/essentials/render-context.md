@@ -1,5 +1,5 @@
 ---
-titleSuffix: "RenderContext (Rendering Context)"
+titleSuffix: "Using RenderContext in SSR"
 description: "RenderContext's resource management and HTML generation mechanism, covering dependency collection and injection order."
 head:
   - - "meta"

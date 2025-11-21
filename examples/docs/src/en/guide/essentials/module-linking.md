@@ -1,5 +1,5 @@
 ---
-titleSuffix: "Esmx Inter-Module Code Sharing"
+titleSuffix: "Zero-Runtime Code Sharing"
 description: "Esmx Module Linking: Zero-runtime Micro-Frontend code sharing solution based on ESM standards"
 head:
   - - "meta"

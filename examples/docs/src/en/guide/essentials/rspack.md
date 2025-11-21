@@ -1,5 +1,5 @@
 ---
-title: "Rspack"
+titleSuffix: "Rspack Builder Encapsulated by Esmx"
 description: "Learn how to use the Rspack builder encapsulated by Esmx to quickly create HTML and Vue applications, and how to support any front-end framework like React, Svelte, etc. by extending the configuration."
 head:
   - - "meta"

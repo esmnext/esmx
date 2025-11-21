@@ -1,5 +1,5 @@
 ---
-titleSuffix: "客户端渲染（CSR）"
+titleSuffix: "CSR 渲染与静态构建"
 description: "Esmx 的客户端渲染机制与构建产物生成方式，适用于无法部署服务端的场景。"
 head:
   - - "meta"

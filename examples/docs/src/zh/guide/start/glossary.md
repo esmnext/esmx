@@ -1,5 +1,5 @@
 ---
-titleSuffix: "术语表"
+titleSuffix: "核心术语解读"
 description: "本页统一了 Esmx 框架的核心术语及其标准译法，涵盖了从底层技术到上层架构的各个方面，旨在帮助开发者准确理解和使用 Esmx 的各项能力。"
 head:
   - - "meta"

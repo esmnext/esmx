@@ -1,5 +1,5 @@
 ---
-titleSuffix: "介绍"
+titleSuffix: "框架核心理念与设计"
 description: "Esmx 是一个基于原生 ESM 和 Import Maps 的现代化前端框架，旨在解决前端模块化和微前端架构中的复杂性。"
 head:
   - - "meta"
