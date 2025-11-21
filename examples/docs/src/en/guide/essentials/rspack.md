@@ -44,7 +44,7 @@ export default {
 
 ## Vue
 
-Esmx provides first-class out-of-the-box support for the Vue ecosystem. Whether it is Vue 2 or Vue 3, developers can get a complete build experience including CSR and SSR.
+Esmx provides first-class out-of-the-box support for the Vue ecosystem. Whether it is Vue 2 or Vue 3, developers can get a complete build experience including CSR and SSR. For more configuration options for the Vue builder, please refer to the [Rspack Vue Build API](/api/app/rspack-vue).
 
 ### Vue 3
 

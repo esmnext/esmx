@@ -47,7 +47,7 @@ export default {
 
 ## Vue
 
-Esmx 为 Vue 生态提供了开箱即用的一流支持。无论是 Vue 2 还是 Vue 3，开发者都能获得包含 CSR 与 SSR 在内的完整构建体验。
+Esmx 为 Vue 生态提供了开箱即用的一流支持。无论是 Vue 2 还是 Vue 3，开发者都能获得包含 CSR 与 SSR 在内的完整构建体验。更多关于 Vue 构建器的配置选项，请参阅 [Rspack Vue 构建 API](/api/app/rspack-vue)。
 
 ### Vue 3
 
