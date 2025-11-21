@@ -1,5 +1,5 @@
 ---
-titleSuffix: "Client-Side Rendering (CSR)"
+titleSuffix: "CSR Rendering and Static Build"
 description: "Esmx's Client-Side Rendering mechanism and build artifact generation method, suitable for scenarios where server-side deployment is not possible."
 head:
   - - "meta"

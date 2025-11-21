@@ -1,5 +1,5 @@
 ---
-titleSuffix: "Esmx Module Configuration API Reference"
+titleSuffix: "ModuleConfig Module Configuration API"
 description: "Detailed explanation of ModuleConfig interface, including type definitions, configuration options, resolution mechanisms, and usage examples, helping developers deeply understand the core configuration of Esmx module system."
 head:
   - - "meta"

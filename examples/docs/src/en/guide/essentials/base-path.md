@@ -1,5 +1,5 @@
 ---
-titleSuffix: "Esmx Framework Static Resource Path Configuration Guide"
+titleSuffix: "Base Path and Static Asset Management"
 description: "Detailed introduction to Esmx framework's base path configuration, including multi-environment deployment, CDN distribution, and resource access path settings, helping developers achieve flexible static resource management."
 head:
   - - "meta"

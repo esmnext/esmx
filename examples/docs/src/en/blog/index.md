@@ -1,5 +1,5 @@
 ---
-titleSuffix: "Esmx Team Blog"
+titleSuffix: "Esmx Official Blog"
 description: "Esmx team's technical blog sharing framework development experience, best practices, and technical innovations."
 head:
   - - "meta"

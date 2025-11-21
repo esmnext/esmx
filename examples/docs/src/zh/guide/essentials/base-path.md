@@ -1,5 +1,5 @@
 ---
-titleSuffix: "Esmx 框架静态资源路径配置指南"
+titleSuffix: "基础路径与静态资源管理"
 description: "详细介绍 Esmx 框架的基础路径配置，包括多环境部署、CDN 分发和资源访问路径设置，帮助开发者实现灵活的静态资源管理。"
 head:
   - - "meta"

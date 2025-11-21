@@ -1,5 +1,5 @@
 ---
-titleSuffix: "Introduction"
+titleSuffix: "Core Concepts and Design"
 description: "Esmx is a modern front-end framework based on native ESM and Import Maps, designed to address the complexities of front-end modularization and micro-frontend architecture."
 head:
   - - "meta"

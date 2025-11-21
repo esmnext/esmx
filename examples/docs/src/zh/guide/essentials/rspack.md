@@ -1,5 +1,5 @@
 ---
-title: "Rspack"
+titleSuffix: "Esmx 封装的 Rspack 构建器"
 description: "了解如何使用 Esmx 封装的 Rspack 构建器，快速创建 HTML、Vue 应用，并学习如何通过扩展配置来支持 React、Svelte 等任意前端框架。"
 head:
   - - "meta"

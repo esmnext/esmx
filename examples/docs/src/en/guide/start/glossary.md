@@ -1,5 +1,5 @@
 ---
-titleSuffix: "Glossary"
+titleSuffix: "Core Terminology Explained"
 description: "A glossary of core Esmx framework terminology, covering everything from underlying technologies to high-level architecture, aiming to help developers accurately understand and use Esmx's capabilities."
 head:
   - - "meta"
