@@ -7,6 +7,7 @@ import { rspack } from '@rspack/core';
 import type { RspackOptions } from '@rspack/core';
 import RspackChain from 'rspack-chain';
 import nodeExternals from 'webpack-node-externals';
+import { initModuleLink } from '../module-link';
 import type { RspackAppOptions } from './app';
 import type { BuildTarget } from './build-target';
 
@@ -61,16 +62,14 @@ export function createChainConfig(
         }
     ]);
 
-    config
-        .plugin('module-link')
-        .use(moduleLinkPlugin, [createModuleLinkConfig(esmx, buildTarget)]);
-
     if (isHot) {
         config.plugin('hmr').use(rspack.HotModuleReplacementPlugin);
     }
 
     config.module.parser.set('javascript', {
-        url: isClient ? true : 'relative'
+        url: isClient ? true : 'relative',
+        importMeta: false,
+        strictExportPresence: true
     });
 
     config.module.generator.set('asset', {
@@ -103,8 +102,13 @@ export function createChainConfig(
         ]);
     }
     config.experiments({
-        nativeWatcher: true
+        nativeWatcher: true,
+        rspackFuture: {
+            bundlerInfo: { force: false }
+        }
     });
+
+    initModuleLink(config, createModuleLinkConfig(esmx, buildTarget));
 
     return config;
 }

@@ -63,6 +63,7 @@
         }
     },
     "dependencies": {
+        "upath": "^2.0.1",
         "@esmx/import": "workspace:*",
         "@esmx/rspack-module-link-plugin": "workspace:*",
         "@npmcli/arborist": "^9.1.6",

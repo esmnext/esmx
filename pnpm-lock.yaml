@@ -965,6 +965,9 @@ importers:
       style-resources-loader:
         specifier: ^1.5.0
         version: 1.5.0(webpack@5.99.9)
+      upath:
+        specifier: ^2.0.1
+        version: 2.0.1
       webpack-hot-middleware:
         specifier: ^2.26.1
         version: 2.26.1
