@@ -66,7 +66,7 @@
         "@esmx/import": "workspace:*",
         "@esmx/rspack-module-link-plugin": "workspace:*",
         "@npmcli/arborist": "^9.1.6",
-        "@rspack/core": "1.6.4",
+        "@rspack/core": "1.6.5",
         "css-loader": "^7.1.2",
         "less-loader": "^12.3.0",
         "node-polyfill-webpack-plugin": "^4.1.0",
