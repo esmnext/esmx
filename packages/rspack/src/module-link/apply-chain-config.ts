@@ -1,18 +1,87 @@
-import type {
-    Compiler,
-    ExternalItem,
-    ExternalItemFunctionData
-} from '@rspack/core';
-import type { ParsedModuleLinkPluginOptions } from '../types';
+import type { ExternalItem, ExternalItemFunctionData } from '@rspack/core';
+import type RspackChain from 'rspack-chain';
+import type { ParsedModuleLinkPluginOptions } from './types';
 
 type ResolvePath = (
     request: string,
     context?: string
 ) => Promise<string | null>;
 
-export function createExternals(opts: ParsedModuleLinkPluginOptions) {
-    const importMap = new Map<string, string>();
+export function applyChainConfig(
+    chain: RspackChain,
+    opts: ParsedModuleLinkPluginOptions
+): void {
+    const isProduction = chain.get('mode') === 'production';
 
+    chain.output
+        .set('module', true)
+        .set('chunkFormat', 'module')
+        .set('chunkLoading', 'import')
+        .set('workerChunkLoading', 'import');
+    chain.experiments({
+        ...chain.get('experiments'),
+        outputModule: true
+    });
+
+    if (isProduction) {
+        chain.output.library({
+            type: 'modern-module'
+        });
+        chain.optimization.set('avoidEntryIife', true);
+    } else {
+        chain.output.library({
+            type: 'module'
+        });
+    }
+
+    applyEntryConfig(chain, opts);
+
+    applyExternalsConfig(chain, opts);
+}
+
+function applyEntryConfig(
+    chain: RspackChain,
+    opts: ParsedModuleLinkPluginOptions
+): void {
+    if (chain.entryPoints.has('main')) {
+        const mainEntry = chain.entry('main');
+        if (mainEntry.values().length === 0) {
+            chain.entryPoints.clear();
+        }
+    }
+
+    for (const value of Object.values(opts.exports)) {
+        if (value.file) {
+            const entry = chain.entry(value.name);
+            for (const preEntry of opts.preEntries) {
+                entry.add(preEntry);
+            }
+            entry.add(value.file);
+        }
+    }
+}
+
+function applyExternalsConfig(
+    chain: RspackChain,
+    opts: ParsedModuleLinkPluginOptions
+): void {
+    const existingExternals = chain.get('externals') || [];
+    const externals: ExternalItem[] = Array.isArray(existingExternals)
+        ? [...existingExternals]
+        : [existingExternals];
+
+    const compilerContext = chain.get('context') ?? process.cwd();
+    const externalFunc = createExternalsFunction(opts, compilerContext);
+    externals.push(externalFunc);
+
+    chain.externals(externals);
+}
+
+function createExternalsFunction(
+    opts: ParsedModuleLinkPluginOptions,
+    compilerContext: string
+) {
+    const importMap = new Map<string, string>();
     let initPromise: Promise<void> | null = null;
 
     const init = (resolvePath: ResolvePath): Promise<void> => {
@@ -69,26 +138,10 @@ export function createExternals(opts: ParsedModuleLinkPluginOptions) {
         return importName || null;
     };
 
-    return { init, match };
-}
-
-export function initExternal(
-    compiler: Compiler,
-    opts: ParsedModuleLinkPluginOptions
-): void {
-    const externals: ExternalItem[] = [];
-    if (Array.isArray(compiler.options.externals)) {
-        externals.push(...compiler.options.externals);
-    } else if (compiler.options.externals) {
-        externals.push(compiler.options.externals);
-    }
-
-    const { init, match } = createExternals(opts);
-    const defaultContext = compiler.options.context ?? process.cwd();
-
     const FILE_EXT_REGEX =
         /\.worker\.(js|mjs|cjs|jsx|mjsx|cjsx|ts|mts|cts|tsx|mtsx|ctsx)$/i;
-    externals.push(async (data: ExternalItemFunctionData) => {
+
+    return async (data: ExternalItemFunctionData) => {
         if (
             !data.request ||
             !data.context ||
@@ -96,6 +149,8 @@ export function initExternal(
             FILE_EXT_REGEX.test(data.contextInfo.issuer)
         )
             return;
+
+        const defaultContext = compilerContext;
         const resolvePath: ResolvePath = async (
             request: string,
             context = defaultContext
@@ -121,7 +176,5 @@ export function initExternal(
         if (matchedIdentifier) {
             return `module-import ${matchedIdentifier}`;
         }
-    });
-
-    compiler.options.externals = externals;
+    };
 }

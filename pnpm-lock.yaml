@@ -932,9 +932,6 @@ importers:
       '@esmx/import':
         specifier: workspace:*
         version: link:../import
-      '@esmx/rspack-module-link-plugin':
-        specifier: workspace:*
-        version: link:../rspack-module-link-plugin
       '@npmcli/arborist':
         specifier: ^9.1.6
         version: 9.1.6
@@ -965,6 +962,9 @@ importers:
       style-resources-loader:
         specifier: ^1.5.0
         version: 1.5.0(webpack@5.99.9)
+      upath:
+        specifier: ^2.0.1
+        version: 2.0.1
       webpack-hot-middleware:
         specifier: ^2.26.1
         version: 2.26.1
@@ -996,37 +996,6 @@ importers:
       '@types/webpack-node-externals':
         specifier: ^3.0.4
         version: 3.0.4
-      '@vitest/coverage-v8':
-        specifier: 3.2.4
-        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.10.0)(happy-dom@20.0.10)(jiti@2.6.1)(less@4.3.0)(sass-embedded@1.89.2)(terser@5.43.1)(yaml@2.8.1))
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
-      unbuild:
-        specifier: 3.6.1
-        version: 3.6.1(typescript@5.9.3)(vue-tsc@2.2.12(typescript@5.9.3))(vue@3.5.23(typescript@5.9.3))
-      vitest:
-        specifier: 3.2.4
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@24.10.0)(happy-dom@20.0.10)(jiti@2.6.1)(less@4.3.0)(sass-embedded@1.89.2)(terser@5.43.1)(yaml@2.8.1)
-
-  packages/rspack-module-link-plugin:
-    dependencies:
-      upath:
-        specifier: ^2.0.1
-        version: 2.0.1
-    devDependencies:
-      '@biomejs/biome':
-        specifier: 1.9.4
-        version: 1.9.4
-      '@esmx/core':
-        specifier: workspace:*
-        version: link:../core
-      '@rspack/core':
-        specifier: 1.6.5
-        version: 1.6.5(@swc/helpers@0.5.17)
-      '@types/node':
-        specifier: ^24.10.0
-        version: 24.10.0
       '@vitest/coverage-v8':
         specifier: 3.2.4
         version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.10.0)(happy-dom@20.0.10)(jiti@2.6.1)(less@4.3.0)(sass-embedded@1.89.2)(terser@5.43.1)(yaml@2.8.1))
