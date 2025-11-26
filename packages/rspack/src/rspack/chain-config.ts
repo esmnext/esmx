@@ -1,12 +1,9 @@
 import type { Esmx } from '@esmx/core';
-import {
-    type ModuleLinkPluginOptions,
-    moduleLinkPlugin
-} from '@esmx/rspack-module-link-plugin';
 import { rspack } from '@rspack/core';
 import type { RspackOptions } from '@rspack/core';
 import RspackChain from 'rspack-chain';
 import nodeExternals from 'webpack-node-externals';
+import type { ModuleLinkPluginOptions } from '../module-link';
 import { initModuleLink } from '../module-link';
 import type { RspackAppOptions } from './app';
 import type { BuildTarget } from './build-target';
