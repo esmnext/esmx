@@ -1080,6 +1080,50 @@ document.head.appendChild(script);
             }
         );
     }
+    /**
+     * Generate bundle size analysis report for the build artifacts.
+     *
+     * @description
+     * This method generates a comprehensive bundle size analysis report with the following features:
+     * 1. **File Analysis**
+     *    - Analyzes all files in the dist directory using glob patterns
+     *    - Supports filtering by file patterns (defaults to client, server, node directories)
+     *    - Calculates original file sizes and gzip compressed sizes
+     *
+     * 2. **Statistics Generation**
+     *    - Provides size breakdown by file extensions
+     *    - Calculates compression ratios for each file
+     *    - Generates average file sizes by extension type
+     *    - Sorts files by size for easy identification of large bundles
+     *
+     * 3. **Report Formats**
+     *    - Text format: Human-readable report with file listings and statistics
+     *    - JSON format: Machine-readable data for programmatic processing
+     *    - Includes total file count, combined sizes, and compression metrics
+     *
+     * @returns Returns an object containing both text and JSON format reports
+     *   - text: Human-readable text report with formatted file listings and statistics
+     *   - json: Detailed JSON data with file information, extension statistics, and metrics
+     * @throws {NotReadyError} Throws error when calling this method if the framework instance is not initialized
+     *
+     * @example
+     * ```ts
+     * // Basic usage
+     * const report = esmx.generateSizeReport();
+     * console.log(report.text); // Display human-readable report
+     *
+     * // Access detailed JSON data
+     * const jsonData = report.json;
+     * console.log(`Total files: ${jsonData.totalFiles}`);
+     * console.log(`Total size: ${jsonData.totalSize} bytes`);
+     * console.log(`Compression ratio: ${jsonData.compressionRatio}%`);
+     *
+     * // Analyze by file extension
+     * Object.entries(jsonData.byExtension).forEach(([ext, stats]) => {
+     *   console.log(`${ext}: ${stats.count} files, avg size: ${stats.avgSize} bytes`);
+     * });
+     * ```
+     */
     public generateSizeReport() {
         return generateSizeReport(
             this.resolvePath('dist'),
