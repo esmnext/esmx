@@ -676,3 +676,19 @@ const paths = await esmx.getStaticImportPaths(
   `your-app-name/src/entry.client`
 );
 ```
+
+### generateSizeReport()
+
+生成构建产物的大小分析报告。
+
+- **返回值**: `{ text: string, json: object }`
+  - `text`: 格式化的文本报告
+  - `json`: 详细统计数据
+
+- **异常**: `NotReadyError` - 框架未初始化时
+
+```ts
+const report = esmx.generateSizeReport();
+console.log(report.text);
+console.log(`总文件: ${report.json.totalFiles}, 总大小: ${report.json.totalSize} 字节`);
+```
