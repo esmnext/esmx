@@ -63,7 +63,6 @@
         }
     },
     "dependencies": {
-        "upath": "^2.0.1",
         "@esmx/import": "workspace:*",
         "@npmcli/arborist": "^9.1.6",
         "@rspack/core": "1.6.5",
@@ -74,6 +73,7 @@
         "rspack-chain": "^1.4.1",
         "style-loader": "^4.0.0",
         "style-resources-loader": "^1.5.0",
+        "upath": "^2.0.1",
         "webpack-hot-middleware": "^2.26.1",
         "webpack-node-externals": "~3.0.0",
         "worker-rspack-loader": "^3.1.2"
@@ -91,7 +91,7 @@
         "unbuild": "3.6.1",
         "vitest": "3.2.4"
     },
-    "version": "3.0.0-rc.77",
+    "version": "3.0.0-rc.78",
     "type": "module",
     "private": false,
     "exports": {

@@ -41,7 +41,7 @@
         "vitest": "3.2.4",
         "vue": "^3.5.23"
     },
-    "version": "3.0.0-rc.77",
+    "version": "3.0.0-rc.78",
     "type": "module",
     "private": false,
     "exports": {
