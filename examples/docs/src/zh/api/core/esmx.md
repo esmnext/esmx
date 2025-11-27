@@ -685,8 +685,6 @@ const paths = await esmx.getStaticImportPaths(
   - `text`: 格式化的文本报告
   - `json`: 详细统计数据
 
-- **异常**: `NotReadyError` - 框架未初始化时
-
 ```ts
 const report = esmx.generateSizeReport();
 console.log(report.text);
