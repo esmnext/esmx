@@ -271,14 +271,7 @@ function rewriteRender(esmx: Esmx) {
         const module = await vmImport(
             `${esmx.name}/src/entry.server`,
             import.meta.url,
-            {
-                console,
-                setTimeout,
-                clearTimeout,
-                process,
-                URL,
-                global
-            }
+            global
         );
         const serverRender: ServerRenderHandle = module[rc.entryName];
         if (typeof serverRender === 'function') {
