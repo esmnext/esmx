@@ -314,6 +314,8 @@ async function start() {
 start();
 `.trim()
         );
+        console.log('\n');
+        console.log(esmx.generateSizeReport().text);
         return pack(esmx);
     };
 }

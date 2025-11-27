@@ -96,7 +96,7 @@ export function displaySuccessMessage() {
         `█   🎯 ARTIFACTS: COPIED TO ${toDisplayPath(config.outDir)}                                           █`
     );
     console.log(
-        `█   📊 COVERAGE: REPORTS AT ${config.coverageUrl}              █`
+        `█   📊 COVERAGE: REPORTS AT ${config.coverageUrl}                     █`
     );
     console.log(
         '█   🔥 STATUS: READY TO DOMINATE THE ESM UNIVERSE!                         █'
@@ -111,3 +111,5 @@ export function displaySuccessMessage() {
     console.log('');
     console.log('');
 }
+
+displaySuccessMessage();

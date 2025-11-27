@@ -22,6 +22,7 @@ import {
 import type { ImportmapMode } from './render-context';
 import type { RenderContext, RenderContextOptions } from './render-context';
 import { type CacheHandle, createCache } from './utils/cache';
+import { generateSizeReport } from './utils/file-size-stats';
 import { createClientImportMap, createImportMap } from './utils/import-map';
 import type { Middleware } from './utils/middleware';
 import { type ProjectPath, resolvePath } from './utils/resolve-path';
@@ -1077,6 +1078,12 @@ document.head.appendChild(script);
                 }
                 return Object.freeze(Object.values(result));
             }
+        );
+    }
+    public generateSizeReport() {
+        return generateSizeReport(
+            this.resolvePath('dist'),
+            '{client,server,node}/**/!(.*)'
         );
     }
 }
