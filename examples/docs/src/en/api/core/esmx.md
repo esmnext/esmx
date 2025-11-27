@@ -675,3 +675,18 @@ const paths = await esmx.getStaticImportPaths(
   'client',
   `your-app-name/src/entry.client`
 );
+```
+
+### generateSizeReport()
+
+Generate build artifact size analysis report.
+
+- **Returns**: `{ text: string, json: object }`
+  - `text`: Formatted text report
+  - `json`: Detailed statistical data
+
+```ts
+const report = esmx.generateSizeReport();
+console.log(report.text);
+console.log(`Total files: ${report.json.totalFiles}, Total size: ${report.json.totalSize} bytes`);
+```
