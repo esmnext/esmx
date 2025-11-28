@@ -2,44 +2,7 @@ import type { ExternalItem, ExternalItemFunctionData } from '@rspack/core';
 import type RspackChain from 'rspack-chain';
 import type { ParsedModuleLinkPluginOptions } from './types';
 
-type ResolvePath = (
-    request: string,
-    context?: string
-) => Promise<string | null>;
-
-export function applyChainConfig(
-    chain: RspackChain,
-    opts: ParsedModuleLinkPluginOptions
-): void {
-    const isProduction = chain.get('mode') === 'production';
-
-    chain.output
-        .set('module', true)
-        .set('chunkFormat', 'module')
-        .set('chunkLoading', 'import')
-        .set('workerChunkLoading', 'import');
-    chain.experiments({
-        ...chain.get('experiments'),
-        outputModule: true
-    });
-
-    if (isProduction) {
-        chain.output.library({
-            type: 'modern-module'
-        });
-        chain.optimization.set('avoidEntryIife', true);
-    } else {
-        chain.output.library({
-            type: 'module'
-        });
-    }
-
-    applyEntryConfig(chain, opts);
-
-    applyExternalsConfig(chain, opts);
-}
-
-function applyEntryConfig(
+export function applyEntryConfig(
     chain: RspackChain,
     opts: ParsedModuleLinkPluginOptions
 ): void {
@@ -61,7 +24,22 @@ function applyEntryConfig(
     }
 }
 
-function applyExternalsConfig(
+export function applyModuleConfig(chain: RspackChain) {
+    chain.output
+        .set('module', true)
+        .set('chunkFormat', 'module')
+        .set('chunkLoading', 'import')
+        .set('workerChunkLoading', 'import');
+    chain.experiments({
+        ...chain.get('experiments'),
+        outputModule: true
+    });
+    chain.output.library({
+        type: 'module'
+    });
+}
+
+export function applyExternalsConfig(
     chain: RspackChain,
     opts: ParsedModuleLinkPluginOptions
 ): void {
@@ -83,7 +61,10 @@ function createExternalsFunction(
 ) {
     const importMap = new Map<string, string>();
     let initPromise: Promise<void> | null = null;
-
+    type ResolvePath = (
+        request: string,
+        context?: string
+    ) => Promise<string | null>;
     const init = (resolvePath: ResolvePath): Promise<void> => {
         if (initPromise) return initPromise;
 
