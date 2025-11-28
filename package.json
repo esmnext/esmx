@@ -6,11 +6,11 @@
     "scripts": {
         "prepare": "node ./prepare.mjs",
         "lint:js": "biome check --write --no-errors-on-unmatched",
-        "lint:css": "FORCE_COLOR=1 pnpm --filter \"*\" lint:css",
-        "lint:type": "FORCE_COLOR=1 pnpm --filter \"*\" lint:type",
-        "test": "FORCE_COLOR=1 pnpm --filter \"*\" test",
+        "lint:css": "pnpm --filter \"*\" lint:css",
+        "lint:type": "pnpm --filter \"*\" lint:type",
+        "test": "pnpm --filter \"*\" test",
         "build": "node ./build.mjs",
-        "build:packages": "FORCE_COLOR=1 pnpm --filter \"./packages/**\" build",
+        "build:packages": "pnpm --filter \"./packages/**\" build",
         "build:examples": "pnpm --filter \"./examples/**\" build",
         "release": "pnpm run build:packages && lerna publish --force-publish --exact"
     },
