@@ -79,9 +79,9 @@
         "worker-rspack-loader": "^3.1.2"
     },
     "devDependencies": {
-        "@biomejs/biome": "2.3.4",
+        "@biomejs/biome": "2.3.7",
         "@esmx/core": "workspace:*",
-        "@types/node": "^24.10.0",
+        "@types/node": "^24.0.0",
         "@types/npmcli__arborist": "^6.3.1",
         "@types/pacote": "^11.1.8",
         "@types/webpack-hot-middleware": "^2.25.12",

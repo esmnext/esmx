@@ -1,5 +1,4 @@
 import module from 'node:module';
-import IM from '@import-maps/resolve';
 import { createImportMapResolver } from './import-map-resolve';
 import type { ImportMap, ImportMapResolver } from './types';
 

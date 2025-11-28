@@ -13,7 +13,7 @@ import type {
     RouterOptions,
     RouterParsedOptions
 } from '../src/types';
-import { RouteType, RouterMode } from '../src/types';
+import { RouterMode, RouteType } from '../src/types';
 
 const createMockParsedConfig = (
     app?: string | RouterMicroAppCallback

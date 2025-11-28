@@ -15,7 +15,6 @@ describe('joinPathname', () => {
         cases: TestCase[] | (() => TestCase[]);
     };
 
-    // biome-ignore format:
     const testCases: JoinPathnameTestCase[] = [
         {
             description: 'Basic path joining',
@@ -23,7 +22,7 @@ describe('joinPathname', () => {
                 { path: 'test', expected: '/test' },
                 { path: '/test', expected: '/test' },
                 { path: 'test/', expected: '/test' },
-                { path: '/test/', expected: '/test' },
+                { path: '/test/', expected: '/test' }
             ]
         },
         {
@@ -32,7 +31,7 @@ describe('joinPathname', () => {
                 { path: 'test', base: '/api', expected: '/api/test' },
                 { path: '/test', base: '/api', expected: '/api/test' },
                 { path: 'test', base: 'api', expected: '/api/test' },
-                { path: '/test', base: 'api', expected: '/api/test' },
+                { path: '/test', base: 'api', expected: '/api/test' }
             ]
         },
         {
@@ -41,16 +40,20 @@ describe('joinPathname', () => {
                 { path: 'test/path', expected: '/test/path' },
                 { path: '/test/path', expected: '/test/path' },
                 { path: 'test/path/', expected: '/test/path' },
-                { path: '/test/path/', expected: '/test/path' },
+                { path: '/test/path/', expected: '/test/path' }
             ]
         },
         {
             description: 'Multi-level path joining with a base',
             cases: [
                 { path: 'test/path', base: '/api', expected: '/api/test/path' },
-                { path: '/test/path', base: '/api', expected: '/api/test/path' },
+                {
+                    path: '/test/path',
+                    base: '/api',
+                    expected: '/api/test/path'
+                },
                 { path: 'test/path', base: 'api', expected: '/api/test/path' },
-                { path: '/test/path', base: 'api', expected: '/api/test/path' },
+                { path: '/test/path', base: 'api', expected: '/api/test/path' }
             ]
         },
         {
@@ -59,7 +62,11 @@ describe('joinPathname', () => {
                 { path: '//test', expected: '/test' },
                 { path: 'test//path', expected: '/test/path' },
                 { path: '//test//path//', expected: '/test/path' },
-                { path: 'test//path', base: '/api//', expected: '/api/test/path' },
+                {
+                    path: 'test//path',
+                    base: '/api//',
+                    expected: '/api/test/path'
+                }
             ]
         },
         {
@@ -68,7 +75,7 @@ describe('joinPathname', () => {
                 { path: '', expected: '/' },
                 { path: '', base: '', expected: '/' },
                 { path: 'test', base: '', expected: '/test' },
-                { path: '', base: 'api', expected: '/api' },
+                { path: '', base: 'api', expected: '/api' }
             ]
         },
         {
@@ -78,7 +85,7 @@ describe('joinPathname', () => {
                 { path: 'test_path', expected: '/test_path' },
                 { path: 'test.path', expected: '/test.path' },
                 { path: 'test:path', expected: '/test:path' },
-                { path: 'test@path', expected: '/test@path' },
+                { path: 'test@path', expected: '/test@path' }
             ]
         },
         {
@@ -86,12 +93,11 @@ describe('joinPathname', () => {
             cases: [
                 { path: '测试', expected: '/测试' },
                 { path: '测试/路径', expected: '/测试/路径' },
-                { path: '测试', base: '/api', expected: '/api/测试' },
+                { path: '测试', base: '/api', expected: '/api/测试' }
             ]
         }
     ];
     // Test cases for various extreme edge cases
-    // biome-ignore format:
     const edgeCases: JoinPathnameTestCase[] = [
         {
             description: 'Paths with only slashes or empty strings',
@@ -102,7 +108,7 @@ describe('joinPathname', () => {
                 { path: '/', base: '/', expected: '/' },
                 { path: '/', base: '//', expected: '/' },
                 { path: '//', base: '/', expected: '/' },
-                { path: '//', base: '//', expected: '/' },
+                { path: '//', base: '//', expected: '/' }
             ]
         },
         {
@@ -120,15 +126,31 @@ describe('joinPathname', () => {
             description: 'Joining paths with special characters',
             cases: [
                 { path: '测试路径', base: '基础', expected: '/基础/测试路径' },
-                { path: 'path with spaces', base: 'base', expected: '/base/path with spaces' },
-                { path: 'path-with-dashes', base: 'base_with_underscores', expected: '/base_with_underscores/path-with-dashes' },
+                {
+                    path: 'path with spaces',
+                    base: 'base',
+                    expected: '/base/path with spaces'
+                },
+                {
+                    path: 'path-with-dashes',
+                    base: 'base_with_underscores',
+                    expected: '/base_with_underscores/path-with-dashes'
+                }
             ]
         },
         {
             description: 'Handling URL-encoded characters',
             cases: [
-                { path: 'hello%20world', base: 'api', expected: '/api/hello%20world' },
-                { path: 'user%2Fprofile', base: 'v1', expected: '/v1/user%2Fprofile' },
+                {
+                    path: 'hello%20world',
+                    base: 'api',
+                    expected: '/api/hello%20world'
+                },
+                {
+                    path: 'user%2Fprofile',
+                    base: 'v1',
+                    expected: '/v1/user%2Fprofile'
+                }
             ]
         },
         {
@@ -136,23 +158,43 @@ describe('joinPathname', () => {
             cases: [
                 { path: '.', expected: '/.' },
                 { path: '..', expected: '/..' },
-                { path: './relative', base: 'base', expected: '/base/./relative' },
-                { path: '../parent', base: 'base', expected: '/base/../parent' },
+                {
+                    path: './relative',
+                    base: 'base',
+                    expected: '/base/./relative'
+                },
+                { path: '../parent', base: 'base', expected: '/base/../parent' }
             ]
         },
         {
             description: 'Query parameters and hash do not affect joining',
             cases: [
-                { path: 'path?query=1', base: 'base', expected: '/base/path?query=1' },
-                { path: 'path#hash', base: 'base', expected: '/base/path#hash' },
-                { path: 'path?q=1#hash', base: 'base', expected: '/base/path?q=1#hash' },
+                {
+                    path: 'path?query=1',
+                    base: 'base',
+                    expected: '/base/path?query=1'
+                },
+                {
+                    path: 'path#hash',
+                    base: 'base',
+                    expected: '/base/path#hash'
+                },
+                {
+                    path: 'path?q=1#hash',
+                    base: 'base',
+                    expected: '/base/path?q=1#hash'
+                }
             ]
         },
         {
             description: 'Paths starting with a colon (route parameters)',
             cases: [
                 { path: ':id', base: 'users', expected: '/users/:id' },
-                { path: ':userId/profile', base: 'api', expected: '/api/:userId/profile' },
+                {
+                    path: ':userId/profile',
+                    base: 'api',
+                    expected: '/api/:userId/profile'
+                }
             ]
         },
         {
@@ -160,31 +202,59 @@ describe('joinPathname', () => {
             cases: [
                 { path: ':rest*', base: 'files', expected: '/files/:rest*' },
                 { path: ':rest*', base: 'assets', expected: '/assets/:rest*' },
-                { path: 'images/:rest*', base: 'static', expected: '/static/images/:rest*' },
-                { path: '/*splat', base: 'base', expected: '/base/*splat' },
+                {
+                    path: 'images/:rest*',
+                    base: 'static',
+                    expected: '/static/images/:rest*'
+                },
+                { path: '/*splat', base: 'base', expected: '/base/*splat' }
             ]
         },
         {
             description: 'Optional paths',
             cases: [
                 { path: ':id?', base: 'posts', expected: '/posts/:id?' },
-                { path: 'comments/:commentId?', base: 'articles', expected: '/articles/comments/:commentId?' },
-                { path: '/users{/:id}/delete?', base: 'base', expected: '/base/users{/:id}/delete?' },
+                {
+                    path: 'comments/:commentId?',
+                    base: 'articles',
+                    expected: '/articles/comments/:commentId?'
+                },
+                {
+                    path: '/users{/:id}/delete?',
+                    base: 'base',
+                    expected: '/base/users{/:id}/delete?'
+                }
             ]
         },
         {
             description: 'Combination of numbers and special symbols',
             cases: [
                 { path: 'v1.2.3', base: 'api', expected: '/api/v1.2.3' },
-                { path: 'user@domain', base: 'profile', expected: '/profile/user@domain' },
-                { path: 'item_123', base: 'products', expected: '/products/item_123' },
+                {
+                    path: 'user@domain',
+                    base: 'profile',
+                    expected: '/profile/user@domain'
+                },
+                {
+                    path: 'item_123',
+                    base: 'products',
+                    expected: '/products/item_123'
+                }
             ]
         },
         {
             description: 'Whitespace character handling',
             cases: [
-                { path: '  path  ', base: '  base  ', expected: '/  base  /  path  ' },
-                { path: '\tpath\t', base: '\tbase\t', expected: '/\tbase\t/\tpath\t' },
+                {
+                    path: '  path  ',
+                    base: '  base  ',
+                    expected: '/  base  /  path  '
+                },
+                {
+                    path: '\tpath\t',
+                    base: '\tbase\t',
+                    expected: '/\tbase\t/\tpath\t'
+                }
             ]
         },
         {
@@ -192,15 +262,23 @@ describe('joinPathname', () => {
             cases: [
                 { path: 'true', base: 'false', expected: '/false/true' },
                 { path: '0', base: '1', expected: '/1/0' },
-                { path: 'NaN', base: 'undefined', expected: '/undefined/NaN' },
+                { path: 'NaN', base: 'undefined', expected: '/undefined/NaN' }
             ]
         },
         {
             description: 'Extreme cases of path normalization',
             cases: [
                 // Test normalization of multiple slashes
-                { path: '///path///', base: '///base///', expected: '/base/path' },
-                { path: 'path////with////slashes', base: 'base////with////slashes', expected: '/base/with/slashes/path/with/slashes' },
+                {
+                    path: '///path///',
+                    base: '///base///',
+                    expected: '/base/path'
+                },
+                {
+                    path: 'path////with////slashes',
+                    base: 'base////with////slashes',
+                    expected: '/base/with/slashes/path/with/slashes'
+                }
             ]
         },
         {
@@ -209,23 +287,47 @@ describe('joinPathname', () => {
                 { path: 'путь', base: 'база', expected: '/база/путь' }, // Russian
                 { path: 'パス', base: 'ベース', expected: '/ベース/パス' }, // Japanese
                 { path: '경로', base: '기본', expected: '/기본/경로' }, // Korean
-                { path: 'مسار', base: 'قاعدة', expected: '/قاعدة/مسار' }, // Arabic
+                { path: 'مسار', base: 'قاعدة', expected: '/قاعدة/مسار' } // Arabic
             ]
         },
         {
             description: 'Handling of special symbols and punctuation',
             cases: [
-                { path: 'path!@#$%^&\\*()', base: 'base!@#$%^&\\*()', expected: '/base!@#$%^&\\*()/path!@#$%^&\\*()' },
-                { path: 'path\\[]{};:"\'<>\\?', base: 'base\\[]{};:"\'<>\\?', expected: '/base\\[]{};:"\'<>\\?/path\\[]{};:"\'<>\\?' },
-                { path: 'path\\backslash', base: 'base\\backslash\\', expected: '/base\\backslash\\/path\\backslash' },
+                {
+                    path: 'path!@#$%^&\\*()',
+                    base: 'base!@#$%^&\\*()',
+                    expected: '/base!@#$%^&\\*()/path!@#$%^&\\*()'
+                },
+                {
+                    path: 'path\\[]{};:"\'<>\\?',
+                    base: 'base\\[]{};:"\'<>\\?',
+                    expected: '/base\\[]{};:"\'<>\\?/path\\[]{};:"\'<>\\?'
+                },
+                {
+                    path: 'path\\backslash',
+                    base: 'base\\backslash\\',
+                    expected: '/base\\backslash\\/path\\backslash'
+                }
             ]
         },
         {
             description: 'Paths with combinations of numbers and symbols',
             cases: [
-                { path: '123.456.789', base: 'v1.0.0', expected: '/v1.0.0/123.456.789' },
-                { path: 'item-123_abc', base: 'category-456_def', expected: '/category-456_def/item-123_abc' },
-                { path: '2023-12-31', base: '2024-01-01', expected: '/2024-01-01/2023-12-31' },
+                {
+                    path: '123.456.789',
+                    base: 'v1.0.0',
+                    expected: '/v1.0.0/123.456.789'
+                },
+                {
+                    path: 'item-123_abc',
+                    base: 'category-456_def',
+                    expected: '/category-456_def/item-123_abc'
+                },
+                {
+                    path: '2023-12-31',
+                    base: '2024-01-01',
+                    expected: '/2024-01-01/2023-12-31'
+                }
             ]
         },
         {
@@ -234,7 +336,7 @@ describe('joinPathname', () => {
                 { path: ' ', base: ' ', expected: '/ / ' },
                 { path: '\n', base: '\t', expected: '/\t/\n' },
                 { path: '\r\n', base: '\t\r', expected: '/\t\r/\r\n' }, // Test carriage return and line feed
-                { path: '\u00A0', base: '\u2000', expected: '/\u2000/\u00A0' }, // Non-breaking space and em space
+                { path: '\u00A0', base: '\u2000', expected: '/\u2000/\u00A0' } // Non-breaking space and em space
             ]
         },
         {
@@ -254,15 +356,23 @@ describe('joinPathname', () => {
                 { path: '//', base: '//', expected: '/' },
                 { path: '///', base: '///', expected: '/' },
                 { path: 'path/', base: '/base', expected: '/base/path' },
-                { path: '/path/', base: '/base/', expected: '/base/path' },
+                { path: '/path/', base: '/base/', expected: '/base/path' }
             ]
         },
         {
             description: 'URL-encoded path segments',
             cases: [
-                { path: '%20space%20', base: '%20base%20', expected: '/%20base%20/%20space%20' },
+                {
+                    path: '%20space%20',
+                    base: '%20base%20',
+                    expected: '/%20base%20/%20space%20'
+                },
                 { path: '%2F%2F', base: '%2F', expected: '/%2F/%2F%2F' },
-                { path: 'path%3Fquery%3D1', base: 'base%23hash', expected: '/base%23hash/path%3Fquery%3D1' },
+                {
+                    path: 'path%3Fquery%3D1',
+                    base: 'base%23hash',
+                    expected: '/base%23hash/path%3Fquery%3D1'
+                }
             ]
         },
         {
@@ -270,30 +380,58 @@ describe('joinPathname', () => {
             cases: [
                 { path: '123', base: '456', expected: '/456/123' },
                 { path: '0', expected: '/0' },
-                { path: '', base: '0', expected: '/0' },
+                { path: '', base: '0', expected: '/0' }
             ]
         },
         {
             description: 'Complex cases with dot notation in paths',
             cases: [
-                { path: '../../../path', base: '../../base', expected: '/../../base/../../../path' },
-                { path: './././path', base: './././base', expected: '/./././base/./././path' },
-                { path: 'path/./file', base: 'base/../dir', expected: '/base/../dir/path/./file' },
+                {
+                    path: '../../../path',
+                    base: '../../base',
+                    expected: '/../../base/../../../path'
+                },
+                {
+                    path: './././path',
+                    base: './././base',
+                    expected: '/./././base/./././path'
+                },
+                {
+                    path: 'path/./file',
+                    base: 'base/../dir',
+                    expected: '/base/../dir/path/./file'
+                }
             ]
         },
         {
             description: 'Paths with mixed character sets',
             cases: [
-                { path: '中文/english/русский', base: '日本語/العربية', expected: '/日本語/العربية/中文/english/русский' },
-                { path: '测试-test-тест', base: '基础-base-база', expected: '/基础-base-база/测试-test-тест' },
+                {
+                    path: '中文/english/русский',
+                    base: '日本語/العربية',
+                    expected: '/日本語/العربية/中文/english/русский'
+                },
+                {
+                    path: '测试-test-тест',
+                    base: '基础-base-база',
+                    expected: '/基础-base-база/测试-test-тест'
+                }
             ]
         },
         {
             description: 'Handling of control characters',
             cases: [
                 // Test control characters (though uncommon in actual URLs)
-                { path: '\u0001\u0002', base: '\u0003\u0004', expected: '/\u0003\u0004/\u0001\u0002' },
-                { path: 'path\u007F', base: 'base\u007F', expected: '/base\u007F/path\u007F' },
+                {
+                    path: '\u0001\u0002',
+                    base: '\u0003\u0004',
+                    expected: '/\u0003\u0004/\u0001\u0002'
+                },
+                {
+                    path: 'path\u007F',
+                    base: 'base\u007F',
+                    expected: '/base\u007F/path\u007F'
+                }
             ]
         },
         {
@@ -302,7 +440,7 @@ describe('joinPathname', () => {
                 { path: 'path.', base: 'base.', expected: '/base./path.' },
                 { path: 'path-', base: 'base-', expected: '/base-/path-' },
                 { path: 'path_', base: 'base_', expected: '/base_/path_' },
-                { path: 'path~', base: 'base~', expected: '/base~/path~' },
+                { path: 'path~', base: 'base~', expected: '/base~/path~' }
             ]
         }
     ];

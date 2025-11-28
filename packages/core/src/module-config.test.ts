@@ -1,7 +1,6 @@
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
-    type ModuleConfig,
     addPackageExportsToScopes,
     createDefaultExports,
     getEnvironmentExports,
@@ -9,8 +8,9 @@ import {
     getEnvironmentScopes,
     getEnvironments,
     getLinks,
-    parseModuleConfig,
+    type ModuleConfig,
     parsedExportValue,
+    parseModuleConfig,
     processExportArray,
     processObjectExport,
     processStringExport,

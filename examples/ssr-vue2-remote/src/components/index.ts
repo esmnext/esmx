@@ -6,24 +6,22 @@
 // Global Styles
 import '../styles/global.less';
 
+// Layout Components
+export { AppFooter, AppNav } from './layout';
+// Types
+export type {
+    ButtonSize,
+    ButtonType,
+    CardProps,
+    ModuleGuideProps,
+    ModuleHeaderProps,
+    ShowcaseSectionProps
+} from './ui';
 // UI Components
 export {
     UiButton,
     UiCard,
     UiModuleGuide,
-    UiShowcaseSection,
-    UiModuleHeader
-} from './ui';
-
-// Layout Components
-export { AppNav, AppFooter } from './layout';
-
-// Types
-export type {
-    ButtonType,
-    ButtonSize,
-    CardProps,
-    ModuleGuideProps,
-    ShowcaseSectionProps,
-    ModuleHeaderProps
+    UiModuleHeader,
+    UiShowcaseSection
 } from './ui';

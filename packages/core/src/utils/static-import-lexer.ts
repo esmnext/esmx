@@ -2,9 +2,8 @@ import type fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
 import type { ImportMap, SpecifierMap } from '@esmx/import';
-import type { ParsedModuleConfig } from '../module-config';
-
 import * as esmLexer from 'es-module-lexer';
+import type { ParsedModuleConfig } from '../module-config';
 
 /**
  * Get the list of statically imported module names from JS code. Maybe cannot handle multiple concurrent calls, not tested.

@@ -1,5 +1,5 @@
-import { version } from 'vue';
 import type { Ref } from 'vue';
+import { version } from 'vue';
 
 export const isVue3 = version.startsWith('3.');
 

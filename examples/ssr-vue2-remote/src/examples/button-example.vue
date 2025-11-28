@@ -40,8 +40,8 @@
 </template>
 
 <script setup lang="ts">
-import { UiButton, UiCard } from '../components';
 import type { ButtonSize, ButtonType } from '../components';
+import { UiButton, UiCard } from '../components';
 
 const buttonTypes: ButtonType[] = ['primary', 'secondary', 'text'];
 const buttonTypeMap: Record<ButtonType, string> = {

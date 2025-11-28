@@ -1,7 +1,7 @@
 import { createMatcher, createRouteMatches } from './matcher';
 import type { Router } from './router';
-import { RouterMode } from './types';
 import type { Route, RouterOptions, RouterParsedOptions } from './types';
+import { RouterMode } from './types';
 import { isBrowser } from './util';
 
 /**

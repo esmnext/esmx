@@ -37,6 +37,7 @@ export function createVmImport(baseURL: URL, importMap: ImportMap = {}) {
         const url: string = result ?? import.meta.resolve(specifier, parent);
         const filename = fileURLToPath(url);
         return {
+            main: false,
             filename,
             dirname: path.dirname(filename),
             url,

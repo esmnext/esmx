@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import { Router } from '../src/router';
-import { RouteType, RouterMode } from '../src/types';
 import type { Route, RouteConfig } from '../src/types';
+import { RouterMode } from '../src/types';
 
 const createTestRouter = (): Router => {
     return new Router({

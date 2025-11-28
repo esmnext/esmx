@@ -111,5 +111,3 @@ export function displaySuccessMessage() {
     console.log('');
     console.log('');
 }
-
-displaySuccessMessage();

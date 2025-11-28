@@ -5,7 +5,6 @@ import { parsedOptions } from './options';
 import { Route } from './route';
 import { RouteTransition } from './route-transition';
 import { createLinkResolver } from './router-link';
-import { RouteType, RouterMode } from './types';
 import type {
     RouteConfirmHook,
     RouteLayerOptions,
@@ -13,12 +12,13 @@ import type {
     RouteLocationInput,
     RouteMatchType,
     RouteNotifyHook,
-    RouteState,
     RouterLinkProps,
     RouterLinkResolved,
     RouterOptions,
-    RouterParsedOptions
+    RouterParsedOptions,
+    RouteState
 } from './types';
+import { RouterMode, RouteType } from './types';
 import { isNotNullish, isPlainObject, isRouteMatched } from './util';
 
 export class Router {

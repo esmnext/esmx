@@ -1,6 +1,6 @@
 import {
-    assert,
     afterEach,
+    assert,
     beforeEach,
     describe,
     expect,
@@ -12,7 +12,7 @@ import { MemoryHistory, Navigation } from '../src/navigation';
 import { parsedOptions } from '../src/options';
 import { Route } from '../src/route';
 import type { RouterOptions } from '../src/types';
-import { RouteType, RouterMode } from '../src/types';
+import { RouterMode, RouteType } from '../src/types';
 
 const sleep = (ms?: number) => new Promise((s) => setTimeout(s, ms));
 const awaitGo = (history: MemoryHistory, delta: number) => {

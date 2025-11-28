@@ -1,19 +1,18 @@
 import { describe, expect, it, vi } from 'vitest';
 import { parsedOptions } from '../src/options';
 import {
+    applyRouteParams,
     NON_ENUMERABLE_PROPERTIES,
-    Route,
-    applyRouteParams
+    Route
 } from '../src/route';
 import type { Router } from '../src/router';
-import { RouteType, RouterMode } from '../src/types';
 import type {
     RouteConfig,
-    RouteConfirmHook,
     RouteHandleHook,
     RouterOptions,
     RouterParsedOptions
 } from '../src/types';
+import { RouterMode, RouteType } from '../src/types';
 
 describe('Route Class Complete Test Suite', () => {
     const createOptions = (

@@ -1,5 +1,5 @@
 import { type MusicStore, musicStore, uniqueKeys } from 'ssr-share/src/store';
-import { type App, type Plugin, inject, ref, watch } from 'vue';
+import { type App, inject, type Plugin, ref, watch } from 'vue';
 
 // Vue 3 响应式 Music Store 插件
 export class Vue3MusicStore {

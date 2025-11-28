@@ -1,13 +1,13 @@
 import { pathToFileURL } from 'node:url';
 import {
     type App,
+    createApp,
     type Esmx,
     type Middleware,
+    mergeMiddlewares,
     RenderContext,
     type RenderContextOptions,
-    type ServerRenderHandle,
-    createApp,
-    mergeMiddlewares
+    type ServerRenderHandle
 } from '@esmx/core';
 import { createVmImport } from '@esmx/import';
 import type { RspackOptions } from '@rspack/core';
@@ -239,14 +239,14 @@ async function createMiddleware(
     ]);
     rsBuild.watch();
 
-    // @ts-ignore
+    // @ts-expect-error
     const hot = hotMiddleware(rsBuild.compilers[0], {
         path: `${esmx.basePath}hot-middleware`
     });
     return [
         (req, res, next) => {
             if (req.url?.startsWith(`${esmx.basePath}hot-middleware`)) {
-                // @ts-ignore
+                // @ts-expect-error
                 return hot(req, res, next);
             }
             return next();

@@ -63,7 +63,7 @@
 import { RouteVerifyHook } from '@esmx/router';
 import { RouterLink, useRouter } from '@esmx/router-vue';
 import { computed, ref } from 'vue';
-import { type Song, mockSongs, musicStore } from '../store/music-store';
+import { mockSongs, musicStore, type Song } from '../store/music-store';
 import RouteInfoModal from './route-info-modal.vue';
 import ToggleThemeBtn from './toggle-theme-btn.vue';
 import TwoCol from './two-col.vue';

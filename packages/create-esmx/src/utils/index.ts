@@ -1,6 +1,6 @@
 export {
-    getCommand,
-    type CommandType
+    type CommandType,
+    getCommand
 } from './package-manager';
 
 export {

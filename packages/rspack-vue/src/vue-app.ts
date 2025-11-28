@@ -28,7 +28,10 @@ export function createRspackVueApp(
             const defineVue = <T>({
                 vue2,
                 vue3
-            }: { vue2: () => T; vue3: () => T }) => {
+            }: {
+                vue2: () => T;
+                vue3: () => T;
+            }) => {
                 if (vueType === '2') {
                     return vue2();
                 } else {

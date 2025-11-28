@@ -45,10 +45,10 @@
 <script lang="ts" setup>
 import { RouterLink } from '@esmx/router-vue';
 import {
-    type Playlist,
     mockArtists,
     mockPlaylists,
-    musicStore
+    musicStore,
+    type Playlist
 } from '../store/music-store';
 
 const playPlaylist = (playlist: Playlist) => {

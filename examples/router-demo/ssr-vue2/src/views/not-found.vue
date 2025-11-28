@@ -14,6 +14,7 @@
 
 <script lang="ts" setup>
 import { RouterLink, useRouter } from '@esmx/router-vue';
+
 const $router = useRouter();
 </script>
 

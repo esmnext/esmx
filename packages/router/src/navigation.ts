@@ -1,6 +1,6 @@
 import { PAGE_ID } from './increment-id';
+import type { RouterParsedOptions, RouteState } from './types';
 import { RouterMode } from './types';
-import type { RouteState, RouterParsedOptions } from './types';
 
 type NavigationSubscribe = (url: string, state: RouteState) => void;
 type NavigationGoResult = null | {

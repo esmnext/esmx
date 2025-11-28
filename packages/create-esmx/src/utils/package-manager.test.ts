@@ -3,8 +3,8 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { getCommand } from './package-manager';
 import type { CommandType } from './package-manager';
+import { getCommand } from './package-manager';
 
 describe('package-manager utilities', () => {
     // Store original environment variable

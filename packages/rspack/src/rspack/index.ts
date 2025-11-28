@@ -1,8 +1,8 @@
 export {
-    type RspackAppConfigContext,
+    createRspackApp,
     type RspackAppChainContext,
-    type RspackAppOptions,
-    createRspackApp
+    type RspackAppConfigContext,
+    type RspackAppOptions
 } from './app';
 export type { BuildTarget } from './build-target';
 export { RSPACK_LOADER } from './loader';

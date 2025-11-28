@@ -23,8 +23,8 @@
 
 <script setup lang="ts">
 import { UiButton, UiCard } from '../components';
-import { defaultTheme, useTheme } from '../composables';
 import type { Theme } from '../composables';
+import { defaultTheme, useTheme } from '../composables';
 
 const { theme, updateTheme } = useTheme();
 

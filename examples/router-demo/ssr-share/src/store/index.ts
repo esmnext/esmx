@@ -1,8 +1,8 @@
-export type { Song, Playlist, Artist } from './types';
-export { mockSongs, mockPlaylists, mockArtists } from './mock-data';
+export { mockArtists, mockPlaylists, mockSongs } from './mock-data';
 export type {
-    Ref,
     ChangeListener,
-    MusicStore
+    MusicStore,
+    Ref
 } from './music-store';
-export { Reactive, ref, musicStore, uniqueKeys } from './music-store';
+export { musicStore, Reactive, ref, uniqueKeys } from './music-store';
+export type { Artist, Playlist, Song } from './types';

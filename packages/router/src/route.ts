@@ -13,9 +13,9 @@ import {
     type RouteMeta,
     type RouteOptions,
     type RouteParsedConfig,
+    type RouterParsedOptions,
     type RouteState,
-    RouteType,
-    type RouterParsedOptions
+    RouteType
 } from './types';
 import { decodeParams, isNonEmptyPlainObject, isPlainObject } from './util';
 

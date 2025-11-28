@@ -15,7 +15,7 @@
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { type Song, musicStore } from '../store/music-store';
+import { musicStore, type Song } from '../store/music-store';
 import TracksListComponent from './tracks-list.vue';
 
 const emit = defineEmits<(e: 'trackSelected', track: Song) => void>();

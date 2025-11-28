@@ -62,7 +62,7 @@
 <script lang="ts" setup>
 import { RouteVerifyHook } from '@esmx/router';
 import { RouterLink, RouterView, useRouter } from '@esmx/router-vue';
-import { type Song, mockSongs } from 'ssr-share/src/store';
+import { mockSongs, type Song } from 'ssr-share/src/store';
 import { computed, ref } from 'vue';
 import { RouteInfoModal, ToggleThemeBtn } from '../components';
 import { TwoCol } from '../layout';

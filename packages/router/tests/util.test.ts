@@ -66,8 +66,8 @@ describe('isNotNullish', () => {
         // Arrays & typed arrays related
         expect(isNotNullish([])).toBe(true);
         expect(isNotNullish(['a', 'b'])).toBe(true);
-        expect(isNotNullish(new Array())).toBe(true);
-        expect(isNotNullish(new Array(1, 2, 3))).toBe(true);
+        expect(isNotNullish([])).toBe(true);
+        expect(isNotNullish([1, 2, 3])).toBe(true);
         expect(isNotNullish(new Array(1))).toBe(true);
         expect(isNotNullish(new Uint8Array(8))).toBe(true);
         expect(isNotNullish(new ArrayBuffer(8))).toBe(true);
@@ -118,7 +118,7 @@ describe('isNotNullish', () => {
         // Various situations that produce NaN
         expect(isNotNullish(0 / 0)).toBe(false);
         expect(isNotNullish(Math.sqrt(-1))).toBe(false);
-        expect(isNotNullish(Number.parseInt('abc'))).toBe(false);
+        expect(isNotNullish(Number.parseInt('abc', 10))).toBe(false);
         expect(isNotNullish(Number.parseFloat('abc'))).toBe(false);
         expect(isNotNullish(Number.NaN)).toBe(false);
         expect(isNotNullish(Number.NaN)).toBe(false);
@@ -126,7 +126,9 @@ describe('isNotNullish', () => {
         // NaN wrapped in Number objects
         expect(isNotNullish(new Number(Number.NaN))).toBe(false);
         expect(isNotNullish(new Number(0 / 0))).toBe(false);
-        expect(isNotNullish(new Number(Number.parseInt('abc')))).toBe(false);
+        expect(isNotNullish(new Number(Number.parseInt('abc', 10)))).toBe(
+            false
+        );
     });
 
     test('should handle complex objects', () => {
@@ -179,8 +181,8 @@ describe('isPlainObject', () => {
         // Arrays & typed arrays related
         expect(isPlainObject([])).toBe(false);
         expect(isPlainObject(['a', 'b'])).toBe(false);
-        expect(isPlainObject(new Array())).toBe(false);
-        expect(isPlainObject(new Array(1, 2, 3))).toBe(false);
+        expect(isPlainObject([])).toBe(false);
+        expect(isPlainObject([1, 2, 3])).toBe(false);
         expect(isPlainObject(new Array(1))).toBe(false);
         expect(isPlainObject(new Uint8Array(8))).toBe(false);
         expect(isPlainObject(new ArrayBuffer(8))).toBe(false);
@@ -617,8 +619,8 @@ describe('isValidConfirmHookResult', () => {
         // Arrays
         expect(isValidConfirmHookResult([])).toBe(false);
         expect(isValidConfirmHookResult(['a', 'b'])).toBe(false);
-        expect(isValidConfirmHookResult(new Array())).toBe(false);
-        expect(isValidConfirmHookResult(new Array(1, 2, 3))).toBe(false);
+        expect(isValidConfirmHookResult([])).toBe(false);
+        expect(isValidConfirmHookResult([1, 2, 3])).toBe(false);
         expect(isValidConfirmHookResult(new Array(1))).toBe(false);
         expect(isValidConfirmHookResult(new Uint8Array(8))).toBe(false);
         expect(isValidConfirmHookResult(new ArrayBuffer(8))).toBe(false);

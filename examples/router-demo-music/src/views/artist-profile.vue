@@ -31,10 +31,10 @@ import { computed } from 'vue';
 import BubbleBg from '../components/bubble-bg.vue';
 import TracksList from '../components/tracks-list.vue';
 import {
-    type Song,
     mockArtists,
     mockSongs,
-    musicStore
+    musicStore,
+    type Song
 } from '../store/music-store';
 
 const route = useRoute();

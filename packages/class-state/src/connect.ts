@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 import { produce } from 'immer';
 
-import { type State, type StateContext, getStateContext } from './create';
+import { getStateContext, type State, type StateContext } from './create';
 export type StoreParams = Record<string, any>;
 export type StoreConstructor = new (cacheKey?: string) => any;
 

@@ -3,9 +3,9 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import {
     CircularDependencyError,
     FileReadError,
-    ModuleLoadingError,
     formatCircularDependency,
-    formatModuleChain
+    formatModuleChain,
+    ModuleLoadingError
 } from './error';
 
 describe('Module Loading Errors', () => {

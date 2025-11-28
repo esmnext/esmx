@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { BuildTarget } from '../rspack';
-import { PRESET_TARGETS, getTargetSetting } from './target-setting';
 import type { TargetSetting } from './target-setting';
+import { getTargetSetting, PRESET_TARGETS } from './target-setting';
 
 describe('getTargetSetting', () => {
     const buildTargets: BuildTarget[] = ['client', 'server', 'node'];

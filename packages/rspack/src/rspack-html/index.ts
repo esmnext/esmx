@@ -1,19 +1,19 @@
 import type { Esmx } from '@esmx/core';
 import {
     type LightningcssLoaderOptions,
-    type SwcLoaderOptions,
-    rspack
+    rspack,
+    type SwcLoaderOptions
 } from '@rspack/core';
 import NodePolyfillPlugin from 'node-polyfill-webpack-plugin';
 import type RspackChain from 'rspack-chain';
 import {
     type BuildTarget,
+    createRspackApp,
     RSPACK_LOADER,
-    type RspackAppOptions,
-    createRspackApp
+    type RspackAppOptions
 } from '../rspack';
-import { getTargetSetting } from './target-setting';
 import type { TargetSetting } from './target-setting';
+import { getTargetSetting } from './target-setting';
 
 export type { TargetSetting };
 export interface RspackHtmlAppOptions extends RspackAppOptions {

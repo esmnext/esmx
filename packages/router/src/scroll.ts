@@ -1,5 +1,3 @@
-import { isBrowser } from './util';
-
 /** Internal {@link ScrollToOptions | `ScrollToOptions`}: `left` and `top` properties always have values */
 interface _ScrollPosition extends ScrollToOptions {
     left: number;

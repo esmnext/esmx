@@ -1,6 +1,6 @@
 import { html } from 'htm/preact';
 import type { JSX } from 'preact';
-import { useEffect, useState } from 'preact/hooks';
+import { useState } from 'preact/hooks';
 import './styles.css';
 
 // 计数器组件

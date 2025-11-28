@@ -97,9 +97,7 @@ describe('index.ts - Package Entry Point', () => {
 
             expectedExports.forEach((exportName) => {
                 expect(RouterVueModule).toHaveProperty(exportName);
-                expect(
-                    RouterVueModule[exportName as keyof typeof RouterVueModule]
-                ).toBeDefined();
+                expect(Object.hasOwn(RouterVueModule, exportName)).toBe(true);
             });
         });
 

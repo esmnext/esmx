@@ -2,16 +2,16 @@
  * @vitest-environment node
  */
 import {
-    type MockInstance,
     afterEach,
     beforeEach,
     describe,
     expect,
     it,
+    type MockInstance,
     vi
 } from 'vitest';
-import type { RouteConfig, RouterOptions } from '../src';
-import { fallback, parsedOptions } from '../src/options';
+import type { RouterOptions } from '../src';
+import { fallback } from '../src/options';
 import { createRequest, createResponse, createRouter } from './util';
 
 describe('options.ts - Node.js Environment Tests', () => {

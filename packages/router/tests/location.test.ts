@@ -1,9 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import {
-    normalizeURL,
-    parseLocation,
-    resolveRouteLocationInput
-} from '../src/location';
+import { normalizeURL, parseLocation } from '../src/location';
 import type { RouteLocationInput } from '../src/types';
 
 declare module 'vitest' {
@@ -23,9 +19,7 @@ expect.extend({
         }
         (received = new URL(received)).searchParams.sort();
         (expected = new URL(expected)).searchParams.sort();
-        // biome-ignore lint/correctness/noSelfAssign:
         received.hash = received.hash;
-        // biome-ignore lint/correctness/noSelfAssign:
         expected.hash = expected.hash;
         return {
             message: () => `expected ${received.href} to be ${expected.href}`,
@@ -267,7 +261,6 @@ describe('parseLocation', () => {
 
 describe('normalizeURL more', () => {
     describe.for(
-        // biome-ignore format:
         Object.entries({
             'https://www.esmx.dev': {
                 '/': 'https://www.esmx.dev/',
@@ -282,7 +275,7 @@ describe('normalizeURL more', () => {
                 '../new/100': 'https://www.esmx.dev/new/100',
                 '../new/100/': 'https://www.esmx.dev/new/100/',
                 '': 'https://www.esmx.dev/',
-                'new': 'https://www.esmx.dev/new',
+                new: 'https://www.esmx.dev/new',
                 'new/': 'https://www.esmx.dev/new/',
                 'new/100': 'https://www.esmx.dev/new/100',
                 'new/100/': 'https://www.esmx.dev/new/100/',
@@ -296,7 +289,7 @@ describe('normalizeURL more', () => {
                 '..a': 'https://www.esmx.dev/..a',
                 '.a/': 'https://www.esmx.dev/.a/',
                 '..a/': 'https://www.esmx.dev/..a/',
-                'new/../.': 'https://www.esmx.dev/',
+                'new/../.': 'https://www.esmx.dev/'
             },
             'https://www.esmx.dev/': {
                 '/': 'https://www.esmx.dev/',
@@ -311,7 +304,7 @@ describe('normalizeURL more', () => {
                 '../new/100': 'https://www.esmx.dev/new/100',
                 '../new/100/': 'https://www.esmx.dev/new/100/',
                 '': 'https://www.esmx.dev/',
-                'new': 'https://www.esmx.dev/new',
+                new: 'https://www.esmx.dev/new',
                 'new/': 'https://www.esmx.dev/new/',
                 'new/100': 'https://www.esmx.dev/new/100',
                 'new/100/': 'https://www.esmx.dev/new/100/',
@@ -325,7 +318,7 @@ describe('normalizeURL more', () => {
                 '..a': 'https://www.esmx.dev/..a',
                 '.a/': 'https://www.esmx.dev/.a/',
                 '..a/': 'https://www.esmx.dev/..a/',
-                'new/../.': 'https://www.esmx.dev/',
+                'new/../.': 'https://www.esmx.dev/'
             },
             'https://www.esmx.dev/a/b/c': {
                 '/': 'https://www.esmx.dev/a/b/',
@@ -340,7 +333,7 @@ describe('normalizeURL more', () => {
                 '../new/100': 'https://www.esmx.dev/a/new/100',
                 '../new/100/': 'https://www.esmx.dev/a/new/100/',
                 '': 'https://www.esmx.dev/a/b/c',
-                'new': 'https://www.esmx.dev/a/b/new',
+                new: 'https://www.esmx.dev/a/b/new',
                 'new/': 'https://www.esmx.dev/a/b/new/',
                 'new/100': 'https://www.esmx.dev/a/b/new/100',
                 'new/100/': 'https://www.esmx.dev/a/b/new/100/',
@@ -355,7 +348,7 @@ describe('normalizeURL more', () => {
                 '.a/': 'https://www.esmx.dev/a/b/.a/',
                 '..a/': 'https://www.esmx.dev/a/b/..a/',
                 'new/../.': 'https://www.esmx.dev/a/b/',
-                'new/.././a/../../x/': 'https://www.esmx.dev/a/x/',
+                'new/.././a/../../x/': 'https://www.esmx.dev/a/x/'
             },
             'https://www.esmx.dev/a/b/c/': {
                 '/': 'https://www.esmx.dev/a/b/c/',
@@ -370,7 +363,7 @@ describe('normalizeURL more', () => {
                 '../new/100': 'https://www.esmx.dev/a/b/new/100',
                 '../new/100/': 'https://www.esmx.dev/a/b/new/100/',
                 '': 'https://www.esmx.dev/a/b/c/',
-                'new': 'https://www.esmx.dev/a/b/c/new',
+                new: 'https://www.esmx.dev/a/b/c/new',
                 'new/': 'https://www.esmx.dev/a/b/c/new/',
                 'new/100': 'https://www.esmx.dev/a/b/c/new/100',
                 'new/100/': 'https://www.esmx.dev/a/b/c/new/100/',
@@ -385,7 +378,7 @@ describe('normalizeURL more', () => {
                 '.a/': 'https://www.esmx.dev/a/b/c/.a/',
                 '..a/': 'https://www.esmx.dev/a/b/c/..a/',
                 'new/.././': 'https://www.esmx.dev/a/b/c/',
-                'new/.././a/../../x/': 'https://www.esmx.dev/a/b/x/',
+                'new/.././a/../../x/': 'https://www.esmx.dev/a/b/x/'
             }
         })
     )(`base: $0`, ([base, cases]) => {

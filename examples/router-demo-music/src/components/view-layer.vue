@@ -15,6 +15,7 @@
 import { useRoute, useRouter } from '@esmx/router-vue';
 import { onMounted, ref, watch } from 'vue';
 import RouteInfoModal from './route-info-modal.vue';
+
 const $router = useRouter();
 const $route = useRoute();
 

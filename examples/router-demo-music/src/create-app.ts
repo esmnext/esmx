@@ -4,7 +4,7 @@
  */
 
 import { Router } from '@esmx/router';
-import { RouterPlugin, RouterView, useProvideRouter } from '@esmx/router-vue';
+import { RouterPlugin, useProvideRouter } from '@esmx/router-vue';
 import Vue from 'vue';
 import { routes } from './routes';
 

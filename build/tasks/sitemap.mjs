@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, extname, join, parse, relative } from 'node:path';
 import { config } from '../config.mjs';
 import { log, toDisplayPath } from '../utils.mjs';

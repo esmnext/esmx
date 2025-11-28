@@ -27,7 +27,7 @@
 
 <script lang="ts" setup>
 import { useRoute } from '@esmx/router-vue';
-import { type Song, mockArtists, mockSongs } from 'ssr-share/src/store';
+import { mockArtists, mockSongs, type Song } from 'ssr-share/src/store';
 import { computed } from 'vue';
 import BubbleBg from '../components/bubble-bg.vue';
 import TracksList from '../components/tracks-list.vue';

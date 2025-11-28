@@ -2,8 +2,8 @@ import type { ManifestJsonExports } from '@esmx/core';
 
 export type {
     ManifestJson,
-    ManifestJsonChunks,
     ManifestJsonChunk,
+    ManifestJsonChunks,
     ManifestJsonExport,
     ManifestJsonExports
 } from '@esmx/core';

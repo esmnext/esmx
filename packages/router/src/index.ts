@@ -1,54 +1,53 @@
-export { Router } from './router';
-export { Route } from './route';
+// Error types
 export {
-    // Core enums
-    RouterMode,
-    RouteType,
+    RouteError,
+    RouteNavigationAbortedError,
+    RouteSelfRedirectionError,
+    RouteTaskCancelledError,
+    RouteTaskExecutionError
+} from './error';
+export { Route } from './route';
+export { Router } from './router';
+export {
+    type RouteConfig,
     // Hook function types
     type RouteConfirmHook,
     type RouteConfirmHookResult,
-    type RouteVerifyHook,
     type RouteHandleHook,
-    type RouteNotifyHook,
-    // Basic data types
-    type RouteMeta,
-    type RouteState,
     type RouteHandleResult,
-    type RouteMatchType,
-    // Route location and config types
-    type RouteLocation,
-    type RouteLocationInput,
-    type RouteConfig,
-    type RouteParsedConfig,
-    type RouteMatchResult,
-    type RouteMatcher,
-    type RouteOptions,
     // Router Layer types
     type RouteLayerOptions,
     type RouteLayerResult,
+    // Route location and config types
+    type RouteLocation,
+    type RouteLocationInput,
+    type RouteMatcher,
+    type RouteMatchResult,
+    type RouteMatchType,
+    // Basic data types
+    type RouteMeta,
+    type RouteNotifyHook,
+    type RouteOptions,
+    type RouteParsedConfig,
     type RouterLayerOptions,
+    type RouterLinkAttributes,
+    type RouterLinkProps,
+    type RouterLinkResolved,
+    // RouterLink types
+    type RouterLinkType,
     // Router MicroApp types
     type RouterMicroApp,
     type RouterMicroAppCallback,
     type RouterMicroAppOptions,
+    // Core enums
+    RouterMode,
     // Router core types
     type RouterOptions,
     type RouterParsedOptions,
-    // RouterLink types
-    type RouterLinkType,
-    type RouterLinkAttributes,
-    type RouterLinkProps,
-    type RouterLinkResolved
+    type RouteState,
+    RouteType,
+    type RouteVerifyHook
 } from './types';
-
-// Error types
-export {
-    RouteError,
-    RouteTaskCancelledError,
-    RouteTaskExecutionError,
-    RouteNavigationAbortedError,
-    RouteSelfRedirectionError
-} from './error';
 
 // =================== Re-exporting deprecated types ===================
 
