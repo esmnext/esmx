@@ -18,14 +18,14 @@ export function createChainConfig(
     const isServer = buildTarget === 'server';
     const isNode = buildTarget === 'node';
 
-    const config = new RspackChain();
+    const chain = new RspackChain();
 
-    config.context(esmx.root);
-    config.mode(esmx.isProd ? 'production' : 'development');
-    config.target(isClient ? 'web' : 'node24');
-    config.cache(!esmx.isProd);
+    chain.context(esmx.root);
+    chain.mode(esmx.isProd ? 'production' : 'development');
+    chain.target(isClient ? 'web' : 'node24');
+    chain.cache(!esmx.isProd);
 
-    config.output
+    chain.output
         .clean(esmx.isProd)
         .filename(
             !isNode && esmx.isProd
@@ -41,56 +41,61 @@ export function createChainConfig(
             isClient ? 'auto' : `${esmx.basePathPlaceholder}${esmx.basePath}`
         );
 
-    config.output.set(
+    chain.output.set(
         'cssFilename',
         esmx.isProd ? '[name].[contenthash:8].final.css' : '[name].css'
     );
-    config.output.set(
+    chain.output.set(
         'cssChunkFilename',
         esmx.isProd
             ? 'chunks/[name].[contenthash:8].final.css'
             : 'chunks/[name].css'
     );
-    config.output.path(esmx.resolvePath('dist', buildTarget));
+    chain.output.path(esmx.resolvePath('dist', buildTarget));
 
-    config.plugin('progress').use(rspack.ProgressPlugin, [
+    chain.plugin('progress').use(rspack.ProgressPlugin, [
         {
             prefix: buildTarget
         }
     ]);
 
     if (isHot) {
-        config.plugin('hmr').use(rspack.HotModuleReplacementPlugin);
+        chain.plugin('hmr').use(rspack.HotModuleReplacementPlugin);
     }
 
-    config.module.parser.set('javascript', {
+    chain.module.parser.set('javascript', {
         url: isClient ? true : 'relative',
         importMeta: false,
         strictExportPresence: true
     });
 
-    config.module.generator.set('asset', {
+    chain.module.generator.set('asset', {
         emit: isClient
     });
 
-    config.module.generator.set('asset/resource', {
+    chain.module.generator.set('asset/resource', {
         emit: isClient
     });
 
-    config.resolve.alias.set(esmx.name, esmx.root);
+    chain.resolve.alias.set(esmx.name, esmx.root);
 
-    config.optimization
+    chain.optimization
         .minimize(options.minimize ?? esmx.isProd)
         .emitOnErrors(true);
 
-    config.externalsPresets({
+    chain.externalsPresets({
         web: isClient,
         node: isServer || isNode
     });
-    config.externalsType('module-import');
+
+    chain.experiments({
+        ...chain.get('experiments'),
+        outputModule: true
+    });
+    chain.externalsType('module-import');
 
     if (isNode) {
-        config.externals([
+        chain.externals([
             // @ts-expect-error
             nodeExternals({
                 // @ts-expect-error
@@ -98,16 +103,16 @@ export function createChainConfig(
             })
         ]);
     }
-    config.experiments({
+    chain.experiments({
         nativeWatcher: true,
         rspackFuture: {
             bundlerInfo: { force: false }
         }
     });
 
-    initModuleLink(config, createModuleLinkConfig(esmx, buildTarget));
+    initModuleLink(chain, createModuleLinkConfig(esmx, buildTarget));
 
-    return config;
+    return chain;
 }
 
 function createModuleLinkConfig(
