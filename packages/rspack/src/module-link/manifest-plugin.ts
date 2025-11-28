@@ -96,11 +96,11 @@ export function getExports(
 ): ManifestJsonExports {
     const entrypoints = stats.entrypoints || {};
     const exports: ManifestJsonExports = {};
-
     for (const [key, value] of Object.entries(entrypoints)) {
         const asset = value.assets?.find((item) => {
             return (
                 item.name.endsWith(opts.ext) &&
+                item.name.startsWith(key) &&
                 !item.name.includes('hot-update')
             );
         });

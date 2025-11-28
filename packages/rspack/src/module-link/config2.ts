@@ -16,6 +16,8 @@ export function applyChainConfig2(
 
     // Set module compilation configuration
     if (chain.get('mode') === 'production') {
+        chain.output.set('module', true);
+
         chain
             .plugin('esm-library')
             .use(new rspack.experiments.EsmLibraryPlugin());

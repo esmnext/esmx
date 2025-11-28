@@ -30,10 +30,6 @@ export function applyModuleConfig(chain: RspackChain) {
         .set('chunkFormat', 'module')
         .set('chunkLoading', 'import')
         .set('workerChunkLoading', 'import');
-    chain.experiments({
-        ...chain.get('experiments'),
-        outputModule: true
-    });
     chain.output.library({
         type: 'module'
     });
