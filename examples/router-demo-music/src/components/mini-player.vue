@@ -78,7 +78,7 @@
 <script lang="ts" setup>
 import { RouterLink } from '@esmx/router-vue';
 import { computed, ref, watch } from 'vue';
-import { type Song, musicStore } from '../store/music-store';
+import { musicStore, type Song } from '../store/music-store';
 import { formatTime } from '../utils/time';
 import PlayList from './play-list.vue';
 import TwoCol from './two-col.vue';

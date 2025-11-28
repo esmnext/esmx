@@ -1,8 +1,9 @@
 /**
  * @vitest-environment happy-dom
  */
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import type { MockInstance } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { RouteType } from '../src';
 import { fallback } from '../src/options';
 import { createRouter, withLocationRestore } from './util';

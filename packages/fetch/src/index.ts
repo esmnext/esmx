@@ -26,6 +26,6 @@ fetchPkgsWithProgress({
 
  */
 
-export * from './types';
 export * from './fetch-pkg';
 export * from './fetch-pkgs';
+export * from './types';

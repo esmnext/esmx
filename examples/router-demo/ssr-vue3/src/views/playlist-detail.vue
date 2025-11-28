@@ -31,7 +31,7 @@
 
 <script lang="ts" setup>
 import { useRoute } from '@esmx/router-vue';
-import { type Song, mockPlaylists } from 'ssr-share/src/store';
+import { mockPlaylists, type Song } from 'ssr-share/src/store';
 import { computed } from 'vue';
 import { TracksList } from '../components';
 import { useMusicStore } from '../store/music-store';

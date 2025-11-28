@@ -1,5 +1,5 @@
 import type { Router, RouterMicroAppOptions } from '@esmx/router';
-import { RouterPlugin, RouterView, useProvideRouter } from '@esmx/router-vue';
+import { RouterPlugin, useProvideRouter } from '@esmx/router-vue';
 import Vue, { type VueConstructor } from 'vue';
 
 Vue.use(RouterPlugin);

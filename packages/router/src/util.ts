@@ -72,9 +72,7 @@ export function isUrlEqual(url1: URL, url2?: URL | null): boolean {
     (url1 = new URL(url1)).searchParams.sort();
     (url2 = new URL(url2)).searchParams.sort();
     // Avoid trailing hash symbol impact from empty hash
-    // biome-ignore lint/correctness/noSelfAssign:
     url1.hash = url1.hash;
-    // biome-ignore lint/correctness/noSelfAssign:
     url2.hash = url2.hash;
     return url1.href === url2.href;
 }

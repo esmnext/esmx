@@ -1,6 +1,5 @@
-import { pathWithoutIndex } from './path-without-index';
-
 import type { ImportMap, ScopesMap, SpecifierMap } from '@esmx/import';
+import { pathWithoutIndex } from './path-without-index';
 
 export interface ImportMapManifest {
     name: string;

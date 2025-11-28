@@ -23,12 +23,12 @@
         "picocolors": "^1.0.0"
     },
     "devDependencies": {
-        "@biomejs/biome": "1.9.4",
+        "@biomejs/biome": "2.3.7",
         "@esmx/core": "workspace:*",
         "@esmx/rspack": "workspace:*",
         "@esmx/rspack-vue": "workspace:*",
         "@types/minimist": "^1.2.5",
-        "@types/node": "^24.10.0",
+        "@types/node": "^24.0.0",
         "@vitest/coverage-v8": "3.2.4",
         "typescript": "5.9.3",
         "unbuild": "3.6.1",

@@ -1,5 +1,4 @@
-import fs from 'node:fs';
-import { globSync } from 'node:fs';
+import fs, { globSync } from 'node:fs';
 import path from 'node:path';
 import { gzipSync } from 'node:zlib';
 

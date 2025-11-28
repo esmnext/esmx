@@ -1,5 +1,5 @@
 import type { RouterLinkProps } from '@esmx/router';
-import { type PropType, defineComponent, h } from 'vue';
+import { defineComponent, h, type PropType } from 'vue';
 import { useLink } from './use';
 import { isVue3 } from './util';
 

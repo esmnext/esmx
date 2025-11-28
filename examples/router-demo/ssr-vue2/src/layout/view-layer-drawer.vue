@@ -22,6 +22,7 @@ import { RouteLocationInput } from '@esmx/router';
 import { RouterLink, RouterView, useRoute, useRouter } from '@esmx/router-vue';
 import { onMounted, ref, watch } from 'vue';
 import RouteInfoModal from '../components/route-info-modal.vue';
+
 const $router = useRouter();
 const $route = useRoute();
 

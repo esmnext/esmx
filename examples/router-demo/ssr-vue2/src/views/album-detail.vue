@@ -29,7 +29,7 @@
 
 <script lang="ts" setup>
 import { useRoute, useRouter } from '@esmx/router-vue';
-import { type Song, mockArtists, mockSongs } from 'ssr-share/src/store';
+import { mockArtists, mockSongs, type Song } from 'ssr-share/src/store';
 import { computed } from 'vue';
 import TracksList from '../components/tracks-list.vue';
 import { useMusicStore } from '../store/music-store';

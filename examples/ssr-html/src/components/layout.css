@@ -262,7 +262,9 @@ section h2 {
     align-items: flex-start;
     box-shadow: 0 4px 20px var(--shadow-color);
     border: 1px solid var(--border-color);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
 }
 
 .feature-card:hover {

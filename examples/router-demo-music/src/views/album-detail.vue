@@ -32,10 +32,10 @@ import { useRoute, useRouter } from '@esmx/router-vue';
 import { computed } from 'vue';
 import TracksList from '../components/tracks-list.vue';
 import {
-    type Song,
     mockArtists,
     mockSongs,
-    musicStore
+    musicStore,
+    type Song
 } from '../store/music-store';
 
 const route = useRoute();

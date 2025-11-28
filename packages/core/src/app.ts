@@ -6,7 +6,7 @@ import {
     type RenderContextOptions,
     type ServerRenderHandle
 } from './render-context';
-import { type Middleware, createMiddleware } from './utils/middleware';
+import { createMiddleware, type Middleware } from './utils/middleware';
 
 /**
  * Application instance interface.

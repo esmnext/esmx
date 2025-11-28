@@ -10,7 +10,8 @@
     --success: #ffa000;
     --danger: #ff4444;
     --shadow: 0 4px 14px rgba(255, 152, 0, 0.1);
-    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    --font:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
         "Microsoft YaHei", "Hiragino Sans GB", "Helvetica Neue", sans-serif;
 }
 

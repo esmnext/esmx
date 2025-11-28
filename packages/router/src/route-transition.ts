@@ -1,18 +1,15 @@
 import { Route } from './route';
 import {
+    createRouteTask,
     type RouteTask,
-    RouteTaskController,
-    createRouteTask
+    RouteTaskController
 } from './route-task';
 import type { Router } from './router';
 import {
     getSavedScrollPosition,
     saveScrollPosition,
-    scrollToPosition,
-    winScrollPos
+    scrollToPosition
 } from './scroll';
-import { RouteType } from './types';
-
 import type {
     RouteConfirmHook,
     RouteConfirmHookResult,
@@ -20,6 +17,7 @@ import type {
     RouteLocationInput,
     RouteNotifyHook
 } from './types';
+import { RouteType } from './types';
 import {
     isBrowser,
     isRouteMatched,

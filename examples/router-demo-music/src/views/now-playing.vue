@@ -71,7 +71,7 @@ import { computed, ref } from 'vue';
 import BubbleBg from '../components/bubble-bg.vue';
 import PlayList from '../components/play-list.vue';
 import TwoCol from '../components/two-col.vue';
-import { type Song, musicStore } from '../store/music-store';
+import { musicStore, type Song } from '../store/music-store';
 import { formatTime } from '../utils/time';
 
 const currentSong = computed(() => musicStore.currentSong.value);

@@ -8,7 +8,7 @@ import type { ImportMap, ScopesMap, SpecifierMap } from '@esmx/import';
 
 import serialize from 'serialize-javascript';
 import { type App, createApp } from './app';
-import { type ManifestJson, getManifestList } from './manifest-json';
+import { getManifestList, type ManifestJson } from './manifest-json';
 import {
     type ModuleConfig,
     type ParsedModuleConfig,
@@ -19,8 +19,11 @@ import {
     type ParsedPackConfig,
     parsePackConfig
 } from './pack-config';
-import type { ImportmapMode } from './render-context';
-import type { RenderContext, RenderContextOptions } from './render-context';
+import type {
+    ImportmapMode,
+    RenderContext,
+    RenderContextOptions
+} from './render-context';
 import { type CacheHandle, createCache } from './utils/cache';
 import { generateSizeReport } from './utils/file-size-stats';
 import { createClientImportMap, createImportMap } from './utils/import-map';

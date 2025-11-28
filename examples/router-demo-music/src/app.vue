@@ -11,10 +11,11 @@
 import { useRouter } from '@esmx/router-vue';
 import { computed } from 'vue';
 import MiniPlayer from './components/mini-player.vue';
-import ViewLayerPopup from './components/view-layer-drawer.vue';
 import ViewLayer from './components/view-layer.vue';
+import ViewLayerPopup from './components/view-layer-drawer.vue';
 import ViewPage from './components/view-page.vue';
 import { musicStore } from './store/music-store';
+
 const $router = useRouter();
 
 const currentSong = computed(() => musicStore.currentSong.value);

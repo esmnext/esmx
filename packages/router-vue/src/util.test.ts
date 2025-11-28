@@ -2,8 +2,7 @@
  * @vitest-environment happy-dom
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { computed, nextTick, ref } from 'vue';
-import { version } from 'vue';
+import { computed, nextTick, ref, version } from 'vue';
 import {
     createDependentProxy,
     createSymbolProperty,

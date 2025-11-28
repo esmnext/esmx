@@ -1,7 +1,6 @@
 import { exec, execSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
-import { rm } from 'node:fs/promises';
-import { glob } from 'node:fs/promises';
+import { glob, rm } from 'node:fs/promises';
 import { join, relative } from 'node:path';
 import { promisify } from 'node:util';
 import { config } from './config.mjs';

@@ -1,6 +1,6 @@
 import type { Esmx } from '@esmx/core';
-import { rspack } from '@rspack/core';
 import type { RspackOptions } from '@rspack/core';
+import { rspack } from '@rspack/core';
 import RspackChain from 'rspack-chain';
 import nodeExternals from 'webpack-node-externals';
 import type { ModuleLinkPluginOptions } from '../module-link';
@@ -91,9 +91,9 @@ export function createChainConfig(
 
     if (isNode) {
         config.externals([
-            // @ts-ignore
+            // @ts-expect-error
             nodeExternals({
-                // @ts-ignore
+                // @ts-expect-error
                 importType: 'module-import'
             })
         ]);

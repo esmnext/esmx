@@ -4,10 +4,10 @@ import { MultiBar } from 'cli-progress';
 import { fetchPkg } from './fetch-pkg';
 import type {
     FetchPkgOptions,
-    FetchPkgWithBarLogger,
-    FetchPkgWithBarOptions,
     FetchPkgsOptions,
     FetchPkgsWithBarOptions,
+    FetchPkgWithBarLogger,
+    FetchPkgWithBarOptions,
     FetchResult,
     FetchResults
 } from './types';

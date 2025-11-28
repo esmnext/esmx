@@ -44,7 +44,7 @@
 
 <script lang="ts" setup>
 import { RouterLink, useRouter } from '@esmx/router-vue';
-import { type Playlist, mockArtists, mockPlaylists } from 'ssr-share/src/store';
+import { mockArtists, mockPlaylists, type Playlist } from 'ssr-share/src/store';
 import { useMusicStore } from '../store/music-store';
 
 const musicStore = useMusicStore();

@@ -68,7 +68,7 @@ async function getProjectName(
             if (!value.trim()) {
                 return 'Project name or path is required';
             }
-            if (!/^[a-zA-Z0-9_.\/@-]+$/.test(value.trim())) {
+            if (!/^[a-zA-Z0-9_./@-]+$/.test(value.trim())) {
                 return 'Project name or path should only contain letters, numbers, hyphens, underscores, dots, and slashes';
             }
         }

@@ -2,9 +2,14 @@ import { type Route, Router, RouterMode } from '@esmx/router';
 /**
  * @vitest-environment happy-dom
  */
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { nextTick } from 'vue';
-import { createApp, defineComponent, getCurrentInstance, h } from 'vue';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import {
+    createApp,
+    defineComponent,
+    getCurrentInstance,
+    h,
+    nextTick
+} from 'vue';
 import { RouterView } from './router-view';
 import {
     getRouterViewDepth,

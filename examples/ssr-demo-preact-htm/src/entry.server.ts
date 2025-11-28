@@ -4,7 +4,6 @@
  */
 
 import type { RenderContext } from '@esmx/core';
-import type { VNode } from 'preact';
 import { render } from 'preact-render-to-string';
 import { createApp } from './create-app';
 

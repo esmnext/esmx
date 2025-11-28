@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { formatProjectName } from './project-name';
 import type { ProjectNameResult } from './project-name';
+import { formatProjectName } from './project-name';
 
 const isWindows = process.platform === 'win32';
 const isUnix = !isWindows;
@@ -256,7 +256,7 @@ describe('project-name utilities', () => {
                 const result: ProjectNameResult = formatProjectName(input, cwd);
 
                 expect(result.name).toBe('my-app');
-                expect(result.root).toMatch(/projects[\\\/]my-app/);
+                expect(result.root).toMatch(/projects[\\/]my-app/);
             }
         );
 
@@ -289,7 +289,7 @@ describe('project-name utilities', () => {
                 const result: ProjectNameResult = formatProjectName(input, cwd);
 
                 expect(result.name).toBe('bar');
-                expect(result.root).toMatch(/workspace[\\\/]foo[\\\/]bar/);
+                expect(result.root).toMatch(/workspace[\\/]foo[\\/]bar/);
             }
         );
 
@@ -302,7 +302,7 @@ describe('project-name utilities', () => {
                 const result: ProjectNameResult = formatProjectName(input, cwd);
 
                 expect(result.name).toBe('bar');
-                expect(result.root).toMatch(/workspace[\\\/]foo[\\\/]bar/);
+                expect(result.root).toMatch(/workspace[\\/]foo[\\/]bar/);
             }
         );
     });

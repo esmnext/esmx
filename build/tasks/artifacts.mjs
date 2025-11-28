@@ -1,7 +1,7 @@
 import { cpSync, existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { config } from '../config.mjs';
-import { execCommand, getPackagePaths, log, toDisplayPath } from '../utils.mjs';
+import { getPackagePaths, log, toDisplayPath } from '../utils.mjs';
 
 async function findSSRDirectories() {
     log.info('Searching for projects with client builds...');

@@ -446,15 +446,8 @@ describe('plugin.ts - RouterPlugin', () => {
             expect(typeof routeDescriptor?.get).toBe('function');
 
             // Verify properties exist in global properties
-            expect(
-                Object.prototype.hasOwnProperty.call(
-                    globalProperties,
-                    '$router'
-                )
-            ).toBe(true);
-            expect(
-                Object.prototype.hasOwnProperty.call(globalProperties, '$route')
-            ).toBe(true);
+            expect(Object.hasOwn(globalProperties, '$router')).toBe(true);
+            expect(Object.hasOwn(globalProperties, '$route')).toBe(true);
         });
 
         it('should provide correct component types', () => {

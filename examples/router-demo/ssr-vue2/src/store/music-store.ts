@@ -1,6 +1,5 @@
 import { type MusicStore, musicStore, uniqueKeys } from 'ssr-share/src/store';
-import Vue from 'vue';
-import { getCurrentInstance } from 'vue';
+import Vue, { getCurrentInstance } from 'vue';
 
 // 扩展 Vue 实例类型
 declare module 'vue/types/vue' {

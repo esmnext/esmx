@@ -90,15 +90,14 @@
 </template>
 
 <script lang="ts" setup>
-import { useRoute } from '@esmx/router-vue';
-import { RouterLink } from '@esmx/router-vue';
+import { RouterLink, useRoute } from '@esmx/router-vue';
 import { computed, ref } from 'vue';
 import {
-    type Song,
     mockArtists,
     mockPlaylists,
     mockSongs,
-    musicStore
+    musicStore,
+    type Song
 } from '../store/music-store';
 import { formatTime } from '../utils/time';
 

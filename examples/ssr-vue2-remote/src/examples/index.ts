@@ -6,5 +6,5 @@
 // Example Components
 export { default as ButtonShowcase } from './button-example.vue';
 export { default as CardShowcase } from './card-example.vue';
-export { default as ThemeCustomizer } from './theme-example.vue';
 export { default as CodeShowcase } from './code-example.vue';
+export { default as ThemeCustomizer } from './theme-example.vue';

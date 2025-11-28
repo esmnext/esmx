@@ -1,4 +1,5 @@
 import { assert, describe, test } from 'vitest';
+import type { GetImportMapOptions, ImportMapManifest } from './import-map';
 import {
     compressImportMap,
     createImportMap,
@@ -6,7 +7,6 @@ import {
     createScopesMap,
     fixImportMapNestedScopes
 } from './import-map';
-import type { GetImportMapOptions, ImportMapManifest } from './import-map';
 
 describe('createImportsMap', () => {
     test('should return empty object for empty manifests', () => {

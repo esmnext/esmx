@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
     RouteNavigationAbortedError,
     RouteTaskCancelledError,
@@ -6,11 +6,11 @@ import {
 } from '../src/error';
 import { parsedOptions } from '../src/options';
 import { Route } from '../src/route';
-import { RouteTaskController, createRouteTask } from '../src/route-task';
 import type { RouteTask, RouteTaskOptions } from '../src/route-task';
+import { createRouteTask, RouteTaskController } from '../src/route-task';
 import type { Router } from '../src/router';
-import { RouteType } from '../src/types';
 import type { RouteConfirmHookResult, RouterParsedOptions } from '../src/types';
+import { RouteType } from '../src/types';
 
 // Helper function to create real RouterParsedOptions
 function createRealOptions(): RouterParsedOptions {

@@ -1,10 +1,10 @@
-export { createVmImport } from './import-vm';
-export { createLoaderImport } from './import-loader';
-export type { ImportMap, SpecifierMap, ScopesMap } from './types';
 export {
-    ModuleLoadingError,
     CircularDependencyError,
     FileReadError,
     formatCircularDependency,
-    formatModuleChain
+    formatModuleChain,
+    ModuleLoadingError
 } from './error';
+export { createLoaderImport } from './import-loader';
+export { createVmImport } from './import-vm';
+export type { ImportMap, ScopesMap, SpecifierMap } from './types';

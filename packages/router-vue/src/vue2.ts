@@ -1,7 +1,7 @@
 import type { Route, Router } from '@esmx/router';
 import type Vue from 'vue2';
 
-// @ts-ignore
+// @ts-expect-error
 declare module 'vue/types/vue' {
     interface Vue {
         readonly $router: Router;
@@ -14,3 +14,5 @@ declare module 'vue2/types/vue' {
         readonly $route: Route;
     }
 }
+
+export type { Vue };
