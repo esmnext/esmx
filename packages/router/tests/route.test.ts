@@ -123,7 +123,6 @@ describe('Route Class Complete Test Suite', () => {
                     toInput: '/tags/tag1/tag2/tag3'
                 });
 
-                // For wildcard parameters, they're captured as a single string
                 expect(route.params.splat).toBe('tag1/tag2/tag3');
                 expect(route.paramsArray.splat).toEqual(['tag1/tag2/tag3']);
             });
@@ -147,10 +146,8 @@ describe('Route Class Complete Test Suite', () => {
                 expect(route.params.name).toBe('user');
                 expect(route.paramsArray.name).toEqual(['user']);
 
-                // params should be decoded
                 expect(route.params.values).toBe('value 1/value 2/value 3');
 
-                // paramsArray should contain the decoded value as well
                 expect(route.paramsArray.values).toEqual([
                     'value 1/value 2/value 3'
                 ]);
@@ -181,7 +178,7 @@ describe('Route Class Complete Test Suite', () => {
                     toInput: '/users/123?tags=js&tags=react&tags=vue'
                 });
 
-                expect(route.query.tags).toBe('js'); // First value
+                expect(route.query.tags).toBe('js');
                 expect(route.queryArray.tags).toEqual(['js', 'react', 'vue']);
             });
 
@@ -247,10 +244,8 @@ describe('Route Class Complete Test Suite', () => {
                     toInput: '/numbers/123/456/789'
                 });
 
-                // params should contain the first value
                 expect(route.params.numbers).toBe('123');
 
-                // paramsArray should contain all values
                 expect(route.paramsArray.numbers).toEqual([
                     '123',
                     '456',
@@ -311,7 +306,7 @@ describe('Route Class Complete Test Suite', () => {
                 });
 
                 expect(route.state).toEqual(initialState);
-                expect(route.state).not.toBe(initialState); // Should be new object
+                expect(route.state).not.toBe(initialState);
             });
         });
 
@@ -326,11 +321,10 @@ describe('Route Class Complete Test Suite', () => {
                     toInput: 'https://external.com/api/data'
                 });
 
-                // Cross-domain should not match routes
                 expect(route.matched).toHaveLength(0);
                 expect(route.config).toBeNull();
-                expect(route.path).toBe('/api/data'); // Use original pathname
-                expect(route.fullPath).toBe('/api/data'); // Use original path calculation
+                expect(route.path).toBe('/api/data');
+                expect(route.fullPath).toBe('/api/data');
             });
 
             it('should handle URLs with different base paths', () => {
@@ -345,7 +339,7 @@ describe('Route Class Complete Test Suite', () => {
 
                 expect(route.matched).toHaveLength(0);
                 expect(route.config).toBeNull();
-                expect(route.path).toBe('/other/path'); // Use original pathname
+                expect(route.path).toBe('/other/path');
             });
 
             it('should correctly calculate path when matched', () => {
@@ -379,7 +373,6 @@ describe('Route Class Complete Test Suite', () => {
             it('should use custom normalizeURL function', () => {
                 const customNormalizeURL = vi.fn(
                     (url: URL, from: URL | null) => {
-                        // Custom logic: convert path to lowercase
                         url.pathname = url.pathname.toLowerCase();
                         return url;
                     }
@@ -476,7 +469,6 @@ describe('Route Class Complete Test Suite', () => {
                     toInput: '/users/123'
                 });
 
-                // Validate property existence
                 expect(route.path).toBeDefined();
                 expect(route.fullPath).toBeDefined();
                 expect(route.url).toBeDefined();
@@ -734,7 +726,6 @@ describe('Route Class Complete Test Suite', () => {
 
                 route.handle = mockHandle;
 
-                // Since there's no error status anymore, handle should work normally
                 expect(() => {
                     route.handle!(route, null, mockRouter);
                 }).not.toThrow();
@@ -801,11 +792,9 @@ describe('Route Class Complete Test Suite', () => {
 
                 route.handle = mockHandle;
 
-                // Since status concept is removed, the handle should be callable initially
                 const firstResult = route.handle!(route, null, mockRouter);
                 expect(firstResult).toEqual({ result: 'test' });
 
-                // After first call, subsequent calls should throw due to double-call prevention
                 expect(() => route.handle!(route, null, mockRouter)).toThrow(
                     'Route handle hook can only be called once per navigation'
                 );
@@ -976,7 +965,6 @@ describe('Route Class Complete Test Suite', () => {
             it('should correctly set default statusCode', () => {
                 const options = createOptions();
 
-                // No statusCode input should default to null
                 const routeWithoutCode = new Route({
                     options,
                     toType: RouteType.push,
@@ -984,7 +972,6 @@ describe('Route Class Complete Test Suite', () => {
                 });
                 expect(routeWithoutCode.statusCode).toBe(null);
 
-                // Unmatched routes should also default to null
                 const unmatchedRoute = new Route({
                     options,
                     toType: RouteType.push,
@@ -996,7 +983,6 @@ describe('Route Class Complete Test Suite', () => {
             it('should support statusCode input from RouteLocation', () => {
                 const options = createOptions();
 
-                // Pass number statusCode
                 const routeWithCode = new Route({
                     options,
                     toType: RouteType.push,
@@ -1004,7 +990,6 @@ describe('Route Class Complete Test Suite', () => {
                 });
                 expect(routeWithCode.statusCode).toBe(201);
 
-                // Pass null statusCode
                 const routeWithNull = new Route({
                     options,
                     toType: RouteType.push,
@@ -1042,7 +1027,6 @@ describe('Route Class Complete Test Suite', () => {
                 const clonedRoute = originalRoute.clone();
                 expect(clonedRoute.statusCode).toBe(500);
 
-                // statusCode should be readonly, cloned route keeps original value
                 expect(clonedRoute.statusCode).toBe(500);
                 expect(originalRoute.statusCode).toBe(500);
             });
@@ -1103,7 +1087,6 @@ describe('Route Class Complete Test Suite', () => {
 
                 const cloned = original.clone();
 
-                // Modify cloned object's state should not affect original
                 cloned.state.newProp = 'newValue';
                 expect(original.state.newProp).toBeUndefined();
             });
@@ -1164,7 +1147,6 @@ describe('Route Class Complete Test Suite', () => {
                     toInput: '/users/测试用户/profile?name=张三'
                 });
 
-                // URL-encoded path should not contain original Chinese characters
                 expect(route.path).toContain('users');
                 expect(route.path).toContain('profile');
                 expect(route.query.name).toBe('张三');
@@ -1268,15 +1250,12 @@ describe('Route Class Complete Test Suite', () => {
                 const originalPathname = to.pathname;
                 const match = options.matcher(to, base);
 
-                // Test string type
                 applyRouteParams(match, '/users/123', base, to);
                 expect(to.pathname).toBe(originalPathname);
 
-                // Test null
                 applyRouteParams(match, null as any, base, to);
                 expect(to.pathname).toBe(originalPathname);
 
-                // Test undefined
                 applyRouteParams(match, undefined as any, base, to);
                 expect(to.pathname).toBe(originalPathname);
             });
@@ -1292,7 +1271,6 @@ describe('Route Class Complete Test Suite', () => {
                 applyRouteParams(match, toInput, base, to);
                 expect(to.pathname).toBe(originalPathname);
 
-                // Test undefined params
                 const toInput2 = {
                     path: '/users/123',
                     params: undefined as any
@@ -1333,12 +1311,11 @@ describe('Route Class Complete Test Suite', () => {
                 const match = options.matcher(to, base);
 
                 const originalCompile = match.matches[0].compile;
-                match.matches[0].compile = vi.fn(() => '/users/'); // Return empty id part
+                match.matches[0].compile = vi.fn(() => '/users/');
 
                 const toInput = { path: '/users/123', params: { id: '' } };
                 applyRouteParams(match, toInput, base, to);
 
-                // Should keep original path fragment
                 expect(to.pathname).toBe('/app/users/123');
 
                 match.matches[0].compile = originalCompile;
@@ -1427,7 +1404,6 @@ describe('Route Class Complete Test Suite', () => {
             const endTime = performance.now();
             const duration = endTime - startTime;
 
-            // 1000 instances should be created within 100ms
             expect(duration).toBeLessThan(200);
         });
 
@@ -1490,7 +1466,6 @@ describe('Route Class Complete Test Suite', () => {
         it('should only match layer routes in pushLayer mode', () => {
             const options = createOptions();
 
-            // Create a route with pushLayer type
             const layerRoute = new Route({
                 options,
                 toType: RouteType.pushLayer,
@@ -1506,7 +1481,6 @@ describe('Route Class Complete Test Suite', () => {
         it('should not match non-layer routes in pushLayer mode', () => {
             const options = createOptions();
 
-            // Create a route with pushLayer type pointing to a non-layer route
             const layerRoute = new Route({
                 options,
                 toType: RouteType.pushLayer,
@@ -1520,7 +1494,6 @@ describe('Route Class Complete Test Suite', () => {
         it('should not match layer routes in standard push mode', () => {
             const options = createOptions();
 
-            // Create a standard route pointing to a layer route
             const standardRoute = new Route({
                 options,
                 toType: RouteType.push,
@@ -1534,7 +1507,6 @@ describe('Route Class Complete Test Suite', () => {
         it('should match non-layer and undefined layer routes in standard push mode', () => {
             const options = createOptions();
 
-            // Test explicit non-layer route
             const nonLayerRoute = new Route({
                 options,
                 toType: RouteType.push,
@@ -1545,7 +1517,6 @@ describe('Route Class Complete Test Suite', () => {
             expect(nonLayerRoute.matched[0].path).toBe('/users');
             expect(nonLayerRoute.config?.layer).toBe(false);
 
-            // Test undefined layer route (should also match in standard mode)
             const undefinedLayerRoute = new Route({
                 options,
                 toType: RouteType.push,
@@ -1560,7 +1531,6 @@ describe('Route Class Complete Test Suite', () => {
         it('should correctly handle nested routes with mixed layer settings', () => {
             const options = createOptions();
 
-            // In standard mode, should match non-layer parent and child
             const standardNestedRoute = new Route({
                 options,
                 toType: RouteType.push,
@@ -1572,7 +1542,6 @@ describe('Route Class Complete Test Suite', () => {
             expect(standardNestedRoute.matched[1].path).toBe('settings');
             expect(standardNestedRoute.config?.layer).toBe(false);
 
-            // In standard mode, should not match non-layer parent with layer child
             const mixedNestedRoute = new Route({
                 options,
                 toType: RouteType.push,
@@ -1582,7 +1551,6 @@ describe('Route Class Complete Test Suite', () => {
             expect(mixedNestedRoute.matched).toHaveLength(0);
             expect(mixedNestedRoute.config).toBeNull();
 
-            // In layer mode, should not match non-layer parent with layer child
             const layerMixedNestedRoute = new Route({
                 options,
                 toType: RouteType.pushLayer,
@@ -1620,6 +1588,189 @@ describe('Route Class Complete Test Suite', () => {
 
             expect(layerMixedNestedRoute.matched).toHaveLength(0);
             expect(layerMixedNestedRoute.config).toBeNull();
+        });
+
+        describe('🔧 options.layer Functionality Tests', () => {
+            it('should match layer routes when options.layer is true with standard push type', () => {
+                const options = createOptions({ layer: true });
+
+                const route = new Route({
+                    options,
+                    toType: RouteType.push,
+                    toInput: '/dashboard'
+                });
+
+                expect(route.matched).toHaveLength(1);
+                expect(route.matched[0].path).toBe('/dashboard');
+                expect(route.config?.layer).toBe(true);
+            });
+
+            it('should not match non-layer routes when options.layer is true', () => {
+                const options = createOptions({ layer: true });
+
+                const route = new Route({
+                    options,
+                    toType: RouteType.push,
+                    toInput: '/users'
+                });
+
+                expect(route.matched).toHaveLength(0);
+                expect(route.config).toBeNull();
+            });
+
+            it('should match undefined layer routes when options.layer is false', () => {
+                const options = createOptions({ layer: false });
+
+                const route = new Route({
+                    options,
+                    toType: RouteType.push,
+                    toInput: '/public'
+                });
+
+                expect(route.matched).toHaveLength(1);
+                expect(route.matched[0].path).toBe('/public');
+                expect(route.config?.layer).toBeUndefined();
+            });
+
+            it('should match non-layer routes when options.layer is false', () => {
+                const options = createOptions({ layer: false });
+
+                const route = new Route({
+                    options,
+                    toType: RouteType.push,
+                    toInput: '/users'
+                });
+
+                expect(route.matched).toHaveLength(1);
+                expect(route.matched[0].path).toBe('/users');
+                expect(route.config?.layer).toBe(false);
+            });
+
+            it('should not match layer routes when options.layer is false', () => {
+                const options = createOptions({ layer: false });
+
+                const route = new Route({
+                    options,
+                    toType: RouteType.push,
+                    toInput: '/dashboard'
+                });
+
+                expect(route.matched).toHaveLength(0);
+                expect(route.config).toBeNull();
+            });
+
+            it('should work with options.layer true and replace type', () => {
+                const options = createOptions({ layer: true });
+
+                const route = new Route({
+                    options,
+                    toType: RouteType.replace,
+                    toInput: '/dashboard'
+                });
+
+                expect(route.matched).toHaveLength(1);
+                expect(route.matched[0].path).toBe('/dashboard');
+                expect(route.config?.layer).toBe(true);
+            });
+
+            it('should work with options.layer true and go type', () => {
+                const options = createOptions({ layer: true });
+
+                const route = new Route({
+                    options,
+                    toType: RouteType.go,
+                    toInput: '/dashboard'
+                });
+
+                expect(route.matched).toHaveLength(1);
+                expect(route.matched[0].path).toBe('/dashboard');
+                expect(route.config?.layer).toBe(true);
+            });
+
+            it('should work with options.layer true and nested routes', () => {
+                const options = createOptions({ layer: true });
+
+                const route = new Route({
+                    options,
+                    toType: RouteType.push,
+                    toInput: '/layer/modal'
+                });
+
+                expect(route.matched).toHaveLength(2);
+                expect(route.matched[0].path).toBe('/layer');
+                expect(route.matched[1].path).toBe('modal');
+                expect(route.matched[0].layer).toBe(true);
+                expect(route.matched[1].layer).toBe(true);
+            });
+
+            it('should not match nested routes with non-layer child when options.layer is true', () => {
+                const options = createOptions({ layer: true });
+
+                const route = new Route({
+                    options,
+                    toType: RouteType.push,
+                    toInput: '/layer/content'
+                });
+
+                expect(route.matched).toHaveLength(0);
+                expect(route.config).toBeNull();
+            });
+
+            it('should not match nested routes with non-layer parent when options.layer is true', () => {
+                const options = createOptions({ layer: true });
+
+                const route = new Route({
+                    options,
+                    toType: RouteType.push,
+                    toInput: '/admin/profile'
+                });
+
+                expect(route.matched).toHaveLength(0);
+                expect(route.config).toBeNull();
+            });
+
+            it('should work with options.layer false and nested routes with non-layer parent', () => {
+                const options = createOptions({ layer: false });
+
+                const route = new Route({
+                    options,
+                    toType: RouteType.push,
+                    toInput: '/admin/settings'
+                });
+
+                expect(route.matched).toHaveLength(2);
+                expect(route.matched[0].path).toBe('/admin');
+                expect(route.matched[1].path).toBe('settings');
+                expect(route.matched[0].layer).toBe(false);
+                expect(route.matched[1].layer).toBe(false);
+            });
+
+            it('should not match nested routes with layer child when options.layer is false', () => {
+                const options = createOptions({ layer: false });
+
+                const route = new Route({
+                    options,
+                    toType: RouteType.push,
+                    toInput: '/admin/profile'
+                });
+
+                expect(route.matched).toHaveLength(0);
+                expect(route.config).toBeNull();
+            });
+
+            it('should prioritize pushLayer type over options.layer when both are present', () => {
+                const options = createOptions({ layer: false });
+
+                const route = new Route({
+                    options,
+                    toType: RouteType.pushLayer,
+                    toInput: '/dashboard'
+                });
+
+                expect(route.matched).toHaveLength(1);
+                expect(route.matched[0].path).toBe('/dashboard');
+                expect(route.config?.layer).toBe(true);
+            });
         });
     });
 });
@@ -1669,15 +1820,12 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
             const originalPathname = to.pathname;
             const match = options.matcher(to, base);
 
-            // Test string type
             applyRouteParams(match, '/users/123', base, to);
             expect(to.pathname).toBe(originalPathname);
 
-            // Test null
             applyRouteParams(match, null as any, base, to);
             expect(to.pathname).toBe(originalPathname);
 
-            // Test undefined
             applyRouteParams(match, undefined as any, base, to);
             expect(to.pathname).toBe(originalPathname);
         });
@@ -1693,8 +1841,10 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
             applyRouteParams(match, toInput, base, to);
             expect(to.pathname).toBe(originalPathname);
 
-            // Test undefined params
-            const toInput2 = { path: '/users/123', params: undefined as any };
+            const toInput2 = {
+                path: '/users/123',
+                params: undefined as any
+            };
             applyRouteParams(match, toInput2, base, to);
             expect(to.pathname).toBe(originalPathname);
         });
@@ -1709,12 +1859,11 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
             const match = options.matcher(to, base);
 
             const originalCompile = match.matches[0].compile;
-            match.matches[0].compile = vi.fn(() => '/users/'); // Return empty id part
+            match.matches[0].compile = vi.fn(() => '/users/');
 
             const toInput = { path: '/users/123', params: { id: '' } };
             applyRouteParams(match, toInput, base, to);
 
-            // Should keep original path fragment
             expect(to.pathname).toBe('/app/users/123');
 
             match.matches[0].compile = originalCompile;
@@ -1730,11 +1879,9 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
                 toInput: '/users/123?name=john&name=jane&age=25&name=bob'
             });
 
-            // query should only contain the first value
             expect(route.query.name).toBe('john');
             expect(route.query.age).toBe('25');
 
-            // queryArray should contain all values
             expect(route.queryArray.name).toEqual(['john', 'jane', 'bob']);
             expect(route.queryArray.age).toEqual(['25']);
         });
@@ -1787,7 +1934,6 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
             expect(cloned.state).toEqual(original.state);
             expect(cloned.state).not.toBe(original.state);
 
-            // Modify cloned object should not affect original
             cloned.state.newProp = 'newValue';
             expect(original.state.newProp).toBeUndefined();
         });
@@ -1802,7 +1948,6 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
 
             const cloned = original.clone();
 
-            // _options should be the same reference
             expect((cloned as any)._options).toBe((original as any)._options);
         });
 
@@ -1827,7 +1972,6 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
         it('should handle keepScrollPosition various values', () => {
             const options = createOptions();
 
-            // Test true value
             const route1 = new Route({
                 options,
                 toType: RouteType.push,
@@ -1835,7 +1979,6 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
             });
             expect(route1.keepScrollPosition).toBe(true);
 
-            // Test false value
             const route2 = new Route({
                 options,
                 toType: RouteType.push,
@@ -1843,7 +1986,6 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
             });
             expect(route2.keepScrollPosition).toBe(false);
 
-            // Test truthy value
             const route3 = new Route({
                 options,
                 toType: RouteType.push,
@@ -1851,7 +1993,6 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
             });
             expect(route3.keepScrollPosition).toBe(true);
 
-            // Test falsy value
             const route4 = new Route({
                 options,
                 toType: RouteType.push,
@@ -1859,7 +2000,6 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
             });
             expect(route4.keepScrollPosition).toBe(false);
 
-            // Test string path (should be false)
             const route5 = new Route({
                 options,
                 toType: RouteType.push,
@@ -1871,7 +2011,6 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
         it('should correctly handle config and meta calculation', () => {
             const options = createOptions();
 
-            // Matched route
             const matchedRoute = new Route({
                 options,
                 toType: RouteType.push,
@@ -1880,7 +2019,6 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
             expect(matchedRoute.config).not.toBeNull();
             expect(matchedRoute.meta.title).toBe('User Detail');
 
-            // Unmatched route
             const unmatchedRoute = new Route({
                 options,
                 toType: RouteType.push,
@@ -1898,7 +2036,6 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
                 toInput: '/users/123'
             });
 
-            // matched array should be frozen
             expect(Object.isFrozen(route.matched)).toBe(true);
 
             expect(() => {
@@ -2098,7 +2235,6 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
             it('should initialize layer as null for non-pushLayer route types', () => {
                 const options = createOptions();
 
-                // Test different route types should all have null layer
                 const routeTypes = [
                     RouteType.push,
                     RouteType.replace,

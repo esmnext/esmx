@@ -162,7 +162,7 @@ export class Route {
             to.origin === base.origin &&
             to.pathname.startsWith(base.pathname)
         ) {
-            const isLayer = toType === RouteType.pushLayer;
+            const isLayer = toType === RouteType.pushLayer || options.layer;
             match = options.matcher(to, base, (config) => {
                 if (isLayer) {
                     return config.layer !== false;
