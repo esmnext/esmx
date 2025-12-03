@@ -333,6 +333,47 @@ describe('util.ts - Utility Functions', () => {
                 const classInstance = new ClassComponent();
                 expect(resolveComponent(classInstance)).toBe(classInstance);
             });
+
+            it('should return default when object has only default key', () => {
+                const component = { default: 'DefaultComponent' };
+                expect(resolveComponent(component)).toBe('DefaultComponent');
+            });
+
+            it('should return object when it has multiple keys including default', () => {
+                const component = {
+                    default: 'DefaultComponent',
+                    other: 'otherValue'
+                };
+                expect(resolveComponent(component)).toBe(component);
+            });
+
+            it('should return object when it has multiple keys without default', () => {
+                const component = {
+                    prop1: 'value1',
+                    prop2: 'value2'
+                };
+                expect(resolveComponent(component)).toBe(component);
+            });
+
+            it('should return object when it has single key that is not default', () => {
+                const component = { custom: 'CustomComponent' };
+                expect(resolveComponent(component)).toBe(component);
+            });
+
+            it('should return array as is', () => {
+                const component = ['item1', 'item2'];
+                expect(resolveComponent(component)).toBe(component);
+            });
+
+            it('should return object with single default key that is null', () => {
+                const component = { default: null };
+                expect(resolveComponent(component)).toBe(null);
+            });
+
+            it('should return object with single default key that is undefined', () => {
+                const component = { default: undefined };
+                expect(resolveComponent(component)).toBe(undefined);
+            });
         });
     });
 

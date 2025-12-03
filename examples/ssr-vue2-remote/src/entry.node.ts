@@ -4,7 +4,9 @@ import express from 'express';
 export default {
     async devApp(esmx) {
         return import('@esmx/rspack-vue').then((m) =>
-            m.createRspackVue2App(esmx)
+            m.createRspackVue2App(esmx, {
+                minimize: false
+            })
         );
     },
     async server(esmx) {

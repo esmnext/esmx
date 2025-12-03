@@ -41,5 +41,15 @@ export function resolveComponent(component: unknown): unknown {
         return component.default || component;
     }
 
+    if (
+        component &&
+        typeof component === 'object' &&
+        !Array.isArray(component) &&
+        'default' in component &&
+        Object.keys(component).length === 1
+    ) {
+        return component.default;
+    }
+
     return component;
 }
