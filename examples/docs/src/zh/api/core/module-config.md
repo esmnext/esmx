@@ -15,12 +15,20 @@ head:
 
 ```typescript
 interface ModuleConfig {
+    lib?: boolean;
     links?: Record<string, string>;
     imports?: ModuleConfigImportMapping;
     scopes?: Record<string, ModuleConfigImportMapping>;
     exports?: ModuleConfigExportExports;
 }
 ```
+
+### lib
+
+* **类型**: `boolean`
+* **描述**: 指定当前模块是否为纯库模式。当设置为 `true` 时，模块不会自动创建默认的入口文件导出（如 `src/entry.client` 和 `src/entry.server`）。
+
+**默认值**: `false`
 
 ### links
 

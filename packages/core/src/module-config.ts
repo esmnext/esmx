@@ -2,6 +2,7 @@ import path from 'node:path';
 import type { BuildEnvironment } from './core';
 
 export interface ModuleConfig {
+    lib?: boolean;
     links?: Record<string, string>;
     imports?: ModuleConfigImportMapping;
     scopes?: Record<string, ModuleConfigImportMapping>;
@@ -262,7 +263,7 @@ export function getEnvironmentExports(
     config: ModuleConfig,
     env: BuildEnvironment
 ): ParsedModuleConfigExports {
-    const exports = createDefaultExports(env);
+    const exports = config.lib ? {} : createDefaultExports(env);
 
     if (config.exports) {
         const userExports = processExportArray(config.exports, env);

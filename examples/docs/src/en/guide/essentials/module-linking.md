@@ -4,7 +4,7 @@ description: "Esmx Module Linking: Zero-runtime Micro-Frontend code sharing solu
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, module linking, Module Linking, ESM, code sharing, Micro-Frontend"
+      content: "Esmx, module linking, ESM, code sharing, Micro-Frontend"
 ---
 
 # Module Linking
@@ -62,7 +62,40 @@ export async function fetchOrders() {
 
 ## Core Configuration
 
-Module linking configuration is located in the `modules` field of the `entry.node.ts` file, containing four core configuration items:
+Module linking configuration is located in the `modules` field of the `entry.node.ts` file, containing five core configuration items:
+
+### Library Mode (lib)
+
+`lib` configuration specifies whether the current module is in pure library mode. When set to `true`, the module will not automatically create default entry file exports (such as `src/entry.client` and `src/entry.server`).
+
+```typescript
+// shared-modules/entry.node.ts
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+  modules: {
+    lib: true,
+    exports: [
+      'pkg:axios',
+      'root:src/utils/format.ts',
+      {
+        'date-utils': './src/utils/date.ts',
+        'api-client': './src/api/index.ts'
+      }
+    ]
+  }
+} satisfies EsmxOptions;
+```
+
+**Use Cases**:
+- **Pure Library Modules**: Only provide utility functions, components, etc., without needing to run independently
+- **Shared Code Packages**: Focus on code sharing, without application logic
+- **Type Definition Modules**: Mainly export TypeScript type definitions
+
+**Notes**:
+- When `lib: true` is enabled, the module will not automatically create default exports for `src/entry.client` and `src/entry.server`
+- You need to explicitly specify what to export through `exports` configuration
+- Suitable for being referenced as a dependency module by other applications, not suitable for running as an independent application
 
 ### Module Linking (links)
 
@@ -228,6 +261,7 @@ import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
+    lib: true,
     exports: [
       'pkg:@esmx/router',
       {
