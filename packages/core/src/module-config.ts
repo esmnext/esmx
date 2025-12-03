@@ -29,6 +29,7 @@ export type ModuleConfigExportObjectValue =
 export interface ParsedModuleConfig {
     name: string;
     root: string;
+    lib: boolean;
     links: Record<string, ParsedModuleConfigLink>;
     environments: {
         client: ParsedModuleConfigEnvironment;
@@ -70,6 +71,7 @@ export function parseModuleConfig(
     return {
         name,
         root,
+        lib: config.lib ?? false,
         links: getLinks(name, root, config),
         environments: {
             client: getEnvironments(config, 'client', name),

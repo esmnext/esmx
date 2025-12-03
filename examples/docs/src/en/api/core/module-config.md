@@ -117,6 +117,7 @@ Build target environment type.
 interface ParsedModuleConfig {
     name: string;
     root: string;
+    lib: boolean;
     links: Record<string, ParsedModuleConfigLink>;
     environments: {
         client: ParsedModuleConfigEnvironment;
@@ -124,6 +125,11 @@ interface ParsedModuleConfig {
     };
 }
 ```
+
+#### lib
+
+* **Type**: `boolean`
+* **Description**: Whether the current module is in pure library mode.
 
 ### ParsedModuleConfigEnvironment
 
