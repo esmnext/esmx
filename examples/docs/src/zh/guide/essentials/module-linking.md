@@ -62,7 +62,40 @@ export async function fetchOrders() {
 
 ## 核心配置
 
-模块链接配置位于 `entry.node.ts` 文件的 `modules` 字段内，包含四个核心配置项：
+模块链接配置位于 `entry.node.ts` 文件的 `modules` 字段内，包含五个核心配置项：
+
+### 库模式 (lib)
+
+`lib` 配置用于指定当前模块是否为纯库模式。当设置为 `true` 时，模块不会自动创建默认的入口文件导出（如 `src/entry.client` 和 `src/entry.server`）。
+
+```typescript
+// shared-modules/entry.node.ts
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+  modules: {
+    lib: true,
+    exports: [
+      'pkg:axios',
+      'root:src/utils/format.ts',
+      {
+        'date-utils': './src/utils/date.ts',
+        'api-client': './src/api/index.ts'
+      }
+    ]
+  }
+} satisfies EsmxOptions;
+```
+
+**使用场景**：
+- **纯库模块**：只提供工具函数、组件等，不需要独立运行
+- **共享代码包**：专注于代码共享，不包含应用逻辑
+- **类型定义模块**：主要导出 TypeScript 类型定义
+
+**注意事项**：
+- 启用 `lib: true` 后，模块不会自动创建 `src/entry.client` 和 `src/entry.server` 的默认导出
+- 需要通过 `exports` 配置明确指定要导出的内容
+- 适合作为依赖模块被其他应用引用，不适合作为独立应用运行
 
 ### 模块链接 (links)
 
@@ -228,6 +261,7 @@ import type { EsmxOptions } from '@esmx/core';
 
 export default {
   modules: {
+    lib: true,
     exports: [
       'pkg:@esmx/router',
       {

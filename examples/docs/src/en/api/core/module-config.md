@@ -1,5 +1,5 @@
 ---
-titleSuffix: "ModuleConfig Module Configuration API"
+titleSuffix: "Module Configuration API"
 description: "Detailed explanation of ModuleConfig interface, including type definitions, configuration options, resolution mechanisms, and usage examples, helping developers deeply understand the core configuration of Esmx module system."
 head:
   - - "meta"
@@ -15,12 +15,20 @@ The core configuration interface for the module system.
 
 ```typescript
 interface ModuleConfig {
+    lib?: boolean;
     links?: Record<string, string>;
     imports?: ModuleConfigImportMapping;
     scopes?: Record<string, ModuleConfigImportMapping>;
     exports?: ModuleConfigExportExports;
 }
 ```
+
+### lib
+
+* **Type**: `boolean`
+* **Description**: Specifies whether the current module is in pure library mode. When set to `true`, the module will not automatically create default entry file exports (such as `src/entry.client` and `src/entry.server`).
+
+**Default Value**: `false`
 
 ### links
 
@@ -101,7 +109,7 @@ type BuildEnvironment = 'client' | 'server';
 
 Build target environment type.
 
-## Parsed Interface
+## Parsed Interfaces
 
 ### ParsedModuleConfig
 

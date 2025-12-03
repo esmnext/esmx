@@ -3,11 +3,6 @@
 <!-- Describe what this PR does and why. -->
 
 
-## Related links
-
-<!-- Related issues or discussions. -->
-
-
 ## Checklist
 
 <!--- Check and mark with an "x" -->
