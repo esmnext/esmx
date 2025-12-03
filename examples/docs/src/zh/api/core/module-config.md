@@ -117,6 +117,7 @@ type BuildEnvironment = 'client' | 'server';
 interface ParsedModuleConfig {
     name: string;
     root: string;
+    lib: boolean;
     links: Record<string, ParsedModuleConfigLink>;
     environments: {
         client: ParsedModuleConfigEnvironment;
@@ -124,6 +125,11 @@ interface ParsedModuleConfig {
     };
 }
 ```
+
+#### lib
+
+* **类型**: `boolean`
+* **描述**: 当前模块是否为纯库模式。
 
 ### ParsedModuleConfigEnvironment
 

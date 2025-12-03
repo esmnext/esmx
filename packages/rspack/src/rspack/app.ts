@@ -282,12 +282,14 @@ function rewriteRender(esmx: Esmx) {
 }
 
 function rewriteBuild(esmx: Esmx, options: RspackAppOptions = {}) {
+    const targets: BuildTarget[] = ['client', 'server'];
+    if (!esmx.moduleConfig.lib) {
+        targets.push('node');
+    }
     return async (): Promise<boolean> => {
-        const ok = await createRsBuild([
-            generateBuildConfig(esmx, options, 'client'),
-            generateBuildConfig(esmx, options, 'server'),
-            generateBuildConfig(esmx, options, 'node')
-        ]).build();
+        const ok = await createRsBuild(
+            targets.map((target) => generateBuildConfig(esmx, options, target))
+        ).build();
         if (!ok) {
             return false;
         }
