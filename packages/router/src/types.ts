@@ -177,6 +177,27 @@ export interface RouteLayerOptions {
      */
     zIndex?: number;
     /**
+     * Hook function to determine layer keep-alive behavior before route closure
+     * Determines whether the layer should remain open during navigation
+     * - 'exact': Keep layer alive only when navigating to the exact initial path (default)
+     * - 'include': Keep layer alive when navigating to paths that start with the initial path
+     * - function: Custom logic to determine if the layer should be kept alive
+     * @default 'exact'
+     * @example
+     * ```typescript
+     * // Default behavior - keep only when navigating back to initial path
+     * keepAlive: 'exact'
+     *
+     * // Keep layer alive for all sub-paths (paths starting with the initial path)
+     * keepAlive: 'include'
+     *
+     * // Custom logic
+     * keepAlive: (to, from, router) => to.query.keepLayer === 'true'
+     * ```
+     */
+    keepAlive?: 'exact' | 'include' | RouteVerifyHook;
+    /**
+     * @deprecated Use keepAlive instead
      * Verification hook function before route closure
      * @returns Return true to allow closure, false to prevent closure
      */
