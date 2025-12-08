@@ -289,11 +289,10 @@ export class Router {
             },
             layer: true
         });
-        await router.replace(toInput);
+        const initRoute = await router.replace(toInput);
 
-        router.afterEach((to, from) => {
+        router.afterEach(async (to, from) => {
             if (
-                layerOptions.shouldClose &&
                 ![
                     RouteType.pushWindow,
                     RouteType.replaceWindow,
@@ -301,15 +300,36 @@ export class Router {
                     RouteType.restartApp,
                     RouteType.pushLayer
                 ].includes(to.type)
-            ) {
-                const result = layerOptions.shouldClose(to, from, router);
-                if (result === true) {
-                    router.destroy();
-                    promiseResolve({
-                        type: 'push',
-                        route: to
-                    });
+            )
+                return;
+            let keepAlive = false;
+            if (layerOptions.keepAlive === 'exact') {
+                keepAlive = to.path === initRoute.path;
+            } else if (layerOptions.keepAlive === 'include') {
+                keepAlive = to.path.startsWith(initRoute.path);
+            } else if (typeof layerOptions.keepAlive === 'function') {
+                keepAlive = await layerOptions.keepAlive(to, from, router);
+            } else {
+                if (layerOptions.shouldClose) {
+                    console.warn(
+                        '[esmx-router] RouteLayerOptions.shouldClose is deprecated. Use keepAlive instead. ' +
+                            'Note: shouldClose returns true to close, keepAlive returns true to keep alive.'
+                    );
+                    keepAlive = !(await layerOptions.shouldClose(
+                        to,
+                        from,
+                        router
+                    ));
+                } else {
+                    keepAlive = to.path === initRoute.path;
                 }
+            }
+            if (!keepAlive) {
+                router.destroy();
+                promiseResolve({
+                    type: 'push',
+                    route: to
+                });
             }
         });
         if (layerOptions.push) {
