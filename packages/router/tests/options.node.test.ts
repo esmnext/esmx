@@ -310,6 +310,45 @@ describe('options.ts - Node.js Environment Tests', () => {
             realRouter.destroy();
             router.destroy();
         });
+
+        it('should set default empty object for data property in Node.js environment', () => {
+            const router = createRouter({});
+            expect(router.parsedOptions.data).toEqual({});
+            router.destroy();
+        });
+
+        it('should use provided data object when specified in Node.js environment', () => {
+            const customData = { version: '1.0.0', env: 'production' };
+            const router = createRouter({
+                data: customData
+            });
+            expect(router.parsedOptions.data).toBe(customData);
+            expect(router.parsedOptions.data.version).toBe('1.0.0');
+            expect(router.parsedOptions.data.env).toBe('production');
+            router.destroy();
+        });
+
+        it('should access data property through router instance in Node.js environment', () => {
+            const customData = { user: { id: 123, name: 'John' } };
+            const router = createRouter({
+                data: customData
+            });
+            expect(router.data).toBe(customData);
+            expect((router.data as any).user.id).toBe(123);
+            expect((router.data as any).user.name).toBe('John');
+            router.destroy();
+        });
+
+        it('should handle data with symbol keys in Node.js environment', () => {
+            const symbolKey = Symbol('secret');
+            const customData = { [symbolKey]: 'secretValue', public: 'open' };
+            const router = createRouter({
+                data: customData
+            });
+            expect(router.parsedOptions.data[symbolKey]).toBe('secretValue');
+            expect(router.parsedOptions.data.public).toBe('open');
+            router.destroy();
+        });
     });
 
     describe('fallback in Node.js environment', () => {

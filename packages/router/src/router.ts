@@ -43,6 +43,9 @@ export class Router {
     public get context() {
         return this.parsedOptions.context;
     }
+    public get data() {
+        return this.parsedOptions.data;
+    }
 
     public get root() {
         return this.parsedOptions.root;

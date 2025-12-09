@@ -279,6 +279,7 @@ export interface RouterOptions {
      */
     root?: string | HTMLElement;
     context?: Record<string | symbol, unknown>;
+    data?: Record<string | symbol, unknown>;
     routes?: RouteConfig[];
     mode?: RouterMode;
     /** Optional in browser, but required on server side */
