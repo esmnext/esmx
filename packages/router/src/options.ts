@@ -66,6 +66,7 @@ export function parsedOptions(
         rootStyle: options.rootStyle || false,
         root: options.root || '',
         context: options.context || {},
+        data: options.data || {},
         req: options.req || null,
         res: options.res || null,
         layer: options.layer || false,

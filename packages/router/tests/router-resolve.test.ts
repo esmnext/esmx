@@ -3,11 +3,12 @@ import { Router } from '../src/router';
 import type { Route, RouteConfig } from '../src/types';
 import { RouterMode } from '../src/types';
 
-const createTestRouter = (): Router => {
+const createTestRouter = (data?: Record<string | symbol, unknown>): Router => {
     return new Router({
         mode: RouterMode.memory,
         base: new URL('http://localhost:3000/'),
-        routes: createTestRoutes()
+        routes: createTestRoutes(),
+        data
     });
 };
 
@@ -472,6 +473,51 @@ describe('Router.resolve method tests', () => {
                     expect(route.config).toBeNull();
                 }
             });
+        });
+    });
+
+    describe('Data property handling', () => {
+        test('should have access to router data property', () => {
+            const customData = { version: '1.0.0', env: 'test' };
+            const testRouter = createTestRouter(customData);
+
+            expect(testRouter.data).toBe(customData);
+            expect((testRouter.data as any).version).toBe('1.0.0');
+            expect((testRouter.data as any).env).toBe('test');
+
+            testRouter.destroy();
+        });
+
+        test('should have default empty data object when not provided', () => {
+            const testRouter = createTestRouter();
+
+            expect(testRouter.data).toEqual({});
+
+            testRouter.destroy();
+        });
+
+        test('should resolve routes with data property available', () => {
+            const customData = { user: { id: 123, name: 'John' } };
+            const testRouter = createTestRouter(customData);
+
+            const route = testRouter.resolve('/about');
+            expect(route).toBeDefined();
+            expect(route.path).toBe('/about');
+
+            testRouter.destroy();
+        });
+
+        test('should handle data with symbol keys', () => {
+            const symbolKey = Symbol('secret');
+            const customData = { [symbolKey]: 'secretValue', public: 'open' };
+            const testRouter = createTestRouter(customData);
+
+            expect(testRouter.parsedOptions.data[symbolKey]).toBe(
+                'secretValue'
+            );
+            expect(testRouter.parsedOptions.data.public).toBe('open');
+
+            testRouter.destroy();
         });
     });
 });
