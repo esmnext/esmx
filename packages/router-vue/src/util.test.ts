@@ -7,22 +7,20 @@ import {
     createDependentProxy,
     createSymbolProperty,
     isESModule,
-    isVue3,
+    isVue2,
     resolveComponent
 } from './util';
 
 describe('util.ts - Utility Functions', () => {
-    describe('isVue3', () => {
-        it('should correctly identify Vue 3', () => {
-            // Since we're testing in a Vue 3 environment, isVue3 should be true
-            expect(isVue3).toBe(version.startsWith('3.'));
-            expect(typeof isVue3).toBe('boolean');
+    describe('isVue2', () => {
+        it('should correctly identify Vue 2', () => {
+            expect(isVue2).toBe(version.startsWith('2.'));
+            expect(typeof isVue2).toBe('boolean');
         });
 
         it('should be consistent with Vue version check', () => {
-            // Verify the logic is correct
-            const expectedResult = version.startsWith('3.');
-            expect(isVue3).toBe(expectedResult);
+            const expectedResult = version.startsWith('2.');
+            expect(isVue2).toBe(expectedResult);
         });
     });
 

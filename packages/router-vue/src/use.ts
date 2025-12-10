@@ -7,7 +7,12 @@ import {
     provide,
     ref
 } from 'vue';
-import { createDependentProxy, createSymbolProperty } from './util';
+import {
+    createDependentProxy,
+    createSymbolProperty,
+    defineRouterProperties,
+    isVue2
+} from './util';
 
 export interface VueInstance {
     $parent?: VueInstance | null;
@@ -41,12 +46,7 @@ function getCurrentProxy(): VueInstance {
     return instance.proxy;
 }
 
-function findRouterContext(vm?: VueInstance): RouterContext {
-    // If no vm provided, try to get current instance
-    if (!vm) {
-        vm = getCurrentProxy();
-    }
-
+function findRouterContext(vm: VueInstance): RouterContext {
     let context = routerContextProperty.get(vm);
     if (context) {
         return context;
@@ -72,7 +72,7 @@ function findRouterContext(vm?: VueInstance): RouterContext {
  * This is a lower-level function used internally by useRouter().
  * Use this in Options API, use useRouter() in Composition API.
  *
- * @param instance - Vue component instance (optional, will use getCurrentInstance if not provided)
+ * @param instance - Vue component instance
  * @returns Router instance
  * @throws {Error} If router context is not found
  *
@@ -94,12 +94,9 @@ function findRouterContext(vm?: VueInstance): RouterContext {
  *     }
  *   }
  * });
- *
- * // Can also be called without instance (uses getCurrentInstance internally)
- * const router = getRouter(); // Works in globalProperties getters
  * ```
  */
-export function getRouter(instance?: VueInstance): Router {
+export function getRouter(instance: VueInstance): Router {
     return findRouterContext(instance).router;
 }
 
@@ -108,7 +105,7 @@ export function getRouter(instance?: VueInstance): Router {
  * This is a lower-level function used internally by useRoute().
  * Use this in Options API, use useRoute() in Composition API.
  *
- * @param instance - Vue component instance (optional, will use getCurrentInstance if not provided)
+ * @param instance - Vue component instance
  * @returns Current route object
  * @throws {Error} If router context is not found
  *
@@ -130,12 +127,9 @@ export function getRouter(instance?: VueInstance): Router {
  *     }
  *   }
  * });
- *
- * // Can also be called without instance (uses getCurrentInstance internally)
- * const route = getRoute(); // Works in globalProperties getters
  * ```
  */
-export function getRoute(instance?: VueInstance): Route {
+export function getRoute(instance: VueInstance): Route {
     return findRouterContext(instance).route;
 }
 
@@ -271,6 +265,17 @@ export function useProvideRouter(router: Router): void {
 
     provide(ROUTER_INJECT_KEY, context);
     routerContextProperty.set(proxy, context);
+
+    if (!isVue2) {
+        const app = (getCurrentInstance() as any).appContext.app;
+        const gp = app.config.globalProperties as Record<string, unknown>;
+        defineRouterProperties(
+            gp,
+            () => proxiedRouter,
+            () => proxiedRoute,
+            true
+        );
+    }
 
     const unwatch = router.afterEach((to: Route) => {
         if (router.route === to) {

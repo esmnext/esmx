@@ -1,7 +1,37 @@
+import type { Route, Router } from '@esmx/router';
 import type { Ref } from 'vue';
 import { version } from 'vue';
 
-export const isVue3 = version.startsWith('3.');
+export const isVue2 = version.startsWith('2.');
+
+/**
+ * Define $router and $route properties on a target object.
+ * Used to set up global properties for Vue components.
+ *
+ * @param target - The target object to define properties on (e.g., globalProperties or prototype)
+ * @param routerGetter - Getter function for $router (can use `this` in Vue 2)
+ * @param routeGetter - Getter function for $route (can use `this` in Vue 2)
+ * @param configurable - Whether the properties should be configurable (default: false)
+ */
+export function defineRouterProperties(
+    target: Record<string, unknown>,
+    routerGetter: (this: unknown) => Router,
+    routeGetter: (this: unknown) => Route,
+    configurable = false
+): void {
+    Object.defineProperties(target, {
+        $router: {
+            configurable,
+            enumerable: false,
+            get: routerGetter
+        },
+        $route: {
+            configurable,
+            enumerable: false,
+            get: routeGetter
+        }
+    });
+}
 
 export function createSymbolProperty<T>(symbol: symbol) {
     return {
