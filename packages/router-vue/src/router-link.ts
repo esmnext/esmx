@@ -1,7 +1,7 @@
 import type { RouterLinkProps } from '@esmx/router';
 import { defineComponent, h, type PropType } from 'vue';
 import { useLink } from './use';
-import { isVue3 } from './util';
+import { isVue2 } from './util';
 
 /**
  * RouterLink component for navigation.
@@ -136,33 +136,34 @@ export const RouterLink = defineComponent({
     setup(props, context) {
         const link = useLink(props);
 
-        if (isVue3) {
+        if (isVue2) {
             return () => {
+                const { class: className, ...attributes } =
+                    link.value.attributes;
                 return h(
                     link.value.tag,
                     {
-                        ...link.value.attributes,
-                        ...context.attrs,
-                        ...link.value.createEventHandlers(
-                            (name) =>
-                                `on${name.charAt(0).toUpperCase()}${name.slice(1)}`
-                        )
+                        attrs: {
+                            ...attributes,
+                            ...context.attrs
+                        },
+                        class: className,
+                        on: link.value.createEventHandlers()
                     },
                     context.slots.default?.()
                 );
             };
         }
         return () => {
-            const { class: className, ...attributes } = link.value.attributes;
             return h(
                 link.value.tag,
                 {
-                    attrs: {
-                        ...attributes,
-                        ...context.attrs
-                    },
-                    class: className,
-                    on: link.value.createEventHandlers()
+                    ...link.value.attributes,
+                    ...context.attrs,
+                    ...link.value.createEventHandlers(
+                        (name) =>
+                            `on${name.charAt(0).toUpperCase()}${name.slice(1)}`
+                    )
                 },
                 context.slots.default?.()
             );

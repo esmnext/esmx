@@ -155,9 +155,8 @@ describe('plugin.ts - RouterPlugin', () => {
             expect(routeDescriptor?.get).toBeDefined();
             expect(typeof routeDescriptor?.get).toBe('function');
 
-            // Verify the descriptor is properly configured for reactivity
             expect(routeDescriptor?.enumerable).toBe(false);
-            expect(routeDescriptor?.configurable).toBe(false);
+            expect(routeDescriptor?.configurable).toBe(true);
         });
 
         it('should provide consistent $router instance across components', async () => {
@@ -481,6 +480,253 @@ describe('plugin.ts - RouterPlugin', () => {
         });
     });
 
+    describe('$router and $route Access', () => {
+        it('should throw error when accessing $router without useProvideRouter', () => {
+            app = createApp({
+                render: () => h('div', 'Test App')
+            });
+
+            app.use(RouterPlugin);
+
+            const globalProperties = app.config.globalProperties;
+            expect(() => {
+                (globalProperties as any).$router;
+            }).toThrow(
+                '[@esmx/router-vue] Router not provided. Please call useProvideRouter() in your root component setup.'
+            );
+        });
+
+        it('should throw error when accessing $route without useProvideRouter', () => {
+            app = createApp({
+                render: () => h('div', 'Test App')
+            });
+
+            app.use(RouterPlugin);
+
+            const globalProperties = app.config.globalProperties;
+            expect(() => {
+                (globalProperties as any).$route;
+            }).toThrow(
+                '[@esmx/router-vue] Router not provided. Please call useProvideRouter() in your root component setup.'
+            );
+        });
+
+        it('should override default getters after useProvideRouter is called', async () => {
+            app = createApp({
+                setup() {
+                    useProvideRouter(router);
+                    return () => h('div', 'Test App');
+                }
+            });
+
+            app.use(RouterPlugin);
+            app.mount(container);
+            await nextTick();
+
+            const globalProperties = app.config.globalProperties;
+            expect(() => {
+                (globalProperties as any).$router;
+            }).not.toThrow();
+            expect(() => {
+                (globalProperties as any).$route;
+            }).not.toThrow();
+        });
+
+        it('should return correct router instance via $router', async () => {
+            let capturedRouter: Router | null = null;
+
+            const TestComponent = defineComponent({
+                mounted() {
+                    capturedRouter = this.$router;
+                },
+                render() {
+                    return h('div', 'Test');
+                }
+            });
+
+            app = createApp({
+                setup() {
+                    useProvideRouter(router);
+                    return () => h(TestComponent);
+                }
+            });
+
+            app.use(RouterPlugin);
+            app.mount(container);
+            await nextTick();
+
+            expect(capturedRouter).toBeDefined();
+            expect(capturedRouter).toBeInstanceOf(Router);
+            expect((capturedRouter as unknown as Router).route.path).toBe('/');
+        });
+
+        it('should return correct route via $route', async () => {
+            let capturedRoute: Route | null = null;
+
+            const TestComponent = defineComponent({
+                mounted() {
+                    capturedRoute = this.$route;
+                },
+                render() {
+                    return h('div', 'Test');
+                }
+            });
+
+            app = createApp({
+                setup() {
+                    useProvideRouter(router);
+                    return () => h(TestComponent);
+                }
+            });
+
+            app.use(RouterPlugin);
+            app.mount(container);
+            await nextTick();
+
+            expect(capturedRoute).toBeDefined();
+            expect((capturedRoute as unknown as Route).path).toBe('/');
+            expect((capturedRoute as unknown as Route).meta?.title).toBe(
+                'Home'
+            );
+        });
+
+        it('should update $route when navigation occurs', async () => {
+            const routes: string[] = [];
+
+            const TestComponent = defineComponent({
+                mounted() {
+                    routes.push(this.$route.path);
+                },
+                updated() {
+                    routes.push(this.$route.path);
+                },
+                render() {
+                    return h('div', this.$route.path);
+                }
+            });
+
+            app = createApp({
+                setup() {
+                    useProvideRouter(router);
+                    return () => h(TestComponent);
+                }
+            });
+
+            app.use(RouterPlugin);
+            app.mount(container);
+            await nextTick();
+
+            expect(routes).toContain('/');
+
+            await router.push('/about');
+            await nextTick();
+
+            expect(router.route.path).toBe('/about');
+        });
+
+        it('should provide same $router instance in nested components', async () => {
+            const routerInstances: Router[] = [];
+
+            const ChildComponent = defineComponent({
+                mounted() {
+                    routerInstances.push(this.$router);
+                },
+                render() {
+                    return h('div', 'Child');
+                }
+            });
+
+            const ParentComponent = defineComponent({
+                mounted() {
+                    routerInstances.push(this.$router);
+                },
+                render() {
+                    return h('div', [h('span', 'Parent'), h(ChildComponent)]);
+                }
+            });
+
+            app = createApp({
+                setup() {
+                    useProvideRouter(router);
+                    return () => h(ParentComponent);
+                }
+            });
+
+            app.use(RouterPlugin);
+            app.mount(container);
+            await nextTick();
+
+            expect(routerInstances.length).toBe(2);
+            expect(routerInstances[0]).toBe(routerInstances[1]);
+        });
+
+        it('should allow navigation via $router.push', async () => {
+            let capturedRouter: Router | null = null;
+
+            const TestComponent = defineComponent({
+                mounted() {
+                    capturedRouter = this.$router;
+                },
+                render() {
+                    return h('div', 'Test');
+                }
+            });
+
+            app = createApp({
+                setup() {
+                    useProvideRouter(router);
+                    return () => h(TestComponent);
+                }
+            });
+
+            app.use(RouterPlugin);
+            app.mount(container);
+            await nextTick();
+
+            expect(capturedRouter).toBeDefined();
+            const routerInstance = capturedRouter as unknown as Router;
+            expect(typeof routerInstance.push).toBe('function');
+
+            await routerInstance.push('/about');
+            await nextTick();
+
+            expect(router.route.path).toBe('/about');
+        });
+
+        it('should allow navigation via $router.replace', async () => {
+            let capturedRouter: Router | null = null;
+
+            const TestComponent = defineComponent({
+                mounted() {
+                    capturedRouter = this.$router;
+                },
+                render() {
+                    return h('div', 'Test');
+                }
+            });
+
+            app = createApp({
+                setup() {
+                    useProvideRouter(router);
+                    return () => h(TestComponent);
+                }
+            });
+
+            app.use(RouterPlugin);
+            app.mount(container);
+            await nextTick();
+
+            expect(capturedRouter).toBeDefined();
+            const routerInstance = capturedRouter as unknown as Router;
+            expect(typeof routerInstance.replace).toBe('function');
+
+            await routerInstance.replace('/about');
+            await nextTick();
+
+            expect(router.route.path).toBe('/about');
+        });
+    });
+
     describe('Advanced Plugin Features', () => {
         it('should support property descriptor configuration', () => {
             interface TestApp {
@@ -516,14 +762,13 @@ describe('plugin.ts - RouterPlugin', () => {
                 '$route'
             );
 
-            // Check descriptor properties - Object.defineProperties sets these to false by default
             expect(routerDescriptor?.get).toBeDefined();
-            expect(routerDescriptor?.enumerable).toBe(false); // Default value from Object.defineProperty
-            expect(routerDescriptor?.configurable).toBe(false); // Default value from Object.defineProperty
+            expect(routerDescriptor?.enumerable).toBe(false);
+            expect(routerDescriptor?.configurable).toBe(true);
 
             expect(routeDescriptor?.get).toBeDefined();
-            expect(routeDescriptor?.enumerable).toBe(false); // Default value from Object.defineProperty
-            expect(routeDescriptor?.configurable).toBe(false); // Default value from Object.defineProperty
+            expect(routeDescriptor?.enumerable).toBe(false);
+            expect(routeDescriptor?.configurable).toBe(true);
         });
 
         it('should handle different app instance structures', () => {

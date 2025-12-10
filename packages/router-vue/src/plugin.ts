@@ -1,7 +1,7 @@
 import { RouterLink } from './router-link';
 import { RouterView } from './router-view';
 import { getRoute, getRouter } from './use';
-import { isVue3 } from './util';
+import { defineRouterProperties, isVue2 } from './util';
 
 interface VueApp {
     config?: {
@@ -81,18 +81,24 @@ export const RouterPlugin = {
         if (!target) {
             throw new Error('[@esmx/router-vue] Invalid Vue app instance');
         }
-        Object.defineProperties(target, {
-            $router: {
-                get() {
-                    return getRouter(isVue3 ? null : this);
+        if (isVue2) {
+            defineRouterProperties(
+                target,
+                function (this: any) {
+                    return getRouter(this);
+                },
+                function (this: any) {
+                    return getRoute(this);
                 }
-            },
-            $route: {
-                get() {
-                    return getRoute(isVue3 ? null : this);
-                }
-            }
-        });
+            );
+        } else {
+            const throwError = () => {
+                throw new Error(
+                    '[@esmx/router-vue] Router not provided. Please call useProvideRouter() in your root component setup.'
+                );
+            };
+            defineRouterProperties(target, throwError, throwError, true);
+        }
 
         // Register global components
         vueApp.component('RouterLink', RouterLink);
