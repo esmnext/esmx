@@ -1,11 +1,14 @@
 /**
  * @vitest-environment happy-dom
  */
+
+import type { Route, Router } from '@esmx/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { computed, nextTick, ref, version } from 'vue';
 import {
     createDependentProxy,
     createSymbolProperty,
+    defineRouterProperties,
     isESModule,
     isVue2,
     resolveComponent
@@ -468,6 +471,290 @@ describe('util.ts - Utility Functions', () => {
 
             proxy.value;
             expect(spy).toHaveBeenCalled();
+        });
+    });
+
+    describe('defineRouterProperties', () => {
+        it('should define $router and $route properties on target object', () => {
+            const target = {};
+            const mockRouter = { push: vi.fn() } as unknown as Router;
+            const mockRoute = { path: '/test' } as unknown as Route;
+
+            const routerGetter = vi.fn(function (this: any) {
+                return mockRouter;
+            });
+            const routeGetter = vi.fn(function (this: any) {
+                return mockRoute;
+            });
+
+            defineRouterProperties(target, routerGetter, routeGetter);
+
+            expect(target).toHaveProperty('$router');
+            expect(target).toHaveProperty('$route');
+        });
+
+        it('should call getter functions when accessing properties', () => {
+            const target = {};
+            const mockRouter = { push: vi.fn() } as unknown as Router;
+            const mockRoute = { path: '/test' } as unknown as Route;
+
+            const routerGetter = vi.fn(function (this: any) {
+                return mockRouter;
+            });
+            const routeGetter = vi.fn(function (this: any) {
+                return mockRoute;
+            });
+
+            defineRouterProperties(target, routerGetter, routeGetter);
+
+            const router = (target as any).$router;
+            const route = (target as any).$route;
+
+            expect(routerGetter).toHaveBeenCalled();
+            expect(routeGetter).toHaveBeenCalled();
+            expect(router).toBe(mockRouter);
+            expect(route).toBe(mockRoute);
+        });
+
+        it('should use correct this context in getter functions', () => {
+            const target = { customProp: 'test' };
+            const mockRouter = { push: vi.fn() } as unknown as Router;
+            const mockRoute = { path: '/test' } as unknown as Route;
+
+            const routerGetter = vi.fn(function (this: any) {
+                return this.customProp ? mockRouter : ({} as Router);
+            });
+            const routeGetter = vi.fn(function (this: any) {
+                return this.customProp ? mockRoute : ({} as Route);
+            });
+
+            defineRouterProperties(target, routerGetter, routeGetter);
+
+            const router = (target as any).$router;
+            const route = (target as any).$route;
+
+            expect(router).toBe(mockRouter);
+            expect(route).toBe(mockRoute);
+        });
+
+        it('should make properties non-enumerable by default', () => {
+            const target = {};
+            const mockRouter = { push: vi.fn() } as unknown as Router;
+            const mockRoute = { path: '/test' } as unknown as Route;
+
+            const routerGetter = vi.fn(function (this: any) {
+                return mockRouter;
+            });
+            const routeGetter = vi.fn(function (this: any) {
+                return mockRoute;
+            });
+
+            defineRouterProperties(target, routerGetter, routeGetter);
+
+            const descriptors = Object.getOwnPropertyDescriptors(target);
+
+            expect(descriptors.$router.enumerable).toBe(false);
+            expect(descriptors.$route.enumerable).toBe(false);
+        });
+
+        it('should make properties non-configurable by default', () => {
+            const target = {};
+            const mockRouter = { push: vi.fn() } as unknown as Router;
+            const mockRoute = { path: '/test' } as unknown as Route;
+
+            const routerGetter = vi.fn(function (this: any) {
+                return mockRouter;
+            });
+            const routeGetter = vi.fn(function (this: any) {
+                return mockRoute;
+            });
+
+            defineRouterProperties(target, routerGetter, routeGetter);
+
+            const descriptors = Object.getOwnPropertyDescriptors(target);
+
+            expect(descriptors.$router.configurable).toBe(false);
+            expect(descriptors.$route.configurable).toBe(false);
+        });
+
+        it('should make properties configurable when configurable option is true', () => {
+            const target = {};
+            const mockRouter = { push: vi.fn() } as unknown as Router;
+            const mockRoute = { path: '/test' } as unknown as Route;
+
+            const routerGetter = vi.fn(function (this: any) {
+                return mockRouter;
+            });
+            const routeGetter = vi.fn(function (this: any) {
+                return mockRoute;
+            });
+
+            defineRouterProperties(target, routerGetter, routeGetter, true);
+
+            const descriptors = Object.getOwnPropertyDescriptors(target);
+
+            expect(descriptors.$router.configurable).toBe(true);
+            expect(descriptors.$route.configurable).toBe(true);
+        });
+
+        it('should define properties as getters', () => {
+            const target = {};
+            const mockRouter = { push: vi.fn() } as unknown as Router;
+            const mockRoute = { path: '/test' } as unknown as Route;
+
+            const routerGetter = vi.fn(function (this: any) {
+                return mockRouter;
+            });
+            const routeGetter = vi.fn(function (this: any) {
+                return mockRoute;
+            });
+
+            defineRouterProperties(target, routerGetter, routeGetter);
+
+            const descriptors = Object.getOwnPropertyDescriptors(target);
+
+            expect(typeof descriptors.$router.get).toBe('function');
+            expect(typeof descriptors.$route.get).toBe('function');
+            expect(descriptors.$router.set).toBeUndefined();
+            expect(descriptors.$route.set).toBeUndefined();
+        });
+
+        it('should call getter each time property is accessed', () => {
+            const target = {};
+            const mockRouter = { push: vi.fn() } as unknown as Router;
+
+            const routerGetter = vi.fn(function (this: any) {
+                return mockRouter;
+            });
+            const routeGetter = vi.fn(function (this: any) {
+                return { path: '/test' } as Route;
+            });
+
+            defineRouterProperties(target, routerGetter, routeGetter);
+
+            (target as any).$router;
+            (target as any).$router;
+            (target as any).$router;
+
+            expect(routerGetter).toHaveBeenCalledTimes(3);
+        });
+
+        it('should work with different target objects', () => {
+            const targets = [
+                {},
+                { existingProp: 'value' },
+                Object.create(null),
+                new (class Test {})()
+            ];
+
+            const mockRouter = { push: vi.fn() } as unknown as Router;
+            const mockRoute = { path: '/test' } as unknown as Route;
+
+            const routerGetter = vi.fn(function (this: any) {
+                return mockRouter;
+            });
+            const routeGetter = vi.fn(function (this: any) {
+                return mockRoute;
+            });
+
+            targets.forEach((target) => {
+                defineRouterProperties(target, routerGetter, routeGetter);
+
+                expect(target).toHaveProperty('$router');
+                expect(target).toHaveProperty('$route');
+
+                const router = (target as any).$router;
+                const route = (target as any).$route;
+
+                expect(router).toBe(mockRouter);
+                expect(route).toBe(mockRoute);
+            });
+        });
+
+        it('should preserve existing properties on target object', () => {
+            const target = {
+                existingProp: 'value',
+                $existingRouter: 'should not be affected'
+            };
+
+            const mockRouter = { push: vi.fn() } as unknown as Router;
+            const mockRoute = { path: '/test' } as unknown as Route;
+
+            const routerGetter = vi.fn(function (this: any) {
+                return mockRouter;
+            });
+            const routeGetter = vi.fn(function (this: any) {
+                return mockRoute;
+            });
+
+            defineRouterProperties(target, routerGetter, routeGetter);
+
+            expect(target.existingProp).toBe('value');
+            expect(target.$existingRouter).toBe('should not be affected');
+            expect(target).toHaveProperty('$router');
+            expect(target).toHaveProperty('$route');
+        });
+
+        it('should handle getter functions that return undefined', () => {
+            const target = {};
+
+            const routerGetter = vi.fn(function (this: any) {
+                return undefined as any;
+            });
+            const routeGetter = vi.fn(function (this: any) {
+                return undefined as any;
+            });
+
+            defineRouterProperties(target, routerGetter, routeGetter);
+
+            const router = (target as any).$router;
+            const route = (target as any).$route;
+
+            expect(router).toBeUndefined();
+            expect(route).toBeUndefined();
+            expect(routerGetter).toHaveBeenCalled();
+            expect(routeGetter).toHaveBeenCalled();
+        });
+
+        it('should handle getter functions that throw errors', () => {
+            const target = {};
+
+            const routerGetter = vi.fn(function (this: any) {
+                throw new Error('Router error');
+            });
+            const routeGetter = vi.fn(function (this: any) {
+                throw new Error('Route error');
+            });
+
+            defineRouterProperties(target, routerGetter, routeGetter);
+
+            expect(() => (target as any).$router).toThrow('Router error');
+            expect(() => (target as any).$route).toThrow('Route error');
+        });
+
+        it('should work with arrow functions as getters', () => {
+            const target = {};
+            const mockRouter = { push: vi.fn() } as unknown as Router;
+            const mockRoute = { path: '/test' } as unknown as Route;
+            const context = { customContext: 'test' };
+
+            const routerGetter = vi.fn(() => mockRouter);
+            const routeGetter = vi.fn(() => mockRoute);
+
+            defineRouterProperties.call(
+                context,
+                target,
+                routerGetter,
+                routeGetter
+            );
+
+            const router = (target as any).$router;
+            const route = (target as any).$route;
+
+            expect(router).toBe(mockRouter);
+            expect(route).toBe(mockRoute);
+            expect(routerGetter).toHaveBeenCalled();
+            expect(routeGetter).toHaveBeenCalled();
         });
     });
 });

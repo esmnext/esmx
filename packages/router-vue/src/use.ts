@@ -267,10 +267,9 @@ export function useProvideRouter(router: Router): void {
     routerContextProperty.set(proxy, context);
 
     if (!isVue2) {
-        const app = (getCurrentInstance() as any).appContext.app;
-        const gp = app.config.globalProperties as Record<string, unknown>;
+        const app = getCurrentInstance()!.appContext.app;
         defineRouterProperties(
-            gp,
+            app.config.globalProperties,
             () => proxiedRouter,
             () => proxiedRoute,
             true
