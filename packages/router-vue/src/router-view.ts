@@ -49,8 +49,11 @@ export const RouterView = defineComponent({
                 ? resolveComponent(matchedRoute.component)
                 : null;
 
-            // Render the component or null if no match at this depth
-            return component ? h(component) : null;
+            // Render the component with compilePath as key to force re-render when route config changes
+            // Using compilePath ensures component is recreated when navigating to different route configs
+            return component
+                ? h(component, { key: matchedRoute.compilePath })
+                : null;
         };
     }
 });
