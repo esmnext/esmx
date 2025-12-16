@@ -18,7 +18,7 @@
             <div v-for="(track, index) in props.tracks" :key="track.id" 
                 class="track-item" 
                 :class="{ 'active': track.id === currentSong?.id }"
-                @click="$emit('playTrack', track)"
+                @click="handlePlayTrack(track)"
             >
                 <div class="track-number">{{ index + 1 }}</div>
                 <div class="track-info">
@@ -41,24 +41,41 @@
     </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { RouterLink } from '@esmx/router-vue';
 import { type Song } from 'ssr-share/src/store';
 import { formatTime } from 'ssr-share/src/utils/time';
-import { computed } from 'vue';
+import { computed, defineComponent, type PropType } from 'vue';
 import { useMusicStore } from '../store/music-store';
 
-const musicStore = useMusicStore();
+export default defineComponent({
+    name: 'TracksList',
+    components: {
+        RouterLink
+    },
+    props: {
+        tracks: {
+            type: Array as PropType<Song[]>,
+            required: true
+        }
+    },
+    emits: ['playTrack'],
+    setup(props, { emit }) {
+        const musicStore = useMusicStore();
+        const currentSong = computed(() => musicStore.currentSong.value);
 
-const props = defineProps<{
-    tracks: Song[];
-}>();
+        const handlePlayTrack = (track: Song) => {
+            emit('playTrack', track);
+        };
 
-defineEmits<{
-    playTrack: [track: Song];
-}>();
-
-const currentSong = computed(() => musicStore.currentSong.value);
+        return {
+            props,
+            currentSong,
+            handlePlayTrack,
+            formatTime
+        };
+    }
+});
 </script>
 
 <style scoped>

@@ -1,9 +1,9 @@
 <template>
-    <div v-if="props.show" class="modal-overlay" @click="$emit('close')">
+    <div v-if="props.show" class="modal-overlay" @click="handleClose">
         <div class="modal-content" @click.stop>
             <div class="modal-header">
                 <h3>Current Route Information</h3>
-                <button class="close-btn" @click="$emit('close')">&times;</button>
+                <button class="close-btn" @click="handleClose">&times;</button>
             </div>
             <div class="modal-body">
                 Route:
@@ -15,20 +15,39 @@
     </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { useRoute, useRouter } from '@esmx/router-vue';
+import { defineComponent } from 'vue';
 import CollapsibleJson from './collapsible-json.vue';
 
-const props = defineProps<{
-    show: boolean;
-}>();
+export default defineComponent({
+    name: 'RouteInfoModal',
+    components: {
+        CollapsibleJson
+    },
+    props: {
+        show: {
+            type: Boolean,
+            required: true
+        }
+    },
+    emits: ['close'],
+    setup(props, { emit }) {
+        const $route = useRoute();
+        const $router = useRouter();
 
-defineEmits<{
-    close: [];
-}>();
+        const handleClose = () => {
+            emit('close');
+        };
 
-const $route = useRoute();
-const $router = useRouter();
+        return {
+            props,
+            $route,
+            $router,
+            handleClose
+        };
+    }
+});
 </script>
 
 <style scoped>
