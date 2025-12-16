@@ -7,7 +7,6 @@ import { createApp, defineComponent, h, inject, nextTick, provide } from 'vue';
 import { RouterView } from './router-view';
 import { useProvideRouter } from './use';
 
-// Mock components for testing
 const HomeComponent = defineComponent({
     name: 'HomeComponent',
     setup() {
@@ -29,7 +28,6 @@ const UserComponent = defineComponent({
     }
 });
 
-// ES Module component for testing resolveComponent
 const ESModuleComponent = {
     __esModule: true,
     default: defineComponent({
@@ -46,12 +44,10 @@ describe('router-view.ts - RouterView Component', () => {
     let testContainer: HTMLElement;
 
     beforeEach(async () => {
-        // Create test container
         testContainer = document.createElement('div');
         testContainer.id = 'test-app';
         document.body.appendChild(testContainer);
 
-        // Create test routes
         const routes: RouteConfig[] = [
             {
                 path: '/',
@@ -75,7 +71,6 @@ describe('router-view.ts - RouterView Component', () => {
             }
         ];
 
-        // Create router instance
         router = new Router({
             root: '#test-app',
             routes,
@@ -83,19 +78,15 @@ describe('router-view.ts - RouterView Component', () => {
             base: new URL('http://localhost:8000/')
         });
 
-        // Initialize router to root path and wait for it to be ready
         await router.replace('/');
-        // Wait for route to be fully initialized
         await new Promise((resolve) => setTimeout(resolve, 10));
     });
 
     afterEach(() => {
-        // Clean up test environment
         if (testContainer.parentNode) {
             testContainer.parentNode.removeChild(testContainer);
         }
 
-        // Destroy router
         if (router) {
             router.destroy();
         }
@@ -114,7 +105,6 @@ describe('router-view.ts - RouterView Component', () => {
             app.mount(testContainer);
             await nextTick();
 
-            // Check if HomeComponent is rendered
             expect(testContainer.textContent).toContain('Home Page');
 
             app.unmount();
@@ -132,10 +122,8 @@ describe('router-view.ts - RouterView Component', () => {
             app.mount(testContainer);
             await nextTick();
 
-            // Initially should show Home
             expect(testContainer.textContent).toContain('Home Page');
 
-            // Navigate to About
             await router.push('/about');
             await nextTick();
 
@@ -155,7 +143,6 @@ describe('router-view.ts - RouterView Component', () => {
             const app = createApp(TestApp);
             app.mount(testContainer);
 
-            // Navigate to user route with parameter
             await router.push('/users/123');
             await nextTick();
 
@@ -177,7 +164,6 @@ describe('router-view.ts - RouterView Component', () => {
             const app = createApp(TestApp);
             app.mount(testContainer);
 
-            // Navigate to ES module route
             await router.push('/es-module');
             await nextTick();
 
@@ -204,7 +190,6 @@ describe('router-view.ts - RouterView Component', () => {
                 base: new URL('http://localhost:8000/')
             });
 
-            // Initialize the router and wait for it to be ready
             await functionRouter.replace('/function');
             await new Promise((resolve) => setTimeout(resolve, 10));
 
@@ -230,10 +215,8 @@ describe('router-view.ts - RouterView Component', () => {
         it('should inject depth 0 by default', async () => {
             let injectedDepth: number | undefined;
 
-            // Use the same symbol key that RouterView uses internally
             const RouterViewDepth = Symbol('RouterViewDepth');
 
-            // Create a custom RouterView component that can capture the injected depth
             const TestRouterView = defineComponent({
                 name: 'TestRouterView',
                 setup() {
@@ -253,8 +236,7 @@ describe('router-view.ts - RouterView Component', () => {
             app.mount(testContainer);
             await nextTick();
 
-            // TestRouterView should inject the default depth 0 when no parent RouterView exists
-            expect(injectedDepth).toBe(-1); // Default value since no parent RouterView provides depth
+            expect(injectedDepth).toBe(-1);
 
             app.unmount();
         });
@@ -269,7 +251,7 @@ describe('router-view.ts - RouterView Component', () => {
                 name: 'ParentTestComponent',
                 setup() {
                     parentDepth = inject(RouterViewDepth, -1);
-                    provide(RouterViewDepth, 0); // Simulate parent RouterView
+                    provide(RouterViewDepth, 0);
                     return () =>
                         h('div', [h('span', 'Parent'), h(ChildTestComponent)]);
                 }
@@ -294,9 +276,8 @@ describe('router-view.ts - RouterView Component', () => {
             app.mount(testContainer);
             await nextTick();
 
-            // Parent should see default depth, child should see provided depth
-            expect(parentDepth).toBe(-1); // Default value since no RouterView above
-            expect(childDepth).toBe(0); // Value provided by parent
+            expect(parentDepth).toBe(-1);
+            expect(childDepth).toBe(0);
 
             app.unmount();
         });
@@ -337,7 +318,6 @@ describe('router-view.ts - RouterView Component', () => {
                 base: new URL('http://localhost:8000/')
             });
 
-            // Initialize the router and wait for it to be ready
             await nestedRouter.replace('/level1/level2');
             await new Promise((resolve) => setTimeout(resolve, 10));
 
@@ -367,7 +347,6 @@ describe('router-view.ts - RouterView Component', () => {
             const DeepRouterView = defineComponent({
                 name: 'DeepRouterView',
                 setup() {
-                    // Inject depth 0 from parent RouterView and provide depth 1
                     const currentDepth = inject(RouterViewDepth, 0);
                     provide(RouterViewDepth, currentDepth + 1);
                     return () => h(RouterView);
@@ -380,8 +359,8 @@ describe('router-view.ts - RouterView Component', () => {
                     return () =>
                         h('div', [
                             h('span', 'App'),
-                            h(RouterView), // This renders Home component at depth 0
-                            h(DeepRouterView) // This tries to render at depth 1, but no match
+                            h(RouterView),
+                            h(DeepRouterView)
                         ]);
                 }
             });
@@ -390,8 +369,6 @@ describe('router-view.ts - RouterView Component', () => {
             app.mount(testContainer);
             await nextTick();
 
-            // Should contain "App" and "Home Page" from the first RouterView
-            // but no additional content from the deep RouterView
             expect(testContainer.textContent).toContain('App');
             expect(testContainer.textContent).toContain('Home Page');
 
@@ -414,7 +391,6 @@ describe('router-view.ts - RouterView Component', () => {
                 base: new URL('http://localhost:8000/')
             });
 
-            // Initialize the router and wait for it to be ready
             await nullRouter.replace('/null-component');
             await new Promise((resolve) => setTimeout(resolve, 10));
 
@@ -429,9 +405,8 @@ describe('router-view.ts - RouterView Component', () => {
             app.mount(testContainer);
             await nextTick();
 
-            // Verify that only the "App" text is rendered and RouterView renders nothing
             expect(testContainer.textContent?.trim()).toBe('App');
-            expect(testContainer.querySelector('div')?.children.length).toBe(1); // Only the span element
+            expect(testContainer.querySelector('div')?.children.length).toBe(1);
             expect(testContainer.querySelector('span')?.textContent).toBe(
                 'App'
             );
@@ -441,20 +416,18 @@ describe('router-view.ts - RouterView Component', () => {
         });
 
         it('should handle non-existent routes', async () => {
-            // Create a new router instance with a valid initial route
             const nonExistentRouter = new Router({
                 root: '#test-app',
                 routes: [
                     {
                         path: '/',
-                        component: null // Initial route with null component
+                        component: null
                     }
                 ],
                 mode: RouterMode.memory,
                 base: new URL('http://localhost:8000/')
             });
 
-            // Initialize router with root path
             await nonExistentRouter.replace('/');
             await new Promise((resolve) => setTimeout(resolve, 10));
 
@@ -468,16 +441,13 @@ describe('router-view.ts - RouterView Component', () => {
             const app = createApp(TestApp);
             app.mount(testContainer);
 
-            // Navigate to non-existent route
             await nonExistentRouter.push('/non-existent');
             await nextTick();
 
-            // Wait for any pending route changes
             await new Promise((resolve) => setTimeout(resolve, 10));
 
-            // Verify that only the "App" text is rendered and RouterView renders nothing
             expect(testContainer.textContent?.trim()).toBe('App');
-            expect(testContainer.querySelector('div')?.children.length).toBe(1); // Only the span element
+            expect(testContainer.querySelector('div')?.children.length).toBe(1);
             expect(testContainer.querySelector('span')?.textContent).toBe(
                 'App'
             );
@@ -507,7 +477,6 @@ describe('router-view.ts - RouterView Component', () => {
                 base: new URL('http://localhost:8000/')
             });
 
-            // Initialize the router and wait for it to be ready
             await malformedRouter.replace('/malformed');
             await new Promise((resolve) => setTimeout(resolve, 10));
 
@@ -594,6 +563,278 @@ describe('router-view.ts - RouterView Component', () => {
             expect(testContainer.textContent).toContain('Home Page');
 
             app.unmount();
+        });
+    });
+
+    describe('compilePath as Key', () => {
+        it('should use compilePath as key for component rendering', async () => {
+            let mountCount = 0;
+            const TrackedComponent = defineComponent({
+                name: 'TrackedComponent',
+                setup() {
+                    mountCount++;
+                    return () =>
+                        h(
+                            'div',
+                            { class: 'tracked' },
+                            `Mounted ${mountCount} times`
+                        );
+                }
+            });
+
+            const routes: RouteConfig[] = [
+                {
+                    path: '/route1',
+                    component: TrackedComponent
+                },
+                {
+                    path: '/route2',
+                    component: TrackedComponent
+                }
+            ];
+
+            const testRouter = new Router({
+                root: '#test-app',
+                routes,
+                mode: RouterMode.memory,
+                base: new URL('http://localhost:8000/')
+            });
+
+            await testRouter.replace('/route1');
+            await new Promise((resolve) => setTimeout(resolve, 10));
+
+            const TestApp = defineComponent({
+                setup() {
+                    useProvideRouter(testRouter);
+                    return () => h('div', [h(RouterView)]);
+                }
+            });
+
+            const app = createApp(TestApp);
+            app.mount(testContainer);
+            await nextTick();
+
+            expect(mountCount).toBe(1);
+            expect(testContainer.textContent).toContain('Mounted 1 times');
+
+            await testRouter.push('/route2');
+            await nextTick();
+
+            expect(mountCount).toBe(2);
+            expect(testContainer.textContent).toContain('Mounted 2 times');
+
+            await testRouter.push('/route1');
+            await nextTick();
+
+            expect(mountCount).toBe(3);
+            expect(testContainer.textContent).toContain('Mounted 3 times');
+
+            app.unmount();
+            testRouter.destroy();
+        });
+
+        it('should force re-render when compilePath changes for same route', async () => {
+            let mountCount = 0;
+            const TrackedComponent = defineComponent({
+                name: 'TrackedComponent',
+                setup() {
+                    mountCount++;
+                    return () =>
+                        h('div', { class: 'tracked' }, `Mount #${mountCount}`);
+                }
+            });
+
+            const routes: RouteConfig[] = [
+                {
+                    path: '/test',
+                    component: TrackedComponent
+                }
+            ];
+
+            const testRouter = new Router({
+                root: '#test-app',
+                routes,
+                mode: RouterMode.memory,
+                base: new URL('http://localhost:8000/')
+            });
+
+            await testRouter.replace('/test');
+            await new Promise((resolve) => setTimeout(resolve, 10));
+
+            const TestApp = defineComponent({
+                setup() {
+                    useProvideRouter(testRouter);
+                    return () => h('div', [h(RouterView)]);
+                }
+            });
+
+            const app = createApp(TestApp);
+            app.mount(testContainer);
+            await nextTick();
+
+            expect(mountCount).toBe(1);
+            expect(testContainer.textContent).toContain('Mount #1');
+
+            const newRoutes: RouteConfig[] = [
+                {
+                    path: '/test',
+                    component: TrackedComponent,
+                    meta: { updated: true }
+                }
+            ];
+
+            const newRouter = new Router({
+                root: '#test-app',
+                routes: newRoutes,
+                mode: RouterMode.memory,
+                base: new URL('http://localhost:8000/')
+            });
+
+            await newRouter.replace('/test');
+            await new Promise((resolve) => setTimeout(resolve, 10));
+
+            app.unmount();
+
+            const NewTestApp = defineComponent({
+                setup() {
+                    useProvideRouter(newRouter);
+                    return () => h('div', [h(RouterView)]);
+                }
+            });
+
+            const newApp = createApp(NewTestApp);
+            newApp.mount(testContainer);
+            await nextTick();
+
+            expect(mountCount).toBe(2);
+            expect(testContainer.textContent).toContain('Mount #2');
+
+            newApp.unmount();
+            newRouter.destroy();
+        });
+
+        it('should handle same component with same compilePath without unnecessary re-renders', async () => {
+            let mountCount = 0;
+            const TrackedComponent = defineComponent({
+                name: 'TrackedComponent',
+                setup() {
+                    mountCount++;
+                    return () => h('div', { class: 'tracked' }, `Component`);
+                }
+            });
+
+            const routes: RouteConfig[] = [
+                {
+                    path: '/test',
+                    component: TrackedComponent
+                }
+            ];
+
+            const testRouter = new Router({
+                root: '#test-app',
+                routes,
+                mode: RouterMode.memory,
+                base: new URL('http://localhost:8000/')
+            });
+
+            await testRouter.replace('/test');
+            await new Promise((resolve) => setTimeout(resolve, 10));
+
+            const TestApp = defineComponent({
+                setup() {
+                    useProvideRouter(testRouter);
+                    return () => h('div', [h(RouterView)]);
+                }
+            });
+
+            const app = createApp(TestApp);
+            app.mount(testContainer);
+            await nextTick();
+
+            expect(mountCount).toBe(1);
+
+            await testRouter.push('/');
+            await nextTick();
+            await testRouter.push('/test');
+            await nextTick();
+
+            expect(mountCount).toBe(1);
+
+            app.unmount();
+            testRouter.destroy();
+        });
+
+        it('should work with nested routes and compilePath keys', async () => {
+            let parentMountCount = 0;
+            let childMountCount = 0;
+
+            const ParentComponent = defineComponent({
+                name: 'ParentComponent',
+                setup() {
+                    parentMountCount++;
+                    return () =>
+                        h('div', [
+                            h('h1', `Parent Mount #${parentMountCount}`),
+                            h(RouterView)
+                        ]);
+                }
+            });
+
+            const ChildComponent = defineComponent({
+                name: 'ChildComponent',
+                setup() {
+                    childMountCount++;
+                    return () =>
+                        h(
+                            'div',
+                            { class: 'child' },
+                            `Child Mount #${childMountCount}`
+                        );
+                }
+            });
+
+            const nestedRoutes: RouteConfig[] = [
+                {
+                    path: '/parent',
+                    component: ParentComponent,
+                    children: [
+                        {
+                            path: 'child',
+                            component: ChildComponent
+                        }
+                    ]
+                }
+            ];
+
+            const nestedRouter = new Router({
+                root: '#test-app',
+                routes: nestedRoutes,
+                mode: RouterMode.memory,
+                base: new URL('http://localhost:8000/')
+            });
+
+            await nestedRouter.replace('/parent/child');
+            await new Promise((resolve) => setTimeout(resolve, 10));
+
+            const TestApp = defineComponent({
+                setup() {
+                    useProvideRouter(nestedRouter);
+                    return () => h('div', [h(RouterView)]);
+                }
+            });
+
+            const app = createApp(TestApp);
+            app.mount(testContainer);
+            await nextTick();
+
+            expect(parentMountCount).toBe(1);
+            expect(childMountCount).toBe(1);
+
+            expect(testContainer.textContent).toContain('Parent Mount #1');
+            expect(testContainer.textContent).toContain('Child Mount #1');
+
+            app.unmount();
+            nestedRouter.destroy();
         });
     });
 });
