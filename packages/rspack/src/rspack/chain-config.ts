@@ -109,14 +109,7 @@ export function createChainConfig(
         }
     });
 
-    if (isClient) {
-        chain.set('lazyCompilation', {
-            imports: true,
-            entries: false
-        });
-    } else {
-        chain.set('lazyCompilation', false);
-    }
+    chain.set('lazyCompilation', false);
 
     initModuleLink(chain, createModuleLinkConfig(esmx, buildTarget));
 
