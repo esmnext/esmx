@@ -109,6 +109,15 @@ export function createChainConfig(
         }
     });
 
+    // Enable lazy compilation for dynamically imported modules in development mode
+    // Following Rspack 1.7.0 standard: imports: true, entries: false
+    if (!esmx.isProd && isClient) {
+        chain.set('lazyCompilation', {
+            imports: true,
+            entries: false
+        });
+    }
+
     initModuleLink(chain, createModuleLinkConfig(esmx, buildTarget));
 
     return chain;
