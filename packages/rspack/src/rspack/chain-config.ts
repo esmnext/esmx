@@ -8,21 +8,6 @@ import { initModuleLink } from '../module-link';
 import type { RspackAppOptions } from './app';
 import type { BuildTarget } from './build-target';
 
-/**
- * Remove deprecated experimental options from Rspack 1.7.0 upgrade
- * These options are now stable and enabled by default:
- * - inlineConst: Now controlled by optimization.inlineExports
- * - inlineEnum: Now controlled by collectTypeScriptInfo.exportedEnum and optimization.inlineExports
- * - typeReexportsPresence: Now stable and enabled by default
- */
-export function cleanDeprecatedExperiments(experiments: any): any {
-    if (!experiments) return {};
-    // Remove deprecated options that are now stable in Rspack 1.7.0
-    const { inlineConst, inlineEnum, typeReexportsPresence, ...rest } =
-        experiments;
-    return rest;
-}
-
 export function createChainConfig(
     esmx: Esmx,
     buildTarget: BuildTarget,
@@ -115,9 +100,8 @@ export function createChainConfig(
         ]);
     }
 
-    const currentExperiments = chain.get('experiments') || {};
     chain.experiments({
-        ...cleanDeprecatedExperiments(currentExperiments),
+        ...(chain.get('experiments') || {}),
         outputModule: true,
         nativeWatcher: true,
         rspackFuture: {
