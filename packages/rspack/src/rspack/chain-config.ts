@@ -88,10 +88,6 @@ export function createChainConfig(
         node: isServer || isNode
     });
 
-    chain.experiments({
-        ...chain.get('experiments'),
-        outputModule: true
-    });
     chain.externalsType('module-import');
 
     if (isNode) {
@@ -103,12 +99,17 @@ export function createChainConfig(
             })
         ]);
     }
+
     chain.experiments({
+        ...(chain.get('experiments') || {}),
+        outputModule: true,
         nativeWatcher: true,
         rspackFuture: {
             bundlerInfo: { force: false }
         }
     });
+
+    chain.set('lazyCompilation', false);
 
     initModuleLink(chain, createModuleLinkConfig(esmx, buildTarget));
 
