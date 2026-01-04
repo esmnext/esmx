@@ -109,16 +109,12 @@ export function createChainConfig(
         }
     });
 
-    // Configure lazy compilation following Rspack 1.7.0 standard
-    // Enable for client builds in development mode only
-    // Explicitly disable for all other build targets (server, node) and production mode
-    if (!esmx.isProd && isClient) {
+    if (isClient) {
         chain.set('lazyCompilation', {
             imports: true,
             entries: false
         });
     } else {
-        // Explicitly disable lazy compilation for server, node builds, and production mode
         chain.set('lazyCompilation', false);
     }
 
