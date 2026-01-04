@@ -12,6 +12,7 @@ import {
     RSPACK_LOADER,
     type RspackAppOptions
 } from '../rspack';
+import { cleanDeprecatedExperiments } from '../rspack/chain-config';
 import type { TargetSetting } from './target-setting';
 import { getTargetSetting } from './target-setting';
 
@@ -458,7 +459,7 @@ function configureCssExtract(
     options: RspackHtmlAppOptions
 ): void {
     chain.set('experiments', {
-        ...(chain.get('experiments') ?? {}),
+        ...cleanDeprecatedExperiments(chain.get('experiments') ?? {}),
         css: true
     });
 

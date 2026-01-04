@@ -8,6 +8,21 @@ import { initModuleLink } from '../module-link';
 import type { RspackAppOptions } from './app';
 import type { BuildTarget } from './build-target';
 
+/**
+ * Remove deprecated experimental options from Rspack 1.7.0 upgrade
+ * These options are now stable and enabled by default:
+ * - inlineConst: Now controlled by optimization.inlineExports
+ * - inlineEnum: Now controlled by collectTypeScriptInfo.exportedEnum and optimization.inlineExports
+ * - typeReexportsPresence: Now stable and enabled by default
+ */
+export function cleanDeprecatedExperiments(experiments: any): any {
+    if (!experiments) return {};
+    // Remove deprecated options that are now stable in Rspack 1.7.0
+    const { inlineConst, inlineEnum, typeReexportsPresence, ...rest } =
+        experiments;
+    return rest;
+}
+
 export function createChainConfig(
     esmx: Esmx,
     buildTarget: BuildTarget,
@@ -83,15 +98,17 @@ export function createChainConfig(
         .minimize(options.minimize ?? esmx.isProd)
         .emitOnErrors(true);
 
+    // Rspack 1.7.0: inlineConst and inlineEnum are now controlled by optimization.inlineExports
+    // Default is already enabled, but set explicitly for clarity and to ensure desired behavior
+    if (esmx.isProd) {
+        chain.optimization.set('inlineExports', true);
+    }
+
     chain.externalsPresets({
         web: isClient,
         node: isServer || isNode
     });
 
-    chain.experiments({
-        ...chain.get('experiments'),
-        outputModule: true
-    });
     chain.externalsType('module-import');
 
     if (isNode) {
@@ -103,12 +120,29 @@ export function createChainConfig(
             })
         ]);
     }
-    chain.experiments({
+
+    // Rspack 1.7.0: Merge all experiments with clean deprecated options
+    // Lazy compilation enabled by default for dynamic imports in dev mode
+    const currentExperiments = chain.get('experiments') || {};
+    const experimentsConfig: any = {
+        ...cleanDeprecatedExperiments(currentExperiments),
+        outputModule: true,
         nativeWatcher: true,
         rspackFuture: {
             bundlerInfo: { force: false }
         }
-    });
+    };
+
+    // Rspack 1.7.0: Lazy compilation enabled by default for dynamic imports
+    // Set explicitly for development client builds for clarity
+    if (!esmx.isProd && isClient) {
+        experimentsConfig.lazyCompilation = {
+            imports: true, // Enable lazy compilation for dynamic imports
+            entries: false // Keep entries compilation immediate (default)
+        };
+    }
+
+    chain.experiments(experimentsConfig);
 
     initModuleLink(chain, createModuleLinkConfig(esmx, buildTarget));
 
