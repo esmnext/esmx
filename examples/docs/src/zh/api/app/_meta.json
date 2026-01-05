@@ -1,4 +1,5 @@
 [
     "rspack",
-    "rspack-vue"
+    "rspack-vue",
+    "rspack-react"
 ]

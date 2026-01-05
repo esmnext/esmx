@@ -1,0 +1,406 @@
+---
+titleSuffix: "Esmx 框架 React 构建工具"
+description: "Esmx 框架的 React 专用构建工具，提供完整的 React 18+ 应用构建支持，包括组件开发、SSR 渲染和性能优化，支持 React Refresh 热模块替换。"
+head:
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, Rspack, React, React18, SSR, 构建工具, 组件开发, 服务端渲染, 性能优化, React Refresh, HMR"
+---
+
+import { PackageManagerTabs } from '@theme';
+
+# @esmx/rspack-react
+
+Rspack React 包提供了一套用于创建和配置基于 React 框架的 Rspack 应用的 API，支持 React 组件的开发、构建与服务端渲染，并提供 React Refresh 热模块替换功能。
+
+## 安装
+
+使用包管理器安装 `@esmx/rspack-react` 开发依赖：
+
+<PackageManagerTabs command="install @esmx/rspack-react -D" />
+
+## 类型导出
+
+### BuildTarget
+
+```ts
+type BuildTarget = 'node' | 'client' | 'server'
+```
+
+构建目标环境类型，定义了应用程序的构建目标环境，用于配置构建过程中的特定优化和功能：
+- `node`: 构建为 Node.js 环境运行的代码
+- `client`: 构建为浏览器环境运行的代码
+- `server`: 构建为服务端环境运行的代码
+
+### RspackAppConfigContext
+
+```ts
+interface RspackAppConfigContext {
+  esmx: Esmx
+  buildTarget: BuildTarget
+  config: RspackOptions
+  options: RspackAppOptions
+}
+```
+
+Rspack 应用配置上下文接口，提供了在配置钩子函数中可以访问的上下文信息：
+- `esmx`: Esmx 框架实例
+- `buildTarget`: 当前的构建目标（client/server/node）
+- `config`: Rspack 配置对象
+- `options`: 应用配置选项
+
+### RspackAppChainContext
+
+```ts
+interface RspackAppChainContext {
+  esmx: Esmx
+  buildTarget: BuildTarget
+  chain: RspackChain
+  options: RspackAppOptions
+}
+```
+
+Rspack 链式配置上下文接口，提供了在链式配置钩子函数中可以访问的上下文信息：
+- `esmx`: Esmx 框架实例
+- `buildTarget`: 当前的构建目标（client/server/node）
+- `chain`: rspack-chain 配置对象，用于链式配置
+- `options`: 应用配置选项
+
+### RspackAppOptions
+
+```ts
+interface RspackAppOptions {
+  minimize?: boolean
+  config?: (context: RspackAppConfigContext) => void | Promise<void>
+  chain?: (context: RspackAppChainContext) => void | Promise<void>
+}
+```
+
+Rspack 应用配置选项接口：
+- `minimize`: 是否启用代码压缩，默认根据环境自动选择
+- `config`: 配置钩子函数，用于修改 Rspack 编译配置
+- `chain`: 链式配置钩子函数，使用 rspack-chain 进行灵活的配置修改
+
+### RspackHtmlAppOptions
+
+```ts
+interface RspackHtmlAppOptions extends RspackAppOptions {
+  css?: 'css' | 'js' | false
+  loaders?: Partial<Record<keyof typeof RSPACK_LOADER, string>>
+  styleLoader?: Record<string, any>
+  cssLoader?: Record<string, any>
+  lessLoader?: Record<string, any>
+  styleResourcesLoader?: Record<string, any>
+  swcLoader?: SwcLoaderOptions
+  definePlugin?: Record<string, string | Partial<Record<BuildTarget, string>>>
+  target?: TargetSetting
+}
+```
+
+Rspack HTML 应用配置选项接口，继承自 `RspackAppOptions`：
+- `css`: CSS 输出方式，可选 'css'（独立文件）或 'js'（打包到JS中），默认根据环境自动选择
+- `loaders`: 自定义 loader 配置，用于替换默认的 loader 实现
+- `styleLoader`: style-loader 配置选项
+- `cssLoader`: css-loader 配置选项
+- `lessLoader`: Less 编译选项
+- `styleResourcesLoader`: 全局样式资源自动注入配置
+- `swcLoader`: TypeScript/JavaScript 编译选项
+- `definePlugin`: 全局常量定义，支持为不同的构建目标设置不同的值
+- `target`: 构建目标兼容性配置
+
+### RspackReactAppOptions
+
+```ts
+interface RspackReactAppOptions extends RspackHtmlAppOptions {
+  // 无额外选项，继承 RspackHtmlAppOptions 的所有选项
+}
+```
+
+Rspack React 应用配置选项接口，继承自 `RspackHtmlAppOptions`。所有 `RspackHtmlAppOptions` 的选项都可用，React 特定的配置由构建工具自动处理。
+
+## 函数导出
+
+### createRspackReactApp
+
+```ts
+function createRspackReactApp(esmx: Esmx, options?: RspackReactAppOptions): Promise<App>
+```
+
+创建一个 React Rspack 应用实例，自动配置 React 相关功能，包括：
+- React JSX/TSX 支持，使用自动运行时
+- React Refresh 插件，用于热模块替换（仅开发环境）
+- TypeScript 和 JavaScript 编译，包含 React 转换
+- React 组件的 SSR 支持
+
+**参数：**
+- `esmx`: Esmx 框架实例
+- `options`: React 应用配置选项
+
+**返回值：**
+- 返回一个 Promise，解析为创建的 React 应用实例
+
+**示例：**
+
+```ts title="src/entry.node.ts"
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rspack-react').then((m) =>
+      m.createRspackReactApp(esmx, {
+        // 自定义配置
+        css: 'css',
+        chain(context) {
+          // 额外的链式配置
+          const { chain, buildTarget } = context;
+          if (buildTarget === 'client') {
+            // 客户端特定配置
+          }
+        }
+      })
+    );
+  }
+} satisfies EsmxOptions;
+```
+
+**React 特定功能：**
+
+`createRspackReactApp` 函数自动配置以下内容：
+
+1. **JSX/TSX 支持**：将 `.tsx` 和 `.jsx` 添加到解析扩展名配置中
+2. **React 转换**：配置 SWC loader，使用自动运行时进行 React 转换
+3. **React Refresh**：在客户端开发构建中自动启用 React Refresh 插件以支持 HMR
+4. **环境变量**：根据构建环境设置 `process.env.NODE_ENV`
+
+### createRspackHtmlApp
+
+```ts
+function createRspackHtmlApp(esmx: Esmx, options?: RspackHtmlAppOptions): Promise<App>
+```
+
+创建一个 HTML 类型的 Rspack 应用实例。此函数从 `@esmx/rspack` 重新导出，可在 React 应用中按需使用。
+
+**参数：**
+- `esmx`: Esmx 框架实例
+- `options`: HTML 应用配置选项
+
+**返回值：**
+- 返回一个 Promise，解析为创建的 HTML 应用实例
+
+### createRspackApp
+
+```ts
+function createRspackApp(esmx: Esmx, options?: RspackAppOptions): Promise<App>
+```
+
+创建一个标准的 Rspack 应用实例。此函数从 `@esmx/rspack` 重新导出，提供基础的 Rspack 功能。
+
+**参数：**
+- `esmx`: Esmx 框架实例
+- `options`: Rspack 应用配置选项
+
+**返回值：**
+- 返回一个 Promise，解析为创建的应用实例
+
+## 常量导出
+
+### RSPACK_LOADER
+
+```ts
+const RSPACK_LOADER: Record<string, string> = {
+  builtinSwcLoader: 'builtin:swc-loader',
+  lightningcssLoader: 'builtin:lightningcss-loader',
+  styleLoader: 'style-loader',
+  cssLoader: 'css-loader',
+  lessLoader: 'less-loader',
+  styleResourcesLoader: 'style-resources-loader',
+  workerRspackLoader: 'worker-rspack-loader'
+}
+```
+
+Rspack 内置的 loader 标识符映射对象，提供了常用的 loader 名称常量：
+
+- `builtinSwcLoader`: Rspack 内置的 SWC loader，用于处理 TypeScript/JavaScript 文件，为 TSX/JSX 文件自动配置 React 转换
+- `lightningcssLoader`: Rspack 内置的 lightningcss loader，用于处理 CSS 文件的高性能编译器
+- `styleLoader`: 用于将 CSS 注入到 DOM 中的 loader
+- `cssLoader`: 用于解析 CSS 文件和处理 CSS 模块化的 loader
+- `lessLoader`: 用于将 Less 文件编译为 CSS 的 loader
+- `styleResourcesLoader`: 用于自动导入全局样式资源（如变量、mixins）的 loader
+- `workerRspackLoader`: 用于处理 Web Worker 文件的 loader
+
+使用这些常量可以在配置中引用内置的 loader，避免手动输入字符串：
+
+```ts title="src/entry.node.ts"
+import { RSPACK_LOADER } from '@esmx/rspack-react';
+
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rspack-react').then((m) =>
+      m.createRspackReactApp(esmx, {
+        loaders: {
+          // 使用常量引用 loader
+          styleLoader: RSPACK_LOADER.styleLoader,
+          cssLoader: RSPACK_LOADER.cssLoader,
+          lightningcssLoader: RSPACK_LOADER.lightningcssLoader
+        }
+      })
+    );
+  }
+};
+```
+
+**注意事项：**
+- 这些 loader 已经内置在 Rspack 中，无需额外安装
+- 在自定义 loader 配置时，可以使用这些常量来替换默认的 loader 实现
+- `builtinSwcLoader` 会自动为 `.tsx` 和 `.jsx` 文件配置 React 转换
+- 某些 loader（如 `builtinSwcLoader`）有特定的配置选项，请参考相应的配置文档
+
+## 模块导出
+
+### rspack
+
+重导出 `@rspack/core` 包的所有内容，提供完整的 Rspack 核心功能，包括插件、loader 和工具函数。
+
+## React 特定配置
+
+### 自动 React 配置
+
+使用 `createRspackReactApp` 时，以下 React 特定配置会自动应用：
+
+1. **文件扩展名**：将 `.tsx` 和 `.jsx` 添加到解析扩展名配置中
+2. **React Loader 规则**：为 `.tsx` 和 `.jsx` 文件创建专用规则，包括：
+   - 使用 TypeScript 解析器的 SWC loader
+   - 使用自动运行时的 React 转换
+   - 在开发环境中启用 React Refresh（仅客户端构建）
+3. **React Refresh 插件**：自动为客户端开发构建添加
+4. **环境变量**：根据构建环境设置 `process.env.NODE_ENV`
+
+### 自定义 React 配置
+
+您可以使用 `chain` 钩子自定义 React 特定行为：
+
+```ts title="src/entry.node.ts"
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rspack-react').then((m) =>
+      m.createRspackReactApp(esmx, {
+        chain(context) {
+          const { chain, buildTarget } = context;
+          
+          // 修改 React loader 配置
+          chain.module
+            .rule('react-tsx')
+            .use('swc-loader')
+            .tap((options) => {
+              return {
+                ...options,
+                jsc: {
+                  ...options.jsc,
+                  transform: {
+                    ...options.jsc.transform,
+                    react: {
+                      ...options.jsc.transform.react,
+                      // 自定义 React 转换选项
+                      pragma: 'React.createElement',
+                      pragmaFrag: 'React.Fragment'
+                    }
+                  }
+                }
+              };
+            });
+        }
+      })
+    );
+  }
+} satisfies EsmxOptions;
+```
+
+### SSR 支持
+
+React SSR 完全支持。React 组件可以直接使用 `react-dom/server` 进行渲染，无需特殊的 loader 配置：
+
+```ts title="src/entry.server.ts"
+import { renderToString } from 'react-dom/server';
+import { App } from './App';
+
+export async function render(context) {
+  const html = renderToString(<App />);
+  context.html = html;
+}
+```
+
+## 示例
+
+### 基础 React 应用
+
+```ts title="src/entry.node.ts"
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rspack-react').then((m) =>
+      m.createRspackReactApp(esmx)
+    );
+  }
+} satisfies EsmxOptions;
+```
+
+### 自定义 CSS 配置的 React 应用
+
+```ts title="src/entry.node.ts"
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rspack-react').then((m) =>
+      m.createRspackReactApp(esmx, {
+        css: 'css', // 将 CSS 输出到独立文件
+        cssLoader: {
+          modules: {
+            localIdentName: '[name]__[local]--[hash:base64:5]'
+          }
+        }
+      })
+    );
+  }
+} satisfies EsmxOptions;
+```
+
+### 自定义 TypeScript 配置的 React 应用
+
+```ts title="src/entry.node.ts"
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rspack-react').then((m) =>
+      m.createRspackReactApp(esmx, {
+        swcLoader: {
+          jsc: {
+            parser: {
+              syntax: 'typescript',
+              tsx: true,
+              decorators: true
+            },
+            transform: {
+              legacyDecorator: true
+            }
+          }
+        }
+      })
+    );
+  }
+} satisfies EsmxOptions;
+```
+
+## 注意事项
+
+- **React 版本**：需要 React 18.0.0 或更高版本
+- **TypeScript 支持**：完整支持 TypeScript，包括 TSX 文件
+- **热模块替换**：React Refresh 在开发环境中自动为客户端构建启用
+- **SSR**：服务端渲染完全支持，无需额外配置
+- **性能**：使用 Rspack 高性能构建系统，包含 React 优化
+- **模块链接**：内置支持 Esmx 模块链接功能
+
