@@ -1,0 +1,29 @@
+{
+    "name": "{{projectName}}",
+    "version": "1.0.0",
+    "description": "React Server-Side Rendering framework",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "esmx dev",
+        "build": "esmx build",
+        "preview": "esmx preview",
+        "start": "esmx start",
+        "lint:type": "tsc --noEmit",
+        "build:type": "tsc --declaration --emitDeclarationOnly --outDir dist/src && tsc-alias -p tsconfig.json --outDir dist/src"
+    },
+    "dependencies": {
+        "@esmx/core": "{{esmxVersion}}",
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0"
+    },
+    "devDependencies": {
+        "tsc-alias": "^1.8.16",
+        "@esmx/rspack-react": "{{esmxVersion}}",
+        "@types/node": "^24.0.0",
+        "@types/react": "^18.0.0",
+        "@types/react-dom": "^18.0.0",
+        "typescript": "5.8.3"
+    }
+}
+
