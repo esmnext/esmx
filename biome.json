@@ -25,6 +25,23 @@
         },
         {
             "includes": [
+                "**/*.css"
+            ],
+            "linter": {
+                "enabled": false
+            },
+            "formatter": {
+                "enabled": true,
+                "formatWithErrors": true
+            },
+            "css": {
+                "parser": {
+                    "tailwindDirectives": true
+                }
+            }
+        },
+        {
+            "includes": [
                 ".rpt2_cache/**",
                 "coverage/**",
                 "public/**",

@@ -1,0 +1,42 @@
+{
+    "name": "rspack-react",
+    "version": "1.0.0",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "esmx dev",
+        "build": "pnpm run build:dts && pnpm run build:ssr",
+        "build:ssr": "esmx build",
+        "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src",
+        "preview": "esmx preview",
+        "start": "esmx start"
+    },
+    "dependencies": {
+        "@esmx/core": "workspace:*",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0"
+    },
+    "devDependencies": {
+        "@esmx/rspack": "workspace:*",
+        "@rspack/plugin-react-refresh": "^1.5.2",
+        "@types/node": "^24.0.0",
+        "@types/react": "^19.0.0",
+        "@types/react-dom": "^19.0.0",
+        "autoprefixer": "^10.4.23",
+        "class-variance-authority": "^0.7.0",
+        "clsx": "^2.1.0",
+        "css-loader": "^7.1.2",
+        "lucide-react": "^0.344.0",
+        "postcss": "^8.5.6",
+        "postcss-loader": "^7.3.4",
+        "style-loader": "^4.0.0",
+        "tailwind-merge": "^2.2.1",
+        "tailwindcss": "^3.4.19",
+        "tailwindcss-animate": "^1.0.7",
+        "typescript": "^5.9.3"
+    },
+    "engines": {
+        "node": ">=20"
+    }
+
+}
