@@ -3,7 +3,7 @@ import type { RspackHtmlAppOptions } from '@esmx/rspack';
 import { createRspackReactApp as createApp } from './react-app';
 
 export interface RspackReactAppOptions extends RspackHtmlAppOptions {
-    reactRefresh?: boolean;
+    // No additional options, same as Vue
 }
 
 export function createRspackReactApp(

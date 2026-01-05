@@ -12,6 +12,7 @@ export default async (rc: RenderContext) => {
     const { app } = createApp();
 
     // Use React's renderToString to generate page content
+    // Note: renderToString is synchronous, but we keep the function async for consistency
     const html = renderToString(app);
 
     // Commit dependency collection to ensure all necessary resources are loaded

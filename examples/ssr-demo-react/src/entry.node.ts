@@ -16,7 +16,6 @@ export default {
     async devApp(esmx) {
         return import('@esmx/rspack-react').then((m) =>
             m.createRspackReactApp(esmx, {
-                reactRefresh: true,
                 config(context) {
                     // Custom Rspack configuration can be added here
                 }

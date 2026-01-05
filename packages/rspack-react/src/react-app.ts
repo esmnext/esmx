@@ -35,9 +35,7 @@ export function createRspackReactApp(
                                 development:
                                     buildTarget === 'client' && !esmx.isProd,
                                 refresh:
-                                    buildTarget === 'client' &&
-                                    !esmx.isProd &&
-                                    options?.reactRefresh !== false
+                                    buildTarget === 'client' && !esmx.isProd
                             }
                         }
                     }
@@ -46,11 +44,8 @@ export function createRspackReactApp(
                 .type('javascript/auto');
 
             // Add React Refresh plugin for HMR (client + development only)
-            if (
-                buildTarget === 'client' &&
-                !esmx.isProd &&
-                options?.reactRefresh !== false
-            ) {
+            // Automatically enabled for client development, same as Vue HMR
+            if (buildTarget === 'client' && !esmx.isProd) {
                 chain.plugin('react-refresh').use(ReactRefreshPlugin);
             }
 
