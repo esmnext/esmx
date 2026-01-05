@@ -1,0 +1,406 @@
+---
+titleSuffix: "Esmx Framework React Build Tool"
+description: "Esmx framework's React-specific build tool, providing complete React 18+ application build support, including component development, SSR rendering, and performance optimization with React Refresh HMR."
+head:
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, Rspack, React, React18, SSR, build tool, component development, Server-Side Rendering, performance optimization, React Refresh, HMR"
+---
+
+import { PackageManagerTabs } from '@theme';
+
+# @esmx/rspack-react
+
+The Rspack React package provides a set of APIs for creating and configuring React-based Rspack applications, supporting React component development, building, and Server-Side Rendering with React Refresh hot module replacement.
+
+## Installation
+
+Use package manager to install `@esmx/rspack-react` as a development dependency:
+
+<PackageManagerTabs command="install @esmx/rspack-react -D" />
+
+## Type Exports
+
+### BuildTarget
+
+```ts
+type BuildTarget = 'node' | 'client' | 'server'
+```
+
+Build target environment type that defines the target environment for application builds, used to configure specific optimizations and features in the build process:
+- `node`: Build code to run in Node.js environment
+- `client`: Build code to run in browser environment
+- `server`: Build code to run in server environment
+
+### RspackAppConfigContext
+
+```ts
+interface RspackAppConfigContext {
+  esmx: Esmx
+  buildTarget: BuildTarget
+  config: RspackOptions
+  options: RspackAppOptions
+}
+```
+
+Rspack application configuration context interface provides context information accessible in configuration hook functions:
+- `esmx`: Esmx framework instance
+- `buildTarget`: Current build target (client/server/node)
+- `config`: Rspack configuration object
+- `options`: Application configuration options
+
+### RspackAppChainContext
+
+```ts
+interface RspackAppChainContext {
+  esmx: Esmx
+  buildTarget: BuildTarget
+  chain: RspackChain
+  options: RspackAppOptions
+}
+```
+
+Rspack chain configuration context interface provides context information accessible in chain hook functions:
+- `esmx`: Esmx framework instance
+- `buildTarget`: Current build target (client/server/node)
+- `chain`: rspack-chain configuration object for chained configuration
+- `options`: Application configuration options
+
+### RspackAppOptions
+
+```ts
+interface RspackAppOptions {
+  minimize?: boolean
+  config?: (context: RspackAppConfigContext) => void | Promise<void>
+  chain?: (context: RspackAppChainContext) => void | Promise<void>
+}
+```
+
+Rspack application configuration options interface:
+- `minimize`: Whether to enable code compression, defaults to automatic selection based on environment
+- `config`: Configuration hook function for modifying Rspack compilation configuration
+- `chain`: Chain hook function using rspack-chain for flexible configuration modification
+
+### RspackHtmlAppOptions
+
+```ts
+interface RspackHtmlAppOptions extends RspackAppOptions {
+  css?: 'css' | 'js' | false
+  loaders?: Partial<Record<keyof typeof RSPACK_LOADER, string>>
+  styleLoader?: Record<string, any>
+  cssLoader?: Record<string, any>
+  lessLoader?: Record<string, any>
+  styleResourcesLoader?: Record<string, any>
+  swcLoader?: SwcLoaderOptions
+  definePlugin?: Record<string, string | Partial<Record<BuildTarget, string>>>
+  target?: TargetSetting
+}
+```
+
+Rspack HTML application configuration options interface, extends `RspackAppOptions`:
+- `css`: CSS output method, optional 'css' (separate file) or 'js' (bundled into JS), defaults to automatic selection based on environment
+- `loaders`: Custom loader configuration for replacing default loader implementations
+- `styleLoader`: style-loader configuration options
+- `cssLoader`: css-loader configuration options
+- `lessLoader`: Less compilation options
+- `styleResourcesLoader`: Global style resources auto-injection configuration
+- `swcLoader`: TypeScript/JavaScript compilation options
+- `definePlugin`: Global constant definitions, supports different values for different build targets
+- `target`: Build target compatibility configuration
+
+### RspackReactAppOptions
+
+```ts
+interface RspackReactAppOptions extends RspackHtmlAppOptions {
+  // No additional options, inherits all options from RspackHtmlAppOptions
+}
+```
+
+Rspack React application configuration options interface, extends `RspackHtmlAppOptions`. All options from `RspackHtmlAppOptions` are available, with React-specific configurations handled automatically by the build tool.
+
+## Function Exports
+
+### createRspackReactApp
+
+```ts
+function createRspackReactApp(esmx: Esmx, options?: RspackReactAppOptions): Promise<App>
+```
+
+Creates a React Rspack application instance with automatic React configuration, including:
+- React JSX/TSX support with automatic runtime
+- React Refresh plugin for hot module replacement (development only)
+- TypeScript and JavaScript compilation with React transform
+- SSR support for React components
+
+**Parameters:**
+- `esmx`: Esmx framework instance
+- `options`: React application configuration options
+
+**Returns:**
+- Returns a Promise that resolves to the created React application instance
+
+**Example:**
+
+```ts title="src/entry.node.ts"
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rspack-react').then((m) =>
+      m.createRspackReactApp(esmx, {
+        // Custom configuration
+        css: 'css',
+        chain(context) {
+          // Additional chain configuration
+          const { chain, buildTarget } = context;
+          if (buildTarget === 'client') {
+            // Client-specific configuration
+          }
+        }
+      })
+    );
+  }
+} satisfies EsmxOptions;
+```
+
+**React-Specific Features:**
+
+The `createRspackReactApp` function automatically configures:
+
+1. **JSX/TSX Support**: Adds `.tsx` and `.jsx` extensions to resolve configuration
+2. **React Transform**: Configures SWC loader with React transform using automatic runtime
+3. **React Refresh**: Automatically enables React Refresh plugin for HMR in client development builds
+4. **Environment Variables**: Sets `process.env.NODE_ENV` based on build environment
+
+### createRspackHtmlApp
+
+```ts
+function createRspackHtmlApp(esmx: Esmx, options?: RspackHtmlAppOptions): Promise<App>
+```
+
+Creates an HTML-type Rspack application instance. This function is re-exported from `@esmx/rspack` and is available for use in React applications if needed.
+
+**Parameters:**
+- `esmx`: Esmx framework instance
+- `options`: HTML application configuration options
+
+**Returns:**
+- Returns a Promise that resolves to the created HTML application instance
+
+### createRspackApp
+
+```ts
+function createRspackApp(esmx: Esmx, options?: RspackAppOptions): Promise<App>
+```
+
+Creates a standard Rspack application instance. This function is re-exported from `@esmx/rspack` and provides the base Rspack functionality.
+
+**Parameters:**
+- `esmx`: Esmx framework instance
+- `options`: Rspack application configuration options
+
+**Returns:**
+- Returns a Promise that resolves to the created application instance
+
+## Constant Exports
+
+### RSPACK_LOADER
+
+```ts
+const RSPACK_LOADER: Record<string, string> = {
+  builtinSwcLoader: 'builtin:swc-loader',
+  lightningcssLoader: 'builtin:lightningcss-loader',
+  styleLoader: 'style-loader',
+  cssLoader: 'css-loader',
+  lessLoader: 'less-loader',
+  styleResourcesLoader: 'style-resources-loader',
+  workerRspackLoader: 'worker-rspack-loader'
+}
+```
+
+Rspack built-in loader identifier mapping object that provides commonly used loader name constants:
+
+- `builtinSwcLoader`: Rspack built-in SWC loader for processing TypeScript/JavaScript files, configured with React transform for TSX/JSX files
+- `lightningcssLoader`: Rspack built-in lightningcss loader, a high-performance compiler for processing CSS files
+- `styleLoader`: Loader that injects CSS into the DOM
+- `cssLoader`: Loader that parses CSS files and handles CSS modularization
+- `lessLoader`: Loader that compiles Less files to CSS
+- `styleResourcesLoader`: Loader that automatically imports global style resources (variables, mixins, etc.)
+- `workerRspackLoader`: Loader for processing Web Worker files
+
+Using these constants can reference built-in loaders in configuration, avoiding manual string input:
+
+```ts title="src/entry.node.ts"
+import { RSPACK_LOADER } from '@esmx/rspack-react';
+
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rspack-react').then((m) =>
+      m.createRspackReactApp(esmx, {
+        loaders: {
+          // Use constants to reference loaders
+          styleLoader: RSPACK_LOADER.styleLoader,
+          cssLoader: RSPACK_LOADER.cssLoader,
+          lightningcssLoader: RSPACK_LOADER.lightningcssLoader
+        }
+      })
+    );
+  }
+};
+```
+
+**Notes:**
+- These loaders are already built into Rspack, requiring no additional installation
+- When customizing loader configuration, these constants can be used to replace default loader implementations
+- The `builtinSwcLoader` is automatically configured with React transform for `.tsx` and `.jsx` files
+- Some loaders (such as `builtinSwcLoader`) have specific configuration options; please refer to the corresponding configuration documentation
+
+## Module Exports
+
+### rspack
+
+Re-exports all contents from `@rspack/core` package, providing complete Rspack core functionality, including plugins, loaders, and utilities.
+
+## React-Specific Configuration
+
+### Automatic React Configuration
+
+When using `createRspackReactApp`, the following React-specific configurations are automatically applied:
+
+1. **File Extensions**: `.tsx` and `.jsx` are added to resolve extensions
+2. **React Loader Rule**: A dedicated rule for `.tsx` and `.jsx` files with:
+   - SWC loader with TypeScript parser
+   - React transform with automatic runtime
+   - React Refresh enabled in development (client builds only)
+3. **React Refresh Plugin**: Automatically added for client development builds
+4. **Environment Variables**: `process.env.NODE_ENV` is set based on build environment
+
+### Customizing React Configuration
+
+You can customize React-specific behavior using the `chain` hook:
+
+```ts title="src/entry.node.ts"
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rspack-react').then((m) =>
+      m.createRspackReactApp(esmx, {
+        chain(context) {
+          const { chain, buildTarget } = context;
+          
+          // Modify React loader configuration
+          chain.module
+            .rule('react-tsx')
+            .use('swc-loader')
+            .tap((options) => {
+              return {
+                ...options,
+                jsc: {
+                  ...options.jsc,
+                  transform: {
+                    ...options.jsc.transform,
+                    react: {
+                      ...options.jsc.transform.react,
+                      // Custom React transform options
+                      pragma: 'React.createElement',
+                      pragmaFrag: 'React.Fragment'
+                    }
+                  }
+                }
+              };
+            });
+        }
+      })
+    );
+  }
+} satisfies EsmxOptions;
+```
+
+### SSR Support
+
+React SSR is fully supported. React components can be rendered directly using `react-dom/server` without special loader configuration:
+
+```ts title="src/entry.server.ts"
+import { renderToString } from 'react-dom/server';
+import { App } from './App';
+
+export async function render(context) {
+  const html = renderToString(<App />);
+  context.html = html;
+}
+```
+
+## Examples
+
+### Basic React Application
+
+```ts title="src/entry.node.ts"
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rspack-react').then((m) =>
+      m.createRspackReactApp(esmx)
+    );
+  }
+} satisfies EsmxOptions;
+```
+
+### React Application with Custom CSS Configuration
+
+```ts title="src/entry.node.ts"
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rspack-react').then((m) =>
+      m.createRspackReactApp(esmx, {
+        css: 'css', // Output CSS to separate files
+        cssLoader: {
+          modules: {
+            localIdentName: '[name]__[local]--[hash:base64:5]'
+          }
+        }
+      })
+    );
+  }
+} satisfies EsmxOptions;
+```
+
+### React Application with TypeScript Configuration
+
+```ts title="src/entry.node.ts"
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rspack-react').then((m) =>
+      m.createRspackReactApp(esmx, {
+        swcLoader: {
+          jsc: {
+            parser: {
+              syntax: 'typescript',
+              tsx: true,
+              decorators: true
+            },
+            transform: {
+              legacyDecorator: true
+            }
+          }
+        }
+      })
+    );
+  }
+} satisfies EsmxOptions;
+```
+
+## Notes
+
+- **React Version**: Requires React 18.0.0 or higher
+- **TypeScript Support**: Full TypeScript support with TSX files
+- **Hot Module Replacement**: React Refresh is automatically enabled in development for client builds
+- **SSR**: Server-side rendering is fully supported without additional configuration
+- **Performance**: Uses Rspack's high-performance build system with React optimizations
+- **Module Linking**: Built-in support for Esmx module linking capabilities
+
