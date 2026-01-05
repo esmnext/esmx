@@ -1,5 +1,5 @@
 {
-    "root": true,
+    "root": false,
     "$schema": "https://biomejs.dev/schemas/2.3.7/schema.json",
     "vcs": {
         "enabled": true,
@@ -7,39 +7,6 @@
         "useIgnoreFile": true
     },
     "overrides": [
-        {
-            "includes": [
-                "**/*.vue"
-            ],
-            "linter": {
-                "rules": {
-                    "style": {
-                        "useConst": "off",
-                        "useImportType": "off"
-                    },
-                    "correctness": {
-                        "noUnusedImports": "off"
-                    }
-                }
-            }
-        },
-        {
-            "includes": [
-                "**/*.css"
-            ],
-            "linter": {
-                "enabled": false
-            },
-            "formatter": {
-                "enabled": true,
-                "formatWithErrors": true
-            },
-            "css": {
-                "parser": {
-                    "tailwindDirectives": true
-                }
-            }
-        },
         {
             "includes": [
                 ".rpt2_cache/**",
@@ -150,3 +117,4 @@
         }
     }
 }
+
