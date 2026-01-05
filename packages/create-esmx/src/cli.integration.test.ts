@@ -39,14 +39,11 @@ async function verifyProjectStructure(
         }
     }
 
-    // Check for entry.client.ts or entry.client.tsx (React templates use .tsx)
+    // Check for entry.client.ts (only .ts extension is allowed)
     const entryClientTs = join(projectPath, 'src/entry.client.ts');
-    const entryClientTsx = join(projectPath, 'src/entry.client.tsx');
-    expect(existsSync(entryClientTs) || existsSync(entryClientTsx)).toBe(true);
-    if (!existsSync(entryClientTs) && !existsSync(entryClientTsx)) {
-        throw new Error(
-            'Missing required file: src/entry.client.ts or src/entry.client.tsx'
-        );
+    expect(existsSync(entryClientTs)).toBe(true);
+    if (!existsSync(entryClientTs)) {
+        throw new Error('Missing required file: src/entry.client.ts');
     }
 
     const packageJson = JSON.parse(

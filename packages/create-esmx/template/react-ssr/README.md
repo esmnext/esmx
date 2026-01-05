@@ -59,7 +59,7 @@ Visit http://localhost:3000 to see the development environment.
 │   ├── components/         # UI components
 │   │   └── hello-world.tsx # Example component with counter functionality
 │   ├── create-app.tsx     # React app instance creation
-│   ├── entry.client.tsx   # Client-side entry
+│   ├── entry.client.ts    # Client-side entry
 │   ├── entry.node.ts      # Node.js environment entry point
 │   └── entry.server.tsx   # Server-side rendering functions
 ├── package.json
@@ -69,7 +69,7 @@ Visit http://localhost:3000 to see the development environment.
 
 ## 🔧 Configuration Details
 
-- `entry.client.tsx` - Responsible for client-side interaction and dynamic updates
+- `entry.client.ts` - Responsible for client-side interaction and dynamic updates
 - `entry.node.ts` - Handles server-side rendering and development server configuration
 - `entry.server.tsx` - Manages server-side rendering process and HTML generation
 

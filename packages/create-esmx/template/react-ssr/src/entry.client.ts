@@ -11,4 +11,3 @@ if (container) {
 } else {
     console.error('Container element #app not found');
 }
-
