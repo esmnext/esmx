@@ -20,23 +20,23 @@
     </a>
   </div>
   
-  <p>A high-performance React integration for Esmx microfrontend framework, providing React support with SSR and Module Linking capabilities</p>
+  <p>为 Esmx 微前端框架提供的高性能 React 集成，支持 React 18+ 并具备 SSR 和模块链接能力</p>
   
   <p>
-    English | <a href="https://github.com/esmnext/esmx/blob/master/packages/rspack-react/README.zh-CN.md">中文</a>
+    <a href="https://github.com/esmnext/esmx/blob/master/packages/rspack-react/README.md">English</a> | 中文
   </p>
 </div>
 
-## 🚀 Features
+## 🚀 特性
 
-- **React Support** - Full support for React 18+ applications
-- **High-Performance Build** - Ultra-fast building based on Rspack with React optimization
-- **Module Linking** - Built-in module linking capabilities for microfrontend architecture
-- **SSR Support** - Complete server-side rendering support for React applications
-- **Hot Module Replacement** - Fast development experience with React component hot reloading
-- **TypeScript Ready** - Full TypeScript support with excellent developer experience
+- **React 支持** - 完整支持 React 18+ 应用
+- **高性能构建** - 基于 Rspack 的超快构建，配有 React 优化
+- **模块链接** - 内置模块链接能力，支持微前端架构
+- **SSR 支持** - 完整的 React 应用服务端渲染支持
+- **热模块替换** - React 组件热重载，快速开发体验
+- **TypeScript 就绪** - 完整的 TypeScript 支持，出色的开发体验
 
-## 📦 Installation
+## 📦 安装
 
 ```bash
 # npm
@@ -49,10 +49,11 @@ pnpm add @esmx/rspack-react -D
 yarn add @esmx/rspack-react -D
 ```
 
-## 📚 Documentation
+## 📚 文档
 
-Visit the [official documentation](https://esmx.dev) for detailed usage guides and API reference.
+访问[官方文档](https://esmx.dev)获取详细的使用指南和 API 参考。
 
-## 📄 License
+## 📄 许可证
 
 MIT © [Esmx Team](https://github.com/esmnext/esmx)
+

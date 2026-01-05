@@ -1,26 +1,52 @@
 {
     "compilerOptions": {
-      "isolatedModules": true,
-      "resolveJsonModule": true,
-      "types": ["@types/node"],
-      "target": "ESNext",
-      "module": "ESNext",
-      "moduleResolution": "node",
-      "strict": true,
-      "skipLibCheck": true,
-      "allowSyntheticDefaultImports": true,
-      "esModuleInterop": true,
-      "jsx": "react-jsx",
-      "lib": ["ESNext", "DOM"],
-      "baseUrl": ".",
-      "paths": {
-        "@/*": ["./src/*"]
-      },
-      "declaration": true,
-      "declarationMap": true,
-      "outDir": "./dist/src",
-      "noEmit": false
+        "isolatedModules": true,
+        "allowJs": false,
+        "experimentalDecorators": true,
+        "resolveJsonModule": true,
+        "types": [
+            "@types/node",
+            "@types/react",
+            "@types/react-dom"
+        ],
+        "target": "ESNext",
+        "module": "ESNext",
+        "importHelpers": false,
+        "declaration": true,
+        "sourceMap": true,
+        "strict": true,
+        "noImplicitAny": false,
+        "noImplicitReturns": false,
+        "noFallthroughCasesInSwitch": true,
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "noEmit": true,
+        "jsx": "react-jsx"
     },
-    "include": ["src/**/*"],
-    "exclude": ["dist", "node_modules"]
-  }
+    "include": [
+        "server",
+        "test",
+        "src",
+        "bin",
+        ".eslintrc.cjs",
+        "*.mjs",
+        "./build.config.ts",
+        "private",
+        "public",
+        "**.cjs",
+        "**.js",
+        "**.mjs",
+        "**.ts",
+        "**.tsx",
+        "tests"
+    ],
+    "exclude": [
+        "dist",
+        "template"
+    ]
+}

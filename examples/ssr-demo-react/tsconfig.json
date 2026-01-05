@@ -1,0 +1,28 @@
+{
+    "compilerOptions": {
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "isolatedModules": true,
+        "resolveJsonModule": true,
+        
+        "target": "ESNext",
+        "lib": ["ESNext", "DOM"],
+        
+        "strict": true,
+        "skipLibCheck": true,
+        "types": ["@types/node"],
+        
+        "jsx": "react-jsx",
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        
+        "baseUrl": ".",
+        "paths": {
+            "ssr-demo-react/src/*": ["./src/*"],
+            "ssr-demo-react/*": ["./*"]
+        }
+    },
+    "include": ["src"],
+    "exclude": ["dist", "node_modules"]
+}
+

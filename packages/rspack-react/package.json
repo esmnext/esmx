@@ -1,42 +1,79 @@
 {
-    "name": "rspack-react",
-    "version": "1.0.0",
-    "type": "module",
-    "private": true,
+    "name": "@esmx/rspack-react",
+    "description": "A high-performance React integration for Esmx microfrontend framework, providing React support with SSR and Module Linking capabilities.",
+    "contributors": [
+        {
+            "name": "gorillaworkout",
+            "url": "https://github.com/gorillaworkout"
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/esmnext/esmx.git",
+        "directory": "packages/rspack-react"
+    },
+    "homepage": "https://github.com/esmnext/esmx",
+    "bugs": {
+        "url": "https://github.com/esmnext/esmx/issues"
+    },
+    "template": "library-node",
+    "license": "MIT",
+    "keywords": [
+        "React",
+        "Rspack",
+        "SSR",
+        "Module Linking",
+        "High Performance",
+        "Build Tool",
+        "Development Experience",
+        "Hot Module Replacement",
+        "TypeScript"
+    ],
     "scripts": {
-        "dev": "esmx dev",
-        "build": "pnpm run build:dts && pnpm run build:ssr",
-        "build:ssr": "esmx build",
-        "build:dts": "tsc --declaration --emitDeclarationOnly --outDir dist/src",
-        "preview": "esmx preview",
-        "start": "esmx start"
+        "lint:js": "biome check --write --no-errors-on-unmatched",
+        "lint:css": "pnpm run lint:js",
+        "lint:type": "tsc --noEmit",
+        "test": "vitest run --pass-with-no-tests",
+        "coverage": "vitest run --coverage --pass-with-no-tests",
+        "build": "unbuild"
+    },
+    "peerDependencies": {
+        "@esmx/core": "*",
+        "react": ">=18.0.0"
     },
     "dependencies": {
-        "@esmx/core": "workspace:*",
-        "react": "^19.0.0",
-        "react-dom": "^19.0.0"
+        "@esmx/rspack": "workspace:*",
+        "@rspack/plugin-react-refresh": "^1.5.2"
     },
     "devDependencies": {
-        "@esmx/rspack": "workspace:*",
-        "@rspack/plugin-react-refresh": "^1.5.2",
+        "@biomejs/biome": "2.3.7",
+        "@esmx/core": "workspace:*",
         "@types/node": "^24.0.0",
-        "@types/react": "^19.0.0",
-        "@types/react-dom": "^19.0.0",
-        "autoprefixer": "^10.4.23",
-        "class-variance-authority": "^0.7.0",
-        "clsx": "^2.1.0",
-        "css-loader": "^7.1.2",
-        "lucide-react": "^0.344.0",
-        "postcss": "^8.5.6",
-        "postcss-loader": "^7.3.4",
-        "style-loader": "^4.0.0",
-        "tailwind-merge": "^2.2.1",
-        "tailwindcss": "^3.4.19",
-        "tailwindcss-animate": "^1.0.7",
-        "typescript": "^5.9.3"
+        "@types/react": "^18.0.0",
+        "@types/react-dom": "^18.0.0",
+        "@vitest/coverage-v8": "3.2.4",
+        "typescript": "5.9.3",
+        "unbuild": "3.6.1",
+        "vitest": "3.2.4"
     },
-    "engines": {
-        "node": ">=20"
-    }
-
+    "version": "3.0.0-rc.93",
+    "type": "module",
+    "private": false,
+    "exports": {
+        ".": {
+            "import": "./dist/index.mjs",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "module": "dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "lib",
+        "src",
+        "dist",
+        "*.mjs",
+        "template",
+        "public"
+    ],
+    "gitHead": "2e16b175552400382913b445ae7e112b78c422f5"
 }
