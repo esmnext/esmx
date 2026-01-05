@@ -574,6 +574,68 @@ importers:
         specifier: ^3.0.5
         version: 3.1.8(typescript@5.9.3)
 
+  examples/templates/react-csr:
+    dependencies:
+      '@esmx/core':
+        specifier: workspace:*
+        version: link:../../../packages/core
+      react:
+        specifier: ^18.0.0
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.0.0
+        version: 18.3.1(react@18.3.1)
+    devDependencies:
+      '@esmx/rspack-react':
+        specifier: workspace:*
+        version: link:../../../packages/rspack-react
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.10.4
+      '@types/react':
+        specifier: ^18.0.0
+        version: 18.3.27
+      '@types/react-dom':
+        specifier: ^18.0.0
+        version: 18.3.7(@types/react@18.3.27)
+      tsc-alias:
+        specifier: ^1.8.16
+        version: 1.8.16
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
+
+  examples/templates/react-ssr:
+    dependencies:
+      '@esmx/core':
+        specifier: workspace:*
+        version: link:../../../packages/core
+      react:
+        specifier: ^18.0.0
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.0.0
+        version: 18.3.1(react@18.3.1)
+    devDependencies:
+      '@esmx/rspack-react':
+        specifier: workspace:*
+        version: link:../../../packages/rspack-react
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.10.4
+      '@types/react':
+        specifier: ^18.0.0
+        version: 18.3.27
+      '@types/react-dom':
+        specifier: ^18.0.0
+        version: 18.3.7(@types/react@18.3.27)
+      tsc-alias:
+        specifier: ^1.8.16
+        version: 1.8.16
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
+
   examples/templates/shared-modules:
     dependencies:
       '@esmx/core':

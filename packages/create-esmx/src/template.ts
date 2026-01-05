@@ -30,6 +30,11 @@ export function getEsmxVersion(): string {
 
 /**
  * Get list of available templates
+ *
+ * Path resolution:
+ * - When installed from npm: __dirname = node_modules/create-esmx/dist/
+ *   -> templateDir = node_modules/create-esmx/template/ (from files array in package.json)
+ * - Template folder is included in npm package via "files" array in package.json
  */
 export function getAvailableTemplates(): TemplateInfo[] {
     const templateDir = resolve(__dirname, '../template');
