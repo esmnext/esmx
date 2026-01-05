@@ -14,7 +14,8 @@
         "test": "vitest run --pass-with-no-tests",
         "coverage": "vitest run --coverage --pass-with-no-tests",
         "lint:js": "biome check --write --no-errors-on-unmatched",
-        "build": "unbuild"
+        "build": "unbuild",
+        "postbuild": "node build/postbuild.mjs"
     },
     "dependencies": {
         "@clack/prompts": "^0.7.0",

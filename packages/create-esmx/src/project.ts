@@ -9,11 +9,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Create a project from template
- *
- * Path resolution:
- * - When installed from npm: __dirname = node_modules/create-esmx/dist/
- *   -> templatePath = node_modules/create-esmx/template/{templateType}
- * - Template folder is included in npm package via "files" array in package.json
  */
 export async function createProjectFromTemplate(
     targetDir: string,
