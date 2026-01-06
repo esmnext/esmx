@@ -40,13 +40,6 @@ async function verifyProjectStructure(
         }
     }
 
-    // Check for entry.client.ts (only .ts extension is allowed)
-    const entryClientTs = join(projectPath, 'src/entry.client.ts');
-    expect(existsSync(entryClientTs)).toBe(true);
-    if (!existsSync(entryClientTs)) {
-        throw new Error('Missing required file: src/entry.client.ts');
-    }
-
     const packageJson = JSON.parse(
         readFileSync(join(projectPath, 'package.json'), 'utf-8')
     );

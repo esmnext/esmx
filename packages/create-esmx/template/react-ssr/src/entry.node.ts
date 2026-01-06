@@ -3,7 +3,7 @@ import type { EsmxOptions } from '@esmx/core';
 
 export default {
     modules: {
-        exports: ['pkg:react']
+        exports: []
     },
     async devApp(esmx) {
         return import('@esmx/rspack-react').then((m) =>
@@ -13,14 +13,6 @@ export default {
                 }
             })
         );
-    },
-
-    async postBuild(esmx) {
-        // postBuild is intentionally empty for react-ssr
-        // React SSR has issues with React internal state (ReactCurrentDispatcher) during postBuild
-        // React internal state cannot be initialized from outside the module that uses React
-        // This prevents build failures while maintaining the postBuild hook structure
-        // Vue SSR can use render() in postBuild, but React SSR cannot due to internal state requirements
     },
 
     async server(esmx) {
