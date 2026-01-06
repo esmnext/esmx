@@ -631,8 +631,8 @@ export class Esmx {
         try {
             await this._options.postBuild?.(this);
             return true;
-        } catch (e) {
-            console.error(e);
+        } catch (error) {
+            console.error('postBuild error:', error);
             return false;
         }
     }
