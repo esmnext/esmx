@@ -70,10 +70,6 @@ export async function cli(command: string) {
                 });
                 exit(await esmx.init(COMMAND.start));
                 exit(await esmx.postBuild());
-                // if (!(await esmx.init(COMMAND.start))) {
-                //     process.exit(17);
-                // }
-                // await esmx.postBuild();
             }
 
             esmx = null;
