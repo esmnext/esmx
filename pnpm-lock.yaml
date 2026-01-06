@@ -874,6 +874,9 @@ importers:
       '@esmx/rspack':
         specifier: workspace:*
         version: link:../rspack
+      '@esmx/rspack-react':
+        specifier: workspace:*
+        version: link:../rspack-react
       '@esmx/rspack-vue':
         specifier: workspace:*
         version: link:../rspack-vue
