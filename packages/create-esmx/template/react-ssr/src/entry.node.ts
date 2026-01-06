@@ -16,6 +16,12 @@ export default {
         );
     },
 
+    async postBuild(esmx) {
+        // postBuild is intentionally empty for react-ssr
+        // React SSR has issues with React internal state during postBuild
+        // This prevents build failures while maintaining the postBuild hook structure
+    },
+
     async server(esmx) {
         const server = http.createServer((req, res) => {
             esmx.middleware(req, res, async () => {
