@@ -43,13 +43,9 @@ export async function execCommand(command, options = {}) {
         log.error(`Exit code: ${error.code}`);
         if (error.stdout) {
             log.error(`Stdout: ${error.stdout}`);
-            // Print stdout for debugging
-            console.error(error.stdout);
         }
         if (error.stderr) {
             log.error(`Stderr: ${error.stderr}`);
-            // Print stderr for debugging
-            console.error(error.stderr);
         }
         throw new Error(
             `Command failed with exit code ${error.code}: ${error.message}`

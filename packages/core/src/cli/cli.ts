@@ -68,27 +68,10 @@ export async function cli(command: string) {
                     ...opts,
                     server: undefined
                 });
-                const initResult = await esmx.init(COMMAND.start);
-                if (!initResult) {
-                    console.error(
-                        styleText(
-                            'red',
-                            'Failed to initialize Esmx for postBuild'
-                        )
-                    );
+                if (!(await esmx.init(COMMAND.start))) {
                     process.exit(17);
                 }
-                const postBuildResult = await esmx.postBuild();
-                if (!postBuildResult) {
-                    console.warn(
-                        styleText(
-                            'yellow',
-                            'postBuild failed, but build completed successfully'
-                        )
-                    );
-                    // Don't exit with error code for postBuild failures
-                    // This allows build to succeed even if postBuild has issues
-                }
+                await esmx.postBuild();
             }
 
             esmx = null;
