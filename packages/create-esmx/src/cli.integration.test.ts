@@ -29,7 +29,6 @@ async function verifyProjectStructure(
         'package.json',
         'tsconfig.json',
         'README.md',
-        'src/entry.client.ts',
         'src/entry.node.ts'
     ];
 
@@ -38,6 +37,13 @@ async function verifyProjectStructure(
         if (!existsSync(join(projectPath, file))) {
             throw new Error(`Missing required file: ${file}`);
         }
+    }
+
+    // Check for entry.client.ts (only .ts extension is allowed)
+    const entryClientTs = join(projectPath, 'src/entry.client.ts');
+    expect(existsSync(entryClientTs)).toBe(true);
+    if (!existsSync(entryClientTs)) {
+        throw new Error('Missing required file: src/entry.client.ts');
     }
 
     const packageJson = JSON.parse(
