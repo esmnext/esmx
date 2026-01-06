@@ -16,8 +16,11 @@ export default {
     },
 
     async postBuild(esmx) {
-        // const rc = await esmx.render();
-        // esmx.writeSync(esmx.resolvePath('dist/client', 'index.html'), rc.html);
+        // postBuild is intentionally empty for react-ssr
+        // React SSR has issues with React internal state (ReactCurrentDispatcher) during postBuild
+        // React internal state cannot be initialized from outside the module that uses React
+        // This prevents build failures while maintaining the postBuild hook structure
+        // Vue SSR can use render() in postBuild, but React SSR cannot due to internal state requirements
     },
 
     async server(esmx) {
