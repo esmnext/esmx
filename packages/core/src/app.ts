@@ -125,17 +125,13 @@ async function createStartRender(esmx: Esmx) {
     const loaderImport = createLoaderImport(baseURL, importMap);
 
     return async (options?: RenderContextOptions): Promise<RenderContext> => {
-        try {
-            const rc = new RenderContext(esmx, options);
-            const result = await loaderImport(`${esmx.name}/src/entry.server`);
-            const serverRender: ServerRenderHandle = result[rc.entryName];
-            if (typeof serverRender === 'function') {
-                await serverRender(rc);
-            }
-            return rc;
-        } catch (error) {
-            throw error instanceof Error ? error : new Error(String(error));
+        const rc = new RenderContext(esmx, options);
+        const result = await loaderImport(`${esmx.name}/src/entry.server`);
+        const serverRender: ServerRenderHandle = result[rc.entryName];
+        if (typeof serverRender === 'function') {
+            await serverRender(rc);
         }
+        return rc;
     };
 }
 
