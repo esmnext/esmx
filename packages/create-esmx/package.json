@@ -26,6 +26,7 @@
         "@biomejs/biome": "2.3.7",
         "@esmx/core": "workspace:*",
         "@esmx/rspack": "workspace:*",
+         "@esmx/rspack-react": "workspace:*",
         "@esmx/rspack-vue": "workspace:*",
         "@types/minimist": "^1.2.5",
         "@types/node": "^24.0.0",

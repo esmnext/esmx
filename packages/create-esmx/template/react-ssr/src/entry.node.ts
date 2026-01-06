@@ -6,7 +6,6 @@ export default {
         exports: ['pkg:react']
     },
     async devApp(esmx) {
-        // @ts-expect-error - @esmx/rspack-react will be available after dependencies are installed
         return import('@esmx/rspack-react').then((m) =>
             m.createRspackReactApp(esmx, {
                 config(context: any) {
@@ -17,9 +16,8 @@ export default {
     },
 
     async postBuild(esmx) {
-        // postBuild is intentionally empty for react-ssr
-        // React SSR has issues with React internal state during postBuild
-        // This prevents build failures while maintaining the postBuild hook structure
+        // const rc = await esmx.render();
+        // esmx.writeSync(esmx.resolvePath('dist/client', 'index.html'), rc.html);
     },
 
     async server(esmx) {
