@@ -29,6 +29,7 @@ async function verifyProjectStructure(
         'package.json',
         'tsconfig.json',
         'README.md',
+        'src/entry.client.ts',
         'src/entry.node.ts'
     ];
 
