@@ -8,7 +8,7 @@ export default {
     async devApp(esmx) {
         return import('@esmx/rspack-react').then((m) =>
             m.createRspackReactApp(esmx, {
-                config(context: any) {
+                config(context) {
                     // Custom Rspack configuration
                 }
             })
