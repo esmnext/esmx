@@ -6,7 +6,6 @@ export default {
         exports: ['pkg:react']
     },
     async devApp(esmx) {
-        // @ts-expect-error - @esmx/rspack-react will be available after dependencies are installed
         return import('@esmx/rspack-react').then((m) =>
             m.createRspackReactApp(esmx, {
                 config(context: any) {
