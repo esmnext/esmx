@@ -1,6 +1,7 @@
 import type { Esmx } from '@esmx/core';
 import { createRspackHtmlApp, rspack } from '@esmx/rspack';
 import ReactRefreshPlugin from '@rspack/plugin-react-refresh';
+import { reactServerRenderLoader } from './loaders';
 import type { RspackReactAppOptions } from './react';
 
 export function createRspackReactApp(
@@ -17,9 +18,18 @@ export function createRspackReactApp(
 
             // Configure React JSX/TSX loader
             // Create a separate rule for TSX/JSX files to add React support
-            chain.module
+            const reactRule = chain.module
                 .rule('react-tsx')
-                .test(/\.(tsx|jsx)$/)
+                .test(/\.(tsx|jsx)$/);
+
+            // Add SSR loader for server builds (before swc-loader)
+            if (buildTarget === 'server') {
+                reactRule
+                    .use('react-server-render-loader')
+                    .loader(reactServerRenderLoader);
+            }
+
+            reactRule
                 .use('swc-loader')
                 .loader('builtin:swc-loader')
                 .options({
@@ -49,8 +59,8 @@ export function createRspackReactApp(
                 chain.plugin('react-refresh').use(ReactRefreshPlugin);
             }
 
-            // Note: React SSR doesn't need special loader like Vue
-            // React components can be rendered directly with react-dom/server
+            // React SSR loader is configured above in the react-tsx rule
+            // It tracks import.meta for each component during server-side rendering
 
             // React aliases are handled automatically by Rspack
             // No need to set explicit aliases
