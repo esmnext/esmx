@@ -23,15 +23,6 @@ export default function (this: rspack.LoaderContext, text: string) {
     return text + ADD_IMPORT;
 }
 
-export const vue3ServerRenderLoader = (() => {
-    try {
-        // Use import.meta.resolve if available (Node.js 20.6.0+)
-        if (typeof import.meta.resolve === 'function') {
-            return fileURLToPath(import.meta.resolve(import.meta.url));
-        }
-    } catch {
-        // Fallback for environments without import.meta.resolve (e.g., vitest)
-    }
-    // Fallback: use import.meta.url directly (always available in ESM)
-    return fileURLToPath(import.meta.url);
-})();
+// Export the absolute path to this loader file
+// import.meta.url provides the current module's URL (always available in ESM)
+export const vue3ServerRenderLoader = fileURLToPath(import.meta.url);
