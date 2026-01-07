@@ -3,7 +3,7 @@ import type { EsmxOptions } from '@esmx/core';
 
 export default {
     modules: {
-        exports: ['pkg:react']
+        exports: ['root:src/react-exports.ts']
     },
     async devApp(esmx) {
         return import('@esmx/rspack-react').then((m) =>

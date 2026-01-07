@@ -52,8 +52,12 @@ export function createRspackReactApp(
             // Note: React SSR doesn't need special loader like Vue
             // React components can be rendered directly with react-dom/server
 
-            // React aliases are handled automatically by Rspack
-            // No need to set explicit aliases
+            // React uses CommonJS, need to configure proper ESM interop
+            // This ensures react and react-dom are bundled with proper ESM exports
+            chain.resolve.set('fullySpecified', false);
+
+            // Configure module concatenation for better ESM output
+            chain.optimization.set('concatenateModules', true);
 
             // Define React environment
             if (buildTarget === 'client') {

@@ -4,24 +4,44 @@
         "moduleResolution": "node",
         "isolatedModules": true,
         "resolveJsonModule": true,
-        
         "target": "ESNext",
-        "lib": ["ESNext", "DOM"],
-        
+        "lib": [
+            "ESNext",
+            "DOM"
+        ],
         "strict": true,
         "skipLibCheck": true,
-        "types": ["@types/node"],
-        
+        "types": [
+            "@types/node",
+            "@types/react",
+            "@types/react-dom"
+        ],
         "jsx": "react-jsx",
         "allowSyntheticDefaultImports": true,
-        
         "baseUrl": ".",
         "paths": {
-            "{{projectName}}/src/*": ["./src/*"],
-            "{{projectName}}/*": ["./*"]
+            "{{projectName}}/src/*": [
+                "./src/*"
+            ],
+            "{{projectName}}/*": [
+                "./*"
+            ],
+            "react": [
+                "../../../../node_modules/.pnpm/react@18.3.1/node_modules/react"
+            ],
+            "react-dom": [
+                "../../../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom"
+            ],
+            "react-dom/*": [
+                "../../../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/*"
+            ]
         }
     },
-    "include": ["src"],
-    "exclude": ["dist", "node_modules"]
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "dist",
+        "node_modules"
+    ]
 }
-
