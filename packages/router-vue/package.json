@@ -62,7 +62,7 @@
         "vue": "3.5.23",
         "vue2": "npm:vue@2.7.16"
     },
-    "version": "3.0.0-rc.97",
+    "version": "3.0.0-rc.98",
     "type": "module",
     "private": false,
     "exports": {
