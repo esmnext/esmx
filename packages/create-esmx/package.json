@@ -1,6 +1,6 @@
 {
     "name": "create-esmx",
-    "version": "3.0.0-rc.103",
+    "version": "3.0.0-rc.104",
     "description": "A scaffold tool for creating Esmx projects",
     "type": "module",
     "private": false,
