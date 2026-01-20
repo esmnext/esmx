@@ -52,7 +52,7 @@ import { resolveComponent } from './util';
  *   return (
  *     <div>
  *       <h1>Users</h1>
- *       <RouterView /> {/- Renders UserProfile for /users/:id -/}
+ *       <RouterView /> // Renders UserProfile for /users/:id
  *     </div>
  *   );
  * }
@@ -102,11 +102,11 @@ export function RouterView({ fallback }: RouterViewProps): ReactElement | null {
         return null;
     }
 
-    // Provide incremented depth for nested RouterViews
-    return (
-        <RouterViewDepthContext.Provider value={depth + 1}>
-            <Component key={matchedRoute.compilePath} />
-        </RouterViewDepthContext.Provider>
+    // Provide incremented depth for nested RouterViews using createElement
+    return createElement(
+        RouterViewDepthContext.Provider,
+        { value: depth + 1 },
+        createElement(Component, { key: matchedRoute.compilePath })
     );
 }
 

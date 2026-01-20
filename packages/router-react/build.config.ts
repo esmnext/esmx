@@ -18,8 +18,7 @@ export default defineBuildConfig({
                     'safari11.1',
                     'edge79',
                     'node24'
-                ],
-                jsx: 'automatic'
+                ]
             }
         }
     ]

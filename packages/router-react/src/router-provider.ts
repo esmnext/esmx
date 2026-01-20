@@ -1,5 +1,5 @@
 import type { Route } from '@esmx/router';
-import { useCallback, useSyncExternalStore } from 'react';
+import { createElement, useCallback, useSyncExternalStore } from 'react';
 import { RouterContext } from './context';
 import type { RouterContextValue, RouterProviderProps } from './types';
 
@@ -47,7 +47,7 @@ import type { RouterContextValue, RouterProviderProps } from './types';
  * const router = new Router({
  *   routes,
  *   mode: RouterMode.history,
- *   url: serverUrl // Pass the request URL for SSR
+ *   base: new URL(serverUrl)
  * });
  *
  * function ServerApp() {
@@ -93,10 +93,11 @@ export function RouterProvider({
         route
     };
 
-    return (
-        <RouterContext.Provider value={contextValue}>
-            {children}
-        </RouterContext.Provider>
+    // Use createElement instead of JSX
+    return createElement(
+        RouterContext.Provider,
+        { value: contextValue },
+        children
     );
 }
 

@@ -24,12 +24,10 @@
         "skipLibCheck": true,
         "allowSyntheticDefaultImports": true,
         "forceConsistentCasingInFileNames": true,
-        "noEmit": true,
-        "jsx": "react-jsx"
+        "noEmit": true
     },
     "include": [
         "src/**/*.ts",
-        "src/**/*.tsx",
         "server",
         "test",
         "src",

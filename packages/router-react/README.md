@@ -35,7 +35,8 @@
 🚀 **TypeScript Ready** - Full TypeScript support with excellent DX  
 ⚡ **High Performance** - Uses `useSyncExternalStore` for optimal re-renders  
 🔄 **SSR Compatible** - Server-side rendering support out of the box  
-📦 **Lightweight** - Minimal bundle size with zero dependencies (except peer deps)
+📦 **Lightweight** - Minimal bundle size with zero dependencies (except peer deps)  
+🔧 **Pure TypeScript** - No JSX required, uses React.createElement for maximum compatibility
 
 ## 📦 Installation
 

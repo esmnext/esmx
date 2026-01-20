@@ -1,28 +1,53 @@
-import type { RouterLinkProps, RouterLinkResolved } from '@esmx/router';
+import type {
+    RouteLayerOptions,
+    RouteLocationInput,
+    RouteMatchType,
+    RouterLinkResolved,
+    RouterLinkType
+} from '@esmx/router';
 import {
+    type CSSProperties,
     createElement,
     type ElementType,
     forwardRef,
     type MouseEvent,
+    type ReactElement,
     type ReactNode,
+    type Ref,
     useCallback,
     useMemo
 } from 'react';
 import { useRouter } from './context';
 
 /**
- * Extended props for RouterLink component.
- * Combines RouterLinkProps from @esmx/router with React-specific props.
+ * Props for RouterLink component.
+ * Similar to RouterLinkProps from @esmx/router with React-specific additions.
  */
-export interface RouterLinkComponentProps extends RouterLinkProps {
+export interface RouterLinkComponentProps {
+    /** Target route location (required) */
+    to: RouteLocationInput;
+    /** Navigation type */
+    type?: RouterLinkType;
+    /** @deprecated Use type='replace' instead */
+    replace?: boolean;
+    /** Active matching mode */
+    exact?: RouteMatchType;
+    /** CSS class for active state */
+    activeClass?: string;
+    /** Event(s) that trigger navigation */
+    event?: string | string[];
+    /** HTML tag to render */
+    tag?: string;
+    /** Layer navigation options */
+    layerOptions?: RouteLayerOptions;
+    /** Hook function called before navigation */
+    beforeNavigate?: (event: Event, eventName: string) => void;
     /** Link content */
     children?: ReactNode;
     /** Additional CSS class name */
     className?: string;
     /** Inline styles */
-    style?: React.CSSProperties;
-    /** HTML anchor attributes (spread) */
-    [key: string]: any;
+    style?: CSSProperties;
 }
 
 /**
@@ -86,11 +111,11 @@ export interface RouterLinkComponentProps extends RouterLinkProps {
  * </RouterLink>
  * ```
  */
-export const RouterLink = forwardRef<
-    HTMLAnchorElement,
-    RouterLinkComponentProps
->(function RouterLink(
-    {
+function RouterLinkInner(
+    props: RouterLinkComponentProps & { [key: string]: any },
+    ref: Ref<HTMLAnchorElement>
+): ReactElement {
+    const {
         to,
         type = 'push',
         replace,
@@ -104,9 +129,8 @@ export const RouterLink = forwardRef<
         className,
         style,
         ...rest
-    },
-    ref
-) {
+    } = props;
+
     const router = useRouter();
 
     // Resolve the link using router's built-in resolver
@@ -183,6 +207,16 @@ export const RouterLink = forwardRef<
 
     // Render the element with the appropriate tag using createElement
     return createElement(tag as ElementType, elementProps, children);
-});
+}
+
+// Cast needed to fix TypeScript forwardRef type inference issue
+// This is a common pattern when index signatures conflict with forwardRef's prop handling
+export const RouterLink = forwardRef(
+    RouterLinkInner as any
+) as React.ForwardRefExoticComponent<
+    RouterLinkComponentProps & {
+        [key: string]: any;
+    } & React.RefAttributes<HTMLAnchorElement>
+>;
 
 RouterLink.displayName = 'RouterLink';
