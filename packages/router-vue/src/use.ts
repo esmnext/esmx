@@ -358,12 +358,26 @@ export function useRouterViewDepth(): number {
 }
 
 /**
- * Get injected RouterView depth from a Vue instance's ancestors.
- * Traverses parent chain to find the value provided under ROUTER_VIEW_DEPTH_KEY.
+ * Get the current RouterView depth in nested routing scenarios.
+ * Returns the depth of the current RouterView component in the component tree.
+ * Useful for advanced routing scenarios where you need to know the nesting level.
  *
  * @param instance - Vue component instance to start from
- * @returns Injected RouterView depth value from nearest ancestor
- * @throws {Error} If no ancestor provided ROUTER_VIEW_DEPTH_KEY
+ * @returns Current RouterView depth (0 for root level, 1 for first nested level, etc.)
+ *
+ * @example
+ * ```typescript
+ * // Options API usage
+ * import { defineComponent } from 'vue';
+ * import { getRouterViewDepth } from '@esmx/router-vue';
+ *
+ * export default defineComponent({
+ *   mounted() {
+ *     const depth = getRouterViewDepth(this);
+ *     console.log('Current RouterView depth:', depth); // 0, 1, 2, etc.
+ *   }
+ * });
+ * ```
  */
 export function getRouterViewDepth(instance: VueInstance): number {
     let current = instance.$parent;
@@ -372,9 +386,7 @@ export function getRouterViewDepth(instance: VueInstance): number {
         if (typeof value === 'number') return value;
         current = current.$parent;
     }
-    throw new Error(
-        '[@esmx/router-vue] RouterView depth not found. Please ensure a RouterView exists in ancestor components.'
-    );
+    return 0;
 }
 
 /**
