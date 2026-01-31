@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { Route } from '../src/route';
 import { Router } from '../src/router';
 import { RouterMode, RouteType } from '../src/types';
@@ -175,6 +175,61 @@ describe('Route Transition Tests', () => {
             expect(route.params.id).toBe('123');
             expect(route.query.tab).toBe('profile');
             expect(route.query.active).toBe('true');
+        });
+    });
+
+    describe('destroy', () => {
+        test('should throw error when to is called after destroy', async () => {
+            router.transition.destroy();
+
+            await expect(router.push('/user/123')).rejects.toThrow(
+                'RouteTransition has been destroyed'
+            );
+        });
+
+        test('should clear guards when destroyed', () => {
+            const beforeEachSpy = vi.fn();
+            const afterEachSpy = vi.fn();
+
+            router.beforeEach(beforeEachSpy);
+            router.afterEach(afterEachSpy);
+
+            expect(router.transition.guards.beforeEach).toHaveLength(1);
+            expect(router.transition.guards.afterEach).toHaveLength(1);
+
+            router.transition.destroy();
+
+            expect(router.transition.guards.beforeEach).toHaveLength(0);
+            expect(router.transition.guards.afterEach).toHaveLength(0);
+        });
+
+        test('should abort current controller when destroyed', async () => {
+            const guardRouter = new Router({
+                mode: RouterMode.memory,
+                base: new URL('http://localhost:3000/'),
+                routes: [
+                    { path: '/', component: () => 'Home' },
+                    {
+                        path: '/slow',
+                        component: () => 'Slow',
+                        async beforeEnter() {
+                            await new Promise((resolve) =>
+                                setTimeout(resolve, 100)
+                            );
+                        }
+                    }
+                ]
+            });
+
+            await guardRouter.replace('/');
+
+            const pushPromise = guardRouter.push('/slow');
+
+            guardRouter.transition.destroy();
+
+            await expect(pushPromise).rejects.toThrow();
+
+            guardRouter.destroy();
         });
     });
 });
