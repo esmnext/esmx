@@ -34,8 +34,12 @@ export class MicroApp {
     public app: RouterMicroAppOptions | null = null;
     public root: HTMLElement | null = null;
     private _factory: RouterMicroAppCallback | null = null;
+    private destroyed = false;
 
     public _update(router: Router, force = false) {
+        if (this.destroyed) {
+            return;
+        }
         const factory = this._getNextFactory(router);
         if (!force && factory === this._factory) {
             return;
@@ -97,5 +101,6 @@ export class MicroApp {
         this.root?.remove();
         this.root = null;
         this._factory = null;
+        this.destroyed = true;
     }
 }
