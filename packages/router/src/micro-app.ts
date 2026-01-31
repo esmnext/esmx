@@ -38,7 +38,7 @@ export class MicroApp {
 
     public _update(router: Router, force = false) {
         if (this.destroyed) {
-            return;
+            throw new Error('MicroApp has been destroyed');
         }
         const factory = this._getNextFactory(router);
         if (!force && factory === this._factory) {
