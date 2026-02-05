@@ -1,6 +1,6 @@
 ---
 titleSuffix: "App Core Application Interface"
-description: "Detailed introduction to Esmx framework's App interface, including application lifecycle management, static resource handling, and Server-Side Rendering functionality, helping developers understand and use the core application features."
+description: "Detailed introduction to Esmx framework's App interface, including application lifecycle management, static resource handling, and Server-Side Rendering functionality, helping developers understand and use core application features."
 head:
   - - "meta"
     - name: "keywords"

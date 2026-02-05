@@ -56,7 +56,7 @@ interface ManifestJson {
 type ManifestJsonExports = Record<string, ManifestJsonExport>;
 ```
 
-Export item configuration mapping, where the key is the export path and the value is the export item information.
+An export item configuration mapping, where the key is the export path and the value is the export item information.
 
 ### ManifestJsonExport
 
@@ -95,7 +95,7 @@ interface ManifestJsonExport {
 type ManifestJsonChunks = Record<string, ManifestJsonChunk>;
 ```
 
-Compiled file information mapping, where the key is the source file and the value is the compilation information.
+A compiled file information mapping, where the key is the source file and the value is the compilation information.
 
 ### ManifestJsonChunk
 
