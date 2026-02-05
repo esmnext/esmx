@@ -97,6 +97,7 @@ type ImportmapMode = 'inline' | 'js';
   - Multiple pages sharing the same importmap
 
 Rendering context class, responsible for resource management and HTML generation in the Server-Side Rendering (SSR) process.
+
 ## Instance Options
 
 Defines configuration options for rendering context.
@@ -356,10 +357,10 @@ const html = await renderToString(app, {
 - **Type**: `RenderFiles`
 
 Resource file list:
-- js: JavaScript file list
-- css: Stylesheet file list
-- modulepreload: ESM module list that needs preloading
-- resources: Other resource file list (images, fonts, etc.)
+- **js**: JavaScript file list
+- **css**: Stylesheet file list
+- **modulepreload**: ESM module list that needs preloading
+- **resources**: Other resource file list (images, fonts, etc.)
 
 ```ts
 await rc.commit();
