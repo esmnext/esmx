@@ -45,10 +45,8 @@ When the user navigates from `/` to `/dashboard`, the router unmounts the React 
 
 ### Two Routing Modes
 
-| Mode | Description | Use Case |
-|------|-------------|----------|
-| `RouterMode.history` | Uses the browser's History API (`pushState`, `popstate`) | Standard web applications |
-| `RouterMode.memory` | Keeps state entirely in memory, no URL changes | SSR, layer routing, testing |
+- `RouterMode.history`: Uses the browser's History API (`pushState`, `popstate`) for standard web applications
+- `RouterMode.memory`: Keeps state entirely in memory with no URL changes, for SSR, layer routing, and testing
 
 ### Server-Side Rendering (SSR)
 

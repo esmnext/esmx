@@ -13,6 +13,7 @@ head:
 
 ## Type Definition
 
+- **Type Definition**:
 ```ts
 interface RouteConfig {
   path: string;
@@ -32,15 +33,11 @@ interface RouteConfig {
 
 ## Properties
 
-### path {#path}
+### path
 
-```ts
-path: string;
-```
+- **Type**: `string`
 
 **Required.** URL-encoded path pattern. Supports static segments and dynamic parameters via [`path-to-regexp`](https://github.com/pillarjs/path-to-regexp) syntax.
-
-#### Example
 
 ```ts
 // Static path
@@ -61,18 +58,14 @@ path: string;
 
 #### Parameter Types
 
-| Pattern | Example URL | Params |
-|---------|-------------|--------|
-| `/user/:id` | `/user/42` | `{ id: '42' }` |
-| `/post/:id?` | `/post` | `{ id: '' }` |
-| `/files/:path*` | `/files/a/b/c` | `{ path: ['a', 'b', 'c'] }` |
-| `/:lang/docs/:page` | `/en/docs/intro` | `{ lang: 'en', page: 'intro' }` |
+- `/user/:id` — e.g. `/user/42` → `{ id: '42' }`
+- `/post/:id?` — e.g. `/post` → `{ id: '' }`
+- `/files/:path*` — e.g. `/files/a/b/c` → `{ path: ['a', 'b', 'c'] }`
+- `/:lang/docs/:page` — e.g. `/en/docs/intro` → `{ lang: 'en', page: 'intro' }`
 
-### component {#component}
+### component
 
-```ts
-optional component: unknown;
-```
+- **Type**: `unknown`
 
 The component to render when this route is matched. The type depends on the framework being used (React component, Vue component, etc.).
 
@@ -80,15 +73,11 @@ The component to render when this route is matched. The type depends on the fram
 { path: '/home', component: HomePage }
 ```
 
-### children {#children}
+### children
 
-```ts
-optional children: RouteConfig[];
-```
+- **Type**: `RouteConfig[]`
 
 Nested child routes. Child paths are resolved relative to the parent.
-
-#### Example
 
 ```ts
 {
@@ -102,15 +91,11 @@ Nested child routes. Child paths are resolved relative to the parent.
 }
 ```
 
-### redirect {#redirect}
+### redirect
 
-```ts
-optional redirect: RouteLocationInput | RouteConfirmHook;
-```
+- **Type**: `RouteLocationInput | RouteConfirmHook`
 
 Redirect to another route when this route is matched. Can be a static target (string or object) or a function for conditional redirects.
-
-#### Example
 
 ```ts
 // Static redirect
@@ -129,15 +114,11 @@ Redirect to another route when this route is matched. Can be a static target (st
 }
 ```
 
-### meta {#meta}
+### meta
 
-```ts
-optional meta: RouteMeta;
-```
+- **Type**: `RouteMeta`
 
 Custom metadata attached to the route. Accessible via `route.meta` in guards and components. Type: `Record<string | symbol, unknown>`.
-
-#### Example
 
 ```ts
 {
@@ -151,15 +132,11 @@ Custom metadata attached to the route. Accessible via `route.meta` in guards and
 }
 ```
 
-### app {#app}
+### app
 
-```ts
-optional app: string | RouterMicroAppCallback;
-```
+- **Type**: `string | RouterMicroAppCallback`
 
 Binds this route (and its children) to a [micro-app](./micro-app). When a `string` is provided, it looks up the app in [`RouterOptions.apps`](./router#apps). When a function is provided, it is used directly as the factory.
-
-#### Example
 
 ```ts
 // String key (looked up in router.options.apps)
@@ -182,15 +159,11 @@ Binds this route (and its children) to a [micro-app](./micro-app). When a `strin
 }
 ```
 
-### asyncComponent {#asynccomponent}
+### asyncComponent
 
-```ts
-optional asyncComponent: () => Promise<unknown>;
-```
+- **Type**: `() => Promise<unknown>`
 
 Lazy-load a component. The component is fetched only when the route is first matched. Once loaded, it replaces the `component` property.
-
-#### Example
 
 ```ts
 {
@@ -199,15 +172,11 @@ Lazy-load a component. The component is fetched only when the route is first mat
 }
 ```
 
-### beforeEnter {#beforeenter}
+### beforeEnter
 
-```ts
-optional beforeEnter: RouteConfirmHook;
-```
+- **Type**: `RouteConfirmHook`
 
 Guard called before entering this route. Only fires when the route is being entered from a different route (not when the route is reused with different params).
-
-#### Example
 
 ```ts
 {
@@ -218,15 +187,11 @@ Guard called before entering this route. Only fires when the route is being ente
 }
 ```
 
-### beforeUpdate {#beforeupdate}
+### beforeUpdate
 
-```ts
-optional beforeUpdate: RouteConfirmHook;
-```
+- **Type**: `RouteConfirmHook`
 
 Guard called when the route is reused but params change. For example, navigating from `/user/1` to `/user/2`. Only fires when the same route config is matched but with different parameters.
-
-#### Example
 
 ```ts
 {
@@ -237,15 +202,11 @@ Guard called when the route is reused but params change. For example, navigating
 }
 ```
 
-### beforeLeave {#beforeleave}
+### beforeLeave
 
-```ts
-optional beforeLeave: RouteConfirmHook;
-```
+- **Type**: `RouteConfirmHook`
 
 Guard called before leaving this route. Return `false` to prevent navigation. Useful for preventing navigation when there are unsaved changes.
-
-#### Example
 
 ```ts
 {
@@ -259,15 +220,11 @@ Guard called before leaving this route. Return `false` to prevent navigation. Us
 }
 ```
 
-### layer {#layer}
+### layer
 
-```ts
-optional layer: boolean;
-```
+- **Type**: `boolean`
 
 Mark this route as layer-only (`true`) or non-layer-only (`false`). Layer routes are only matched when using [`pushLayer()`](./router#pushlayer) navigation.
-
-#### Example
 
 ```ts
 // Only matches in pushLayer() context
@@ -278,15 +235,11 @@ Mark this route as layer-only (`true`) or non-layer-only (`false`). Layer routes
 }
 ```
 
-### override {#override}
+### override
 
-```ts
-optional override: RouteConfirmHook;
-```
+- **Type**: `RouteConfirmHook`
 
 Route override function for hybrid app development. Allows intercepting navigation to handle it externally (e.g., native app bridges). **Not executed** during initial route loading.
-
-#### Example
 
 ```ts
 {

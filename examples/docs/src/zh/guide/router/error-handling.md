@@ -27,14 +27,12 @@ class RouteError extends Error {
 }
 ```
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `message` | `string` | Human-readable error description |
-| `code` | `string` | Machine-readable error code |
-| `to` | `Route` | Target route that was being navigated to |
-| `from` | `Route \| null` | Route that was being navigated from (`null` on initial navigation) |
+- **`message`**: `string` — Human-readable error description
+- **`code`**: `string` — Machine-readable error code
+- **`to`**: `Route` — Target route that was being navigated to
+- **`from`**: `Route | null` — Route that was being navigated from (`null` on initial navigation)
 
-### RouteTaskCancelledError {#task-cancelled}
+### RouteTaskCancelledError
 
 **Code:** `ROUTE_TASK_CANCELLED`
 
@@ -49,9 +47,7 @@ router.push('/page-3'); // → completes successfully
 
 This error has an additional property:
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `taskName` | `string` | Name of the guard/task that was running when cancelled |
+- **`taskName`**: `string` — Name of the guard/task that was running when cancelled
 
 In most cases, you can safely ignore this error — it simply means the user changed their mind:
 
@@ -60,14 +56,13 @@ try {
   await router.push('/slow-page');
 } catch (error) {
   if (error instanceof RouteTaskCancelledError) {
-    // Normal — user navigated somewhere else. Do nothing.
     return;
   }
   throw error;
 }
 ```
 
-### RouteTaskExecutionError {#task-execution}
+### RouteTaskExecutionError
 
 **Code:** `ROUTE_TASK_EXECUTION_ERROR`
 
@@ -76,22 +71,20 @@ Thrown when a guard or async component **throws an error** during execution:
 ```ts
 // A guard that throws
 router.beforeEach(async (to) => {
-  const user = await fetchUser(); // network error!
+  const user = await fetchUser();
 });
 
 // An async component that fails to load
 {
   path: '/dashboard',
-  asyncComponent: () => import('./Dashboard') // module not found!
+  asyncComponent: () => import('./Dashboard')
 }
 ```
 
 This error wraps the original error and provides access to it:
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `taskName` | `string` | Name of the guard/task that threw |
-| `originalError` | `Error` | The original error that was thrown |
+- **`taskName`**: `string` — Name of the guard/task that threw
+- **`originalError`**: `Error` — The original error that was thrown
 
 ```ts
 try {
@@ -104,7 +97,7 @@ try {
 }
 ```
 
-### RouteNavigationAbortedError {#navigation-aborted}
+### RouteNavigationAbortedError
 
 **Code:** `ROUTE_NAVIGATION_ABORTED`
 
@@ -116,15 +109,13 @@ Thrown when a navigation guard explicitly **returns `false`** to block the navig
   beforeLeave: (to, from, router) => {
     if (hasUnsavedChanges()) {
       const confirmed = confirm('Discard changes?');
-      if (!confirmed) return false; // ← triggers RouteNavigationAbortedError
+      if (!confirmed) return false;
     }
   }
 }
 ```
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `taskName` | `string` | Name of the guard that aborted navigation |
+- **`taskName`**: `string` — Name of the guard that aborted navigation
 
 ```ts
 try {
@@ -137,20 +128,16 @@ try {
 }
 ```
 
-### RouteSelfRedirectionError {#self-redirection}
+### RouteSelfRedirectionError
 
 **Code:** `ROUTE_SELF_REDIRECTION`
 
 Thrown when a guard causes an **infinite redirect loop** — redirecting to the same route that's already being navigated to:
 
 ```ts
-// This would cause an infinite loop without protection:
 router.beforeEach((to) => {
-  // Always redirects to /login, even when already going to /login!
   if (!isLoggedIn()) return '/login';
 });
-
-// The router detects this and throws RouteSelfRedirectionError
 ```
 
 The fix is to check the target route before redirecting:
@@ -174,15 +161,12 @@ try {
   await router.push('/protected-page');
 } catch (error) {
   if (error instanceof RouteNavigationAbortedError) {
-    // Guard returned false — navigation blocked
     showNotification('You need permission to access this page');
   } else if (error instanceof RouteTaskCancelledError) {
     // Another navigation started — ignore silently
   } else if (error instanceof RouteTaskExecutionError) {
-    // A guard or async component threw
     showError(`Navigation failed: ${error.originalError.message}`);
   } else if (error instanceof RouteSelfRedirectionError) {
-    // Redirect loop detected
     console.error('Redirect loop:', error.message);
   }
 }
@@ -193,19 +177,15 @@ try {
 You can check errors by `instanceof` or by their `code` property:
 
 ```ts
-// Using instanceof (recommended)
 if (error instanceof RouteTaskCancelledError) { /* ... */ }
 
-// Using error code
 if (error instanceof RouteError && error.code === 'ROUTE_TASK_CANCELLED') { /* ... */ }
 ```
 
-| Error Class | Code |
-|-------------|------|
-| `RouteTaskCancelledError` | `ROUTE_TASK_CANCELLED` |
-| `RouteTaskExecutionError` | `ROUTE_TASK_EXECUTION_ERROR` |
-| `RouteNavigationAbortedError` | `ROUTE_NAVIGATION_ABORTED` |
-| `RouteSelfRedirectionError` | `ROUTE_SELF_REDIRECTION` |
+- `RouteTaskCancelledError`: `ROUTE_TASK_CANCELLED`
+- `RouteTaskExecutionError`: `ROUTE_TASK_EXECUTION_ERROR`
+- `RouteNavigationAbortedError`: `ROUTE_NAVIGATION_ABORTED`
+- `RouteSelfRedirectionError`: `ROUTE_SELF_REDIRECTION`
 
 ## Best Practices
 
@@ -237,7 +217,7 @@ async function safeNavigate(to: string) {
     return await router.push(to);
   } catch (error) {
     if (error instanceof RouteTaskCancelledError) {
-      return null; // silently ignore
+      return null;
     }
     throw error;
   }
@@ -289,7 +269,6 @@ If your async components can fail (network issues, deployment changes), handle t
       return await import('./Dashboard.vue');
     } catch (error) {
       console.error('Failed to load Dashboard:', error);
-      // Return a fallback component instead of crashing
       return import('./ErrorPage.vue');
     }
   }
@@ -337,7 +316,6 @@ async function navigate(to: string): Promise<void> {
     await router.push(to);
   } catch (error) {
     if (error instanceof RouteTaskCancelledError) {
-      // Superseded by newer navigation — ignore
       return;
     }
 
@@ -348,7 +326,6 @@ async function navigate(to: string): Promise<void> {
 
     if (error instanceof RouteTaskExecutionError) {
       showToast(`Navigation failed: ${error.originalError.message}`);
-      // Try to navigate to an error page
       await router.replace('/error').catch(() => {});
       return;
     }

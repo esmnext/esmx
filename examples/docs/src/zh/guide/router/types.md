@@ -13,8 +13,9 @@ Complete TypeScript type reference for `@esmx/router`.
 
 ## Enums
 
-### RouterMode {#routermode}
+### RouterMode
 
+- **Type Definition**:
 ```ts
 enum RouterMode {
   history = 'history',
@@ -22,15 +23,14 @@ enum RouterMode {
 }
 ```
 
-| Value | Description |
-|-------|-------------|
-| `history` | Uses browser History API, URL changes visible in address bar |
-| `memory` | In-memory stack, no URL changes. For SSR, testing, and [layers](./layer) |
+- `history`: Uses browser History API, URL changes visible in address bar
+- `memory`: In-memory stack, no URL changes. For SSR, testing, and [layers](./layer)
 
-### RouteType {#routetype}
+### RouteType
 
 How a route transition was initiated.
 
+- **Type Definition**:
 ```ts
 enum RouteType {
   push = 'push',
@@ -48,54 +48,58 @@ enum RouteType {
 
 ## Utility Types
 
-### Awaitable {#awaitable}
+### Awaitable
 
+- **Type Definition**:
 ```ts
 type Awaitable<T> = T | Promise<T>;
 ```
 
 A value that can be either synchronous or a Promise.
 
-### RouteMeta {#routemeta}
+### RouteMeta
 
+- **Type Definition**:
 ```ts
 type RouteMeta = Record<string | symbol, unknown>;
 ```
 
 Custom metadata attached to route configs. Accessible via [`route.meta`](./route#meta).
 
-### RouteState {#routestate}
+### RouteState
 
+- **Type Definition**:
 ```ts
 type RouteState = Record<string, unknown>;
 ```
 
 State data associated with a navigation entry. Accessible via [`route.state`](./route#state).
 
-### RouteHandleResult {#routehandleresult}
+### RouteHandleResult
 
+- **Type Definition**:
 ```ts
 type RouteHandleResult = unknown | null | void;
 ```
 
-### RouteMatchType {#routematchtype}
+### RouteMatchType
 
+- **Type Definition**:
 ```ts
 type RouteMatchType = 'route' | 'exact' | 'include';
 ```
 
-| Value | Match behavior |
-|-------|---------------|
-| `'route'` | Same route configuration reference |
-| `'exact'` | Paths are identical |
-| `'include'` | Current path starts with target path |
+- `'route'`: Same route configuration reference
+- `'exact'`: Paths are identical
+- `'include'`: Current path starts with target path
 
 ## Hook Types
 
-### RouteConfirmHook {#routeconfirmhook}
+### RouteConfirmHook
 
 Guard hook that can modify navigation flow.
 
+- **Type Definition**:
 ```ts
 type RouteConfirmHook = (
   to: Route,
@@ -104,8 +108,9 @@ type RouteConfirmHook = (
 ) => Awaitable<RouteConfirmHookResult>;
 ```
 
-### RouteConfirmHookResult {#routeconfirmhookresult}
+### RouteConfirmHookResult
 
+- **Type Definition**:
 ```ts
 type RouteConfirmHookResult =
   | void              // Continue navigation
@@ -114,8 +119,9 @@ type RouteConfirmHookResult =
   | RouteHandleHook;   // Custom handler
 ```
 
-### RouteHandleHook {#routehandlehook}
+### RouteHandleHook
 
+- **Type Definition**:
 ```ts
 type RouteHandleHook = (
   to: Route,
@@ -124,8 +130,9 @@ type RouteHandleHook = (
 ) => Awaitable<RouteHandleResult>;
 ```
 
-### RouteVerifyHook {#routeverifyhook}
+### RouteVerifyHook
 
+- **Type Definition**:
 ```ts
 type RouteVerifyHook = (
   to: Route,
@@ -136,10 +143,11 @@ type RouteVerifyHook = (
 
 Used by [`RouteLayerOptions.keepAlive`](./layer#keepalive) to determine if a layer should stay open.
 
-### RouteNotifyHook {#routenotifyhook}
+### RouteNotifyHook
 
 Post-navigation hook. Cannot modify navigation — for side effects only.
 
+- **Type Definition**:
 ```ts
 type RouteNotifyHook = (
   to: Route,
@@ -150,8 +158,9 @@ type RouteNotifyHook = (
 
 ## Route Location Types
 
-### RouteLocation {#routelocation}
+### RouteLocation
 
+- **Type Definition**:
 ```ts
 interface RouteLocation {
   path?: string;
@@ -168,22 +177,21 @@ interface RouteLocation {
 }
 ```
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `path` | `string` | URL path |
-| `url` | `string \| URL` | Full URL (alternative to `path`) |
-| `params` | `Record<string, string>` | Route parameters |
-| `query` | `Record<string, string \| undefined>` | Query parameters |
-| `queryArray` | `Record<string, string[] \| undefined>` | Query parameters (array form) |
-| `hash` | `string` | URL hash |
-| `state` | `RouteState` | Arbitrary state data |
-| `keepScrollPosition` | `boolean` | Maintain scroll position after navigation |
-| `statusCode` | `number \| null` | HTTP status code (SSR) |
-| `layer` | `RouteLayerOptions \| null` | [Layer options](./layer#routelayeroptions) |
-| `confirm` | `RouteConfirmHook \| null` | Per-navigation confirm hook |
+- `path`: URL path
+- `url`: Full URL (alternative to `path`)
+- `params`: Route parameters
+- `query`: Query parameters
+- `queryArray`: Query parameters (array form)
+- `hash`: URL hash
+- `state`: Arbitrary state data
+- `keepScrollPosition`: Maintain scroll position after navigation
+- `statusCode`: HTTP status code (SSR)
+- `layer`: [Layer options](./layer#routelayeroptions)
+- `confirm`: Per-navigation confirm hook
 
-### RouteLocationInput {#routelocationinput}
+### RouteLocationInput
 
+- **Type Definition**:
 ```ts
 type RouteLocationInput = RouteLocation | string;
 ```
@@ -192,10 +200,11 @@ A route location can be specified as either a string path or a [`RouteLocation`]
 
 ## Route Config Types
 
-### RouteConfig {#routeconfig}
+### RouteConfig
 
 See [Route Config](./route-config) for full details.
 
+- **Type Definition**:
 ```ts
 interface RouteConfig {
   path: string;
@@ -213,10 +222,11 @@ interface RouteConfig {
 }
 ```
 
-### RouteParsedConfig {#routeparsedconfig}
+### RouteParsedConfig
 
 Compiled route config with matcher functions. Extends `RouteConfig` with internal matching data.
 
+- **Type Definition**:
 ```ts
 interface RouteParsedConfig extends RouteConfig {
   compilePath: string;
@@ -226,8 +236,9 @@ interface RouteParsedConfig extends RouteConfig {
 }
 ```
 
-### RouteMatchResult {#routematchresult}
+### RouteMatchResult
 
+- **Type Definition**:
 ```ts
 interface RouteMatchResult {
   readonly matches: readonly RouteParsedConfig[];
@@ -235,8 +246,9 @@ interface RouteMatchResult {
 }
 ```
 
-### RouteMatcher {#routematcher}
+### RouteMatcher
 
+- **Type Definition**:
 ```ts
 type RouteMatcher = (
   to: URL,
@@ -247,10 +259,11 @@ type RouteMatcher = (
 
 Function used internally for route matching. The optional `cb` callback can filter route configs (e.g., to exclude layer-only routes).
 
-### RouteOptions {#routeoptions}
+### RouteOptions
 
 Constructor options for creating a Route object (primarily internal use).
 
+- **Type Definition**:
 ```ts
 interface RouteOptions {
   options?: RouterParsedOptions;
@@ -262,8 +275,9 @@ interface RouteOptions {
 
 ## MicroApp Types
 
-### RouterMicroAppOptions {#routermicroappoptions}
+### RouterMicroAppOptions
 
+- **Type Definition**:
 ```ts
 interface RouterMicroAppOptions {
   mount: (el: HTMLElement) => void;
@@ -274,14 +288,16 @@ interface RouterMicroAppOptions {
 
 See [MicroApp](./micro-app) for full details.
 
-### RouterMicroAppCallback {#routermicroappcallback}
+### RouterMicroAppCallback
 
+- **Type Definition**:
 ```ts
 type RouterMicroAppCallback = (router: Router) => RouterMicroAppOptions;
 ```
 
-### RouterMicroApp {#routermicroapp}
+### RouterMicroApp
 
+- **Type Definition**:
 ```ts
 type RouterMicroApp =
   | Record<string, RouterMicroAppCallback | undefined>
@@ -290,12 +306,13 @@ type RouterMicroApp =
 
 ## Router Options Types
 
-### RouterOptions {#routeroptions}
+### RouterOptions
 
 See [Router](./router#routeroptions) for full details.
 
-### RouterParsedOptions {#routerparsedoptions}
+### RouterParsedOptions
 
+- **Type Definition**:
 ```ts
 interface RouterParsedOptions extends Readonly<Required<RouterOptions>> {
   readonly compiledRoutes: readonly RouteParsedConfig[];
@@ -305,10 +322,11 @@ interface RouterParsedOptions extends Readonly<Required<RouterOptions>> {
 
 ## Layer Types
 
-### RouteLayerOptions {#routelayeroptions}
+### RouteLayerOptions
 
 See [Layer](./layer#routelayeroptions) for full details.
 
+- **Type Definition**:
 ```ts
 interface RouteLayerOptions {
   zIndex?: number;
@@ -319,8 +337,9 @@ interface RouteLayerOptions {
 }
 ```
 
-### RouteLayerResult {#routelayerresult}
+### RouteLayerResult
 
+- **Type Definition**:
 ```ts
 type RouteLayerResult =
   | { type: 'close'; route: Route }
@@ -328,14 +347,13 @@ type RouteLayerResult =
   | { type: 'success'; route: Route; data?: any };
 ```
 
-| Type | Description |
-|------|-------------|
-| `close` | Layer was dismissed |
-| `push` | Layer closed because user navigated to a non-layer route |
-| `success` | Layer was closed with data via `closeLayer(data)` |
+- `close`: Layer was dismissed
+- `push`: Layer closed because user navigated to a non-layer route
+- `success`: Layer was closed with data via `closeLayer(data)`
 
-### RouterLayerOptions {#routerlayeroptions}
+### RouterLayerOptions
 
+- **Type Definition**:
 ```ts
 type RouterLayerOptions = Omit<
   RouterOptions,
@@ -345,8 +363,9 @@ type RouterLayerOptions = Omit<
 
 ## RouterLink Types
 
-### RouterLinkType {#routerlinktype}
+### RouterLinkType
 
+- **Type Definition**:
 ```ts
 type RouterLinkType =
   | 'push'
@@ -356,10 +375,11 @@ type RouterLinkType =
   | 'pushLayer';
 ```
 
-### RouterLinkProps {#routerlinkprops}
+### RouterLinkProps
 
 See [RouterLink](./router-link#routerlinkprops) for full details.
 
+- **Type Definition**:
 ```ts
 interface RouterLinkProps {
   to: RouteLocationInput;
@@ -374,8 +394,9 @@ interface RouterLinkProps {
 }
 ```
 
-### RouterLinkAttributes {#routerlinkattributes}
+### RouterLinkAttributes
 
+- **Type Definition**:
 ```ts
 interface RouterLinkAttributes {
   href: string;
@@ -385,10 +406,11 @@ interface RouterLinkAttributes {
 }
 ```
 
-### RouterLinkResolved {#routerlinkresolved}
+### RouterLinkResolved
 
 See [RouterLink](./router-link#routerlinkresolved) for full details.
 
+- **Type Definition**:
 ```ts
 interface RouterLinkResolved {
   route: Route;
@@ -409,8 +431,9 @@ interface RouterLinkResolved {
 
 All error types extend `RouteError`.
 
-### RouteError {#routeerror}
+### RouteError
 
+- **Type Definition**:
 ```ts
 class RouteError extends Error {
   readonly code: string;
@@ -421,8 +444,9 @@ class RouteError extends Error {
 
 Base error class for all routing errors.
 
-### RouteNavigationAbortedError {#routenavigationabortederror}
+### RouteNavigationAbortedError
 
+- **Type Definition**:
 ```ts
 class RouteNavigationAbortedError extends RouteError {
   readonly taskName: string;
@@ -431,16 +455,18 @@ class RouteNavigationAbortedError extends RouteError {
 
 Thrown when navigation is cancelled by a guard returning `false`. Error code: `'ROUTE_NAVIGATION_ABORTED'`.
 
-### RouteSelfRedirectionError {#routeselfredirecirectionerror}
+### RouteSelfRedirectionError
 
+- **Type Definition**:
 ```ts
 class RouteSelfRedirectionError extends RouteError {}
 ```
 
 Thrown when a redirect loop is detected (redirect to the same route). Error code: `'ROUTE_SELF_REDIRECTION'`.
 
-### RouteTaskCancelledError {#routetaskcancellederror}
+### RouteTaskCancelledError
 
+- **Type Definition**:
 ```ts
 class RouteTaskCancelledError extends RouteError {
   readonly taskName: string;
@@ -449,8 +475,9 @@ class RouteTaskCancelledError extends RouteError {
 
 Thrown when a navigation task is cancelled by a newer navigation. Error code: `'ROUTE_TASK_CANCELLED'`.
 
-### RouteTaskExecutionError {#routetaskexecutionerror}
+### RouteTaskExecutionError
 
+- **Type Definition**:
 ```ts
 class RouteTaskExecutionError extends RouteError {
   readonly taskName: string;
@@ -462,9 +489,7 @@ Thrown when a guard throws an error during execution. Error code: `'ROUTE_TASK_E
 
 ## Deprecated Types
 
-| Old Type | Replacement |
-|----------|-------------|
-| `RouterInstance` | `Router` |
-| `RouterRawLocation` | `RouteLocationInput` |
-| `RouterLocation` | `RouteLocation` |
-| `RouteRecord` | `Route` |
+- `RouterInstance`: Use `Router` instead
+- `RouterRawLocation`: Use `RouteLocationInput` instead
+- `RouterLocation`: Use `RouteLocation` instead
+- `RouteRecord`: Use `Route` instead

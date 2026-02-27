@@ -46,8 +46,7 @@ const routes: RouteConfig[] = [
 
 The `Layout` component uses `RouterView` to render whichever child route is matched:
 
-```vue
-<!-- Layout.vue -->
+```vue title="src/Layout.vue"
 <template>
   <div class="layout">
     <nav>
@@ -57,7 +56,6 @@ The `Layout` component uses `RouterView` to render whichever child route is matc
     </nav>
 
     <main>
-      <!-- Child route component renders here -->
       <RouterView />
     </main>
   </div>
@@ -153,22 +151,20 @@ AppLayout                      ← matched[0], rendered by RouterView at depth 0
 
 Each layout component contains a `RouterView` that renders the next level:
 
-```vue
-<!-- UsersLayout.vue -->
+```vue title="src/UsersLayout.vue"
 <template>
   <div class="users-layout">
     <h1>Users</h1>
-    <RouterView />  <!-- renders UserList or UserDetailLayout -->
+    <RouterView />
   </div>
 </template>
 ```
 
-```vue
-<!-- UserDetailLayout.vue -->
+```vue title="src/UserDetailLayout.vue"
 <template>
   <div class="user-detail">
     <UserSidebar />
-    <RouterView />  <!-- renders UserProfile or UserPosts -->
+    <RouterView />
   </div>
 </template>
 ```
@@ -188,12 +184,10 @@ console.log('Current RouterView depth:', depth); // 0, 1, 2, etc.
 </script>
 ```
 
-| Depth | What it renders | Example |
-|-------|----------------|---------|
-| 0 | `route.matched[0].component` | Root layout |
-| 1 | `route.matched[1].component` | Section layout |
-| 2 | `route.matched[2].component` | Page component |
-| 3 | `route.matched[3].component` | Sub-page component |
+- Depth `0`: Renders `route.matched[0].component` (root layout)
+- Depth `1`: Renders `route.matched[1].component` (section layout)
+- Depth `2`: Renders `route.matched[2].component` (page component)
+- Depth `3`: Renders `route.matched[3].component` (sub-page component)
 
 This is handled automatically — you rarely need to interact with depth directly. It's exposed mainly for advanced use cases like building custom `RouterView` implementations.
 
@@ -203,8 +197,7 @@ Here's a full example with a three-level layout structure:
 
 ### Route Configuration
 
-```ts
-// routes.ts
+```ts title="src/routes.ts"
 import type { RouteConfig } from '@esmx/router';
 
 export const routes: RouteConfig[] = [
@@ -236,8 +229,7 @@ export const routes: RouteConfig[] = [
 
 ### Layout Components
 
-```vue
-<!-- MainLayout.vue -->
+```vue title="src/MainLayout.vue"
 <template>
   <div class="app">
     <header>
@@ -253,8 +245,7 @@ export const routes: RouteConfig[] = [
 </template>
 ```
 
-```vue
-<!-- UsersSection.vue -->
+```vue title="src/UsersSection.vue"
 <template>
   <div class="users-section">
     <aside>
@@ -269,8 +260,7 @@ export const routes: RouteConfig[] = [
 </template>
 ```
 
-```vue
-<!-- UserProfile.vue -->
+```vue title="src/UserProfile.vue"
 <template>
   <div class="user-profile">
     <h2>User {{ route.params.id }}</h2>

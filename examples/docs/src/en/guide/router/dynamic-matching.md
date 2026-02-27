@@ -143,10 +143,8 @@ route.query.tag           // 'frontend'
 route.queryArray.tag      // ['frontend', 'ssr']
 ```
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `route.query` | `Record<string, string \| undefined>` | First value for each query key |
-| `route.queryArray` | `Record<string, string[] \| undefined>` | All values for each query key |
+- **`route.query`**: `Record<string, string | undefined>` — First value for each query key
+- **`route.queryArray`**: `Record<string, string[] | undefined>` — All values for each query key
 
 ## Hash
 

@@ -13,10 +13,11 @@ Navigation guards are hooks that intercept route transitions. They can redirect,
 
 ## Guard Types
 
-### RouteConfirmHook {#routeconfirmhook}
+### RouteConfirmHook
 
-Guards that can modify navigation flow.
+Guard hook that can modify navigation flow.
 
+- **Type Definition**:
 ```ts
 type RouteConfirmHook = (
   to: Route,
@@ -27,18 +28,17 @@ type RouteConfirmHook = (
 
 #### Return Values
 
-| Return | Effect |
-|--------|--------|
-| `void` / `undefined` | Continue to next guard |
-| `false` | Cancel navigation |
-| `string` | Redirect to that path |
-| `RouteLocationInput` | Redirect to that location |
-| `RouteHandleHook` | Execute as the final handler |
+- `void` / `undefined`: Continue to next guard
+- `false`: Cancel navigation
+- `string`: Redirect to that path
+- `RouteLocationInput`: Redirect to that location
+- `RouteHandleHook`: Execute as the final handler
 
-### RouteNotifyHook {#routenotifyhook}
+### RouteNotifyHook
 
-Post-navigation hooks. Cannot modify navigation — for side effects only.
+Post-navigation hook. Cannot modify navigation — for side effects only.
 
+- **Type Definition**:
 ```ts
 type RouteNotifyHook = (
   to: Route,
@@ -49,7 +49,7 @@ type RouteNotifyHook = (
 
 ## Global Guards
 
-### beforeEach {#beforeeach}
+### beforeEach
 
 Registered on the router instance. Runs before every navigation. Returns a function that removes the registered guard.
 
@@ -65,7 +65,7 @@ const remove = router.beforeEach((to, from, router) => {
 remove();
 ```
 
-### afterEach {#aftereach}
+### afterEach
 
 Runs after every completed navigation. Cannot affect navigation.
 
@@ -80,7 +80,7 @@ router.afterEach((to, from) => {
 
 Defined directly on [`RouteConfig`](./route-config).
 
-### beforeEnter {#beforeenter}
+### beforeEnter
 
 Called when entering a route **from a different route**. Not called if the user is already on this route (use `beforeUpdate` for same-route param changes).
 
@@ -95,7 +95,7 @@ Called when entering a route **from a different route**. Not called if the user 
 }
 ```
 
-### beforeUpdate {#beforeupdate}
+### beforeUpdate
 
 Called when the **same route** is reused but parameters change. For example, navigating from `/user/1` to `/user/2`.
 
@@ -108,7 +108,7 @@ Called when the **same route** is reused but parameters change. For example, nav
 }
 ```
 
-### beforeLeave {#beforeleave}
+### beforeLeave
 
 Called before leaving a route. Return `false` to prevent navigation.
 
@@ -128,7 +128,7 @@ Called before leaving a route. Return `false` to prevent navigation.
 
 Every navigation goes through a strict sequence of guards. The exact pipeline depends on the navigation type.
 
-### Standard Navigation (push / replace) {#standard-navigation}
+### Standard Navigation (push / replace)
 
 ```
 1. fallback        → Handle unmatched routes (404)
@@ -142,7 +142,7 @@ Every navigation goes through a strict sequence of guards. The exact pipeline de
    └─ afterEach    → Global: post-navigation hooks
 ```
 
-### Window Navigation (pushWindow / replaceWindow) {#window-navigation}
+### Window Navigation (pushWindow / replaceWindow)
 
 ```
 1. fallback
@@ -151,7 +151,7 @@ Every navigation goes through a strict sequence of guards. The exact pipeline de
 4. confirm → Delegates to fallback handler
 ```
 
-### Layer Navigation (pushLayer) {#layer-navigation}
+### Layer Navigation (pushLayer)
 
 ```
 1. fallback
@@ -160,7 +160,7 @@ Every navigation goes through a strict sequence of guards. The exact pipeline de
 4. confirm → Creates layer router
 ```
 
-### Restart App (restartApp) {#restart-navigation}
+### Restart App (restartApp)
 
 ```
 1. fallback
@@ -174,7 +174,7 @@ Every navigation goes through a strict sequence of guards. The exact pipeline de
 
 ## Pipeline Behavior
 
-### Short-circuiting {#short-circuiting}
+### Short-circuiting
 
 Any guard returning a non-void result **stops the pipeline**. The remaining guards are skipped.
 
@@ -187,7 +187,7 @@ router.beforeEach((to) => {
 });
 ```
 
-### Redirect Chains {#redirect-chains}
+### Redirect Chains
 
 When a guard returns a redirect, the entire pipeline **restarts** for the new target:
 
@@ -198,7 +198,7 @@ router.beforeEach((to) => {
 });
 ```
 
-### Async Guards {#async-guards}
+### Async Guards
 
 All guards support `async`/`Promise`. The pipeline awaits each guard before proceeding.
 
@@ -211,7 +211,7 @@ router.beforeEach(async (to) => {
 });
 ```
 
-### Task Cancellation {#task-cancellation}
+### Task Cancellation
 
 If a new navigation starts while guards are still running, the previous navigation is **automatically cancelled** via the internal `RouteTaskController`. A `RouteTaskCancelledError` is thrown for the cancelled navigation.
 
@@ -253,7 +253,6 @@ const router = new Router({
       path: '/user/:id',
       component: UserProfile,
       beforeUpdate: (to, from) => {
-        // Runs when navigating /user/1 → /user/2
         store.loadUser(to.params.id);
       }
     }

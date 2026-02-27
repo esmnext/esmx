@@ -50,7 +50,6 @@ This is useful when you want to redirect without cluttering the browser history 
 ```ts
 async function handleLogin() {
   await performLogin();
-  // User shouldn't be able to "go back" to the login page
   await router.replace('/dashboard');
 }
 ```
@@ -59,18 +58,15 @@ async function handleLogin() {
 
 Both `push` and `replace` accept a `RouteLocationInput`, which can be a string or an object with these properties:
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `path` | `string` | The target path |
-| `query` | `Record<string, string>` | Query parameters |
-| `hash` | `string` | Hash fragment (e.g., `'#section'`) |
-| `state` | `Record<string, unknown>` | State stored in `history.state` (not visible in URL) |
-| `params` | `Record<string, string>` | Dynamic segment values |
-| `keepScrollPosition` | `boolean` | If `true`, don't scroll to top after navigation |
-| `statusCode` | `number` | HTTP status code (useful for SSR) |
+- **`path`**: `string` — The target path
+- **`query`**: `Record<string, string>` — Query parameters
+- **`hash`**: `string` — Hash fragment (e.g., `'#section'`)
+- **`state`**: `Record<string, unknown>` — State stored in `history.state` (not visible in URL)
+- **`params`**: `Record<string, string>` — Dynamic segment values
+- **`keepScrollPosition`**: `boolean` — If `true`, don't scroll to top after navigation
+- **`statusCode`**: `number` — HTTP status code (useful for SSR)
 
 ```ts
-// Full example with all options
 await router.push({
   path: '/users/42',
   query: { tab: 'posts' },
@@ -103,7 +99,6 @@ await router.push({
   state: { cartId: 'abc-123', step: 2 }
 });
 
-// Later, access via the route
 console.log(router.route.state.cartId); // 'abc-123'
 ```
 
@@ -116,7 +111,6 @@ Standard `push`/`replace` perform **SPA navigation** — the page doesn't reload
 Opens the target in a new browser tab/window (equivalent to `window.open`):
 
 ```ts
-// Opens in a new tab
 await router.pushWindow('/external-report');
 ```
 
@@ -125,19 +119,16 @@ await router.pushWindow('/external-report');
 Navigates the current tab to a new URL (equivalent to `window.location.replace`):
 
 ```ts
-// Full page navigation in same tab
 await router.replaceWindow('/legacy-page');
 ```
 
 ### When to Use Window Navigation
 
-| Scenario | Method |
-|----------|--------|
-| Navigate within your SPA | `push` / `replace` |
-| Navigate to a different micro-frontend | `pushWindow` / `replaceWindow` |
-| Open in new tab | `pushWindow` |
-| Full page reload / redirect to external URL | `replaceWindow` |
-| Navigate to a page outside router scope | `pushWindow` / `replaceWindow` |
+- Navigate within your SPA: use `push` / `replace`
+- Navigate to a different micro-frontend: use `pushWindow` / `replaceWindow`
+- Open in new tab: use `pushWindow`
+- Full page reload / redirect to external URL: use `replaceWindow`
+- Navigate to a page outside router scope: use `pushWindow` / `replaceWindow`
 
 ### Guard Pipeline Differences
 
@@ -225,13 +216,11 @@ console.log(route.url.href);       // full URL string
 Use it to generate link URLs without triggering navigation:
 
 ```ts
-// Check if a route exists
 const resolved = router.resolve('/some/path');
 if (resolved.matched.length > 0) {
   console.log('Route exists!');
 }
 
-// Get the full URL for an anchor tag
 const href = router.resolve({ path: '/about', hash: '#team' }).url.href;
 ```
 
@@ -240,7 +229,6 @@ const href = router.resolve({ path: '/about', hash: '#team' }).url.href;
 By default, `push` and `replace` scroll the page to the top. Pass `keepScrollPosition: true` to prevent this:
 
 ```ts
-// Tab switching — don't jump to top
 await router.push({
   path: '/dashboard',
   query: { tab: 'analytics' },
@@ -268,7 +256,7 @@ try {
   } else if (error instanceof RouteTaskCancelledError) {
     console.log('Navigation was superseded by a newer one');
   } else {
-    throw error; // unexpected error
+    throw error;
   }
 }
 ```

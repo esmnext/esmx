@@ -11,10 +11,11 @@ head:
 
 The MicroApp system is how `@esmx/router` manages framework-agnostic micro-frontends. Each micro-app provides three lifecycle methods: `mount`, `unmount`, and optionally `renderToString`. The router handles transitions between micro-apps during navigation.
 
-## RouterMicroAppOptions {#routermicroappoptions}
+## RouterMicroAppOptions
 
 The interface every micro-app must implement.
 
+- **Type Definition**:
 ```ts
 interface RouterMicroAppOptions {
   mount: (el: HTMLElement) => void;
@@ -23,48 +24,41 @@ interface RouterMicroAppOptions {
 }
 ```
 
-### mount {#mount}
+### mount
 
-```ts
-mount: (el: HTMLElement) => void;
-```
+- **Type**: `(el: HTMLElement) => void`
 
 Mount the application into the given DOM element. Called when the router navigates to a route bound to this micro-app.
 
-#### Parameters
+- **Parameters**:
+  - `el: HTMLElement` - The DOM element to mount into (from [`RouterOptions.root`](./router#root))
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| el | `HTMLElement` | The DOM element to mount into (from [`RouterOptions.root`](./router#root)) |
+### unmount
 
-### unmount {#unmount}
-
-```ts
-unmount: () => void;
-```
+- **Type**: `() => void`
 
 Clean up and destroy the application. Called when navigating away to a route bound to a different micro-app.
 
-### renderToString {#rendertostring}
+### renderToString
 
-```ts
-optional renderToString: () => Awaitable<string>;
-```
+- **Type**: `() => Awaitable<string>`
 
 Return the SSR HTML string for the current state of the application. Called by [`router.renderToString()`](./router#rendertostring) during server-side rendering.
 
-## RouterMicroAppCallback {#routermicroappcallback}
+## RouterMicroAppCallback
 
 A factory function that creates a micro-app, receiving the router instance.
 
+- **Type Definition**:
 ```ts
 type RouterMicroAppCallback = (router: Router) => RouterMicroAppOptions;
 ```
 
-## RouterMicroApp {#routermicroapp}
+## RouterMicroApp
 
 The `apps` option in [`RouterOptions`](./router#apps) accepts either a map of named factories or a single factory.
 
+- **Type Definition**:
 ```ts
 type RouterMicroApp =
   | Record<string, RouterMicroAppCallback | undefined>
@@ -73,7 +67,7 @@ type RouterMicroApp =
 
 ## Usage
 
-### Registering Micro-Apps {#registering}
+### Registering Micro-Apps
 
 Micro-apps are registered via the `apps` option on the Router and referenced by the `app` property in [route configs](./route-config#app):
 
@@ -104,7 +98,7 @@ const router = new Router({
 });
 ```
 
-### React Example {#react-example}
+### React Example
 
 ```ts
 import * as ReactDOM from 'react-dom/client';
@@ -129,7 +123,7 @@ function createReactApp(router: Router): RouterMicroAppOptions {
 }
 ```
 
-### Vue 3 Example {#vue3-example}
+### Vue 3 Example
 
 ```ts
 import { createApp, createSSRApp } from 'vue';
@@ -159,7 +153,7 @@ function createVueApp(router: Router): RouterMicroAppOptions {
 
 ## Lifecycle
 
-### App Selection {#app-selection}
+### App Selection
 
 When a route is matched, the router determines which micro-app to use:
 
@@ -167,7 +161,7 @@ When a route is matched, the router determines which micro-app to use:
 2. If `app` is a `string`, it's looked up in `router.options.apps`
 3. If `app` is a function, it's called directly as the factory
 
-### App Transition {#app-transition}
+### App Transition
 
 When navigating between routes with **different** `app` values:
 
@@ -181,11 +175,11 @@ When navigating within the **same** app (e.g., `/react` → `/react/about`):
 - No mount/unmount occurs
 - The app handles internal routing via its own component system
 
-### Force Restart {#force-restart}
+### Force Restart
 
 [`router.restartApp()`](./router#restartapp) forces a full unmount → mount cycle even if the app key hasn't changed.
 
-## SSR Flow {#ssr-flow}
+## SSR Flow
 
 During server-side rendering:
 
@@ -205,10 +199,9 @@ await router.push(req.url);
 
 // 3. Render the micro-app to HTML
 const html = await router.renderToString();
-// → Calls the matched micro-app's renderToString()
 ```
 
-## Root Element {#root-element}
+## Root Element
 
 The [`root`](./router#root) option in `RouterOptions` determines where micro-apps are mounted:
 

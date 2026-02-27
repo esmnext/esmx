@@ -11,8 +11,9 @@ head:
 
 `@esmx/router` provides a framework-agnostic link resolution system via [`router.resolveLink()`](./router#resolvelink). It generates all the data needed to build link components in any framework — including HTML attributes, active states, CSS classes, and event handlers.
 
-## RouterLinkProps {#routerlinkprops}
+## RouterLinkProps
 
+- **Type Definition**:
 ```ts
 interface RouterLinkProps {
   to: RouteLocationInput;
@@ -26,112 +27,73 @@ interface RouterLinkProps {
 }
 ```
 
-### to {#to}
+### to
 
-```ts
-to: RouteLocationInput;
-```
+- **Type**: `RouteLocationInput`
 
 **Required.** Target route. Can be a string path or a route location object.
-
-#### Example
 
 ```ts
 router.resolveLink({ to: '/about' });
 router.resolveLink({ to: { path: '/user', query: { id: '1' } } });
 ```
 
-### type {#type}
+### type
 
-```ts
-optional type: RouterLinkType;
-```
+- **Type**: `RouterLinkType`
+- **Default**: `'push'`
 
 Navigation type used when the link is clicked.
 
-| Type | Description |
-|------|-------------|
-| `'push'` | Add to history stack (default) |
-| `'replace'` | Replace current history entry |
-| `'pushWindow'` | Open in new window/tab |
-| `'replaceWindow'` | Replace current window |
-| `'pushLayer'` | Open as a [layer/modal](./layer) |
+- `'push'`: Add to history stack (default)
+- `'replace'`: Replace current history entry
+- `'pushWindow'`: Open in new window/tab
+- `'replaceWindow'`: Replace current window
+- `'pushLayer'`: Open as a [layer/modal](./layer)
 
-#### Default Value
+### exact
 
-`'push'`
-
-### exact {#exact}
-
-```ts
-optional exact: RouteMatchType;
-```
+- **Type**: `RouteMatchType`
+- **Default**: `'include'`
 
 How to determine the active state of the link.
 
-| Value | Active when... |
-|-------|---------------|
-| `'include'` | Current path starts with link path |
-| `'exact'` | Current path exactly matches link path |
-| `'route'` | Same route config is matched |
+- `'include'`: Active when current path starts with link path
+- `'exact'`: Active when current path exactly matches link path
+- `'route'`: Active when same route config is matched
 
-#### Default Value
+### activeClass
 
-`'include'`
-
-### activeClass {#activeclass}
-
-```ts
-optional activeClass: string;
-```
+- **Type**: `string`
+- **Default**: `'router-link-active'`
 
 CSS class applied when the link is active.
 
-#### Default Value
+### event
 
-`'router-link-active'`
-
-### event {#event}
-
-```ts
-optional event: string | string[];
-```
+- **Type**: `string | string[]`
+- **Default**: `'click'`
 
 DOM event(s) that trigger navigation.
 
-#### Default Value
+### tag
 
-`'click'`
-
-### tag {#tag}
-
-```ts
-optional tag: string;
-```
+- **Type**: `string`
+- **Default**: `'a'`
 
 The HTML tag to render.
 
-#### Default Value
+### layerOptions
 
-`'a'`
-
-### layerOptions {#layeroptions}
-
-```ts
-optional layerOptions: RouteLayerOptions;
-```
+- **Type**: `RouteLayerOptions`
 
 Layer options passed when `type` is `'pushLayer'`. See [Layer](./layer#routelayeroptions).
 
-### beforeNavigate {#beforenavigate}
+### beforeNavigate
 
-```ts
-optional beforeNavigate: (event: Event, eventName: string) => void;
-```
+- **Type**: `(event: Event, eventName: string) => void`
 
 Hook called before navigation. Call `event.preventDefault()` to cancel.
-
-#### Example
 
 ```ts
 router.resolveLink({
@@ -144,10 +106,11 @@ router.resolveLink({
 });
 ```
 
-## RouterLinkResolved {#routerlinkresolved}
+## RouterLinkResolved
 
 The result of `resolveLink()`.
 
+- **Type Definition**:
 ```ts
 interface RouterLinkResolved {
   route: Route;
@@ -164,26 +127,27 @@ interface RouterLinkResolved {
 }
 ```
 
-### route {#route}
+### route
 
 The resolved [Route](./route) object for the target.
 
-### isActive {#isactive}
+### isActive
 
 `true` if the current route matches the link target (based on the `exact` setting).
 
-### isExactActive {#isexactactive}
+### isExactActive
 
 `true` if the current route path exactly matches the link target path.
 
-### isExternal {#isexternal}
+### isExternal
 
 `true` if the link points to a different origin (external URL).
 
-### attributes {#attributes}
+### attributes
 
 HTML attributes for the link element:
 
+- **Type Definition**:
 ```ts
 interface RouterLinkAttributes {
   href: string;
@@ -193,25 +157,17 @@ interface RouterLinkAttributes {
 }
 ```
 
-### navigate {#navigate}
+### navigate
 
-```ts
-navigate: (e: Event) => Promise<void>;
-```
+- **Type**: `(e: Event) => Promise<void>`
 
 Function to call for programmatic navigation. Intelligently handles modifier keys (Ctrl+click opens new tab, etc.).
 
-### createEventHandlers {#createeventhandlers}
+### createEventHandlers
 
-```ts
-createEventHandlers: (
-  format?: (eventType: string) => string
-) => Record<string, (e: Event) => Promise<void>>;
-```
+- **Type**: `(format?: (eventType: string) => string) => Record<string, (e: Event) => Promise<void>>`
 
 Generate event handlers with framework-specific event name formatting.
-
-#### Example
 
 ```ts
 // React (camelCase events)
@@ -225,19 +181,17 @@ const handlers = linkData.createEventHandlers();
 // → { click: (e) => ... }
 ```
 
-## CSS Classes {#css-classes}
+## CSS Classes
 
 Links automatically receive CSS classes based on active state:
 
-| Class | Applied when |
-|-------|-------------|
-| `router-link` | Always |
-| `router-link-active` | `isActive` is `true` |
-| `router-link-exact-active` | `isExactActive` is `true` |
+- `router-link`: Always applied
+- `router-link-active`: Applied when `isActive` is `true`
+- `router-link-exact-active`: Applied when `isExactActive` is `true`
 
 ## Framework Examples
 
-### Vanilla JavaScript {#vanilla}
+### Vanilla JavaScript
 
 ```ts
 function createLink(router: Router, to: string, text: string) {
@@ -253,7 +207,7 @@ function createLink(router: Router, to: string, text: string) {
 }
 ```
 
-### React {#react}
+### React
 
 ```tsx
 function RouterLink({ to, children, type = 'push' }) {
@@ -274,7 +228,7 @@ function RouterLink({ to, children, type = 'push' }) {
 }
 ```
 
-### Vue 3 {#vue3}
+### Vue 3
 
 ```vue
 <template>
@@ -291,7 +245,7 @@ const handlers = linkData.createEventHandlers();
 </script>
 ```
 
-## Smart Navigation {#smart-navigation}
+## Smart Navigation
 
 The `navigate` function intelligently handles browser events:
 

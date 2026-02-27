@@ -17,13 +17,8 @@ Router instance for managing route matching, navigation, micro-app lifecycle, na
 
 Creates a new Router instance.
 
-#### Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| options | [`RouterOptions`](#routeroptions) | Router configuration object |
-
-#### Example
+- **Parameters**:
+  - `options: RouterOptions` - Router configuration object
 
 ```ts
 import { Router, RouterMode } from '@esmx/router';
@@ -38,23 +33,16 @@ const router = new Router({
 });
 ```
 
-## RouterOptions {#routeroptions}
+## RouterOptions
 
 Options to initialize a Router instance.
 
-### root {#root}
+### root
 
-```ts
-optional root: string | HTMLElement;
-```
+- **Type**: `string | HTMLElement`
+- **Default**: `'#root'`
 
 The DOM element or CSS selector where micro-apps are mounted. Supports ID, class, or attribute selectors.
-
-#### Default Value
-
-`'#root'`
-
-#### Example
 
 ```ts
 // Using ID selector
@@ -71,44 +59,28 @@ const element = document.getElementById('app');
 new Router({ root: element });
 ```
 
-### mode {#mode}
+### mode
 
-```ts
-optional mode: RouterMode;
-```
+- **Type**: `RouterMode`
+- **Default**: `RouterMode.history`
 
 History mode used by the router.
 
-| Mode | Description | Use Case |
-|------|-------------|----------|
-| `RouterMode.history` | Uses browser History API (`pushState`/`popState`) | Production apps with server support |
-| `RouterMode.memory` | In-memory history stack, no URL changes | SSR, testing, layers |
+- `RouterMode.history`: Uses browser History API (`pushState`/`popState`). For production apps with server support
+- `RouterMode.memory`: In-memory history stack, no URL changes. For SSR, testing, layers
 
-#### Default Value
+### routes
 
-`RouterMode.history`
-
-### routes {#routes}
-
-```ts
-optional routes: RouteConfig[];
-```
+- **Type**: `RouteConfig[]`
+- **Default**: `[]`
 
 Initial list of routes that should be added to the router. See [Route Config](./route-config) for full details.
 
-#### Default Value
+### base
 
-`[]`
-
-### base {#base}
-
-```ts
-optional base: URL;
-```
+- **Type**: `URL`
 
 Base URL for route resolution. Optional in the browser (defaults to `window.location`), **required** on the server side.
-
-#### Example
 
 ```ts
 // Server-side rendering
@@ -122,15 +94,11 @@ const router = new Router({
 });
 ```
 
-### apps {#apps}
+### apps
 
-```ts
-optional apps: RouterMicroApp;
-```
+- **Type**: `RouterMicroApp`
 
 Micro-app factory functions. Maps string keys to factory functions that create micro-app lifecycle handlers. See [MicroApp](./micro-app) for details.
-
-#### Example
 
 ```ts
 const router = new Router({
@@ -145,55 +113,37 @@ const router = new Router({
 });
 ```
 
-### context {#context}
+### context
 
-```ts
-optional context: Record<string | symbol, unknown>;
-```
+- **Type**: `Record<string | symbol, unknown>`
+- **Default**: `{}`
 
 Shared context object accessible from all routes via `router.context`. Useful for dependency injection (services, stores, etc.).
 
-#### Default Value
+### data
 
-`{}`
-
-### data {#data}
-
-```ts
-optional data: Record<string | symbol, unknown>;
-```
+- **Type**: `Record<string | symbol, unknown>`
+- **Default**: `{}`
 
 Shared data object accessible via `router.data`. Similar to `context` but intended for mutable shared state.
 
-#### Default Value
+### req
 
-`{}`
-
-### req {#req-option}
-
-```ts
-optional req: IncomingMessage | null;
-```
+- **Type**: `IncomingMessage | null`
 
 Node.js HTTP request object. Used during server-side rendering to access request headers, URL, etc.
 
-### res {#res-option}
+### res
 
-```ts
-optional res: ServerResponse | null;
-```
+- **Type**: `ServerResponse | null`
 
 Node.js HTTP response object. Used during server-side rendering to set status codes, headers, etc.
 
-### normalizeURL {#normalizeurl}
+### normalizeURL
 
-```ts
-optional normalizeURL: (to: URL, from: URL | null) => URL;
-```
+- **Type**: `(to: URL, from: URL | null) => URL`
 
 URL normalization function called before route matching. Useful for removing trailing slashes, forcing lowercase paths, or other URL transformations.
-
-#### Example
 
 ```ts
 new Router({
@@ -207,15 +157,11 @@ new Router({
 });
 ```
 
-### fallback {#fallback}
+### fallback
 
-```ts
-optional fallback: RouteHandleHook;
-```
+- **Type**: `RouteHandleHook`
 
 Called when no route matches the target URL, or for `pushWindow`/`replaceWindow` navigation types. Use this to handle 404 pages or external navigation.
-
-#### Example
 
 ```ts
 new Router({
@@ -226,69 +172,51 @@ new Router({
 });
 ```
 
-### nextTick {#nexttick}
+### nextTick
 
-```ts
-optional nextTick: () => Awaitable<void>;
-```
+- **Type**: `() => Awaitable<void>`
 
 Custom `nextTick` implementation called after route transition confirms. Useful for framework-specific DOM update timing (e.g., Vue's `nextTick`).
 
-### rootStyle {#rootstyle}
+### rootStyle
 
-```ts
-optional rootStyle: Partial<CSSStyleDeclaration> | false | null;
-```
+- **Type**: `Partial<CSSStyleDeclaration> | false | null`
 
 CSS styles applied to the root element when creating layer routers. Set to `false` or `null` to disable automatic styling.
 
-### layer {#layer-option}
+### layer
 
-```ts
-optional layer: boolean;
-```
+- **Type**: `boolean`
 
 Internal. Whether this router instance operates as a layer (overlay/modal) router. Set automatically by [`createLayer()`](#createlayer).
 
-### zIndex {#zindex}
+### zIndex
 
-```ts
-optional zIndex: number;
-```
+- **Type**: `number`
+- **Default**: `1000`
 
 Base z-index value for layer overlays. Layers auto-increment from this value.
 
-#### Default Value
+### handleBackBoundary
 
-`1000`
-
-### handleBackBoundary {#handlebackboundary}
-
-```ts
-optional handleBackBoundary: (router: Router) => void;
-```
+- **Type**: `(router: Router) => void`
 
 Called when `back()` is invoked at the beginning of the history stack (no more history to go back to). Useful for closing the app or navigating to a parent context.
 
-### handleLayerClose {#handlelayerclose}
+### handleLayerClose
 
-```ts
-optional handleLayerClose: (router: Router, data?: any) => void;
-```
+- **Type**: `(router: Router, data?: any) => void`
 
 Internal. Called when a layer router is closed. Set automatically by [`createLayer()`](#createlayer).
 
 ## Properties
 
-### route {#route}
+### route
 
-```ts
-readonly route: Route;
-```
+- **Type**: `Route`
+- **Read-only**: `true`
 
 The current active [Route](./route). Throws an error if accessed before the first navigation.
-
-#### Example
 
 ```ts
 console.log(router.route.path);    // '/about'
@@ -296,123 +224,99 @@ console.log(router.route.params);  // { id: '123' }
 console.log(router.route.query);   // { page: '1' }
 ```
 
-### options {#options}
+### options
 
-```ts
-readonly options: RouterOptions;
-```
+- **Type**: `RouterOptions`
+- **Read-only**: `true`
 
 The original options passed to the Router constructor.
 
-### parsedOptions {#parsedoptions}
+### parsedOptions
 
-```ts
-readonly parsedOptions: RouterParsedOptions;
-```
+- **Type**: `RouterParsedOptions`
+- **Read-only**: `true`
 
 Parsed and compiled options, including `compiledRoutes` (route configs with compiled matchers) and `matcher` function.
 
-### isLayer {#islayer}
+### isLayer
 
-```ts
-readonly isLayer: boolean;
-```
+- **Type**: `boolean`
+- **Read-only**: `true`
 
 Whether this router instance is a layer (overlay/modal) router created via [`createLayer()`](#createlayer).
 
-### navigation {#navigation}
+### navigation
 
-```ts
-readonly navigation: Navigation;
-```
+- **Type**: `Navigation`
+- **Read-only**: `true`
 
 The internal navigation controller managing the history stack (browser History API or MemoryHistory).
 
-### microApp {#microapp}
+### microApp
 
-```ts
-readonly microApp: MicroApp;
-```
+- **Type**: `MicroApp`
+- **Read-only**: `true`
 
 The internal micro-app lifecycle manager handling mount/unmount transitions between micro-apps.
 
-### mode {#mode-prop}
+### mode
 
-```ts
-readonly mode: RouterMode;
-```
+- **Type**: `RouterMode`
+- **Read-only**: `true`
 
 The current router mode (`'history'` or `'memory'`).
 
-### base {#base-prop}
+### base
 
-```ts
-readonly base: URL;
-```
+- **Type**: `URL`
+- **Read-only**: `true`
 
 The base URL used for route resolution.
 
-### root {#root-prop}
+### root
 
-```ts
-readonly root: HTMLElement;
-```
+- **Type**: `HTMLElement`
+- **Read-only**: `true`
 
 The root DOM element where micro-apps are mounted.
 
-### context {#context-prop}
+### context
 
-```ts
-readonly context: Record<string | symbol, unknown>;
-```
+- **Type**: `Record<string | symbol, unknown>`
+- **Read-only**: `true`
 
 The shared context object provided via [`RouterOptions.context`](#context).
 
-### data {#data-prop}
+### data
 
-```ts
-readonly data: Record<string | symbol, unknown>;
-```
+- **Type**: `Record<string | symbol, unknown>`
+- **Read-only**: `true`
 
 The shared data object provided via [`RouterOptions.data`](#data).
 
-### req {#req}
+### req
 
-```ts
-readonly req: IncomingMessage | null;
-```
+- **Type**: `IncomingMessage | null`
+- **Read-only**: `true`
 
 The HTTP request object (SSR only). `null` in the browser.
 
-### res {#res}
+### res
 
-```ts
-readonly res: ServerResponse | null;
-```
+- **Type**: `ServerResponse | null`
+- **Read-only**: `true`
 
 The HTTP response object (SSR only). `null` in the browser.
 
 ## Methods
 
-### push {#push}
+### push()
 
-```ts
-push(to: RouteLocationInput): Promise<Route>;
-```
+- **Parameters**:
+  - `to: RouteLocationInput` - Route location to navigate to
+- **Returns**: `Promise<Route>`
 
-Programmatically navigate to a new URL by pushing an entry in the history stack.
-
-#### Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| to | `RouteLocationInput` | Route location to navigate to |
-
-#### Returns
-
-`Promise<Route>` — Resolves to the target [Route](./route) after the full [navigation guard pipeline](./navigation-guards) completes.
-
-#### Example
+Programmatically navigate to a new URL by pushing an entry in the history stack. Resolves to the target [Route](./route) after the full [navigation guard pipeline](./navigation-guards) completes.
 
 ```ts
 // String path
@@ -432,135 +336,67 @@ await router.push({
 });
 ```
 
-### replace {#replace}
+### replace()
 
-```ts
-replace(to: RouteLocationInput): Promise<Route>;
-```
+- **Parameters**:
+  - `to: RouteLocationInput` - Route location to navigate to
+- **Returns**: `Promise<Route>`
 
 Programmatically navigate to a new URL by replacing the current entry in the history stack. Unlike `push`, this does not create a new history entry — pressing the back button will not return to the current page.
-
-#### Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| to | `RouteLocationInput` | Route location to navigate to |
-
-#### Returns
-
-`Promise<Route>`
-
-#### Example
 
 ```ts
 // Replace after login (prevents back-to-login)
 await router.replace('/dashboard');
 ```
 
-### back {#back}
+### back()
 
-```ts
-back(): Promise<Route | null>;
-```
+- **Returns**: `Promise<Route | null>`
 
-Go back one step in history if possible by calling `navigation.back()`. Equivalent to `router.go(-1)`. If at the beginning of the history stack, calls [`handleBackBoundary`](#handlebackboundary).
+Go back one step in history if possible by calling `navigation.back()`. Equivalent to `router.go(-1)`. If at the beginning of the history stack, calls [`handleBackBoundary`](#handlebackboundary). Returns `null` if navigation didn't happen.
 
-#### Returns
+### forward()
 
-`Promise<Route | null>` — Returns `null` if navigation didn't happen.
+- **Returns**: `Promise<Route | null>`
 
-### forward {#forward}
+Go forward one step in history if possible. Equivalent to `router.go(1)`. Returns `null` if navigation didn't happen.
 
-```ts
-forward(): Promise<Route | null>;
-```
+### go()
 
-Go forward one step in history if possible. Equivalent to `router.go(1)`.
-
-#### Returns
-
-`Promise<Route | null>` — Returns `null` if navigation didn't happen.
-
-### go {#go}
-
-```ts
-go(index: number): Promise<Route | null>;
-```
+- **Parameters**:
+  - `index: number` - Position in the history relative to the current page
+- **Returns**: `Promise<Route | null>`
 
 Navigate to a specific position relative to the current page in the history stack. `go(0)` returns `null` (no-op). Negative values go back, positive values go forward.
-
-#### Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| index | `number` | Position in the history relative to the current page |
-
-#### Returns
-
-`Promise<Route | null>`
-
-#### Example
 
 ```ts
 await router.go(-2); // Go back 2 steps
 await router.go(1);  // Go forward 1 step
 ```
 
-### pushWindow {#pushwindow}
+### pushWindow()
 
-```ts
-pushWindow(to: RouteLocationInput): Promise<Route>;
-```
+- **Parameters**:
+  - `to: RouteLocationInput` - Route location to navigate to
+- **Returns**: `Promise<Route>`
 
 Navigate to a route intended for a new window/tab context. Triggers the [`fallback`](#fallback) handler instead of performing in-page navigation.
 
-#### Parameters
+### replaceWindow()
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| to | `RouteLocationInput` | Route location to navigate to |
-
-#### Returns
-
-`Promise<Route>`
-
-### replaceWindow {#replacewindow}
-
-```ts
-replaceWindow(to: RouteLocationInput): Promise<Route>;
-```
+- **Parameters**:
+  - `to: RouteLocationInput` - Route location to navigate to
+- **Returns**: `Promise<Route>`
 
 Navigate to a route intended for replacing the current window context. Triggers the [`fallback`](#fallback) handler.
 
-#### Parameters
+### restartApp()
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| to | `RouteLocationInput` | Route location to navigate to |
-
-#### Returns
-
-`Promise<Route>`
-
-### restartApp {#restartapp}
-
-```ts
-restartApp(to?: RouteLocationInput): Promise<Route>;
-```
+- **Parameters**:
+  - `to: RouteLocationInput` - Optional route location (defaults to current route)
+- **Returns**: `Promise<Route>`
 
 Force-restart the current micro-app. Performs a full unmount → mount cycle even if the app key hasn't changed. If `to` is not provided, restarts at the current route.
-
-#### Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| to | `RouteLocationInput` | Optional route location (defaults to current route) |
-
-#### Returns
-
-`Promise<Route>`
-
-#### Example
 
 ```ts
 // Restart at current route
@@ -570,26 +406,14 @@ await router.restartApp();
 await router.restartApp('/dashboard');
 ```
 
-### resolve {#resolve}
+### resolve()
 
-```ts
-resolve(to: RouteLocationInput, toType?: RouteType): Route;
-```
+- **Parameters**:
+  - `to: RouteLocationInput` - Target route location
+  - `toType: RouteType` - Optional route type
+- **Returns**: `Route`
 
 Returns the [Route](./route) for a given location without performing navigation. Useful for generating URLs, pre-checking matches, or getting route metadata.
-
-#### Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| to | `RouteLocationInput` | Target route location |
-| toType | `RouteType` | Optional route type |
-
-#### Returns
-
-[`Route`](./route) — The resolved route object.
-
-#### Example
 
 ```ts
 const route = router.resolve('/user/123');
@@ -598,32 +422,19 @@ console.log(route.params);       // { id: '123' }
 console.log(route.matched);      // Matched route configs
 ```
 
-### isRouteMatched {#isroutematched}
+### isRouteMatched()
 
-```ts
-isRouteMatched(toRoute: Route, matchType?: RouteMatchType): boolean;
-```
+- **Parameters**:
+  - `toRoute: Route` - Route to compare against the current route
+  - `matchType: RouteMatchType` - Match strategy (default: `'include'`)
+- **Returns**: `boolean`
 
 Check if a route matches the current route.
 
-#### Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| toRoute | `Route` | Route to compare against the current route |
-| matchType | `RouteMatchType` | Match strategy (default: `'include'`) |
-
-| Match Type | Description |
-|------------|-------------|
-| `'route'` | Same route configuration (same `RouteConfig` reference) |
-| `'exact'` | Exact path match |
-| `'include'` | Current path starts with target path |
-
-#### Returns
-
-`boolean`
-
-#### Example
+Match types:
+- `'route'`: Same route configuration (same `RouteConfig` reference)
+- `'exact'`: Exact path match
+- `'include'`: Current path starts with target path
 
 ```ts
 const aboutRoute = router.resolve('/about');
@@ -632,25 +443,13 @@ router.isRouteMatched(aboutRoute, 'exact');   // true if at /about
 router.isRouteMatched(aboutRoute, 'include'); // true if at /about or /about/team
 ```
 
-### beforeEach {#beforeeach}
+### beforeEach()
 
-```ts
-beforeEach(guard: RouteConfirmHook): () => void;
-```
+- **Parameters**:
+  - `guard: RouteConfirmHook` - Navigation guard to add
+- **Returns**: `() => void`
 
 Add a navigation guard that executes before any navigation. Returns a function that removes the registered guard.
-
-#### Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| guard | [`RouteConfirmHook`](./types#routeconfirmhook) | Navigation guard to add |
-
-#### Returns
-
-A function that removes the registered guard.
-
-#### Example
 
 ```ts
 const removeGuard = router.beforeEach((to, from, router) => {
@@ -664,25 +463,13 @@ const removeGuard = router.beforeEach((to, from, router) => {
 removeGuard();
 ```
 
-### afterEach {#aftereach}
+### afterEach()
 
-```ts
-afterEach(guard: RouteNotifyHook): () => void;
-```
+- **Parameters**:
+  - `guard: RouteNotifyHook` - Navigation hook to add
+- **Returns**: `() => void`
 
 Add a navigation hook that is executed after every navigation. Returns a function that removes the registered hook. Cannot modify navigation.
-
-#### Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| guard | [`RouteNotifyHook`](./types#routenotifyhook) | Navigation hook to add |
-
-#### Returns
-
-A function that removes the registered hook.
-
-#### Example
 
 ```ts
 router.afterEach((to, from, router) => {
@@ -693,70 +480,37 @@ router.afterEach((to, from, router) => {
 
 See [Navigation Guards](./navigation-guards) for full details on guard types and the navigation pipeline.
 
-### resolveLink {#resolvelink}
+### resolveLink()
 
-```ts
-resolveLink(props: RouterLinkProps): RouterLinkResolved;
-```
+- **Parameters**:
+  - `props: RouterLinkProps` - Link configuration
+- **Returns**: `RouterLinkResolved`
 
 Resolve a router link configuration into complete link data including HTML attributes, active states, and event handlers. Used to build framework-specific link components.
 
-#### Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| props | [`RouterLinkProps`](./types#routerlinkprops) | Link configuration |
-
-#### Returns
-
-[`RouterLinkResolved`](./types#routerlinkresolved) — Complete link data.
-
 See [RouterLink](./router-link) for full details and framework examples.
 
-### createLayer {#createlayer}
+### createLayer()
 
-```ts
-createLayer(to: RouteLocationInput): Promise<{
-  promise: Promise<RouteLayerResult>;
-  router: Router;
-}>;
-```
+- **Parameters**:
+  - `to: RouteLocationInput` - Route location to open in the layer
+- **Returns**: `Promise<{ promise: Promise<RouteLayerResult>; router: Router }>`
 
 Create a layer (overlay/modal) router with its own navigation stack. Returns both the layer router instance and a promise that resolves when the layer closes.
 
-#### Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| to | `RouteLocationInput` | Route location to open in the layer |
-
-#### Returns
-
-An object with:
+Returns an object with:
 - `router` — The layer Router instance
 - `promise` — A `Promise<RouteLayerResult>` that resolves when the layer closes
 
 See [Layer System](./layer) for full details.
 
-### pushLayer {#pushlayer}
+### pushLayer()
 
-```ts
-pushLayer(to: RouteLocationInput): Promise<RouteLayerResult>;
-```
+- **Parameters**:
+  - `to: RouteLocationInput` - Route location to open in the layer
+- **Returns**: `Promise<RouteLayerResult>`
 
 Shorthand for creating a layer and waiting for its result. Combines `createLayer()` into a single call.
-
-#### Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| to | `RouteLocationInput` | Route location to open in the layer |
-
-#### Returns
-
-`Promise<RouteLayerResult>` — Resolves when the layer closes.
-
-#### Example
 
 ```ts
 const result = await router.pushLayer('/modal/confirm');
@@ -768,39 +522,20 @@ if (result.type === 'success') {
 }
 ```
 
-### closeLayer {#closelayer}
+### closeLayer()
 
-```ts
-closeLayer(data?: any): void;
-```
+- **Parameters**:
+  - `data: any` - Optional data to return to the parent router. When provided, the layer result type is `'success'`
 
 Close the current layer router. Only works when `router.isLayer` is `true`.
 
-#### Parameters
+### renderToString()
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| data | `any` | Optional data to return to the parent router. When provided, the layer result type is `'success'` |
+- **Parameters**:
+  - `throwError: boolean` - If `true`, throws errors instead of logging them (default: `false`)
+- **Returns**: `Promise<string | null>`
 
-### renderToString {#rendertostring}
-
-```ts
-renderToString(throwError?: boolean): Promise<string | null>;
-```
-
-Render the current micro-app to an HTML string for server-side rendering. Calls the matched micro-app's `renderToString()` method.
-
-#### Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| throwError | `boolean` | If `true`, throws errors instead of logging them (default: `false`) |
-
-#### Returns
-
-`Promise<string | null>` — The rendered HTML string, or `null` if no micro-app is mounted.
-
-#### Example
+Render the current micro-app to an HTML string for server-side rendering. Calls the matched micro-app's `renderToString()` method. Returns the rendered HTML string, or `null` if no micro-app is mounted.
 
 ```ts
 // Server-side rendering
@@ -808,11 +543,7 @@ await router.push(req.url);
 const html = await router.renderToString();
 ```
 
-### destroy {#destroy}
-
-```ts
-destroy(): void;
-```
+### destroy()
 
 Destroy the router instance, cleaning up all event listeners, navigation guards, history state, and micro-app instances. Call this when you no longer need the router.
 

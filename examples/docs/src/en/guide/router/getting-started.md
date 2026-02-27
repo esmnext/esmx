@@ -42,10 +42,8 @@ const router = new Router({
   ]
 });
 
-// Navigate programmatically
 await router.push('/about');
 
-// Access current route
 console.log(router.route.path);   // '/about'
 console.log(router.route.query);  // {}
 ```
@@ -58,8 +56,7 @@ Vue 3 integration uses `@esmx/router-vue` which provides a plugin, composables, 
 
 ### 1. Define Your Routes
 
-```ts
-// routes.ts
+```ts title="src/routes.ts"
 import type { RouteConfig } from '@esmx/router';
 
 export const routes: RouteConfig[] = [
@@ -77,8 +74,7 @@ export const routes: RouteConfig[] = [
 
 ### 2. Create the App
 
-```ts
-// create-app.ts
+```ts title="src/create-app.ts"
 import { createApp } from 'vue';
 import { Router, RouterMode } from '@esmx/router';
 import { RouterPlugin, useProvideRouter } from '@esmx/router-vue';
@@ -88,13 +84,11 @@ import { routes } from './routes';
 export function createVueApp(router: Router) {
   const app = createApp({
     setup() {
-      // Provide router to all child components
       useProvideRouter(router);
       return () => h(App);
     }
   });
 
-  // Register RouterView and RouterLink as global components
   app.use(RouterPlugin);
 
   return { app };
@@ -103,8 +97,7 @@ export function createVueApp(router: Router) {
 
 ### 3. Client Entry
 
-```ts
-// entry.client.ts
+```ts title="src/entry.client.ts"
 import { Router, RouterMode } from '@esmx/router';
 import { createVueApp } from './create-app';
 import { routes } from './routes';
@@ -121,8 +114,7 @@ app.mount('#app');
 
 ### 4. Server Entry (SSR)
 
-```ts
-// entry.server.ts
+```ts title="src/entry.server.ts"
 import { Router, RouterMode } from '@esmx/router';
 import { renderToString } from '@vue/server-renderer';
 import { createVueApp } from './create-app';
@@ -137,7 +129,6 @@ export default async function render(req, res) {
     routes
   });
 
-  // Initialize the route
   await router.push(req.url);
 
   const { app } = createVueApp(router);
@@ -157,7 +148,7 @@ export default async function render(req, res) {
 
 ### 5. Use in Components
 
-```vue
+```vue title="src/App.vue"
 <template>
   <div>
     <nav>
@@ -165,7 +156,6 @@ export default async function render(req, res) {
       <RouterLink to="/about">About</RouterLink>
     </nav>
 
-    <!-- Renders the matched route component -->
     <RouterView />
   </div>
 </template>
@@ -176,7 +166,6 @@ import { useRouter, useRoute } from '@esmx/router-vue';
 const router = useRouter();
 const route = useRoute();
 
-// Navigate programmatically
 function goToUser(id: string) {
   router.push(`/users/${id}`);
 }
@@ -193,7 +182,6 @@ import { Router, RouterMode } from '@esmx/router';
 import { RouterPlugin, useProvideRouter } from '@esmx/router-vue';
 import { routes } from './routes';
 
-// Install plugin globally (Vue 2 style)
 Vue.use(RouterPlugin);
 
 const router = new Router({
@@ -204,7 +192,6 @@ const router = new Router({
 
 new Vue({
   setup() {
-    // Provide router to all descendants
     useProvideRouter(router);
   },
   render: (h) => h(App)
@@ -226,8 +213,7 @@ export default {
 
 React doesn't have a dedicated integration package. Instead, register a micro-app directly on the router:
 
-```tsx
-// entry.client.tsx
+```tsx title="src/entry.client.tsx"
 import { Router, RouterMode } from '@esmx/router';
 import { createRoot } from 'react-dom/client';
 import { createElement } from 'react';
@@ -247,7 +233,6 @@ const router = new Router({
       root.unmount();
     },
     async renderToString() {
-      // SSR rendering for React
       const { renderToString } = await import('react-dom/server');
       return renderToString(createElement(App, { router }));
     }
@@ -288,13 +273,11 @@ src/
     └── UserProfile.vue
 ```
 
-| File | Purpose |
-|------|---------|
-| `entry.node.ts` | Configures the Node.js server (HTTP listener, middleware, build hooks) |
-| `entry.server.ts` | Handles SSR — creates router in memory mode, renders HTML |
-| `entry.client.ts` | Handles client-side — creates router in history mode, mounts app |
-| `create-app.ts` | Shared factory that creates the framework app with router |
-| `routes.ts` | Single source of truth for route definitions |
+- `entry.node.ts`: Configures the Node.js server (HTTP listener, middleware, build hooks)
+- `entry.server.ts`: Handles SSR — creates router in memory mode, renders HTML
+- `entry.client.ts`: Handles client-side — creates router in history mode, mounts app
+- `create-app.ts`: Shared factory that creates the framework app with router
+- `routes.ts`: Single source of truth for route definitions
 
 ## Full Working Example
 
@@ -302,7 +285,7 @@ Here's a complete example tying everything together with Vue 3 and SSR:
 
 ### routes.ts
 
-```ts
+```ts title="src/routes.ts"
 import type { RouteConfig } from '@esmx/router';
 
 export const routes: RouteConfig[] = [
@@ -324,7 +307,7 @@ export const routes: RouteConfig[] = [
 
 ### create-app.ts
 
-```ts
+```ts title="src/create-app.ts"
 import { h, createApp, createSSRApp } from 'vue';
 import { Router } from '@esmx/router';
 import { RouterPlugin, useProvideRouter } from '@esmx/router-vue';
@@ -348,7 +331,7 @@ export function createVueApp(router: Router, ssr = false) {
 
 ### entry.client.ts
 
-```ts
+```ts title="src/entry.client.ts"
 import { Router, RouterMode } from '@esmx/router';
 import { createVueApp } from './create-app';
 import { routes } from './routes';
@@ -365,7 +348,7 @@ app.mount('#app');
 
 ### entry.server.ts
 
-```ts
+```ts title="src/entry.server.ts"
 import type { RenderContext } from '@esmx/core';
 import { renderToString } from '@vue/server-renderer';
 import { Router, RouterMode } from '@esmx/router';
@@ -404,7 +387,7 @@ export default async (rc: RenderContext) => {
 
 ### entry.node.ts
 
-```ts
+```ts title="src/entry.node.ts"
 import http from 'node:http';
 import type { EsmxOptions } from '@esmx/core';
 

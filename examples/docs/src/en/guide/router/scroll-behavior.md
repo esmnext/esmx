@@ -15,22 +15,18 @@ When navigating between routes, `@esmx/router` automatically manages scroll posi
 
 The router handles scrolling differently based on the navigation type:
 
-| Navigation Type | Scroll Behavior |
-|----------------|----------------|
-| `push` | Scrolls to top `(0, 0)` |
-| `replace` | Scrolls to top `(0, 0)` |
-| `back` | Restores saved scroll position |
-| `forward` | Restores saved scroll position |
-| `go(n)` | Restores saved scroll position |
-| `pushWindow` | Handled by browser |
-| `replaceWindow` | Handled by browser |
+- `push`: Scrolls to top `(0, 0)`
+- `replace`: Scrolls to top `(0, 0)`
+- `back`: Restores saved scroll position
+- `forward`: Restores saved scroll position
+- `go(n)`: Restores saved scroll position
+- `pushWindow`: Handled by browser
+- `replaceWindow`: Handled by browser
 
 ```ts
-// Navigating forward → scroll to top
-await router.push('/new-page'); // page scrolls to top
+await router.push('/new-page');
 
-// Going back → scroll position is restored
-await router.back(); // page scrolls to where you were before
+await router.back();
 ```
 
 This works out of the box with no configuration needed.
@@ -43,13 +39,10 @@ When leaving a page (via `push`, `replace`, or history navigation), the router s
 2. **History state**: The position is also stored in `history.state` under the `__scroll_position_key` property
 
 ```ts
-// Internally, the router does something like:
 const scrollPosition = { left: window.scrollX, top: window.scrollY };
 
-// Save in memory
 scrollPositions.set(currentUrl, scrollPosition);
 
-// Save in history state
 history.replaceState({
   ...history.state,
   __scroll_position_key: scrollPosition
@@ -69,7 +62,6 @@ This is configured during the `confirm` phase of navigation — you don't need t
 Sometimes you don't want navigation to scroll to the top. For example, when switching tabs or filtering content, the user expects to stay where they are:
 
 ```ts
-// Tab navigation — stay at current scroll position
 await router.push({
   path: '/dashboard',
   query: { tab: 'settings' },
@@ -82,12 +74,7 @@ When `keepScrollPosition` is set to `true`:
 - The current scroll position is **not** saved (since we're staying at the same position)
 - The `__keepScrollPosition` flag is stored in `history.state`
 
-This flag is also checked during `back`/`forward` navigation — if the target history entry was created with `keepScrollPosition: true`, scroll restoration is skipped:
-
-```ts
-// If the user navigates back to an entry that was created with keepScrollPosition,
-// the router won't attempt scroll restoration
-```
+This flag is also checked during `back`/`forward` navigation — if the target history entry was created with `keepScrollPosition: true`, scroll restoration is skipped.
 
 ## Scroll to Element
 
@@ -96,17 +83,14 @@ The scroll system supports scrolling to a specific element on the page using a C
 ```ts
 import { scrollToPosition } from '@esmx/router';
 
-// Scroll to an element by CSS selector
 scrollToPosition({ el: '#section-title' });
 
-// Scroll to an element with offset
 scrollToPosition({
   el: '#section-title',
-  top: -80,    // offset for fixed header
+  top: -80,
   behavior: 'smooth'
 });
 
-// Scroll to an element by reference
 const element = document.querySelector('.target');
 scrollToPosition({ el: element });
 ```
@@ -134,9 +118,7 @@ router.afterEach((to) => {
 Routes opened as [layers](./layer) (via `pushLayer` or `createLayer`) skip scroll handling entirely. Since layers render in an overlay on top of the current page, scrolling the background page would be disruptive:
 
 ```ts
-// Layer navigation does NOT affect scroll position
 await router.pushLayer('/confirm-dialog');
-// The background page stays exactly where it is
 ```
 
 This behavior is built into the router's confirm phase — scroll logic is skipped when `router.isLayer` is `true`.
@@ -173,10 +155,8 @@ Here's the complete flow of how scroll is handled during different navigation ty
 
 ## Summary
 
-| Feature | Default | How to change |
-|---------|---------|---------------|
-| Scroll to top on push/replace | ✅ Enabled | Pass `keepScrollPosition: true` |
-| Restore scroll on back/forward | ✅ Enabled | Automatic — uses saved positions |
-| Browser scroll restoration | ❌ Disabled (`'manual'`) | Set automatically by router |
-| Layer scroll handling | ❌ Skipped | Automatic for layer routes |
-| Persist across page refresh | ✅ Via `history.state` | Automatic |
+- **Scroll to top on push/replace**: Enabled by default. Pass `keepScrollPosition: true` to disable.
+- **Restore scroll on back/forward**: Enabled by default. Uses saved positions automatically.
+- **Browser scroll restoration**: Disabled (`'manual'`). Set automatically by router.
+- **Layer scroll handling**: Skipped. Automatic for layer routes.
+- **Persist across page refresh**: Via `history.state`. Automatic.

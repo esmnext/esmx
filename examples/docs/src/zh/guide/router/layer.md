@@ -13,30 +13,17 @@ The Layer system allows creating overlay/modal routes with their own navigation 
 
 ## API Methods
 
-### createLayer {#createlayer}
+### createLayer()
 
-```ts
-createLayer(to: RouteLocationInput): Promise<{
-  promise: Promise<RouteLayerResult>;
-  router: Router;
-}>;
-```
+- **Parameters**:
+  - `to: RouteLocationInput` - Target route (can include `layer` options)
+- **Returns**: `Promise<{ promise: Promise<RouteLayerResult>; router: Router }>`
 
 Create a layer router and navigate to the given route. Returns both the layer router instance and a promise that resolves when the layer closes.
 
-#### Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| to | `RouteLocationInput` | Target route (can include `layer` options) |
-
-#### Returns
-
-An object with:
+Returns an object with:
 - `router` — The layer Router instance
 - `promise` — Resolves to [`RouteLayerResult`](#routelayerresult) when the layer closes
-
-#### Example
 
 ```ts
 const { promise, router: layerRouter } = await router.createLayer({
@@ -50,25 +37,13 @@ const { promise, router: layerRouter } = await router.createLayer({
 const result = await promise;
 ```
 
-### pushLayer {#pushlayer}
+### pushLayer()
 
-```ts
-pushLayer(to: RouteLocationInput): Promise<RouteLayerResult>;
-```
+- **Parameters**:
+  - `to: RouteLocationInput` - Target route (can include `layer` options)
+- **Returns**: `Promise<RouteLayerResult>`
 
 Shorthand that creates a layer and returns its result directly.
-
-#### Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| to | `RouteLocationInput` | Target route (can include `layer` options) |
-
-#### Returns
-
-`Promise<RouteLayerResult>`
-
-#### Example
 
 ```ts
 const result = await router.pushLayer('/modal/confirm');
@@ -80,21 +55,12 @@ if (result.type === 'success') {
 }
 ```
 
-### closeLayer {#closelayer}
+### closeLayer()
 
-```ts
-closeLayer(data?: any): void;
-```
+- **Parameters**:
+  - `data: any` - Optional data returned to the parent. When provided, result type is `'success'`
 
 Close the current layer. Only works when `router.isLayer` is `true`.
-
-#### Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| data | `any` | Optional data returned to the parent. When provided, result type is `'success'` |
-
-#### Example
 
 ```ts
 // Inside a layer route component:
@@ -104,10 +70,11 @@ router.closeLayer({ confirmed: true, selectedItem: item });
 router.closeLayer();
 ```
 
-## RouteLayerOptions {#routelayeroptions}
+## RouteLayerOptions
 
 Configure layer behavior via the `layer` property of `RouteLocationInput`.
 
+- **Type Definition**:
 ```ts
 interface RouteLayerOptions {
   zIndex?: number;
@@ -118,37 +85,23 @@ interface RouteLayerOptions {
 }
 ```
 
-### zIndex {#zindex}
+### zIndex
 
-```ts
-optional zIndex: number;
-```
+- **Type**: `number`
+- **Default**: Auto-incremented from `1000`
 
 CSS z-index for the layer overlay.
 
-#### Default Value
+### keepAlive
 
-Auto-incremented from `1000`
-
-### keepAlive {#keepalive}
-
-```ts
-optional keepAlive: 'exact' | 'include' | RouteVerifyHook;
-```
+- **Type**: `'exact' | 'include' | RouteVerifyHook`
+- **Default**: `'exact'`
 
 Controls when the layer stays open during internal navigation.
 
-| Value | Behavior |
-|-------|----------|
-| `'exact'` | Layer stays open only when navigating to its initial path |
-| `'include'` | Layer stays open for all sub-paths of the initial path |
-| `function` | Custom logic returning `true` to keep alive, `false` to close |
-
-#### Default Value
-
-`'exact'`
-
-#### Example
+- `'exact'`: Layer stays open only when navigating to its initial path
+- `'include'`: Layer stays open for all sub-paths of the initial path
+- `function`: Custom logic returning `true` to keep alive, `false` to close
 
 ```ts
 // Keep alive for sub-paths
@@ -169,42 +122,31 @@ await router.pushLayer({
 });
 ```
 
-### autoPush {#autopush}
+### autoPush
 
-```ts
-optional autoPush: boolean;
-```
+- **Type**: `boolean`
+- **Default**: `true`
 
 When the layer closes due to a `push`-type result (navigation to a non-layer route), automatically push that route on the parent router.
 
-#### Default Value
+### push
 
-`true`
-
-### push {#push}
-
-```ts
-optional push: boolean;
-```
+- **Type**: `boolean`
+- **Default**: `true`
 
 Whether to add a history entry when the layer opens. When `true`, pressing the browser back button will close the layer.
 
-#### Default Value
+### routerOptions
 
-`true`
-
-### routerOptions {#routeroptions}
-
-```ts
-optional routerOptions: RouterLayerOptions;
-```
+- **Type**: `RouterLayerOptions`
 
 Additional options passed to the layer's internal Router constructor. Allows customizing routes, mode, and other router settings for the layer context.
 
-## RouteLayerResult {#routelayerresult}
+## RouteLayerResult
 
 The result when a layer closes.
 
+- **Type Definition**:
 ```ts
 type RouteLayerResult =
   | { type: 'close'; route: Route }
@@ -212,13 +154,11 @@ type RouteLayerResult =
   | { type: 'success'; route: Route; data?: any };
 ```
 
-| Type | Description |
-|------|-------------|
-| `close` | Layer was dismissed (back button, `closeLayer()` without data) |
-| `push` | Layer closed because user navigated to a non-layer route |
-| `success` | Layer was closed with data via `closeLayer(data)` |
+- `close`: Layer was dismissed (back button, `closeLayer()` without data)
+- `push`: Layer closed because user navigated to a non-layer route
+- `success`: Layer was closed with data via `closeLayer(data)`
 
-## Layer Routes {#layer-routes}
+## Layer Routes
 
 Routes can be marked as layer-only in their [config](./route-config#layer):
 
@@ -240,7 +180,7 @@ const routes = [
   {
     path: '/product/:id',
     component: ProductDetail,
-    layer: true  // Can be opened as overlay
+    layer: true
   }
 ];
 
@@ -250,7 +190,7 @@ const result = await router.pushLayer({
   layer: {
     zIndex: 2000,
     keepAlive: 'exact',
-    push: true // Back button closes the modal
+    push: true
   }
 });
 
@@ -260,15 +200,15 @@ if (result.type === 'success') {
 
 // Inside the ProductDetail component:
 function onAddToCart(product) {
-  router.closeLayer({ product }); // Returns data to parent
+  router.closeLayer({ product });
 }
 
 function onDismiss() {
-  router.closeLayer(); // result.type === 'close'
+  router.closeLayer();
 }
 ```
 
-## How It Works Internally {#internals}
+## How It Works Internally
 
 1. `createLayer()` creates a new Router instance with `mode: memory` and `layer: true`
 2. A new root `<div>` is created and appended to `document.body` with overlay styling:
