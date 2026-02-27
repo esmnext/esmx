@@ -2,22 +2,16 @@
     {
         "type": "dir",
         "name": "start",
-        "label": "Getting Started",
-        "collapsible": true,
-        "collapsed": false
+        "label": "Getting Started"
     },
     {
         "type": "dir",
         "name": "essentials",
-        "label": "Essentials",
-        "collapsible": true,
-        "collapsed": false
+        "label": "Essentials"
     },
     {
         "type": "dir",
         "name": "router",
-        "label": "Router",
-        "collapsible": true,
-        "collapsed": false
+        "label": "Router"
     }
 ]
