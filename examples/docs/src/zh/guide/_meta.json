@@ -2,12 +2,12 @@
     {
         "type": "dir",
         "name": "start",
-        "label": "Getting Started"
+        "label": "开始"
     },
     {
         "type": "dir",
         "name": "essentials",
-        "label": "Essentials"
+        "label": "基础"
     },
     {
         "type": "dir",
