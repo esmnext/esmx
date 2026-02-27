@@ -22,360 +22,127 @@ Modern web applications face challenges that traditional routers were not design
 
 `@esmx/router` was built from the ground up to address all of these.
 
-## Core Concepts
+## Core Features
 
-### Framework-Agnostic by Design
+### Framework-Agnostic
 
-The router does not import React, Vue, or any other framework. Instead, routes declare a **micro-app factory** — a function that knows how to mount and unmount a specific framework's component tree into a DOM element:
+The router does not import React, Vue, or any other framework. Instead, routes declare a **micro-app** — a set of callbacks (`mount`, `unmount`, `renderToString`) that know how to manage a specific framework's component tree. This means different routes can render using entirely different frameworks:
 
 ```ts
 const router = new Router({
   routes: [
-    {
-      path: '/',
-      app: 'react-app',       // mount the React micro-app
-      component: HomePage
-    },
-    {
-      path: '/dashboard',
-      app: 'vue3-app',        // mount the Vue 3 micro-app
-      component: DashboardPage
-    }
+    { path: '/', app: 'react-app', component: HomePage },
+    { path: '/dashboard', app: 'vue3-app', component: Dashboard }
   ],
   apps: {
-    'react-app': () => ({
-      mount(el, component) { /* ReactDOM.render(...) */ },
-      unmount(el) { /* ReactDOM.unmountComponentAtNode(...) */ }
-    }),
-    'vue3-app': () => ({
-      mount(el, component) { /* createApp(component).mount(el) */ },
-      unmount(el) { /* app.unmount() */ }
-    })
+    'react-app': () => ({ mount(el, comp) { /* ReactDOM */ }, unmount(el) { /* cleanup */ } }),
+    'vue3-app': () => ({ mount(el, comp) { /* createApp */ }, unmount(el) { /* cleanup */ } })
   }
 });
 ```
 
 When the user navigates from `/` to `/dashboard`, the router unmounts the React app, mounts the Vue 3 app, and renders the correct component — all without a full page reload.
 
-### Routing Modes
-
-The router supports two modes:
+### Two Routing Modes
 
 | Mode | Description | Use Case |
 |------|-------------|----------|
-| `history` | Uses the browser's History API (`pushState`, `popstate`) | Standard web applications |
-| `memory` | Keeps routing state entirely in memory, no URL changes | SSR, layer routing, testing |
-
-```ts
-import { Router, RouterMode } from '@esmx/router';
-
-// Browser mode (default)
-const router = new Router({
-  mode: RouterMode.history,
-  routes: [/* ... */]
-});
-
-// Memory mode (SSR or layer)
-const ssrRouter = new Router({
-  mode: RouterMode.memory,
-  base: new URL('https://example.com/current-page'),
-  routes: [/* ... */]
-});
-```
+| `RouterMode.history` | Uses the browser's History API (`pushState`, `popstate`) | Standard web applications |
+| `RouterMode.memory` | Keeps state entirely in memory, no URL changes | SSR, layer routing, testing |
 
 ### Server-Side Rendering (SSR)
 
-The router has first-class SSR support. The same route configuration works on both server and client:
+The router has first-class SSR support. The same route configuration works on both server and client. On the server, use `RouterMode.memory` and pass `req`/`res` objects:
 
 ```ts
-// Server side (Node.js)
 const router = new Router({
   mode: RouterMode.memory,
   base: new URL(req.url, `http://${req.headers.host}`),
-  req,
-  res,
-  routes: [/* ... */]
+  req, res,
+  routes: [/* same routes as client */]
 });
-
-// renderToString() walks the route tree and produces HTML
 const html = await router.renderToString();
 ```
 
-On the server, routes are matched against the incoming request URL. The correct micro-app's `renderToString` method is called, producing HTML that can be sent to the client. On the client, the same router configuration hydrates the rendered content.
+### Rich Route Configuration
 
-### Route Configuration
-
-Routes are defined as a tree of `RouteConfig` objects. Each route can have children (nested routes), guards, redirects, lazy-loaded components, and micro-app bindings:
+Routes support dynamic parameters, nested children, lazy loading, per-route guards, redirects, micro-app binding, and more:
 
 ```ts
-const routes: RouteConfig[] = [
+const routes = [
   {
     path: '/',
     component: Layout,
     children: [
       { path: '', component: Home },
-      { path: 'about', component: About },
-      {
-        path: 'users/:id',
-        asyncComponent: () => import('./UserProfile'),
-        beforeEnter(to, from, router) {
-          if (!isLoggedIn()) return '/login';
-        }
+      { path: 'users/:id', asyncComponent: () => import('./UserProfile') },
+      { path: 'admin', app: 'admin-app', component: AdminPanel,
+        beforeEnter: (to, from, router) => { if (!isAdmin()) return '/login'; }
       }
-    ]
-  },
-  {
-    path: '/admin',
-    app: 'admin-app',  // different micro-app
-    component: AdminLayout,
-    children: [
-      { path: '', component: AdminHome },
-      { path: 'settings', component: AdminSettings }
     ]
   }
 ];
 ```
 
-Key features of route configuration:
+### Full Navigation Guard Pipeline
 
-- **Dynamic parameters**: `/users/:id` extracts `id` from the URL
-- **Nested routes**: Children inherit the parent's path prefix and component tree
-- **Async components**: Load components on demand with `asyncComponent`
-- **Redirects**: Send users to a different route with `redirect`
-- **Per-route guards**: `beforeEnter`, `beforeUpdate`, `beforeLeave`
-- **Micro-app binding**: Different routes can mount different framework applications
-- **Layer routes**: Routes marked with `layer: true` only activate inside a layer context
+Guards intercept navigation at every stage — from leaving the current route to entering the new one. The pipeline executes in this order:
 
-### Navigation
-
-The router provides several navigation methods, each with different behavior:
-
-```ts
-// Client-side navigation (SPA — no full page reload)
-await router.push('/about');
-await router.replace('/about');
-
-// Full page navigation (triggers a browser navigation)
-await router.pushWindow('/external-page');
-await router.replaceWindow('/external-page');
-
-// History navigation
-await router.back();
-await router.forward();
-await router.go(-2);
-
-// Restart the current micro-app
-await router.restartApp();
-```
-
-The difference between `push`/`replace` and `pushWindow`/`replaceWindow` is critical in micro-frontend applications: SPA navigation keeps the host app running and only swaps the routed content, while window navigation triggers a full browser navigation — useful when navigating to a page outside the current micro-frontend's scope.
-
-### Navigation Guards
-
-Guards allow you to intercept navigation and control whether it should proceed, redirect, or be cancelled:
-
-```ts
-// Global guard — runs for every navigation
-router.beforeEach((to, from, router) => {
-  if (to.meta.requiresAuth && !isLoggedIn()) {
-    return '/login';  // redirect
-  }
-  // return void to allow navigation
-});
-
-// After each navigation (notification only — cannot block)
-router.afterEach((to, from, router) => {
-  analytics.trackPageView(to.path);
-});
-```
-
-The full navigation pipeline, in order:
-
-1. **`override`** — Route-level override for hybrid app scenarios
-2. **`asyncComponent`** — Lazy load the target component
+1. **`fallback`** — Handle unmatched routes
+2. **`override`** — Route-level override (hybrid app scenarios)
 3. **`beforeLeave`** — Guard on the route being left
-4. **`beforeEnter`** — Guard on the route being entered (new route only)
-5. **`beforeUpdate`** — Guard on the route being updated (same route, different params)
-6. **`beforeEach`** — Global guard
-7. **Navigation confirmed** → DOM updates, micro-app mount/unmount
-8. **`afterEach`** — Global notification hook
+4. **`beforeEach`** — Global guard
+5. **`beforeUpdate`** — Guard when same route changes params
+6. **`beforeEnter`** — Guard on the route being entered
+7. **`asyncComponent`** — Lazy load the target component
+8. **`confirm`** — Final confirmation, DOM updates, micro-app mount/unmount
+9. **`afterEach`** — Post-navigation notification
 
-Guards can return:
-- `void` / `undefined` — allow navigation
-- `false` — cancel navigation
-- A route location string or object — redirect
-- A `RouteHandleHook` function — execute custom logic before proceeding
+Guards can return `void` (allow), `false` (cancel), a string/object (redirect), or a function (custom logic).
 
 ### Layer Routing
 
-Layers are isolated routing contexts that render on top of the main page — think modals, drawers, or slide-in panels, but with their own full routing support:
+Layers are isolated routing contexts rendered on top of the main page — modals, drawers, and slide-in panels with their own navigation:
 
 ```ts
-// Open a layer with its own route tree
 const result = await router.createLayer({
   routes: [
     { path: '/', component: ModalContent },
     { path: '/step-2', component: ModalStep2 }
-  ],
-  rootStyle: {
-    position: 'fixed',
-    inset: '0',
-    zIndex: '1000',
-    background: 'rgba(0,0,0,0.5)'
-  }
+  ]
 });
-
-// result.data contains any data passed to closeLayer()
-console.log(result.data);
+// result.data contains data passed to closeLayer()
 ```
 
-Inside the layer, you can navigate freely (`push`, `replace`, `back`) without affecting the parent page's route. When `closeLayer(data)` is called, the layer's DOM is removed and the promise resolves with the passed data.
-
-For simpler cases, `pushLayer` opens a layer from the current route configuration (routes marked with `layer: true`):
-
-```ts
-const result = await router.pushLayer('/confirm-dialog');
-```
+Inside a layer, navigation (`push`, `replace`, `back`) does not affect the parent page's route.
 
 ### RouterLink
 
-`RouterLink` is a framework-agnostic utility for generating navigation links. Instead of providing a React or Vue component, it provides a `resolveLink` function that returns everything needed to render a link in any framework:
+A framework-agnostic utility for building navigation links. `router.resolveLink()` returns attributes, active state, and event handlers that any framework can use:
 
 ```ts
-const resolved = router.resolveLink({
-  to: '/about',
-  activeClass: 'nav-active',
-  exact: 'route'
-});
-
-// resolved.attributes — { href, class, target?, rel? }
-// resolved.isActive — whether the link matches the current route
-// resolved.navigate — function to call on click
-// resolved.createEventHandlers() — event handlers for the element
+const link = router.resolveLink({ to: '/about', activeClass: 'nav-active' });
+// link.attributes — { href, class }
+// link.isActive — true/false
+// link.navigate — click handler
 ```
 
-This approach means the router itself has zero framework dependencies, while framework-specific wrappers (like `@esmx/router-vue`) can use `resolveLink` to build their own `<RouterLink>` components.
+Framework-specific wrappers (like `@esmx/router-vue`) build their own `<RouterLink>` components on top of this.
 
-### Micro-App Lifecycle
+### Scroll Behavior
 
-When the router navigates between routes that belong to different micro-apps, it manages a complete lifecycle:
+The router automatically manages scroll positions:
+- **`push`/`replace`** — scrolls to top (unless `keepScrollPosition: true`)
+- **`back`/`forward`/`go`** — restores the saved scroll position
+- Scroll positions are saved per URL in `history.state`
 
-1. **Unmount** the current micro-app (clean up DOM, event listeners, framework state)
-2. **Mount** the new micro-app (initialize framework, render component)
-3. **On SSR**: Call `renderToString` on the matched micro-app to produce HTML
+### Error Handling
 
-Each micro-app registers three callbacks:
-
-```ts
-router.microApp.on('react-app', (router) => ({
-  mount(rootEl, component, route) {
-    // Called when this micro-app becomes active
-    const root = createRoot(rootEl);
-    root.render(createElement(component));
-    return root;
-  },
-  unmount(rootEl, app) {
-    // Called when navigating away from this micro-app
-    app.unmount();
-  },
-  async renderToString(component, route) {
-    // Called during SSR
-    return ReactDOMServer.renderToString(createElement(component));
-  }
-}));
-```
-
-## Quick Start
-
-### Installation
-
-```bash
-npm install @esmx/router
-```
-
-### Basic Setup
-
-```ts
-import { Router, RouterMode } from '@esmx/router';
-
-const router = new Router({
-  root: '#app',
-  mode: RouterMode.history,
-  routes: [
-    { path: '/', component: HomePage },
-    { path: '/about', component: AboutPage },
-    { path: '/users/:id', component: UserPage },
-    { path: '/contact', component: ContactPage }
-  ]
-});
-
-// Navigate
-await router.push('/about');
-
-// Access current route
-console.log(router.route.path);    // '/about'
-console.log(router.route.params);  // {}
-console.log(router.route.query);   // {}
-```
-
-### With Micro-Apps (Multi-Framework)
-
-```ts
-import { Router, RouterMode } from '@esmx/router';
-
-const router = new Router({
-  root: '#app',
-  mode: RouterMode.history,
-  routes: [
-    { path: '/', app: 'react', component: ReactHome },
-    { path: '/admin', app: 'vue3', component: VueAdmin }
-  ],
-  apps: {
-    react: () => ({
-      mount(el, component) {
-        const root = createRoot(el);
-        root.render(createElement(component));
-        return root;
-      },
-      unmount(el, root) { root.unmount(); }
-    }),
-    vue3: () => ({
-      mount(el, component) {
-        const app = createApp(component);
-        app.mount(el);
-        return app;
-      },
-      unmount(el, app) { app.unmount(); }
-    })
-  }
-});
-```
-
-### With SSR
-
-```ts
-// entry.server.ts
-export default async function render(req, res) {
-  const router = new Router({
-    mode: RouterMode.memory,
-    base: new URL(req.url, `http://${req.headers.host}`),
-    req,
-    res,
-    routes: [/* same routes as client */]
-  });
-
-  const html = await router.renderToString();
-
-  res.end(`
-    <html>
-      <body>
-        <div id="app">${html}</div>
-        <script src="/client.js"></script>
-      </body>
-    </html>
-  `);
-}
-```
+Four error types provide structured error handling for navigation failures:
+- `RouteTaskCancelledError` — Navigation superseded by a newer one
+- `RouteTaskExecutionError` — A guard or async component threw an error
+- `RouteNavigationAbortedError` — A guard returned `false`
+- `RouteSelfRedirectionError` — Infinite redirect loop detected
 
 ## Comparison with Other Routers
 
@@ -388,6 +155,17 @@ export default async function render(req, res) {
 | Layer routing (modals) | ✅ Built-in | ❌ | ❌ |
 | Micro-app lifecycle | ✅ | ❌ | ❌ |
 | Memory mode | ✅ | ✅ | ✅ |
-| Dynamic route matching | ✅ | ✅ | ✅ |
-| Nested routes | ✅ | ✅ | ✅ |
+| Scroll management | ✅ Automatic | ✅ Manual | ❌ |
 | TypeScript | ✅ Full types | ✅ | ✅ |
+
+## What's Next?
+
+- **[Getting Started](./getting-started)** — Step-by-step setup with Vue 2, Vue 3, or React
+- **[Dynamic Route Matching](./dynamic-matching)** — Route parameters, query strings, catch-all routes
+- **[Nested Routes](./nested-routes)** — Layouts and child routes
+- **[Programmatic Navigation](./programmatic-navigation)** — All navigation methods in detail
+- **[Navigation Guards](./navigation-guards)** — Intercept and control navigation
+- **[Scroll Behavior](./scroll-behavior)** — Automatic scroll management
+- **[Layer Routing](./layer)** — Modals and drawers with isolated routing
+- **[Micro-App](./micro-app)** — Multi-framework app orchestration
+- **[Error Handling](./error-handling)** — Structured error types

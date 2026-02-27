@@ -1,11 +1,17 @@
 [
     "introduction",
+    "getting-started",
+    "dynamic-matching",
+    "nested-routes",
+    "programmatic-navigation",
+    "scroll-behavior",
+    "navigation-guards",
+    "error-handling",
+    "layer",
+    "micro-app",
+    "router-link",
     "router",
     "route",
     "route-config",
-    "navigation-guards",
-    "micro-app",
-    "layer",
-    "router-link",
     "types"
 ]
