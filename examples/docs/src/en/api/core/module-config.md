@@ -9,7 +9,7 @@ head:
 
 # ModuleConfig
 
-The core configuration interface for the module system.
+Core configuration interface for the module system.
 
 ## Interface Definition
 
@@ -173,3 +173,4 @@ interface ParsedModuleConfigExport {
     file: string;
     pkg: boolean;
 }
+```

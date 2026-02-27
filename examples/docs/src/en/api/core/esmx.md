@@ -36,7 +36,7 @@ type ImportMap = {
 }
 ```
 
-ES module import mapping type.
+An ES module import mapping type.
 
 #### SpecifierMap
 
@@ -45,7 +45,7 @@ ES module import mapping type.
 type SpecifierMap = Record<string, string>
 ```
 
-Module specifier mapping type, used to define module import path mappings.
+A module specifier mapping type, used to define module import path mappings.
 
 #### ScopesMap
 
@@ -54,7 +54,7 @@ Module specifier mapping type, used to define module import path mappings.
 type ScopesMap = Record<string, SpecifierMap>
 ```
 
-Scope mapping type, used to define module import mappings within specific scopes.
+A scope mapping type, used to define module import mappings within specific scopes.
 
 ### COMMAND
 
