@@ -1,6 +1,9 @@
 [
     "introduction",
     "getting-started",
+    "vue3",
+    "vue2",
+    "react",
     "dynamic-matching",
     "nested-routes",
     "programmatic-navigation",
