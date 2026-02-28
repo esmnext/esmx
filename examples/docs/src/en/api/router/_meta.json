@@ -1,0 +1,11 @@
+[
+    "router",
+    "route",
+    "route-config",
+    "router-link",
+    "navigation-guards",
+    "layer",
+    "error-types",
+    "router-vue",
+    "types"
+]

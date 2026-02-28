@@ -6,6 +6,11 @@
     },
     {
         "type": "dir",
+        "name": "router",
+        "label": "@esmx/router"
+    },
+    {
+        "type": "dir",
         "name": "app",
         "label": "App"
     }
