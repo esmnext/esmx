@@ -131,6 +131,39 @@ Gets the Node.js request object (server-side only).
 
 Gets the Node.js response object (server-side only).
 
+### context
+
+- **Type**: `Record<string | symbol, unknown>`
+- **Read-only**: `true`
+
+Gets the shared context object. Useful for passing data across routes without coupling them, such as dependency injection containers or shared services.
+
+```ts
+const router = new Router({
+    context: { auth: authService, i18n: i18nService },
+    routes
+});
+
+// Access in guards or components
+console.log(router.context.auth);
+```
+
+### data
+
+- **Type**: `Record<string | symbol, unknown>`
+- **Read-only**: `true`
+
+Gets the shared data object. Similar to `context`, but intended for mutable data shared across routes.
+
+```ts
+const router = new Router({
+    data: { pageTitle: 'Home' },
+    routes
+});
+
+router.data.pageTitle = 'About';
+```
+
 ## Instance Methods
 
 ### constructor()
@@ -406,6 +439,42 @@ router.closeLayer();
 
 // Close with return data
 router.closeLayer({ selectedUserId: 42 });
+```
+
+### renderToString()
+
+- **Parameters**:
+  - `throwError?: boolean` — Whether to throw errors instead of catching them (default: `false`)
+- **Returns**: `Promise<string | null>`
+
+Renders the current route's micro-app to an HTML string for server-side rendering. Returns `null` if no micro-app is mounted or if rendering fails (when `throwError` is `false`).
+
+```ts
+// SSR usage
+const router = new Router({
+    mode: RouterMode.memory,
+    base: new URL(req.url, `http://${req.headers.host}`),
+    routes,
+    apps: (router) => ({
+        mount(el) { /* ... */ },
+        unmount(el) { /* ... */ },
+        async renderToString() {
+            const { renderToString } = await import('react-dom/server');
+            return renderToString(createElement(App, { router }));
+        }
+    })
+});
+
+await router.push(req.url);
+const html = await router.renderToString();
+// html contains the rendered HTML string
+
+// With error propagation
+try {
+    const html = await router.renderToString(true);
+} catch (e) {
+    console.error('SSR render failed:', e);
+}
 ```
 
 ### destroy()

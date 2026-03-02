@@ -131,6 +131,39 @@ console.log(currentRoute.params);  // { id: '123' }
 
 获取 Node.js 响应对象（仅服务端）。
 
+### context
+
+- **类型**：`Record<string | symbol, unknown>`
+- **只读**：`true`
+
+获取共享上下文对象。用于在路由之间传递数据而不产生耦合，例如依赖注入容器或共享服务。
+
+```ts
+const router = new Router({
+    context: { auth: authService, i18n: i18nService },
+    routes
+});
+
+// 在守卫或组件中访问
+console.log(router.context.auth);
+```
+
+### data
+
+- **类型**：`Record<string | symbol, unknown>`
+- **只读**：`true`
+
+获取共享数据对象。与 `context` 类似，但用于路由之间共享的可变数据。
+
+```ts
+const router = new Router({
+    data: { pageTitle: 'Home' },
+    routes
+});
+
+router.data.pageTitle = 'About';
+```
+
 ## 实例方法
 
 ### constructor()
@@ -406,6 +439,42 @@ router.closeLayer();
 
 // 携带返回数据关闭
 router.closeLayer({ selectedUserId: 42 });
+```
+
+### renderToString()
+
+- **参数**：
+  - `throwError?: boolean` — 是否抛出错误而不是捕获它们（默认：`false`）
+- **返回值**：`Promise<string | null>`
+
+将当前路由的微应用渲染为 HTML 字符串，用于服务端渲染。如果没有挂载微应用或渲染失败（当 `throwError` 为 `false` 时），返回 `null`。
+
+```ts
+// SSR 用法
+const router = new Router({
+    mode: RouterMode.memory,
+    base: new URL(req.url, `http://${req.headers.host}`),
+    routes,
+    apps: (router) => ({
+        mount(el) { /* ... */ },
+        unmount(el) { /* ... */ },
+        async renderToString() {
+            const { renderToString } = await import('react-dom/server');
+            return renderToString(createElement(App, { router }));
+        }
+    })
+});
+
+await router.push(req.url);
+const html = await router.renderToString();
+// html 包含渲染后的 HTML 字符串
+
+// 启用错误传播
+try {
+    const html = await router.renderToString(true);
+} catch (e) {
+    console.error('SSR 渲染失败：', e);
+}
 ```
 
 ### destroy()
