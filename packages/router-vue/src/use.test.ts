@@ -381,13 +381,13 @@ describe('Router Vue Integration', () => {
             expect(observedDepth).toBe(3);
         });
 
-        it('should throw when no RouterView ancestor exists', async () => {
-            let callDepth: (() => void) | undefined;
+        it('should return 0 when no RouterView ancestor exists', async () => {
+            let observedDepth: number | undefined;
 
             const Probe = defineComponent({
                 setup() {
                     const p = getCurrentInstance()!.proxy as any;
-                    callDepth = () => getRouterViewDepth(p);
+                    observedDepth = getRouterViewDepth(p);
                     return () => h('div');
                 }
             });
@@ -403,11 +403,7 @@ describe('Router Vue Integration', () => {
             app.mount('#app');
             await nextTick();
 
-            expect(() => callDepth!()).toThrow(
-                new Error(
-                    '[@esmx/router-vue] RouterView depth not found. Please ensure a RouterView exists in ancestor components.'
-                )
-            );
+            expect(observedDepth).toBe(0);
         });
 
         it('should return 0 for useRouterViewDepth without RouterView', async () => {

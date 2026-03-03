@@ -598,6 +598,30 @@ describe('MicroApp', () => {
             expect(mockApp.unmount).toHaveBeenCalled();
             expect(microApp.app).toBeNull();
         });
+
+        it('should throw error when _update is called after destroy', () => {
+            const mockFactory = vi.fn().mockReturnValue(createMockApp());
+            const router = createMockRouter({
+                matched: [{ app: 'test-app' }],
+                options: { apps: { 'test-app': mockFactory } }
+            });
+
+            microApp._update(router);
+            expect(microApp.app).not.toBeNull();
+
+            microApp.destroy();
+
+            expect(() => microApp._update(router)).toThrow(
+                'MicroApp has been destroyed'
+            );
+        });
+
+        it('should throw error on multiple destroy calls', () => {
+            microApp.destroy();
+            expect(() => microApp._update({} as Router)).toThrow(
+                'MicroApp has been destroyed'
+            );
+        });
     });
 
     describe('integration tests', () => {

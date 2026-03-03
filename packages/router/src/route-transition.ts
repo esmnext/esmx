@@ -394,11 +394,12 @@ export class RouteTransition {
     // Task controller for the current transition.
     private _controller: RouteTaskController | null = null;
 
-    // Guard arrays, responsible for storing navigation guards.
     public readonly guards = {
         beforeEach: [] as RouteConfirmHook[],
         afterEach: [] as RouteNotifyHook[]
     };
+
+    private destroyed = false;
 
     constructor(router: Router) {
         this.router = router;
@@ -421,12 +422,19 @@ export class RouteTransition {
     public destroy(): void {
         this._controller?.abort();
         this._controller = null;
+        this.guards.afterEach.length = 0;
+        this.guards.beforeEach.length = 0;
+        this.destroyed = true;
     }
 
     public async to(
         toType: RouteType,
         toInput: RouteLocationInput
     ): Promise<Route> {
+        if (this.destroyed) {
+            throw new Error('RouteTransition has been destroyed');
+        }
+
         const from = this.route;
         const to = await this._runTask(
             new Route({

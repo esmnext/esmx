@@ -1,0 +1,47 @@
+{
+    "compilerOptions": {
+        "isolatedModules": true,
+        "allowJs": false,
+        "experimentalDecorators": true,
+        "resolveJsonModule": true,
+        "types": [
+            "@types/node",
+            "@types/react"
+        ],
+        "target": "ESNext",
+        "module": "ESNext",
+        "importHelpers": false,
+        "declaration": true,
+        "sourceMap": true,
+        "strict": true,
+        "noImplicitAny": false,
+        "noImplicitReturns": false,
+        "noFallthroughCasesInSwitch": true,
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "allowSyntheticDefaultImports": true,
+        "forceConsistentCasingInFileNames": true,
+        "noEmit": true
+    },
+    "include": [
+        "src/**/*.ts",
+        "server",
+        "test",
+        "src",
+        "private",
+        "public",
+        "bin",
+        "**.cjs",
+        "**.js",
+        "**.mjs",
+        "**.ts",
+        "tests"
+    ],
+    "exclude": [
+        "dist",
+        "template"
+    ]
+}

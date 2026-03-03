@@ -1,0 +1,119 @@
+{
+    "root": false,
+    "$schema": "https://biomejs.dev/schemas/2.3.7/schema.json",
+    "vcs": {
+        "enabled": true,
+        "clientKind": "git",
+        "useIgnoreFile": true
+    },
+    "overrides": [
+        {
+            "includes": [
+                ".rpt2_cache/**",
+                "coverage/**",
+                "public/**",
+                "**/i18n/**",
+                "**/svg-icons.ts",
+                "build.config.ts",
+                "*.min.js",
+                "*.g.ts"
+            ],
+            "linter": {
+                "enabled": false
+            },
+            "formatter": {
+                "enabled": false
+            }
+        }
+    ],
+    "files": {
+        "ignoreUnknown": false
+    },
+    "formatter": {
+        "enabled": true,
+        "indentStyle": "space",
+        "indentWidth": 4
+    },
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "recommended": true,
+            "suspicious": {
+                "noEmptyInterface": "off",
+                "noConfusingVoidType": "off",
+                "noExplicitAny": "off",
+                "noAssignInExpressions": "off",
+                "useGetterReturn": "off",
+                "noGlobalIsNan": "warn",
+                "noImplicitAnyLet": "warn",
+                "noShadowRestrictedNames": "warn",
+                "useIsArray": "warn",
+                "noThenProperty": "warn",
+                "useIterableCallbackReturn": "off",
+                "noNonNullAssertedOptionalChain": "warn"
+            },
+            "security": {
+                "noGlobalEval": "warn"
+            },
+            "complexity": {
+                "noForEach": "off",
+                "noThisInStatic": "off",
+                "noBannedTypes": "off",
+                "useOptionalChain": "warn",
+                "noUselessConstructor": "warn",
+                "noUselessSwitchCase": "warn",
+                "noStaticOnlyClass": "off"
+            },
+            "style": {
+                "useFilenamingConvention": {
+                    "level": "warn",
+                    "options": {
+                        "strictCase": true,
+                        "requireAscii": true,
+                        "filenameCases": [
+                            "kebab-case"
+                        ]
+                    }
+                },
+                "useExponentiationOperator": "off",
+                "noUselessElse": "off",
+                "useTemplate": "off",
+                "noUnusedTemplateLiteral": "off",
+                "noNonNullAssertion": "off",
+                "noParameterAssign": "off",
+                "useNodejsImportProtocol": "warn",
+                "useDefaultParameterLast": "warn"
+            },
+            "performance": {
+                "noDelete": "warn",
+                "noAccumulatingSpread": "warn"
+            },
+            "correctness": {
+                "noSelfAssign": "off",
+                "noUnusedVariables": "off",
+                "noUnusedFunctionParameters": "off",
+                "noUnsafeOptionalChaining": "warn",
+                "noVoidTypeReturn": "warn"
+            }
+        }
+    },
+    "javascript": {
+        "formatter": {
+            "quoteStyle": "single",
+            "trailingCommas": "none"
+        }
+    },
+    "json": {
+        "formatter": {
+            "enabled": false
+        }
+    },
+    "css": {
+        "formatter": {
+            "enabled": true
+        },
+        "linter": {
+            "enabled": true
+        }
+    }
+}
