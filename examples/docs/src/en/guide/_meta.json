@@ -8,5 +8,10 @@
         "type": "dir",
         "name": "essentials",
         "label": "Essentials"
+    },
+    {
+        "type": "dir",
+        "name": "router",
+        "label": "Router"
     }
 ]

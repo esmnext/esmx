@@ -6,6 +6,21 @@
     },
     {
         "type": "dir",
+        "name": "router",
+        "label": "@esmx/router"
+    },
+    {
+        "type": "dir",
+        "name": "router-vue",
+        "label": "@esmx/router-vue"
+    },
+    {
+        "type": "dir",
+        "name": "router-react",
+        "label": "@esmx/router-react"
+    },
+    {
+        "type": "dir",
         "name": "app",
         "label": "App"
     }
