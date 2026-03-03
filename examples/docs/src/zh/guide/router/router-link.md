@@ -9,11 +9,11 @@ head:
 
 # RouterLink
 
-`@esmx/router` provides a framework-agnostic link resolution system via [`router.resolveLink()`](./router#resolvelink). It generates all the data needed to build link components in any framework — including HTML attributes, active states, CSS classes, and event handlers.
+`@esmx/router` 通过 [`router.resolveLink()`](./router#resolvelink) 提供了一个框架无关的链接解析系统。它生成构建任何框架链接组件所需的所有数据——包括 HTML 属性、激活状态、CSS 类和事件处理器。
 
 ## RouterLinkProps
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 interface RouterLinkProps {
   to: RouteLocationInput;
@@ -29,9 +29,9 @@ interface RouterLinkProps {
 
 ### to
 
-- **Type**: `RouteLocationInput`
+- **类型**：`RouteLocationInput`
 
-**Required.** Target route. Can be a string path or a route location object.
+**必填。** 目标路由。可以是字符串路径或路由位置对象。
 
 ```ts
 router.resolveLink({ to: '/about' });
@@ -40,60 +40,60 @@ router.resolveLink({ to: { path: '/user', query: { id: '1' } } });
 
 ### type
 
-- **Type**: `RouterLinkType`
-- **Default**: `'push'`
+- **类型**：`RouterLinkType`
+- **默认值**：`'push'`
 
-Navigation type used when the link is clicked.
+点击链接时使用的导航类型。
 
-- `'push'`: Add to history stack (default)
-- `'replace'`: Replace current history entry
-- `'pushWindow'`: Open in new window/tab
-- `'replaceWindow'`: Replace current window
-- `'pushLayer'`: Open as a [layer/modal](./layer)
+- `'push'`：添加到历史栈（默认）
+- `'replace'`：替换当前历史条目
+- `'pushWindow'`：在新窗口/标签页中打开
+- `'replaceWindow'`：替换当前窗口
+- `'pushLayer'`：作为[分层/模态框](./layer)打开
 
 ### exact
 
-- **Type**: `RouteMatchType`
-- **Default**: `'include'`
+- **类型**：`RouteMatchType`
+- **默认值**：`'include'`
 
-How to determine the active state of the link.
+如何判定链接的激活状态。
 
-- `'include'`: Active when current path starts with link path
-- `'exact'`: Active when current path exactly matches link path
-- `'route'`: Active when same route config is matched
+- `'include'`：当前路径以链接路径开头时激活
+- `'exact'`：当前路径与链接路径完全匹配时激活
+- `'route'`：匹配相同路由配置时激活
 
 ### activeClass
 
-- **Type**: `string`
-- **Default**: `'router-link-active'`
+- **类型**：`string`
+- **默认值**：`'router-link-active'`
 
-CSS class applied when the link is active.
+链接激活时应用的 CSS 类。
 
 ### event
 
-- **Type**: `string | string[]`
-- **Default**: `'click'`
+- **类型**：`string | string[]`
+- **默认值**：`'click'`
 
-DOM event(s) that trigger navigation.
+触发导航的 DOM 事件。
 
 ### tag
 
-- **Type**: `string`
-- **Default**: `'a'`
+- **类型**：`string`
+- **默认值**：`'a'`
 
-The HTML tag to render.
+要渲染的 HTML 标签。
 
 ### layerOptions
 
-- **Type**: `RouteLayerOptions`
+- **类型**：`RouteLayerOptions`
 
-Layer options passed when `type` is `'pushLayer'`. See [Layer](./layer#routelayeroptions).
+当 `type` 为 `'pushLayer'` 时传递的分层选项。参见 [Layer](./layer#routelayeroptions)。
 
 ### beforeNavigate
 
-- **Type**: `(event: Event, eventName: string) => void`
+- **类型**：`(event: Event, eventName: string) => void`
 
-Hook called before navigation. Call `event.preventDefault()` to cancel.
+导航前调用的钩子。调用 `event.preventDefault()` 可取消导航。
 
 ```ts
 router.resolveLink({
@@ -108,9 +108,9 @@ router.resolveLink({
 
 ## RouterLinkResolved
 
-The result of `resolveLink()`.
+`resolveLink()` 的返回结果。
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 interface RouterLinkResolved {
   route: Route;
@@ -129,25 +129,25 @@ interface RouterLinkResolved {
 
 ### route
 
-The resolved [Route](./route) object for the target.
+目标的已解析 [Route](./route) 对象。
 
 ### isActive
 
-`true` if the current route matches the link target (based on the `exact` setting).
+如果当前路由与链接目标匹配（基于 `exact` 设置），则为 `true`。
 
 ### isExactActive
 
-`true` if the current route path exactly matches the link target path.
+如果当前路由路径与链接目标路径完全匹配，则为 `true`。
 
 ### isExternal
 
-`true` if the link points to a different origin (external URL).
+如果链接指向不同的源（外部 URL），则为 `true`。
 
 ### attributes
 
-HTML attributes for the link element:
+链接元素的 HTML 属性：
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 interface RouterLinkAttributes {
   href: string;
@@ -159,39 +159,39 @@ interface RouterLinkAttributes {
 
 ### navigate
 
-- **Type**: `(e: Event) => Promise<void>`
+- **类型**：`(e: Event) => Promise<void>`
 
-Function to call for programmatic navigation. Intelligently handles modifier keys (Ctrl+click opens new tab, etc.).
+用于编程式导航的函数。智能处理修饰键（Ctrl+点击打开新标签页等）。
 
 ### createEventHandlers
 
-- **Type**: `(format?: (eventType: string) => string) => Record<string, (e: Event) => Promise<void>>`
+- **类型**：`(format?: (eventType: string) => string) => Record<string, (e: Event) => Promise<void>>`
 
-Generate event handlers with framework-specific event name formatting.
+使用框架特定的事件名称格式生成事件处理器。
 
 ```ts
-// React (camelCase events)
+// React（驼峰命名事件）
 const handlers = linkData.createEventHandlers(
   name => `on${name.charAt(0).toUpperCase() + name.slice(1)}`
 );
 // → { onClick: (e) => ... }
 
-// Vue / vanilla (lowercase events)
+// Vue / 原生（小写事件）
 const handlers = linkData.createEventHandlers();
 // → { click: (e) => ... }
 ```
 
-## CSS Classes
+## CSS 类
 
-Links automatically receive CSS classes based on active state:
+链接根据激活状态自动接收 CSS 类：
 
-- `router-link`: Always applied
-- `router-link-active`: Applied when `isActive` is `true`
-- `router-link-exact-active`: Applied when `isExactActive` is `true`
+- `router-link`：始终应用
+- `router-link-active`：当 `isActive` 为 `true` 时应用
+- `router-link-exact-active`：当 `isExactActive` 为 `true` 时应用
 
-## Framework Examples
+## 框架示例
 
-### Vanilla JavaScript
+### 原生 JavaScript
 
 ```ts
 function createLink(router: Router, to: string, text: string) {
@@ -245,13 +245,13 @@ const handlers = linkData.createEventHandlers();
 </script>
 ```
 
-## Smart Navigation
+## 智能导航
 
-The `navigate` function intelligently handles browser events:
+`navigate` 函数智能处理浏览器事件：
 
-- **Ctrl+Click / Cmd+Click**: Opens in new tab (browser default)
-- **Shift+Click**: Opens in new window (browser default)
-- **Middle-click**: Opens in new tab (browser default)
-- **Normal click**: SPA navigation via router
+- **Ctrl+点击 / Cmd+点击**：在新标签页中打开（浏览器默认行为）
+- **Shift+点击**：在新窗口中打开（浏览器默认行为）
+- **中键点击**：在新标签页中打开（浏览器默认行为）
+- **普通点击**：通过路由器进行 SPA 导航
 
-This matches the behavior users expect from standard `<a>` tags.
+这与用户对标准 `<a>` 标签期望的行为一致。

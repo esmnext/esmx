@@ -7,15 +7,15 @@ head:
       content: "esmx micro-app, micro-frontend, mount unmount, renderToString, SSR micro-app, framework-agnostic"
 ---
 
-# MicroApp
+# 微应用
 
-The MicroApp system is how `@esmx/router` manages framework-agnostic micro-frontends. Each micro-app provides three lifecycle methods: `mount`, `unmount`, and optionally `renderToString`. The router handles transitions between micro-apps during navigation.
+微应用系统是 `@esmx/router` 管理框架无关的微前端的方式。每个微应用提供三个生命周期方法：`mount`、`unmount` 以及可选的 `renderToString`。Router 在导航过程中处理微应用之间的切换。
 
 ## RouterMicroAppOptions
 
-The interface every micro-app must implement.
+每个微应用必须实现的接口。
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 interface RouterMicroAppOptions {
   mount: (el: HTMLElement) => void;
@@ -26,50 +26,50 @@ interface RouterMicroAppOptions {
 
 ### mount
 
-- **Type**: `(el: HTMLElement) => void`
+- **类型**: `(el: HTMLElement) => void`
 
-Mount the application into the given DOM element. Called when the router navigates to a route bound to this micro-app.
+将应用挂载到给定的 DOM 元素中。当 Router 导航到绑定此微应用的路由时调用。
 
-- **Parameters**:
-  - `el: HTMLElement` - The DOM element to mount into (from [`RouterOptions.root`](./router#root))
+- **参数**：
+  - `el: HTMLElement` - 要挂载到的 DOM 元素（来自 [`RouterOptions.root`](./router#root)）
 
 ### unmount
 
-- **Type**: `() => void`
+- **类型**: `() => void`
 
-Clean up and destroy the application. Called when navigating away to a route bound to a different micro-app.
+清理并销毁应用。当导航离开当前路由到绑定不同微应用的路由时调用。
 
 ### renderToString
 
-- **Type**: `() => Awaitable<string>`
+- **类型**: `() => Awaitable<string>`
 
-Return the SSR HTML string for the current state of the application. Called by [`router.renderToString()`](./router#rendertostring) during server-side rendering.
+返回应用当前状态的 SSR HTML 字符串。在服务端渲染期间由 [`router.renderToString()`](./router#rendertostring) 调用。
 
 ## RouterMicroAppCallback
 
-A factory function that creates a micro-app, receiving the router instance.
+创建微应用的工厂函数，接收 Router 实例。
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 type RouterMicroAppCallback = (router: Router) => RouterMicroAppOptions;
 ```
 
 ## RouterMicroApp
 
-The `apps` option in [`RouterOptions`](./router#apps) accepts either a map of named factories or a single factory.
+[`RouterOptions`](./router#apps) 中的 `apps` 选项接受命名工厂的映射或单个工厂。
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 type RouterMicroApp =
   | Record<string, RouterMicroAppCallback | undefined>
   | RouterMicroAppCallback;
 ```
 
-## Usage
+## 使用方法
 
-### Registering Micro-Apps
+### 注册微应用
 
-Micro-apps are registered via the `apps` option on the Router and referenced by the `app` property in [route configs](./route-config#app):
+微应用通过 Router 的 `apps` 选项注册，并通过[路由配置](./route-config#app)中的 `app` 属性引用：
 
 ```ts
 const router = new Router({
@@ -98,7 +98,7 @@ const router = new Router({
 });
 ```
 
-### React Example
+### React 示例
 
 ```ts
 import * as ReactDOM from 'react-dom/client';
@@ -123,7 +123,7 @@ function createReactApp(router: Router): RouterMicroAppOptions {
 }
 ```
 
-### Vue 3 Example
+### Vue 3 示例
 
 ```ts
 import { createApp, createSSRApp } from 'vue';
@@ -151,19 +151,19 @@ function createVueApp(router: Router): RouterMicroAppOptions {
 }
 ```
 
-## Lifecycle
+## 生命周期
 
-### App Selection
+### 应用选择
 
-When a route is matched, the router determines which micro-app to use:
+当路由被匹配时，Router 会确定使用哪个微应用：
 
-1. The **first** matched route config with an `app` property is used
-2. If `app` is a `string`, it's looked up in `router.options.apps`
-3. If `app` is a function, it's called directly as the factory
+1. 使用**第一个**带有 `app` 属性的匹配路由配置
+2. 如果 `app` 是 `string`，则从 `router.options.apps` 中查找
+3. 如果 `app` 是函数，则直接作为工厂调用
 
-### App Transition
+### 应用切换
 
-When navigating between routes with **different** `app` values:
+在具有**不同** `app` 值的路由之间导航时：
 
 ```
 1. New app factory is called → creates new RouterMicroAppOptions
@@ -171,17 +171,17 @@ When navigating between routes with **different** `app` values:
 3. old app.unmount() → clean up previous app
 ```
 
-When navigating within the **same** app (e.g., `/react` → `/react/about`):
-- No mount/unmount occurs
-- The app handles internal routing via its own component system
+在**同一个**应用内导航时（例如 `/react` → `/react/about`）：
+- 不会发生 mount/unmount
+- 应用通过自身的组件系统处理内部路由
 
-### Force Restart
+### 强制重启
 
-[`router.restartApp()`](./router#restartapp) forces a full unmount → mount cycle even if the app key hasn't changed.
+[`router.restartApp()`](./router#restartapp) 强制执行完整的 unmount → mount 循环，即使 app 键没有改变。
 
-## SSR Flow
+## SSR 流程
 
-During server-side rendering:
+在服务端渲染期间：
 
 ```ts
 // 1. Create router with request context
@@ -201,10 +201,10 @@ await router.push(req.url);
 const html = await router.renderToString();
 ```
 
-## Root Element
+## 根元素
 
-The [`root`](./router#root) option in `RouterOptions` determines where micro-apps are mounted:
+`RouterOptions` 中的 [`root`](./router#root) 选项决定微应用挂载的位置：
 
-- If the element exists in the DOM, it's reused
-- If it doesn't exist, a `<div>` is created and appended to `document.body`
-- [Layer](./layer) routers create their own root elements with overlay styling
+- 如果元素在 DOM 中存在，则复用它
+- 如果不存在，则创建一个 `<div>` 并追加到 `document.body`
+- [层](./layer) Router 会创建自己带有覆盖层样式的根元素

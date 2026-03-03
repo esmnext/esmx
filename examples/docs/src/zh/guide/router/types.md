@@ -7,15 +7,15 @@ head:
       content: "esmx router types, TypeScript types, router enums, route interfaces, type definitions"
 ---
 
-# Types
+# 类型
 
-Complete TypeScript type reference for `@esmx/router`.
+`@esmx/router` 的完整 TypeScript 类型参考。
 
-## Enums
+## 枚举
 
 ### RouterMode
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 enum RouterMode {
   history = 'history',
@@ -23,14 +23,14 @@ enum RouterMode {
 }
 ```
 
-- `history`: Uses browser History API, URL changes visible in address bar
-- `memory`: In-memory stack, no URL changes. For SSR, testing, and [layers](./layer)
+- `history`：使用浏览器 History API，URL 变化在地址栏中可见
+- `memory`：内存栈，无 URL 变化。用于 SSR、测试和[层](./layer)
 
 ### RouteType
 
-How a route transition was initiated.
+路由过渡的发起方式。
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 enum RouteType {
   push = 'push',
@@ -46,60 +46,60 @@ enum RouteType {
 }
 ```
 
-## Utility Types
+## 工具类型
 
 ### Awaitable
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 type Awaitable<T> = T | Promise<T>;
 ```
 
-A value that can be either synchronous or a Promise.
+一个可以是同步值或 Promise 的值。
 
 ### RouteMeta
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 type RouteMeta = Record<string | symbol, unknown>;
 ```
 
-Custom metadata attached to route configs. Accessible via [`route.meta`](./route#meta).
+附加到路由配置的自定义元数据。通过 [`route.meta`](./route#meta) 访问。
 
 ### RouteState
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 type RouteState = Record<string, unknown>;
 ```
 
-State data associated with a navigation entry. Accessible via [`route.state`](./route#state).
+与导航条目关联的状态数据。通过 [`route.state`](./route#state) 访问。
 
 ### RouteHandleResult
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 type RouteHandleResult = unknown | null | void;
 ```
 
 ### RouteMatchType
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 type RouteMatchType = 'route' | 'exact' | 'include';
 ```
 
-- `'route'`: Same route configuration reference
-- `'exact'`: Paths are identical
-- `'include'`: Current path starts with target path
+- `'route'`：相同的路由配置引用
+- `'exact'`：路径完全相同
+- `'include'`：当前路径以目标路径开头
 
-## Hook Types
+## 钩子类型
 
 ### RouteConfirmHook
 
-Guard hook that can modify navigation flow.
+可以修改导航流程的守卫钩子。
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 type RouteConfirmHook = (
   to: Route,
@@ -110,7 +110,7 @@ type RouteConfirmHook = (
 
 ### RouteConfirmHookResult
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 type RouteConfirmHookResult =
   | void              // Continue navigation
@@ -121,7 +121,7 @@ type RouteConfirmHookResult =
 
 ### RouteHandleHook
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 type RouteHandleHook = (
   to: Route,
@@ -132,7 +132,7 @@ type RouteHandleHook = (
 
 ### RouteVerifyHook
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 type RouteVerifyHook = (
   to: Route,
@@ -141,13 +141,13 @@ type RouteVerifyHook = (
 ) => Awaitable<boolean>;
 ```
 
-Used by [`RouteLayerOptions.keepAlive`](./layer#keepalive) to determine if a layer should stay open.
+由 [`RouteLayerOptions.keepAlive`](./layer#keepalive) 使用，用于确定层是否应保持打开。
 
 ### RouteNotifyHook
 
-Post-navigation hook. Cannot modify navigation — for side effects only.
+导航后钩子。不能修改导航——仅用于副作用。
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 type RouteNotifyHook = (
   to: Route,
@@ -156,11 +156,11 @@ type RouteNotifyHook = (
 ) => void;
 ```
 
-## Route Location Types
+## 路由位置类型
 
 ### RouteLocation
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 interface RouteLocation {
   path?: string;
@@ -177,34 +177,34 @@ interface RouteLocation {
 }
 ```
 
-- `path`: URL path
-- `url`: Full URL (alternative to `path`)
-- `params`: Route parameters
-- `query`: Query parameters
-- `queryArray`: Query parameters (array form)
-- `hash`: URL hash
-- `state`: Arbitrary state data
-- `keepScrollPosition`: Maintain scroll position after navigation
-- `statusCode`: HTTP status code (SSR)
-- `layer`: [Layer options](./layer#routelayeroptions)
-- `confirm`: Per-navigation confirm hook
+- `path`：URL 路径
+- `url`：完整 URL（`path` 的替代方式）
+- `params`：路由参数
+- `query`：查询参数
+- `queryArray`：查询参数（数组形式）
+- `hash`：URL 哈希
+- `state`：任意状态数据
+- `keepScrollPosition`：导航后保持滚动位置
+- `statusCode`：HTTP 状态码（SSR）
+- `layer`：[层选项](./layer#routelayeroptions)
+- `confirm`：每次导航的 confirm 钩子
 
 ### RouteLocationInput
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 type RouteLocationInput = RouteLocation | string;
 ```
 
-A route location can be specified as either a string path or a [`RouteLocation`](#routelocation) object.
+路由位置可以指定为字符串路径或 [`RouteLocation`](#routelocation) 对象。
 
-## Route Config Types
+## 路由配置类型
 
 ### RouteConfig
 
-See [Route Config](./route-config) for full details.
+详情请参阅[路由配置](./route-config)。
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 interface RouteConfig {
   path: string;
@@ -224,9 +224,9 @@ interface RouteConfig {
 
 ### RouteParsedConfig
 
-Compiled route config with matcher functions. Extends `RouteConfig` with internal matching data.
+带有匹配器函数的编译后路由配置。扩展 `RouteConfig` 并包含内部匹配数据。
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 interface RouteParsedConfig extends RouteConfig {
   compilePath: string;
@@ -238,7 +238,7 @@ interface RouteParsedConfig extends RouteConfig {
 
 ### RouteMatchResult
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 interface RouteMatchResult {
   readonly matches: readonly RouteParsedConfig[];
@@ -248,7 +248,7 @@ interface RouteMatchResult {
 
 ### RouteMatcher
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 type RouteMatcher = (
   to: URL,
@@ -257,13 +257,13 @@ type RouteMatcher = (
 ) => RouteMatchResult;
 ```
 
-Function used internally for route matching. The optional `cb` callback can filter route configs (e.g., to exclude layer-only routes).
+内部用于路由匹配的函数。可选的 `cb` 回调可以过滤路由配置（例如排除仅限层的路由）。
 
 ### RouteOptions
 
-Constructor options for creating a Route object (primarily internal use).
+创建 Route 对象的构造函数选项（主要供内部使用）。
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 interface RouteOptions {
   options?: RouterParsedOptions;
@@ -273,11 +273,11 @@ interface RouteOptions {
 }
 ```
 
-## MicroApp Types
+## 微应用类型
 
 ### RouterMicroAppOptions
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 interface RouterMicroAppOptions {
   mount: (el: HTMLElement) => void;
@@ -286,33 +286,33 @@ interface RouterMicroAppOptions {
 }
 ```
 
-See [MicroApp](./micro-app) for full details.
+详情请参阅[微应用](./micro-app)。
 
 ### RouterMicroAppCallback
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 type RouterMicroAppCallback = (router: Router) => RouterMicroAppOptions;
 ```
 
 ### RouterMicroApp
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 type RouterMicroApp =
   | Record<string, RouterMicroAppCallback | undefined>
   | RouterMicroAppCallback;
 ```
 
-## Router Options Types
+## Router 选项类型
 
 ### RouterOptions
 
-See [Router](./router#routeroptions) for full details.
+详情请参阅 [Router](./router#routeroptions)。
 
 ### RouterParsedOptions
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 interface RouterParsedOptions extends Readonly<Required<RouterOptions>> {
   readonly compiledRoutes: readonly RouteParsedConfig[];
@@ -320,13 +320,13 @@ interface RouterParsedOptions extends Readonly<Required<RouterOptions>> {
 }
 ```
 
-## Layer Types
+## 层类型
 
 ### RouteLayerOptions
 
-See [Layer](./layer#routelayeroptions) for full details.
+详情请参阅[层](./layer#routelayeroptions)。
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 interface RouteLayerOptions {
   zIndex?: number;
@@ -339,7 +339,7 @@ interface RouteLayerOptions {
 
 ### RouteLayerResult
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 type RouteLayerResult =
   | { type: 'close'; route: Route }
@@ -347,13 +347,13 @@ type RouteLayerResult =
   | { type: 'success'; route: Route; data?: any };
 ```
 
-- `close`: Layer was dismissed
-- `push`: Layer closed because user navigated to a non-layer route
-- `success`: Layer was closed with data via `closeLayer(data)`
+- `close`：层被关闭
+- `push`：层因用户导航到非层路由而关闭
+- `success`：层通过 `closeLayer(data)` 携带数据关闭
 
 ### RouterLayerOptions
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 type RouterLayerOptions = Omit<
   RouterOptions,
@@ -361,11 +361,11 @@ type RouterLayerOptions = Omit<
 >;
 ```
 
-## RouterLink Types
+## RouterLink 类型
 
 ### RouterLinkType
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 type RouterLinkType =
   | 'push'
@@ -377,9 +377,9 @@ type RouterLinkType =
 
 ### RouterLinkProps
 
-See [RouterLink](./router-link#routerlinkprops) for full details.
+详情请参阅 [RouterLink](./router-link#routerlinkprops)。
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 interface RouterLinkProps {
   to: RouteLocationInput;
@@ -396,7 +396,7 @@ interface RouterLinkProps {
 
 ### RouterLinkAttributes
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 interface RouterLinkAttributes {
   href: string;
@@ -408,9 +408,9 @@ interface RouterLinkAttributes {
 
 ### RouterLinkResolved
 
-See [RouterLink](./router-link#routerlinkresolved) for full details.
+详情请参阅 [RouterLink](./router-link#routerlinkresolved)。
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 interface RouterLinkResolved {
   route: Route;
@@ -427,13 +427,13 @@ interface RouterLinkResolved {
 }
 ```
 
-## Error Types
+## 错误类型
 
-All error types extend `RouteError`.
+所有错误类型都继承自 `RouteError`。
 
 ### RouteError
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 class RouteError extends Error {
   readonly code: string;
@@ -442,42 +442,42 @@ class RouteError extends Error {
 }
 ```
 
-Base error class for all routing errors.
+所有路由错误的基类。
 
 ### RouteNavigationAbortedError
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 class RouteNavigationAbortedError extends RouteError {
   readonly taskName: string;
 }
 ```
 
-Thrown when navigation is cancelled by a guard returning `false`. Error code: `'ROUTE_NAVIGATION_ABORTED'`.
+当导航被守卫返回 `false` 取消时抛出。错误代码：`'ROUTE_NAVIGATION_ABORTED'`。
 
 ### RouteSelfRedirectionError
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 class RouteSelfRedirectionError extends RouteError {}
 ```
 
-Thrown when a redirect loop is detected (redirect to the same route). Error code: `'ROUTE_SELF_REDIRECTION'`.
+当检测到重定向循环（重定向到相同路由）时抛出。错误代码：`'ROUTE_SELF_REDIRECTION'`。
 
 ### RouteTaskCancelledError
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 class RouteTaskCancelledError extends RouteError {
   readonly taskName: string;
 }
 ```
 
-Thrown when a navigation task is cancelled by a newer navigation. Error code: `'ROUTE_TASK_CANCELLED'`.
+当导航任务被更新的导航取消时抛出。错误代码：`'ROUTE_TASK_CANCELLED'`。
 
 ### RouteTaskExecutionError
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 class RouteTaskExecutionError extends RouteError {
   readonly taskName: string;
@@ -485,11 +485,11 @@ class RouteTaskExecutionError extends RouteError {
 }
 ```
 
-Thrown when a guard throws an error during execution. Error code: `'ROUTE_TASK_EXECUTION_ERROR'`.
+当守卫在执行期间抛出错误时触发。错误代码：`'ROUTE_TASK_EXECUTION_ERROR'`。
 
-## Deprecated Types
+## 已弃用类型
 
-- `RouterInstance`: Use `Router` instead
-- `RouterRawLocation`: Use `RouteLocationInput` instead
-- `RouterLocation`: Use `RouteLocation` instead
-- `RouteRecord`: Use `Route` instead
+- `RouterInstance`：请使用 `Router` 代替
+- `RouterRawLocation`：请使用 `RouteLocationInput` 代替
+- `RouterLocation`：请使用 `RouteLocation` 代替
+- `RouteRecord`：请使用 `Route` 代替

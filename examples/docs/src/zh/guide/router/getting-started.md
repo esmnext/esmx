@@ -7,27 +7,27 @@ head:
       content: "esmx router setup, router installation, Vue 3 router, Vue 2 router, React router, SSR router, micro-frontend router getting started"
 ---
 
-# Getting Started
+# 快速开始
 
-This guide walks you through setting up `@esmx/router` from scratch. By the end, you'll have a working router with routes, navigation, and framework integration.
+本指南将引导你从零开始设置 `@esmx/router`。完成后，你将拥有一个包含路由、导航和框架集成的可工作路由器。
 
-## Installation
+## 安装
 
-Install the core router package:
+安装核心路由器包：
 
 ```bash
 npm install @esmx/router
 ```
 
-If you're using Vue (2.7+ or 3), install the Vue integration as well:
+如果你使用 Vue（2.7+ 或 3），还需要安装 Vue 集成包：
 
 ```bash
 npm install @esmx/router-vue
 ```
 
-## Basic Setup
+## 基本设置
 
-At its simplest, `@esmx/router` needs a list of routes and a mode:
+最简单的 `@esmx/router` 只需要一个路由列表和一个模式：
 
 ```ts
 import { Router, RouterMode } from '@esmx/router';
@@ -48,13 +48,13 @@ console.log(router.route.path);   // '/about'
 console.log(router.route.query);  // {}
 ```
 
-That's it for the basics. The router matches URLs to components, handles browser history, and provides the current route state.
+基本设置就是这些。路由器将 URL 匹配到组件，处理浏览器历史记录，并提供当前路由状态。
 
-## Setup with Vue 3
+## 使用 Vue 3 设置
 
-Vue 3 integration uses `@esmx/router-vue` which provides a plugin, composables, and components that work seamlessly with Vue's reactivity system.
+Vue 3 集成使用 `@esmx/router-vue`，它提供了与 Vue 响应式系统无缝协作的插件、组合式 API 和组件。
 
-### 1. Define Your Routes
+### 1. 定义路由
 
 ```ts title="src/routes.ts"
 import type { RouteConfig } from '@esmx/router';
@@ -72,7 +72,7 @@ export const routes: RouteConfig[] = [
 ];
 ```
 
-### 2. Create the App
+### 2. 创建应用
 
 ```ts title="src/create-app.ts"
 import { createApp } from 'vue';
@@ -95,7 +95,7 @@ export function createVueApp(router: Router) {
 }
 ```
 
-### 3. Client Entry
+### 3. 客户端入口
 
 ```ts title="src/entry.client.ts"
 import { Router, RouterMode } from '@esmx/router';
@@ -112,7 +112,7 @@ const { app } = createVueApp(router);
 app.mount('#app');
 ```
 
-### 4. Server Entry (SSR)
+### 4. 服务端入口（SSR）
 
 ```ts title="src/entry.server.ts"
 import { Router, RouterMode } from '@esmx/router';
@@ -146,7 +146,7 @@ export default async function render(req, res) {
 }
 ```
 
-### 5. Use in Components
+### 5. 在组件中使用
 
 ```vue title="src/App.vue"
 <template>
@@ -172,9 +172,9 @@ function goToUser(id: string) {
 </script>
 ```
 
-## Setup with Vue 2
+## 使用 Vue 2 设置
 
-Vue 2.7+ is supported using the same `@esmx/router-vue` package. The main difference is how the plugin is installed:
+Vue 2.7+ 使用相同的 `@esmx/router-vue` 包。主要区别在于插件的安装方式：
 
 ```ts
 import Vue from 'vue';
@@ -198,7 +198,7 @@ new Vue({
 }).$mount('#app');
 ```
 
-In Vue 2.7+ components, you can use the same Composition API composables (`useRouter`, `useRoute`) just like in Vue 3. The Options API also works — the plugin makes `this.$router` and `this.$route` available:
+在 Vue 2.7+ 组件中，你可以像 Vue 3 一样使用相同的组合式 API（`useRouter`、`useRoute`）。选项式 API 也同样适用——插件会使 `this.$router` 和 `this.$route` 可用：
 
 ```ts
 export default {
@@ -209,9 +209,9 @@ export default {
 };
 ```
 
-## Setup with React
+## 使用 React 设置
 
-React doesn't have a dedicated integration package. Instead, register a micro-app directly on the router:
+React 没有专门的集成包。相反，直接在路由器上注册微应用：
 
 ```tsx title="src/entry.client.tsx"
 import { Router, RouterMode } from '@esmx/router';
@@ -240,7 +240,7 @@ const router = new Router({
 });
 ```
 
-Then pass the `router` object through props or React context to your components:
+然后通过 props 或 React context 将 `router` 对象传递给你的组件：
 
 ```tsx
 function App({ router }: { router: Router }) {
@@ -255,33 +255,33 @@ function App({ router }: { router: Router }) {
 }
 ```
 
-## Project File Structure
+## 项目文件结构
 
-A typical Esmx project with routing follows this structure:
+一个典型的带路由的 Esmx 项目遵循以下结构：
 
 ```
 src/
-├── entry.node.ts      # Node.js server setup, dev/build config
-├── entry.server.ts    # SSR rendering logic
-├── entry.client.ts    # Client-side hydration/mounting
-├── create-app.ts      # Shared app factory (used by both server & client)
-├── routes.ts          # Route definitions
-├── App.vue            # Root component
+├── entry.node.ts      # Node.js 服务器设置，开发/构建配置
+├── entry.server.ts    # SSR 渲染逻辑
+├── entry.client.ts    # 客户端水合/挂载
+├── create-app.ts      # 共享的应用工厂（服务端和客户端共用）
+├── routes.ts          # 路由定义
+├── App.vue            # 根组件
 └── pages/
     ├── Home.vue
     ├── About.vue
     └── UserProfile.vue
 ```
 
-- `entry.node.ts`: Configures the Node.js server (HTTP listener, middleware, build hooks)
-- `entry.server.ts`: Handles SSR — creates router in memory mode, renders HTML
-- `entry.client.ts`: Handles client-side — creates router in history mode, mounts app
-- `create-app.ts`: Shared factory that creates the framework app with router
-- `routes.ts`: Single source of truth for route definitions
+- `entry.node.ts`：配置 Node.js 服务器（HTTP 监听器、中间件、构建钩子）
+- `entry.server.ts`：处理 SSR——在内存模式下创建路由器，渲染 HTML
+- `entry.client.ts`：处理客户端——在 history 模式下创建路由器，挂载应用
+- `create-app.ts`：共享的工厂函数，使用路由器创建框架应用
+- `routes.ts`：路由定义的唯一数据源
 
-## Full Working Example
+## 完整工作示例
 
-Here's a complete example tying everything together with Vue 3 and SSR:
+这是一个将所有内容整合在一起的完整示例，使用 Vue 3 和 SSR：
 
 ### routes.ts
 
@@ -415,11 +415,11 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-## What's Next?
+## 下一步
 
-Now that you have a working router, explore the rest of the guide:
+现在你已经有了一个可工作的路由器，继续探索指南的其余部分：
 
-- [Dynamic Route Matching](./dynamic-matching) — Learn about route parameters and patterns
-- [Nested Routes](./nested-routes) — Build layouts with child routes
-- [Programmatic Navigation](./programmatic-navigation) — Navigate with code
-- [Navigation Guards](./navigation-guards) — Control access and intercept navigation
+- [动态路由匹配](./dynamic-matching) — 了解路由参数和模式
+- [嵌套路由](./nested-routes) — 使用子路由构建布局
+- [编程式导航](./programmatic-navigation) — 使用代码进行导航
+- [导航守卫](./navigation-guards) — 控制访问和拦截导航

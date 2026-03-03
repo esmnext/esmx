@@ -6,6 +6,5 @@
     "navigation-guards",
     "layer",
     "error-types",
-    "router-vue",
     "types"
 ]

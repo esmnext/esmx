@@ -9,11 +9,11 @@ head:
 
 # RouteConfig
 
-`RouteConfig` defines how URLs map to components or micro-apps. It supports static and dynamic paths, nested routes, redirects, async components, per-route guards, and micro-app bindings.
+`RouteConfig` 定义 URL 如何映射到组件或微应用。它支持静态和动态路径、嵌套路由、重定向、异步组件、单路由守卫和微应用绑定。
 
-## Type Definition
+## 类型定义
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 interface RouteConfig {
   path: string;
@@ -31,43 +31,43 @@ interface RouteConfig {
 }
 ```
 
-## Properties
+## 属性
 
 ### path
 
-- **Type**: `string`
+- **类型**：`string`
 
-**Required.** URL-encoded path pattern. Supports static segments and dynamic parameters via [`path-to-regexp`](https://github.com/pillarjs/path-to-regexp) syntax.
+**必填。** URL 编码的路径模式。支持静态段和通过 [`path-to-regexp`](https://github.com/pillarjs/path-to-regexp) 语法的动态参数。
 
 ```ts
-// Static path
+// 静态路径
 { path: '/about' }
 
-// Dynamic parameter
+// 动态参数
 { path: '/user/:id' }
 
-// Optional parameter
+// 可选参数
 { path: '/post/:id?' }
 
-// Wildcard (catch-all)
+// 通配符（匹配所有）
 { path: '/files/:path*' }
 
-// Multiple parameters
+// 多个参数
 { path: '/blog/:year/:month/:slug' }
 ```
 
-#### Parameter Types
+#### 参数类型
 
-- `/user/:id` — e.g. `/user/42` → `{ id: '42' }`
-- `/post/:id?` — e.g. `/post` → `{ id: '' }`
-- `/files/:path*` — e.g. `/files/a/b/c` → `{ path: ['a', 'b', 'c'] }`
-- `/:lang/docs/:page` — e.g. `/en/docs/intro` → `{ lang: 'en', page: 'intro' }`
+- `/user/:id` — 例如 `/user/42` → `{ id: '42' }`
+- `/post/:id?` — 例如 `/post` → `{ id: '' }`
+- `/files/:path*` — 例如 `/files/a/b/c` → `{ path: ['a', 'b', 'c'] }`
+- `/:lang/docs/:page` — 例如 `/en/docs/intro` → `{ lang: 'en', page: 'intro' }`
 
 ### component
 
-- **Type**: `unknown`
+- **类型**：`unknown`
 
-The component to render when this route is matched. The type depends on the framework being used (React component, Vue component, etc.).
+当此路由匹配时要渲染的组件。类型取决于所使用的框架（React 组件、Vue 组件等）。
 
 ```ts
 { path: '/home', component: HomePage }
@@ -75,9 +75,9 @@ The component to render when this route is matched. The type depends on the fram
 
 ### children
 
-- **Type**: `RouteConfig[]`
+- **类型**：`RouteConfig[]`
 
-Nested child routes. Child paths are resolved relative to the parent.
+嵌套子路由。子路由路径相对于父级解析。
 
 ```ts
 {
@@ -93,32 +93,32 @@ Nested child routes. Child paths are resolved relative to the parent.
 
 ### redirect
 
-- **Type**: `RouteLocationInput | RouteConfirmHook`
+- **类型**：`RouteLocationInput | RouteConfirmHook`
 
-Redirect to another route when this route is matched. Can be a static target (string or object) or a function for conditional redirects.
+当此路由匹配时重定向到另一个路由。可以是静态目标（字符串或对象）或用于条件重定向的函数。
 
 ```ts
-// Static redirect
+// 静态重定向
 { path: '/old-page', redirect: '/new-page' }
 
-// Object redirect with query
+// 带查询参数的对象重定向
 { path: '/old-page', redirect: { path: '/new-page', query: { ref: 'redirect' } } }
 
-// Conditional redirect
+// 条件重定向
 {
   path: '/dashboard',
   redirect: (to, from, router) => {
     if (!isAuthenticated()) return '/login';
-    // Return void to continue to the route normally
+    // 返回 void 以正常继续到该路由
   }
 }
 ```
 
 ### meta
 
-- **Type**: `RouteMeta`
+- **类型**：`RouteMeta`
 
-Custom metadata attached to the route. Accessible via `route.meta` in guards and components. Type: `Record<string | symbol, unknown>`.
+附加到路由的自定义元数据。可通过守卫和组件中的 `route.meta` 访问。类型：`Record<string | symbol, unknown>`。
 
 ```ts
 {
@@ -134,12 +134,12 @@ Custom metadata attached to the route. Accessible via `route.meta` in guards and
 
 ### app
 
-- **Type**: `string | RouterMicroAppCallback`
+- **类型**：`string | RouterMicroAppCallback`
 
-Binds this route (and its children) to a [micro-app](./micro-app). When a `string` is provided, it looks up the app in [`RouterOptions.apps`](./router#apps). When a function is provided, it is used directly as the factory.
+将此路由（及其子路由）绑定到一个[微应用](./micro-app)。当提供 `string` 时，在 [`RouterOptions.apps`](./router#apps) 中查找应用。当提供函数时，直接用作工厂函数。
 
 ```ts
-// String key (looked up in router.options.apps)
+// 字符串键（在 router.options.apps 中查找）
 {
   path: '/react',
   app: 'reactApp',
@@ -149,7 +149,7 @@ Binds this route (and its children) to a [micro-app](./micro-app). When a `strin
   ]
 }
 
-// Inline factory function
+// 内联工厂函数
 {
   path: '/vue',
   app: (router) => ({
@@ -161,9 +161,9 @@ Binds this route (and its children) to a [micro-app](./micro-app). When a `strin
 
 ### asyncComponent
 
-- **Type**: `() => Promise<unknown>`
+- **类型**：`() => Promise<unknown>`
 
-Lazy-load a component. The component is fetched only when the route is first matched. Once loaded, it replaces the `component` property.
+懒加载组件。组件仅在路由首次匹配时获取。加载完成后，它会替换 `component` 属性。
 
 ```ts
 {
@@ -174,9 +174,9 @@ Lazy-load a component. The component is fetched only when the route is first mat
 
 ### beforeEnter
 
-- **Type**: `RouteConfirmHook`
+- **类型**：`RouteConfirmHook`
 
-Guard called before entering this route. Only fires when the route is being entered from a different route (not when the route is reused with different params).
+进入此路由前调用的守卫。仅在从不同路由进入时触发（当路由因参数不同而被复用时不触发）。
 
 ```ts
 {
@@ -189,9 +189,9 @@ Guard called before entering this route. Only fires when the route is being ente
 
 ### beforeUpdate
 
-- **Type**: `RouteConfirmHook`
+- **类型**：`RouteConfirmHook`
 
-Guard called when the route is reused but params change. For example, navigating from `/user/1` to `/user/2`. Only fires when the same route config is matched but with different parameters.
+当路由被复用但参数发生变化时调用的守卫。例如，从 `/user/1` 导航到 `/user/2`。仅在相同路由配置匹配但参数不同时触发。
 
 ```ts
 {
@@ -204,9 +204,9 @@ Guard called when the route is reused but params change. For example, navigating
 
 ### beforeLeave
 
-- **Type**: `RouteConfirmHook`
+- **类型**：`RouteConfirmHook`
 
-Guard called before leaving this route. Return `false` to prevent navigation. Useful for preventing navigation when there are unsaved changes.
+离开此路由前调用的守卫。返回 `false` 可阻止导航。适用于在有未保存更改时阻止导航。
 
 ```ts
 {
@@ -214,7 +214,7 @@ Guard called before leaving this route. Return `false` to prevent navigation. Us
   beforeLeave: (to, from, router) => {
     if (hasUnsavedChanges()) {
       const confirmed = window.confirm('Discard changes?');
-      if (!confirmed) return false; // Cancel navigation
+      if (!confirmed) return false; // 取消导航
     }
   }
 }
@@ -222,12 +222,12 @@ Guard called before leaving this route. Return `false` to prevent navigation. Us
 
 ### layer
 
-- **Type**: `boolean`
+- **类型**：`boolean`
 
-Mark this route as layer-only (`true`) or non-layer-only (`false`). Layer routes are only matched when using [`pushLayer()`](./router#pushlayer) navigation.
+将此路由标记为仅分层（`true`）或非分层（`false`）。分层路由仅在使用 [`pushLayer()`](./router#pushlayer) 导航时匹配。
 
 ```ts
-// Only matches in pushLayer() context
+// 仅在 pushLayer() 上下文中匹配
 {
   path: '/preview/:id',
   component: PreviewModal,
@@ -237,9 +237,9 @@ Mark this route as layer-only (`true`) or non-layer-only (`false`). Layer routes
 
 ### override
 
-- **Type**: `RouteConfirmHook`
+- **类型**：`RouteConfirmHook`
 
-Route override function for hybrid app development. Allows intercepting navigation to handle it externally (e.g., native app bridges). **Not executed** during initial route loading.
+用于混合应用开发的路由覆写函数。允许拦截导航以在外部处理（例如原生应用桥接）。**不在**初始路由加载期间执行。
 
 ```ts
 {
@@ -248,12 +248,12 @@ Route override function for hybrid app development. Allows intercepting navigati
     if (isInNativeApp()) {
       return () => JSBridge.openNative(to.path);
     }
-    // Return void to use default routing
+    // 返回 void 以使用默认路由
   }
 }
 ```
 
-## Full Example
+## 完整示例
 
 ```ts
 const routes: RouteConfig[] = [

@@ -9,16 +9,16 @@ head:
 
 # Route
 
-A Route object represents a resolved route location. It contains parsed URL information, matched route configs, parameters, query strings, and metadata. Route objects are immutable — each navigation creates a new one.
+Route 对象表示一个已解析的路由位置。它包含解析后的 URL 信息、匹配的路由配置、参数、查询字符串和元数据。Route 对象是不可变的——每次导航都会创建一个新的对象。
 
-## Properties
+## 属性
 
 ### path
 
-- **Type**: `string`
-- **Read-only**: `true`
+- **类型**：`string`
+- **只读**：`true`
 
-The decoded pathname relative to the router base. For unmatched routes, returns the full `url.pathname`.
+相对于路由器基础路径的解码后路径名。对于未匹配的路由，返回完整的 `url.pathname`。
 
 ```ts
 // With base: http://localhost/app/
@@ -28,10 +28,10 @@ route.path // '/user/123'
 
 ### fullPath
 
-- **Type**: `string`
-- **Read-only**: `true`
+- **类型**：`string`
+- **只读**：`true`
 
-The full path including search and hash: `path + search + hash`.
+包含搜索参数和哈希的完整路径：`path + search + hash`。
 
 ```ts
 route.fullPath // '/user/123?tab=posts#section'
@@ -39,10 +39,10 @@ route.fullPath // '/user/123?tab=posts#section'
 
 ### url
 
-- **Type**: `URL`
-- **Read-only**: `true`
+- **类型**：`URL`
+- **只读**：`true`
 
-The full resolved URL object.
+完整的已解析 URL 对象。
 
 ```ts
 route.url.href     // 'http://localhost/user/123?tab=posts#section'
@@ -52,22 +52,22 @@ route.url.origin   // 'http://localhost'
 
 ### pathname
 
-- **Type**: `string`
-- **Read-only**: `true`
+- **类型**：`string`
+- **只读**：`true`
 
-Alias for `url.pathname`. The raw URL pathname (not decoded, not base-stripped).
+`url.pathname` 的别名。原始 URL 路径名（未解码，未去除基础路径）。
 
 ```ts
 route.pathname // '/app/user/123'
-route.path     // '/user/123' (base-stripped and decoded)
+route.path     // '/user/123' (已去除基础路径并解码)
 ```
 
 ### href
 
-- **Type**: `string`
-- **Read-only**: `true`
+- **类型**：`string`
+- **只读**：`true`
 
-Alias for `url.href`. The full URL string.
+`url.href` 的别名。完整的 URL 字符串。
 
 ```ts
 route.href // 'http://localhost/user/123?tab=posts#section'
@@ -75,10 +75,10 @@ route.href // 'http://localhost/user/123?tab=posts#section'
 
 ### params
 
-- **Type**: `Record<string, string>`
-- **Read-only**: `true`
+- **类型**：`Record<string, string>`
+- **只读**：`true`
 
-Dynamic route parameters extracted from the path. For repeated parameters, returns the first match.
+从路径中提取的动态路由参数。对于重复参数，返回第一个匹配项。
 
 ```ts
 // Route: /user/:id
@@ -94,17 +94,17 @@ route.params.slug  // 'hello'
 
 ### paramsArray
 
-- **Type**: `Record<string, string[]>`
-- **Read-only**: `true`
+- **类型**：`Record<string, string[]>`
+- **只读**：`true`
 
-Same as `params` but always returns arrays. Useful for repeated parameters.
+与 `params` 相同，但始终返回数组。适用于重复参数。
 
 ### query
 
-- **Type**: `Record<string, string | undefined>`
-- **Read-only**: `true`
+- **类型**：`Record<string, string | undefined>`
+- **只读**：`true`
 
-Parsed URL query parameters. For repeated keys, returns the first value.
+解析后的 URL 查询参数。对于重复的键，返回第一个值。
 
 ```ts
 // URL: /search?q=hello&page=2
@@ -114,10 +114,10 @@ route.query.page // '2'
 
 ### queryArray
 
-- **Type**: `Record<string, string[] | undefined>`
-- **Read-only**: `true`
+- **类型**：`Record<string, string[] | undefined>`
+- **只读**：`true`
 
-Same as `query` but always returns arrays. Useful for repeated query keys.
+与 `query` 相同，但始终返回数组。适用于重复的查询键。
 
 ```ts
 // URL: /filter?tag=js&tag=ts
@@ -126,10 +126,10 @@ route.queryArray.tag // ['js', 'ts']
 
 ### hash
 
-- **Type**: `string`
-- **Read-only**: `true`
+- **类型**：`string`
+- **只读**：`true`
 
-The URL hash (including the `#` prefix).
+URL 哈希值（包含 `#` 前缀）。
 
 ```ts
 // URL: /page#section
@@ -138,10 +138,10 @@ route.hash // '#section'
 
 ### meta
 
-- **Type**: `RouteMeta`
-- **Read-only**: `true`
+- **类型**：`RouteMeta`
+- **只读**：`true`
 
-Custom metadata from the matched [route config](./route-config#meta). Returns `{}` if no route matched.
+来自匹配的[路由配置](./route-config#meta)的自定义元数据。如果没有路由匹配，返回 `{}`。
 
 ```ts
 // Route config: { path: '/admin', meta: { requiresAuth: true } }
@@ -150,120 +150,120 @@ route.meta.requiresAuth // true
 
 ### matched
 
-- **Type**: `readonly RouteParsedConfig[]`
-- **Read-only**: `true`
+- **类型**：`readonly RouteParsedConfig[]`
+- **只读**：`true`
 
-Array of all matched route configurations, from parent to child. Empty array if no route matched.
+所有匹配的路由配置数组，从父级到子级排列。如果没有路由匹配，返回空数组。
 
 ```ts
 // URL: /user/123 matching /user/:id
-route.matched.length  // 1 (or more with nested routes)
+route.matched.length  // 1（嵌套路由时可能更多）
 route.matched[0].path // '/user/:id'
 ```
 
 ### config
 
-- **Type**: `RouteParsedConfig | null`
-- **Read-only**: `true`
+- **类型**：`RouteParsedConfig | null`
+- **只读**：`true`
 
-The last (deepest) matched route config, or `null` if no route matched.
+最后一个（最深层）匹配的路由配置，如果没有路由匹配则为 `null`。
 
 ### type
 
-- **Type**: `RouteType`
-- **Read-only**: `true`
+- **类型**：`RouteType`
+- **只读**：`true`
 
-How this route was navigated to. See [`RouteType`](./types#routetype) for all possible values.
+此路由是如何被导航到的。所有可能的值请参见 [`RouteType`](./types#routetype)。
 
-- `RouteType.push`: Triggered by `router.push()`
-- `RouteType.replace`: Triggered by `router.replace()`
-- `RouteType.back`: Triggered by `router.back()`
-- `RouteType.forward`: Triggered by `router.forward()`
-- `RouteType.go`: Triggered by `router.go(n)`
-- `RouteType.restartApp`: Triggered by `router.restartApp()`
-- `RouteType.pushWindow`: Triggered by `router.pushWindow()`
-- `RouteType.replaceWindow`: Triggered by `router.replaceWindow()`
-- `RouteType.pushLayer`: Triggered by `router.pushLayer()`
-- `RouteType.unknown`: Triggered by browser popstate event
+- `RouteType.push`：由 `router.push()` 触发
+- `RouteType.replace`：由 `router.replace()` 触发
+- `RouteType.back`：由 `router.back()` 触发
+- `RouteType.forward`：由 `router.forward()` 触发
+- `RouteType.go`：由 `router.go(n)` 触发
+- `RouteType.restartApp`：由 `router.restartApp()` 触发
+- `RouteType.pushWindow`：由 `router.pushWindow()` 触发
+- `RouteType.replaceWindow`：由 `router.replaceWindow()` 触发
+- `RouteType.pushLayer`：由 `router.pushLayer()` 触发
+- `RouteType.unknown`：由浏览器 popstate 事件触发
 
 ### state
 
-- **Type**: `RouteState`
-- **Read-only**: `true`
+- **类型**：`RouteState`
+- **只读**：`true`
 
-Arbitrary state data associated with this navigation, passed via [`RouteLocation.state`](./types#routelocation).
+与此次导航关联的任意状态数据，通过 [`RouteLocation.state`](./types#routelocation) 传递。
 
 ```ts
 await router.push({ path: '/page', state: { scrollY: 100 } });
-// Next route:
+// 下一个路由：
 router.route.state.scrollY // 100
 ```
 
 ### statusCode
 
-- **Type**: `number | null`
-- **Read-only**: `true`
+- **类型**：`number | null`
+- **只读**：`true`
 
-HTTP status code for SSR responses. Set via [`RouteLocation.statusCode`](./types#routelocation).
+用于 SSR 响应的 HTTP 状态码。通过 [`RouteLocation.statusCode`](./types#routelocation) 设置。
 
 ```ts
-// In a redirect route
+// 在重定向路由中
 { path: '/old', redirect: { path: '/new', statusCode: 301 } }
 ```
 
 ### isPush
 
-- **Type**: `boolean`
-- **Read-only**: `true`
+- **类型**：`boolean`
+- **只读**：`true`
 
-Whether this navigation added a new history entry (type is `'push'`, `'pushWindow'`, or `'pushLayer'`).
+此次导航是否添加了新的历史条目（类型为 `'push'`、`'pushWindow'` 或 `'pushLayer'`）。
 
 ### keepScrollPosition
 
-- **Type**: `boolean`
-- **Read-only**: `true`
+- **类型**：`boolean`
+- **只读**：`true`
 
-Whether scroll position should be maintained after this navigation. When `true`, the router will not scroll to top.
+此次导航后是否应保持滚动位置。为 `true` 时，路由器不会滚动到顶部。
 
 ### layer
 
-- **Type**: `RouteLayerOptions | null`
-- **Read-only**: `true`
+- **类型**：`RouteLayerOptions | null`
+- **只读**：`true`
 
-Layer options if this route was navigated via [`pushLayer()`](./router#pushlayer), otherwise `null`.
+如果此路由是通过 [`pushLayer()`](./router#pushlayer) 导航到的，则为分层选项，否则为 `null`。
 
 ### confirm
 
-- **Type**: `RouteConfirmHook | null`
-- **Read-only**: `true`
+- **类型**：`RouteConfirmHook | null`
+- **只读**：`true`
 
-Per-navigation confirm hook passed via [`RouteLocation.confirm`](./types#routelocation).
+通过 [`RouteLocation.confirm`](./types#routelocation) 传递的单次导航确认钩子。
 
 ### req
 
-- **Type**: `IncomingMessage | null`
-- **Read-only**: `true`
+- **类型**：`IncomingMessage | null`
+- **只读**：`true`
 
-HTTP request object (SSR only). `null` in the browser.
+HTTP 请求对象（仅 SSR）。在浏览器中为 `null`。
 
 ### res
 
-- **Type**: `ServerResponse | null`
-- **Read-only**: `true`
+- **类型**：`ServerResponse | null`
+- **只读**：`true`
 
-HTTP response object (SSR only). `null` in the browser.
+HTTP 响应对象（仅 SSR）。在浏览器中为 `null`。
 
 ### context
 
-- **Type**: `Record<string | symbol, unknown>`
-- **Read-only**: `true`
+- **类型**：`Record<string | symbol, unknown>`
+- **只读**：`true`
 
-Router shared context object.
+Router 共享上下文对象。
 
-## Methods
+## 方法
 
 ### clone()
 
-- **Returns**: `Route`
+- **返回值**：`Route`
 
-Create a copy of this route with the same configuration and state.
+创建此路由的副本，具有相同的配置和状态。

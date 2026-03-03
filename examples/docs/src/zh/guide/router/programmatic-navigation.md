@@ -7,13 +7,13 @@ head:
       content: "programmatic navigation, router push, router replace, pushWindow, replaceWindow, history navigation, router.go, router.back, router resolve"
 ---
 
-# Programmatic Navigation
+# 编程式导航
 
-Aside from using `<RouterLink>` to create anchor tags for declarative navigation, we can do this programmatically using the router's instance methods.
+除了使用 `<RouterLink>` 创建锚标签进行声明式导航外，我们还可以使用 Router 的实例方法进行编程式导航。
 
 ## `router.push`
 
-To navigate to a different URL, use `router.push`. This method adds a new entry to the history stack, so when the user clicks the browser back button, they'll go back to the previous URL.
+要导航到不同的 URL，使用 `router.push`。此方法会向历史记录栈添加一个新条目，因此当用户点击浏览器后退按钮时，会回到上一个 URL。
 
 ```ts
 // String path
@@ -29,7 +29,7 @@ await router.push({ path: '/search', query: { q: 'vue', page: '1' } });
 await router.push({ path: '/docs/intro', hash: '#getting-started' });
 ```
 
-The method returns a `Promise<Route>` that resolves to the new route after navigation completes (including all guards):
+该方法返回一个 `Promise<Route>`，在导航完成（包括所有守卫）后解析为新路由：
 
 ```ts
 const route = await router.push('/about');
@@ -38,14 +38,14 @@ console.log(route.path); // '/about'
 
 ## `router.replace`
 
-Acts like `router.push` but does **not** add a new history entry. It replaces the current entry instead:
+行为与 `router.push` 类似，但**不会**添加新的历史记录条目。它会替换当前条目：
 
 ```ts
 // The current history entry is replaced — back button won't return here
 await router.replace('/new-location');
 ```
 
-This is useful when you want to redirect without cluttering the browser history — for example, after form submission or login:
+当你想在不增加浏览器历史记录的情况下进行重定向时，这很有用——例如，在表单提交或登录之后：
 
 ```ts
 async function handleLogin() {
@@ -54,17 +54,17 @@ async function handleLogin() {
 }
 ```
 
-## Navigation with Objects
+## 使用对象导航
 
-Both `push` and `replace` accept a `RouteLocationInput`, which can be a string or an object with these properties:
+`push` 和 `replace` 都接受 `RouteLocationInput`，它可以是一个字符串或具有以下属性的对象：
 
-- **`path`**: `string` — The target path
-- **`query`**: `Record<string, string>` — Query parameters
-- **`hash`**: `string` — Hash fragment (e.g., `'#section'`)
-- **`state`**: `Record<string, unknown>` — State stored in `history.state` (not visible in URL)
-- **`params`**: `Record<string, string>` — Dynamic segment values
-- **`keepScrollPosition`**: `boolean` — If `true`, don't scroll to top after navigation
-- **`statusCode`**: `number` — HTTP status code (useful for SSR)
+- **`path`**: `string` — 目标路径
+- **`query`**: `Record<string, string>` — 查询参数
+- **`hash`**: `string` — 哈希片段（例如 `'#section'`）
+- **`state`**: `Record<string, unknown>` — 存储在 `history.state` 中的状态（不显示在 URL 中）
+- **`params`**: `Record<string, string>` — 动态段的值
+- **`keepScrollPosition`**: `boolean` — 如果为 `true`，导航后不滚动到顶部
+- **`statusCode`**: `number` — HTTP 状态码（对 SSR 有用）
 
 ```ts
 await router.push({
@@ -76,9 +76,9 @@ await router.push({
 });
 ```
 
-### Using `params`
+### 使用 `params`
 
-The `params` option lets you pass dynamic segment values that are applied to the matched route's path pattern:
+`params` 选项允许你传递动态段的值，这些值会应用到匹配路由的路径模式中：
 
 ```ts
 // Route: /users/:userId/posts/:postId
@@ -89,9 +89,9 @@ await router.push({
 // Navigates to /users/42/posts/7
 ```
 
-### Using `state`
+### 使用 `state`
 
-The `state` property stores data in `history.state`. Unlike query params, state is not visible in the URL and is preserved across forward/back navigation:
+`state` 属性将数据存储在 `history.state` 中。与查询参数不同，state 不会显示在 URL 中，并且在前进/后退导航中会被保留：
 
 ```ts
 await router.push({
@@ -102,13 +102,13 @@ await router.push({
 console.log(router.route.state.cartId); // 'abc-123'
 ```
 
-## Window Navigation
+## 窗口导航
 
-Standard `push`/`replace` perform **SPA navigation** — the page doesn't reload, only the routed content changes. Window navigation methods trigger a **full browser navigation** instead.
+标准的 `push`/`replace` 执行的是 **SPA 导航**——页面不会重新加载，只有路由内容会更改。窗口导航方法则会触发**完整的浏览器导航**。
 
 ### `router.pushWindow`
 
-Opens the target in a new browser tab/window (equivalent to `window.open`):
+在新的浏览器标签页/窗口中打开目标（等同于 `window.open`）：
 
 ```ts
 await router.pushWindow('/external-report');
@@ -116,23 +116,23 @@ await router.pushWindow('/external-report');
 
 ### `router.replaceWindow`
 
-Navigates the current tab to a new URL (equivalent to `window.location.replace`):
+在当前标签页中导航到新 URL（等同于 `window.location.replace`）：
 
 ```ts
 await router.replaceWindow('/legacy-page');
 ```
 
-### When to Use Window Navigation
+### 何时使用窗口导航
 
-- Navigate within your SPA: use `push` / `replace`
-- Navigate to a different micro-frontend: use `pushWindow` / `replaceWindow`
-- Open in new tab: use `pushWindow`
-- Full page reload / redirect to external URL: use `replaceWindow`
-- Navigate to a page outside router scope: use `pushWindow` / `replaceWindow`
+- 在 SPA 内部导航：使用 `push` / `replace`
+- 导航到不同的微前端：使用 `pushWindow` / `replaceWindow`
+- 在新标签页中打开：使用 `pushWindow`
+- 全页面刷新/重定向到外部 URL：使用 `replaceWindow`
+- 导航到 Router 作用域之外的页面：使用 `pushWindow` / `replaceWindow`
 
-### Guard Pipeline Differences
+### 守卫管道差异
 
-Window navigation methods skip most of the guard pipeline since the browser will perform a full navigation anyway:
+窗口导航方法会跳过大部分守卫管道，因为浏览器会执行完整的导航：
 
 | Stage | push/replace | pushWindow/replaceWindow |
 |-------|-------------|------------------------|
@@ -145,33 +145,33 @@ Window navigation methods skip most of the guard pipeline since the browser will
 | asyncComponent | ✅ | ❌ |
 | confirm | ✅ | ✅ |
 
-## History Navigation
+## 历史记录导航
 
-These methods mirror the browser's native history navigation:
+这些方法镜像了浏览器的原生历史记录导航：
 
 ### `router.back()`
 
-Go back one step in history. Equivalent to `router.go(-1)`:
+后退一步。等同于 `router.go(-1)`：
 
 ```ts
 await router.back();
 ```
 
-Returns `Promise<Route | null>`. Returns `null` if there's no history to go back to (the user is at the start of their session).
+返回 `Promise<Route | null>`。如果没有可以返回的历史记录（用户处于会话起始位置），则返回 `null`。
 
 ### `router.forward()`
 
-Go forward one step. Equivalent to `router.go(1)`:
+前进一步。等同于 `router.go(1)`：
 
 ```ts
 await router.forward();
 ```
 
-Returns `Promise<Route | null>`. Returns `null` if there's no forward history.
+返回 `Promise<Route | null>`。如果没有前进历史记录，则返回 `null`。
 
 ### `router.go(n)`
 
-Move `n` steps in history. Positive values go forward, negative values go back:
+在历史记录中移动 `n` 步。正值前进，负值后退：
 
 ```ts
 // Go back 2 pages
@@ -181,27 +181,27 @@ await router.go(-2);
 await router.go(3);
 ```
 
-Returns `Promise<Route | null>`. Returns `null` if the target position doesn't exist in history. Note that `router.go(0)` returns `null` immediately without any action (unlike `location.reload()`).
+返回 `Promise<Route | null>`。如果目标位置不存在于历史记录中，则返回 `null`。注意 `router.go(0)` 会立即返回 `null` 而不执行任何操作（与 `location.reload()` 不同）。
 
 ## `router.restartApp`
 
-Remounts the current micro-app without changing the URL. This is useful when you need to reset the application state completely:
+在不更改 URL 的情况下重新挂载当前微应用。当你需要完全重置应用状态时，这很有用：
 
 ```ts
 await router.restartApp();
 ```
 
-You can optionally pass a new route location:
+你也可以传入一个新的路由位置：
 
 ```ts
 await router.restartApp('/dashboard');
 ```
 
-This method runs the full guard pipeline (excluding `override`), unmounts the current micro-app, and remounts it fresh.
+此方法会运行完整的守卫管道（不包括 `override`），卸载当前微应用，然后重新挂载。
 
 ## `router.resolve`
 
-Resolves a route location without actually navigating. This is useful for generating URLs, checking if a route exists, or inspecting what a navigation would produce:
+解析一个路由位置但不实际导航。这对于生成 URL、检查路由是否存在或检查导航的结果很有用：
 
 ```ts
 const route = router.resolve('/users/42?tab=posts');
@@ -213,7 +213,7 @@ console.log(route.matched.length); // number of matched route configs
 console.log(route.url.href);       // full URL string
 ```
 
-Use it to generate link URLs without triggering navigation:
+使用它来生成链接 URL 而不触发导航：
 
 ```ts
 const resolved = router.resolve('/some/path');
@@ -224,9 +224,9 @@ if (resolved.matched.length > 0) {
 const href = router.resolve({ path: '/about', hash: '#team' }).url.href;
 ```
 
-## The `keepScrollPosition` Option
+## `keepScrollPosition` 选项
 
-By default, `push` and `replace` scroll the page to the top. Pass `keepScrollPosition: true` to prevent this:
+默认情况下，`push` 和 `replace` 会将页面滚动到顶部。传递 `keepScrollPosition: true` 可以阻止这一行为：
 
 ```ts
 await router.push({
@@ -236,11 +236,11 @@ await router.push({
 });
 ```
 
-See [Scroll Behavior](./scroll-behavior) for full details on how scrolling works.
+有关滚动工作方式的完整详情，请参阅[滚动行为](./scroll-behavior)。
 
-## Error Handling
+## 错误处理
 
-All navigation methods can throw errors. Always handle them appropriately:
+所有导航方法都可能抛出错误。请始终正确处理它们：
 
 ```ts
 import {
@@ -261,9 +261,9 @@ try {
 }
 ```
 
-See [Error Handling](./error-handling) for more details.
+更多详情请参阅[错误处理](./error-handling)。
 
-## Summary
+## 总结
 
 | Method | History | Page Reload | Returns |
 |--------|---------|-------------|---------|

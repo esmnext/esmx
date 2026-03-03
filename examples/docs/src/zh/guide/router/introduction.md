@@ -7,26 +7,26 @@ head:
       content: "esmx router, micro-frontend router, SSR router, framework-agnostic router, navigation guards, layer routing, micro-app routing"
 ---
 
-# Introduction
+# 介绍
 
-`@esmx/router` is a framework-agnostic router built for modern micro-frontend applications. Unlike traditional routers that bind to a single framework, `@esmx/router` works with React, Vue 2, Vue 3, vanilla JavaScript, or any combination of them — all within the same application.
+`@esmx/router` 是一个为现代微前端应用构建的框架无关路由器。与绑定单一框架的传统路由器不同，`@esmx/router` 可以与 React、Vue 2、Vue 3、原生 JavaScript 或它们的任意组合协同工作——全部在同一个应用中。
 
-## Why @esmx/router?
+## 为什么选择 @esmx/router？
 
-Modern web applications face challenges that traditional routers were not designed to solve:
+现代 Web 应用面临着传统路由器无法解决的挑战：
 
-- **Multiple frameworks in one app**: A large organization may have teams using React, Vue 2, and Vue 3. They need one router that governs navigation across all of them.
-- **Server-side rendering (SSR) that works everywhere**: The same route configuration should produce server-rendered HTML and then hydrate seamlessly on the client — regardless of which framework renders each route.
-- **Overlaying content without destroying state**: Modal dialogs, drawers, and slide-in panels need their own isolated routing context while the parent page continues running behind them.
-- **Gradual migration**: Moving from one framework to another should happen route by route, not all at once.
+- **一个应用中使用多个框架**：大型组织可能有团队分别使用 React、Vue 2 和 Vue 3。他们需要一个路由器来管理所有框架之间的导航。
+- **随处可用的服务端渲染（SSR）**：相同的路由配置应该能够生成服务端渲染的 HTML，然后在客户端无缝水合——无论哪个框架渲染哪个路由。
+- **在不销毁状态的情况下覆盖内容**：模态对话框、抽屉和滑入面板需要拥有自己独立的路由上下文，同时父页面在后台继续运行。
+- **渐进式迁移**：从一个框架迁移到另一个框架应该逐路由进行，而不是一次性全部完成。
 
-`@esmx/router` was built from the ground up to address all of these.
+`@esmx/router` 从底层开始构建，以解决所有这些问题。
 
-## Core Features
+## 核心特性
 
-### Framework-Agnostic
+### 框架无关
 
-The router does not import React, Vue, or any other framework. Instead, routes declare a **micro-app** — a set of callbacks (`mount`, `unmount`, `renderToString`) that know how to manage a specific framework's component tree. This means different routes can render using entirely different frameworks:
+路由器不导入 React、Vue 或任何其他框架。路由声明一个**微应用**——一组回调（`mount`、`unmount`、`renderToString`），这些回调知道如何管理特定框架的组件树。这意味着不同的路由可以使用完全不同的框架进行渲染：
 
 ```ts
 const router = new Router({
@@ -41,16 +41,16 @@ const router = new Router({
 });
 ```
 
-When the user navigates from `/` to `/dashboard`, the router unmounts the React app, mounts the Vue 3 app, and renders the correct component — all without a full page reload.
+当用户从 `/` 导航到 `/dashboard` 时，路由器会卸载 React 应用，挂载 Vue 3 应用，并渲染正确的组件——所有这一切都无需整页刷新。
 
-### Two Routing Modes
+### 两种路由模式
 
-- `RouterMode.history`: Uses the browser's History API (`pushState`, `popstate`) for standard web applications
-- `RouterMode.memory`: Keeps state entirely in memory with no URL changes, for SSR, layer routing, and testing
+- `RouterMode.history`：使用浏览器的 History API（`pushState`、`popstate`），适用于标准 Web 应用
+- `RouterMode.memory`：将状态完全保存在内存中，不改变 URL，适用于 SSR、分层路由和测试
 
-### Server-Side Rendering (SSR)
+### 服务端渲染（SSR）
 
-The router has first-class SSR support. The same route configuration works on both server and client. On the server, use `RouterMode.memory` and pass `req`/`res` objects:
+路由器原生支持 SSR。相同的路由配置在服务端和客户端都能工作。在服务端，使用 `RouterMode.memory` 并传入 `req`/`res` 对象：
 
 ```ts
 const router = new Router({
@@ -62,9 +62,9 @@ const router = new Router({
 const html = await router.renderToString();
 ```
 
-### Rich Route Configuration
+### 丰富的路由配置
 
-Routes support dynamic parameters, nested children, lazy loading, per-route guards, redirects, micro-app binding, and more:
+路由支持动态参数、嵌套子路由、懒加载、单路由守卫、重定向、微应用绑定等：
 
 ```ts
 const routes = [
@@ -82,25 +82,25 @@ const routes = [
 ];
 ```
 
-### Full Navigation Guard Pipeline
+### 完整的导航守卫管线
 
-Guards intercept navigation at every stage — from leaving the current route to entering the new one. The pipeline executes in this order:
+守卫在每个阶段拦截导航——从离开当前路由到进入新路由。管线按以下顺序执行：
 
-1. **`fallback`** — Handle unmatched routes
-2. **`override`** — Route-level override (hybrid app scenarios)
-3. **`beforeLeave`** — Guard on the route being left
-4. **`beforeEach`** — Global guard
-5. **`beforeUpdate`** — Guard when same route changes params
-6. **`beforeEnter`** — Guard on the route being entered
-7. **`asyncComponent`** — Lazy load the target component
-8. **`confirm`** — Final confirmation, DOM updates, micro-app mount/unmount
-9. **`afterEach`** — Post-navigation notification
+1. **`fallback`** — 处理未匹配的路由
+2. **`override`** — 路由级覆写（混合应用场景）
+3. **`beforeLeave`** — 离开当前路由时的守卫
+4. **`beforeEach`** — 全局守卫
+5. **`beforeUpdate`** — 同一路由参数变化时的守卫
+6. **`beforeEnter`** — 进入目标路由时的守卫
+7. **`asyncComponent`** — 懒加载目标组件
+8. **`confirm`** — 最终确认，DOM 更新，微应用挂载/卸载
+9. **`afterEach`** — 导航后通知
 
-Guards can return `void` (allow), `false` (cancel), a string/object (redirect), or a function (custom logic).
+守卫可以返回 `void`（允许）、`false`（取消）、字符串/对象（重定向）或函数（自定义逻辑）。
 
-### Layer Routing
+### 分层路由
 
-Layers are isolated routing contexts rendered on top of the main page — modals, drawers, and slide-in panels with their own navigation:
+分层是渲染在主页面之上的独立路由上下文——模态框、抽屉和滑入面板拥有自己的导航：
 
 ```ts
 const result = await router.createLayer({
@@ -112,11 +112,11 @@ const result = await router.createLayer({
 // result.data contains data passed to closeLayer()
 ```
 
-Inside a layer, navigation (`push`, `replace`, `back`) does not affect the parent page's route.
+在分层内部，导航（`push`、`replace`、`back`）不会影响父页面的路由。
 
 ### RouterLink
 
-A framework-agnostic utility for building navigation links. `router.resolveLink()` returns attributes, active state, and event handlers that any framework can use:
+一个框架无关的工具，用于构建导航链接。`router.resolveLink()` 返回属性、激活状态和事件处理器，任何框架都可以使用：
 
 ```ts
 const link = router.resolveLink({ to: '/about', activeClass: 'nav-active' });
@@ -125,45 +125,45 @@ const link = router.resolveLink({ to: '/about', activeClass: 'nav-active' });
 // link.navigate — click handler
 ```
 
-Framework-specific wrappers (like `@esmx/router-vue`) build their own `<RouterLink>` components on top of this.
+框架特定的包装器（如 `@esmx/router-vue`）在此基础上构建自己的 `<RouterLink>` 组件。
 
-### Scroll Behavior
+### 滚动行为
 
-The router automatically manages scroll positions:
-- **`push`/`replace`** — scrolls to top (unless `keepScrollPosition: true`)
-- **`back`/`forward`/`go`** — restores the saved scroll position
-- Scroll positions are saved per URL in `history.state`
+路由器自动管理滚动位置：
+- **`push`/`replace`** — 滚动到顶部（除非设置 `keepScrollPosition: true`）
+- **`back`/`forward`/`go`** — 恢复保存的滚动位置
+- 滚动位置按 URL 保存在 `history.state` 中
 
-### Error Handling
+### 错误处理
 
-Four error types provide structured error handling for navigation failures:
-- `RouteTaskCancelledError` — Navigation superseded by a newer one
-- `RouteTaskExecutionError` — A guard or async component threw an error
-- `RouteNavigationAbortedError` — A guard returned `false`
-- `RouteSelfRedirectionError` — Infinite redirect loop detected
+四种错误类型为导航失败提供结构化的错误处理：
+- `RouteTaskCancelledError` — 导航被更新的导航取代
+- `RouteTaskExecutionError` — 守卫或异步组件抛出错误
+- `RouteNavigationAbortedError` — 守卫返回了 `false`
+- `RouteSelfRedirectionError` — 检测到无限重定向循环
 
-## Comparison with Other Routers
+## 与其他路由器的对比
 
-| Feature | @esmx/router | Vue Router | React Router |
+| 特性 | @esmx/router | Vue Router | React Router |
 |---------|-------------|------------|-------------|
-| Framework-agnostic | ✅ | Vue only | React only |
-| Multi-framework apps | ✅ | ❌ | ❌ |
-| SSR support | ✅ Built-in | ✅ | ✅ |
-| Navigation guards | ✅ Full pipeline | ✅ | Limited |
-| Layer routing (modals) | ✅ Built-in | ❌ | ❌ |
-| Micro-app lifecycle | ✅ | ❌ | ❌ |
-| Memory mode | ✅ | ✅ | ✅ |
-| Scroll management | ✅ Automatic | ✅ Manual | ❌ |
-| TypeScript | ✅ Full types | ✅ | ✅ |
+| 框架无关 | ✅ | 仅 Vue | 仅 React |
+| 多框架应用 | ✅ | ❌ | ❌ |
+| SSR 支持 | ✅ 内置 | ✅ | ✅ |
+| 导航守卫 | ✅ 完整管线 | ✅ | 有限 |
+| 分层路由（模态框） | ✅ 内置 | ❌ | ❌ |
+| 微应用生命周期 | ✅ | ❌ | ❌ |
+| 内存模式 | ✅ | ✅ | ✅ |
+| 滚动管理 | ✅ 自动 | ✅ 手动 | ❌ |
+| TypeScript | ✅ 完整类型 | ✅ | ✅ |
 
-## What's Next?
+## 下一步
 
-- **[Getting Started](./getting-started)** — Step-by-step setup with Vue 2, Vue 3, or React
-- **[Dynamic Route Matching](./dynamic-matching)** — Route parameters, query strings, catch-all routes
-- **[Nested Routes](./nested-routes)** — Layouts and child routes
-- **[Programmatic Navigation](./programmatic-navigation)** — All navigation methods in detail
-- **[Navigation Guards](./navigation-guards)** — Intercept and control navigation
-- **[Scroll Behavior](./scroll-behavior)** — Automatic scroll management
-- **[Layer Routing](./layer)** — Modals and drawers with isolated routing
-- **[Micro-App](./micro-app)** — Multi-framework app orchestration
-- **[Error Handling](./error-handling)** — Structured error types
+- **[快速开始](./getting-started)** — 使用 Vue 2、Vue 3 或 React 的逐步设置指南
+- **[动态路由匹配](./dynamic-matching)** — 路由参数、查询字符串、通配符路由
+- **[嵌套路由](./nested-routes)** — 布局和子路由
+- **[编程式导航](./programmatic-navigation)** — 所有导航方法的详细说明
+- **[导航守卫](./navigation-guards)** — 拦截和控制导航
+- **[滚动行为](./scroll-behavior)** — 自动滚动管理
+- **[分层路由](./layer)** — 具有独立路由的模态框和抽屉
+- **[微应用](./micro-app)** — 多框架应用编排
+- **[错误处理](./error-handling)** — 结构化错误类型

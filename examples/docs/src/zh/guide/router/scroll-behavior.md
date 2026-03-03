@@ -7,21 +7,21 @@ head:
       content: "scroll behavior, scroll restoration, scroll position, keepScrollPosition, scroll to top, scroll to element, history scroll"
 ---
 
-# Scroll Behavior
+# 滚动行为
 
-When navigating between routes, `@esmx/router` automatically manages scroll position to match user expectations. Pushing to a new page scrolls to the top; going back restores the previous scroll position. This mirrors how traditional multi-page websites behave.
+在路由之间导航时，`@esmx/router` 会自动管理滚动位置以符合用户预期。推送到新页面时滚动到顶部；返回时恢复之前的滚动位置。这与传统多页面网站的行为一致。
 
-## Default Behavior
+## 默认行为
 
-The router handles scrolling differently based on the navigation type:
+Router 根据导航类型以不同方式处理滚动：
 
-- `push`: Scrolls to top `(0, 0)`
-- `replace`: Scrolls to top `(0, 0)`
-- `back`: Restores saved scroll position
-- `forward`: Restores saved scroll position
-- `go(n)`: Restores saved scroll position
-- `pushWindow`: Handled by browser
-- `replaceWindow`: Handled by browser
+- `push`：滚动到顶部 `(0, 0)`
+- `replace`：滚动到顶部 `(0, 0)`
+- `back`：恢复保存的滚动位置
+- `forward`：恢复保存的滚动位置
+- `go(n)`：恢复保存的滚动位置
+- `pushWindow`：由浏览器处理
+- `replaceWindow`：由浏览器处理
 
 ```ts
 await router.push('/new-page');
@@ -29,14 +29,14 @@ await router.push('/new-page');
 await router.back();
 ```
 
-This works out of the box with no configuration needed.
+这开箱即用，无需任何配置。
 
-## How Scroll Positions Are Saved
+## 滚动位置的保存方式
 
-When leaving a page (via `push`, `replace`, or history navigation), the router saves the current scroll position using two mechanisms:
+离开页面时（通过 `push`、`replace` 或历史记录导航），Router 会使用两种机制保存当前滚动位置：
 
-1. **In-memory map**: A `Map<string, ScrollPosition>` keyed by the page's full URL
-2. **History state**: The position is also stored in `history.state` under the `__scroll_position_key` property
+1. **内存映射**：一个以页面完整 URL 为键的 `Map<string, ScrollPosition>`
+2. **历史状态**：位置也会存储在 `history.state` 的 `__scroll_position_key` 属性中
 
 ```ts
 const scrollPosition = { left: window.scrollX, top: window.scrollY };
@@ -49,17 +49,17 @@ history.replaceState({
 }, '');
 ```
 
-Storing in `history.state` means scroll positions survive page refreshes — when the user refreshes and then navigates back, the correct scroll position can still be restored.
+存储在 `history.state` 中意味着滚动位置在页面刷新后仍然有效——当用户刷新后再导航返回时，仍然可以恢复正确的滚动位置。
 
-## Manual Scroll Restoration
+## 手动滚动恢复
 
-The router sets `history.scrollRestoration = 'manual'` automatically. This tells the browser not to attempt its own scroll restoration, leaving full control to the router.
+Router 会自动设置 `history.scrollRestoration = 'manual'`。这告诉浏览器不要尝试自行进行滚动恢复，将完全控制权交给 Router。
 
-This is configured during the `confirm` phase of navigation — you don't need to set it yourself.
+这是在导航的 `confirm` 阶段配置的——你无需自行设置。
 
-## Keeping Scroll Position
+## 保持滚动位置
 
-Sometimes you don't want navigation to scroll to the top. For example, when switching tabs or filtering content, the user expects to stay where they are:
+有时你不希望导航滚动到顶部。例如，在切换标签页或筛选内容时，用户希望保持在当前位置：
 
 ```ts
 await router.push({
@@ -69,16 +69,16 @@ await router.push({
 });
 ```
 
-When `keepScrollPosition` is set to `true`:
-- The page does **not** scroll to top
-- The current scroll position is **not** saved (since we're staying at the same position)
-- The `__keepScrollPosition` flag is stored in `history.state`
+当 `keepScrollPosition` 设置为 `true` 时：
+- 页面**不会**滚动到顶部
+- 当前滚动位置**不会**被保存（因为我们停留在同一位置）
+- `__keepScrollPosition` 标志会存储在 `history.state` 中
 
-This flag is also checked during `back`/`forward` navigation — if the target history entry was created with `keepScrollPosition: true`, scroll restoration is skipped.
+在 `back`/`forward` 导航期间也会检查此标志——如果目标历史记录条目是使用 `keepScrollPosition: true` 创建的，则会跳过滚动恢复。
 
-## Scroll to Element
+## 滚动到元素
 
-The scroll system supports scrolling to a specific element on the page using a CSS selector:
+滚动系统支持使用 CSS 选择器滚动到页面上的特定元素：
 
 ```ts
 import { scrollToPosition } from '@esmx/router';
@@ -95,12 +95,12 @@ const element = document.querySelector('.target');
 scrollToPosition({ el: element });
 ```
 
-The `el` property accepts:
-- A CSS selector string (e.g., `'#my-id'`, `'.my-class'`, `'[data-section]'`)
-- A DOM `Element` reference
+`el` 属性接受：
+- CSS 选择器字符串（例如 `'#my-id'`、`'.my-class'`、`'[data-section]'`）
+- DOM `Element` 引用
 
 :::tip
-If you need to scroll to an element after navigation, use the `afterEach` hook:
+如果你需要在导航后滚动到某个元素，请使用 `afterEach` 钩子：
 
 ```ts
 router.afterEach((to) => {
@@ -113,19 +113,19 @@ router.afterEach((to) => {
 ```
 :::
 
-## Layer Routes and Scroll
+## 层路由与滚动
 
-Routes opened as [layers](./layer) (via `pushLayer` or `createLayer`) skip scroll handling entirely. Since layers render in an overlay on top of the current page, scrolling the background page would be disruptive:
+作为[层](./layer)打开的路由（通过 `pushLayer` 或 `createLayer`）会完全跳过滚动处理。由于层在当前页面之上以覆盖层的形式渲染，滚动背景页面会造成干扰：
 
 ```ts
 await router.pushLayer('/confirm-dialog');
 ```
 
-This behavior is built into the router's confirm phase — scroll logic is skipped when `router.isLayer` is `true`.
+此行为内置于 Router 的 confirm 阶段——当 `router.isLayer` 为 `true` 时，会跳过滚动逻辑。
 
-## Scroll Position Flow
+## 滚动位置流程
 
-Here's the complete flow of how scroll is handled during different navigation types:
+以下是不同导航类型中滚动处理的完整流程：
 
 ### push / replace
 
@@ -147,16 +147,16 @@ Here's the complete flow of how scroll is handled during different navigation ty
      → Falls back to (0, 0) if no saved position exists
 ```
 
-### Window Navigation (pushWindow / replaceWindow)
+### 窗口导航 (pushWindow / replaceWindow)
 
 ```
 1. Full browser navigation — scroll handled by browser natively
 ```
 
-## Summary
+## 总结
 
-- **Scroll to top on push/replace**: Enabled by default. Pass `keepScrollPosition: true` to disable.
-- **Restore scroll on back/forward**: Enabled by default. Uses saved positions automatically.
-- **Browser scroll restoration**: Disabled (`'manual'`). Set automatically by router.
-- **Layer scroll handling**: Skipped. Automatic for layer routes.
-- **Persist across page refresh**: Via `history.state`. Automatic.
+- **push/replace 时滚动到顶部**：默认启用。传递 `keepScrollPosition: true` 可禁用。
+- **back/forward 时恢复滚动**：默认启用。自动使用保存的位置。
+- **浏览器滚动恢复**：已禁用（`'manual'`）。由 Router 自动设置。
+- **层的滚动处理**：已跳过。对层路由自动生效。
+- **跨页面刷新持久化**：通过 `history.state`。自动完成。

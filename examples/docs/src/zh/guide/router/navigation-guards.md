@@ -7,17 +7,17 @@ head:
       content: "esmx navigation guards, route guards, beforeEach, afterEach, beforeEnter, beforeLeave, route transition pipeline"
 ---
 
-# Navigation Guards
+# 导航守卫
 
-Navigation guards are hooks that intercept route transitions. They can redirect, cancel, or allow navigation. Guards execute in a strict pipeline order, giving you fine-grained control over every route change.
+导航守卫是拦截路由过渡的钩子。它们可以重定向、取消或允许导航。守卫按照严格的管线顺序执行，让你对每次路由变化都拥有细粒度的控制。
 
-## Guard Types
+## 守卫类型
 
 ### RouteConfirmHook
 
-Guard hook that can modify navigation flow.
+可以修改导航流程的守卫钩子。
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 type RouteConfirmHook = (
   to: Route,
@@ -26,19 +26,19 @@ type RouteConfirmHook = (
 ) => Awaitable<RouteConfirmHookResult>;
 ```
 
-#### Return Values
+#### 返回值
 
-- `void` / `undefined`: Continue to next guard
-- `false`: Cancel navigation
-- `string`: Redirect to that path
-- `RouteLocationInput`: Redirect to that location
-- `RouteHandleHook`: Execute as the final handler
+- `void` / `undefined`：继续执行下一个守卫
+- `false`：取消导航
+- `string`：重定向到该路径
+- `RouteLocationInput`：重定向到该位置
+- `RouteHandleHook`：作为最终处理器执行
 
 ### RouteNotifyHook
 
-Post-navigation hook. Cannot modify navigation — for side effects only.
+导航后钩子。不能修改导航——仅用于副作用。
 
-- **Type Definition**:
+- **类型定义**：
 ```ts
 type RouteNotifyHook = (
   to: Route,
@@ -47,27 +47,27 @@ type RouteNotifyHook = (
 ) => void;
 ```
 
-## Global Guards
+## 全局守卫
 
 ### beforeEach
 
-Registered on the router instance. Runs before every navigation. Returns a function that removes the registered guard.
+注册在路由器实例上。在每次导航之前运行。返回一个移除已注册守卫的函数。
 
 ```ts
-// Authentication guard
+// 认证守卫
 const remove = router.beforeEach((to, from, router) => {
   if (to.meta.requiresAuth && !isLoggedIn()) {
     return '/login';
   }
 });
 
-// Remove the guard later
+// 之后移除守卫
 remove();
 ```
 
 ### afterEach
 
-Runs after every completed navigation. Cannot affect navigation.
+在每次完成的导航之后运行。不能影响导航。
 
 ```ts
 router.afterEach((to, from) => {
@@ -76,13 +76,13 @@ router.afterEach((to, from) => {
 });
 ```
 
-## Per-Route Guards
+## 单路由守卫
 
-Defined directly on [`RouteConfig`](./route-config).
+直接定义在 [`RouteConfig`](./route-config) 上。
 
 ### beforeEnter
 
-Called when entering a route **from a different route**. Not called if the user is already on this route (use `beforeUpdate` for same-route param changes).
+当**从不同路由**进入时调用。如果用户已在此路由上不会调用（参数变化时使用 `beforeUpdate`）。
 
 ```ts
 {
@@ -97,7 +97,7 @@ Called when entering a route **from a different route**. Not called if the user 
 
 ### beforeUpdate
 
-Called when the **same route** is reused but parameters change. For example, navigating from `/user/1` to `/user/2`.
+当**相同路由**被复用但参数发生变化时调用。例如，从 `/user/1` 导航到 `/user/2`。
 
 ```ts
 {
@@ -110,7 +110,7 @@ Called when the **same route** is reused but parameters change. For example, nav
 
 ### beforeLeave
 
-Called before leaving a route. Return `false` to prevent navigation.
+离开路由前调用。返回 `false` 可阻止导航。
 
 ```ts
 {
@@ -124,43 +124,43 @@ Called before leaving a route. Return `false` to prevent navigation.
 }
 ```
 
-## Navigation Pipeline
+## 导航管线
 
-Every navigation goes through a strict sequence of guards. The exact pipeline depends on the navigation type.
+每次导航都经过严格的守卫序列。具体管线取决于导航类型。
 
-### Standard Navigation (push / replace)
-
-```
-1. fallback        → Handle unmatched routes (404)
-2. override        → Route override (hybrid app bridges)
-3. asyncComponent  → Load lazy components
-4. beforeLeave     → Per-route: leaving current route
-5. beforeEnter     → Per-route: entering new route
-6. beforeUpdate    → Per-route: same route, different params
-7. beforeEach      → Global: all registered beforeEach guards
-8. confirm         → Execute navigation (update history + mount app)
-   └─ afterEach    → Global: post-navigation hooks
-```
-
-### Window Navigation (pushWindow / replaceWindow)
+### 标准导航（push / replace）
 
 ```
-1. fallback
-2. override
-3. beforeEach
-4. confirm → Delegates to fallback handler
+1. fallback        → 处理未匹配的路由（404）
+2. override        → 路由覆写（混合应用桥接）
+3. asyncComponent  → 加载懒加载组件
+4. beforeLeave     → 单路由守卫：离开当前路由
+5. beforeEnter     → 单路由守卫：进入新路由
+6. beforeUpdate    → 单路由守卫：相同路由，不同参数
+7. beforeEach      → 全局守卫：所有已注册的 beforeEach 守卫
+8. confirm         → 执行导航（更新历史 + 挂载应用）
+   └─ afterEach    → 全局钩子：导航后钩子
 ```
 
-### Layer Navigation (pushLayer)
+### 窗口导航（pushWindow / replaceWindow）
 
 ```
 1. fallback
 2. override
 3. beforeEach
-4. confirm → Creates layer router
+4. confirm → 委托给 fallback 处理器
 ```
 
-### Restart App (restartApp)
+### 分层导航（pushLayer）
+
+```
+1. fallback
+2. override
+3. beforeEach
+4. confirm → 创建分层路由器
+```
+
+### 重启应用（restartApp）
 
 ```
 1. fallback
@@ -169,38 +169,38 @@ Every navigation goes through a strict sequence of guards. The exact pipeline de
 4. beforeUpdate
 5. beforeEnter
 6. asyncComponent
-7. confirm → Force re-mount micro-app
+7. confirm → 强制重新挂载微应用
 ```
 
-## Pipeline Behavior
+## 管线行为
 
-### Short-circuiting
+### 短路
 
-Any guard returning a non-void result **stops the pipeline**. The remaining guards are skipped.
+任何守卫返回非 void 结果都会**停止管线**。剩余的守卫将被跳过。
 
 ```ts
 router.beforeEach((to) => {
   if (to.path === '/forbidden') {
-    return false; // Pipeline stops here
+    return false; // 管线在此停止
   }
-  // Return void → continue to next guard
+  // 返回 void → 继续下一个守卫
 });
 ```
 
-### Redirect Chains
+### 重定向链
 
-When a guard returns a redirect, the entire pipeline **restarts** for the new target:
+当守卫返回重定向时，整个管线会为新目标**重新启动**：
 
 ```ts
 router.beforeEach((to) => {
   if (to.path === '/old') return '/new';
-  // Navigating to /old → pipeline restarts for /new
+  // 导航到 /old → 管线为 /new 重新启动
 });
 ```
 
-### Async Guards
+### 异步守卫
 
-All guards support `async`/`Promise`. The pipeline awaits each guard before proceeding.
+所有守卫支持 `async`/`Promise`。管线在继续之前会等待每个守卫完成。
 
 ```ts
 router.beforeEach(async (to) => {
@@ -211,18 +211,18 @@ router.beforeEach(async (to) => {
 });
 ```
 
-### Task Cancellation
+### 任务取消
 
-If a new navigation starts while guards are still running, the previous navigation is **automatically cancelled** via the internal `RouteTaskController`. A `RouteTaskCancelledError` is thrown for the cancelled navigation.
+如果在守卫仍在运行时启动新的导航，前一个导航会通过内部的 `RouteTaskController` **自动取消**。被取消的导航会抛出 `RouteTaskCancelledError`。
 
 ```ts
-// User clicks rapidly:
-router.push('/page-1'); // Started, then cancelled
-router.push('/page-2'); // Started, then cancelled
-router.push('/page-3'); // This one completes
+// 用户快速点击：
+router.push('/page-1'); // 已启动，然后被取消
+router.push('/page-2'); // 已启动，然后被取消
+router.push('/page-3'); // 这个会完成
 ```
 
-## Complete Example
+## 完整示例
 
 ```ts
 const router = new Router({
@@ -259,7 +259,7 @@ const router = new Router({
   ]
 });
 
-// Global guards
+// 全局守卫
 router.beforeEach((to) => {
   if (to.meta.requiresAuth && !isLoggedIn()) {
     return '/login';

@@ -7,13 +7,13 @@ head:
       content: "nested routes, children routes, RouterView, layout routes, route nesting, Vue RouterView, router view depth"
 ---
 
-# Nested Routes
+# 嵌套路由
 
-Real-world application UIs are usually composed of components that are nested multiple levels deep. It's very common to have a layout that wraps page content, or a page that has its own sub-pages. `@esmx/router` uses nested route configurations and the `RouterView` component to express this relationship naturally.
+实际应用的 UI 通常由多层嵌套的组件组成。布局包裹页面内容，或者页面拥有自己的子页面，这些都是非常常见的情况。`@esmx/router` 使用嵌套路由配置和 `RouterView` 组件来自然地表达这种关系。
 
-## Basic Nesting
+## 基本嵌套
 
-Consider a layout with a navigation bar and a content area where different pages render:
+考虑一个带有导航栏和内容区域的布局，不同页面在内容区域中渲染：
 
 ```
 ┌──────────────────────────────────┐
@@ -26,7 +26,7 @@ Consider a layout with a navigation bar and a content area where different pages
 └──────────────────────────────────┘
 ```
 
-This is expressed using `children` in the route configuration:
+这通过路由配置中的 `children` 来表达：
 
 ```ts
 import type { RouteConfig } from '@esmx/router';
@@ -44,7 +44,7 @@ const routes: RouteConfig[] = [
 ];
 ```
 
-The `Layout` component uses `RouterView` to render whichever child route is matched:
+`Layout` 组件使用 `RouterView` 来渲染匹配到的子路由：
 
 ```vue title="src/Layout.vue"
 <template>
@@ -62,75 +62,75 @@ The `Layout` component uses `RouterView` to render whichever child route is matc
 </template>
 ```
 
-When the user navigates to `/about`, the `Layout` component stays mounted and only the `RouterView` content swaps from `Home` to `About`.
+当用户导航到 `/about` 时，`Layout` 组件保持挂载，只有 `RouterView` 的内容从 `Home` 切换为 `About`。
 
 :::tip
-Note that a child route with an **empty path** (`''`) acts as the default child. It matches when the parent's path is matched exactly — in this case, `/`.
+注意，**空路径**（`''`）的子路由充当默认子路由。它在父路由路径完全匹配时匹配——在这个例子中是 `/`。
 :::
 
-## How Matched Works
+## matched 的工作原理
 
-When a URL is matched against nested routes, the `route.matched` array contains all matched route configurations from **parent to child** in order:
+当 URL 与嵌套路由匹配时，`route.matched` 数组包含所有匹配的路由配置，按**从父级到子级**的顺序排列：
 
 ```ts
-// Route config
+// 路由配置
 {
-  path: '/',          // index 0 in matched[]
+  path: '/',          // matched[] 中的索引 0
   component: Layout,
   children: [
     {
-      path: 'users/:id',   // index 1 in matched[]
+      path: 'users/:id',   // matched[] 中的索引 1
       component: UserProfile
     }
   ]
 }
 
-// When URL is /users/42:
-route.matched[0]  // → Layout route config
-route.matched[1]  // → UserProfile route config
+// 当 URL 为 /users/42 时：
+route.matched[0]  // → Layout 路由配置
+route.matched[1]  // → UserProfile 路由配置
 route.matched.length  // 2
 ```
 
-Each `RouterView` component uses its depth in the component tree to pick the correct entry from `matched[]`. The root `RouterView` renders `matched[0]`, a nested `RouterView` renders `matched[1]`, and so on.
+每个 `RouterView` 组件使用它在组件树中的深度来从 `matched[]` 中选取正确的条目。根级 `RouterView` 渲染 `matched[0]`，嵌套的 `RouterView` 渲染 `matched[1]`，依此类推。
 
-## RouterView Component
+## RouterView 组件
 
-`RouterView` is imported from `@esmx/router-vue`. It renders the component at the current depth in the route tree:
+`RouterView` 从 `@esmx/router-vue` 导入。它渲染路由树中当前深度的组件：
 
 ```ts
 import { RouterView } from '@esmx/router-vue';
 ```
 
-Or register it globally via the plugin:
+或通过插件全局注册：
 
 ```ts
 import { RouterPlugin } from '@esmx/router-vue';
-app.use(RouterPlugin); // registers both RouterView and RouterLink globally
+app.use(RouterPlugin); // 全局注册 RouterView 和 RouterLink
 ```
 
-`RouterView` automatically tracks its nesting depth. You don't need to pass any props — it knows which matched route config to render based on where it sits in the component hierarchy.
+`RouterView` 自动跟踪其嵌套深度。你不需要传递任何 props——它根据自身在组件层级中的位置，知道应该渲染哪个匹配的路由配置。
 
-## Multiple Levels of Nesting
+## 多级嵌套
 
-Routes can be nested to any depth. Each level of nesting corresponds to a `RouterView` in the component tree:
+路由可以嵌套到任意深度。每一级嵌套对应组件树中的一个 `RouterView`：
 
 ```ts
 const routes: RouteConfig[] = [
   {
     path: '/',
-    component: AppLayout,           // depth 0
+    component: AppLayout,           // 深度 0
     children: [
       {
         path: 'users',
-        component: UsersLayout,      // depth 1
+        component: UsersLayout,      // 深度 1
         children: [
-          { path: '', component: UserList },         // depth 2
+          { path: '', component: UserList },         // 深度 2
           {
             path: ':id',
-            component: UserDetailLayout,              // depth 2
+            component: UserDetailLayout,              // 深度 2
             children: [
-              { path: '', component: UserProfile },   // depth 3
-              { path: 'posts', component: UserPosts } // depth 3
+              { path: '', component: UserProfile },   // 深度 3
+              { path: 'posts', component: UserPosts } // 深度 3
             ]
           }
         ]
@@ -140,16 +140,16 @@ const routes: RouteConfig[] = [
 ];
 ```
 
-The component tree for `/users/42/posts` looks like:
+`/users/42/posts` 的组件树如下所示：
 
 ```
-AppLayout                      ← matched[0], rendered by RouterView at depth 0
-└── UsersLayout                ← matched[1], rendered by RouterView at depth 1
-    └── UserDetailLayout       ← matched[2], rendered by RouterView at depth 2
-        └── UserPosts          ← matched[3], rendered by RouterView at depth 3
+AppLayout                      ← matched[0]，由深度 0 的 RouterView 渲染
+└── UsersLayout                ← matched[1]，由深度 1 的 RouterView 渲染
+    └── UserDetailLayout       ← matched[2]，由深度 2 的 RouterView 渲染
+        └── UserPosts          ← matched[3]，由深度 3 的 RouterView 渲染
 ```
 
-Each layout component contains a `RouterView` that renders the next level:
+每个布局组件包含一个 `RouterView`，用于渲染下一级：
 
 ```vue title="src/UsersLayout.vue"
 <template>
@@ -169,11 +169,11 @@ Each layout component contains a `RouterView` that renders the next level:
 </template>
 ```
 
-## RouterView Depth
+## RouterView 深度
 
-Each `RouterView` maintains a depth counter internally. The root-level `RouterView` is at depth 0, and each nested `RouterView` increments the depth by 1. This depth determines which entry in the `route.matched` array to render.
+每个 `RouterView` 内部维护一个深度计数器。根级 `RouterView` 的深度为 0，每个嵌套的 `RouterView` 将深度加 1。这个深度决定了渲染 `route.matched` 数组中的哪个条目。
 
-You can access the current depth using `useRouterViewDepth()`:
+你可以使用 `useRouterViewDepth()` 访问当前深度：
 
 ```vue
 <script setup lang="ts">
@@ -184,18 +184,18 @@ console.log('Current RouterView depth:', depth); // 0, 1, 2, etc.
 </script>
 ```
 
-- Depth `0`: Renders `route.matched[0].component` (root layout)
-- Depth `1`: Renders `route.matched[1].component` (section layout)
-- Depth `2`: Renders `route.matched[2].component` (page component)
-- Depth `3`: Renders `route.matched[3].component` (sub-page component)
+- 深度 `0`：渲染 `route.matched[0].component`（根布局）
+- 深度 `1`：渲染 `route.matched[1].component`（分区布局）
+- 深度 `2`：渲染 `route.matched[2].component`（页面组件）
+- 深度 `3`：渲染 `route.matched[3].component`（子页面组件）
 
-This is handled automatically — you rarely need to interact with depth directly. It's exposed mainly for advanced use cases like building custom `RouterView` implementations.
+这一切都是自动处理的——你很少需要直接与深度交互。它主要暴露用于高级用例，如构建自定义 `RouterView` 实现。
 
-## Complete Example
+## 完整示例
 
-Here's a full example with a three-level layout structure:
+这是一个带有三级布局结构的完整示例：
 
-### Route Configuration
+### 路由配置
 
 ```ts title="src/routes.ts"
 import type { RouteConfig } from '@esmx/router';
@@ -227,7 +227,7 @@ export const routes: RouteConfig[] = [
 ];
 ```
 
-### Layout Components
+### 布局组件
 
 ```vue title="src/MainLayout.vue"
 <template>
@@ -279,9 +279,9 @@ const route = useRoute();
 </script>
 ```
 
-### Resulting Navigation
+### 导航结果
 
-| URL | Rendered Components |
+| URL | 渲染的组件 |
 |-----|-------------------|
 | `/` | MainLayout → HomePage |
 | `/about` | MainLayout → AboutPage |

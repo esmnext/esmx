@@ -7,13 +7,13 @@ head:
       content: "dynamic routes, route params, route parameters, path-to-regexp, wildcard routes, catch-all routes, query params, optional params"
 ---
 
-# Dynamic Route Matching
+# 动态路由匹配
 
-Very often we need to map routes with the given pattern to the same component. For example, we may have a `UserProfile` component which should be rendered for all users but with different user IDs. In `@esmx/router`, we can use a dynamic segment in the path to achieve that.
+很多时候，我们需要将给定模式的路由映射到同一个组件。例如，我们可能有一个 `UserProfile` 组件，它需要为所有用户渲染，但使用不同的用户 ID。在 `@esmx/router` 中，我们可以在路径中使用动态段来实现这一点。
 
-## Route Params
+## 路由参数
 
-Dynamic segments are denoted by a colon `:`. When a route is matched, the value of the dynamic segments will be exposed as `route.params`:
+动态段以冒号 `:` 开头。当路由被匹配时，动态段的值将通过 `route.params` 暴露：
 
 ```ts
 const routes: RouteConfig[] = [
@@ -22,7 +22,7 @@ const routes: RouteConfig[] = [
 ];
 ```
 
-Now URLs like `/users/42` and `/users/alice` will both map to the same route:
+现在，类似 `/users/42` 和 `/users/alice` 的 URL 都会映射到同一条路由：
 
 ```ts
 // When the URL is /users/42
@@ -33,12 +33,12 @@ console.log(route.params.id); // 'alice'
 ```
 
 :::tip
-All param values are strings. Even if the URL contains `/users/42`, `route.params.id` will be the string `'42'`, not the number `42`.
+所有参数值都是字符串。即使 URL 包含 `/users/42`，`route.params.id` 也会是字符串 `'42'`，而不是数字 `42`。
 :::
 
-## Multiple Params
+## 多个参数
 
-You can have multiple dynamic segments in the same route, and they will map to corresponding fields on `route.params`:
+你可以在同一条路由中使用多个动态段，它们会映射到 `route.params` 上的对应字段：
 
 ```ts
 const routes: RouteConfig[] = [
@@ -52,9 +52,9 @@ const routes: RouteConfig[] = [
 | `/blog/:year/:month/:slug` | `/blog/2024/01/hello-world` | `{ year: '2024', month: '01', slug: 'hello-world' }` |
 | `/:lang/docs/:page` | `/en/docs/intro` | `{ lang: 'en', page: 'intro' }` |
 
-## Optional Params
+## 可选参数
 
-You can make a parameter optional by adding a `?` after it. Optional parameters will match routes both with and without the segment:
+你可以在参数后面添加 `?` 使其成为可选参数。可选参数可以匹配有或没有该段的路由：
 
 ```ts
 const routes: RouteConfig[] = [
@@ -67,11 +67,11 @@ const routes: RouteConfig[] = [
 | `/search` | `{ query: '' }` |
 | `/search/vue-router` | `{ query: 'vue-router' }` |
 
-When an optional parameter is not present in the URL, its value will be an empty string `''`.
+当可选参数不存在于 URL 中时，其值为空字符串 `''`。
 
-## Catch-All / 404 Routes
+## 捕获所有 / 404 路由
 
-A wildcard pattern can catch all paths — useful for 404 pages or fallback routes. Use the `(.*)` pattern (or `(.*)*` for capturing the value as an array):
+通配符模式可以匹配所有路径——适用于 404 页面或兜底路由。使用 `(.*)` 模式（或 `(.*)*` 将值作为数组捕获）：
 
 ```ts
 const routes: RouteConfig[] = [
@@ -93,14 +93,14 @@ console.log(route.paramsArray.pathMatch);  // ['a', 'b', 'c']
 ```
 
 :::warning
-Make sure to place your catch-all route **last** in the routes array. Since routes are evaluated in order, a catch-all at the top would match every URL and prevent specific routes from ever being reached.
+请确保将捕获所有路由放在路由数组的**最后**。由于路由是按顺序匹配的，放在顶部的捕获所有路由会匹配每个 URL，导致特定路由永远无法被匹配到。
 :::
 
-## Accessing Params
+## 访问参数
 
 ### `route.params`
 
-An object containing key/value pairs of dynamic segments. Each value is a **string**. For repeating parameters (like `(.*)*`), only the first match is provided:
+一个包含动态段键/值对的对象。每个值都是**字符串**。对于重复参数（如 `(.*)*`），只提供第一个匹配项：
 
 ```ts
 // Route: /files/:path*
@@ -110,7 +110,7 @@ route.params.path  // 'a'
 
 ### `route.paramsArray`
 
-An object containing key/value pairs where each value is a **string array**. This is useful for repeating parameters and ensures you always get all matched values:
+一个包含键/值对的对象，其中每个值都是**字符串数组**。这对于重复参数很有用，确保你始终能获取所有匹配值：
 
 ```ts
 // Route: /files/:path*
@@ -122,9 +122,9 @@ route.paramsArray.path  // ['a', 'b', 'c']
 route.paramsArray.id    // ['42']
 ```
 
-## Query Params
+## 查询参数
 
-Query parameters are the key/value pairs after the `?` in a URL. They don't need to be defined in the route pattern — they're always available:
+查询参数是 URL 中 `?` 后面的键/值对。它们不需要在路由模式中定义——它们始终可用：
 
 ```ts
 // URL: /search?q=vue&sort=date&tag=frontend&tag=ssr
@@ -135,7 +135,7 @@ route.query.tag     // 'frontend' (first value only)
 
 ### `route.queryArray`
 
-For query parameters that appear multiple times, use `queryArray` to get all values:
+对于出现多次的查询参数，使用 `queryArray` 获取所有值：
 
 ```ts
 // URL: /search?tag=frontend&tag=ssr
@@ -143,50 +143,50 @@ route.query.tag           // 'frontend'
 route.queryArray.tag      // ['frontend', 'ssr']
 ```
 
-- **`route.query`**: `Record<string, string | undefined>` — First value for each query key
-- **`route.queryArray`**: `Record<string, string[] | undefined>` — All values for each query key
+- **`route.query`**: `Record<string, string | undefined>` — 每个查询键的第一个值
+- **`route.queryArray`**: `Record<string, string[] | undefined>` — 每个查询键的所有值
 
 ## Hash
 
-The hash fragment (everything after `#` in the URL) is available via `route.hash`:
+哈希片段（URL 中 `#` 后面的所有内容）通过 `route.hash` 获取：
 
 ```ts
 // URL: /about#team
 route.hash  // '#team'
 ```
 
-The hash always includes the `#` prefix. If there's no hash in the URL, `route.hash` is an empty string.
+哈希始终包含 `#` 前缀。如果 URL 中没有哈希，`route.hash` 为空字符串。
 
-## Pattern Matching with path-to-regexp
+## 使用 path-to-regexp 进行模式匹配
 
-Under the hood, `@esmx/router` uses the [`path-to-regexp`](https://github.com/pillarjs/path-to-regexp) library for pattern matching. This gives you access to advanced matching features:
+在底层，`@esmx/router` 使用 [`path-to-regexp`](https://github.com/pillarjs/path-to-regexp) 库进行模式匹配。这使你可以使用高级匹配特性：
 
 | Pattern | Description | Example Match |
 |---------|-------------|---------------|
-| `:id` | Named parameter | `/users/42` |
-| `:id?` | Optional parameter | `/users` or `/users/42` |
-| `:path*` | Zero or more segments | `/files` or `/files/a/b` |
-| `:path+` | One or more segments | `/files/a` or `/files/a/b` |
-| `:id(\\d+)` | Parameter with regex constraint | `/users/42` (not `/users/alice`) |
-| `(.*)*` | Catch-all wildcard | Anything |
+| `:id` | 命名参数 | `/users/42` |
+| `:id?` | 可选参数 | `/users` or `/users/42` |
+| `:path*` | 零个或多个段 | `/files` or `/files/a/b` |
+| `:path+` | 一个或多个段 | `/files/a` or `/files/a/b` |
+| `:id(\\\\d+)` | 带正则约束的参数 | `/users/42` (not `/users/alice`) |
+| `(.*)*` | 捕获所有通配符 | Anything |
 
-### Custom Regex Constraints
+### 自定义正则约束
 
-You can restrict what a parameter matches using inline regex:
+你可以使用内联正则表达式来限制参数的匹配范围：
 
 ```ts
 const routes: RouteConfig[] = [
   // Only matches numeric IDs
-  { path: '/users/:id(\\d+)', component: UserProfile },
+  { path: '/users/:id(\\\\d+)', component: UserProfile },
 
   // Only matches specific values
   { path: '/:lang(en|fr|de)/docs', component: Docs }
 ];
 ```
 
-## URL Encoding
+## URL 编码
 
-Route paths should be URL-encoded. The router handles encoding and decoding automatically — when you define routes and access parameters, you work with decoded values:
+路由路径应使用 URL 编码。Router 会自动处理编码和解码——当你定义路由和访问参数时，使用的是解码后的值：
 
 ```ts
 const routes: RouteConfig[] = [
@@ -198,7 +198,7 @@ const routes: RouteConfig[] = [
 route.params.page  // 'getting started' (decoded)
 ```
 
-When navigating programmatically, you can pass either encoded or decoded paths:
+在编程式导航时，你可以传递编码或解码后的路径：
 
 ```ts
 router.push('/docs/getting started');   // works — encoded automatically

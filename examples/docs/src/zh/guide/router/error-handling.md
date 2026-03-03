@@ -7,17 +7,17 @@ head:
       content: "route errors, navigation errors, RouteError, RouteTaskCancelledError, RouteNavigationAbortedError, RouteSelfRedirectionError, error handling"
 ---
 
-# Error Handling
+# 错误处理
 
-Navigation in `@esmx/router` can fail for several reasons — a guard blocks the transition, an async component fails to load, or a newer navigation supersedes the current one. The router provides a structured error hierarchy so you can handle each case appropriately.
+`@esmx/router` 中的导航可能由于多种原因失败——守卫阻止了过渡、异步组件加载失败，或者更新的导航取代了当前导航。Router 提供了结构化的错误层级，以便你能够恰当地处理每种情况。
 
-## Error Types
+## 错误类型
 
-All route errors extend the `RouteError` base class. Each error type has a specific `code` that identifies the failure reason.
+所有路由错误都继承自 `RouteError` 基类。每种错误类型都有一个特定的 `code` 来标识失败原因。
 
-### RouteError (Base Class)
+### RouteError（基类）
 
-The base class for all routing errors. Every route error has these properties:
+所有路由错误的基类。每个路由错误都具有以下属性：
 
 ```ts
 class RouteError extends Error {
@@ -27,16 +27,16 @@ class RouteError extends Error {
 }
 ```
 
-- **`message`**: `string` — Human-readable error description
-- **`code`**: `string` — Machine-readable error code
-- **`to`**: `Route` — Target route that was being navigated to
-- **`from`**: `Route | null` — Route that was being navigated from (`null` on initial navigation)
+- **`message`**: `string` — 人类可读的错误描述
+- **`code`**: `string` — 机器可读的错误代码
+- **`to`**: `Route` — 正在导航到的目标路由
+- **`from`**: `Route | null` — 正在离开的路由（初始导航时为 `null`）
 
 ### RouteTaskCancelledError
 
-**Code:** `ROUTE_TASK_CANCELLED`
+**代码:** `ROUTE_TASK_CANCELLED`
 
-Thrown when a navigation is cancelled because a **newer navigation** started before the current one completed. This is normal and expected in applications where users click quickly:
+当导航因**更新的导航**在当前导航完成前启动而被取消时抛出。这在用户快速点击的应用中是正常和预期的：
 
 ```ts
 // User clicks rapidly:
@@ -45,11 +45,11 @@ router.push('/page-2'); // → RouteTaskCancelledError (superseded)
 router.push('/page-3'); // → completes successfully
 ```
 
-This error has an additional property:
+此错误有一个额外属性：
 
-- **`taskName`**: `string` — Name of the guard/task that was running when cancelled
+- **`taskName`**: `string` — 被取消时正在运行的守卫/任务名称
 
-In most cases, you can safely ignore this error — it simply means the user changed their mind:
+在大多数情况下，你可以安全地忽略此错误——它只是意味着用户改变了主意：
 
 ```ts
 try {
@@ -64,9 +64,9 @@ try {
 
 ### RouteTaskExecutionError
 
-**Code:** `ROUTE_TASK_EXECUTION_ERROR`
+**代码:** `ROUTE_TASK_EXECUTION_ERROR`
 
-Thrown when a guard or async component **throws an error** during execution:
+当守卫或异步组件在执行期间**抛出错误**时触发：
 
 ```ts
 // A guard that throws
@@ -81,10 +81,10 @@ router.beforeEach(async (to) => {
 }
 ```
 
-This error wraps the original error and provides access to it:
+此错误封装了原始错误并提供访问：
 
-- **`taskName`**: `string` — Name of the guard/task that threw
-- **`originalError`**: `Error` — The original error that was thrown
+- **`taskName`**: `string` — 抛出错误的守卫/任务名称
+- **`originalError`**: `Error` — 被抛出的原始错误
 
 ```ts
 try {
@@ -99,9 +99,9 @@ try {
 
 ### RouteNavigationAbortedError
 
-**Code:** `ROUTE_NAVIGATION_ABORTED`
+**代码:** `ROUTE_NAVIGATION_ABORTED`
 
-Thrown when a navigation guard explicitly **returns `false`** to block the navigation:
+当导航守卫明确**返回 `false`** 以阻止导航时抛出：
 
 ```ts
 {
@@ -115,7 +115,7 @@ Thrown when a navigation guard explicitly **returns `false`** to block the navig
 }
 ```
 
-- **`taskName`**: `string` — Name of the guard that aborted navigation
+- **`taskName`**: `string` — 中止导航的守卫名称
 
 ```ts
 try {
@@ -130,9 +130,9 @@ try {
 
 ### RouteSelfRedirectionError
 
-**Code:** `ROUTE_SELF_REDIRECTION`
+**代码:** `ROUTE_SELF_REDIRECTION`
 
-Thrown when a guard causes an **infinite redirect loop** — redirecting to the same route that's already being navigated to:
+当守卫导致**无限重定向循环**——重定向到正在导航的同一路由时抛出：
 
 ```ts
 router.beforeEach((to) => {
@@ -140,7 +140,7 @@ router.beforeEach((to) => {
 });
 ```
 
-The fix is to check the target route before redirecting:
+修复方法是在重定向前检查目标路由：
 
 ```ts
 router.beforeEach((to) => {
@@ -150,11 +150,11 @@ router.beforeEach((to) => {
 });
 ```
 
-## Catching Errors
+## 捕获错误
 
-### From `router.push` / `router.replace`
+### 从 `router.push` / `router.replace` 中捕获
 
-Every navigation method returns a `Promise` that rejects on error:
+每个导航方法都返回一个在出错时 reject 的 `Promise`：
 
 ```ts
 try {
@@ -172,9 +172,9 @@ try {
 }
 ```
 
-### Type-Checking Errors
+### 类型检查错误
 
-You can check errors by `instanceof` or by their `code` property:
+你可以通过 `instanceof` 或 `code` 属性检查错误：
 
 ```ts
 if (error instanceof RouteTaskCancelledError) { /* ... */ }
@@ -187,11 +187,11 @@ if (error instanceof RouteError && error.code === 'ROUTE_TASK_CANCELLED') { /* .
 - `RouteNavigationAbortedError`: `ROUTE_NAVIGATION_ABORTED`
 - `RouteSelfRedirectionError`: `ROUTE_SELF_REDIRECTION`
 
-## Best Practices
+## 最佳实践
 
-### 1. Always Handle Errors from Navigation
+### 1. 始终处理导航错误
 
-Don't fire-and-forget navigation calls in production. Unhandled promise rejections from failed navigations can crash your app:
+不要在生产环境中对导航调用使用 fire-and-forget。未处理的来自失败导航的 Promise rejection 可能导致应用崩溃：
 
 ```ts
 // ❌ Bad — unhandled rejection if guard blocks navigation
@@ -207,9 +207,9 @@ router.push('/admin').catch((error) => {
 });
 ```
 
-### 2. Ignore Cancellation Errors
+### 2. 忽略取消错误
 
-`RouteTaskCancelledError` is almost always harmless. Create a helper to filter it out:
+`RouteTaskCancelledError` 几乎总是无害的。创建一个辅助函数来过滤它：
 
 ```ts
 async function safeNavigate(to: string) {
@@ -224,9 +224,9 @@ async function safeNavigate(to: string) {
 }
 ```
 
-### 3. Guard Error Recovery
+### 3. 守卫错误恢复
 
-When a guard throws unexpectedly, catch it and redirect to an error page rather than leaving the user stuck:
+当守卫意外抛出错误时，捕获它并重定向到错误页面，而不是让用户卡住：
 
 ```ts
 router.beforeEach(async (to) => {
@@ -239,9 +239,9 @@ router.beforeEach(async (to) => {
 });
 ```
 
-### 4. Prevent Self-Redirection in Guards
+### 4. 防止守卫中的自重定向
 
-Always check the target route before redirecting to avoid infinite loops:
+在重定向前始终检查目标路由，以避免无限循环：
 
 ```ts
 // ❌ Bad — infinite loop when user navigates to /login
@@ -257,9 +257,9 @@ router.beforeEach((to) => {
 });
 ```
 
-### 5. Wrap Async Component Loading
+### 5. 包装异步组件加载
 
-If your async components can fail (network issues, deployment changes), handle the error gracefully:
+如果你的异步组件可能失败（网络问题、部署变更），请优雅地处理错误：
 
 ```ts
 {
@@ -275,7 +275,7 @@ If your async components can fail (network issues, deployment changes), handle t
 }
 ```
 
-## Complete Example
+## 完整示例
 
 ```ts
 import {
