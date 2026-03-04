@@ -1,5 +1,21 @@
 {
-    "name": "@esmx/router",
+    "name": "@esmx/router-react",
+    "description": "React integration for @esmx/router - A powerful router with React 18+ support using modern hooks and context patterns",
+    "keywords": [
+        "react",
+        "router",
+        "routing",
+        "react-router",
+        "hooks",
+        "typescript",
+        "navigation",
+        "esmx",
+        "esm",
+        "single-page-application",
+        "spa",
+        "framework",
+        "frontend"
+    ],
     "template": "library",
     "scripts": {
         "lint:js": "biome check --write --no-errors-on-unmatched",
@@ -27,14 +43,21 @@
             "url": "https://github.com/wesloong"
         }
     ],
+    "peerDependencies": {
+        "react": "^18.0.0 || ^19.0.0"
+    },
     "dependencies": {
-        "path-to-regexp": "^6.2.2"
+        "@esmx/router": "workspace:*"
     },
     "devDependencies": {
         "@biomejs/biome": "2.3.7",
         "@types/node": "^24.0.0",
+        "@types/react": "^19.1.8",
+        "@types/react-dom": "^19.1.6",
         "@vitest/coverage-v8": "3.2.4",
         "happy-dom": "^20.0.10",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
         "typescript": "5.9.3",
         "unbuild": "3.6.1",
         "vitest": "3.2.4"

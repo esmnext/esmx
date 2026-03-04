@@ -296,7 +296,7 @@ export class Router {
 
         router.afterEach(async (to, from) => {
             if (
-                ![
+                [
                     RouteType.pushWindow,
                     RouteType.replaceWindow,
                     RouteType.replace,
