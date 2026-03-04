@@ -159,11 +159,11 @@ const link = router.resolveLink({ to: '/about', activeClass: 'nav-active' });
 ## 下一步
 
 - **[快速开始](./getting-started)** — 使用 Vue 2、Vue 3 或 React 的逐步设置指南
-- **[动态路由匹配](./dynamic-matching)** — 路由参数、查询字符串、通配符路由
-- **[嵌套路由](./nested-routes)** — 布局和子路由
-- **[编程式导航](./programmatic-navigation)** — 所有导航方法的详细说明
-- **[导航守卫](./navigation-guards)** — 拦截和控制导航
-- **[滚动行为](./scroll-behavior)** — 自动滚动管理
-- **[分层路由](./layer)** — 具有独立路由的模态框和抽屉
-- **[微应用](./micro-app)** — 多框架应用编排
-- **[错误处理](./error-handling)** — 结构化错误类型
+- **[动态路由匹配](/api/router/dynamic-matching)** — 路由参数、查询字符串、通配符路由
+- **[嵌套路由](/api/router/nested-routes)** — 布局和子路由
+- **[编程式导航](/api/router/programmatic-navigation)** — 所有导航方法的详细说明
+- **[导航守卫](/api/router/navigation-guards)** — 拦截和控制导航
+- **[滚动行为](/api/router/scroll-behavior)** — 自动滚动管理
+- **[分层路由](/api/router/layer)** — 具有独立路由的模态框和抽屉
+- **[微应用](/api/router/micro-app)** — 多框架应用编排
+- **[错误处理](/api/router/error-types)** — 结构化错误类型

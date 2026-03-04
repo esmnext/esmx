@@ -31,7 +31,7 @@ interface RouterMicroAppOptions {
 Mount the application into the given DOM element. Called when the router navigates to a route bound to this micro-app.
 
 - **Parameters**:
-  - `el: HTMLElement` - The DOM element to mount into (from [`RouterOptions.root`](./router#root))
+  - `el: HTMLElement` - The DOM element to mount into (from [`RouterOptions.root`](/api/router/router#root))
 
 ### unmount
 
@@ -43,7 +43,7 @@ Clean up and destroy the application. Called when navigating away to a route bou
 
 - **Type**: `() => Awaitable<string>`
 
-Return the SSR HTML string for the current state of the application. Called by [`router.renderToString()`](./router#rendertostring) during server-side rendering.
+Return the SSR HTML string for the current state of the application. Called by [`router.renderToString()`](/api/router/router#rendertostring) during server-side rendering.
 
 ## RouterMicroAppCallback
 
@@ -56,7 +56,7 @@ type RouterMicroAppCallback = (router: Router) => RouterMicroAppOptions;
 
 ## RouterMicroApp
 
-The `apps` option in [`RouterOptions`](./router#apps) accepts either a map of named factories or a single factory.
+The `apps` option in [`RouterOptions`](/api/router/router#apps) accepts either a map of named factories or a single factory.
 
 - **Type Definition**:
 ```ts
@@ -69,7 +69,7 @@ type RouterMicroApp =
 
 ### Registering Micro-Apps
 
-Micro-apps are registered via the `apps` option on the Router and referenced by the `app` property in [route configs](./route-config#app):
+Micro-apps are registered via the `apps` option on the Router and referenced by the `app` property in [route configs](/api/router/route-config#app):
 
 ```ts
 const router = new Router({
@@ -177,7 +177,7 @@ When navigating within the **same** app (e.g., `/react` → `/react/about`):
 
 ### Force Restart
 
-[`router.restartApp()`](./router#restartapp) forces a full unmount → mount cycle even if the app key hasn't changed.
+[`router.restartApp()`](/api/router/router#restartapp) forces a full unmount → mount cycle even if the app key hasn't changed.
 
 ## SSR Flow
 
@@ -203,7 +203,7 @@ const html = await router.renderToString();
 
 ## Root Element
 
-The [`root`](./router#root) option in `RouterOptions` determines where micro-apps are mounted:
+The [`root`](/api/router/router#root) option in `RouterOptions` determines where micro-apps are mounted:
 
 - If the element exists in the DOM, it's reused
 - If it doesn't exist, a `<div>` is created and appended to `document.body`

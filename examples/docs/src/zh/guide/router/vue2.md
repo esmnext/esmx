@@ -300,7 +300,7 @@ src/
 
 ## 下一步
 
-- [动态路由匹配](./dynamic-matching) — 路由参数和模式
-- [嵌套路由](./nested-routes) — 带子路由的布局
-- [编程式导航](./programmatic-navigation) — 所有导航方法
-- [导航守卫](./navigation-guards) — 拦截和控制导航
+- [动态路由匹配](/api/router/dynamic-matching) — 路由参数和模式
+- [嵌套路由](/api/router/nested-routes) — 带子路由的布局
+- [编程式导航](/api/router/programmatic-navigation) — 所有导航方法
+- [导航守卫](/api/router/navigation-guards) — 拦截和控制导航

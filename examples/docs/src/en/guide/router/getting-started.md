@@ -419,7 +419,7 @@ export default {
 
 Now that you have a working router, explore the rest of the guide:
 
-- [Dynamic Route Matching](./dynamic-matching) — Learn about route parameters and patterns
-- [Nested Routes](./nested-routes) — Build layouts with child routes
-- [Programmatic Navigation](./programmatic-navigation) — Navigate with code
-- [Navigation Guards](./navigation-guards) — Control access and intercept navigation
+- [Dynamic Route Matching](/api/router/dynamic-matching) — Learn about route parameters and patterns
+- [Nested Routes](/api/router/nested-routes) — Build layouts with child routes
+- [Programmatic Navigation](/api/router/programmatic-navigation) — Navigate with code
+- [Navigation Guards](/api/router/navigation-guards) — Control access and intercept navigation
