@@ -419,7 +419,7 @@ export default {
 
 现在你已经有了一个可工作的路由器，继续探索指南的其余部分：
 
-- [动态路由匹配](./dynamic-matching) — 了解路由参数和模式
-- [嵌套路由](./nested-routes) — 使用子路由构建布局
-- [编程式导航](./programmatic-navigation) — 使用代码进行导航
-- [导航守卫](./navigation-guards) — 控制访问和拦截导航
+- [动态路由匹配](/api/router/dynamic-matching) — 了解路由参数和模式
+- [嵌套路由](/api/router/nested-routes) — 使用子路由构建布局
+- [编程式导航](/api/router/programmatic-navigation) — 使用代码进行导航
+- [导航守卫](/api/router/navigation-guards) — 控制访问和拦截导航

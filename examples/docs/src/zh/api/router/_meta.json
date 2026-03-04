@@ -4,7 +4,12 @@
     "route-config",
     "router-link",
     "navigation-guards",
+    "dynamic-matching",
+    "nested-routes",
+    "programmatic-navigation",
+    "scroll-behavior",
     "layer",
+    "micro-app",
     "error-types",
     "types"
 ]

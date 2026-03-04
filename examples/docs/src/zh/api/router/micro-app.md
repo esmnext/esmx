@@ -31,7 +31,7 @@ interface RouterMicroAppOptions {
 将应用挂载到给定的 DOM 元素中。当 Router 导航到绑定此微应用的路由时调用。
 
 - **参数**：
-  - `el: HTMLElement` - 要挂载到的 DOM 元素（来自 [`RouterOptions.root`](./router#root)）
+  - `el: HTMLElement` - 要挂载到的 DOM 元素（来自 [`RouterOptions.root`](/api/router/router#root)）
 
 ### unmount
 
@@ -43,7 +43,7 @@ interface RouterMicroAppOptions {
 
 - **类型**: `() => Awaitable<string>`
 
-返回应用当前状态的 SSR HTML 字符串。在服务端渲染期间由 [`router.renderToString()`](./router#rendertostring) 调用。
+返回应用当前状态的 SSR HTML 字符串。在服务端渲染期间由 [`router.renderToString()`](/api/router/router#rendertostring) 调用。
 
 ## RouterMicroAppCallback
 
@@ -56,7 +56,7 @@ type RouterMicroAppCallback = (router: Router) => RouterMicroAppOptions;
 
 ## RouterMicroApp
 
-[`RouterOptions`](./router#apps) 中的 `apps` 选项接受命名工厂的映射或单个工厂。
+[`RouterOptions`](/api/router/router#apps) 中的 `apps` 选项接受命名工厂的映射或单个工厂。
 
 - **类型定义**：
 ```ts
@@ -69,7 +69,7 @@ type RouterMicroApp =
 
 ### 注册微应用
 
-微应用通过 Router 的 `apps` 选项注册，并通过[路由配置](./route-config#app)中的 `app` 属性引用：
+微应用通过 Router 的 `apps` 选项注册，并通过[路由配置](/api/router/route-config#app)中的 `app` 属性引用：
 
 ```ts
 const router = new Router({
@@ -177,7 +177,7 @@ function createVueApp(router: Router): RouterMicroAppOptions {
 
 ### 强制重启
 
-[`router.restartApp()`](./router#restartapp) 强制执行完整的 unmount → mount 循环，即使 app 键没有改变。
+[`router.restartApp()`](/api/router/router#restartapp) 强制执行完整的 unmount → mount 循环，即使 app 键没有改变。
 
 ## SSR 流程
 
@@ -203,7 +203,7 @@ const html = await router.renderToString();
 
 ## 根元素
 
-`RouterOptions` 中的 [`root`](./router#root) 选项决定微应用挂载的位置：
+`RouterOptions` 中的 [`root`](/api/router/router#root) 选项决定微应用挂载的位置：
 
 - 如果元素在 DOM 中存在，则复用它
 - 如果不存在，则创建一个 `<div>` 并追加到 `document.body`

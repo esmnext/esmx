@@ -300,7 +300,7 @@ src/
 
 ## What's Next?
 
-- [Dynamic Route Matching](./dynamic-matching) — Route parameters and patterns
-- [Nested Routes](./nested-routes) — Layouts with child routes
-- [Programmatic Navigation](./programmatic-navigation) — All navigation methods
-- [Navigation Guards](./navigation-guards) — Intercept and control navigation
+- [Dynamic Route Matching](/api/router/dynamic-matching) — Route parameters and patterns
+- [Nested Routes](/api/router/nested-routes) — Layouts with child routes
+- [Programmatic Navigation](/api/router/programmatic-navigation) — All navigation methods
+- [Navigation Guards](/api/router/navigation-guards) — Intercept and control navigation

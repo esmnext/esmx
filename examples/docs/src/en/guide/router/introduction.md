@@ -159,11 +159,11 @@ Four error types provide structured error handling for navigation failures:
 ## What's Next?
 
 - **[Getting Started](./getting-started)** — Step-by-step setup with Vue 2, Vue 3, or React
-- **[Dynamic Route Matching](./dynamic-matching)** — Route parameters, query strings, catch-all routes
-- **[Nested Routes](./nested-routes)** — Layouts and child routes
-- **[Programmatic Navigation](./programmatic-navigation)** — All navigation methods in detail
-- **[Navigation Guards](./navigation-guards)** — Intercept and control navigation
-- **[Scroll Behavior](./scroll-behavior)** — Automatic scroll management
-- **[Layer Routing](./layer)** — Modals and drawers with isolated routing
-- **[Micro-App](./micro-app)** — Multi-framework app orchestration
-- **[Error Handling](./error-handling)** — Structured error types
+- **[Dynamic Route Matching](/api/router/dynamic-matching)** — Route parameters, query strings, catch-all routes
+- **[Nested Routes](/api/router/nested-routes)** — Layouts and child routes
+- **[Programmatic Navigation](/api/router/programmatic-navigation)** — All navigation methods in detail
+- **[Navigation Guards](/api/router/navigation-guards)** — Intercept and control navigation
+- **[Scroll Behavior](/api/router/scroll-behavior)** — Automatic scroll management
+- **[Layer Routing](/api/router/layer)** — Modals and drawers with isolated routing
+- **[Micro-App](/api/router/micro-app)** — Multi-framework app orchestration
+- **[Error Handling](/api/router/error-types)** — Structured error types

@@ -261,7 +261,7 @@ try {
 }
 ```
 
-See [Error Handling](./error-handling) for more details.
+See [Error Handling](/api/router/error-types) for more details.
 
 ## Summary
 
