@@ -3,7 +3,6 @@
  * @description Responsible for client-side interaction logic and dynamic updates
  */
 
-import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { createApp } from './create-app';
 
@@ -18,4 +17,3 @@ if (container) {
 } else {
     console.error('Container element #app not found');
 }
-

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './hello-world.css';
 
 interface HelloWorldProps {
@@ -22,8 +22,10 @@ export default function HelloWorld({ msg }: HelloWorldProps) {
                 </p>
             </div>
 
-            <p>Experience React with client-side rendering powered by Esmx framework</p>
+            <p>
+                Experience React with client-side rendering powered by Esmx
+                framework
+            </p>
         </div>
     );
 }
-
