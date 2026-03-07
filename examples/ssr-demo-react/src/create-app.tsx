@@ -3,7 +3,6 @@
  * @description Responsible for creating and configuring React application instance
  */
 
-import React from 'react';
 import App from './app';
 
 export function createApp() {
@@ -11,4 +10,3 @@ export function createApp() {
         app: <App />
     };
 }
-

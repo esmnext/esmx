@@ -24,4 +24,3 @@ export default async (rc: RenderContext) => {
 </html>
 `;
 };
-
