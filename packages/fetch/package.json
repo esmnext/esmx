@@ -28,7 +28,7 @@
         "build": "unbuild"
     },
     "dependencies": {
-        "axios": "^1.13.2",
+        "axios": "1.14.0",
         "cachedir": "^2.4.0",
         "cli-progress": "^3.12.0"
     },
