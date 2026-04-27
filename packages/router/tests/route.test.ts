@@ -2468,4 +2468,74 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
             expect(route.url.pathname).toBe('/app/user/1000/detail');
         });
     });
+
+    describe('requireIndex integration', () => {
+        it('should not match parent route when requireIndex: true and no index child', () => {
+            const options = createOptions({
+                routes: [
+                    {
+                        path: '/A',
+                        requireIndex: true,
+                        children: [
+                            { path: 'a', component: 'AaComponent' },
+                            { path: 'b', component: 'AbComponent' }
+                        ]
+                    }
+                ]
+            });
+
+            const route = new Route({
+                options,
+                toType: RouteType.push,
+                toInput: '/A'
+            });
+
+            expect(route.matched.length).toBe(0);
+        });
+
+        it('should match parent route with index child when requireIndex: true', () => {
+            const options = createOptions({
+                routes: [
+                    {
+                        path: '/A',
+                        requireIndex: true,
+                        children: [
+                            { path: '', component: 'IndexComponent' },
+                            { path: 'a', component: 'AaComponent' }
+                        ]
+                    }
+                ]
+            });
+
+            const route = new Route({
+                options,
+                toType: RouteType.push,
+                toInput: '/A'
+            });
+
+            expect(route.matched.length).toBe(2);
+            expect(route.matched[0].path).toBe('/A');
+            expect(route.matched[1].path).toBe('');
+        });
+
+        it('should match parent route without requireIndex (backward compatible)', () => {
+            const options = createOptions({
+                routes: [
+                    {
+                        path: '/A',
+                        children: [{ path: 'a', component: 'AaComponent' }]
+                    }
+                ]
+            });
+
+            const route = new Route({
+                options,
+                toType: RouteType.push,
+                toInput: '/A'
+            });
+
+            expect(route.matched.length).toBe(1);
+            expect(route.matched[0].path).toBe('/A');
+        });
+    });
 });

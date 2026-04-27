@@ -1,5 +1,9 @@
 import { assert, describe, test } from 'vitest';
-import { createMatcher, joinPathname } from '../src/matcher';
+import {
+    createMatcher,
+    createRouteMatches,
+    joinPathname
+} from '../src/matcher';
 import type { RouteConfirmHook } from '../src/types';
 
 const BASE_URL = new URL('https://www.esmx.dev');
@@ -1819,5 +1823,159 @@ describe('createMatcher', () => {
         assert.equal(result.matches.length, 1);
         assert.equal(result.matches[0].component, 'CatchAllPage');
         assert.deepEqual(result.params.rest, ['anything', 'else']);
+    });
+});
+
+describe('requireIndex', () => {
+    test('requireIndex: true with no index child route - parent path does not match', () => {
+        const matcher = createMatcher([
+            {
+                path: '/A',
+                requireIndex: true,
+                children: [
+                    { path: 'a', component: 'AaComponent' },
+                    { path: 'b', component: 'AbComponent' },
+                    { path: 'c', component: 'AcComponent' }
+                ]
+            }
+        ]);
+
+        const result = matcher(new URL('/A', BASE_URL), BASE_URL);
+        assert.equal(result.matches.length, 0);
+    });
+
+    test('requireIndex: true with path: "" index child route - parent path matches', () => {
+        const matcher = createMatcher([
+            {
+                path: '/A',
+                requireIndex: true,
+                children: [
+                    { path: '', component: 'IndexComponent' },
+                    { path: 'a', component: 'AaComponent' }
+                ]
+            }
+        ]);
+
+        const result = matcher(new URL('/A', BASE_URL), BASE_URL);
+        assert.equal(result.matches.length, 2);
+        assert.equal(result.matches[0].path, '/A');
+        assert.equal(result.matches[1].path, '');
+    });
+
+    test('requireIndex: true with index child route - child paths match normally', () => {
+        const matcher = createMatcher([
+            {
+                path: '/A',
+                requireIndex: true,
+                children: [
+                    { path: '', component: 'IndexComponent' },
+                    { path: 'a', component: 'AaComponent' }
+                ]
+            }
+        ]);
+
+        const result = matcher(new URL('/A/a', BASE_URL), BASE_URL);
+        assert.equal(result.matches.length, 2);
+        assert.equal(result.matches[0].path, '/A');
+        assert.equal(result.matches[1].path, 'a');
+    });
+
+    test('requireIndex: false - parent path matches even without index child', () => {
+        const matcher = createMatcher([
+            {
+                path: '/A',
+                requireIndex: false,
+                children: [{ path: 'a', component: 'AaComponent' }]
+            }
+        ]);
+
+        const result = matcher(new URL('/A', BASE_URL), BASE_URL);
+        assert.equal(result.matches.length, 1);
+        assert.equal(result.matches[0].path, '/A');
+    });
+
+    test('no requireIndex (undefined) - backward compatible, parent self-matches', () => {
+        const matcher = createMatcher([
+            {
+                path: '/A',
+                children: [{ path: 'a', component: 'AaComponent' }]
+            }
+        ]);
+
+        const result = matcher(new URL('/A', BASE_URL), BASE_URL);
+        assert.equal(result.matches.length, 1);
+        assert.equal(result.matches[0].path, '/A');
+    });
+
+    test('requireIndex: true with no children - matches normally (self-match allowed)', () => {
+        const matcher = createMatcher([
+            {
+                path: '/A',
+                requireIndex: true
+            }
+        ]);
+
+        const result = matcher(new URL('/A', BASE_URL), BASE_URL);
+        assert.equal(result.matches.length, 1);
+        assert.equal(result.matches[0].path, '/A');
+    });
+
+    test('nested requireIndex - both parent and child requireIndex: true', () => {
+        const matcher = createMatcher([
+            {
+                path: '/A',
+                requireIndex: true,
+                children: [
+                    {
+                        path: 'b',
+                        requireIndex: true,
+                        children: [{ path: 'c', component: 'BcComponent' }]
+                    }
+                ]
+            }
+        ]);
+
+        // /A does not match (no index child)
+        const result1 = matcher(new URL('/A', BASE_URL), BASE_URL);
+        assert.equal(result1.matches.length, 0);
+
+        // /A/b does not match (no index child for /A/b)
+        const result2 = matcher(new URL('/A/b', BASE_URL), BASE_URL);
+        assert.equal(result2.matches.length, 0);
+
+        // /A/b/c matches
+        const result3 = matcher(new URL('/A/b/c', BASE_URL), BASE_URL);
+        assert.equal(result3.matches.length, 3);
+        assert.equal(result3.matches[0].path, '/A');
+        assert.equal(result3.matches[1].path, 'b');
+        assert.equal(result3.matches[2].path, 'c');
+    });
+
+    test('requireIndex: true - non-matching child path does not match parent', () => {
+        const matcher = createMatcher([
+            {
+                path: '/A',
+                requireIndex: true,
+                children: [
+                    { path: 'a', component: 'AaComponent' },
+                    { path: 'b', component: 'AbComponent' }
+                ]
+            }
+        ]);
+
+        const result = matcher(new URL('/A/f', BASE_URL), BASE_URL);
+        assert.equal(result.matches.length, 0);
+    });
+
+    test('requireIndex default value is false in RouteParsedConfig', () => {
+        const routes = [{ path: '/test' }];
+        const parsed = createRouteMatches(routes);
+        assert.equal(parsed[0].requireIndex, false);
+    });
+
+    test('requireIndex value is preserved in RouteParsedConfig', () => {
+        const routes = [{ path: '/test', requireIndex: true }];
+        const parsed = createRouteMatches(routes);
+        assert.equal(parsed[0].requireIndex, true);
     });
 });

@@ -28,6 +28,8 @@ export function createMatcher(
                     matches.unshift(item);
                     return true;
                 }
+                // At this point, children exist but none matched — if requireIndex is true, skip self-match
+                if (item.requireIndex && item.children.length) continue;
                 const result = item.match(matchPath);
                 if (result) {
                     matches.unshift(item);
@@ -56,6 +58,7 @@ export function createRouteMatches(
             match: match(compilePath),
             compile: compile(compilePath),
             meta: route.meta || {},
+            requireIndex: route.requireIndex ?? false,
             children: Array.isArray(route.children)
                 ? createRouteMatches(route.children, compilePath)
                 : []

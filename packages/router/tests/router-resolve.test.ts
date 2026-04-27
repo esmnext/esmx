@@ -520,4 +520,72 @@ describe('Router.resolve method tests', () => {
             testRouter.destroy();
         });
     });
+
+    describe('requireIndex', () => {
+        test('should return empty matched when requireIndex: true and no index child', () => {
+            const router = new Router({
+                mode: RouterMode.memory,
+                base: new URL('http://localhost:3000/'),
+                routes: [
+                    {
+                        path: '/A',
+                        requireIndex: true,
+                        children: [
+                            { path: 'a', component: 'AaComponent' },
+                            { path: 'b', component: 'AbComponent' }
+                        ]
+                    }
+                ]
+            });
+
+            const route = router.resolve('/A');
+            expect(route.matched.length).toBe(0);
+            expect(route.config).toBeNull();
+
+            router.destroy();
+        });
+
+        test('should match with index child when requireIndex: true', () => {
+            const router = new Router({
+                mode: RouterMode.memory,
+                base: new URL('http://localhost:3000/'),
+                routes: [
+                    {
+                        path: '/A',
+                        requireIndex: true,
+                        children: [
+                            { path: '', component: 'IndexComponent' },
+                            { path: 'a', component: 'AaComponent' }
+                        ]
+                    }
+                ]
+            });
+
+            const route = router.resolve('/A');
+            expect(route.matched.length).toBe(2);
+            expect(route.matched[0].path).toBe('/A');
+            expect(route.matched[1].path).toBe('');
+
+            router.destroy();
+        });
+
+        test('should match parent self without requireIndex (backward compatible)', () => {
+            const router = new Router({
+                mode: RouterMode.memory,
+                base: new URL('http://localhost:3000/'),
+                routes: [
+                    {
+                        path: '/A',
+                        children: [{ path: 'a', component: 'AaComponent' }]
+                    }
+                ]
+            });
+
+            const route = router.resolve('/A');
+            expect(route.matched.length).toBe(1);
+            expect(route.matched[0].path).toBe('/A');
+
+            router.destroy();
+        });
+    });
 });
