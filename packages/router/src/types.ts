@@ -115,6 +115,43 @@ export interface RouteConfig {
     layer?: boolean;
 
     /**
+     * Require an index child route to match the parent path
+     *
+     * When set to `true`, the parent route will not match its own path
+     * if no child route matches. The parent route requires a `path: ''`
+     * index child route to match the parent path itself.
+     *
+     * - `requireIndex: false` (default): If no child route matches,
+     *   the matcher falls back to matching the parent route itself
+     * - `requireIndex: true`: If no child route matches, the parent
+     *   route is skipped entirely (no fallback to self-match)
+     *
+     * @default false
+     *
+     * @example
+     * ```typescript
+     * // requireIndex: true - /A won't match without index child
+     * {
+     *   path: '/A',
+     *   requireIndex: true,
+     *   children: [
+     *     { path: '', component: IndexComponent },  // /A matches this
+     *     { path: 'a', component: AComponent }       // /A/a matches this
+     *   ]
+     * }
+     *
+     * // Default behavior - /A matches even without index child
+     * {
+     *   path: '/A',
+     *   children: [
+     *     { path: 'a', component: AComponent }  // /A/a matches, /A also matches (parent self)
+     *   ]
+     * }
+     * ```
+     */
+    requireIndex?: boolean;
+
+    /**
      * Route override function for hybrid app development
      *
      * Note: Override is not executed during initial route loading
@@ -136,6 +173,8 @@ export interface RouteConfig {
 }
 
 export interface RouteParsedConfig extends RouteConfig {
+    /** Require an index child route to match the parent path (always has a value after parsing) */
+    requireIndex: boolean;
     compilePath: string;
     children: RouteParsedConfig[];
     match: MatchFunction;

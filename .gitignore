@@ -21,3 +21,4 @@ packages/**/coverage
 remotes
 /Dockerfile
 examples/templates/
+.codebuddy
