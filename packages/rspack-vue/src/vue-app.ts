@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url';
 import type { Esmx } from '@esmx/core';
-import { createRspackHtmlApp, rspack } from '@esmx/rspack';
+import { createRspackHtmlApp, RSPACK_LOADER, rspack } from '@esmx/rspack';
 import { VueLoaderPlugin as VueLoader2Plugin } from 'vue-loader-v15';
 import { VueLoaderPlugin as VueLoader3Plugin } from 'vue-loader-v17';
 import {
@@ -44,9 +44,32 @@ export function createRspackVueApp(
             defineVue({
                 vue2: () => {
                     chain.plugin('vue-loader').use(VueLoader2Plugin);
+                    // Rspack 2.0: Ensure css-loader is matched for vue style requests
+                    // so vue-loader 15's pitcher can generate the correct inline loader chain.
+                    chain.module
+                        .rule('vue-style')
+                        .resourceQuery(/vue&type=style/)
+                        .use('css-loader')
+                        .loader(RSPACK_LOADER.cssLoader)
+                        .end();
                 },
                 vue3: () => {
                     chain.plugin('vue-loader').use(VueLoader3Plugin);
+                    // Rspack 2.0: Add explicit rule for vue3 style requests
+                    // to ensure css-loader is applied
+                    chain.module
+                        .rule('vue3-style')
+                        .resourceQuery(/vue&type=style/)
+                        .use('vue-style-loader')
+                        .loader(
+                            fileURLToPath(
+                                import.meta.resolve('vue-style-loader')
+                            )
+                        )
+                        .end()
+                        .use('css-loader')
+                        .loader(RSPACK_LOADER.cssLoader)
+                        .end();
                 }
             });
 
@@ -64,7 +87,7 @@ export function createRspackVueApp(
                 .loader(vueLoader)
                 .options({
                     ...options?.vueLoader,
-                    experimentalInlineMatchResource: true,
+                    experimentalInlineMatchResource: false,
                     optimizeSSR: buildTarget === 'server'
                 });
 

@@ -1,4 +1,4 @@
-import type RspackChain from 'rspack-chain';
+import type { RspackChain } from 'rspack-chain';
 import {
     applyEntryConfig,
     applyExternalsConfig,

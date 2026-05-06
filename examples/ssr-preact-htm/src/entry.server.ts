@@ -15,7 +15,7 @@ export default async (rc: RenderContext) => {
 <html lang="zh-CN">
 <head>
     ${rc.preload()}
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Esmx + Preact + HTM 示例</title>
     <link rel="icon" type="image/svg+xml" href="https://esmx.dev/logo.svg">

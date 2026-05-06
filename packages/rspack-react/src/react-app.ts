@@ -1,6 +1,6 @@
 import type { Esmx } from '@esmx/core';
 import { createRspackHtmlApp, rspack } from '@esmx/rspack';
-import ReactRefreshPlugin from '@rspack/plugin-react-refresh';
+import { ReactRefreshRspackPlugin } from '@rspack/plugin-react-refresh';
 import type { RspackReactAppOptions } from './react';
 
 export function createRspackReactApp(
@@ -46,7 +46,7 @@ export function createRspackReactApp(
             // Add React Refresh plugin for HMR (client + development only)
             // Automatically enabled for client development, same as Vue HMR
             if (buildTarget === 'client' && !esmx.isProd) {
-                chain.plugin('react-refresh').use(ReactRefreshPlugin);
+                chain.plugin('react-refresh').use(ReactRefreshRspackPlugin);
             }
 
             // Note: React SSR doesn't need special loader like Vue

@@ -202,5 +202,51 @@ describe('Module Loading Errors', () => {
                 `        └─ ${relativeE} ❌ Loading failed`
             );
         });
+
+        it('should handle formatModuleChain with original error', () => {
+            const moduleIds: string[] = [];
+            const targetModule = '/src/error.js';
+            const originalError = new Error('Original error message');
+
+            const formatted = formatModuleChain(
+                moduleIds,
+                targetModule,
+                originalError
+            );
+
+            expect(formatted).toContain('Error details:');
+            expect(formatted).toContain('Original error message');
+        });
+    });
+
+    describe('ModuleLoadingError base class', () => {
+        it('should create base error with all properties', () => {
+            const moduleIds = ['/src/a.js'];
+            const targetModule = '/src/b.js';
+            const originalError = new Error('cause');
+
+            const error = new ModuleLoadingError(
+                'Base error',
+                moduleIds,
+                targetModule,
+                originalError
+            );
+
+            expect(error.name).toBe('ModuleLoadingError');
+            expect(error.message).toBe('Base error');
+            expect(error.moduleIds).toEqual(moduleIds);
+            expect(error.targetModule).toBe(targetModule);
+            expect(error.originalError).toBe(originalError);
+        });
+
+        it('should create base error without original error', () => {
+            const error = new ModuleLoadingError(
+                'Simple error',
+                [],
+                '/src/x.js'
+            );
+
+            expect(error.originalError).toBeUndefined();
+        });
     });
 });

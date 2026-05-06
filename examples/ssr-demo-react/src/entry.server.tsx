@@ -24,7 +24,7 @@ export default async (rc: RenderContext) => {
 <head>
     ${rc.preload()}
     <title>Esmx React Demo</title>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     ${rc.css()}
 </head>

@@ -8,7 +8,7 @@ export default async (rc: RenderContext) => {
     rc.html = `<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Esmx Shared Modules - A comprehensive micro-frontend solution for sharing modules across multiple framework versions, built on native ESM technology with zero runtime overhead">
     <meta name="keywords" content="Esmx,Shared Modules,Module Sharing,Micro-frontend,ESM Modules,JavaScript Modules,TypeScript,Rspack,Multi-framework,Vue2,Vue3,Code Reuse,Frontend Architecture">
