@@ -1,7 +1,7 @@
 import type { Esmx } from '@esmx/core';
 import type { RspackOptions } from '@rspack/core';
 import { rspack } from '@rspack/core';
-import RspackChain from 'rspack-chain';
+import { RspackChain } from 'rspack-chain';
 import nodeExternals from 'webpack-node-externals';
 import type { ModuleLinkPluginOptions } from '../module-link';
 import { initModuleLink } from '../module-link';
@@ -65,8 +65,7 @@ export function createChainConfig(
 
     chain.module.parser.set('javascript', {
         url: isClient ? true : 'relative',
-        importMeta: false,
-        strictExportPresence: true
+        importMeta: false
     });
 
     chain.module.generator.set('asset', {
@@ -81,7 +80,8 @@ export function createChainConfig(
 
     chain.optimization
         .minimize(options.minimize ?? esmx.isProd)
-        .emitOnErrors(true);
+        .emitOnErrors(true)
+        .runtimeChunk('single');
 
     chain.externalsPresets({
         web: isClient,
@@ -100,14 +100,9 @@ export function createChainConfig(
         ]);
     }
 
-    chain.experiments({
-        ...(chain.get('experiments') || {}),
-        outputModule: true,
-        nativeWatcher: true,
-        rspackFuture: {
-            bundlerInfo: { force: false }
-        }
-    });
+    chain.output.set('module', true);
+    chain.output.bundlerInfo({ force: false });
+    chain.set('nativeWatcher', true);
 
     chain.set('lazyCompilation', false);
 

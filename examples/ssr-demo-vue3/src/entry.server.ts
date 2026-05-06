@@ -24,6 +24,7 @@ export default async (rc: RenderContext) => {
 <html lang="zh-CN">
 <head>
     ${rc.preload()}
+    <meta charset="utf-8">
     <title>Esmx 快速开始</title>
     ${rc.css()}
 </head>

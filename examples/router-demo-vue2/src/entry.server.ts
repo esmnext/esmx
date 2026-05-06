@@ -29,7 +29,7 @@ export default async (rc: RenderContext) => {
     rc.html = `<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8"/>
+    <meta charset="utf-8">
     ${rc.preload()}
     <title>Esmx 快速开始</title>
     ${rc.css()}

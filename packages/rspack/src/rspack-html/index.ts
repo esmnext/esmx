@@ -5,7 +5,7 @@ import {
     type SwcLoaderOptions
 } from '@rspack/core';
 import NodePolyfillPlugin from 'node-polyfill-webpack-plugin';
-import type RspackChain from 'rspack-chain';
+import type { RspackChain } from 'rspack-chain';
 import {
     type BuildTarget,
     createRspackApp,
@@ -341,7 +341,7 @@ function configureOptimization(
             {
                 minimizerOptions: {
                     targets: getTargetSetting(options?.target, 'client'),
-                    errorRecovery: false
+                    errorRecovery: true
                 }
             }
         ]);
@@ -457,15 +457,10 @@ function configureCssExtract(
     chain: RspackChain,
     options: RspackHtmlAppOptions
 ): void {
-    chain.set('experiments', {
-        ...(chain.get('experiments') ?? {}),
-        css: true
-    });
-
-    const experiments = chain.get('experiments');
-    if (!experiments || !experiments.css) {
-        return;
-    }
+    chain.module
+        .rule('css')
+        .test(/\.css$/)
+        .type('css/auto');
 
     const lessRule = chain.module
         .rule('less')

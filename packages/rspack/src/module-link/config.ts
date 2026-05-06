@@ -1,5 +1,5 @@
 import type { ExternalItem, ExternalItemFunctionData } from '@rspack/core';
-import type RspackChain from 'rspack-chain';
+import type { RspackChain } from 'rspack-chain';
 import type { ParsedModuleLinkPluginOptions } from './types';
 
 export function applyEntryConfig(

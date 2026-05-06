@@ -17,6 +17,10 @@ initImport();
 `;
 
 export default function (this: rspack.LoaderContext, text: string) {
+    // Only process original .vue files, not sub-requests (template/script/style)
+    if (this.resourceQuery && this.resourceQuery.includes('type=')) {
+        return text;
+    }
     return text + ADD_IMPORT;
 }
 
