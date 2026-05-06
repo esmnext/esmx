@@ -60,11 +60,20 @@ export function createVmImport(baseURL: URL, importMap: ImportMap = {}) {
         if (isBuiltin(specifier)) {
             const nodeModule = requireSync(specifier);
             const keys = Object.keys(nodeModule);
+            const hasDefault = keys.includes('default');
+            if (!hasDefault) {
+                keys.push('default');
+            }
             const module = new vm.SyntheticModule(
                 keys,
                 function evaluateCallback() {
                     keys.forEach((key) => {
-                        this.setExport(key, nodeModule[key]);
+                        this.setExport(
+                            key,
+                            key === 'default' && !hasDefault
+                                ? nodeModule
+                                : nodeModule[key]
+                        );
                     });
                 },
                 {
