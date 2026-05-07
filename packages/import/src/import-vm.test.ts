@@ -443,7 +443,7 @@ describe('createVmImport', () => {
         const memBaseURL = new URL(`file://${memBase}/`);
         const memEntry = `file://${memBase}/entry.mjs`;
 
-        const memPath = (filename: string) => `${memBase}/${filename}`;
+        const memPath = (filename: string) => path.join(memBase, filename);
 
         const createMemRead = () => (filepath: string) => {
             const content = memfs.get(filepath);
