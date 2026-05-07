@@ -22,6 +22,29 @@ export default async (rc: RenderContext) => {
     ${rc.preload()}
     <title>Esmx Micro-App Hub</title>
     ${rc.css()}
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #0f172a;
+            line-height: 1.5;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .app-container {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
 </head>
 <body>
     <div id="app">${html}</div>

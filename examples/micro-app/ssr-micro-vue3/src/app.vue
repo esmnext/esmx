@@ -1,28 +1,59 @@
 <template>
-    <div class="vue3-app">
-        <h1>Vue3 Micro-App</h1>
-        <p>This is a Vue 3 micro-app rendered by Esmx Router</p>
+    <div style="max-width: 800px; margin: 0 auto;">
+        <div style="
+            background: white;
+            border-radius: 16px;
+            padding: 48px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        ">
+            <div style="
+                width: 64px;
+                height: 64px;
+                background: linear-gradient(135deg, #3b82f6, #2563eb);
+                border-radius: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-weight: 700;
+                font-size: 24px;
+                margin: 0 auto 24px;
+                box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+            ">V3</div>
+            <h1 style="
+                font-size: 2rem;
+                font-weight: 800;
+                color: #0f172a;
+                margin-bottom: 12px;
+            ">Vue 3 Micro-App</h1>
+            <p style="
+                font-size: 1.125rem;
+                color: #64748b;
+                margin-bottom: 32px;
+                max-width: 500px;
+                margin-left: auto;
+                margin-right: auto;
+            ">This page is rendered by a Vue 3.5 micro-app with full SSR support, script setup syntax, and modern tooling.</p>
+            <div style="
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 12px 24px;
+                background: #eff6ff;
+                border-radius: 8px;
+                color: #1e40af;
+                font-family: monospace;
+                font-size: 14px;
+            ">
+                <span></span> ssr-micro-vue3
+            </div>
+            <div style="margin-top: 32px; padding-top: 32px; border-top: 1px solid #e2e8f0;">
+                <p style="color: #94a3b8; font-size: 14px; margin: 0;">🚀 Vue 3.5 with Composition API and SSR</p>
+            </div>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
 </script>
-
-<style scoped>
-.vue3-app {
-    padding: 40px;
-    text-align: center;
-    font-family: system-ui, sans-serif;
-}
-
-h1 {
-    color: #42b883;
-    font-size: 2.5rem;
-    margin-bottom: 16px;
-}
-
-p {
-    color: #666;
-    font-size: 1.2rem;
-}
-</style>

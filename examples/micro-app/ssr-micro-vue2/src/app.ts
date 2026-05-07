@@ -12,6 +12,7 @@ export function createVue2App(router): RouterMicroAppOptions {
         mount(el: HTMLElement) {
             el.innerHTML = '';
             container = document.createElement('div');
+            container.className = 'app-container';
             el.appendChild(container);
             app = new Vue({
                 setup() {

@@ -1,10 +1,9 @@
 import type { RouteConfig } from '@esmx/router';
-import { App, createReactApp } from './app';
+import { createReactApp } from './app';
 
 export const routes: RouteConfig[] = [
     {
         path: '/react',
-        app: createReactApp,
-        component: App
+        app: createReactApp
     }
 ];
