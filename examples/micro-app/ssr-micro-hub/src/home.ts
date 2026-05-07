@@ -36,9 +36,14 @@ export function createHomeApp(router: Router): RouterMicroAppOptions {
         }
     ];
 
+    let container: HTMLElement | null = null;
+
     return {
         mount(el: HTMLElement) {
-            el.innerHTML = `
+            el.innerHTML = '';
+            container = document.createElement('div');
+            el.appendChild(container);
+            container.innerHTML = `
                 <div style="padding: 40px; text-align: center; font-family: system-ui, sans-serif;">
                     <h1 style="color: #333; font-size: 2.5rem; margin-bottom: 16px;">Esmx Micro-App Hub</h1>
                     <p style="color: #666; font-size: 1.2rem; margin-bottom: 40px;">
@@ -65,9 +70,9 @@ export function createHomeApp(router: Router): RouterMicroAppOptions {
                 </div>
             `;
 
-            const container = el.querySelector('#nav-cards');
-            if (container) {
-                container.addEventListener('click', async (e) => {
+            const navCards = container.querySelector('#nav-cards');
+            if (navCards) {
+                navCards.addEventListener('click', async (e) => {
                     const target = e.target as HTMLElement;
                     const anchor = target.closest(
                         'a[data-to]'
@@ -83,7 +88,10 @@ export function createHomeApp(router: Router): RouterMicroAppOptions {
             }
         },
         unmount() {
-            // Nothing to clean up
+            if (container && container.parentNode) {
+                container.parentNode.removeChild(container);
+            }
+            container = null;
         },
         renderToString() {
             return `

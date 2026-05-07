@@ -19,6 +19,7 @@ export function App() {
 
 export function createReactApp(router): RouterMicroAppOptions {
     let root: ReturnType<typeof createRoot> | null = null;
+    let container: HTMLElement | null = null;
 
     function AppWithProvider() {
         return createElement(
@@ -30,7 +31,10 @@ export function createReactApp(router): RouterMicroAppOptions {
 
     return {
         mount(el: HTMLElement) {
-            root = createRoot(el);
+            el.innerHTML = '';
+            container = document.createElement('div');
+            el.appendChild(container);
+            root = createRoot(container);
             root.render(createElement(AppWithProvider));
         },
         unmount() {
@@ -38,6 +42,10 @@ export function createReactApp(router): RouterMicroAppOptions {
                 root.unmount();
                 root = null;
             }
+            if (container && container.parentNode) {
+                container.parentNode.removeChild(container);
+            }
+            container = null;
         },
         renderToString() {
             return Promise.resolve(

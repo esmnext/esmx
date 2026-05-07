@@ -11,12 +11,20 @@ export function createHtmlApp(): RouterMicroAppOptions {
         </div>
     `;
 
+    let container: HTMLElement | null = null;
+
     return {
         mount(el: HTMLElement) {
-            el.innerHTML = HTML;
+            el.innerHTML = '';
+            container = document.createElement('div');
+            el.appendChild(container);
+            container.innerHTML = HTML;
         },
         unmount() {
-            // Nothing to clean up
+            if (container && container.parentNode) {
+                container.parentNode.removeChild(container);
+            }
+            container = null;
         },
         renderToString() {
             return HTML;
