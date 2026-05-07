@@ -3,7 +3,8 @@ import { routes } from './routes';
 
 const router = new Router({
     routes,
-    root: '#app'
+    root: '#app',
+    base: new URL(location.href)
 });
 
-router.replace(location.pathname);
+router.replace(location.href);

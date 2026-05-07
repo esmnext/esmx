@@ -21,8 +21,11 @@ export default {
     async server(esmx) {
         const server = http.createServer((req, res) => {
             esmx.middleware(req, res, async () => {
+                const protocol = req.headers['x-forwarded-proto'] || 'http';
+                const host = req.headers.host || 'localhost:3000';
+                const base = `${protocol}://${host}`;
                 const rc = await esmx.render({
-                    params: { url: req.url }
+                    params: { url: req.url, base }
                 });
                 res.end(rc.html);
             });
@@ -35,7 +38,7 @@ export default {
 
     async postBuild(esmx) {
         const rc = await esmx.render({
-            params: { url: '/' }
+            params: { url: '/', base: 'http://localhost:3000' }
         });
         esmx.writeSync(esmx.resolvePath('dist/client', 'index.html'), rc.html);
     }
