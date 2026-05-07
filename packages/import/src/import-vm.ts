@@ -9,6 +9,10 @@ import type { ImportMap } from './types';
 
 const requireSync = createRequire(import.meta.url);
 
+export interface VmImportOptions {
+    readFileSync?: (path: string) => string;
+}
+
 async function importBuiltinModule(specifier: string, context: vm.Context) {
     const nodeModule = await import(specifier);
     const keys = Object.keys(nodeModule);
@@ -31,7 +35,13 @@ async function importBuiltinModule(specifier: string, context: vm.Context) {
     return module;
 }
 
-export function createVmImport(baseURL: URL, importMap: ImportMap = {}) {
+export function createVmImport(
+    baseURL: URL,
+    importMap: ImportMap = {},
+    options?: VmImportOptions
+) {
+    const readFileSync =
+        options?.readFileSync ?? ((path) => fs.readFileSync(path, 'utf-8'));
     const importMapResolver = createImportMapResolver(baseURL.href, importMap);
     const buildMeta = (specifier: string, parent: string): ImportMeta => {
         const result = importMapResolver(specifier, parent);
@@ -100,7 +110,7 @@ export function createVmImport(baseURL: URL, importMap: ImportMap = {}) {
 
         let text: string;
         try {
-            text = fs.readFileSync(meta.filename, 'utf-8');
+            text = readFileSync(meta.filename);
         } catch (error) {
             throw new FileReadError(
                 `Failed to read module: ${meta.filename}`,
@@ -205,6 +215,6 @@ export function createVmImport(baseURL: URL, importMap: ImportMap = {}) {
             []
         );
 
-        return module.namespace;
+        return module.namespace as Record<string, any>;
     };
 }
