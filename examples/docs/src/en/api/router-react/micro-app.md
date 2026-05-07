@@ -11,17 +11,15 @@ head:
 
 ## Introduction
 
-React integration with `@esmx/router` uses the router's built-in **micro-app pattern** directly — no separate package is needed. Install `@esmx/router` only.
+React integration with `@esmx/router` is implemented through the `@esmx/router-react` package. This package provides React-specific hooks and components, while you can also use the router's built-in **micro-app pattern** via the `apps` callback for low-level integration.
 
-Unlike `@esmx/router-vue`, which provides a dedicated npm package with plugins, composables, and components, React integration works through the `apps` callback in `RouterOptions`. You build your own hooks and components using standard React patterns, with full control over implementation.
+`@esmx/router-react` provides `useRouter()`, `useRoute()`, `RouterLink`, `RouterView`, and other APIs, enabling quick integration of routing functionality. If you need a fully custom implementation, you can also build your own hooks and components using standard React patterns via the `apps` callback in `RouterOptions`.
 
 ## Installation
 
 ```bash
-npm install @esmx/router
+npm install @esmx/router @esmx/router-react
 ```
-
-No additional integration package is required.
 
 ## Type Definitions
 
@@ -36,7 +34,7 @@ interface RouterMicroAppOptions {
 }
 ```
 
-Configuration object returned by the `apps` callback, defining the lifecycle hooks for mounting, unmounting, and server-rendering the React application.
+Configuration object returned by the `apps` callback, defining the lifecycle hooks for mounting, unmounting, and SSR-ing the React application.
 
 ### RouterMicroAppCallback
 
@@ -64,7 +62,7 @@ The type accepted by the `apps` option in `RouterOptions`. Can be a single callb
 |------|-------------|
 | `mount(el)` | Creates a React root and renders the app into the DOM element |
 | `unmount()` | Unmounts the React root for cleanup |
-| `renderToString()` | Server-side renders the app to an HTML string. Optional — only needed for SSR |
+| `renderToString()` | SSRs the app to an HTML string. Optional — only needed for SSR |
 
 ## Example
 

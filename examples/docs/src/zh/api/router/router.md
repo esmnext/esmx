@@ -11,7 +11,7 @@ head:
 
 ## 简介
 
-Router 类是 `@esmx/router` 的核心，提供完整的客户端路由能力，包括导航、路由匹配、守卫管理和图层路由。
+Router 类是 `@esmx/router` 的核心，提供完整的客户端路由能力，包括导航、路由匹配、守卫管理和层路由。
 
 ## 类型定义
 
@@ -27,7 +27,7 @@ enum RouterMode {
 
 路由器运行模式：
 - `history`：使用浏览器 History API 进行导航，适用于标准 Web 应用
-- `memory`：使用内存历史记录，适用于 SSR、测试或图层路由场景
+- `memory`：使用内存历史记录，适用于 SSR、测试或层路由场景
 
 ### RouterOptions
 
@@ -68,10 +68,10 @@ interface RouterOptions {
 - `fallback`：未匹配路由或外部导航的回退处理器
 - `nextTick`：自定义 next-tick 函数，用于异步调度
 - `rootStyle`：根元素的自定义样式，设置为 `false` 或 `null` 可禁用
-- `layer`：此路由器实例是否为图层路由器
-- `zIndex`：图层路由的基础 z-index（默认：`10000`）
+- `layer`：此路由器实例是否为层路由器
+- `zIndex`：层路由的基础 z-index（默认：`10000`）
 - `handleBackBoundary`：当后退导航没有更多历史记录时调用的处理器
-- `handleLayerClose`：当图层关闭时调用的处理器
+- `handleLayerClose`：当层关闭时调用的处理器
 
 ## 实例属性
 
@@ -115,7 +115,7 @@ console.log(currentRoute.params);  // { id: '123' }
 - **类型**：`boolean`
 - **只读**：`true`
 
-此路由器实例是否作为图层运行。
+此路由器实例是否作为层运行。
 
 ### req
 
@@ -396,17 +396,17 @@ const unregister = router.afterEach((to, from, router) => {
 ### createLayer()
 
 - **参数**：
-  - `toInput: RouteLocationInput` — 图层的目标路由位置
+  - `toInput: RouteLocationInput` — 层的目标路由位置
 - **返回值**：`Promise<{ promise: Promise<RouteLayerResult>; router: Router }>`
 
-创建图层路由实例。图层在覆盖层中提供隔离的导航。详情请参阅[图层路由](./layer.md)。
+创建层路由实例。层在覆盖层中提供隔离的导航。详情请参阅[层路由](./layer.md)。
 
 ```ts
 const { promise, router: layerRouter } = await router.createLayer('/dialog');
 
 const result = await promise;
 if (result.type === 'success') {
-    console.log('图层返回的数据：', result.data);
+    console.log('层返回的数据：', result.data);
 }
 ```
 
@@ -416,7 +416,7 @@ if (result.type === 'success') {
   - `toInput: RouteLocationInput` — 目标路由位置
 - **返回值**：`Promise<RouteLayerResult>`
 
-以图层方式导航到路由并返回图层结果。
+以层方式导航到路由并返回层结果。
 
 ```ts
 const result = await router.pushLayer({
@@ -431,7 +431,7 @@ const result = await router.pushLayer({
   - `data?: any` — 返回给父路由器的可选数据
 - **返回值**：`void`
 
-关闭当前图层路由器。仅在路由器为图层实例时有效。
+关闭当前层路由器。仅在路由器为层实例时有效。
 
 ```ts
 // 不携带数据关闭
@@ -447,7 +447,7 @@ router.closeLayer({ selectedUserId: 42 });
   - `throwError?: boolean` — 是否抛出错误而不是捕获它们（默认：`false`）
 - **返回值**：`Promise<string | null>`
 
-将当前路由的微应用渲染为 HTML 字符串，用于服务端渲染。如果没有挂载微应用或渲染失败（当 `throwError` 为 `false` 时），返回 `null`。
+将当前路由的微应用渲染为 HTML 字符串，用于 SSR。如果没有挂载微应用或渲染失败（当 `throwError` 为 `false` 时），返回 `null`。
 
 ```ts
 // SSR 用法
@@ -457,7 +457,7 @@ const router = new Router({
     routes,
     apps: (router) => ({
         mount(el) { /* ... */ },
-        unmount(el) { /* ... */ },
+        unmount() { /* ... */ },
         async renderToString() {
             const { renderToString } = await import('react-dom/server');
             return renderToString(createElement(App, { router }));

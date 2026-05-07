@@ -15,9 +15,9 @@ Client-Side Rendering (CSR) executes page rendering in the browser. When a Node.
 
 The following scenarios are recommended for using Client-Side Rendering:
 
-- **Static Hosting Environments**: Hosting services that don't support Server-Side Rendering, such as GitHub Pages, CDNs, etc.
-- **Simple Applications**: Small applications with minimal requirements for first-screen loading speed and SEO
-- **Development Environment**: Quickly preview and debug applications during development
+- **Static Hosting Environments**: Hosting services that don't support SSR, such as GitHub Pages, CDNs, etc.
+- **Simple Applications**: Small applications with minimal requirements for first-screen loading speed and SEO.
+- **Development Environment**: Quickly preview and debug applications during development.
 
 ## Configuration Instructions
 
@@ -25,7 +25,7 @@ The following scenarios are recommended for using Client-Side Rendering:
 
 The template should include resource injection and entry order: `preload` and `css` in `head`, while `importmap`, `moduleEntry`, and `modulePreload` should be in `body`.
 
-```ts title="src/entry.server.ts"
+```typescript title="src/entry.server.ts"
 import type { RenderContext } from '@esmx/core';
 
 export default async (rc: RenderContext) => {
@@ -53,7 +53,7 @@ export default async (rc: RenderContext) => {
 
 Static HTML files can be generated during the build phase through the `postBuild` hook:
 
-```ts title="src/entry.node.ts"
+```typescript title="src/entry.node.ts"
 import type { EsmxOptions } from '@esmx/core';
 
 export default {

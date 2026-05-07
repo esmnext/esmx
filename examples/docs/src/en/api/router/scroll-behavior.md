@@ -78,44 +78,31 @@ This flag is also checked during `back`/`forward` navigation — if the target h
 
 ## Scroll to Element
 
-The scroll system supports scrolling to a specific element on the page using a CSS selector:
+The scroll system supports scrolling to a specific element on the page using a CSS selector. You can specify the target via the `el` property:
 
-```ts
-import { scrollToPosition } from '@esmx/router';
-
-scrollToPosition({ el: '#section-title' });
-
-scrollToPosition({
-  el: '#section-title',
-  top: -80,
-  behavior: 'smooth'
-});
-
-const element = document.querySelector('.target');
-scrollToPosition({ el: element });
-```
-
-The `el` property accepts:
-- A CSS selector string (e.g., `'#my-id'`, `'.my-class'`, `'[data-section]'`)
-- A DOM `Element` reference
+- CSS selector strings (e.g., `'#my-id'`, `'.my-class'`, `'[data-section]'`)
+- DOM `Element` references
 
 :::tip
-If you need to scroll to an element after navigation, use the `afterEach` hook:
+If you need to scroll to an element after navigation, use the `afterEach` hook with the native scroll API:
 
 ```ts
 router.afterEach((to) => {
   if (to.hash) {
     setTimeout(() => {
-      scrollToPosition({ el: to.hash });
+      const el = document.querySelector(to.hash);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
     }, 100); // wait for DOM to update
   }
 });
 ```
 :::
 
-## Layer Routes and Scroll
+## Layers and Scroll
 
-Routes opened as [layers](./layer) (via `pushLayer` or `createLayer`) skip scroll handling entirely. Since layers render in an overlay on top of the current page, scrolling the background page would be disruptive:
+Routes opened via [layer routing](./layer) (using `pushLayer` or `createLayer`) skip scroll handling entirely. Since layers render in an overlay on top of the current page, scrolling the background page would be disruptive:
 
 ```ts
 await router.pushLayer('/confirm-dialog');
@@ -158,5 +145,5 @@ Here's the complete flow of how scroll is handled during different navigation ty
 - **Scroll to top on push/replace**: Enabled by default. Pass `keepScrollPosition: true` to disable.
 - **Restore scroll on back/forward**: Enabled by default. Uses saved positions automatically.
 - **Browser scroll restoration**: Disabled (`'manual'`). Set automatically by router.
-- **Layer scroll handling**: Skipped. Automatic for layer routes.
+- **Layer scroll handling**: Skipped. Automatic for layers.
 - **Persist across page refresh**: Via `history.state`. Automatic.

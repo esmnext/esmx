@@ -33,7 +33,7 @@
 - **Universal Support** - Runs in both browser and Node.js environments
 - **TypeScript Ready** - Full TypeScript support with excellent type inference
 - **High Performance** - Optimized for production use with minimal bundle size
-- **SSR Compatible** - Complete server-side rendering support
+- **SSR Compatible** - Complete SSR support
 - **Modern API** - Clean and intuitive API design
 
 ## 📦 Installation
@@ -56,7 +56,7 @@ import { Router, RouterMode } from '@esmx/router';
 
 // Create router instance
 const router = new Router({
-  root: '#app', // Required in browser environment
+  root: '#app', // DOM mount target (optional, defaults to '')
   mode: RouterMode.history,
   routes: [
     { path: '/', component: () => 'Home Page' },

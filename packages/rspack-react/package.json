@@ -12,6 +12,9 @@
         "url": "git+https://github.com/esmnext/esmx.git",
         "directory": "packages/rspack-react"
     },
+    "engines": {
+        "node": ">=24"
+    },
     "homepage": "https://github.com/esmnext/esmx",
     "bugs": {
         "url": "https://github.com/esmnext/esmx/issues"

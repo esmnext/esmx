@@ -35,7 +35,7 @@ interface ModuleConfig {
 * **Type**: `Record<string, string>`
 * **Description**: Module linking configuration, where the key is the remote module name and the value is the module build artifact directory path.
 
-### imports  
+### imports
 
 * **Type**: `ModuleConfigImportMapping`
 * **Description**: Module import mapping configuration, where the key is the local module identifier and the value is the remote module path. Supports environment-specific configuration.

@@ -1,6 +1,6 @@
 ---
-titleSuffix: "Vue 3 集成 — @esmx/router"
-description: "完整的 @esmx/router 与 Vue 3 集成指南 — 插件配置、组合式 API、SSR、RouterView、RouterLink 以及完整的工作示例。"
+titleSuffix: "@esmx/router Vue 3 集成"
+description: "完整的 @esmx/router 与 Vue 3 集成指南 — 涵盖插件配置、组合式 API、SSR、RouterView、RouterLink 及完整示例。"
 head:
   - - "meta"
     - name: "keywords"
@@ -85,7 +85,7 @@ export function createVueApp(router: Router, ssr = false) {
 
 - **`useProvideRouter(router)`** 必须在根组件的 `setup()` 中调用。它通过 `useRouter()` 和 `useRoute()` 将路由实例提供给所有后代组件。
 - **`RouterPlugin`** 将 `RouterView` 和 `RouterLink` 注册为全局组件，并在 `globalProperties` 上设置 `$router` 和 `$route`。
-- 服务端渲染使用 `createSSRApp`，仅客户端使用 `createApp`。
+- SSR 使用 `createSSRApp`，仅客户端使用 `createApp`。
 
 ### 3. 客户端入口
 
@@ -129,7 +129,9 @@ export default async (rc: RenderContext) => {
   await router.replace(rc.params.url);
 
   const { app } = createVueApp(router, true);
-  const html = await renderToString(app);
+  const html = await renderToString(app, {
+    importMetaSet: rc.importMetaSet
+  });
 
   rc.html = `<!DOCTYPE html>
 <html lang="zh">
@@ -208,7 +210,7 @@ export default {
 当当前路由匹配链接的 `to` 路径时，`RouterLink` 会自动应用 `router-link-active` 类名。通过 `activeClass` 属性自定义：
 
 ```vue
-<RouterLink to="/about" activeClass="nav-active">关于</RouterLink>
+<RouterLink to="/about" active-class="nav-active">关于</RouterLink>
 ```
 
 ### useRouter 和 useRoute
@@ -316,7 +318,7 @@ route.matched      // RouteConfig[]
 src/
 ├── entry.node.ts      # Node.js 服务器配置、开发/构建设置
 ├── entry.server.ts    # SSR 渲染逻辑
-├── entry.client.ts    # 客户端水合/挂载
+├── entry.client.ts    # 客户端挂载与应用激活
 ├── create-app.ts      # 共享的应用工厂（服务端和客户端共用）
 ├── routes.ts          # 路由定义
 ├── App.vue            # 根组件（RouterView + 导航）

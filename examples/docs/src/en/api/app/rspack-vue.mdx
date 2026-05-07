@@ -1,117 +1,70 @@
 ---
 titleSuffix: "Esmx Framework Vue Build Tool"
-description: "Esmx framework's Vue-specific build tool, providing complete Vue 2/3 application build support, including component development, SSR rendering, and performance optimization."
+description: "Esmx framework's Vue-specific build tool, providing complete Vue 2 and Vue 3 application build support, including component development, SSR rendering, and performance optimization."
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, Rspack, Vue, Vue2, Vue3, SSR, build tool, component development, Server-Side Rendering, performance optimization"
+      content: "Esmx, Rspack, Vue, Vue 2, Vue 3, SSR, build tool, component development, performance optimization"
 ---
 
 import { PackageManagerTabs } from '@theme';
 
 # @esmx/rspack-vue
 
-The Rspack Vue package provides a set of APIs for creating and configuring Vue-based Rspack applications, supporting Vue component development, building, and Server-Side Rendering.
+`@esmx/rspack-vue` provides a set of APIs for creating and configuring Vue-based Rspack applications, supporting Vue 2.7+ and Vue 3 component development, building, and SSR.
 
 ## Installation
 
 Use package manager to install `@esmx/rspack-vue` as a development dependency:
 
-<PackageManagerTabs command="install @esmx/rspack-vue -D" />
+<PackageManagerTabs command="install @esmx/rspack-vue vue -D" />
 
 ## Type Exports
 
-### BuildTarget
+### RspackVueAppOptions
 
 ```ts
-type BuildTarget = 'node' | 'client' | 'server'
-```
-
-Build target environment type that defines the target environment for application builds, used to configure specific optimizations and features in the build process:
-- `node`: Build code to run in Node.js environment
-- `client`: Build code to run in browser environment
-- `server`: Build code to run in server environment
-
-### RspackAppConfigContext
-
-```ts
-interface RspackAppConfigContext {
-  esmx: Esmx
-  buildTarget: BuildTarget
-  config: RspackOptions
-  options: RspackAppOptions
+interface RspackVueAppOptions extends RspackHtmlAppOptions {
+  vueLoader?: Record<string, any>
 }
 ```
 
-Rspack application configuration context interface provides context information accessible in configuration hook functions:
-- `esmx`: Esmx framework instance
-- `buildTarget`: Current build target (client/server/node)
-- `config`: Rspack configuration object
-- `options`: Application configuration options
+Vue application configuration options interface, inherits from `@esmx/rspack`'s `RspackHtmlAppOptions`:
+- `vueLoader`: vue-loader configuration options
 
-### RspackAppOptions
-
-```ts
-interface RspackAppOptions {
-  css?: 'css' | 'js' | false
-  loaders?: {
-    styleLoader?: string
-  }
-  styleLoader?: Record<string, any>
-  cssLoader?: Record<string, any>
-  target?: {
-    web?: string[]
-    node?: string[]
-  }
-  definePlugin?: Record<string, any>
-  config?: (context: RspackAppConfigContext) => void | Promise<void>
-}
-```
-
-Rspack application configuration options interface:
-- `css`: CSS output method, optional 'css' (separate file) or 'js' (bundled into JS), defaults to automatic selection based on environment: production uses 'css' to optimize caching and parallel loading, development uses 'js' to support HMR
-- `loaders`: Custom loader configuration
-- `styleLoader`: style-loader configuration options
-- `cssLoader`: css-loader configuration options
-- `target`: Build target compatibility configuration
-- `definePlugin`: Global constant definitions
-- `config`: Configuration hook function
-
-### RspackHtmlAppOptions
-
-Inherits from `RspackAppOptions`, used to configure specific options for HTML applications.
+For details on base types, please refer to the [@esmx/rspack documentation](./rspack.md).
 
 ## Function Exports
 
-### createRspackApp
+### createRspackVue2App
 
 ```ts
-function createRspackApp(esmx: Esmx, options?: RspackAppOptions): Promise<App>
+function createRspackVue2App(esmx: Esmx, options?: RspackVueAppOptions): Promise<App>
 ```
 
-Creates a standard Rspack application instance.
+Creates a Vue 2.7+ application build instance. Automatically configures vue-loader-v15 and Vue 2 related compilation options.
 
 **Parameters:**
 - `esmx`: Esmx framework instance
-- `options`: Rspack application configuration options
+- `options`: Vue application configuration options
 
 **Returns:**
-- Returns a Promise that resolves to the created application instance
+- Returns a `Promise` that resolves to the created application instance
 
-### createRspackHtmlApp
+### createRspackVue3App
 
 ```ts
-function createRspackHtmlApp(esmx: Esmx, options?: RspackHtmlAppOptions): Promise<App>
+function createRspackVue3App(esmx: Esmx, options?: RspackVueAppOptions): Promise<App>
 ```
 
-Creates an HTML-type Rspack application instance.
+Creates a Vue 3 application build instance. Automatically configures vue-loader-v17 and Vue 3 related compilation options.
 
 **Parameters:**
 - `esmx`: Esmx framework instance
-- `options`: HTML application configuration options
+- `options`: Vue application configuration options
 
 **Returns:**
-- Returns a Promise that resolves to the created HTML application instance
+- Returns a `Promise` that resolves to the created application instance
 
 ## Constant Exports
 ### RSPACK_LOADER

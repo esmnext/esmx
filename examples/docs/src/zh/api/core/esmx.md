@@ -11,7 +11,7 @@ head:
 
 ## 简介
 
-Esmx 是一个基于 Rspack 的高性能 Web 应用框架，提供了完整的应用生命周期管理、静态资源处理和服务端渲染能力。
+Esmx 是一个基于 Rspack 的高性能 Web 应用框架，提供了完整的应用生命周期管理、静态资源处理和 SSR 能力。
 
 ## 类型定义
 
@@ -23,8 +23,8 @@ type BuildEnvironment = 'client' | 'server'
 ```
 
 应用程序运行时环境类型：
-- `client`: 运行在浏览器环境，支持 DOM 操作和浏览器 API
-- `server`: 运行在 Node.js 环境，支持文件系统和服务器端功能
+- `client`: 浏览器环境，支持 DOM 操作和浏览器 API
+- `server`: Node.js 环境，支持文件系统和服务器端功能
 
 ### ImportMap
 
@@ -45,7 +45,7 @@ ES 模块导入映射类型。
 type SpecifierMap = Record<string, string>
 ```
 
-模块标识符映射类型，用于定义模块导入路径的映射关系。
+模块标识符映射类型，定义模块导入路径的映射关系。
 
 #### ScopesMap
 
@@ -245,14 +245,14 @@ const server = http.createServer((req, res) => {
 - **类型**: `(options?: RenderContextOptions) => Promise<RenderContext>`
 - **只读**: `true`
 
-获取服务端渲染函数。根据环境提供不同实现：
+获取 SSR 函数。根据环境提供不同实现：
 - 开发环境：支持热更新和实时预览
 - 生产环境：提供优化的渲染性能
 
 ```ts
-const rc = await esmx.render({
-  params: { url: req.url }
-});
+        const rc = await esmx.render({
+          params: { url: req.url }
+        });
 
 const rc = await esmx.render({
   base: '',

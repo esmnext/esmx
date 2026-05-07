@@ -30,6 +30,7 @@ interface RouteConfig {
     beforeEnter?: RouteConfirmHook;
     beforeUpdate?: RouteConfirmHook;
     beforeLeave?: RouteConfirmHook;
+    requireIndex?: boolean;
     layer?: boolean;
     override?: RouteConfirmHook;
 }
@@ -187,6 +188,25 @@ Per-route guard called when the route is reused with different parameters.
 
 Per-route guard called before leaving this route.
 
+#### requireIndex
+
+- **Type**: `boolean`
+- **Default**: `false`
+
+Whether to enable index matching for this route's children. When set to `true`, if the parent route does not have a default child route configured with `path: ''`, accessing the parent route path will throw an error.
+
+```ts
+// Require an index child route
+{
+    path: '/parent',
+    component: Parent,
+    requireIndex: true,
+    children: [
+        { path: '', component: Index }  // Required index route
+    ]
+}
+```
+
 #### layer
 
 - **Type**: `boolean`
@@ -223,6 +243,7 @@ Route override function for hybrid app development. Returns a handle function to
 - **Type Definition**:
 ```ts
 interface RouteParsedConfig extends RouteConfig {
+    requireIndex: boolean;
     compilePath: string;
     children: RouteParsedConfig[];
     match: MatchFunction;

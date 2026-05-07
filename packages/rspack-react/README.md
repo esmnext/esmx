@@ -32,7 +32,7 @@
 - **React Support** - Full support for React 18+ applications
 - **High-Performance Build** - Ultra-fast building based on Rspack with React optimization
 - **Module Linking** - Built-in module linking capabilities for microfrontend architecture
-- **SSR Support** - Complete server-side rendering support for React applications
+- **SSR Support** - Complete React application SSR support
 - **Hot Module Replacement** - Fast development experience with React component hot reloading
 - **TypeScript Ready** - Full TypeScript support with excellent developer experience
 

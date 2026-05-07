@@ -4,14 +4,14 @@ description: "Esmx framework's React-specific build tool, providing complete Rea
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, Rspack, React, React18, SSR, build tool, component development, Server-Side Rendering, performance optimization, React Refresh, HMR"
+      content: "Esmx, Rspack, React, React18, SSR, build tool, component development, performance optimization, React Refresh, HMR"
 ---
 
 import { PackageManagerTabs } from '@theme';
 
 # @esmx/rspack-react
 
-The Rspack React package provides a set of APIs for creating and configuring React-based Rspack applications, supporting React component development, building, and Server-Side Rendering with React Refresh hot module replacement.
+The Rspack React package provides a set of APIs for creating and configuring React-based Rspack applications, supporting React component development, building, and SSR with React Refresh hot module replacement.
 
 ## Installation
 
@@ -71,8 +71,8 @@ Rspack chain configuration context interface provides context information access
 ```ts
 interface RspackAppOptions {
   minimize?: boolean
-  config?: (context: RspackAppConfigContext) => void | Promise<void>
-  chain?: (context: RspackAppChainContext) => void | Promise<void>
+  config?: (context: RspackAppConfigContext) => void
+  chain?: (context: RspackAppChainContext) => void
 }
 ```
 
@@ -400,7 +400,7 @@ export default {
 - **React Version**: Requires React 18.0.0 or higher
 - **TypeScript Support**: Full TypeScript support with TSX files
 - **Hot Module Replacement**: React Refresh is automatically enabled in development for client builds
-- **SSR**: Server-side rendering is fully supported without additional configuration
+- **SSR**: Fully supported without additional configuration
 - **Performance**: Uses Rspack's high-performance build system with React optimizations
 - **Module Linking**: Built-in support for Esmx module linking capabilities
 

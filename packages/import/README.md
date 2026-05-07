@@ -55,6 +55,13 @@ yarn add @esmx/import
 import { createVmImport } from '@esmx/import';
 import { pathToFileURL } from 'node:url';
 
+const baseURL = pathToFileURL('/project');
+const importMap = {
+    imports: {
+        'my-app/src/utils': '/project/src/utils.mjs'
+    }
+};
+
 const vmImport = createVmImport(baseURL, importMap);
 const module = await vmImport('my-app/src/utils', import.meta.url);
 ```
@@ -124,7 +131,7 @@ const loaderImport = createLoaderImport(baseURL, importMap);
 const module = await loaderImport(specifier);
 ```
 
-### ImportMap Format
+### Import Map Format
 ```typescript
 interface ImportMap {
   imports?: Record<string, string>;

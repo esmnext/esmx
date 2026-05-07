@@ -35,8 +35,8 @@ const router = new Router({
     { path: '/dashboard', app: 'vue3-app', component: Dashboard }
   ],
   apps: {
-    'react-app': () => ({ mount(el, comp) { /* ReactDOM */ }, unmount(el) { /* cleanup */ } }),
-    'vue3-app': () => ({ mount(el, comp) { /* createApp */ }, unmount(el) { /* cleanup */ } })
+    'react-app': () => ({ mount(el) { /* ReactDOM */ }, unmount() { /* cleanup */ } }),
+    'vue3-app': () => ({ mount(el) { /* createApp */ }, unmount() { /* cleanup */ } })
   }
 });
 ```
@@ -103,11 +103,11 @@ Guards can return `void` (allow), `false` (cancel), a string/object (redirect), 
 Layers are isolated routing contexts rendered on top of the main page — modals, drawers, and slide-in panels with their own navigation:
 
 ```ts
-const result = await router.createLayer({
-  routes: [
-    { path: '/', component: ModalContent },
-    { path: '/step-2', component: ModalStep2 }
-  ]
+const result = await router.pushLayer({
+  path: '/dialog',
+  layer: {
+    keepAlive: 'include'
+  }
 });
 // result.data contains data passed to closeLayer()
 ```

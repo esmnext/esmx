@@ -20,7 +20,7 @@
     </a>
   </div>
   
-  <p>为现代 JavaScript 应用提供的轻量级基于类的状态管理解决方案</p>
+  <p>为现代 JavaScript 应用提供轻量级的基于类的状态管理解决方案</p>
   
   <p>
     <a href="https://github.com/esmnext/esmx/blob/master/packages/class-state/README.md">English</a> | 中文
@@ -29,12 +29,12 @@
 
 ## 🚀 特性
 
-- **基于类的设计** - 简洁直观的基于类的状态管理
-- **框架无关** - 适用于任何 JavaScript 框架或原生 JS
-- **TypeScript 就绪** - 完整的 TypeScript 支持，出色的类型推断
-- **响应式系统** - 内置响应性，自动更新 UI
-- **轻量级** - 最小化包体积，最大化功能
-- **现代 API** - 使用现代 JavaScript 特性和模式
+- **基于类的设计** - 简洁直观的基于类的状态管理方案
+- **框架无关** - 适用于任何 JavaScript 框架或原生 JavaScript
+- **TypeScript 支持** - 完整的 TypeScript 类型推断与类型安全
+- **响应式系统** - 内置响应式能力，自动更新 UI
+- **轻量级** - 极小的包体积，功能完备
+- **现代 API** - 基于现代 JavaScript 特性设计
 
 ## 📦 安装
 

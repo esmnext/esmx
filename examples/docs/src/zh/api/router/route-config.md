@@ -30,6 +30,7 @@ interface RouteConfig {
     beforeEnter?: RouteConfirmHook;
     beforeUpdate?: RouteConfirmHook;
     beforeLeave?: RouteConfirmHook;
+    requireIndex?: boolean;
     layer?: boolean;
     override?: RouteConfirmHook;
 }
@@ -38,7 +39,7 @@ interface RouteConfig {
 #### path
 
 - **类型**：`string`
-- **必填**：`true`
+- **必填**：是
 
 路由的 URL 路径模式。支持动态片段和通配符：
 
@@ -187,17 +188,36 @@ import Home from './Home.vue';
 
 离开此路由前调用的路由级守卫。
 
+#### requireIndex
+
+- **类型**：`boolean`
+- **默认值**：`false`
+
+是否为该路由的子路由启用索引匹配。当设为 `true` 时，如果父路由没有配置 `path: ''` 的默认子路由，访问父路由路径会抛出错误。
+
+```ts
+// 要求必须有索引子路由
+{
+    path: '/parent',
+    component: Parent,
+    requireIndex: true,
+    children: [
+        { path: '', component: Index }  // 必需的索引路由
+    ]
+}
+```
+
 #### layer
 
 - **类型**：`boolean`
 
-为 `true` 时，此路由仅在图层模式下匹配。为 `false` 时，此路由不参与图层匹配。
+为 `true` 时，此路由仅在层模式下匹配。为 `false` 时，此路由不参与层匹配。
 
 ```ts
-// 仅作为图层可用
+// 仅作为层可用
 { path: '/dialog/select', component: SelectDialog, layer: true }
 
-// 永远不作为图层
+// 永远不作为层
 { path: '/main', component: MainPage, layer: false }
 ```
 
@@ -223,6 +243,7 @@ import Home from './Home.vue';
 - **类型定义**：
 ```ts
 interface RouteParsedConfig extends RouteConfig {
+    requireIndex: boolean;
     compilePath: string;
     children: RouteParsedConfig[];
     match: MatchFunction;

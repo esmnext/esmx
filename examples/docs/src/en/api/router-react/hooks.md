@@ -11,7 +11,7 @@ head:
 
 ## Introduction
 
-Since React does not have a dedicated `@esmx/router` integration package, you implement your own hooks and context providers using standard React patterns. This page documents the recommended implementation for `useRouter()`, `useRoute()`, and `RouterProvider`.
+`@esmx/router-react` provides hooks and context components for React applications integrated with `@esmx/router`. This page documents the usage of `useRouter()`, `useRoute()`, and `RouterProvider`.
 
 ## RouterProvider
 
@@ -116,48 +116,12 @@ function CurrentPath() {
 }
 ```
 
-## Full Implementation
+## Implementation Notes
 
-Complete reference implementation combining all hooks and the provider:
+`@esmx/router-react` uses React Context to pass the router instance and current route state through the component tree:
 
-```tsx
-import { createContext, useContext, useSyncExternalStore } from 'react';
-import type { Router, Route } from '@esmx/router';
+- `RouterProvider` — Provides the router instance to descendant components via Context
+- `useRouter()` — Gets the router instance from Context, used for navigation
+- `useRoute()` — Gets the current route object from Context, triggers re-render when the route changes
 
-// Context
-const RouterContext = createContext<Router | null>(null);
-
-// Provider
-export function RouterProvider({
-    router,
-    children
-}: {
-    router: Router;
-    children: React.ReactNode;
-}) {
-    return (
-        <RouterContext.Provider value={router}>
-            {children}
-        </RouterContext.Provider>
-    );
-}
-
-// Hooks
-export function useRouter(): Router {
-    const router = useContext(RouterContext);
-    if (!router) {
-        throw new Error('useRouter must be used within a RouterProvider');
-    }
-    return router;
-}
-
-export function useRoute(): Route {
-    const router = useRouter();
-
-    return useSyncExternalStore(
-        (callback) => router.afterEach(callback),
-        () => router.route,
-        () => router.route
-    );
-}
-```
+The actual implementation is in the `@esmx/router-react` package source code and does not need to be implemented manually. The above hooks are included in the package; import and use them directly.

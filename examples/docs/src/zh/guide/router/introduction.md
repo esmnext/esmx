@@ -1,10 +1,10 @@
 ---
-titleSuffix: "Introduction to @esmx/router"
-description: "A comprehensive introduction to @esmx/router — a framework-agnostic router for micro-frontend applications with SSR support, navigation guards, layer routing, and micro-app orchestration."
+titleSuffix: "@esmx/router 介绍"
+description: "@esmx/router 全面介绍 — 一个支持 SSR、导航守卫、分层路由和微应用编排的框架无关路由器，适用于微前端应用。"
 head:
   - - "meta"
     - name: "keywords"
-      content: "esmx router, micro-frontend router, SSR router, framework-agnostic router, navigation guards, layer routing, micro-app routing"
+      content: "esmx router, 微前端路由, SSR 路由, 框架无关路由, 导航守卫, 分层路由, 微应用路由"
 ---
 
 # 介绍
@@ -16,7 +16,7 @@ head:
 现代 Web 应用面临着传统路由器无法解决的挑战：
 
 - **一个应用中使用多个框架**：大型组织可能有团队分别使用 React、Vue 2 和 Vue 3。他们需要一个路由器来管理所有框架之间的导航。
-- **随处可用的服务端渲染（SSR）**：相同的路由配置应该能够生成服务端渲染的 HTML，然后在客户端无缝水合——无论哪个框架渲染哪个路由。
+- **通用的服务端渲染（SSR）支持**：相同的路由配置应该能够生成 SSR 的 HTML，然后在客户端无缝激活（hydrate）——无论哪个框架渲染哪个路由。
 - **在不销毁状态的情况下覆盖内容**：模态对话框、抽屉和滑入面板需要拥有自己独立的路由上下文，同时父页面在后台继续运行。
 - **渐进式迁移**：从一个框架迁移到另一个框架应该逐路由进行，而不是一次性全部完成。
 
@@ -35,8 +35,8 @@ const router = new Router({
     { path: '/dashboard', app: 'vue3-app', component: Dashboard }
   ],
   apps: {
-    'react-app': () => ({ mount(el, comp) { /* ReactDOM */ }, unmount(el) { /* cleanup */ } }),
-    'vue3-app': () => ({ mount(el, comp) { /* createApp */ }, unmount(el) { /* cleanup */ } })
+    'react-app': () => ({ mount(el) { /* ReactDOM */ }, unmount() { /* cleanup */ } }),
+    'vue3-app': () => ({ mount(el) { /* createApp */ }, unmount() { /* cleanup */ } })
   }
 });
 ```
@@ -48,7 +48,7 @@ const router = new Router({
 - `RouterMode.history`：使用浏览器的 History API（`pushState`、`popstate`），适用于标准 Web 应用
 - `RouterMode.memory`：将状态完全保存在内存中，不改变 URL，适用于 SSR、分层路由和测试
 
-### 服务端渲染（SSR）
+### SSR
 
 路由器原生支持 SSR。相同的路由配置在服务端和客户端都能工作。在服务端，使用 `RouterMode.memory` 并传入 `req`/`res` 对象：
 
@@ -103,11 +103,11 @@ const routes = [
 分层是渲染在主页面之上的独立路由上下文——模态框、抽屉和滑入面板拥有自己的导航：
 
 ```ts
-const result = await router.createLayer({
-  routes: [
-    { path: '/', component: ModalContent },
-    { path: '/step-2', component: ModalStep2 }
-  ]
+const result = await router.pushLayer({
+  path: '/dialog',
+  layer: {
+    keepAlive: 'include'
+  }
 });
 // result.data contains data passed to closeLayer()
 ```

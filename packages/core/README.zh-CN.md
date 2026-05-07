@@ -20,7 +20,7 @@
     </a>
   </div>
   
-  <p>支持 Vue、React、Preact、Solid、Svelte 的高性能微前端框架，具备 SSR 和模块链接能力</p>
+  <p>支持 Vue、React、Preact、Solid、Svelte 的高性能微前端框架，支持 SSR 与模块链接</p>
   
   <p>
     <a href="https://github.com/esmnext/esmx/blob/master/packages/core/README.md">English</a> | 中文
@@ -29,10 +29,10 @@
 
 ## 🚀 特性
 
-- **原生微前端** - 基于 ESM + ImportMap 的原生模块加载，零运行时开销
-- **依赖管理** - 中心化的依赖管理，基于内容哈希的强缓存策略
-- **应用隔离** - ESM 原生模块隔离，保障应用运行时的稳定性
-- **SSR 支持** - 灵活的服务端渲染策略，支持任意前端框架
+- **原生微前端** - 基于 ESM + Import Map 的原生模块加载，零运行时开销
+- **依赖管理** - 中心化依赖管理，基于内容哈希的强缓存策略
+- **应用隔离** - ESM 原生模块隔离，保障应用运行时稳定性
+- **SSR 支持** - 灵活的 SSR 策略，支持任意前端框架
 - **开发体验** - 完整的 TypeScript 支持，原生模块链接能力
 
 ## 📦 安装

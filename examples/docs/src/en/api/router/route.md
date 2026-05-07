@@ -272,7 +272,7 @@ Whether this route was created by a push-type navigation (`push`, `pushWindow`, 
 - **Type**: `number | null`
 - **Read-only**: `true`
 
-HTTP status code for server-side rendering redirects.
+HTTP status code for SSR redirects.
 
 ### req
 

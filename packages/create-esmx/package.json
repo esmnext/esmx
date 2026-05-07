@@ -70,5 +70,8 @@
     "bugs": {
         "url": "https://github.com/esmnext/esmx/issues"
     },
+    "engines": {
+        "node": ">=24"
+    },
     "homepage": "https://github.com/esmnext/esmx#readme"
 }

@@ -28,7 +28,7 @@ interface ManifestJson {
 #### name
 
 - **Type**: `string`
-- **Description**: Module name, sourced from the name in the module configuration
+- **Description**: Module name, sourced from the module configuration
 
 #### scopes
 

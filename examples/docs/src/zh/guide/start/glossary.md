@@ -12,7 +12,7 @@ head:
 ## 核心技术
 
 ### ESM (ECMAScript Modules)
-浏览器与 Node.js 原生的模块机制，使用 `import`/`export` 语法。
+浏览器与 Node.js 原生的模块系统，使用 `import`/`export` 语法。
 
 ### 导入映射 (Import Maps)
 浏览器原生机制，控制 ESM 模块的路径映射与作用域。

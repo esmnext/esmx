@@ -36,7 +36,7 @@
 🔗 **Seamless Integration** - Drop-in replacement for Vue Router  
 🚀 **TypeScript Ready** - Full TypeScript support with excellent DX  
 ⚡ **High Performance** - Optimized for production use  
-🔄 **SSR Compatible** - Server-side rendering support  
+🔄 **SSR Compatible** - SSR support  
 
 ## 📦 Installation
 
@@ -405,7 +405,7 @@ app.use(RouterPlugin);
 Vue.use(RouterPlugin);
 ```
 
-## TypeScript Support
+## 📝 TypeScript Support
 
 This package provides full TypeScript support for both Vue 2.7+ and Vue 3. For Options API usage, the package automatically augments Vue component instances with `$router` and `$route` properties, allowing you to access them directly in templates and component methods.
 
@@ -552,11 +552,11 @@ const app = createApp({
 app.use(RouterPlugin);
 ```
 
-## Browser Support
+## 🌐 Browser Support
 
 - **Modern browsers** that support ES modules (`import`/`export`) and dynamic imports (`import()`)
 
-## Contributing
+## 🤝 Contributing
 
 We welcome contributions! Please feel free to submit issues and pull requests.
 

@@ -11,17 +11,15 @@ head:
 
 ## 简介
 
-React 与 `@esmx/router` 的集成直接使用路由内置的**微应用模式** —— 无需单独安装包。只需安装 `@esmx/router` 即可。
+React 与 `@esmx/router` 的集成通过 `@esmx/router-react` 包实现。该包提供了 React 专用的 hooks 和组件，同时你也可以使用路由内置的**微应用模式**通过 `apps` 回调进行底层集成。
 
-与提供专用 npm 包（包含插件、组合式函数和组件）的 `@esmx/router-vue` 不同，React 集成通过 `RouterOptions` 中的 `apps` 回调实现。你可以使用标准的 React 模式构建自己的 hooks 和组件，完全掌控实现方式。
+`@esmx/router-react` 提供 `useRouter()`、`useRoute()`、`RouterLink`、`RouterView` 等 API，让你能够快速集成路由功能。如果需要完全自定义实现，也可以通过 `RouterOptions` 中的 `apps` 回调使用标准的 React 模式构建自己的 hooks 和组件。
 
 ## 安装
 
 ```bash
-npm install @esmx/router
+npm install @esmx/router @esmx/router-react
 ```
-
-无需额外的集成包。
 
 ## 类型定义
 
@@ -36,7 +34,7 @@ interface RouterMicroAppOptions {
 }
 ```
 
-由 `apps` 回调返回的配置对象，定义了挂载、卸载和服务端渲染 React 应用的生命周期钩子。
+由 `apps` 回调返回的配置对象，定义了挂载、卸载和 SSR React 应用的生命周期钩子。
 
 ### RouterMicroAppCallback
 
@@ -64,7 +62,7 @@ type RouterMicroApp =
 |------|------|
 | `mount(el)` | 创建 React 根节点并将应用渲染到 DOM 元素中 |
 | `unmount()` | 卸载 React 根节点进行清理 |
-| `renderToString()` | 将应用服务端渲染为 HTML 字符串。可选 —— 仅在需要 SSR 时使用 |
+| `renderToString()` | 将应用 SSR 为 HTML 字符串。可选 —— 仅在需要 SSR 时使用 |
 
 ## 示例
 

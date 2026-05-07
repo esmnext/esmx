@@ -13,7 +13,7 @@
       <img src="https://img.shields.io/badge/coverage-live%20report-brightgreen" alt="Coverage Report" />
     </a>
     <a href="https://nodejs.org/">
-      <img src="https://img.shields.io/node/v/@esmx/core.svg" alt="node version" />
+      <img src="https://img.shields.io/node/v/create-esmx.svg" alt="node version" />
     </a>
     <a href="https://bundlephobia.com/package/create-esmx">
       <img src="https://img.shields.io/bundlephobia/minzip/create-esmx" alt="size" />
@@ -27,26 +27,30 @@
   </p>
 </div>
 
-## 功能特性
+## 🚀 特性
 
-- 交互式命令行界面
-- 支持多种项目模板
-- 完整的 TypeScript 支持
-- 自动配置项目结构
+- **交互式 CLI** - 友好的命令行交互界面
+- **多种模板** - 支持多种项目模板
+- **TypeScript 支持** - 完整的 TypeScript 类型支持
+- **自动配置** - 自动初始化项目结构
 
-## 安装使用
+## 📦 安装
 
 ```bash
-# 使用 npm
+# npm
 npm create esmx@latest my-project
 
-# 使用 yarn
-yarn create esmx my-project
-
-# 使用 pnpm
+# pnpm
 pnpm create esmx my-project
+
+# yarn
+yarn create esmx my-project
 ```
 
-## 许可证
+## 📚 文档
 
-MIT © Esmx Team 
+访问[官方文档](https://esmx.dev)获取详细的使用指南和 API 参考。
+
+## 📄 许可证
+
+MIT © [Esmx Team](https://github.com/esmnext/esmx)

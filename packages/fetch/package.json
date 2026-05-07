@@ -59,5 +59,8 @@
         "*.mjs",
         "template",
         "public"
-    ]
+    ],
+    "engines": {
+        "node": ">=24"
+    }
 }

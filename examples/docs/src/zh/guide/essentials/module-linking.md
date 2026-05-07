@@ -18,7 +18,7 @@ head:
 - **版本隔离**：支持不同应用使用不同版本的同一模块，避免冲突
 - **简单易用**：配置直观，与原生 ESM 语法完全兼容
 
-简单来说，模块链接就是一个"模块共享管理器"，让不同的应用可以安全、高效地共享代码，就像使用本地模块一样简单。
+简而言之，模块链接相当于一个"模块共享管理器"，让不同应用能够像使用本地模块一样，安全、高效地共享代码。
 
 ## 快速开始
 
@@ -27,6 +27,8 @@ head:
 假设我们有一个共享模块应用（shared-modules）和一个业务应用（business-app）：
 
 ```typescript
+import type { EsmxOptions } from '@esmx/core';
+
 export default {
   modules: {
     exports: [
@@ -121,6 +123,8 @@ export default {
 
 ```typescript
 // business-app/entry.node.ts
+import type { EsmxOptions } from '@esmx/core';
+
 export default {
   modules: {
     links: {
@@ -149,7 +153,9 @@ export default {
 以下示例展示了如何使用 `scopes` 配置为 `vue2/` 目录下的模块指定不同的 Vue 版本：
 
 ```typescript
-// shared-modules/entry.node.ts  
+// shared-modules/entry.node.ts
+import type { EsmxOptions } from '@esmx/core';
+
 export default {
   modules: {
     scopes: {
@@ -168,6 +174,8 @@ export default {
 
 ```typescript
 // shared-modules/entry.node.ts
+import type { EsmxOptions } from '@esmx/core';
+
 export default {
   modules: {
     scopes: {
@@ -185,6 +193,8 @@ export default {
 
 ```typescript
 // shared-modules/entry.node.ts
+import type { EsmxOptions } from '@esmx/core';
+
 export default {
   modules: {
     exports: [
@@ -211,7 +221,9 @@ export default {
 
 ### 环境差异化构建
 
-```typescript
+根据运行环境（客户端或服务端）导出不同的模块实现：
+
+```typescript title="entry.node.ts"
 exports: [
   {
     'src/storage/db': {
@@ -230,7 +242,9 @@ exports: [
 
 ### 混合配置格式
 
-```typescript
+`exports` 支持多种配置格式混合使用：
+
+```typescript title="entry.node.ts"
 exports: [
   'pkg:axios',
   'root:src/utils/format.ts',
@@ -280,7 +294,7 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-### Vue3 应用 (vue3-app)
+### Vue 3 应用 (vue3-app)
 
 ```typescript
 // vue3-app/entry.node.ts
@@ -303,7 +317,7 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-### Vue2 应用 (vue2-app)
+### Vue 2 应用 (vue2-app)
 
 ```typescript
 // vue2-app/entry.node.ts
@@ -348,8 +362,8 @@ export default {
 
 这种配置方式展示了：
 - **共享模块**：提供多版本框架支持，通过作用域映射实现版本隔离
-- **Vue3 应用**：使用 Vue 3 的业务应用，只导出路由配置
-- **Vue2 专用应用**：专门使用 Vue 2 的业务应用，只导出路由配置
-- **聚合应用**：统一入口，协调不同版本的子应用，包含完整的Vue模块导入
+- **Vue 3 应用**：使用 Vue 3 的业务应用，只导出路由配置
+- **Vue 2 专用应用**：专门使用 Vue 2 的业务应用，只导出路由配置
+- **聚合应用**：统一入口，协调不同版本的子应用，包含完整的 Vue 模块导入
 
-每个模块的配置都符合实际项目的使用场景，依赖关系清晰，功能职责明确，技术实现准确。
+以上配置展示了实际项目中常见的依赖管理场景，各模块职责清晰，依赖关系明确。

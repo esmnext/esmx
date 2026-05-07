@@ -11,9 +11,9 @@ head:
 
 ## Introduction
 
-Since React does not have a dedicated `@esmx/router` integration package, you implement your own components using `router.resolveLink()` for navigation links and `route.matched` for route rendering. This page documents the recommended implementation patterns.
+`@esmx/router-react` provides navigation and route rendering components for React applications integrated with `@esmx/router`. This page documents the usage of `RouterLink` and `RouterView`.
 
-## Link
+## RouterLink
 
 Navigation link component that renders an anchor element with proper navigation behavior and active state management. Equivalent to `RouterLink` in `@esmx/router-vue`.
 
@@ -21,71 +21,42 @@ Navigation link component that renders an anchor element with proper navigation 
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `to` | `string` | _required_ | Target route location |
+| `to` | `RouteLocationInput` | _required_ | Target route location (string or object) |
 | `type` | `RouterLinkType` | `'push'` | Navigation type |
+| `replace` | `boolean` | — | _Deprecated_ — Use `type='replace'` |
 | `exact` | `RouteMatchType` | `'include'` | Active state matching strategy |
 | `activeClass` | `string` | — | Custom CSS class for active state |
+| `event` | `string \| string[]` | `'click'` | Event(s) that trigger navigation |
+| `tag` | `string` | `'a'` | HTML tag to render |
+| `layerOptions` | `RouteLayerOptions` | — | Layer options when `type='pushLayer'` |
+| `beforeNavigate` | `Function` | — | Hook called before navigation |
 | `className` | `string` | — | Additional CSS class |
-| `children` | `ReactNode` | _required_ | Link content |
-
-### Implementation
-
-```tsx
-import type { ReactNode, MouseEvent } from 'react';
-import { useRouter, useRoute } from './router-context';
-
-interface LinkProps {
-    to: string;
-    type?: 'push' | 'replace' | 'pushWindow' | 'replaceWindow' | 'pushLayer';
-    exact?: 'route' | 'exact' | 'include';
-    activeClass?: string;
-    className?: string;
-    children: ReactNode;
-}
-
-export function Link({
-    to,
-    type = 'push',
-    exact,
-    activeClass,
-    className,
-    children
-}: LinkProps) {
-    const router = useRouter();
-    // Trigger re-render on route change for active state
-    useRoute();
-
-    const link = router.resolveLink({ to, type, exact, activeClass });
-
-    function handleClick(e: MouseEvent) {
-        if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) return;
-        if (link.isExternal) return;
-
-        e.preventDefault();
-        link.navigate(e.nativeEvent);
-    }
-
-    return (
-        <a
-            href={link.attributes.href}
-            className={[className, link.attributes.class].filter(Boolean).join(' ')}
-            target={link.attributes.target}
-            rel={link.attributes.rel}
-            onClick={handleClick}
-        >
-            {children}
-        </a>
-    );
-}
-```
+| `style` | `CSSProperties` | — | Inline styles |
+| `children` | `ReactNode` | — | Link content |
 
 ### Usage
 
 ```tsx
-<Link to="/">Home</Link>
-<Link to="/about" activeClass="nav-active">About</Link>
-<Link to="/docs" type="pushWindow">Documentation</Link>
-<Link to="/dashboard" exact="exact">Dashboard</Link>
+import { RouterLink } from '@esmx/router-react';
+
+// Basic usage
+<RouterLink to="/about">About</RouterLink>
+
+// Replace current history entry
+<RouterLink to="/login" type="replace">Login</RouterLink>
+
+// Open in new window
+<RouterLink to="/external" type="pushWindow">External link</RouterLink>
+
+// Custom tag and styles
+<RouterLink to="/submit" tag="button" className="btn" style={{ color: 'red' }}>
+    Submit
+</RouterLink>
+
+// Layer navigation
+<RouterLink to="/dialog" type="pushLayer" layerOptions={{ keepAlive: 'include' }}>
+    Open dialog
+</RouterLink>
 ```
 
 ## RouterView
@@ -139,8 +110,8 @@ function MainLayout() {
     return (
         <div>
             <nav>
-                <Link to="/">Home</Link>
-                <Link to="/about">About</Link>
+                <RouterLink to="/">Home</RouterLink>
+                <RouterLink to="/about">About</RouterLink>
             </nav>
             <main>
                 <RouterView />

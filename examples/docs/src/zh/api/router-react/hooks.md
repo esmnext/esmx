@@ -11,7 +11,7 @@ head:
 
 ## 简介
 
-由于 React 没有专用的 `@esmx/router` 集成包，你需要使用标准 React 模式实现自己的 hooks 和上下文提供者。本页文档记录了 `useRouter()`、`useRoute()` 和 `RouterProvider` 的推荐实现。
+`@esmx/router-react` 为 React 应用提供了与 `@esmx/router` 集成的 hooks 和上下文组件。本页文档介绍了 `useRouter()`、`useRoute()` 和 `RouterProvider` 的使用方法。
 
 ## RouterProvider
 
@@ -116,48 +116,12 @@ function CurrentPath() {
 }
 ```
 
-## 完整实现
+## 实现说明
 
-组合所有 hooks 和提供者的完整参考实现：
+`@esmx/router-react` 使用 React Context 在组件树中传递路由实例和当前路由状态：
 
-```tsx
-import { createContext, useContext, useSyncExternalStore } from 'react';
-import type { Router, Route } from '@esmx/router';
+- `RouterProvider` — 通过 Context 向下层组件提供路由实例
+- `useRouter()` — 从 Context 获取路由实例，用于导航
+- `useRoute()` — 从 Context 获取当前路由对象，路由变化时触发重新渲染
 
-// Context
-const RouterContext = createContext<Router | null>(null);
-
-// Provider
-export function RouterProvider({
-    router,
-    children
-}: {
-    router: Router;
-    children: React.ReactNode;
-}) {
-    return (
-        <RouterContext.Provider value={router}>
-            {children}
-        </RouterContext.Provider>
-    );
-}
-
-// Hooks
-export function useRouter(): Router {
-    const router = useContext(RouterContext);
-    if (!router) {
-        throw new Error('useRouter 必须在 RouterProvider 内部使用');
-    }
-    return router;
-}
-
-export function useRoute(): Route {
-    const router = useRouter();
-
-    return useSyncExternalStore(
-        (callback) => router.afterEach(callback),
-        () => router.route,
-        () => router.route
-    );
-}
-```
+实际的实现位于 `@esmx/router-react` 包的源码中，无需手动实现。上述 hooks 已包含在包中，直接导入使用即可。
