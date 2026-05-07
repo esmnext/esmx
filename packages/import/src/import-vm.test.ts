@@ -434,4 +434,214 @@ describe('createVmImport', () => {
             expect(namespace.result).toBe('library');
         });
     });
+
+    describe('in-memory filesystem', () => {
+        let memfs: Map<string, string>;
+        let memImport: ReturnType<typeof createVmImport>;
+
+        beforeEach(() => {
+            memfs = new Map();
+            memImport = createVmImport(
+                new URL('file:///project/'),
+                {},
+                {
+                    readFileSync: (filepath: string) => {
+                        const content = memfs.get(filepath);
+                        if (content === undefined) {
+                            const err = new Error(
+                                `ENOENT: no such file or directory, open '${filepath}'`
+                            );
+                            (err as any).code = 'ENOENT';
+                            throw err;
+                        }
+                        return content;
+                    }
+                }
+            );
+        });
+
+        it('should load a simple ES module from memory', async () => {
+            memfs.set('/project/simple.mjs', `export const value = 42;`);
+
+            const namespace = await memImport(
+                './simple.mjs',
+                'file:///project/entry.mjs'
+            );
+
+            expect(namespace.value).toBe(42);
+        });
+
+        it('should load a module with multiple exports from memory', async () => {
+            memfs.set(
+                '/project/math.mjs',
+                `export const add = (a, b) => a + b;\nexport const mul = (a, b) => a * b;`
+            );
+
+            const namespace = await memImport(
+                './math.mjs',
+                'file:///project/entry.mjs'
+            );
+
+            expect(namespace.add(2, 3)).toBe(5);
+            expect(namespace.mul(4, 5)).toBe(20);
+        });
+
+        it('should load a module that imports another module from memory', async () => {
+            memfs.set(
+                '/project/helper.mjs',
+                `export const helper = () => 'helper-value';`
+            );
+
+            memfs.set(
+                '/project/main.mjs',
+                `import { helper } from './helper.mjs';\nexport const result = helper();`
+            );
+
+            const namespace = await memImport(
+                './main.mjs',
+                'file:///project/entry.mjs'
+            );
+
+            expect(namespace.result).toBe('helper-value');
+        });
+
+        it('should handle deeply nested module chains from memory', async () => {
+            memfs.set('/project/a.mjs', `export const a = 'A';`);
+
+            memfs.set(
+                '/project/b.mjs',
+                `import { a } from './a.mjs';\nexport const b = a + 'B';`
+            );
+
+            memfs.set(
+                '/project/c.mjs',
+                `import { b } from './b.mjs';\nexport const c = b + 'C';`
+            );
+
+            const namespace = await memImport(
+                './c.mjs',
+                'file:///project/entry.mjs'
+            );
+
+            expect(namespace.c).toBe('ABC');
+        });
+
+        it('should handle A -> B -> A circular reference from memory', async () => {
+            memfs.set(
+                '/project/a.mjs',
+                `import * as b from './b.mjs';\nexport const a = 'A';\nexport const getB = () => b.b;`
+            );
+
+            memfs.set(
+                '/project/b.mjs',
+                `import * as a from './a.mjs';\nexport const b = 'B';\nexport const getA = () => a.a;`
+            );
+
+            const namespace = await memImport(
+                './a.mjs',
+                'file:///project/entry.mjs'
+            );
+
+            expect(namespace.a).toBe('A');
+            expect(namespace.getB()).toBe('B');
+        });
+
+        it('should cache loaded modules within a single memImport call', async () => {
+            memfs.set(
+                '/project/counter.mjs',
+                `export let count = 0;\nexport const increment = () => ++count;`
+            );
+
+            memfs.set(
+                '/project/consumer.mjs',
+                `import { count, increment } from './counter.mjs';\nexport const getCount = () => count;\nexport const inc = increment;`
+            );
+
+            const ns = await memImport(
+                './consumer.mjs',
+                'file:///project/entry.mjs'
+            );
+
+            expect(ns.getCount()).toBe(0);
+            ns.inc();
+            expect(ns.getCount()).toBe(1);
+        });
+
+        it('should handle dynamic import() inside VM module from memory', async () => {
+            memfs.set('/project/lazy.mjs', `export const lazy = 'lazy-value';`);
+
+            memfs.set(
+                '/project/dynamic.mjs',
+                `export const result = await import('./lazy.mjs').then(m => m.lazy);`
+            );
+
+            const namespace = await memImport(
+                './dynamic.mjs',
+                'file:///project/entry.mjs'
+            );
+
+            expect(namespace.result).toBe('lazy-value');
+        });
+
+        it('should throw FileReadError for non-existent module in memory', async () => {
+            await expect(
+                memImport('./non-existent.mjs', 'file:///project/entry.mjs')
+            ).rejects.toThrow('Failed to read module');
+        });
+
+        it('should resolve specifiers using import map with memory fs', async () => {
+            memfs.set('/project/lib.mjs', `export const lib = 'library';`);
+
+            const importMap = {
+                imports: {
+                    '#lib': 'file:///project/lib.mjs'
+                }
+            };
+
+            const vmImportWithMap = createVmImport(
+                new URL('file:///project/'),
+                importMap,
+                {
+                    readFileSync: (filepath: string) => {
+                        const content = memfs.get(filepath);
+                        if (content === undefined) {
+                            const err = new Error(
+                                `ENOENT: no such file or directory, open '${filepath}'`
+                            );
+                            (err as any).code = 'ENOENT';
+                            throw err;
+                        }
+                        return content;
+                    }
+                }
+            );
+
+            memfs.set(
+                '/project/app.mjs',
+                `import { lib } from '#lib';\nexport const result = lib;`
+            );
+
+            const namespace = await vmImportWithMap(
+                './app.mjs',
+                'file:///project/entry.mjs'
+            );
+
+            expect(namespace.result).toBe('library');
+        });
+
+        it('should provide correct import.meta with memory fs', async () => {
+            memfs.set(
+                '/project/meta.mjs',
+                `export const url = import.meta.url;\nexport const filename = import.meta.filename;`
+            );
+
+            const namespace = await memImport(
+                './meta.mjs',
+                'file:///project/entry.mjs'
+            );
+
+            expect(namespace.url).toBe('file:///project/meta.mjs');
+            expect(namespace.filename).toBe('/project/meta.mjs');
+        });
+    });
 });
