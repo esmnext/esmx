@@ -1,0 +1,23 @@
+{
+    "name": "ssr-micro-hub",
+    "version": "1.0.0",
+    "description": "Hub for micro-frontend example",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "esmx dev",
+        "build": "esmx build",
+        "preview": "esmx preview",
+        "start": "esmx start",
+        "lint:type": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@esmx/core": "workspace:*",
+        "@esmx/router": "workspace:*"
+    },
+    "devDependencies": {
+        "@esmx/rspack": "workspace:*",
+        "@types/node": "^24.0.0",
+        "typescript": "5.8.3"
+    }
+}

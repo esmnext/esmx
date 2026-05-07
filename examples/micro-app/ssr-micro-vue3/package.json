@@ -1,0 +1,29 @@
+{
+    "name": "ssr-micro-vue3",
+    "version": "1.0.0",
+    "description": "Vue3 micro-app for micro-frontend example",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "esmx dev",
+        "build": "esmx build",
+        "preview": "esmx preview",
+        "start": "esmx start",
+        "lint:type": "vue-tsc --noEmit",
+        "build:type": "vue-tsc --declaration --emitDeclarationOnly --noEmit false --outDir dist/src && tsc-alias -p tsconfig.json --outDir dist/src"
+    },
+    "dependencies": {
+        "@esmx/core": "workspace:*",
+        "ssr-micro-shared": "workspace:*"
+    },
+    "devDependencies": {
+        "tsc-alias": "^1.8.16",
+        "@esmx/rspack-vue": "workspace:*",
+        "@esmx/router-vue": "workspace:*",
+        "@types/node": "^24.0.0",
+        "@vue/server-renderer": "^3.5.23",
+        "typescript": "5.8.3",
+        "vue": "^3.5.23",
+        "vue-tsc": "^3.0.5"
+    }
+} 
