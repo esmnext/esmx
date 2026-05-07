@@ -607,7 +607,7 @@ describe('createVmImport', () => {
 
             const namespace = await memImport('./meta.mjs', memEntry);
 
-            expect(namespace.url).toBe(`file://${memBase}/meta.mjs`);
+            expect(namespace.url).toBe(new URL('meta.mjs', memBaseURL).href);
             expect(namespace.filename).toBe(memPath('meta.mjs'));
         });
     });
