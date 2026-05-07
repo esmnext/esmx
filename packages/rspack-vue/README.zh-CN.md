@@ -49,6 +49,23 @@ pnpm add @esmx/rspack-vue -D
 yarn add @esmx/rspack-vue -D
 ```
 
+## 🚀 快速开始
+
+```typescript
+import { createEsmx } from '@esmx/core';
+import { createRspackVue } from '@esmx/rspack-vue';
+
+const esmx = createEsmx({
+  app: {
+    name: 'vue-app',
+    entry: './src/index.ts'
+  }
+});
+
+const rspack = createRspackVue(esmx);
+await rspack.build();
+```
+
 ## 📚 文档
 
 访问[官方文档](https://esmx.dev)获取详细的使用指南和 API 参考。

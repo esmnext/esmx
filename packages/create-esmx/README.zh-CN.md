@@ -47,6 +47,27 @@ pnpm create esmx my-project
 yarn create esmx my-project
 ```
 
+## 🚀 快速开始
+
+```bash
+# 使用交互式提示创建新项目
+npm create esmx@latest my-project
+
+# 或使用 pnpm
+pnpm create esmx my-project
+```
+
+按照交互式提示选择：
+- **项目名称** - 你的项目目录名称
+- **模板** - 从 Vue SSR、Vue CSR、React SSR、React CSR、Vue2 SSR、Vue2 CSR 或 Shared Modules 中选择
+
+然后开始开发：
+```bash
+cd my-project
+pnpm install
+pnpm dev
+```
+
 ## 📚 文档
 
 访问[官方文档](https://esmx.dev)获取详细的使用指南和 API 参考。

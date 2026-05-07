@@ -72,6 +72,87 @@ await router.push('/about');
 
 Visit the [official documentation](https://esmx.dev) for detailed usage guides and API reference.
 
+### Route Navigation Flow
+
+```mermaid
+flowchart TD
+  start(["Start"]):::Terminal --> normalizeURL["normalizeURL"]
+  normalizeURL --> isExternalUrl{"Internal URL"}:::Decision
+  isExternalUrl -- Yes --> matchInRouteTable["Match in route table"]
+  isExternalUrl -- No --> fallback["fallback"] --> End
+  matchInRouteTable --> isExist{"Match found"}:::Decision
+  isExist -- No --> fallback
+  isExist -- Yes --> execGuard["Execute hooks/guards"] --> End(["End"]):::Terminal
+  classDef Terminal fill:#FFF9C4,color:#000
+  classDef Decision fill:#C8E6C9,color:#000
+```
+
+#### Route Hook Pipeline
+
+|  | fallback | override | beforeLeave | beforeEach | beforeUpdate | beforeEnter | asyncComponent | confirm |
+|---------|----------|----------|-------------|------------|--------------|-------------|----------------|---------|
+| `push` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `replace` | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `pushWindow` | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ✅ |
+| `pushLayer` | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ✅ |
+| `replaceWindow` | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ✅ |
+| `restartApp` | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `unknown` | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+```mermaid
+gantt
+  title Route Hook Execution Comparison
+  dateFormat X
+  axisFormat %s
+  section push\nreplace
+    fallback      :0, 1
+    override      :1, 2
+    beforeLeave   :2, 3
+    beforeEach    :3, 4
+    beforeUpdate  :4, 5
+    beforeEnter   :5, 6
+    asyncComponent:6, 7
+    confirm       :7, 8
+  section pushWindow\npushLayer
+    fallback      :0, 1
+    override      :1, 2
+    beforeEach    :3, 4
+    confirm       :7, 8
+  section replaceWindow
+    fallback      :0, 1
+    override      :1, 2
+    beforeLeave   :2, 3
+    beforeEach    :3, 4
+    confirm       :7, 8
+  section restartApp\nunknown
+    fallback      :0, 1
+    beforeLeave   :2, 3
+    beforeEach    :3, 4
+    beforeUpdate  :4, 5
+    beforeEnter   :5, 6
+    asyncComponent:6, 7
+    confirm       :7, 8
+```
+
+#### Hook Functions
+
+- **fallback**: Handle unmatched routes
+- **override**: Allow route override logic
+- **beforeLeave**: Execute before leaving current route
+- **beforeEach**: Global navigation guard
+- **beforeUpdate**: Execute before route update (same component)
+- **beforeEnter**: Execute before entering new route
+- **asyncComponent**: Load async component
+- **confirm**: Final confirmation and navigation execution
+
+#### Navigation Types
+
+- **Standard Navigation** (`push`, `replace`): Execute full hook chain
+- **Window Operations** (`pushWindow`, `replaceWindow`): Simplified hook chain for window-level navigation
+- **Layer Operations** (`pushLayer`): Minimal hook chain for layer navigation
+- **App Restart** (`restartApp`): Full hook chain but skip override
+- **Unknown Type** (`unknown`): Full hook chain but skip override, used as default handling
+
 ## 📄 License
 
-MIT © [Esmx Team](https://github.com/esmnext/esmx) 
+MIT © [Esmx Team](https://github.com/esmnext/esmx)

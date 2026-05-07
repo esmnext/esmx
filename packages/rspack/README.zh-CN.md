@@ -48,6 +48,23 @@ pnpm add @esmx/rspack -D
 yarn add @esmx/rspack -D
 ```
 
+## 🚀 快速开始
+
+```typescript
+import { createEsmx } from '@esmx/core';
+import { createRspack } from '@esmx/rspack';
+
+const esmx = createEsmx({
+  app: {
+    name: 'my-app',
+    entry: './src/index.ts'
+  }
+});
+
+const rspack = createRspack(esmx);
+await rspack.build();
+```
+
 ## 📚 文档
 
 访问[官方文档](https://esmx.dev/api/app/rspack.html)获取详细的使用指南和 API 参考。

@@ -49,6 +49,34 @@ pnpm add @esmx/class-state
 yarn add @esmx/class-state
 ```
 
+## 🚀 快速开始
+
+```typescript
+import { State } from '@esmx/class-state';
+
+class Counter extends State {
+  count = 0;
+
+  increment() {
+    this.count++;
+  }
+
+  decrement() {
+    this.count--;
+  }
+}
+
+const counter = new Counter();
+
+// 订阅状态变更
+counter.subscribe(() => {
+  console.log('计数:', counter.count);
+});
+
+counter.increment(); // 计数: 1
+counter.decrement(); // 计数: 0
+```
+
 ## 📚 文档
 
 访问[官方文档](https://esmx.dev)获取详细的使用指南和 API 参考。

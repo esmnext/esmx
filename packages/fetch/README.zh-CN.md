@@ -49,6 +49,27 @@ pnpm add @esmx/fetch
 yarn add @esmx/fetch
 ```
 
+## 🚀 快速开始
+
+```typescript
+import { createFetch } from '@esmx/fetch';
+
+const fetch = createFetch({
+  baseURL: 'https://api.example.com',
+  cache: true
+});
+
+// GET 请求
+const response = await fetch.get('/users');
+
+// 带进度追踪的 POST 请求
+const result = await fetch.post('/upload', formData, {
+  onProgress: (progress) => {
+    console.log(`上传进度: ${progress}%`);
+  }
+});
+```
+
 ## 📚 文档
 
 访问[官方文档](https://esmx.dev)获取详细的使用指南和 API 参考。

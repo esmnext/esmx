@@ -49,6 +49,34 @@ pnpm add @esmx/class-state
 yarn add @esmx/class-state
 ```
 
+## 🚀 Quick Start
+
+```typescript
+import { State } from '@esmx/class-state';
+
+class Counter extends State {
+  count = 0;
+
+  increment() {
+    this.count++;
+  }
+
+  decrement() {
+    this.count--;
+  }
+}
+
+const counter = new Counter();
+
+// Subscribe to state changes
+counter.subscribe(() => {
+  console.log('Count:', counter.count);
+});
+
+counter.increment(); // Count: 1
+counter.decrement(); // Count: 0
+```
+
 ## 📚 Documentation
 
 Visit the [official documentation](https://esmx.dev) for detailed usage guides and API reference.
