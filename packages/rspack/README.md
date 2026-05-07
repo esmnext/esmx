@@ -48,6 +48,23 @@ pnpm add @esmx/rspack -D
 yarn add @esmx/rspack -D
 ```
 
+## 🚀 Quick Start
+
+```typescript
+import { createEsmx } from '@esmx/core';
+import { createRspack } from '@esmx/rspack';
+
+const esmx = createEsmx({
+  app: {
+    name: 'my-app',
+    entry: './src/index.ts'
+  }
+});
+
+const rspack = createRspack(esmx);
+await rspack.build();
+```
+
 ## 📚 Documentation
 
 Visit the [official documentation](https://esmx.dev/api/app/rspack.html) for detailed usage guides and API reference.

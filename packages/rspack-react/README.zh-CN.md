@@ -49,6 +49,23 @@ pnpm add @esmx/rspack-react -D
 yarn add @esmx/rspack-react -D
 ```
 
+## 🚀 快速开始
+
+```typescript
+import { createEsmx } from '@esmx/core';
+import { createRspackReact } from '@esmx/rspack-react';
+
+const esmx = createEsmx({
+  app: {
+    name: 'react-app',
+    entry: './src/index.tsx'
+  }
+});
+
+const rspack = createRspackReact(esmx);
+await rspack.build();
+```
+
 ## 📚 文档
 
 访问[官方文档](https://esmx.dev)获取详细的使用指南和 API 参考。

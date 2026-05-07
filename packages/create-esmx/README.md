@@ -47,6 +47,27 @@ pnpm create esmx my-project
 yarn create esmx my-project
 ```
 
+## 🚀 Quick Start
+
+```bash
+# Create a new project with interactive prompts
+npm create esmx@latest my-project
+
+# Or use pnpm
+pnpm create esmx my-project
+```
+
+Follow the interactive prompts to select:
+- **Project name** - Your project directory name
+- **Template** - Choose from Vue SSR, Vue CSR, React SSR, React CSR, Vue2 SSR, Vue2 CSR, or Shared Modules
+
+Then start development:
+```bash
+cd my-project
+pnpm install
+pnpm dev
+```
+
 ## 📚 Documentation
 
 Visit the [official documentation](https://esmx.dev) for detailed usage guides and API references.

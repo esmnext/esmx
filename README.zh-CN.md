@@ -52,8 +52,12 @@ npx create-esmx@latest my-app
 | [**@esmx/core**](https://github.com/esmnext/esmx/tree/master/packages/core) | <a href="https://www.npmjs.com/package/@esmx/core"><img src="https://img.shields.io/npm/v/@esmx/core.svg" alt="npm version" /></a> | 🔵 **预览** | 微前端框架，ESM 模块链接 |
 | [**@esmx/router**](https://github.com/esmnext/esmx/tree/master/packages/router) | <a href="https://www.npmjs.com/package/@esmx/router"><img src="https://img.shields.io/npm/v/@esmx/router.svg" alt="npm version" /></a> | 🔵 **预览** | 框架无关的路由库 |
 | [**@esmx/router-vue**](https://github.com/esmnext/esmx/tree/master/packages/router-vue) | <a href="https://www.npmjs.com/package/@esmx/router-vue"><img src="https://img.shields.io/npm/v/@esmx/router-vue.svg" alt="npm version" /></a> | 🔵 **预览** | Vue 集成包（2.7+ & 3） |
+| [**@esmx/router-react**](https://github.com/esmnext/esmx/tree/master/packages/router-react) | <a href="https://www.npmjs.com/package/@esmx/router-react"><img src="https://img.shields.io/npm/v/@esmx/router-react.svg" alt="npm version" /></a> | 🔵 **预览** | React 集成包（18+） |
 | [**@esmx/rspack**](https://github.com/esmnext/esmx/tree/master/packages/rspack) | <a href="https://www.npmjs.com/package/@esmx/rspack"><img src="https://img.shields.io/npm/v/@esmx/rspack.svg" alt="npm version" /></a> | 🔵 **预览** | 框架无关的 Rspack 工具 |
 | [**@esmx/rspack-vue**](https://github.com/esmnext/esmx/tree/master/packages/rspack-vue) | <a href="https://www.npmjs.com/package/@esmx/rspack-vue"><img src="https://img.shields.io/npm/v/@esmx/rspack-vue.svg" alt="npm version" /></a> | 🔵 **预览** | Vue 专用的 Rspack 工具 |
+| [**@esmx/rspack-react**](https://github.com/esmnext/esmx/tree/master/packages/rspack-react) | <a href="https://www.npmjs.com/package/@esmx/rspack-react"><img src="https://img.shields.io/npm/v/@esmx/rspack-react.svg" alt="npm version" /></a> | 🔵 **预览** | React 专用的 Rspack 工具 |
+| [**@esmx/import**](https://github.com/esmnext/esmx/tree/master/packages/import) | <a href="https://www.npmjs.com/package/@esmx/import"><img src="https://img.shields.io/npm/v/@esmx/import.svg" alt="npm version" /></a> | 🔵 **预览** | Import Map 工具 |
+| [**create-esmx**](https://github.com/esmnext/esmx/tree/master/packages/create-esmx) | <a href="https://www.npmjs.com/package/create-esmx"><img src="https://img.shields.io/npm/v/create-esmx.svg" alt="npm version" /></a> | 🔵 **预览** | 项目脚手架工具 |
 
 ## 🎯 演示项目
 

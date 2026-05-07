@@ -49,6 +49,27 @@ pnpm add @esmx/fetch
 yarn add @esmx/fetch
 ```
 
+## 🚀 Quick Start
+
+```typescript
+import { createFetch } from '@esmx/fetch';
+
+const fetch = createFetch({
+  baseURL: 'https://api.example.com',
+  cache: true
+});
+
+// GET request
+const response = await fetch.get('/users');
+
+// POST request with progress tracking
+const result = await fetch.post('/upload', formData, {
+  onProgress: (progress) => {
+    console.log(`Upload progress: ${progress}%`);
+  }
+});
+```
+
 ## 📚 Documentation
 
 Visit the [official documentation](https://esmx.dev) for detailed usage guides and API reference.

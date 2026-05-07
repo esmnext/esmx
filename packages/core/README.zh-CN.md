@@ -50,7 +50,21 @@ yarn add @esmx/core
 
 ## 🚀 快速开始
 
-查看快速开始指南：https://esmx.dev/zh-CN/guide/start/getting-started.html
+```typescript
+import { createEsmx } from '@esmx/core';
+
+const esmx = createEsmx({
+  app: {
+    name: 'my-app',
+    entry: './src/index.ts'
+  }
+});
+
+await esmx.build();
+await esmx.start();
+```
+
+📖 [完整文档](https://esmx.dev/zh-CN/guide/start/getting-started.html)
 
 ## 📚 文档
 
