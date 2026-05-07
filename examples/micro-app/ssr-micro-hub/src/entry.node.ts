@@ -31,5 +31,12 @@ export default {
         server.listen(3000, () => {
             console.log('Hub server: http://localhost:3000');
         });
+    },
+
+    async postBuild(esmx) {
+        const rc = await esmx.render({
+            params: { url: '/' }
+        });
+        esmx.writeSync(esmx.resolvePath('dist/client', 'index.html'), rc.html);
     }
 } satisfies EsmxOptions;
