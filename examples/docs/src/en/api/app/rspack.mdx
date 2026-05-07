@@ -27,7 +27,7 @@ Use package manager to install `@esmx/rspack` as a development dependency:
 type BuildTarget = 'node' | 'client' | 'server'
 ```
 
-Build target environment type that defines the application's build target environment, used to configure specific optimizations and features in the build process:
+Build target environment type that defines the application's build target environment:
 - `node`: Build code to run in Node.js environment
 - `client`: Build code to run in browser environment
 - `server`: Build code to run in server environment
@@ -45,41 +45,69 @@ interface RspackAppConfigContext {
 
 Rspack application configuration context interface provides context information accessible in configuration hook functions:
 - `esmx`: Esmx framework instance
-- `buildTarget`: Current build target (client/server/node)
+- `buildTarget`: Current build target (`client`/`server`/`node`)
 - `config`: Rspack configuration object
+- `options`: Application configuration options
+
+### RspackAppChainContext
+
+```ts
+interface RspackAppChainContext {
+  esmx: Esmx
+  buildTarget: BuildTarget
+  chain: import('rspack-chain').RspackChain
+  options: RspackAppOptions
+}
+```
+
+Rspack application chain configuration context interface for the `chain` hook function:
+- `esmx`: Esmx framework instance
+- `buildTarget`: Current build target (`client`/`server`/`node`)
+- `chain`: rspack-chain configuration object for chained configuration
 - `options`: Application configuration options
 
 ### RspackAppOptions
 
 ```ts
 interface RspackAppOptions {
-  css?: 'css' | 'js' | false
-  loaders?: {
-    styleLoader?: string
-  }
-  styleLoader?: Record<string, any>
-  cssLoader?: Record<string, any>
-  target?: {
-    web?: string[]
-    node?: string[]
-  }
-  definePlugin?: Record<string, any>
-  config?: (context: RspackAppConfigContext) => void | Promise<void>
+  minimize?: boolean
+  config?: (context: RspackAppConfigContext) => void
+  chain?: (context: RspackAppChainContext) => void
 }
 ```
 
 Rspack application configuration options interface:
-- `css`: CSS output method, optional 'css' (separate file) or 'js' (bundled into JS), defaults to automatic selection based on the environment: production uses 'css' to optimize caching and parallel loading, development uses 'js' to support HMR
-- `loaders`: Custom loader configuration
-- `styleLoader`: style-loader configuration options
-- `cssLoader`: css-loader configuration options
-- `target`: Build target compatibility configuration
-- `definePlugin`: Global constant definitions
-- `config`: Configuration hook function
+- `minimize`: Whether to enable code minification, `true` to enable, `false` to disable, `undefined` to automatically decide based on environment (enabled in production, disabled in development)
+- `config`: Configuration hook function called before build starts for modifying Rspack compilation configuration
+- `chain`: Chain configuration hook function using rspack-chain for flexible configuration modification
 
 ### RspackHtmlAppOptions
 
-Inherits from `RspackAppOptions`, used to configure specific options for HTML applications.
+Inherits from `RspackAppOptions`, used to configure specific options for HTML applications:
+
+```ts
+interface RspackHtmlAppOptions extends RspackAppOptions {
+  css?: 'css' | 'js' | false
+  loaders?: Partial<Record<keyof typeof RSPACK_LOADER, string>>
+  styleLoader?: Record<string, any>
+  cssLoader?: Record<string, any>
+  lessLoader?: Record<string, any>
+  styleResourcesLoader?: Record<string, any>
+  swcLoader?: SwcLoaderOptions
+  definePlugin?: Record<string, string | Partial<Record<BuildTarget, string>>>
+  target?: TargetSetting
+}
+```
+
+- `css`: CSS output method, optional `'css'` (separate file) or `'js'` (bundled into JS), defaults to automatic selection based on environment
+- `loaders`: Custom loader configuration for replacing default loader implementations
+- `styleLoader`: style-loader configuration options
+- `cssLoader`: css-loader configuration options
+- `lessLoader`: less-loader configuration options
+- `styleResourcesLoader`: Global style resources auto-injection configuration
+- `swcLoader`: SWC loader configuration options
+- `definePlugin`: Global constant definitions
+- `target`: Build target compatibility configuration
 
 ## Function Exports
 
@@ -92,11 +120,11 @@ function createRspackApp(esmx: Esmx, options?: RspackAppOptions): Promise<App>
 Create a standard Rspack application instance.
 
 **Parameters:**
-- `esmx`: Esmx framework instance
-- `options`: Rspack application configuration options
+- `esmx` — Esmx framework instance
+- `options` — Rspack application configuration options
 
 **Returns:**
-- Returns a Promise that resolves to the created application instance
+- Returns a `Promise` that resolves to the created application instance
 
 ### createRspackHtmlApp
 
@@ -107,13 +135,14 @@ function createRspackHtmlApp(esmx: Esmx, options?: RspackHtmlAppOptions): Promis
 Create an HTML-type Rspack application instance.
 
 **Parameters:**
-- `esmx`: Esmx framework instance
-- `options`: HTML application configuration options
+- `esmx` — Esmx framework instance
+- `options` — HTML application configuration options
 
 **Returns:**
-- Returns a Promise that resolves to the created HTML application instance
+- Returns a `Promise` that resolves to the created HTML application instance
 
 ## Constant Exports
+
 ### RSPACK_LOADER
 
 ```ts
@@ -131,7 +160,7 @@ const RSPACK_LOADER: Record<string, string> = {
 Rspack built-in loader identifier mapping object that provides commonly used loader name constants:
 
 - `builtinSwcLoader`: Rspack built-in SWC loader, for processing TypeScript/JavaScript files
-- `lightningcssLoader`: Rspack built-in lightningcss loader, a high-performance compiler for processing CSS files
+- `lightningcssLoader`: Rspack built-in LightningCSS loader, a high-performance compiler for processing CSS files
 - `styleLoader`: Loader for injecting CSS into the DOM
 - `cssLoader`: Loader for parsing CSS files and handling CSS modularization
 - `lessLoader`: Loader for compiling Less files to CSS

@@ -129,7 +129,9 @@ export default async (rc: RenderContext) => {
   await router.replace(rc.params.url);
 
   const { app } = createVueApp(router, true);
-  const html = await renderToString(app);
+  const html = await renderToString(app, {
+    importMetaSet: rc.importMetaSet
+  });
 
   rc.html = `<!DOCTYPE html>
 <html lang="en">
@@ -208,7 +210,7 @@ export default {
 `RouterLink` automatically applies the `router-link-active` class when the current route matches the link's `to` path. Customize it with the `activeClass` prop:
 
 ```vue
-<RouterLink to="/about" activeClass="nav-active">About</RouterLink>
+<RouterLink to="/about" active-class="nav-active">About</RouterLink>
 ```
 
 ### useRouter and useRoute
@@ -316,7 +318,7 @@ A typical Vue 3 + SSR project with `@esmx/router`:
 src/
 ├── entry.node.ts      # Node.js server setup, dev/build config
 ├── entry.server.ts    # SSR rendering logic
-├── entry.client.ts    # Client-side hydration/mounting
+├── entry.client.ts    # Client-side mounting and app activation
 ├── create-app.ts      # Shared app factory (used by both server & client)
 ├── routes.ts          # Route definitions
 ├── App.vue            # Root component (RouterView + navigation)

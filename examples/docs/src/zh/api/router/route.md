@@ -43,7 +43,7 @@ enum RouteType {
 - `unknown`：由浏览器 popstate 事件触发的导航
 - `pushWindow`：在新窗口中打开导航
 - `replaceWindow`：替换当前窗口位置
-- `pushLayer`：在图层中打开导航
+- `pushLayer`：在层中打开导航
 
 ### RouteLocation
 
@@ -74,7 +74,7 @@ interface RouteLocation {
 - `state`：持久化到历史记录中的自定义状态数据
 - `keepScrollPosition`：为 `true` 时，导航后保持当前滚动位置
 - `statusCode`：服务端响应的 HTTP 状态码
-- `layer`：图层配置选项
+- `layer`：层配置选项
 - `confirm`：自定义确认处理器，覆盖默认的路由过渡逻辑
 
 ### RouteLocationInput
@@ -272,7 +272,7 @@ route.state // { cartId: 'abc' }
 - **类型**：`number | null`
 - **只读**：`true`
 
-服务端渲染重定向的 HTTP 状态码。
+SSR 重定向的 HTTP 状态码。
 
 ### req
 

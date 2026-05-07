@@ -11,9 +11,9 @@ head:
 
 ## 简介
 
-由于 React 没有专用的 `@esmx/router` 集成包，你需要使用 `router.resolveLink()` 实现导航链接，使用 `route.matched` 实现路由渲染。本页文档记录了推荐的实现模式。
+`@esmx/router-react` 为 React 应用提供了与 `@esmx/router` 集成的导航和路由渲染组件。本页文档介绍了 `RouterLink` 和 `RouterView` 的使用方法。
 
-## Link
+## RouterLink
 
 导航链接组件，渲染带有适当导航行为和活跃状态管理的锚元素。等同于 `@esmx/router-vue` 中的 `RouterLink`。
 
@@ -21,71 +21,42 @@ head:
 
 | 属性 | 类型 | 默认值 | 描述 |
 |------|------|--------|------|
-| `to` | `string` | _必填_ | 目标路由位置 |
+| `to` | `RouteLocationInput` | _必填_ | 目标路由位置（字符串或对象） |
 | `type` | `RouterLinkType` | `'push'` | 导航类型 |
+| `replace` | `boolean` | — | _已弃用_ — 请使用 `type='replace'` |
 | `exact` | `RouteMatchType` | `'include'` | 活跃状态匹配策略 |
 | `activeClass` | `string` | — | 活跃状态的自定义 CSS 类 |
+| `event` | `string \| string[]` | `'click'` | 触发导航的事件 |
+| `tag` | `string` | `'a'` | 要渲染的 HTML 标签 |
+| `layerOptions` | `RouteLayerOptions` | — | `type='pushLayer'` 时的层选项 |
+| `beforeNavigate` | `Function` | — | 导航前的钩子 |
 | `className` | `string` | — | 额外 CSS 类 |
-| `children` | `ReactNode` | _必填_ | 链接内容 |
-
-### 实现
-
-```tsx
-import type { ReactNode, MouseEvent } from 'react';
-import { useRouter, useRoute } from './router-context';
-
-interface LinkProps {
-    to: string;
-    type?: 'push' | 'replace' | 'pushWindow' | 'replaceWindow' | 'pushLayer';
-    exact?: 'route' | 'exact' | 'include';
-    activeClass?: string;
-    className?: string;
-    children: ReactNode;
-}
-
-export function Link({
-    to,
-    type = 'push',
-    exact,
-    activeClass,
-    className,
-    children
-}: LinkProps) {
-    const router = useRouter();
-    // 路由变化时触发重新渲染以更新活跃状态
-    useRoute();
-
-    const link = router.resolveLink({ to, type, exact, activeClass });
-
-    function handleClick(e: MouseEvent) {
-        if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) return;
-        if (link.isExternal) return;
-
-        e.preventDefault();
-        link.navigate(e.nativeEvent);
-    }
-
-    return (
-        <a
-            href={link.attributes.href}
-            className={[className, link.attributes.class].filter(Boolean).join(' ')}
-            target={link.attributes.target}
-            rel={link.attributes.rel}
-            onClick={handleClick}
-        >
-            {children}
-        </a>
-    );
-}
-```
+| `style` | `CSSProperties` | — | 内联样式 |
+| `children` | `ReactNode` | — | 链接内容 |
 
 ### 用法
 
 ```tsx
-<Link to="/">首页</Link>
-<Link to="/about" activeClass="nav-active">关于</Link>
-<Link to="/docs" type="pushWindow">文档</Link>
-<Link to="/dashboard" exact="exact">仪表盘</Link>
+import { RouterLink } from '@esmx/router-react';
+
+// 基础用法
+<RouterLink to="/about">关于</RouterLink>
+
+// 替换当前历史记录
+<RouterLink to="/login" type="replace">登录</RouterLink>
+
+// 在新窗口打开
+<RouterLink to="/external" type="pushWindow">外部链接</RouterLink>
+
+// 自定义标签和样式
+<RouterLink to="/submit" tag="button" className="btn" style={{ color: 'red' }}>
+    提交
+</RouterLink>
+
+// 层导航
+<RouterLink to="/dialog" type="pushLayer" layerOptions={{ keepAlive: 'include' }}>
+    打开弹层
+</RouterLink>
 ```
 
 ## RouterView
@@ -139,8 +110,8 @@ function MainLayout() {
     return (
         <div>
             <nav>
-                <Link to="/">首页</Link>
-                <Link to="/about">关于</Link>
+                <RouterLink to="/">首页</RouterLink>
+                <RouterLink to="/about">关于</RouterLink>
             </nav>
             <main>
                 <RouterView />

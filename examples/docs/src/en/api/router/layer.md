@@ -48,7 +48,7 @@ Controls when the layer remains open during navigation:
 - `function`: Custom logic returning `true` to keep alive, `false` to close
 
 ```ts
-// Default - keep only on exact path match
+// Default — keep only on exact path match
 keepAlive: 'exact'
 
 // Keep alive on any sub-path
@@ -184,7 +184,7 @@ router.closeLayer({ selectedId: 42, confirmed: true });
 ## Layer Lifecycle
 
 1. **Creation**: `createLayer()` or `pushLayer()` creates a new Router instance in `memory` mode
-2. **Mounting**: The layer's root element is appended to the document body with overlay styling
+2. **Mounting**: The layer's root element is appended to the `document.body` with overlay styling
 3. **Navigation**: The layer has its own isolated navigation stack
 4. **Closing**: The layer closes when:
    - `closeLayer()` is called

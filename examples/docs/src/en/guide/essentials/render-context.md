@@ -37,53 +37,58 @@ async server(esmx) {
 RenderContext collects module and resource dependencies during component rendering, avoiding preloading all resources.
 
 #### On-Demand Collection
-- Automatically tracks and records module dependencies during actual component rendering
-- Only collects CSS, JavaScript, and other resources actually used in the current page rendering
-- Precisely records module dependency relationships for each component through `importMetaSet`
-- Supports dependency collection for async components and dynamic imports
+- Automatically tracks and records module dependencies during actual component rendering.
+- Only collects CSS, JavaScript, and other resources actually used in the current page rendering.
+- Precisely records module dependency relationships for each component through `importMetaSet`.
+- Supports dependency collection for async components and dynamic imports.
 
 #### Automated Processing
-- Developers don't need to manually manage the dependency collection process
-- The framework automatically collects dependency information during component rendering
-- Uniformly processes all collected resources through the `commit()` method
-- Automatically handles circular dependencies and duplicate dependencies
+- Developers don't need to manually manage the dependency collection process.
+- The framework automatically collects dependency information during component rendering.
+- Uniformly processes all collected resources through the `commit()` method.
+- Automatically handles circular dependencies and duplicate dependencies.
 
 #### Performance Optimization
-- Avoids loading unused modules, significantly reducing first-screen loading time
-- Precisely controls resource loading order, optimizing page rendering performance
-- Automatically generates optimal Import Maps
-- Supports resource preloading and on-demand loading strategies
+- Avoids loading unused modules, significantly reducing first-screen loading time.
+- Precisely controls resource loading order, optimizing page rendering performance.
+- Automatically generates optimal Import Maps.
+- Supports resource preloading and on-demand loading strategies.
 
 ### Resource Injection
 
 RenderContext provides multiple methods to inject different types of resources, each carefully designed to optimize resource loading performance:
 
-- `preload()`: Preloads CSS and JS resources, supports priority configuration
-- `css()`: Injects first-screen stylesheets, supports critical CSS extraction
-- `importmap()`: Injects module import maps, supports dynamic path resolution
-- `moduleEntry()`: Injects client entry module, supports multi-entry configuration
-- `modulePreload()`: Preloads module dependencies, supports on-demand loading strategy
+- `preload()`: Preloads CSS and JS resources, supports priority configuration.
+- `css()`: Injects first-screen stylesheets, supports critical CSS extraction.
+- `importmap()`: Injects module import maps, supports dynamic path resolution.
+- `moduleEntry()`: Injects client entry module, supports multi-entry configuration.
+- `modulePreload()`: Preloads module dependencies, supports on-demand loading strategy.
 
 ### Resource Injection Order
 
 RenderContext strictly controls resource injection order. This order design is based on browser working principles and performance optimization considerations:
 
 1. head section:
-   - `preload()`: Preloads CSS and JS resources, letting the browser discover and start loading these resources as early as possible
-   - `css()`: Injects first-screen stylesheets, ensuring page styles are in place when content renders
+   - `preload()`: Preloads CSS and JS resources, letting the browser discover and start loading these resources as early as possible.
+   - `css()`: Injects first-screen stylesheets, ensuring page styles are in place when content renders.
 
 2. body section:
-   - `importmap()`: Injects module import maps, defining ESM module path resolution rules
-   - `moduleEntry()`: Injects client entry module, must be executed after importmap
-   - `modulePreload()`: Preloads module dependencies, must be executed after importmap
+   - `importmap()`: Injects module import maps, defining ESM module path resolution rules.
+   - `moduleEntry()`: Injects client entry module, must be executed after importmap.
+   - `modulePreload()`: Preloads module dependencies, must be executed after importmap.
 
 ## Complete Rendering Flow
 
 A typical flow is as follows:
 
 ```ts title="src/entry.server.ts"
+import { createApp } from 'vue';
+import { renderToString } from '@vue/server-renderer';
+import type { RenderContext } from '@esmx/core';
+import App from './app.vue';
+
 export default async (rc: RenderContext) => {
-    const app = createApp();
+    const app = createApp(App);
     const html = await renderToString(app, {
        importMetaSet: rc.importMetaSet
     });
@@ -175,11 +180,12 @@ const rc = await esmx.render({
 This mechanism is particularly suitable for the following scenarios:
 
 1. **Multi-Template Rendering**
-```ts title="src/entry.server.ts"
-   // Mobile entry function
-   export const mobile = async (rc: RenderContext) => {};
 
-   export const desktop = async (rc: RenderContext) => {};
+```ts title="src/entry.server.ts"
+// Mobile entry function
+export const mobile = async (rc: RenderContext) => {};
+
+export const desktop = async (rc: RenderContext) => {};
 ```
 
 2. **A/B Testing**
@@ -200,17 +206,17 @@ This mechanism is particularly suitable for the following scenarios:
    - Avoid manually creating instances
 
 2. **Dependency Collection**
-   - Ensure all modules correctly call `importMetaSet.add(import.meta)`
-   - Call `commit()` method immediately after rendering completes
-   - Reasonably use async components and dynamic imports to optimize first-screen loading
+   - The framework automatically tracks module dependencies during component rendering; no manual calling is required.
+   - Call `commit()` method immediately after rendering completes to submit the collected results.
+   - Reasonably use async components and dynamic imports to optimize first-screen loading.
 
 3. **Resource Injection**
-   - Strictly follow resource injection order
-   - Don't inject CSS in body
-   - Ensure importmap comes before moduleEntry
+   - Strictly follow resource injection order.
+   - Don't inject CSS in `body`.
+   - Ensure `importmap` comes before `moduleEntry`.
 
 4. **Performance Optimization**
-   - Use preload to preload critical resources
-   - Reasonably use modulePreload to optimize module loading
-   - Avoid unnecessary resource loading
-   - Utilize the browser caching mechanism to optimize loading performance
+   - Use `preload` to preload critical resources.
+   - Reasonably use `modulePreload` to optimize module loading.
+   - Avoid unnecessary resource loading.
+   - Utilize the browser caching mechanism to optimize loading performance.

@@ -4,7 +4,7 @@ description: "Learn how to use the Rspack builder encapsulated by Esmx to quickl
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx,Rspack,build system,HTML application,standard application,multi-target build,SSR,HMR,SWC,LightningCSS,Loader,DefinePlugin,ImportMap,Module Link,external,content hash,performance optimization"
+      content: "Esmx,Rspack,build system,HTML application,standard application,multi-target build,SSR,HMR,SWC,LightningCSS,Loader,DefinePlugin,Import Map,Module Link,external,content hash,performance optimization"
 ---
 
 # Rspack

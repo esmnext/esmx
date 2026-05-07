@@ -21,9 +21,9 @@
 
 ## 🚀 Core Features
 
-- **Zero Runtime Overhead** - Based on native ESM + ImportMap, no sandbox or proxy
+- **Zero Runtime Overhead** - Based on native ESM + Import Map, no sandbox or proxy
 - **High-Performance Build** - Powered by Rspack, significantly faster builds
-- **Complete SSR Support** - High-performance server-side rendering, SEO-friendly
+- **Complete SSR Support** - High-performance SSR, SEO-friendly
 - **Standard ESM Syntax** - No framework-specific APIs, minimal learning curve
 - **Multi-Framework Support** - Vue, React, Preact, Solid, and more
 
@@ -32,9 +32,9 @@
 | Feature | Traditional Solutions | Esmx |
 |---------|----------------------|------|
 | **Architecture** | Manual sandbox + proxy | Native ESM |
-| **Runtime** | Has overhead | Zero overhead |
+| **Runtime Overhead** | Has | Zero |
 | **Learning Curve** | Framework APIs | Standard syntax |
-| **Module Isolation** | Sandbox simulation | Browser native |
+| **Module Isolation** | Sandbox simulation | Browser native isolation |
 
 
 ## 🚀 Getting Started

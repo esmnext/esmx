@@ -1,117 +1,70 @@
 ---
 titleSuffix: "Esmx 框架 Vue 构建工具"
-description: "Esmx 框架的 Vue 专用构建工具，提供完整的 Vue 2/3 应用构建支持，包括组件开发、SSR 渲染和性能优化等功能。"
+description: "Esmx 框架的 Vue 专用构建工具，提供完整的 Vue 2 和 Vue 3 应用构建支持，包括组件开发、SSR 渲染和性能优化等功能。"
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, Rspack, Vue, Vue2, Vue3, SSR, 构建工具, 组件开发, 服务端渲染, 性能优化"
+      content: "Esmx, Rspack, Vue, Vue 2, Vue 3, SSR, 构建工具, 组件开发, 性能优化"
 ---
 
 import { PackageManagerTabs } from '@theme';
 
 # @esmx/rspack-vue
 
-Rspack Vue 包提供了一套用于创建和配置基于 Vue 框架的 Rspack 应用的 API，支持 Vue 组件的开发、构建与服务端渲染。
+`@esmx/rspack-vue` 提供了一套用于创建和配置基于 Vue 框架的 Rspack 应用的 API，支持 Vue 2.7+ 和 Vue 3 组件的开发、构建与 SSR。
 
 ## 安装
 
 使用包管理器安装 `@esmx/rspack-vue` 开发依赖：
 
-<PackageManagerTabs command="install @esmx/rspack-vue -D" />
+<PackageManagerTabs command="install @esmx/rspack-vue vue -D" />
 
 ## 类型导出
 
-### BuildTarget
+### RspackVueAppOptions
 
 ```ts
-type BuildTarget = 'node' | 'client' | 'server'
-```
-
-构建目标环境类型，定义了应用程序的构建目标环境，用于配置构建过程中的特定优化和功能：
-- `node`: 构建为 Node.js 环境运行的代码
-- `client`: 构建为浏览器环境运行的代码
-- `server`: 构建为服务端环境运行的代码
-
-### RspackAppConfigContext
-
-```ts
-interface RspackAppConfigContext {
-  esmx: Esmx
-  buildTarget: BuildTarget
-  config: RspackOptions
-  options: RspackAppOptions
+interface RspackVueAppOptions extends RspackHtmlAppOptions {
+  vueLoader?: Record<string, any>
 }
 ```
 
-Rspack 应用配置上下文接口，提供了在配置钩子函数中可以访问的上下文信息：
-- `esmx`: Esmx 框架实例
-- `buildTarget`: 当前的构建目标（client/server/node）
-- `config`: Rspack 配置对象
-- `options`: 应用配置选项
+Vue 应用配置选项接口，继承自 `@esmx/rspack` 的 `RspackHtmlAppOptions`：
+- `vueLoader`: vue-loader 配置选项
 
-### RspackAppOptions
-
-```ts
-interface RspackAppOptions {
-  css?: 'css' | 'js' | false
-  loaders?: {
-    styleLoader?: string
-  }
-  styleLoader?: Record<string, any>
-  cssLoader?: Record<string, any>
-  target?: {
-    web?: string[]
-    node?: string[]
-  }
-  definePlugin?: Record<string, any>
-  config?: (context: RspackAppConfigContext) => void | Promise<void>
-}
-```
-
-Rspack 应用配置选项接口：
-- `css`: CSS 输出方式，可选 'css'（独立文件）或 'js'（打包到JS中），默认根据环境自动选择：生产环境使用'css'以优化缓存和并行加载，开发环境使用'js'以支持热更新(HMR)
-- `loaders`: 自定义 loader 配置
-- `styleLoader`: style-loader 配置选项
-- `cssLoader`: css-loader 配置选项
-- `target`: 构建目标兼容性配置
-- `definePlugin`: 全局常量定义
-- `config`: 配置钩子函数
-
-### RspackHtmlAppOptions
-
-继承自 `RspackAppOptions`，用于配置 HTML 应用的特定选项。
+关于基础类型的详细说明，请参阅 [@esmx/rspack 文档](./rspack.md)。
 
 ## 函数导出
 
-### createRspackApp
+### createRspackVue2App
 
 ```ts
-function createRspackApp(esmx: Esmx, options?: RspackAppOptions): Promise<App>
+function createRspackVue2App(esmx: Esmx, options?: RspackVueAppOptions): Promise<App>
 ```
 
-创建一个标准的 Rspack 应用实例。
+创建 Vue 2.7+ 应用构建实例。自动配置 vue-loader-v15 和 Vue 2 相关的编译选项。
 
 **参数：**
 - `esmx`: Esmx 框架实例
-- `options`: Rspack 应用配置选项
+- `options`: Vue 应用配置选项
 
 **返回值：**
-- 返回一个 Promise，解析为创建的应用实例
+- 返回一个 `Promise`，解析为创建的应用实例
 
-### createRspackHtmlApp
+### createRspackVue3App
 
 ```ts
-function createRspackHtmlApp(esmx: Esmx, options?: RspackHtmlAppOptions): Promise<App>
+function createRspackVue3App(esmx: Esmx, options?: RspackVueAppOptions): Promise<App>
 ```
 
-创建一个 HTML 类型的 Rspack 应用实例。
+创建 Vue 3 应用构建实例。自动配置 vue-loader-v17 和 Vue 3 相关的编译选项。
 
 **参数：**
 - `esmx`: Esmx 框架实例
-- `options`: HTML 应用配置选项
+- `options`: Vue 应用配置选项
 
 **返回值：**
-- 返回一个 Promise，解析为创建的 HTML 应用实例
+- 返回一个 `Promise`，解析为创建的应用实例
 
 ## 常量导出
 ### RSPACK_LOADER

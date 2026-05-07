@@ -11,9 +11,9 @@ head:
 
 Base Path refers to the access path prefix for static resources (such as JavaScript, CSS, images, etc.) in an application. In Esmx, proper base path configuration is crucial for the following scenarios:
 
-- **Multi-Environment Deployment**: Supports resource access in different environments like development, testing, and production
-- **Multi-Region Deployment**: Adapts to cluster deployment needs in different regions or countries
-- **CDN Distribution**: Achieves global distribution and acceleration of static resources
+- **Multi-Environment Deployment**: Supports resource access in different environments like development, testing, and production.
+- **Multi-Region Deployment**: Adapts to cluster deployment needs in different regions or countries.
+- **CDN Distribution**: Achieves global distribution and acceleration of static resources.
 
 ## Default Path Mechanism
 
@@ -27,9 +27,9 @@ Esmx adopts an automatic path generation mechanism based on the service name. By
 
 This convention-over-configuration design has the following advantages:
 
-- **Consistency**: Ensures all static resources use unified access paths
-- **Predictability**: Resource access paths can be inferred through the `name` field in `package.json`
-- **Maintainability**: No additional configuration needed, reducing maintenance costs
+- **Consistency**: Ensures all static resources use unified access paths.
+- **Predictability**: Resource access paths can be inferred through the `name` field in `package.json`.
+- **Maintainability**: No additional configuration needed, reducing maintenance costs.
 
 ## Dynamic Path Configuration
 
@@ -55,11 +55,17 @@ In real-world projects, we often need to deploy the same codebase to different e
 
 You can dynamically set the base path based on the request context through the `base` parameter of the `esmx.render()` method:
 
-```ts
-const render = await esmx.render({
+```ts title="src/entry.node.ts"
+const rc = await esmx.render({
     base: '/cn',
     params: {
         url: req.url
     }
 });
 ```
+
+## Best Practices
+
+- In production environments, it is recommended to dynamically determine the base path through environment variables or request headers to avoid hardcoding.
+- When using a CDN, ensure that the base path points to the CDN domain to fully leverage caching and acceleration capabilities.
+- Multi-language sites can be distinguished by secondary directories (such as `/cn/`, `/en/`) or independent domains. Choose the appropriate solution based on business requirements.

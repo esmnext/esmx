@@ -67,7 +67,7 @@ head:
 | `activeClass` | `string` | — | 活跃状态的自定义 CSS 类 |
 | `event` | `string \| string[]` | `'click'` | 触发导航的事件 |
 | `tag` | `string` | `'a'` | 要渲染的 HTML 标签 |
-| `layerOptions` | `RouteLayerOptions` | — | `type='pushLayer'` 时的图层选项 |
+| `layerOptions` | `RouteLayerOptions` | — | `type='pushLayer'` 时的层选项 |
 | `beforeNavigate` | `Function` | — | 导航前的钩子 |
 
 ```vue

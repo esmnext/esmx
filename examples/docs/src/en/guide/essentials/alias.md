@@ -11,19 +11,19 @@ head:
 
 Path Alias is a module import path mapping mechanism that allows developers to use short, semantic identifiers to replace complete module paths. In Esmx, the path alias mechanism provides the following advantages:
 
-- **Simplify Import Paths**: Use semantic aliases to replace lengthy relative paths, improving code readability
-- **Avoid Deep Nesting**: Eliminate maintenance difficulties caused by multi-level directory references (like `../../../../`)
-- **Type Safety**: Fully integrated with TypeScript's type system, providing code completion and type checking
-- **Module Resolution Optimization**: Improve module resolution performance through predefined path mappings
+- **Simplify Import Paths**: Use semantic aliases to replace lengthy relative paths, improving code readability.
+- **Avoid Deep Nesting**: Eliminate maintenance difficulties caused by multi-level directory references (like `../../../../`).
+- **Type Safety**: Fully integrated with TypeScript's type system, providing code completion and type checking.
+- **Module Resolution Optimization**: Improve module resolution performance through predefined path mappings.
 
 ## Default Alias Mechanism
 
 Esmx adopts an automatic alias mechanism based on Service Name. This convention-over-configuration design has the following characteristics:
 
-- **Automatic Configuration**: Automatically generates aliases based on the `name` field in `package.json`, no manual configuration needed
-- **Unified Specification**: Ensures all service modules follow consistent naming and reference specifications
-- **Type Support**: Works with `npm run build:dts` command to automatically generate type declaration files, enabling cross-service type inference
-- **Predictability**: Module reference paths can be inferred through service name, reducing maintenance costs
+- **Automatic Configuration**: Automatically generates aliases based on the `name` field in `package.json`, no manual configuration needed.
+- **Unified Specification**: Ensures all service modules follow consistent naming and reference specifications.
+- **Type Support**: Works with `npm run build:dts` command to automatically generate type declaration files, enabling cross-service type inference.
+- **Predictability**: Module reference paths can be inferred through service name, reducing maintenance costs.
 
 ## Configuration Instructions
 
@@ -72,20 +72,25 @@ import { SharedComponent } from 'other-service/src/components';
 import { utils } from 'other-service/src/utils';
 ```
 
-::: tip Best Practices
-- Prefer alias paths over relative paths
-- Keep alias paths semantic and consistent
-- Avoid using too many directory levels in alias paths
+## Best Practices
 
-:::
+### Prefer Alias Paths
 
-``` ts
+In business code, alias paths should be preferred over relative paths:
+
+```typescript
 import { Button } from 'your-app-name/src/components';
 import { Layout } from 'your-app-name/src/components/layout';
 import { formatDate } from 'your-app-name/src/utils';
 import { request } from 'your-app-name/src/utils/request';
 import type { UserInfo } from 'your-app-name/src/types';
 ```
+
+### Maintain Semantics and Consistency
+
+- Prefer alias paths over relative paths.
+- Keep alias paths semantic and consistent.
+- Avoid using too many directory levels in alias paths.
 
 ### Cross-Service Import
 
@@ -101,18 +106,18 @@ import { logger } from 'remote-service/src/utils';
 For third-party packages or special scenarios, you can customize aliases through Esmx configuration files:
 
 ```ts title="src/entry.node.ts"
+import path from 'node:path';
+import type { EsmxOptions } from '@esmx/core';
+
 export default {
     async devApp(esmx) {
         return import('@esmx/rspack').then((m) =>
-            m.createApp(esmx, (buildContext) => {
-                buildContext.config.resolve = {
-                    ...buildContext.config.resolve,
-                    alias: {
-                        ...buildContext.config.resolve?.alias,
-                        'vue$': 'vue/dist/vue.esm.js',
-                        '@': './src',
-                        '@components': './src/components'
-                    }
+            m.createRspackHtmlApp(esmx, {
+                chain({ chain }) {
+                    chain.resolve.alias
+                        .set('vue$', 'vue/dist/vue.esm.js')
+                        .set('@', path.resolve('./src'))
+                        .set('@components', path.resolve('./src/components'));
                 }
             })
         );
@@ -121,8 +126,9 @@ export default {
 ```
 
 ::: warning Notes
-1. For business modules, it's recommended to always use the default alias mechanism to maintain project consistency
-2. Custom aliases are mainly used to handle special needs of third-party packages or optimize development experience
-3. Overuse of custom aliases may affect code maintainability and build optimization
+
+1. For business modules, it's recommended to always use the default alias mechanism to maintain project consistency.
+2. Custom aliases are mainly used to handle special needs of third-party packages or optimize development experience.
+3. Overuse of custom aliases may affect code maintainability and build optimization.
 
 :::

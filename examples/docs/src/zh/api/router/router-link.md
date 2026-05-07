@@ -32,7 +32,7 @@ type RouterLinkType =
 - `replace`：替换当前历史记录
 - `pushWindow`：在新浏览器窗口中打开
 - `replaceWindow`：替换当前窗口位置
-- `pushLayer`：作为图层覆盖层打开
+- `pushLayer`：作为层打开
 
 ### RouterLinkProps
 
@@ -52,14 +52,14 @@ interface RouterLinkProps {
 ```
 
 链接配置属性：
-- `to`：目标路由位置（字符串或 RouteLocation 对象）
+- `to`：目标路由位置（字符串或 `RouteLocation` 对象）
 - `type`：导航类型（默认：`'push'`）
 - `replace`：_已弃用_ — 请使用 `type='replace'` 替代
 - `exact`：活跃状态匹配策略（`'include'` | `'exact'` | `'route'`）
 - `activeClass`：活跃状态的自定义 CSS 类名
 - `event`：触发导航的事件（默认：`'click'`）
 - `tag`：要渲染的 HTML 标签（默认：`'a'`）
-- `layerOptions`：当 `type='pushLayer'` 时的图层配置
+- `layerOptions`：当 `type='pushLayer'` 时的层配置
 - `beforeNavigate`：导航前调用的钩子；调用 `event.preventDefault()` 可阻止导航
 
 ### RouterLinkResolved
@@ -189,7 +189,7 @@ const linkData = router.resolveLink({
 const handlers = linkData.createEventHandlers((type) => `on${type}`);
 ```
 
-### 图层导航链接
+### 层导航链接
 
 ```ts
 const layerLink = router.resolveLink({

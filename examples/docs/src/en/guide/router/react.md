@@ -27,8 +27,8 @@ The React integration uses the **micro-app pattern**:
 
 1. **`apps` callback** — Tells the router how to mount, unmount, and render your React app
 2. **`mount(el)`** — Creates a React root and renders the app into a DOM element
-3. **`unmount(el, root)`** — Unmounts the React root for cleanup
-4. **`renderToString()`** — Server-side renders the app to an HTML string
+3. **`unmount()`** — Unmounts the React root for cleanup
+4. **`renderToString()`** — SSRs the app to an HTML string
 
 The router passes itself to the `apps` callback, so your React components can access it via props or React context.
 
@@ -188,27 +188,30 @@ const router = new Router({
   root: '#app',
   mode: RouterMode.history,
   routes,
-  apps: (router) => ({
-    mount(el) {
-      const root = createRoot(el);
-      root.render(createElement(App, { router }));
-      return root;
-    },
-    unmount(el, root) {
-      root.unmount();
-    },
-    async renderToString() {
-      const { renderToString } = await import('react-dom/server');
-      return renderToString(createElement(App, { router }));
-    }
-  })
+  apps: (router) => {
+    let root = null;
+    return {
+      mount(el) {
+        root = createRoot(el);
+        root.render(createElement(App, { router }));
+      },
+      unmount() {
+        root?.unmount();
+        root = null;
+      },
+      async renderToString() {
+        const { renderToString } = await import('react-dom/server');
+        return renderToString(createElement(App, { router }));
+      }
+    };
+  }
 });
 ```
 
 The `apps` callback:
 
-- **`mount(el)`** — Called when the router needs to render the app. Returns a value (the React root) that's passed to `unmount` later.
-- **`unmount(el, root)`** — Called when the app should be torn down.
+- **`mount(el)`** — Called when the router needs to render the app. Creates a React root and renders the app internally.
+- **`unmount()`** — Called when the app should be torn down. Unmounts the React root for cleanup.
 - **`renderToString()`** — Called on the server for SSR. Returns the HTML string.
 
 ### 6. Server Entry (SSR)
@@ -228,7 +231,7 @@ export default async (rc: RenderContext) => {
     routes,
     apps: (router) => ({
       mount(el) { /* client only */ },
-      unmount(el) { /* client only */ },
+      unmount() { /* client only */ },
       async renderToString() {
         return renderToString(createElement(App, { router }));
       }

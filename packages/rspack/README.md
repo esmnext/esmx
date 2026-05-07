@@ -32,7 +32,7 @@
 - **High-Performance Build** - Ultra-fast building based on Rspack, providing excellent development experience
 - **Application Support** - Complete support for standard applications and HTML applications development and building
 - **Asset Processing** - Smart processing of various assets including JavaScript, CSS, images
-- **SSR Support** - Built-in server-side rendering support for easy isomorphic application building
+- **SSR Support** - Built-in SSR support for easy isomorphic application building
 - **Developer Experience** - Supports hot reload, intelligent hints, and TypeScript
 
 ## 📦 Installation

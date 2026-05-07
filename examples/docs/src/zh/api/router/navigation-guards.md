@@ -69,7 +69,7 @@ type RouteVerifyHook = (
 ) => Awaitable<boolean>;
 ```
 
-返回布尔值的验证钩子。用于图层的保活逻辑。
+返回布尔值的验证钩子。用于层的保活逻辑。
 
 ### RouteHandleHook
 

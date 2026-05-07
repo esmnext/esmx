@@ -158,6 +158,7 @@ interface RouteConfig {
     beforeEnter?: RouteConfirmHook;
     beforeUpdate?: RouteConfirmHook;
     beforeLeave?: RouteConfirmHook;
+    requireIndex?: boolean;
     layer?: boolean;
     override?: RouteConfirmHook;
 }
@@ -169,6 +170,7 @@ Route configuration interface. See [Route Configuration](./route-config.md) for 
 
 ```ts
 interface RouteParsedConfig extends RouteConfig {
+    requireIndex: boolean;
     compilePath: string;
     children: RouteParsedConfig[];
     match: MatchFunction;

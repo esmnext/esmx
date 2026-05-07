@@ -29,10 +29,10 @@
 
 ## 🚀 Features
 
-- **Native Microfrontend** - Based on ESM + ImportMap for native module loading with zero runtime overhead
+- **Native Microfrontend** - Based on ESM + Import Map for native module loading with zero runtime overhead
 - **Dependency Management** - Centralized dependency management with content-hash-based strong caching strategy
 - **Application Isolation** - ESM native module isolation ensuring runtime stability
-- **SSR Support** - Flexible server-side rendering strategy supporting any frontend framework
+- **SSR Support** - Flexible SSR strategy supporting any frontend framework
 - **Developer Experience** - Complete TypeScript support with native Module Linking capabilities
 
 ## 📦 Installation

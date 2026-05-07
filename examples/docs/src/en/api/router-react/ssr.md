@@ -11,7 +11,7 @@ head:
 
 ## Introduction
 
-Server-side rendering with `@esmx/router` and React uses the `renderToString()` lifecycle hook in the micro-app's `apps` callback. The router operates in `memory` mode on the server, navigates to the requested URL, renders the app to HTML, and sends it to the client for hydration.
+SSR with `@esmx/router` and React uses the `renderToString()` lifecycle hook in the micro-app's `apps` callback. The router operates in `memory` mode on the server, navigates to the requested URL, renders the app to HTML, and sends it to the client for hydration.
 
 ## Server Entry
 

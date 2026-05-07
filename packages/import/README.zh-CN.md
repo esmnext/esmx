@@ -20,7 +20,7 @@
     </a>
   </div>
   
-  <p>为 Esmx 框架提供 Import Maps 的 Node.js 服务端实现</p>
+  <p>为 Esmx 框架提供 Import Map 的 Node.js 服务端实现</p>
   
   <p>
     <a href="https://github.com/esmnext/esmx/blob/master/packages/import/README.md">English</a> | 中文
@@ -31,10 +31,10 @@
 
 - **双重实现** - 开发环境使用 VM 模式，生产环境使用 Loader 模式
 - **热重载支持** - VM 模式支持多次创建，提供开发灵活性
-- **高性能** - Loader 模式为生产部署优化
+- **高性能** - Loader 模式针对生产环境优化
 - **Node.js 专注** - 专为 Node.js 服务端环境设计
-- **TypeScript 就绪** - 完整的 TypeScript 支持，出色的类型安全
-- **ESM 标准** - 完全符合 Import Maps 规范
+- **TypeScript 支持** - 完整的 TypeScript 类型安全
+- **ESM 标准** - 完全符合 Import Map 规范
 
 ## 📦 安装
 
@@ -55,13 +55,20 @@ yarn add @esmx/import
 import { createVmImport } from '@esmx/import';
 import { pathToFileURL } from 'node:url';
 
+const baseURL = pathToFileURL('/project');
+const importMap = {
+    imports: {
+        'my-app/src/utils': '/project/src/utils.mjs'
+    }
+};
+
 const vmImport = createVmImport(baseURL, importMap);
 const module = await vmImport('my-app/src/utils', import.meta.url);
 ```
 
 ## 📖 模式对比
 
-`@esmx/import` 提供两种不同的 Import Maps 实现方式：
+`@esmx/import` 提供两种不同的 Import Map 实现方式：
 
 | 特性 | VM 模式 | Loader 模式 |
 |------|---------|-------------|
@@ -124,7 +131,7 @@ const loaderImport = createLoaderImport(baseURL, importMap);
 const module = await loaderImport(specifier);
 ```
 
-### ImportMap 格式
+### Import Map 格式
 ```typescript
 interface ImportMap {
   imports?: Record<string, string>;

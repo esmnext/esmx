@@ -158,6 +158,7 @@ interface RouteConfig {
     beforeEnter?: RouteConfirmHook;
     beforeUpdate?: RouteConfirmHook;
     beforeLeave?: RouteConfirmHook;
+    requireIndex?: boolean;
     layer?: boolean;
     override?: RouteConfirmHook;
 }
@@ -169,6 +170,7 @@ interface RouteConfig {
 
 ```ts
 interface RouteParsedConfig extends RouteConfig {
+    requireIndex: boolean;
     compilePath: string;
     children: RouteParsedConfig[];
     match: MatchFunction;
@@ -368,7 +370,7 @@ interface RouterLinkResolved {
 
 解析后的链接数据。详情请参阅 [RouterLink](./router-link.md#routerlinkresolved)。
 
-## 图层类型
+## 层类型
 
 ### RouteLayerOptions
 
@@ -383,7 +385,7 @@ interface RouteLayerOptions {
 }
 ```
 
-图层创建选项。详情请参阅[图层路由](./layer.md#routelayeroptions)。
+层创建选项。详情请参阅[层路由](./layer.md#routelayeroptions)。
 
 ### RouteLayerResult
 
@@ -394,7 +396,7 @@ type RouteLayerResult =
     | { type: 'success'; route: Route; data?: any };
 ```
 
-图层结果联合类型。详情请参阅[图层路由](./layer.md#routelayerresult)。
+层结果联合类型。详情请参阅[层路由](./layer.md#routelayerresult)。
 
 ### RouterLayerOptions
 
@@ -405,7 +407,7 @@ type RouterLayerOptions = Omit<
 >;
 ```
 
-图层创建的路由器选项，排除内部管理的处理字段。
+层创建的路由器选项，排除内部管理的处理字段。
 
 ## 微应用类型
 

@@ -63,7 +63,7 @@ const goBack = () => {
 - **Returns**: `Route`
 - **Throws**: `Error` — If called outside `setup()` or if router context is not found
 
-Gets the current reactive route object. Automatically updates when the route changes.
+Gets the current reactive route object. The component automatically re-renders when the route changes.
 
 ```vue
 <template>
@@ -183,6 +183,5 @@ export default defineComponent({
 - **Parameters**:
   - `instance: VueInstance` — Vue component instance
 - **Returns**: `number`
-- **Throws**: `Error` — If no RouterView ancestor is found
 
-Gets the RouterView depth from a Vue component instance by traversing the parent chain. Use this in Options API; use `useRouterViewDepth()` in Composition API.
+Gets the RouterView depth from a Vue component instance by traversing the parent chain. Use this in Options API; use `useRouterViewDepth()` in Composition API. Returns `0` if no RouterView ancestor is found.

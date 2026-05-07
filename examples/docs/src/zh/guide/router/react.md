@@ -1,15 +1,15 @@
 ---
-titleSuffix: "React 集成 — @esmx/router"
-description: "完整的 @esmx/router 与 React 集成指南 — 微应用模式、renderToString SSR、自定义 hooks、RouterLink 等效组件以及完整的工作示例。"
+titleSuffix: "@esmx/router React 集成"
+description: "完整的 @esmx/router 与 React 集成指南 — 涵盖微应用模式、renderToString SSR、自定义 hooks、RouterLink 组件及完整示例。"
 head:
   - - "meta"
     - name: "keywords"
-      content: "esmx router React, React SSR 路由, 微应用 React, createRoot 路由, renderToString, React context 路由, useRouter React, RouterLink React"
+      content: "esmx router React, React SSR 路由, 微应用 React, createRoot 路由, renderToString, React context 路由, useRouter, RouterLink"
 ---
 
 # React 集成
 
-本指南涵盖了将 `@esmx/router` 与 React 集成的全部内容。与 Vue 不同，React 不需要单独的集成包 —— 路由内置的微应用系统直接处理挂载、卸载和服务端渲染。
+本指南涵盖了将 `@esmx/router` 与 React 集成的全部内容。与 Vue 不同，React 不需要单独的集成包 —— 路由内置的微应用系统直接处理挂载、卸载和 SSR。
 
 ## 安装
 
@@ -19,7 +19,7 @@ head:
 npm install @esmx/router
 ```
 
-不需要额外的集成包。React 通过路由的 `apps` 回调工作，该回调提供 `mount`、`unmount` 和 `renderToString` 生命周期钩子。
+不需要额外的集成包。React 通过路由的 `apps` 回调工作，该回调提供 `mount`、`unmount` 和 `renderToString` 生命周期函数。
 
 ## 核心概念
 
@@ -27,8 +27,8 @@ React 集成使用**微应用模式**：
 
 1. **`apps` 回调** — 告诉路由如何挂载、卸载和渲染你的 React 应用
 2. **`mount(el)`** — 创建 React 根节点并将应用渲染到 DOM 元素中
-3. **`unmount(el, root)`** — 卸载 React 根节点进行清理
-4. **`renderToString()`** — 将应用服务端渲染为 HTML 字符串
+3. **`unmount()`** — 卸载 React 根节点进行清理
+4. **`renderToString()`** — 将应用 SSR 为 HTML 字符串
 
 路由将自身传递给 `apps` 回调，因此你的 React 组件可以通过 props 或 React context 访问它。
 
@@ -188,27 +188,30 @@ const router = new Router({
   root: '#app',
   mode: RouterMode.history,
   routes,
-  apps: (router) => ({
-    mount(el) {
-      const root = createRoot(el);
-      root.render(createElement(App, { router }));
-      return root;
-    },
-    unmount(el, root) {
-      root.unmount();
-    },
-    async renderToString() {
-      const { renderToString } = await import('react-dom/server');
-      return renderToString(createElement(App, { router }));
-    }
-  })
+  apps: (router) => {
+    let root = null;
+    return {
+      mount(el) {
+        root = createRoot(el);
+        root.render(createElement(App, { router }));
+      },
+      unmount() {
+        root?.unmount();
+        root = null;
+      },
+      async renderToString() {
+        const { renderToString } = await import('react-dom/server');
+        return renderToString(createElement(App, { router }));
+      }
+    };
+  }
 });
 ```
 
 `apps` 回调说明：
 
-- **`mount(el)`** — 当路由需要渲染应用时调用。返回值（React 根节点）将传递给后续的 `unmount`。
-- **`unmount(el, root)`** — 当应用需要销毁时调用。
+- **`mount(el)`** — 当路由需要渲染应用时调用。在内部创建 React 根节点并渲染应用。
+- **`unmount()`** — 当应用需要销毁时调用。卸载 React 根节点进行清理。
 - **`renderToString()`** — 在服务端进行 SSR 时调用。返回 HTML 字符串。
 
 ### 6. 服务端入口（SSR）
@@ -228,7 +231,7 @@ export default async (rc: RenderContext) => {
     routes,
     apps: (router) => ({
       mount(el) { /* 仅客户端 */ },
-      unmount(el) { /* 仅客户端 */ },
+      unmount() { /* 仅客户端 */ },
       async renderToString() {
         return renderToString(createElement(App, { router }));
       }

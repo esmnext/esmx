@@ -1,15 +1,15 @@
 ---
-titleSuffix: "Getting Started with @esmx/router"
-description: "Step-by-step guide to installing and configuring @esmx/router — from basic setup to full SSR integration with Vue 3, Vue 2, and React."
+titleSuffix: "@esmx/router 快速上手"
+description: "从零开始安装和配置 @esmx/router 的逐步指南 — 涵盖基础设置到与 Vue 3、Vue 2 和 React 的完整 SSR 集成。"
 head:
   - - "meta"
     - name: "keywords"
-      content: "esmx router setup, router installation, Vue 3 router, Vue 2 router, React router, SSR router, micro-frontend router getting started"
+      content: "esmx router 安装, Vue 3 路由, Vue 2 路由, React 路由, SSR 路由, 微前端路由, 路由配置"
 ---
 
 # 快速开始
 
-本指南将引导你从零开始设置 `@esmx/router`。完成后，你将拥有一个包含路由、导航和框架集成的可工作路由器。
+本指南将引导你从零开始配置 `@esmx/router`。完成配置后，你将获得一个包含路由、导航和框架集成的可用路由器。
 
 ## 安装
 
@@ -75,7 +75,7 @@ export const routes: RouteConfig[] = [
 ### 2. 创建应用
 
 ```ts title="src/create-app.ts"
-import { createApp } from 'vue';
+import { h, createApp } from 'vue';
 import { Router, RouterMode } from '@esmx/router';
 import { RouterPlugin, useProvideRouter } from '@esmx/router-vue';
 import App from './App.vue';
@@ -115,35 +115,35 @@ app.mount('#app');
 ### 4. 服务端入口（SSR）
 
 ```ts title="src/entry.server.ts"
+import type { RenderContext } from '@esmx/core';
 import { Router, RouterMode } from '@esmx/router';
 import { renderToString } from '@vue/server-renderer';
 import { createVueApp } from './create-app';
 import { routes } from './routes';
 
-export default async function render(req, res) {
+export default async (rc: RenderContext) => {
   const router = new Router({
     mode: RouterMode.memory,
-    base: new URL(req.url, `http://${req.headers.host}`),
-    req,
-    res,
+    base: new URL(rc.params.url, 'http://localhost'),
     routes
   });
 
-  await router.push(req.url);
+  await router.replace(rc.params.url);
 
-  const { app } = createVueApp(router);
-  const html = await renderToString(app);
+  const { app } = createVueApp(router, true);
+  const html = await renderToString(app, {
+    importMetaSet: rc.importMetaSet
+  });
 
-  res.end(`
-    <!DOCTYPE html>
-    <html>
-      <body>
-        <div id="app">${html}</div>
-        <script src="/entry.client.js"></script>
-      </body>
-    </html>
-  `);
-}
+  rc.html = `<!DOCTYPE html>
+<html>
+  <body>
+    <div id="app">${html}</div>
+    ${rc.importmap()}
+    ${rc.moduleEntry()}
+  </body>
+</html>`;
+};
 ```
 
 ### 5. 在组件中使用
@@ -223,20 +223,23 @@ const router = new Router({
   root: '#app',
   mode: RouterMode.history,
   routes,
-  apps: (router) => ({
-    mount(el) {
-      const root = createRoot(el);
-      root.render(createElement(App, { router }));
-      return root;
-    },
-    unmount(el, root) {
-      root.unmount();
-    },
-    async renderToString() {
-      const { renderToString } = await import('react-dom/server');
-      return renderToString(createElement(App, { router }));
-    }
-  })
+  apps: (router) => {
+    let root = null;
+    return {
+      mount(el) {
+        root = createRoot(el);
+        root.render(createElement(App, { router }));
+      },
+      unmount() {
+        root?.unmount();
+        root = null;
+      },
+      async renderToString() {
+        const { renderToString } = await import('react-dom/server');
+        return renderToString(createElement(App, { router }));
+      }
+    };
+  }
 });
 ```
 
@@ -263,7 +266,7 @@ function App({ router }: { router: Router }) {
 src/
 ├── entry.node.ts      # Node.js 服务器设置，开发/构建配置
 ├── entry.server.ts    # SSR 渲染逻辑
-├── entry.client.ts    # 客户端水合/挂载
+├── entry.client.ts    # 客户端挂载与应用激活
 ├── create-app.ts      # 共享的应用工厂（服务端和客户端共用）
 ├── routes.ts          # 路由定义
 ├── App.vue            # 根组件
@@ -275,7 +278,7 @@ src/
 
 - `entry.node.ts`：配置 Node.js 服务器（HTTP 监听器、中间件、构建钩子）
 - `entry.server.ts`：处理 SSR——在内存模式下创建路由器，渲染 HTML
-- `entry.client.ts`：处理客户端——在 history 模式下创建路由器，挂载应用
+- `entry.client.ts`：处理客户端——在 history 模式下创建路由器，挂载并激活应用
 - `create-app.ts`：共享的工厂函数，使用路由器创建框架应用
 - `routes.ts`：路由定义的唯一数据源
 
@@ -365,7 +368,9 @@ export default async (rc: RenderContext) => {
   await router.replace(rc.params.url);
 
   const { app } = createVueApp(router, true);
-  const html = await renderToString(app);
+  const html = await renderToString(app, {
+    importMetaSet: rc.importMetaSet
+  });
 
   rc.html = `<!DOCTYPE html>
 <html lang="en">

@@ -20,7 +20,7 @@
     </a>
   </div>
   
-  <p>A high-performance Vue integration for Esmx microfrontend framework, providing Vue 2/3 support with SSR and Module Linking capabilities</p>
+  <p>A high-performance Vue integration for Esmx microfrontend framework, providing Vue 2.7+ and Vue 3 support with SSR and Module Linking capabilities</p>
   
   <p>
     English | <a href="https://github.com/esmnext/esmx/blob/master/packages/rspack-vue/README.zh-CN.md">中文</a>
@@ -32,7 +32,7 @@
 - **Universal Vue Support** - Supports both Vue 2.7+ and Vue 3 applications
 - **High-Performance Build** - Ultra-fast building based on Rspack with Vue optimization
 - **Module Linking** - Built-in module linking capabilities for microfrontend architecture
-- **SSR Support** - Complete server-side rendering support for Vue applications
+- **SSR Support** - Complete Vue application SSR support
 - **Hot Module Replacement** - Fast development experience with Vue component hot reloading
 - **TypeScript Ready** - Full TypeScript support with excellent developer experience
 

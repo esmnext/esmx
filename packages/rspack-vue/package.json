@@ -24,6 +24,9 @@
         "url": "https://github.com/esmnext/esmx.git",
         "directory": "packages/rspack-vue"
     },
+    "engines": {
+        "node": ">=24"
+    },
     "homepage": "https://github.com/esmnext/esmx",
     "bugs": {
         "url": "https://github.com/esmnext/esmx/issues"

@@ -27,6 +27,8 @@ In simple terms, module linking is a "module sharing manager" that allows differ
 Assume we have a shared module application (shared-modules) and a business application (business-app):
 
 ```typescript
+import type { EsmxOptions } from '@esmx/core';
+
 export default {
   modules: {
     exports: [
@@ -149,7 +151,9 @@ Directory scope mapping only affects module imports under specific directories, 
 The following example shows how to use `scopes` configuration to specify different Vue versions for modules under the `vue2/` directory:
 
 ```typescript
-// shared-modules/entry.node.ts  
+// shared-modules/entry.node.ts
+import type { EsmxOptions } from '@esmx/core';
+
 export default {
   modules: {
     scopes: {
@@ -168,6 +172,8 @@ Package scope mapping affects dependency resolution within specific packages, us
 
 ```typescript
 // shared-modules/entry.node.ts
+import type { EsmxOptions } from '@esmx/core';
+
 export default {
   modules: {
     scopes: {
@@ -185,6 +191,8 @@ export default {
 
 ```typescript
 // shared-modules/entry.node.ts
+import type { EsmxOptions } from '@esmx/core';
+
 export default {
   modules: {
     exports: [
@@ -211,7 +219,9 @@ export default {
 
 ### Environment-Differentiated Build
 
-```typescript
+Export different module implementations based on the runtime environment (client or server):
+
+```typescript title="entry.node.ts"
 exports: [
   {
     'src/storage/db': {
@@ -230,7 +240,9 @@ exports: [
 
 ### Mixed Configuration Format
 
-```typescript
+`exports` supports multiple configuration formats mixed together:
+
+```typescript title="entry.node.ts"
 exports: [
   'pkg:axios',
   'root:src/utils/format.ts',
@@ -280,7 +292,7 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-### Vue3 Application (vue3-app)
+### Vue 3 Application (vue3-app)
 
 ```typescript
 // vue3-app/entry.node.ts
@@ -303,7 +315,7 @@ export default {
 } satisfies EsmxOptions;
 ```
 
-### Vue2 Application (vue2-app)
+### Vue 2 Application (vue2-app)
 
 ```typescript
 // vue2-app/entry.node.ts
@@ -348,8 +360,8 @@ export default {
 
 This configuration demonstrates:
 - **Shared Module**: Provides multi-version framework support, achieves version isolation through scope mapping
-- **Vue3 Application**: Business application using Vue 3, only exports route configuration
-- **Vue2-Specific Application**: Business application specifically using Vue 2, only exports route configuration
+- **Vue 3 Application**: Business application using Vue 3, only exports route configuration
+- **Vue 2-Specific Application**: Business application specifically using Vue 2, only exports route configuration
 - **Aggregation Application**: Unified entry, coordinates sub-applications of different versions, includes complete Vue module imports
 
-Each module's configuration conforms to actual project usage scenarios, with clear dependency relationships, clear functional responsibilities, and accurate technical implementation.
+The above configuration shows common dependency management scenarios in real projects, with clear module responsibilities and clear dependency relationships.

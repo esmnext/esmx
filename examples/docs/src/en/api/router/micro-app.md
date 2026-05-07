@@ -43,7 +43,7 @@ Clean up and destroy the application. Called when navigating away to a route bou
 
 - **Type**: `() => Awaitable<string>`
 
-Return the SSR HTML string for the current state of the application. Called by [`router.renderToString()`](/api/router/router#rendertostring) during server-side rendering.
+Return the SSR HTML string for the current state of the application. Called by [`router.renderToString()`](/api/router/router#rendertostring) during SSR.
 
 ## RouterMicroAppCallback
 
@@ -181,7 +181,7 @@ When navigating within the **same** app (e.g., `/react` → `/react/about`):
 
 ## SSR Flow
 
-During server-side rendering:
+During SSR:
 
 ```ts
 // 1. Create router with request context

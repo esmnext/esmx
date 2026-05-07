@@ -9,7 +9,7 @@ head:
 
 # 微应用
 
-微应用系统是 `@esmx/router` 管理框架无关的微前端的方式。每个微应用提供三个生命周期方法：`mount`、`unmount` 以及可选的 `renderToString`。Router 在导航过程中处理微应用之间的切换。
+微应用系统是 `@esmx/router` 管理框架无关微前端的方式。每个微应用提供三个生命周期方法：`mount`、`unmount` 以及可选的 `renderToString`。Router 在导航过程中处理微应用之间的切换。
 
 ## RouterMicroAppOptions
 
@@ -43,7 +43,7 @@ interface RouterMicroAppOptions {
 
 - **类型**: `() => Awaitable<string>`
 
-返回应用当前状态的 SSR HTML 字符串。在服务端渲染期间由 [`router.renderToString()`](/api/router/router#rendertostring) 调用。
+返回应用当前状态的 SSR HTML 字符串。在 SSR 期间由 [`router.renderToString()`](/api/router/router#rendertostring) 调用。
 
 ## RouterMicroAppCallback
 
@@ -181,7 +181,7 @@ function createVueApp(router: Router): RouterMicroAppOptions {
 
 ## SSR 流程
 
-在服务端渲染期间：
+在 SSR 期间：
 
 ```ts
 // 1. Create router with request context

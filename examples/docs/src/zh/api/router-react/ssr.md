@@ -11,7 +11,7 @@ head:
 
 ## 简介
 
-使用 `@esmx/router` 和 React 进行服务端渲染时，通过微应用 `apps` 回调中的 `renderToString()` 生命周期钩子实现。路由在服务端以 `memory` 模式运行，导航到请求的 URL，将应用渲染为 HTML，然后发送给客户端进行水合。
+使用 `@esmx/router` 和 React 进行 SSR 时，通过微应用 `apps` 回调中的 `renderToString()` 生命周期钩子实现。路由在服务端以 `memory` 模式运行，导航到请求的 URL，将应用渲染为 HTML，然后发送给客户端进行水合。
 
 ## 服务端入口
 

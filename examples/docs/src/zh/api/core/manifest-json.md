@@ -28,7 +28,7 @@ interface ManifestJson {
 #### name
 
 - **类型**: `string`
-- **描述**: 模块名称，来自于模块配置中的名称
+- **描述**: 模块名称，来源于模块配置
 
 #### scopes
 

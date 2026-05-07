@@ -1,10 +1,10 @@
 ---
-titleSuffix: "Vue 2 集成 — @esmx/router"
-description: "完整的 @esmx/router 与 Vue 2.7+ 集成指南 — 插件配置、组合式 API 和选项式 API 用法、SSR 以及完整的工作示例。"
+titleSuffix: "@esmx/router Vue 2 集成"
+description: "完整的 @esmx/router 与 Vue 2.7+ 集成指南 — 涵盖插件配置、组合式 API 与选项式 API 用法、SSR 及完整示例。"
 head:
   - - "meta"
     - name: "keywords"
-      content: "esmx router Vue 2, Vue 2.7 路由, Vue.use 路由, 选项式 API 路由, 组合式 API Vue 2, useProvideRouter, RouterView, RouterLink, Vue 2 SSR"
+      content: "esmx router Vue 2, Vue 2.7 路由, Vue.use, 选项式 API, 组合式 API, useProvideRouter, RouterView, RouterLink, Vue 2 SSR"
 ---
 
 # Vue 2 集成
@@ -286,7 +286,7 @@ export default defineComponent({
 src/
 ├── entry.node.ts      # Node.js 服务器配置、开发/构建设置
 ├── entry.server.ts    # SSR 渲染逻辑
-├── entry.client.ts    # 客户端水合/挂载
+├── entry.client.ts    # 客户端挂载与应用激活
 ├── create-app.ts      # 共享的应用工厂
 ├── routes.ts          # 路由定义
 ├── App.vue            # 根组件

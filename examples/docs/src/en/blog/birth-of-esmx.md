@@ -34,7 +34,7 @@ To address the component sharing efficiency issues, Esmx v1.0 introduced an HTTP
 
 ### v2.0: Module Federation Attempt
 
-In version 2.0, we adopted [Webpack 5.0](https://webpack.js.org/)'s [Module Federation](https://webpack.js.org/concepts/module-federation/) technology. This approach significantly improved inter-service collaboration efficiency through a unified module loading mechanism and runtime container. However, in large-scale implementations, Module Federation's closed implementation mechanism introduced new challenges: achieving precise dependency version management became difficult, particularly when unifying shared dependencies across multiple services, often resulting in version conflicts and runtime exceptions.
+In version 2.0, we adopted [Webpack 5](https://webpack.js.org/)'s [Module Federation](https://webpack.js.org/concepts/module-federation/) technology. This approach significantly improved inter-service collaboration efficiency through a unified module loading mechanism and runtime container. However, in large-scale implementations, Module Federation's closed implementation mechanism introduced new challenges: achieving precise dependency version management became difficult, particularly when unifying shared dependencies across multiple services, often resulting in version conflicts and runtime exceptions.
 
 ## Embracing the ESM New Era
 
@@ -66,8 +66,8 @@ In the implementation process of the technical solution, the selection of build 
    - Advantages: ESM-based development server delivers an excellent development experience
    - Challenges: Discrepancies between development and production build environments introduced some uncertainty
 
-2. **Rspack Adoption**
-   - Performance: Rust-based high-performance compilation significantly improves build speed
+2. **[Rspack](https://rspack.dev/) Adoption**
+   - Performance: [Rust](https://www.rust-lang.org/)-based high-performance compilation significantly improves build speed
    - Ecosystem: High compatibility with the Webpack ecosystem reduces migration costs
    - ESM Support: Proven reliability in ESM builds through the Rslib project
 

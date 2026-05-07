@@ -63,7 +63,7 @@ const goBack = () => {
 - **返回值**：`Route`
 - **异常**：`Error` — 如果在 `setup()` 外部调用或未找到路由器上下文
 
-获取当前的响应式路由对象。路由变化时自动更新。
+获取当前的响应式路由对象。路由变化时组件自动重新渲染。
 
 ```vue
 <template>
@@ -122,7 +122,7 @@ const link = useLink({
 - **返回值**：`number`
 - **异常**：`Error` — 如果在 `setup()` 外部调用
 
-获取当前 RouterView 的嵌套深度。根级别返回 `0`，第一层嵌套返回 `1`，以此类推。
+获取当前 RouterView 的嵌套深度。根级别返回 `0`，第一层嵌套返回 `1`，依此类推。
 
 ```vue
 <script setup lang="ts">
@@ -183,6 +183,5 @@ export default defineComponent({
 - **参数**：
   - `instance: VueInstance` — Vue 组件实例
 - **返回值**：`number`
-- **异常**：`Error` — 如果未找到 RouterView 祖先
 
-通过遍历父级链从 Vue 组件实例获取 RouterView 深度。在选项式 API 中使用此方法，在组合式 API 中使用 `useRouterViewDepth()`。
+通过遍历父级链从 Vue 组件实例获取 RouterView 深度。在选项式 API 中使用此方法，在组合式 API 中使用 `useRouterViewDepth()`。如果未找到 RouterView 祖先，返回 `0`。

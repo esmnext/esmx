@@ -17,7 +17,7 @@ import { PackageManagerTabs } from '@theme';
 
 <PackageManagerTabs command="create esmx@latest my-app" />
 
-注：命令会根据你使用的包管理器自动适配；以下示例使用 npm 格式。
+注意：命令会根据你使用的包管理器自动适配；以下示例使用 npm 格式。
 
 ## 选择模板
 
@@ -29,9 +29,11 @@ import { PackageManagerTabs } from '@theme';
 |------|------|
 | **shared-modules** | 用于创建跨项目共享的微前端模块 |
 | **vue-csr** | Vue 3 客户端渲染 |
-| **vue-ssr** | Vue 3 服务端渲染 |
+| **vue-ssr** | Vue 3 SSR |
+| **react-csr** | React 18+ 客户端渲染 |
+| **react-ssr** | React 18+ SSR |
 | **vue2-csr** | Vue 2.7 客户端渲染 |
-| **vue2-ssr** | Vue 2.7 服务端渲染 |
+| **vue2-ssr** | Vue 2.7 SSR |
 
 ## 命令行选项
 
@@ -42,7 +44,7 @@ import { PackageManagerTabs } from '@theme';
 你也可以通过 `-t` 或 `--template` 选项直接指定模板，跳过交互式选择：
 
 ```bash
-npm create esmx@latest my-app --template vue-csr
+npm create esmx@latest my-app -- --template vue-csr
 ```
 
 ### 指定项目名称
@@ -50,7 +52,7 @@ npm create esmx@latest my-app --template vue-csr
 使用 `--name` 或 `-n` 选项指定项目名称：
 
 ```bash
-npm create esmx@latest my-app --name my-project
+npm create esmx@latest my-app -- --name my-project
 ```
 
 ### 强制覆盖
@@ -58,7 +60,7 @@ npm create esmx@latest my-app --name my-project
 使用 `--force` 或 `-f` 选项强制覆盖现有目录：
 
 ```bash
-npm create esmx@latest my-app --force
+npm create esmx@latest my-app -- --force
 ```
 
 ### 组合使用
@@ -66,7 +68,7 @@ npm create esmx@latest my-app --force
 可以将多个选项组合使用：
 
 ```bash
-npm create esmx@latest my-app --template vue-ssr --name my-project --force
+npm create esmx@latest my-app -- --template vue-ssr --name my-project --force
 ```
 
 ## 启动开发服务器
@@ -93,8 +95,8 @@ npm run start
 ## 故障排查
 
 - Node.js 版本应为 `>= 24`。
-- 若端口占用，修改 `npm run dev` 配置或调整端口环境变量。
-- 如安装失败，检查代理或使用国内镜像源。
+- 如果端口被占用，请修改开发服务器配置或调整端口环境变量。
+- 如果安装失败，请检查网络代理设置，或尝试使用国内镜像源。
 
 ## 项目结构
 
@@ -107,7 +109,7 @@ my-app/
 │   ├── create-app.ts               # 应用创建函数
 │   ├── entry.client.ts             # 客户端入口
 │   ├── entry.node.ts               # 开发服务器入口
-│   ├── entry.server.ts             # 服务端渲染入口
+│   ├── entry.server.ts             # SSR 入口
 │   └── components/                 # 组件目录
 │       └── hello-world.vue
 ├── tsconfig.json                   # TypeScript 配置

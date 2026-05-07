@@ -20,7 +20,7 @@
     </a>
   </div>
   
-  <p><a href="https://github.com/esmnext/esmx/tree/master/packages/router">@esmx/router</a> 的 Vue 集成包 - 一个同时适用于 Vue 2.7+ 和 Vue 3 的通用路由器。</p>
+  <p><a href="https://github.com/esmnext/esmx/tree/master/packages/router">@esmx/router</a> 的 Vue 集成包，同时适用于 Vue 2.7+ 和 Vue 3 的通用路由器。</p>
   
   <p>
     <a href="https://github.com/esmnext/esmx/blob/master/packages/router-vue/README.md">English</a> | 中文
@@ -34,9 +34,9 @@
 ✨ **通用 Vue 支持** - 同时支持 Vue 2.7+ 和 Vue 3  
 🎯 **组合式 API 优先** - 为现代 Vue 开发而构建  
 🔗 **无缝集成** - Vue Router 的替代方案  
-🚀 **TypeScript 就绪** - 完整的 TypeScript 支持，出色的开发体验  
-⚡ **高性能** - 为生产环境优化  
-🔄 **SSR 兼容** - 支持服务端渲染  
+🚀 **TypeScript 支持** - 完整的 TypeScript 类型支持，出色的开发体验  
+⚡ **高性能** - 针对生产环境优化  
+🔄 **SSR 兼容** - 支持 SSR  
 
 ## 📦 安装
 
@@ -405,7 +405,7 @@ app.use(RouterPlugin);
 Vue.use(RouterPlugin);
 ```
 
-## TypeScript 支持
+## 📝 TypeScript 支持
 
 此包为 Vue 2.7+ 和 Vue 3 提供完整的 TypeScript 支持。对于选项式 API 用法，包会自动为 Vue 组件实例增强 `$router` 和 `$route` 属性，允许您在模板和组件方法中直接访问它们。
 
@@ -438,7 +438,7 @@ export default defineComponent({
     navigate() {
       // TypeScript 能够识别 $router 和 $route
       this.$router.push('/about');
-      // Access current route: this.$route.path
+      // 访问当前路由: this.$route.path
     }
   }
 });
@@ -552,11 +552,11 @@ const app = createApp({
 app.use(RouterPlugin);
 ```
 
-## 浏览器支持
+## 🌐 浏览器支持
 
 - **现代浏览器**：支持 ES 模块 (`import`/`export`) 和动态导入 (`import()`) 的浏览器
 
-## 贡献
+## 🤝 贡献
 
 我们欢迎贡献！请随时提交 issues 和 pull requests。
 

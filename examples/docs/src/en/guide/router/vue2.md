@@ -286,7 +286,7 @@ These work exactly the same as in Vue 3:
 src/
 ├── entry.node.ts      # Node.js server setup, dev/build config
 ├── entry.server.ts    # SSR rendering logic
-├── entry.client.ts    # Client-side hydration/mounting
+├── entry.client.ts    # Client-side mounting and app activation
 ├── create-app.ts      # Shared app factory
 ├── routes.ts          # Route definitions
 ├── App.vue            # Root component

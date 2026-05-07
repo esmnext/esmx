@@ -29,7 +29,9 @@ After running the command, you will see the template selection interface:
 |------|------|
 | **shared-modules** | For creating micro-frontend modules shared across projects |
 | **vue-csr** | Vue 3 Client-Side Rendering |
-| **vue-ssr** | Vue 3 Server-Side Rendering |
+| **vue-ssr** | Vue 3 SSR |
+| **react-csr** | React 18+ CSR |
+| **react-ssr** | React 18+ SSR |
 | **vue2-csr** | Vue 2.7 Client-Side Rendering |
 | **vue2-ssr** | Vue 2.7 Server-Side Rendering |
 
@@ -42,7 +44,7 @@ This scaffolding tool supports specifying templates or configuring projects dire
 You can also specify a template directly with the `-t` or `--template` option to skip the interactive selection:
 
 ```bash
-npm create esmx@latest my-app --template vue-csr
+npm create esmx@latest my-app -- --template vue-csr
 ```
 
 ### Specify Project Name
@@ -50,7 +52,7 @@ npm create esmx@latest my-app --template vue-csr
 Use the `--name` or `-n` option to specify the project name:
 
 ```bash
-npm create esmx@latest my-app --name my-project
+npm create esmx@latest my-app -- --name my-project
 ```
 
 ### Force Overwrite
@@ -58,7 +60,7 @@ npm create esmx@latest my-app --name my-project
 Use the `--force` or `-f` option to force overwrite an existing directory:
 
 ```bash
-npm create esmx@latest my-app --force
+npm create esmx@latest my-app -- --force
 ```
 
 ### Combined Usage
@@ -66,7 +68,7 @@ npm create esmx@latest my-app --force
 You can combine multiple options:
 
 ```bash
-npm create esmx@latest my-app --template vue-ssr --name my-project --force
+npm create esmx@latest my-app -- --template vue-ssr --name my-project --force
 ```
 
 ## Start the Development Server

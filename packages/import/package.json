@@ -59,5 +59,8 @@
         "template",
         "public"
     ],
-    "gitHead": "2e16b175552400382913b445ae7e112b78c422f5"
+    "gitHead": "2e16b175552400382913b445ae7e112b78c422f5",
+    "engines": {
+        "node": ">=24"
+    }
 }

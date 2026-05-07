@@ -13,7 +13,7 @@
       <img src="https://img.shields.io/badge/coverage-live%20report-brightgreen" alt="Coverage Report" />
     </a>
     <a href="https://nodejs.org/">
-      <img src="https://img.shields.io/node/v/@esmx/core.svg" alt="node version" />
+      <img src="https://img.shields.io/node/v/create-esmx.svg" alt="node version" />
     </a>
     <a href="https://bundlephobia.com/package/create-esmx">
       <img src="https://img.shields.io/bundlephobia/minzip/create-esmx" alt="size" />
@@ -27,26 +27,30 @@
   </p>
 </div>
 
-## Features
+## 🚀 Features
 
-- Interactive command-line interface
-- Support for multiple project templates
-- Complete TypeScript support
-- Automatic project structure configuration
+- **Interactive CLI** - Friendly command-line interactive interface
+- **Multiple Templates** - Support for multiple project templates
+- **TypeScript Support** - Complete TypeScript type support
+- **Automatic Configuration** - Automatic project structure initialization
 
-## Usage
+## 📦 Installation
 
 ```bash
-# Using npm
+# npm
 npm create esmx@latest my-project
 
-# Using yarn
-yarn create esmx my-project
-
-# Using pnpm
+# pnpm
 pnpm create esmx my-project
+
+# yarn
+yarn create esmx my-project
 ```
 
-## License
+## 📚 Documentation
 
-MIT © Esmx Team 
+Visit the [official documentation](https://esmx.dev) for detailed usage guides and API references.
+
+## 📄 License
+
+MIT © [Esmx Team](https://github.com/esmnext/esmx) 

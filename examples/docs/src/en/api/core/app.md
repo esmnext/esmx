@@ -9,7 +9,7 @@ head:
 
 # App
 
-`App` is the application abstraction for the Esmx framework, providing a unified interface to manage application lifecycle, static resources, and Server-Side Rendering.
+`App` is the application abstraction for the Esmx framework, providing a unified interface to manage application lifecycle, static resources, and SSR.
 
 ```ts title="entry.node.ts"
 export default {
@@ -45,11 +45,11 @@ Static resource handling middleware.
 Development Environment:
 - Handles static resource requests from source code
 - Supports real-time compilation and hot reloading
-- Uses no-cache caching strategy
+- Uses `no-cache` caching strategy
 
 Production Environment:
 - Handles static resources after building
-- Supports long-term caching for immutable files (.final.xxx)
+- Supports long-term caching for immutable files (`.final.xxx`)
 - Optimized resource loading strategy
 
 ```ts
@@ -60,7 +60,7 @@ server.use(esmx.middleware);
 
 - **Type**: `(options?: RenderContextOptions) => Promise<RenderContext>`
 
-Server-Side Rendering function. Provides different implementations based on the runtime environment:
+SSR function. Provides different implementations based on the runtime environment:
 - Production environment (start): Loads the built server entry file (entry.server) to execute rendering
 - Development environment (dev): Loads the server entry file from source code to execute rendering
 

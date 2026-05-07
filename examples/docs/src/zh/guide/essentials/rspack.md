@@ -4,7 +4,7 @@ description: "了解如何使用 Esmx 封装的 Rspack 构建器，快速创建 
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx,Rspack,构建系统,HTML应用,标准应用,多目标构建,SSR,HMR,SWC,LightningCSS,Loader,DefinePlugin,ImportMap,Module Link,外部化,内容哈希,性能优化"
+      content: "Esmx,Rspack,构建系统,HTML应用,标准应用,多目标构建,SSR,HMR,SWC,LightningCSS,Loader,DefinePlugin,Import Map,Module Link,外部化,内容哈希,性能优化"
 ---
 
 # Rspack
@@ -12,9 +12,6 @@ head:
 Esmx 采用 [Rspack](https://www.rspack.dev/) 作为其默认的高性能构建引擎。Rspack 基于 Rust 开发，拥有卓越的构建性能和与 Webpack 兼容的生态系统，能够为 Esmx 应用提供极速的开发体验和高效的打包能力。
 
 为了简化不同类型应用的构建配置，Esmx 提供了一系列封装好的 Rspack 构建器。以下将详细介绍这些构建器及其使用场景。
-
- 
-
 
 ## 构建器
 

@@ -447,7 +447,7 @@ router.closeLayer({ selectedUserId: 42 });
   - `throwError?: boolean` — Whether to throw errors instead of catching them (default: `false`)
 - **Returns**: `Promise<string | null>`
 
-Renders the current route's micro-app to an HTML string for server-side rendering. Returns `null` if no micro-app is mounted or if rendering fails (when `throwError` is `false`).
+Renders the current route's micro-app to an HTML string for SSR. Returns `null` if no micro-app is mounted or if rendering fails (when `throwError` is `false`).
 
 ```ts
 // SSR usage
@@ -457,7 +457,7 @@ const router = new Router({
     routes,
     apps: (router) => ({
         mount(el) { /* ... */ },
-        unmount(el) { /* ... */ },
+        unmount() { /* ... */ },
         async renderToString() {
             const { renderToString } = await import('react-dom/server');
             return renderToString(createElement(App, { router }));

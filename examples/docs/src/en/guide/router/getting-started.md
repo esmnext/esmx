@@ -75,7 +75,7 @@ export const routes: RouteConfig[] = [
 ### 2. Create the App
 
 ```ts title="src/create-app.ts"
-import { createApp } from 'vue';
+import { h, createApp } from 'vue';
 import { Router, RouterMode } from '@esmx/router';
 import { RouterPlugin, useProvideRouter } from '@esmx/router-vue';
 import App from './App.vue';
@@ -115,35 +115,35 @@ app.mount('#app');
 ### 4. Server Entry (SSR)
 
 ```ts title="src/entry.server.ts"
+import type { RenderContext } from '@esmx/core';
 import { Router, RouterMode } from '@esmx/router';
 import { renderToString } from '@vue/server-renderer';
 import { createVueApp } from './create-app';
 import { routes } from './routes';
 
-export default async function render(req, res) {
+export default async (rc: RenderContext) => {
   const router = new Router({
     mode: RouterMode.memory,
-    base: new URL(req.url, `http://${req.headers.host}`),
-    req,
-    res,
+    base: new URL(rc.params.url, 'http://localhost'),
     routes
   });
 
-  await router.push(req.url);
+  await router.replace(rc.params.url);
 
-  const { app } = createVueApp(router);
-  const html = await renderToString(app);
+  const { app } = createVueApp(router, true);
+  const html = await renderToString(app, {
+    importMetaSet: rc.importMetaSet
+  });
 
-  res.end(`
-    <!DOCTYPE html>
-    <html>
-      <body>
-        <div id="app">${html}</div>
-        <script src="/entry.client.js"></script>
-      </body>
-    </html>
-  `);
-}
+  rc.html = `<!DOCTYPE html>
+<html>
+  <body>
+    <div id="app">${html}</div>
+    ${rc.importmap()}
+    ${rc.moduleEntry()}
+  </body>
+</html>`;
+};
 ```
 
 ### 5. Use in Components
@@ -223,20 +223,23 @@ const router = new Router({
   root: '#app',
   mode: RouterMode.history,
   routes,
-  apps: (router) => ({
-    mount(el) {
-      const root = createRoot(el);
-      root.render(createElement(App, { router }));
-      return root;
-    },
-    unmount(el, root) {
-      root.unmount();
-    },
-    async renderToString() {
-      const { renderToString } = await import('react-dom/server');
-      return renderToString(createElement(App, { router }));
-    }
-  })
+  apps: (router) => {
+    let root = null;
+    return {
+      mount(el) {
+        root = createRoot(el);
+        root.render(createElement(App, { router }));
+      },
+      unmount() {
+        root?.unmount();
+        root = null;
+      },
+      async renderToString() {
+        const { renderToString } = await import('react-dom/server');
+        return renderToString(createElement(App, { router }));
+      }
+    };
+  }
 });
 ```
 
@@ -263,7 +266,7 @@ A typical Esmx project with routing follows this structure:
 src/
 ├── entry.node.ts      # Node.js server setup, dev/build config
 ├── entry.server.ts    # SSR rendering logic
-├── entry.client.ts    # Client-side hydration/mounting
+├── entry.client.ts    # Client-side mounting and app activation
 ├── create-app.ts      # Shared app factory (used by both server & client)
 ├── routes.ts          # Route definitions
 ├── App.vue            # Root component
@@ -275,7 +278,7 @@ src/
 
 - `entry.node.ts`: Configures the Node.js server (HTTP listener, middleware, build hooks)
 - `entry.server.ts`: Handles SSR — creates router in memory mode, renders HTML
-- `entry.client.ts`: Handles client-side — creates router in history mode, mounts app
+- `entry.client.ts`: Handles client-side — creates router in history mode, mounts and activates app
 - `create-app.ts`: Shared factory that creates the framework app with router
 - `routes.ts`: Single source of truth for route definitions
 
@@ -365,7 +368,9 @@ export default async (rc: RenderContext) => {
   await router.replace(rc.params.url);
 
   const { app } = createVueApp(router, true);
-  const html = await renderToString(app);
+  const html = await renderToString(app, {
+    importMetaSet: rc.importMetaSet
+  });
 
   rc.html = `<!DOCTYPE html>
 <html lang="en">

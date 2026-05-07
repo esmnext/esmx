@@ -52,7 +52,7 @@ interface RouterLinkProps {
 ```
 
 Link configuration properties:
-- `to`: Target route location (string or RouteLocation object)
+- `to`: Target route location (string or `RouteLocation` object)
 - `type`: Navigation type (default: `'push'`)
 - `replace`: _Deprecated_ — Use `type='replace'` instead
 - `exact`: Active state matching strategy (`'include'` | `'exact'` | `'route'`)

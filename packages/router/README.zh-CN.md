@@ -31,9 +31,9 @@
 
 - **框架无关** - 适用于任何前端框架（Vue、React、Preact、Solid 等）
 - **通用支持** - 在浏览器和 Node.js 环境中运行
-- **TypeScript 就绪** - 完整的 TypeScript 支持，出色的类型推断
-- **高性能** - 为生产环境优化，最小化包体积
-- **SSR 兼容** - 完整的服务端渲染支持
+- **TypeScript 支持** - 完整的 TypeScript 类型推断与类型安全
+- **高性能** - 针对生产环境优化，极小的包体积
+- **SSR 兼容** - 完整的 SSR 支持
 - **现代 API** - 简洁直观的 API 设计
 
 ## 📦 安装
@@ -56,7 +56,7 @@ import { Router, RouterMode } from '@esmx/router';
 
 // 创建路由器实例
 const router = new Router({
-  root: '#app', // 浏览器环境中必需
+  root: '#app', // 浏览器环境的根挂载点（可选，默认空字符串）
   mode: RouterMode.history,
   routes: [
     { path: '/', component: () => '首页' },

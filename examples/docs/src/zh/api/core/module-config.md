@@ -35,7 +35,7 @@ interface ModuleConfig {
 * **类型**: `Record<string, string>`
 * **描述**: 模块链接配置。键为远程模块名称，值为模块构建产物目录路径。
 
-### imports  
+### imports
 
 * **类型**: `ModuleConfigImportMapping`
 * **描述**: 模块导入映射配置。键为本地模块标识符，值为远程模块路径。支持环境特定的配置。
