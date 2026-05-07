@@ -18,6 +18,11 @@
     "devDependencies": {
         "@esmx/rspack": "workspace:*",
         "@types/node": "^24.0.0",
+        "ssr-micro-html": "workspace:*",
+        "ssr-micro-react": "workspace:*",
+        "ssr-micro-shared": "workspace:*",
+        "ssr-micro-vue2": "workspace:*",
+        "ssr-micro-vue3": "workspace:*",
         "typescript": "5.8.3"
     }
 }

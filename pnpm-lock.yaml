@@ -68,6 +68,21 @@ importers:
       '@types/node':
         specifier: ^24.0.0
         version: 24.11.0
+      ssr-micro-html:
+        specifier: workspace:*
+        version: link:../ssr-micro-html
+      ssr-micro-react:
+        specifier: workspace:*
+        version: link:../ssr-micro-react
+      ssr-micro-shared:
+        specifier: workspace:*
+        version: link:../ssr-micro-shared
+      ssr-micro-vue2:
+        specifier: workspace:*
+        version: link:../ssr-micro-vue2
+      ssr-micro-vue3:
+        specifier: workspace:*
+        version: link:../ssr-micro-vue3
       typescript:
         specifier: 5.8.3
         version: 5.8.3
