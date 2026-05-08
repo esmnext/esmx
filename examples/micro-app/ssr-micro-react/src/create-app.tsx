@@ -19,6 +19,8 @@ export function createReactApp(router): RouterMicroAppOptions {
 
     return {
         mount(el: HTMLElement) {
+            // React creates a root inside the container and renders within it
+            // For SSR, use hydrateRoot to attach event listeners to existing DOM
             const hasSSR = el.querySelector('[data-ssr="true"]') !== null;
             if (hasSSR) {
                 root = hydrateRoot(el, <AppWithProvider ssr={false} />);
@@ -28,6 +30,7 @@ export function createReactApp(router): RouterMicroAppOptions {
             }
         },
         unmount() {
+            // React root.unmount() clears the container's content but preserves the container element
             if (root) {
                 root.unmount();
                 root = null;

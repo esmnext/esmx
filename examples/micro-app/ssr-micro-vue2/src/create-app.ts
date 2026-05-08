@@ -16,6 +16,8 @@ export function createVue2App(router): RouterMicroAppOptions {
 
     return {
         mount(root: HTMLElement) {
+            // Vue 2 $mount replaces the target element entirely
+            // For SSR hydration, pass the existing element as target
             const ssrEl = root.querySelector('[data-ssr="true"]');
             if (ssrEl) {
                 app.$mount(ssrEl as HTMLElement, true);
@@ -24,6 +26,8 @@ export function createVue2App(router): RouterMicroAppOptions {
             }
         },
         unmount() {
+            // Vue 2 $destroy does not remove the DOM element
+            // Must manually remove $el to clean up
             app.$destroy();
             if (app.$el?.parentNode) {
                 app.$el.remove();
