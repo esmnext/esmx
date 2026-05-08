@@ -2,8 +2,6 @@ import type { Router, RouterMicroAppOptions } from '@esmx/router';
 import { Layout } from 'ssr-micro-shared/src/layout';
 
 export function createHomeApp(router: Router): RouterMicroAppOptions {
-    let container: HTMLElement | null = null;
-
     const apps = [
         {
             to: '/html',
@@ -91,15 +89,13 @@ export function createHomeApp(router: Router): RouterMicroAppOptions {
         return heroSection + cardsSection;
     }
 
+    let layout: Layout | null = null;
+
     return {
         mount(el: HTMLElement) {
-            el.innerHTML = '';
-            container = document.createElement('div');
-            el.appendChild(container);
+            layout = new Layout({ appId: 'home', router });
 
-            const layout = new Layout({ appId: 'home', router });
-
-            container.innerHTML =
+            el.innerHTML =
                 `<div id="${layout.headerId}">${layout.header}</div>` +
                 `<div style="margin-left: 260px; min-height: 100vh; background: #f8fafc; padding: 32px;">${getContentHtml()}</div>` +
                 `<div id="${layout.footerId}">${layout.footer}</div>`;
@@ -107,10 +103,8 @@ export function createHomeApp(router: Router): RouterMicroAppOptions {
             layout.mount();
         },
         unmount() {
-            if (container?.parentNode) {
-                container.parentNode.removeChild(container);
-            }
-            container = null;
+            layout?.unmount();
+            layout = null;
         },
         renderToString() {
             const layout = new Layout({ appId: 'home', router });

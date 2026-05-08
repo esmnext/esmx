@@ -42,17 +42,13 @@ const CONTENT_HTML = `
 `;
 
 export function createHtmlApp(router: Router): RouterMicroAppOptions {
-    let container: HTMLElement | null = null;
+    let layout: Layout | null = null;
 
     return {
         mount(el: HTMLElement) {
-            el.innerHTML = '';
-            container = document.createElement('div');
-            el.appendChild(container);
+            layout = new Layout({ appId: 'html', router });
 
-            const layout = new Layout({ appId: 'html', router });
-
-            container.innerHTML =
+            el.innerHTML =
                 `<div id="${layout.headerId}">${layout.header}</div>` +
                 `<div style="margin-left: 260px; min-height: 100vh; background: #f8fafc; padding: 32px;">${CONTENT_HTML}</div>` +
                 `<div id="${layout.footerId}">${layout.footer}</div>`;
@@ -60,10 +56,8 @@ export function createHtmlApp(router: Router): RouterMicroAppOptions {
             layout.mount();
         },
         unmount() {
-            if (container?.parentNode) {
-                container.parentNode.removeChild(container);
-            }
-            container = null;
+            layout?.unmount();
+            layout = null;
         },
         renderToString() {
             const layout = new Layout({ appId: 'html', router });
