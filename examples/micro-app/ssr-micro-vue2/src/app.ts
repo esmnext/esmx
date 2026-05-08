@@ -1,7 +1,6 @@
 import type { RouterMicroAppOptions } from '@esmx/router';
 import { RouterPlugin, useProvideRouter } from '@esmx/router-vue';
 import Vue from 'vue';
-import { createRenderer } from 'vue-server-renderer';
 
 import AppComponent from './app.vue';
 
@@ -22,7 +21,8 @@ export function createVue2App(router): RouterMicroAppOptions {
         unmount() {
             app.$destroy();
         },
-        renderToString() {
+        async renderToString() {
+            const { createRenderer } = await import('vue-server-renderer');
             const renderer = createRenderer();
             return renderer.renderToString(app);
         }
