@@ -4,19 +4,27 @@ import { HomeApp } from './home-app';
 
 export function createHomeApp(router: Router): RouterMicroAppOptions {
     const app = new HomeApp(router);
+    let container: HTMLElement | null = null;
 
     return {
-        mount(el: HTMLElement) {
-            // For SSR: reuse the existing DOM element marked with data-ssr="true"
-            // For CSR: create a new container and append to the root
-            app.mount(el);
+        mount(root: HTMLElement) {
+            const ssrEl = root.querySelector('[data-ssr="true"]');
+            if (ssrEl) {
+                container = ssrEl as HTMLElement;
+            } else {
+                container = document.createElement('div');
+                container.innerHTML = app.render();
+                root.appendChild(container);
+            }
+            app.mount(container);
         },
         unmount() {
-            // HomeApp.unmount() removes the entire container from DOM
             app.unmount();
+            container?.remove();
+            container = null;
         },
         renderToString() {
-            return app.render(true);
+            return `<div data-ssr="true">${app.render()}</div>`;
         }
     };
 }

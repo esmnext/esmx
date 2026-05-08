@@ -37,12 +37,19 @@ export default {
     },
 
     async postBuild(esmx) {
-        const rc = await esmx.render({
-            params: {
-                url: '/',
-                base: 'http://localhost:3000/ssr-micro-hub/'
-            }
-        });
-        esmx.writeSync(esmx.resolvePath('dist/client', 'index.html'), rc.html);
+        const base = 'http://localhost:3000/ssr-micro-hub/';
+        const pages = [
+            { url: '/', file: 'index.html' },
+            { url: '/html/', file: 'html/index.html' },
+            { url: '/vue2/', file: 'vue2/index.html' },
+            { url: '/vue3/', file: 'vue3/index.html' },
+            { url: '/react/', file: 'react/index.html' }
+        ];
+
+        for (const page of pages) {
+            const rc = await esmx.render({ params: { url: page.url, base } });
+            const filePath = esmx.resolvePath('dist/client', page.file);
+            esmx.writeSync(filePath, rc.html);
+        }
     }
 } satisfies EsmxOptions;

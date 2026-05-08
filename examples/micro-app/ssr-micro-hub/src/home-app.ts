@@ -4,7 +4,7 @@ import { Layout } from 'ssr-micro-shared/src/layout';
 export class HomeApp {
     private router: Router;
     private layout: Layout;
-    private container: HTMLDivElement | null = null;
+    private container: HTMLElement | null = null;
 
     private apps = [
         {
@@ -98,26 +98,17 @@ export class HomeApp {
         return heroSection + cardsSection;
     }
 
-    render(ssr = false): string {
-        const ssrAttr = ` data-ssr="${ssr}"`;
+    render(): string {
         return (
-            `<div${ssrAttr}>` +
             `<div id="${this.layout.headerId}">${this.layout.header}</div>` +
             `<div style="margin-left: 260px; min-height: 100vh; background: #f8fafc; padding: 32px;">${this.getContentHtml()}</div>` +
-            `<div id="${this.layout.footerId}">${this.layout.footer}</div>` +
-            `</div>`
+            `<div id="${this.layout.footerId}">${this.layout.footer}</div>`
         );
     }
 
-    mount(root: HTMLElement): void {
-        const ssrEl = root.querySelector('[data-ssr="true"]');
-        if (ssrEl) {
-            this.container = ssrEl as HTMLDivElement;
-        } else {
-            this.container = document.createElement('div');
-            this.container.innerHTML = this.render();
-            root.appendChild(this.container);
-        }
+    mount(container: HTMLElement): void {
+        container.setAttribute('data-ssr', 'false');
+        this.container = container;
         this.layout.mount();
 
         this.container.addEventListener('click', async (e) => {
@@ -137,7 +128,6 @@ export class HomeApp {
 
     unmount(): void {
         this.layout.unmount();
-        this.container?.remove();
         this.container = null;
     }
 }

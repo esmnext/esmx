@@ -15,4 +15,4 @@ const router = new Router({
     }
 });
 
-router.replace(location.href);
+await router.replace(location.href);

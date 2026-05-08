@@ -16,8 +16,6 @@ export function createVue3App(router): RouterMicroAppOptions {
 
     return {
         mount(root: HTMLElement) {
-            // Vue 3 mount preserves the target element and replaces its innerHTML
-            // For SSR hydration, the existing element is reused
             const ssrEl = root.querySelector('[data-ssr="true"]');
             if (ssrEl) {
                 container = ssrEl as HTMLElement;
@@ -29,8 +27,6 @@ export function createVue3App(router): RouterMicroAppOptions {
             }
         },
         unmount() {
-            // Vue 3 app.unmount() preserves the container element (only clears innerHTML)
-            // Must manually remove the container to avoid leaving empty DOM residue
             app.unmount();
             container?.remove();
             container = null;

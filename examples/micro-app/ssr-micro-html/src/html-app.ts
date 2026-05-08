@@ -3,16 +3,13 @@ import { Layout } from 'ssr-micro-shared/src/layout';
 
 export class HtmlApp {
     private layout: Layout;
-    private container: HTMLDivElement | null = null;
 
     constructor(router: Router) {
         this.layout = new Layout({ appId: 'html', router });
     }
 
-    render(ssr = false): string {
-        const ssrAttr = ` data-ssr="${ssr}"`;
+    render(): string {
         return (
-            `<div${ssrAttr}>` +
             `<div id="${this.layout.headerId}">${this.layout.header}</div>` +
             `<div style="margin-left: 260px; min-height: 100vh; background: #f8fafc; padding: 32px;">` +
             `<div style="max-width: 800px; margin: 0 auto;">` +
@@ -53,26 +50,16 @@ export class HtmlApp {
             `</div>` +
             `</div>` +
             `</div>` +
-            `<div id="${this.layout.footerId}">${this.layout.footer}</div>` +
-            `</div>`
+            `<div id="${this.layout.footerId}">${this.layout.footer}</div>`
         );
     }
 
-    mount(root: HTMLElement): void {
-        const ssrEl = root.querySelector('[data-ssr="true"]');
-        if (ssrEl) {
-            this.container = ssrEl as HTMLDivElement;
-        } else {
-            this.container = document.createElement('div');
-            this.container.innerHTML = this.render();
-            root.appendChild(this.container);
-        }
+    mount(container: HTMLElement): void {
+        container.setAttribute('data-ssr', 'false');
         this.layout.mount();
     }
 
     unmount(): void {
         this.layout.unmount();
-        this.container?.remove();
-        this.container = null;
     }
 }

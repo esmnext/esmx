@@ -13,21 +13,14 @@ const NAV_ITEMS = [
     { path: '/react', label: 'React', icon: 'R' }
 ];
 
-function getCurrentPath(router: Router): string {
-    try {
-        return router.route.path;
-    } catch {
-        return '/';
-    }
-}
-
-function generateNavHtml(router: Router, currentPath: string): string {
+function generateNavHtml(router: Router): string {
     return NAV_ITEMS.map((item) => {
-        const isActive = currentPath === item.path;
         const resolved = router.resolveLink({
             to: item.path,
-            type: 'push'
+            type: 'push',
+            exact: 'route'
         });
+        const isActive = resolved.isActive;
         return `
             <a
                 href="${resolved.attributes.href}"
@@ -68,7 +61,6 @@ export class Layout {
     }
 
     get header(): string {
-        const currentPath = getCurrentPath(this.router);
         return `
             <div style="
                 width: 260px;
@@ -95,7 +87,7 @@ export class Layout {
                     Esmx Hub
                 </div>
                 <nav style="display: flex; flex-direction: column; gap: 4px;">
-                    ${generateNavHtml(this.router, currentPath)}
+                    ${generateNavHtml(this.router)}
                 </nav>
             </div>
         `;

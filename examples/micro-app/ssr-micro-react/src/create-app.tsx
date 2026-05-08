@@ -15,26 +15,29 @@ export function createReactApp(router): RouterMicroAppOptions {
         </SSRContext.Provider>
     );
 
-    let root: ReturnType<typeof createRoot> | null = null;
+    let reactRoot: ReturnType<typeof createRoot> | null = null;
+    let container: HTMLElement | null = null;
 
     return {
-        mount(el: HTMLElement) {
-            // React creates a root inside the container and renders within it
-            // For SSR, use hydrateRoot to attach event listeners to existing DOM
-            const hasSSR = el.querySelector('[data-ssr="true"]') !== null;
-            if (hasSSR) {
-                root = hydrateRoot(el, <AppWithProvider ssr={false} />);
+        mount(root: HTMLElement) {
+            const ssrEl = root.querySelector('[data-ssr="true"]');
+            if (ssrEl) {
+                container = ssrEl as HTMLElement;
+                reactRoot = hydrateRoot(container, <AppWithProvider ssr={false} />);
             } else {
-                root = createRoot(el);
-                root.render(<AppWithProvider ssr={false} />);
+                container = document.createElement('div');
+                root.appendChild(container);
+                reactRoot = createRoot(container);
+                reactRoot.render(<AppWithProvider ssr={false} />);
             }
         },
         unmount() {
-            // React root.unmount() clears the container's content but preserves the container element
-            if (root) {
-                root.unmount();
-                root = null;
+            if (reactRoot) {
+                reactRoot.unmount();
+                reactRoot = null;
             }
+            container?.remove();
+            container = null;
         },
         renderToString() {
             return Promise.resolve(renderToString(<AppWithProvider ssr={true} />));
