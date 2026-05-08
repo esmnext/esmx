@@ -4,6 +4,7 @@ import { Layout } from 'ssr-micro-shared/src/layout';
 export class HomeApp {
     private router: Router;
     private layout: Layout;
+    private container: HTMLDivElement | null = null;
 
     private apps = [
         {
@@ -99,17 +100,26 @@ export class HomeApp {
 
     render(): string {
         return (
+            `<div data-app="home">` +
             `<div id="${this.layout.headerId}">${this.layout.header}</div>` +
             `<div style="margin-left: 260px; min-height: 100vh; background: #f8fafc; padding: 32px;">${this.getContentHtml()}</div>` +
-            `<div id="${this.layout.footerId}">${this.layout.footer}</div>`
+            `<div id="${this.layout.footerId}">${this.layout.footer}</div>` +
+            `</div>`
         );
     }
 
-    mount(el: HTMLElement): void {
-        el.innerHTML = this.render();
+    mount(root: HTMLElement): void {
+        const ssrEl = root.querySelector('[data-app="home"]');
+        if (ssrEl) {
+            this.container = ssrEl as HTMLDivElement;
+        } else {
+            this.container = document.createElement('div');
+            this.container.innerHTML = this.render();
+            root.appendChild(this.container);
+        }
         this.layout.mount();
 
-        el.addEventListener('click', async (e) => {
+        this.container.addEventListener('click', async (e) => {
             const target = e.target as HTMLElement;
             const anchor = target.closest(
                 'a[data-to]'
@@ -126,5 +136,7 @@ export class HomeApp {
 
     unmount(): void {
         this.layout.unmount();
+        this.container?.remove();
+        this.container = null;
     }
 }

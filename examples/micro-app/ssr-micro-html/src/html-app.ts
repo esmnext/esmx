@@ -3,6 +3,7 @@ import { Layout } from 'ssr-micro-shared/src/layout';
 
 export class HtmlApp {
     private layout: Layout;
+    private container: HTMLDivElement | null = null;
 
     constructor(router: Router) {
         this.layout = new Layout({ appId: 'html', router });
@@ -10,6 +11,7 @@ export class HtmlApp {
 
     render(): string {
         return (
+            `<div data-app="html">` +
             `<div id="${this.layout.headerId}">${this.layout.header}</div>` +
             `<div style="margin-left: 260px; min-height: 100vh; background: #f8fafc; padding: 32px;">` +
             `<div style="max-width: 800px; margin: 0 auto;">` +
@@ -50,16 +52,26 @@ export class HtmlApp {
             `</div>` +
             `</div>` +
             `</div>` +
-            `<div id="${this.layout.footerId}">${this.layout.footer}</div>`
+            `<div id="${this.layout.footerId}">${this.layout.footer}</div>` +
+            `</div>`
         );
     }
 
-    mount(el: HTMLElement): void {
-        el.innerHTML = this.render();
+    mount(root: HTMLElement): void {
+        const ssrEl = root.querySelector('[data-app="html"]');
+        if (ssrEl) {
+            this.container = ssrEl as HTMLDivElement;
+        } else {
+            this.container = document.createElement('div');
+            this.container.innerHTML = this.render();
+            root.appendChild(this.container);
+        }
         this.layout.mount();
     }
 
     unmount(): void {
         this.layout.unmount();
+        this.container?.remove();
+        this.container = null;
     }
 }
