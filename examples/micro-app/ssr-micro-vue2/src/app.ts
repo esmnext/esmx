@@ -15,11 +15,19 @@ export function createVue2App(router): RouterMicroAppOptions {
     });
 
     return {
-        mount(el: HTMLElement) {
-            app.$mount(el);
+        mount(root: HTMLElement) {
+            const ssrEl = root.querySelector('[data-server-rendered="true"]');
+            if (ssrEl) {
+                app.$mount(ssrEl as HTMLElement, true);
+            } else {
+                root.appendChild(app.$mount().$el);
+            }
         },
         unmount() {
             app.$destroy();
+            if (app.$el?.parentNode) {
+                app.$el.remove();
+            }
         },
         async renderToString() {
             const { createRenderer } = await import('vue-server-renderer');
