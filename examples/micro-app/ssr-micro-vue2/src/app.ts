@@ -15,21 +15,12 @@ export function createVue2App(router): RouterMicroAppOptions {
         render: (h) => h(AppComponent)
     });
 
-    let container: HTMLElement | null = null;
-
     return {
         mount(el: HTMLElement) {
-            el.innerHTML = '';
-            container = document.createElement('div');
-            el.appendChild(container);
-            app.$mount(container);
+            app.$mount(el);
         },
         unmount() {
             app.$destroy();
-            if (container?.parentNode) {
-                container.parentNode.removeChild(container);
-            }
-            container = null;
         },
         renderToString() {
             const renderer = createRenderer();

@@ -13,21 +13,12 @@ export function createVue3App(router): RouterMicroAppOptions {
         render: () => h(AppComponent)
     });
 
-    let container: HTMLElement | null = null;
-
     return {
         mount(el: HTMLElement) {
-            el.innerHTML = '';
-            container = document.createElement('div');
-            el.appendChild(container);
-            app.mount(container);
+            app.mount(el);
         },
         unmount() {
             app.unmount();
-            if (container?.parentNode) {
-                container.parentNode.removeChild(container);
-            }
-            container = null;
         },
         renderToString() {
             return renderToString(app);

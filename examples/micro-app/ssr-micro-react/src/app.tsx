@@ -1,7 +1,8 @@
 import type { RouterMicroAppOptions } from '@esmx/router';
-import { RouterProvider, useRouter } from '@esmx/router-react';
+import { RouterProvider } from '@esmx/router-react';
 import { createRoot } from 'react-dom/client';
 import { renderToString } from 'react-dom/server';
+import { useRouter } from '@esmx/router-react';
 import { useEffect } from 'react';
 
 import { Layout } from 'ssr-micro-shared/src/layout';
@@ -19,7 +20,6 @@ function AppContent() {
         <div>
             <div
                 id={layout.headerId}
-                // biome-ignore lint/security/noDangerouslySetInnerHtml: Layout generates safe HTML
                 dangerouslySetInnerHTML={{ __html: layout.header }}
             />
             <div
@@ -80,7 +80,6 @@ function AppContent() {
             </div>
             <div
                 id={layout.footerId}
-                // biome-ignore lint/security/noDangerouslySetInnerHtml: Layout generates safe HTML
                 dangerouslySetInnerHTML={{ __html: layout.footer }}
             />
         </div>
@@ -95,14 +94,10 @@ export function createReactApp(router): RouterMicroAppOptions {
     );
 
     let root: ReturnType<typeof createRoot> | null = null;
-    let container: HTMLElement | null = null;
 
     return {
         mount(el: HTMLElement) {
-            el.innerHTML = '';
-            container = document.createElement('div');
-            el.appendChild(container);
-            root = createRoot(container);
+            root = createRoot(el);
             root.render(<AppWithProvider />);
         },
         unmount() {
@@ -110,10 +105,6 @@ export function createReactApp(router): RouterMicroAppOptions {
                 root.unmount();
                 root = null;
             }
-            if (container?.parentNode) {
-                container.parentNode.removeChild(container);
-            }
-            container = null;
         },
         renderToString() {
             return Promise.resolve(renderToString(<AppWithProvider />));
