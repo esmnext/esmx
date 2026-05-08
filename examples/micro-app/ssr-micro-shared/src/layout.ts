@@ -58,7 +58,6 @@ export function useLayout(options: LayoutOptions): LayoutInstance {
                         color: ${isActive ? '#fff' : '#94a3b8'};
                         background: ${isActive ? 'rgba(59, 130, 246, 0.15)' : 'transparent'};
                         border-left: ${isActive ? '3px solid #3b82f6' : '3px solid transparent'};
-                        transition: all 0.2s;
                         cursor: pointer;
                         font-weight: ${isActive ? '600' : '400'};
                     "
