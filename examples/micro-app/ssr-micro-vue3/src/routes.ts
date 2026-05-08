@@ -1,5 +1,5 @@
 import type { RouteConfig } from '@esmx/router';
-import { createVue3App } from './app';
+import { createVue3App } from './create-app';
 
 export const routes: RouteConfig[] = [
     {

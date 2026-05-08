@@ -1,6 +1,6 @@
 import type { RouteConfig } from '@esmx/router';
-import { createVue2App } from './app';
 import AppComponent from './app.vue';
+import { createVue2App } from './create-app';
 
 export const routes: RouteConfig[] = [
     {

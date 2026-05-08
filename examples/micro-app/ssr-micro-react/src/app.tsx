@@ -1,15 +1,11 @@
-import type { RouterMicroAppOptions } from '@esmx/router';
-
-import { RouterProvider, useRouter } from '@esmx/router-react';
+import { useRouter } from '@esmx/router-react';
 import { createContext, useContext, useEffect, useMemo } from 'react';
-import { createRoot, hydrateRoot } from 'react-dom/client';
-import { renderToString } from 'react-dom/server';
 
 import { Layout } from 'ssr-micro-shared/src/layout';
 
-const SSRContext = createContext(false);
+export const SSRContext = createContext(false);
 
-function AppContent() {
+export function AppContent() {
     const router = useRouter();
     const layout = useMemo(
         () => new Layout({ appId: 'react', router }),
@@ -92,37 +88,4 @@ function AppContent() {
             />
         </div>
     );
-}
-
-export function createReactApp(router): RouterMicroAppOptions {
-    const AppWithProvider = ({ ssr }: { ssr: boolean }) => (
-        <SSRContext.Provider value={ssr}>
-            <RouterProvider router={router}>
-                <AppContent />
-            </RouterProvider>
-        </SSRContext.Provider>
-    );
-
-    let root: ReturnType<typeof createRoot> | null = null;
-
-    return {
-        mount(el: HTMLElement) {
-            const hasSSR = el.querySelector('[data-ssr="true"]') !== null;
-            if (hasSSR) {
-                root = hydrateRoot(el, <AppWithProvider ssr={false} />);
-            } else {
-                root = createRoot(el);
-                root.render(<AppWithProvider ssr={false} />);
-            }
-        },
-        unmount() {
-            if (root) {
-                root.unmount();
-                root = null;
-            }
-        },
-        renderToString() {
-            return Promise.resolve(renderToString(<AppWithProvider ssr={true} />));
-        }
-    };
 }
