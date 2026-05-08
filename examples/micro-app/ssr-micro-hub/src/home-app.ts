@@ -8,7 +8,7 @@ export class HomeApp {
 
     private apps = [
         {
-            to: '/html',
+            to: '/html/',
             title: 'HTML',
             subtitle: 'Pure HTML + TypeScript',
             description: 'A native HTML micro-app.',
@@ -19,7 +19,7 @@ export class HomeApp {
             tagBg: 'rgba(245, 158, 11, 0.1)'
         },
         {
-            to: '/vue2',
+            to: '/vue2/',
             title: 'Vue 2',
             subtitle: 'Vue 2.7 + Composition API',
             description: 'Classic Vue 2 with modern Composition API.',
@@ -30,7 +30,7 @@ export class HomeApp {
             tagBg: 'rgba(66, 184, 131, 0.1)'
         },
         {
-            to: '/vue3',
+            to: '/vue3/',
             title: 'Vue 3',
             subtitle: 'Vue 3.5 + SSR',
             description: 'Modern Vue 3 with full SSR support.',
@@ -41,7 +41,7 @@ export class HomeApp {
             tagBg: 'rgba(59, 130, 246, 0.1)'
         },
         {
-            to: '/react',
+            to: '/react/',
             title: 'React',
             subtitle: 'React 18 + Hooks',
             description: 'React 18 with concurrent features.',
