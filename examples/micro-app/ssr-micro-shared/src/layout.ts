@@ -89,6 +89,13 @@ export class Layout {
     }
 
     get header(): string {
+        if (
+            typeof document !== 'undefined' &&
+            document.getElementById(this.headerId)
+        ) {
+            return '';
+        }
+
         const currentPath = getCurrentPath(this.router);
 
         return `

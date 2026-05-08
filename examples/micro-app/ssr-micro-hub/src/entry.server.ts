@@ -33,17 +33,7 @@ export default async (rc: RenderContext) => {
             color: #0f172a;
             line-height: 1.5;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-10px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        .app-container {
-            animation: fadeIn 0.3s ease-out;
-        }
+
     </style>
 </head>
 <body>
