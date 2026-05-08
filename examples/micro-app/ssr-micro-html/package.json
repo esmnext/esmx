@@ -11,12 +11,12 @@
         "start": "esmx start"
     },
     "dependencies": {
-        "@esmx/core": "workspace:*",
-        "ssr-micro-shared": "workspace:*"
+        "@esmx/core": "workspace:*"
     },
     "devDependencies": {
         "@esmx/rspack": "workspace:*",
         "@types/node": "^24.0.0",
+        "ssr-micro-shared": "workspace:*",
         "typescript": "5.8.3"
     }
 }

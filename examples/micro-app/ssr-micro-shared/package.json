@@ -11,11 +11,11 @@
         "start": "esmx start"
     },
     "dependencies": {
-        "@esmx/core": "workspace:*",
-        "@esmx/router": "workspace:*"
+        "@esmx/core": "workspace:*"
     },
     "devDependencies": {
         "@esmx/rspack": "workspace:*",
+        "@esmx/router": "workspace:*",
         "@types/node": "^24.0.0",
         "typescript": "5.8.3"
     }

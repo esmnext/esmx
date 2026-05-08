@@ -12,10 +12,7 @@
         "lint:type": "tsc --noEmit"
     },
     "dependencies": {
-        "@esmx/core": "workspace:*",
-        "ssr-micro-shared": "workspace:*",
-        "react": "^18.0.0",
-        "react-dom": "^18.0.0"
+        "@esmx/core": "workspace:*"
     },
     "devDependencies": {
         "@esmx/rspack-react": "workspace:*",
@@ -23,6 +20,9 @@
         "@types/node": "^24.0.0",
         "@types/react": "^18.0.0",
         "@types/react-dom": "^18.0.0",
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0",
+        "ssr-micro-shared": "workspace:*",
         "typescript": "5.8.3"
     }
 }

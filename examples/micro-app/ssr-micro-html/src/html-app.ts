@@ -2,11 +2,9 @@ import type { Router } from '@esmx/router';
 import { Layout } from 'ssr-micro-shared/src/layout';
 
 export class HtmlApp {
-    private router: Router;
     private layout: Layout;
 
     constructor(router: Router) {
-        this.router = router;
         this.layout = new Layout({ appId: 'html', router });
     }
 

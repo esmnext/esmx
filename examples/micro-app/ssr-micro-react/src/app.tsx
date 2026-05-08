@@ -1,20 +1,23 @@
 import type { RouterMicroAppOptions } from '@esmx/router';
-import { RouterProvider } from '@esmx/router-react';
+
+import { RouterProvider, useRouter } from '@esmx/router-react';
+import { useEffect, useMemo } from 'react';
 import { createRoot } from 'react-dom/client';
 import { renderToString } from 'react-dom/server';
-import { useRouter } from '@esmx/router-react';
-import { useEffect } from 'react';
 
 import { Layout } from 'ssr-micro-shared/src/layout';
 
 function AppContent() {
     const router = useRouter();
-    const layout = new Layout({ appId: 'react', router });
+    const layout = useMemo(
+        () => new Layout({ appId: 'react', router }),
+        [router]
+    );
 
     useEffect(() => {
         layout.mount();
         return () => layout.unmount();
-    }, []);
+    }, [layout]);
 
     return (
         <div>
@@ -43,7 +46,8 @@ function AppContent() {
                             style={{
                                 width: '64px',
                                 height: '64px',
-                                background: 'linear-gradient(135deg, #0ea5e9, #0284c7)',
+                                background:
+                                    'linear-gradient(135deg, #0ea5e9, #0284c7)',
                                 borderRadius: '16px',
                                 display: 'flex',
                                 alignItems: 'center',

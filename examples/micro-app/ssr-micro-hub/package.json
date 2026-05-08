@@ -12,10 +12,10 @@
         "lint:type": "tsc --noEmit"
     },
     "dependencies": {
-        "@esmx/core": "workspace:*",
-        "@esmx/router": "workspace:*"
+        "@esmx/core": "workspace:*"
     },
     "devDependencies": {
+        "@esmx/router": "workspace:*",
         "@esmx/rspack": "workspace:*",
         "@types/node": "^24.0.0",
         "ssr-micro-html": "workspace:*",

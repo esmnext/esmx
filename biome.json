@@ -42,6 +42,18 @@
         },
         {
             "includes": [
+                "examples/micro-app/**/*.tsx"
+            ],
+            "linter": {
+                "rules": {
+                    "security": {
+                        "noDangerouslySetInnerHtml": "off"
+                    }
+                }
+            }
+        },
+        {
+            "includes": [
                 ".rpt2_cache/**",
                 "coverage/**",
                 "public/**",

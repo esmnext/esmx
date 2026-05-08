@@ -13,8 +13,7 @@
         "build:type": "vue-tsc --declaration --emitDeclarationOnly --noEmit false --outDir dist/src && tsc-alias -p tsconfig.json --outDir dist/src"
     },
     "dependencies": {
-        "@esmx/core": "workspace:*",
-        "ssr-micro-shared": "workspace:*"
+        "@esmx/core": "workspace:*"
     },
     "devDependencies": {
         "tsc-alias": "^1.8.16",
@@ -22,6 +21,7 @@
         "@esmx/router-vue": "workspace:*",
         "@types/node": "^24.0.0",
         "@vue/server-renderer": "^3.5.23",
+        "ssr-micro-shared": "workspace:*",
         "typescript": "5.8.3",
         "vue": "^3.5.23",
         "vue-tsc": "^3.0.5"
