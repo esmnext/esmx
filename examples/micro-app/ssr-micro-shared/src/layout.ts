@@ -177,7 +177,3 @@ export class Layout {
         }
     }
 }
-
-export function useLayout(options: LayoutOptions): Layout {
-    return new Layout(options);
-}

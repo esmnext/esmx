@@ -63,11 +63,11 @@
 
 <script setup lang="ts">
 import { useRouter } from '@esmx/router-vue';
-import { useLayout } from 'ssr-micro-shared/src/layout';
+import { Layout } from 'ssr-micro-shared/src/layout';
 import { computed, onBeforeUnmount, onMounted } from 'vue';
 
 const router = useRouter();
-const layout = useLayout({ appId: 'vue3', router });
+const layout = new Layout({ appId: 'vue3', router });
 
 const header = computed(() => layout.header);
 const footer = computed(() => layout.footer);

@@ -63,13 +63,13 @@
 
 <script>
 import { useRouter } from '@esmx/router-vue';
-import { useLayout } from 'ssr-micro-shared/src/layout';
+import { Layout } from 'ssr-micro-shared/src/layout';
 import { onBeforeUnmount, onMounted } from 'vue';
 
 export default {
     setup() {
         const router = useRouter();
-        const layout = useLayout({ appId: 'vue2', router });
+        const layout = new Layout({ appId: 'vue2', router });
 
         onMounted(() => layout.mount());
         onBeforeUnmount(() => layout.unmount());

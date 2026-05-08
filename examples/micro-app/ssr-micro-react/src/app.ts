@@ -4,10 +4,10 @@ import { createElement, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { renderToString } from 'react-dom/server';
 
-import { useLayout } from 'ssr-micro-shared/src/layout';
+import { Layout } from 'ssr-micro-shared/src/layout';
 
 function AppContent({ router }) {
-    const layout = useLayout({ appId: 'react', router });
+    const layout = new Layout({ appId: 'react', router });
 
     useEffect(() => {
         layout.mount();

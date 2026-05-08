@@ -1,10 +1,10 @@
 import type { Router, RouterMicroAppOptions } from '@esmx/router';
 
-import { useLayout } from 'ssr-micro-shared/src/layout';
+import { Layout } from 'ssr-micro-shared/src/layout';
 
 export function createHomeApp(router: Router): RouterMicroAppOptions {
     let container: HTMLElement | null = null;
-    let layout: ReturnType<typeof useLayout> | null = null;
+    let layout: Layout | null = null;
 
     const apps = [
         {
@@ -252,7 +252,7 @@ export function createHomeApp(router: Router): RouterMicroAppOptions {
             container.className = 'app-container';
             el.appendChild(container);
 
-            layout = useLayout({ appId: 'home', router });
+            layout = new Layout({ appId: 'home', router });
 
             container.innerHTML =
                 layout.header +
@@ -286,7 +286,7 @@ export function createHomeApp(router: Router): RouterMicroAppOptions {
             container = null;
         },
         renderToString() {
-            const layout = useLayout({ appId: 'home', router });
+            const layout = new Layout({ appId: 'home', router });
             return (
                 layout.header +
                 `<div style="margin-left: 260px; min-height: 100vh; background: #f8fafc; padding: 32px;">` +

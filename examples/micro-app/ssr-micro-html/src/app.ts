@@ -1,6 +1,6 @@
 import type { Router, RouterMicroAppOptions } from '@esmx/router';
 
-import { useLayout } from 'ssr-micro-shared/src/layout';
+import { Layout } from 'ssr-micro-shared/src/layout';
 
 const CONTENT_HTML = `
     <div style="max-width: 800px; margin: 0 auto;">
@@ -61,7 +61,7 @@ const CONTENT_HTML = `
 
 export function createHtmlApp(router: Router): RouterMicroAppOptions {
     let container: HTMLElement | null = null;
-    let layout: ReturnType<typeof useLayout> | null = null;
+    let layout: Layout | null = null;
 
     return {
         mount(el: HTMLElement) {
@@ -70,7 +70,7 @@ export function createHtmlApp(router: Router): RouterMicroAppOptions {
             container.className = 'app-container';
             el.appendChild(container);
 
-            layout = useLayout({ appId: 'html', router });
+            layout = new Layout({ appId: 'html', router });
 
             container.innerHTML =
                 layout.header +
@@ -90,7 +90,7 @@ export function createHtmlApp(router: Router): RouterMicroAppOptions {
             container = null;
         },
         renderToString() {
-            const layout = useLayout({ appId: 'html', router });
+            const layout = new Layout({ appId: 'html', router });
             return (
                 layout.header +
                 `<div style="margin-left: 260px; min-height: 100vh; background: #f8fafc; padding: 32px;">` +
