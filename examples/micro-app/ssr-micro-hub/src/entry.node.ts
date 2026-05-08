@@ -38,7 +38,10 @@ export default {
 
     async postBuild(esmx) {
         const rc = await esmx.render({
-            params: { url: '/', base: 'http://localhost:3000' }
+            params: {
+                url: '/',
+                base: 'http://localhost:3000/ssr-micro-hub/'
+            }
         });
         esmx.writeSync(esmx.resolvePath('dist/client', 'index.html'), rc.html);
     }
