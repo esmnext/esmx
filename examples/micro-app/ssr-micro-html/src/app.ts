@@ -13,7 +13,7 @@ export function createHtmlApp(router: Router): RouterMicroAppOptions {
             app.unmount();
         },
         renderToString() {
-            return app.render();
+            return app.render(true);
         }
     };
 }

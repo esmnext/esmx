@@ -16,7 +16,7 @@ export function createVue2App(router): RouterMicroAppOptions {
 
     return {
         mount(root: HTMLElement) {
-            const ssrEl = root.querySelector('[data-server-rendered="true"]');
+            const ssrEl = root.querySelector('[data-ssr="true"]');
             if (ssrEl) {
                 app.$mount(ssrEl as HTMLElement, true);
             } else {

@@ -1,11 +1,13 @@
 import type { RouterMicroAppOptions } from '@esmx/router';
 
 import { RouterProvider, useRouter } from '@esmx/router-react';
-import { useEffect, useMemo } from 'react';
-import { createRoot } from 'react-dom/client';
+import { createContext, useContext, useEffect, useMemo } from 'react';
+import { createRoot, hydrateRoot } from 'react-dom/client';
 import { renderToString } from 'react-dom/server';
 
 import { Layout } from 'ssr-micro-shared/src/layout';
+
+const SSRContext = createContext(false);
 
 function AppContent() {
     const router = useRouter();
@@ -19,8 +21,10 @@ function AppContent() {
         return () => layout.unmount();
     }, [layout]);
 
+    const ssr = useContext(SSRContext);
+
     return (
-        <div>
+        <div data-ssr={ssr}>
             <div
                 id={layout.headerId}
                 dangerouslySetInnerHTML={{ __html: layout.header }}
@@ -91,18 +95,25 @@ function AppContent() {
 }
 
 export function createReactApp(router): RouterMicroAppOptions {
-    const AppWithProvider = () => (
-        <RouterProvider router={router}>
-            <AppContent />
-        </RouterProvider>
+    const AppWithProvider = ({ ssr }: { ssr: boolean }) => (
+        <SSRContext.Provider value={ssr}>
+            <RouterProvider router={router}>
+                <AppContent />
+            </RouterProvider>
+        </SSRContext.Provider>
     );
 
     let root: ReturnType<typeof createRoot> | null = null;
 
     return {
         mount(el: HTMLElement) {
-            root = createRoot(el);
-            root.render(<AppWithProvider />);
+            const hasSSR = el.querySelector('[data-ssr="true"]') !== null;
+            if (hasSSR) {
+                root = hydrateRoot(el, <AppWithProvider ssr={false} />);
+            } else {
+                root = createRoot(el);
+                root.render(<AppWithProvider ssr={false} />);
+            }
         },
         unmount() {
             if (root) {
@@ -111,7 +122,7 @@ export function createReactApp(router): RouterMicroAppOptions {
             }
         },
         renderToString() {
-            return Promise.resolve(renderToString(<AppWithProvider />));
+            return Promise.resolve(renderToString(<AppWithProvider ssr={true} />));
         }
     };
 }

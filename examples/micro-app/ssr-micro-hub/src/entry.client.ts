@@ -1,9 +1,8 @@
 import { Router } from '@esmx/router';
 import { routes } from './routes';
 
-const pathname = location.pathname;
-const basePath = pathname.replace(/\/[^/]+\/?$/, '/');
-const base = new URL(basePath || '/', location.origin);
+const basePath = window.__ESMX_BASE__ || '/';
+const base = new URL(basePath, location.origin);
 
 const router = new Router({
     routes,

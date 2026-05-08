@@ -18,6 +18,8 @@ export default async (rc: RenderContext) => {
     const html = await router.renderToString();
     await rc.commit();
 
+    const basePath = new URL(base).pathname;
+
     rc.html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,6 +42,7 @@ export default async (rc: RenderContext) => {
         }
 
     </style>
+    <script>window.__ESMX_BASE__='${basePath}'</script>
 </head>
 <body>
     <div id="app">${html}</div>

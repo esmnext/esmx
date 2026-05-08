@@ -13,8 +13,16 @@ export function createVue3App(router): RouterMicroAppOptions {
     });
 
     return {
-        mount(el: HTMLElement) {
-            app.mount(el);
+        mount(root: HTMLElement) {
+            const ssrEl = root.querySelector('[data-ssr="true"]');
+            if (ssrEl) {
+                app.mount(ssrEl);
+            } else {
+                root.innerHTML = '';
+                const el = document.createElement('div');
+                app.mount(el);
+                root.appendChild(el);
+            }
         },
         unmount() {
             app.unmount();

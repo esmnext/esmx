@@ -107,10 +107,7 @@ export class Layout {
 
     mount(): void {
         const container = document.getElementById(this.headerId);
-        if (!container) {
-            console.warn('[Layout] Container not found:', this.headerId);
-            return;
-        }
+        if (!container) return;
 
         this.clickHandler = (e: Event) => {
             const target = e.target as HTMLElement;
@@ -120,16 +117,11 @@ export class Layout {
             e.preventDefault();
             const path = link.getAttribute('data-nav');
             if (path) {
-                try {
-                    this.router.push(path);
-                } catch (err) {
-                    console.error('[Layout] Router push failed:', err);
-                }
+                this.router.push(path);
             }
         };
 
         container.addEventListener('click', this.clickHandler);
-        console.log('[Layout] Event listener bound to:', this.headerId);
     }
 
     unmount(): void {

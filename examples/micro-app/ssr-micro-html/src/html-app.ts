@@ -9,9 +9,10 @@ export class HtmlApp {
         this.layout = new Layout({ appId: 'html', router });
     }
 
-    render(): string {
+    render(ssr = false): string {
+        const ssrAttr = ` data-ssr="${ssr}"`;
         return (
-            `<div data-app="html">` +
+            `<div${ssrAttr}>` +
             `<div id="${this.layout.headerId}">${this.layout.header}</div>` +
             `<div style="margin-left: 260px; min-height: 100vh; background: #f8fafc; padding: 32px;">` +
             `<div style="max-width: 800px; margin: 0 auto;">` +
@@ -58,7 +59,7 @@ export class HtmlApp {
     }
 
     mount(root: HTMLElement): void {
-        const ssrEl = root.querySelector('[data-app="html"]');
+        const ssrEl = root.querySelector('[data-ssr="true"]');
         if (ssrEl) {
             this.container = ssrEl as HTMLDivElement;
         } else {

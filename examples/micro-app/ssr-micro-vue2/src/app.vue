@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :data-ssr="ssr">
         <div :id="layout.headerId" v-html="layout.header"></div>
         <div style="margin-left: 260px; min-height: 100vh; background: #f8fafc; padding: 32px;">
             <div style="max-width: 800px; margin: 0 auto;">
@@ -47,10 +47,12 @@
 <script setup>
 import { useRouter } from '@esmx/router-vue';
 import { Layout } from 'ssr-micro-shared/src/layout';
-import { nextTick, onBeforeUnmount, onMounted } from 'vue';
+import { getCurrentInstance, nextTick, onBeforeUnmount, onMounted } from 'vue';
 
 const router = useRouter();
 const layout = new Layout({ appId: 'vue2', router });
+const instance = getCurrentInstance();
+const ssr = !!(instance && instance.proxy && instance.proxy.$ssrContext);
 
 onMounted(() => {
     nextTick(() => layout.mount());

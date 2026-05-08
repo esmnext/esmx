@@ -98,9 +98,10 @@ export class HomeApp {
         return heroSection + cardsSection;
     }
 
-    render(): string {
+    render(ssr = false): string {
+        const ssrAttr = ` data-ssr="${ssr}"`;
         return (
-            `<div data-app="home">` +
+            `<div${ssrAttr}>` +
             `<div id="${this.layout.headerId}">${this.layout.header}</div>` +
             `<div style="margin-left: 260px; min-height: 100vh; background: #f8fafc; padding: 32px;">${this.getContentHtml()}</div>` +
             `<div id="${this.layout.footerId}">${this.layout.footer}</div>` +
@@ -109,7 +110,7 @@ export class HomeApp {
     }
 
     mount(root: HTMLElement): void {
-        const ssrEl = root.querySelector('[data-app="home"]');
+        const ssrEl = root.querySelector('[data-ssr="true"]');
         if (ssrEl) {
             this.container = ssrEl as HTMLDivElement;
         } else {
