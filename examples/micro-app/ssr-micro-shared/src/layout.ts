@@ -13,9 +13,6 @@ const NAV_ITEMS = [
     { path: '/react', label: 'React', icon: 'R' }
 ];
 
-const SHARED_HEADER_ID = 'esmx-sidebar';
-const SHARED_FOOTER_ID = 'esmx-layout-footer';
-
 function getCurrentPath(router: Router): string {
     try {
         return router.route.path;
@@ -52,54 +49,24 @@ function generateNavHtml(currentPath: string): string {
     }).join('');
 }
 
-function updateActiveState(currentPath: string): void {
-    const headerEl = document.getElementById(SHARED_HEADER_ID);
-    if (!headerEl) return;
-
-    const links = headerEl.querySelectorAll('a[data-nav]');
-    links.forEach((link) => {
-        const path = link.getAttribute('data-nav');
-        const isActive = path === currentPath;
-        const el = link as HTMLElement;
-        el.style.color = isActive ? '#fff' : '#94a3b8';
-        el.style.background = isActive
-            ? 'rgba(59, 130, 246, 0.15)'
-            : 'transparent';
-        el.style.borderLeft = isActive
-            ? '3px solid #3b82f6'
-            : '3px solid transparent';
-        el.style.fontWeight = isActive ? '600' : '400';
-    });
-}
-
 export class Layout {
     public readonly appId: string;
     public readonly router: Router;
-    public readonly id: string;
     public readonly headerId: string;
     public readonly footerId: string;
-    private cleanup: (() => void) | null = null;
+    private clickHandler: ((e: Event) => void) | null = null;
 
     constructor(options: LayoutOptions) {
         this.appId = options.appId;
         this.router = options.router;
-        this.id = `${options.appId}-layout`;
-        this.headerId = SHARED_HEADER_ID;
-        this.footerId = SHARED_FOOTER_ID;
+        this.headerId = `${options.appId}-header`;
+        this.footerId = `${options.appId}-footer`;
     }
 
     get header(): string {
-        if (
-            typeof document !== 'undefined' &&
-            document.getElementById(this.headerId)
-        ) {
-            return '';
-        }
-
         const currentPath = getCurrentPath(this.router);
-
         return `
-            <div id="${this.headerId}" style="
+            <div style="
                 width: 260px;
                 background: #0f172a;
                 color: white;
@@ -123,11 +90,7 @@ export class Layout {
                 ">
                     Esmx Hub
                 </div>
-                <nav style="
-                    display: flex;
-                    flex-direction: column;
-                    gap: 4px;
-                ">
+                <nav style="display: flex; flex-direction: column; gap: 4px;">
                     ${generateNavHtml(currentPath)}
                 </nav>
             </div>
@@ -135,52 +98,35 @@ export class Layout {
     }
 
     get footer(): string {
-        return `<div id="${this.footerId}" style="display: none;"></div>`;
-    }
-
-    private bindEvents(): void {
-        const headerEl = document.getElementById(this.headerId);
-        if (!headerEl) return;
-
-        const links = headerEl.querySelectorAll('a[data-nav]');
-        const handlers = new Map<Element, EventListener>();
-
-        links.forEach((link) => {
-            const handler = (e: Event) => {
-                e.preventDefault();
-                const path = link.getAttribute('data-nav');
-                if (path) {
-                    this.router.push(path);
-                }
-            };
-            link.addEventListener('click', handler);
-            handlers.set(link, handler);
-        });
-
-        this.cleanup = () => {
-            handlers.forEach((handler, link) => {
-                link.removeEventListener('click', handler);
-            });
-        };
+        return `<div style="display: none;"></div>`;
     }
 
     mount(): void {
-        const currentPath = getCurrentPath(this.router);
+        const container = document.getElementById(this.headerId);
+        if (!container) return;
 
-        if (document.getElementById(this.headerId)) {
-            updateActiveState(currentPath);
-            if (this.cleanup) this.cleanup();
-            this.bindEvents();
-            return;
-        }
+        this.clickHandler = (e: Event) => {
+            const target = e.target as HTMLElement;
+            const link = target.closest('a[data-nav]') as HTMLElement | null;
+            if (!link) return;
 
-        this.bindEvents();
+            e.preventDefault();
+            const path = link.getAttribute('data-nav');
+            if (path) {
+                this.router.push(path);
+            }
+        };
+
+        container.addEventListener('click', this.clickHandler);
     }
 
     unmount(): void {
-        if (this.cleanup) {
-            this.cleanup();
-            this.cleanup = null;
+        if (this.clickHandler) {
+            const container = document.getElementById(this.headerId);
+            if (container) {
+                container.removeEventListener('click', this.clickHandler);
+            }
+            this.clickHandler = null;
         }
     }
 }
