@@ -2,6 +2,8 @@ import type { RouterMicroAppOptions } from '@esmx/router';
 import { RouterPlugin, useProvideRouter } from '@esmx/router-vue';
 import Vue from 'vue';
 
+import AppComponent from './app.vue';
+
 Vue.use(RouterPlugin);
 
 export function createVue2App(router): RouterMicroAppOptions {
@@ -18,7 +20,7 @@ export function createVue2App(router): RouterMicroAppOptions {
                 setup() {
                     useProvideRouter(router);
                 },
-                render: (h) => h('router-view')
+                render: (h) => h(AppComponent)
             });
             app.$mount(container);
         },
@@ -27,7 +29,7 @@ export function createVue2App(router): RouterMicroAppOptions {
                 app.$destroy();
                 app = null;
             }
-            if (container && container.parentNode) {
+            if (container?.parentNode) {
                 container.parentNode.removeChild(container);
             }
             container = null;
@@ -39,7 +41,7 @@ export function createVue2App(router): RouterMicroAppOptions {
                 setup() {
                     useProvideRouter(router);
                 },
-                render: (h) => h('router-view')
+                render: (h) => h(AppComponent)
             });
             return renderer.renderToString(vm);
         }

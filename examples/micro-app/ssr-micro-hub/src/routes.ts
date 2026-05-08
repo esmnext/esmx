@@ -1,4 +1,3 @@
-import { Router } from '@esmx/router';
 import { routes as htmlRoutes } from 'ssr-micro-html/src/routes';
 import { routes as reactRoutes } from 'ssr-micro-react/src/routes';
 import { routes as vue2Routes } from 'ssr-micro-vue2/src/routes';
