@@ -47,11 +47,13 @@
 <script setup lang="ts">
 import { useRouter } from '@esmx/router-vue';
 import { Layout } from 'ssr-micro-shared/src/layout';
-import { onBeforeUnmount, onMounted } from 'vue';
+import { nextTick, onBeforeUnmount, onMounted } from 'vue';
 
 const router = useRouter();
 const layout = new Layout({ appId: 'vue3', router });
 
-onMounted(() => layout.mount());
+onMounted(() => {
+    nextTick(() => layout.mount());
+});
 onBeforeUnmount(() => layout.unmount());
 </script>

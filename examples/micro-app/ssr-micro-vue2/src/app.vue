@@ -44,22 +44,17 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { useRouter } from '@esmx/router-vue';
 import { Layout } from 'ssr-micro-shared/src/layout';
+import { nextTick, onBeforeUnmount, onMounted } from 'vue';
 
-export default {
-    setup() {
-        const router = useRouter();
-        const layout = new Layout({ appId: 'vue2', router });
+const router = useRouter();
+const layout = new Layout({ appId: 'vue2', router });
 
-        return { layout };
-    },
-    mounted() {
-        this.layout.mount();
-    },
-    beforeDestroy() {
-        this.layout.unmount();
-    }
-};
+onMounted(() => {
+    nextTick(() => layout.mount());
+});
+
+onBeforeUnmount(() => layout.unmount());
 </script>
