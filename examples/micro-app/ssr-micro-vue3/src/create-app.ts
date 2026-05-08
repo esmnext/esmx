@@ -12,20 +12,24 @@ export function createVue3App(router): RouterMicroAppOptions {
         render: () => h(AppComponent)
     });
 
+    let container: HTMLElement | null = null;
+
     return {
         mount(root: HTMLElement) {
             const ssrEl = root.querySelector('[data-ssr="true"]');
             if (ssrEl) {
-                app.mount(ssrEl);
+                container = ssrEl as HTMLElement;
+                app.mount(container);
             } else {
-                root.innerHTML = '';
-                const el = document.createElement('div');
-                app.mount(el);
-                root.appendChild(el);
+                container = document.createElement('div');
+                app.mount(container);
+                root.appendChild(container);
             }
         },
         unmount() {
             app.unmount();
+            container?.remove();
+            container = null;
         },
         async renderToString() {
             const { renderToString } = await import('@vue/server-renderer');
