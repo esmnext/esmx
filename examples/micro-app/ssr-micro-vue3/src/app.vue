@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-html="header"></div>
+        <div :id="layout.headerId" v-once v-html="layout.header"></div>
         <div style="margin-left: 260px; min-height: 100vh; background: #f8fafc; padding: 32px;">
             <div style="max-width: 800px; margin: 0 auto;">
                 <div style="
@@ -22,7 +22,6 @@
                         font-weight: 700;
                         font-size: 24px;
                         margin: 0 auto 24px;
-                        box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
                     ">V3</div>
                     <h1 style="
                         font-size: 2rem;
@@ -37,40 +36,21 @@
                         max-width: 500px;
                         margin-left: auto;
                         margin-right: auto;
-                    ">This page is rendered by a Vue 3.5 micro-app with full SSR support, script setup syntax, and modern tooling.</p>
-                    <div style="
-                        display: inline-flex;
-                        align-items: center;
-                        gap: 8px;
-                        padding: 12px 24px;
-                        background: #eff6ff;
-                        border-radius: 8px;
-                        color: #1e40af;
-                        font-family: monospace;
-                        font-size: 14px;
-                    ">
-                        <span></span> ssr-micro-vue3
-                    </div>
-                    <div style="margin-top: 32px; padding-top: 32px; border-top: 1px solid #e2e8f0;">
-                        <p style="color: #94a3b8; font-size: 14px; margin: 0;">Vue 3.5 with Composition API and SSR</p>
-                    </div>
+                    ">This page is rendered by a Vue 3.5 micro-app with full SSR support.</p>
                 </div>
             </div>
         </div>
-        <div v-html="footer"></div>
+        <div :id="layout.footerId" v-once v-html="layout.footer"></div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { useRouter } from '@esmx/router-vue';
 import { Layout } from 'ssr-micro-shared/src/layout';
-import { computed, onBeforeUnmount, onMounted } from 'vue';
+import { onBeforeUnmount, onMounted } from 'vue';
 
 const router = useRouter();
 const layout = new Layout({ appId: 'vue3', router });
-
-const header = computed(() => layout.header);
-const footer = computed(() => layout.footer);
 
 onMounted(() => layout.mount());
 onBeforeUnmount(() => layout.unmount());
