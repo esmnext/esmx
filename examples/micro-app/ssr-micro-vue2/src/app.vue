@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div :id="layout.headerId" v-once v-html="layout.header"></div>
+        <div :id="layout.headerId" v-html="layout.header"></div>
         <div style="margin-left: 260px; min-height: 100vh; background: #f8fafc; padding: 32px;">
             <div style="max-width: 800px; margin: 0 auto;">
                 <div style="
@@ -40,7 +40,7 @@
                 </div>
             </div>
         </div>
-        <div :id="layout.footerId" v-once v-html="layout.footer"></div>
+        <div :id="layout.footerId" v-html="layout.footer"></div>
     </div>
 </template>
 
