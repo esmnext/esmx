@@ -3,7 +3,7 @@ import { createHtmlApp } from './create-app';
 
 export const routes: RouteConfig[] = [
     {
-        path: '/html',
+        path: '/html/',
         app: createHtmlApp
     }
 ];

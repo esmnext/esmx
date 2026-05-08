@@ -3,7 +3,7 @@ import { createReactApp } from './create-app.tsx';
 
 export const routes: RouteConfig[] = [
     {
-        path: '/react',
+        path: '/react/',
         app: createReactApp
     }
 ];

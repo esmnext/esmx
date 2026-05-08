@@ -4,7 +4,7 @@ import { createVue2App } from './create-app';
 
 export const routes: RouteConfig[] = [
     {
-        path: '/vue2',
+        path: '/vue2/',
         app: createVue2App,
         component: AppComponent
     }
