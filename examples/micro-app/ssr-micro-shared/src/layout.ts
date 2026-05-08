@@ -21,12 +21,16 @@ function getCurrentPath(router: Router): string {
     }
 }
 
-function generateNavHtml(currentPath: string): string {
+function generateNavHtml(router: Router, currentPath: string): string {
     return NAV_ITEMS.map((item) => {
         const isActive = currentPath === item.path;
+        const resolved = router.resolveLink({
+            to: item.path,
+            type: 'push'
+        });
         return `
             <a
-                href="${item.path}"
+                href="${resolved.attributes.href}"
                 data-nav="${item.path}"
                 style="
                     display: flex;
@@ -91,7 +95,7 @@ export class Layout {
                     Esmx Hub
                 </div>
                 <nav style="display: flex; flex-direction: column; gap: 4px;">
-                    ${generateNavHtml(currentPath)}
+                    ${generateNavHtml(this.router, currentPath)}
                 </nav>
             </div>
         `;

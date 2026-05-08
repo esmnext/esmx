@@ -86,7 +86,8 @@ export function parsedOptions(
         fallback: options.fallback ?? fallback,
         nextTick: options.nextTick ?? (() => {}),
         handleBackBoundary: options.handleBackBoundary ?? (() => {}),
-        handleLayerClose: options.handleLayerClose ?? (() => {})
+        handleLayerClose: options.handleLayerClose ?? (() => {}),
+        resolveLink: options.resolveLink ?? ((link) => link)
     });
 }
 

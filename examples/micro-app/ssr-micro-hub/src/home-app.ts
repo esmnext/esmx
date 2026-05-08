@@ -72,8 +72,12 @@ export class HomeApp {
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;">
                 ${this.apps
                     .map((app) => {
+                        const resolved = this.router.resolveLink({
+                            to: app.to,
+                            type: 'push'
+                        });
                         return `
-                        <a href="${app.to}" data-to="${app.to}" style="text-decoration: none; color: inherit; display: block;">
+                        <a href="${resolved.attributes.href}" data-to="${app.to}" style="text-decoration: none; color: inherit; display: block;">
                             <article style="background: white; border-radius: 16px; padding: 32px; border: 1px solid #e2e8f0; cursor: pointer;">
                                 <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px;">
                                     <div style="width: 56px; height: 56px; background: ${app.iconBg}; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 20px;">${app.icon}</div>

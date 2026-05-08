@@ -7,7 +7,12 @@ export default async (rc: RenderContext) => {
     const base = (rc.params.base as string) || 'http://localhost:3000';
     const router = new Router({
         routes,
-        base: new URL(base)
+        base: new URL(base),
+        resolveLink(link) {
+            const { href, origin } = link.route.url;
+            link.attributes.href = href.slice(origin.length) || '/';
+            return link;
+        }
     });
     await router.replace(`${base}${url}`);
     const html = await router.renderToString();
