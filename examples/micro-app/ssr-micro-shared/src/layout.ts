@@ -7,10 +7,10 @@ export interface LayoutOptions {
 
 const NAV_ITEMS = [
     { path: '/', label: 'Home', icon: '🏠' },
-    { path: '/html', label: 'HTML', icon: 'H' },
-    { path: '/vue2', label: 'Vue 2', icon: 'V2' },
-    { path: '/vue3', label: 'Vue 3', icon: 'V3' },
-    { path: '/react', label: 'React', icon: 'R' }
+    { path: '/html/', label: 'HTML', icon: 'H' },
+    { path: '/vue2/', label: 'Vue 2', icon: 'V2' },
+    { path: '/vue3/', label: 'Vue 3', icon: 'V3' },
+    { path: '/react/', label: 'React', icon: 'R' }
 ];
 
 function generateNavHtml(router: Router): string {
