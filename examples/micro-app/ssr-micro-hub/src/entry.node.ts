@@ -25,8 +25,8 @@ export default {
                 const host = req.headers.host || 'localhost:3000';
                 const rc = await esmx.render({
                     params: {
-                        url: `${protocol}://${host}${req.url}`,
-                        base: 'http://localhost:3000/ssr-micro-hub/'
+                        url: req.url,
+                        base: `${protocol}://${host}/`
                     }
                 });
                 res.end(rc.html);
