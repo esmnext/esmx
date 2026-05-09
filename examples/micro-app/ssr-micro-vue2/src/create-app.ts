@@ -1,6 +1,6 @@
 import type { RouterMicroAppOptions } from '@esmx/router';
 import { RouterPlugin, useProvideRouter } from '@esmx/router-vue';
-import { BaseApp } from 'ssr-micro-shared/src/index';
+import { BaseApp, setSsrStyles } from 'ssr-micro-shared/src/index';
 import Vue from 'vue';
 import AppComponent from './app.vue';
 
@@ -36,7 +36,12 @@ class Vue2App extends BaseApp {
     async renderToString(): Promise<string> {
         const { createRenderer } = await import('vue-server-renderer');
         const renderer = createRenderer();
-        const html = await renderer.renderToString(this.app);
+        const ctx: Record<string, unknown> = {};
+        const html = await renderer.renderToString(this.app, ctx);
+        const fn = ctx.renderStyles as (() => string) | undefined;
+        if (fn) {
+            setSsrStyles(this.router, fn());
+        }
         return html?.trim() ? `<div>${html}</div>` : '';
     }
 }

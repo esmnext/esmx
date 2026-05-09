@@ -1,5 +1,6 @@
 import type { RenderContext } from '@esmx/core';
 import { Router } from '@esmx/router';
+import { getSsrStyles } from 'ssr-micro-shared/src/index';
 import { routes } from './routes';
 
 export default async (rc: RenderContext) => {
@@ -19,6 +20,7 @@ export default async (rc: RenderContext) => {
     await rc.commit();
 
     const basePath = new URL(base).pathname;
+    const renderStyles = getSsrStyles(router);
 
     rc.html = `<!DOCTYPE html>
 <html lang="en">
@@ -28,6 +30,7 @@ export default async (rc: RenderContext) => {
     <link rel="icon" href="https://esmx.dev/logo.svg" type="image/svg+xml">
     ${rc.preload()}
     <title>Esmx Micro-App Hub</title>
+    ${renderStyles}
     ${rc.css()}
     <style>
         *, *::before, *::after {
