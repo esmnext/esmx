@@ -33,7 +33,7 @@ npm install @esmx/router-vue
 import { Router, RouterMode } from '@esmx/router';
 
 const router = new Router({
-  root: '#app',
+  appId: 'app',
   mode: RouterMode.history,
   routes: [
     { path: '/', component: HomePage },
@@ -103,7 +103,7 @@ import { createVueApp } from './create-app';
 import { routes } from './routes';
 
 const router = new Router({
-  root: '#app',
+  appId: 'app',
   mode: RouterMode.history,
   routes
 });
@@ -185,7 +185,7 @@ import { routes } from './routes';
 Vue.use(RouterPlugin);
 
 const router = new Router({
-  root: '#app',
+  appId: 'app',
   mode: RouterMode.history,
   routes
 });
@@ -220,7 +220,7 @@ import { createElement } from 'react';
 import { routes } from './routes';
 
 const router = new Router({
-  root: '#app',
+  appId: 'app',
   mode: RouterMode.history,
   routes,
   apps: (router) => {
@@ -340,7 +340,7 @@ import { createVueApp } from './create-app';
 import { routes } from './routes';
 
 const router = new Router({
-  root: '#app',
+  appId: 'app',
   mode: RouterMode.history,
   routes
 });

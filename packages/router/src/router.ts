@@ -47,8 +47,8 @@ export class Router {
         return this.parsedOptions.data;
     }
 
-    public get root() {
-        return this.parsedOptions.root;
+    public get appId() {
+        return this.parsedOptions.appId;
     }
     public get mode(): RouterMode {
         return this.parsedOptions.mode;
@@ -266,7 +266,7 @@ export class Router {
             ...this.options,
             context: this.parsedOptions.context,
             mode: RouterMode.memory,
-            root: undefined,
+            appId: undefined,
             ...layerOptions.routerOptions,
             handleBackBoundary(router) {
                 router.destroy();
@@ -372,7 +372,9 @@ export class Router {
     public async renderToString(throwError = false): Promise<string | null> {
         try {
             const result = await this.microApp.app?.renderToString?.();
-            return result ?? null;
+            const hasContent = result && result.trim().length > 0;
+            const ssrAttr = hasContent ? ' data-ssr' : '';
+            return `<div id="${this.appId}"${ssrAttr}>${result ?? ''}</div>`;
         } catch (e) {
             if (throwError) throw e;
             else console.error(e);

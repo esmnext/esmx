@@ -3,31 +3,21 @@ import type { RouterMicroAppCallback, RouterMicroAppOptions } from './types';
 import { isBrowser, isPlainObject } from './util';
 
 /**
- * Resolves the root container element.
- * Supports a DOM selector string or a direct HTMLElement.
+ * Gets the root container element by ID.
+ * If not found, creates a new div with the given ID and appends it to document.body.
  *
- * @param rootConfig - The root container configuration, can be a selector string or an HTMLElement.
+ * @param appId - The application container ID.
  * @returns The resolved HTMLElement.
  */
-export function resolveRootElement(
-    rootConfig?: string | HTMLElement
-): HTMLElement {
-    let el: HTMLElement | null = null;
-    // Direct HTMLElement provided
-    if (rootConfig instanceof HTMLElement) {
-        el = rootConfig;
+export function getRootElement(appId: string): HTMLElement {
+    const el = document.getElementById(appId);
+    if (el) {
+        return el;
     }
-    if (typeof rootConfig === 'string' && rootConfig) {
-        try {
-            el = document.querySelector(rootConfig);
-        } catch (error) {
-            console.warn(`Failed to resolve root element: ${rootConfig}`);
-        }
-    }
-    if (el === null) {
-        el = document.createElement('div');
-    }
-    return el;
+    const newEl = document.createElement('div');
+    newEl.id = appId;
+    document.body.appendChild(newEl);
+    return newEl;
 }
 
 export class MicroApp {
@@ -50,21 +40,42 @@ export class MicroApp {
         if (isBrowser && app) {
             let root: HTMLElement | null = this.root;
             if (root === null) {
-                root = resolveRootElement(router.root);
+                root = getRootElement(router.appId);
                 const { rootStyle } = router.parsedOptions;
                 if (root && isPlainObject(rootStyle)) {
                     Object.assign(root.style, router.parsedOptions.rootStyle);
                 }
+                this.root = root;
             }
             if (root) {
-                app.mount(root);
-                if (root.parentNode === null) {
-                    document.body.appendChild(root);
+                const isHydration = root.hasAttribute('data-ssr');
+                if (isHydration) {
+                    const appRoot = root.firstElementChild as HTMLElement;
+                    if (appRoot) {
+                        if (app.hydration) {
+                            app.hydration(appRoot);
+                        } else {
+                            throw new Error(
+                                'SSR content detected but hydration function not provided'
+                            );
+                        }
+                    } else {
+                        // No child elements (e.g., Vue 2 comment nodes), fallback to mount
+                        const el = document.createElement('div');
+                        root.appendChild(el);
+                        app.mount(el);
+                    }
+                    // Remove data-ssr attribute after hydration
+                    root.removeAttribute('data-ssr');
+                } else {
+                    const el = document.createElement('div');
+                    root.appendChild(el);
+                    app.mount(el);
                 }
-                this.root = root;
             }
             if (oldApp) {
                 oldApp.unmount();
+                root?.firstElementChild?.remove();
             }
         }
         this.app = app;
@@ -97,8 +108,8 @@ export class MicroApp {
 
     public destroy() {
         this.app?.unmount();
+        this.root?.firstElementChild?.remove();
         this.app = null;
-        this.root?.remove();
         this.root = null;
         this._factory = null;
         this.destroyed = true;

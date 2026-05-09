@@ -15,6 +15,16 @@ class ReactApp extends BaseApp {
                 <AppContent />
             </RouterProvider>
         );
+        this.reactRoot = createRoot(container);
+        this.reactRoot.render(<App />);
+    }
+
+    protected onHydration(container: HTMLElement): void {
+        const App = () => (
+            <RouterProvider router={this.router}>
+                <AppContent />
+            </RouterProvider>
+        );
         this.reactRoot = hydrateRoot(container, <App />);
     }
 
@@ -36,7 +46,8 @@ class ReactApp extends BaseApp {
 export function createReactApp(router): RouterMicroAppOptions {
     const app = new ReactApp(router);
     return {
-        mount: (root) => app.mount(root),
+        mount: (el) => app.mount(el),
+        hydration: (el) => app.hydration(el),
         unmount: () => app.unmount(),
         renderToString: () => app.renderToString()
     };

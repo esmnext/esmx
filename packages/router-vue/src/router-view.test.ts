@@ -72,7 +72,7 @@ describe('router-view.ts - RouterView Component', () => {
         ];
 
         router = new Router({
-            root: '#test-app',
+            appId: 'test-app',
             routes,
             mode: RouterMode.memory,
             base: new URL('http://localhost:8000/')
@@ -184,7 +184,7 @@ describe('router-view.ts - RouterView Component', () => {
             ];
 
             const functionRouter = new Router({
-                root: '#test-app',
+                appId: 'test-app',
                 routes,
                 mode: RouterMode.memory,
                 base: new URL('http://localhost:8000/')
@@ -312,7 +312,7 @@ describe('router-view.ts - RouterView Component', () => {
             ];
 
             const nestedRouter = new Router({
-                root: '#test-app',
+                appId: 'test-app',
                 routes: nestedRoutes,
                 mode: RouterMode.memory,
                 base: new URL('http://localhost:8000/')
@@ -385,7 +385,7 @@ describe('router-view.ts - RouterView Component', () => {
             ];
 
             const nullRouter = new Router({
-                root: '#test-app',
+                appId: 'test-app',
                 routes: routesWithNull,
                 mode: RouterMode.memory,
                 base: new URL('http://localhost:8000/')
@@ -417,7 +417,7 @@ describe('router-view.ts - RouterView Component', () => {
 
         it('should handle non-existent routes', async () => {
             const nonExistentRouter = new Router({
-                root: '#test-app',
+                appId: 'test-app',
                 routes: [
                     {
                         path: '/',
@@ -471,7 +471,7 @@ describe('router-view.ts - RouterView Component', () => {
             ];
 
             const malformedRouter = new Router({
-                root: '#test-app',
+                appId: 'test-app',
                 routes: malformedRoutes,
                 mode: RouterMode.memory,
                 base: new URL('http://localhost:8000/')
@@ -594,7 +594,7 @@ describe('router-view.ts - RouterView Component', () => {
             ];
 
             const testRouter = new Router({
-                root: '#test-app',
+                appId: 'test-app',
                 routes,
                 mode: RouterMode.memory,
                 base: new URL('http://localhost:8000/')
@@ -652,7 +652,7 @@ describe('router-view.ts - RouterView Component', () => {
             ];
 
             const testRouter = new Router({
-                root: '#test-app',
+                appId: 'test-app',
                 routes,
                 mode: RouterMode.memory,
                 base: new URL('http://localhost:8000/')
@@ -684,7 +684,7 @@ describe('router-view.ts - RouterView Component', () => {
             ];
 
             const newRouter = new Router({
-                root: '#test-app',
+                appId: 'test-app',
                 routes: newRoutes,
                 mode: RouterMode.memory,
                 base: new URL('http://localhost:8000/')
@@ -731,7 +731,7 @@ describe('router-view.ts - RouterView Component', () => {
             ];
 
             const testRouter = new Router({
-                root: '#test-app',
+                appId: 'test-app',
                 routes,
                 mode: RouterMode.memory,
                 base: new URL('http://localhost:8000/')
@@ -807,7 +807,7 @@ describe('router-view.ts - RouterView Component', () => {
             ];
 
             const nestedRouter = new Router({
-                root: '#test-app',
+                appId: 'test-app',
                 routes: nestedRoutes,
                 mode: RouterMode.memory,
                 base: new URL('http://localhost:8000/')

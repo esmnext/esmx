@@ -20,6 +20,12 @@ class Vue2App extends BaseApp {
     }
 
     protected onMount(container: HTMLElement): void {
+        const el = document.createElement('div');
+        container.appendChild(el);
+        this.app.$mount(el);
+    }
+
+    protected onHydration(container: HTMLElement): void {
         this.app.$mount(container, true);
     }
 
@@ -37,7 +43,8 @@ class Vue2App extends BaseApp {
 export function createVue2App(router): RouterMicroAppOptions {
     const app = new Vue2App(router);
     return {
-        mount: (root) => app.mount(root),
+        mount: (el) => app.mount(el),
+        hydration: (el) => app.hydration(el),
         unmount: () => app.unmount(),
         renderToString: () => app.renderToString()
     };

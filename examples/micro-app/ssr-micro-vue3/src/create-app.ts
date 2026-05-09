@@ -21,6 +21,10 @@ class Vue3App extends BaseApp {
         this.app.mount(container);
     }
 
+    protected onHydration(container: HTMLElement): void {
+        this.app.mount(container);
+    }
+
     protected onUnmount(): void {
         this.app.unmount();
     }
@@ -34,7 +38,8 @@ class Vue3App extends BaseApp {
 export function createVue3App(router): RouterMicroAppOptions {
     const app = new Vue3App(router);
     return {
-        mount: (root) => app.mount(root),
+        mount: (el) => app.mount(el),
+        hydration: (el) => app.hydration(el),
         unmount: () => app.unmount(),
         renderToString: () => app.renderToString()
     };

@@ -56,7 +56,10 @@ export class HtmlApp extends BaseApp {
     }
 
     protected onMount(container: HTMLElement): void {
-        container.setAttribute('data-ssr', 'false');
+        this.layout.mount();
+    }
+
+    protected onHydration(container: HTMLElement): void {
         this.layout.mount();
     }
 
@@ -65,6 +68,6 @@ export class HtmlApp extends BaseApp {
     }
 
     renderToString(): Promise<string> {
-        return Promise.resolve(`<div data-ssr>${this.render()}</div>`);
+        return Promise.resolve(this.render());
     }
 }

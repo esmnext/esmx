@@ -49,7 +49,7 @@ describe('router-link.ts - RouterLink Component', () => {
 
         // Create router instance
         router = new Router({
-            root: '#test-app',
+            appId: 'test-app',
             routes,
             mode: RouterMode.memory,
             base: new URL('http://localhost:8000/')

@@ -45,7 +45,7 @@ export default async (rc: RenderContext) => {
     <script>window.__ESMX_BASE__='${basePath}'</script>
 </head>
 <body>
-    <div id="root">${html ?? ''}</div>
+    ${html ?? '<div id="app"></div>'}
     ${rc.importmap()}
     ${rc.moduleEntry()}
     ${rc.modulePreload()}

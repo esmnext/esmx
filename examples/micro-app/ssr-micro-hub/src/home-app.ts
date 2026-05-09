@@ -105,7 +105,24 @@ export class HomeApp extends BaseApp {
     }
 
     protected onMount(container: HTMLElement): void {
-        container.setAttribute('data-ssr', 'false');
+        this.layout.mount();
+
+        container.addEventListener('click', async (e) => {
+            const target = e.target as HTMLElement;
+            const anchor = target.closest(
+                'a[data-to]'
+            ) as HTMLAnchorElement | null;
+            if (!anchor) return;
+
+            const to = anchor.getAttribute('data-to');
+            if (!to) return;
+
+            e.preventDefault();
+            await this.router.push(to);
+        });
+    }
+
+    protected onHydration(container: HTMLElement): void {
         this.layout.mount();
 
         container.addEventListener('click', async (e) => {
@@ -128,6 +145,6 @@ export class HomeApp extends BaseApp {
     }
 
     renderToString(): Promise<string> {
-        return Promise.resolve(`<div data-ssr>${this.render()}</div>`);
+        return Promise.resolve(this.render());
     }
 }

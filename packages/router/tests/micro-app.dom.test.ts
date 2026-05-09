@@ -2,7 +2,7 @@
  * @vitest-environment happy-dom
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { MicroApp, resolveRootElement } from '../src/micro-app';
+import { getRootElement, MicroApp } from '../src/micro-app';
 import { parsedOptions } from '../src/options';
 import { Route } from '../src/route';
 import type { Router } from '../src/router';
@@ -29,14 +29,14 @@ const createMockParsedConfig = (
 
 const createMockRouter = (
     overrides: {
-        root?: string | HTMLElement;
+        appId?: string;
         matched?: Array<{ app?: string | RouterMicroAppCallback }>;
         options?: any;
         parsedOptions?: Partial<RouterParsedOptions>;
     } = {}
 ): Router => {
     const baseOptions: RouterOptions = {
-        root: overrides.root || '#test-router',
+        appId: overrides.appId || 'test-router',
         context: {},
         routes: [],
         mode: RouterMode.memory,
@@ -74,7 +74,7 @@ const createMockRouter = (
     });
 
     return {
-        root: overrides.root || '#test-router',
+        appId: overrides.appId || 'test-router',
         route: mockRoute,
         options: overrides.options || {},
         parsedOptions: mockParsedOptions
@@ -87,168 +87,45 @@ const createMockApp = (): RouterMicroAppOptions => ({
     renderToString: vi.fn().mockResolvedValue('<div>rendered</div>')
 });
 
-describe('resolveRootElement', () => {
+const createMockAppWithHydration = (): RouterMicroAppOptions => ({
+    mount: vi.fn(),
+    hydration: vi.fn(),
+    unmount: vi.fn(),
+    renderToString: vi.fn().mockResolvedValue('<div>rendered</div>')
+});
+
+describe('getRootElement', () => {
     afterEach(() => {
         vi.clearAllMocks();
-        // Clean up the DOM
         document.body.innerHTML = '';
     });
 
     describe('Basic functionality tests', () => {
-        it('should return a div element when the parameter is empty', () => {
-            const result1 = resolveRootElement();
-            expect(result1).toBeInstanceOf(HTMLElement);
-            expect(result1.tagName).toBe('DIV');
-
-            const result2 = resolveRootElement(undefined);
-            expect(result2).toBeInstanceOf(HTMLElement);
-            expect(result2.tagName).toBe('DIV');
-        });
-
-        it('should correctly handle a directly passed HTMLElement', () => {
+        it('should return element by id', () => {
             const element = document.createElement('div');
-            element.id = 'test-element';
+            element.id = 'test-app';
+            document.body.appendChild(element);
 
-            const result = resolveRootElement(element);
+            const result = getRootElement('test-app');
 
             expect(result).toBe(element);
-            expect(result!.id).toBe('test-element');
+            expect(result.id).toBe('test-app');
         });
 
-        it('should correctly handle a string selector', () => {
-            const existingElement = document.createElement('div');
-            existingElement.id = 'existing-element';
-            document.body.appendChild(existingElement);
-
-            const result = resolveRootElement('#existing-element');
-
-            expect(result).toBe(existingElement);
-        });
-
-        it('should create a new element when not found', () => {
-            const result = resolveRootElement('#non-existent');
-
+        it('should create new element when not found', () => {
+            const result = getRootElement('non-existent');
             expect(result).toBeInstanceOf(HTMLElement);
-            expect(result!.tagName).toBe('DIV');
-            expect(result!.id).toBe('');
-        });
-    });
-
-    describe('Selector type tests', () => {
-        it('should handle ID selectors', () => {
-            // Test finding an existing element
-            const existingElement = document.createElement('div');
-            existingElement.id = 'app';
-            document.body.appendChild(existingElement);
-            const result = resolveRootElement('#app');
-            expect(result).toBeInstanceOf(HTMLElement);
-            expect(result!.id).toBe('app');
-
-            // Test creating a new element when not found
-            const newResult = resolveRootElement('#new-app');
-            expect(newResult).toBeInstanceOf(HTMLElement);
-            expect(newResult.tagName).toBe('DIV');
-            expect(newResult.id).toBe('');
-        });
-
-        it('should handle class selectors', () => {
-            const element = document.createElement('div');
-            element.className = 'app-container';
-            document.body.appendChild(element);
-
-            const result = resolveRootElement('.app-container');
-
-            expect(result).toBe(element);
-        });
-
-        it('should handle attribute selectors', () => {
-            const element = document.createElement('div');
-            element.setAttribute('data-app', 'main');
-            document.body.appendChild(element);
-
-            const result = resolveRootElement('[data-app="main"]');
-
-            expect(result).toBe(element);
-        });
-
-        it('should handle tag selectors', () => {
-            const element = document.createElement('main');
-            document.body.appendChild(element);
-
-            const result = resolveRootElement('main');
-
-            expect(result).toBe(element);
+            expect(result.id).toBe('non-existent');
+            expect(document.body.contains(result)).toBe(true);
         });
     });
 
     describe('Edge case tests', () => {
-        it('should handle complex selectors', () => {
-            const container = document.createElement('div');
-            container.className = 'container';
-            const app = document.createElement('div');
-            app.id = 'app';
-            container.appendChild(app);
-            document.body.appendChild(container);
-
-            const result = resolveRootElement('.container #app');
-
-            expect(result).toBe(app);
-        });
-
-        it('should return the first matching element', () => {
-            const element1 = document.createElement('div');
-            element1.className = 'multiple';
-            element1.textContent = 'first';
-            const element2 = document.createElement('div');
-            element2.className = 'multiple';
-            element2.textContent = 'second';
-
-            document.body.appendChild(element1);
-            document.body.appendChild(element2);
-
-            const result = resolveRootElement('.multiple');
-
-            expect(result).toBe(element1);
-        });
-
-        it('should handle non-string, non-HTMLElement inputs', () => {
-            // @ts-expect-error - testing invalid input
-            const result1 = resolveRootElement(123);
-            expect(result1).toBeInstanceOf(HTMLElement);
-            expect(result1.tagName).toBe('DIV');
-
-            // @ts-expect-error - testing invalid input
-            const result2 = resolveRootElement({});
-            expect(result2).toBeInstanceOf(HTMLElement);
-            expect(result2.tagName).toBe('DIV');
-
-            // @ts-expect-error - testing invalid input
-            const result3 = resolveRootElement([]);
-            expect(result3).toBeInstanceOf(HTMLElement);
-            expect(result3.tagName).toBe('DIV');
-        });
-    });
-
-    describe('Type safety tests', () => {
-        it('should return any type of element found', () => {
-            const svg = document.createElementNS(
-                'http://www.w3.org/2000/svg',
-                'svg'
-            );
-            svg.id = 'svg-element';
-            document.body.appendChild(svg);
-
-            const result = resolveRootElement('#svg-element');
-
-            expect(result).toBe(svg);
-            expect(result).toBeInstanceOf(SVGElement);
-        });
-
-        it('should handle non-element nodes like text nodes', () => {
-            // querySelector will not return text nodes, but this is for type safety verification.
-            const result = resolveRootElement('#non-existent-text');
-
+        it('should create element with empty string id', () => {
+            const result = getRootElement('');
             expect(result).toBeInstanceOf(HTMLElement);
+            expect(result.id).toBe('');
+            expect(document.body.contains(result)).toBe(true);
         });
     });
 });
@@ -262,7 +139,6 @@ describe('MicroApp', () => {
 
     afterEach(() => {
         vi.clearAllMocks();
-        // Clean up the DOM
         document.body.innerHTML = '';
     });
 
@@ -394,12 +270,14 @@ describe('MicroApp', () => {
             expect((microApp as any)._factory).toBeNull();
         });
 
-        it('should create a new root element and mount the application', () => {
+        it('should mount app with a new element as root', () => {
             const mockApp = createMockApp();
             const mockFactory = vi.fn().mockReturnValue(mockApp);
 
+            document.body.innerHTML = '';
+
             const router = createMockRouter({
-                root: '#test-router',
+                appId: 'test-router',
                 matched: [{ app: 'test-app' }],
                 options: { apps: { 'test-app': mockFactory } }
             });
@@ -407,12 +285,16 @@ describe('MicroApp', () => {
             microApp._update(router);
 
             expect(microApp.root).toBeInstanceOf(HTMLElement);
-            expect(microApp.root!.tagName).toBe('DIV');
-            expect(mockApp.mount).toHaveBeenCalledWith(microApp.root);
-            expect(document.body.contains(microApp.root!)).toBe(true);
+            expect(microApp.root!.id).toBe('test-router');
+            // mount should be called with a child element, not the root itself
+            expect(mockApp.mount).toHaveBeenCalledTimes(1);
+            const mountArg = (mockApp.mount as any).mock.calls[0][0];
+            expect(mountArg).toBeInstanceOf(HTMLElement);
+            expect(mountArg.parentNode).toBe(microApp.root);
         });
 
         it('should use an existing root element', () => {
+            document.body.innerHTML = '';
             const existingElement = document.createElement('div');
             existingElement.id = 'test-router';
             document.body.appendChild(existingElement);
@@ -421,7 +303,7 @@ describe('MicroApp', () => {
             const mockFactory = vi.fn().mockReturnValue(mockApp);
 
             const router = createMockRouter({
-                root: '#test-router',
+                appId: 'test-router',
                 matched: [{ app: 'test-app' }],
                 options: { apps: { 'test-app': mockFactory } }
             });
@@ -429,28 +311,84 @@ describe('MicroApp', () => {
             microApp._update(router);
 
             expect(microApp.root).toBe(existingElement);
-            expect(mockApp.mount).toHaveBeenCalledWith(existingElement);
+            // mount should be called with a child element
+            const mountArg = (mockApp.mount as any).mock.calls[0][0];
+            expect(mountArg.parentNode).toBe(existingElement);
         });
 
-        it('should use the already set root element', () => {
-            const existingRoot = document.createElement('div');
-            existingRoot.id = 'existing-root';
-            document.body.appendChild(existingRoot);
+        it('should use hydration when data-ssr is present', () => {
+            document.body.innerHTML = '';
+            const existingElement = document.createElement('div');
+            existingElement.id = 'test-router';
+            existingElement.setAttribute('data-ssr', '');
+            const appRoot = document.createElement('div');
+            appRoot.className = 'app-root';
+            existingElement.appendChild(appRoot);
+            document.body.appendChild(existingElement);
 
-            microApp.root = existingRoot;
-
-            const mockApp = createMockApp();
+            const mockApp = createMockAppWithHydration();
             const mockFactory = vi.fn().mockReturnValue(mockApp);
 
             const router = createMockRouter({
+                appId: 'test-router',
                 matched: [{ app: 'test-app' }],
                 options: { apps: { 'test-app': mockFactory } }
             });
 
             microApp._update(router);
 
-            expect(microApp.root).toBe(existingRoot);
-            expect(mockApp.mount).toHaveBeenCalledWith(existingRoot);
+            expect(mockApp.hydration).toHaveBeenCalledTimes(1);
+            const hydrationArg = (mockApp.hydration as any).mock.calls[0][0];
+            expect(hydrationArg).toBe(appRoot);
+            expect(mockApp.mount).not.toHaveBeenCalled();
+            // data-ssr attribute should be removed after hydration
+            expect(existingElement.hasAttribute('data-ssr')).toBe(false);
+        });
+
+        it('should throw error when data-ssr is present but hydration is not provided', () => {
+            document.body.innerHTML = '';
+            const existingElement = document.createElement('div');
+            existingElement.id = 'test-router';
+            existingElement.setAttribute('data-ssr', '');
+            const appRoot = document.createElement('div');
+            existingElement.appendChild(appRoot);
+            document.body.appendChild(existingElement);
+
+            const mockApp = createMockApp(); // no hydration
+            const mockFactory = vi.fn().mockReturnValue(mockApp);
+
+            const router = createMockRouter({
+                appId: 'test-router',
+                matched: [{ app: 'test-app' }],
+                options: { apps: { 'test-app': mockFactory } }
+            });
+
+            expect(() => microApp._update(router)).toThrow(
+                'SSR content detected but hydration function not provided'
+            );
+        });
+
+        it('should fallback to mount when data-ssr is present but no child elements', () => {
+            document.body.innerHTML = '';
+            const existingElement = document.createElement('div');
+            existingElement.id = 'test-router';
+            existingElement.setAttribute('data-ssr', '');
+            // No child elements - Vue 2 comment node scenario
+            document.body.appendChild(existingElement);
+
+            const mockApp = createMockAppWithHydration();
+            const mockFactory = vi.fn().mockReturnValue(mockApp);
+
+            const router = createMockRouter({
+                appId: 'test-router',
+                matched: [{ app: 'test-app' }],
+                options: { apps: { 'test-app': mockFactory } }
+            });
+
+            microApp._update(router);
+
+            expect(mockApp.hydration).not.toHaveBeenCalled();
+            expect(mockApp.mount).toHaveBeenCalledTimes(1);
         });
 
         it('should apply rootStyle styles', () => {
@@ -488,7 +426,7 @@ describe('MicroApp', () => {
             expect(microApp.root!.style.cssText).toBe('');
         });
 
-        it('should unmount the old application if it exists', () => {
+        it('should unmount old app and remove first child when switching', () => {
             const oldApp = createMockApp();
             const newApp = createMockApp();
             const oldFactory = vi.fn().mockReturnValue(oldApp);
@@ -501,7 +439,8 @@ describe('MicroApp', () => {
             microApp._update(router1);
 
             expect(microApp.app).toBe(oldApp);
-            expect(oldApp.unmount).not.toHaveBeenCalled();
+            const oldMountArg = (oldApp.mount as any).mock.calls[0][0];
+            expect(oldMountArg.parentNode).toBe(microApp.root);
 
             const router2 = createMockRouter({
                 matched: [{ app: 'new-app' }],
@@ -511,43 +450,8 @@ describe('MicroApp', () => {
 
             expect(oldApp.unmount).toHaveBeenCalled();
             expect(microApp.app).toBe(newApp);
-        });
-
-        it('should append the root element to the body if not in DOM', () => {
-            const mockApp = createMockApp();
-            const mockFactory = vi.fn().mockReturnValue(mockApp);
-
-            const router = createMockRouter({
-                matched: [{ app: 'test-app' }],
-                options: { apps: { 'test-app': mockFactory } }
-            });
-
-            microApp._update(router);
-
-            expect(document.body.contains(microApp.root!)).toBe(true);
-        });
-
-        it('should not re-append an element already in the DOM', () => {
-            const existingElement = document.createElement('div');
-            existingElement.id = 'test-router';
-            document.body.appendChild(existingElement);
-
-            const mockApp = createMockApp();
-            const mockFactory = vi.fn().mockReturnValue(mockApp);
-
-            const router = createMockRouter({
-                root: '#test-router',
-                matched: [{ app: 'test-app' }],
-                options: { apps: { 'test-app': mockFactory } }
-            });
-
-            // Record the number of children in the body
-            const initialChildCount = document.body.children.length;
-
-            microApp._update(router);
-
-            expect(document.body.children.length).toBe(initialChildCount);
-            expect(microApp.root).toBe(existingElement);
+            // Old app's element should be removed
+            expect(oldMountArg.parentNode).toBeNull();
         });
 
         it('should handle the case where the factory function is null', () => {
@@ -566,17 +470,21 @@ describe('MicroApp', () => {
     describe('destroy method', () => {
         it('should destroy the application and clean up the state', () => {
             const mockApp = createMockApp();
-            const mockRoot = document.createElement('div');
-            document.body.appendChild(mockRoot);
+            const mountPoint = document.createElement('div');
+            document.body.appendChild(mountPoint);
 
+            // Set up: create app with a child element
+            microApp.root = mountPoint;
             microApp.app = mockApp;
-            microApp.root = mockRoot;
             (microApp as any)._factory = vi.fn();
+            const appRoot = document.createElement('div');
+            mountPoint.appendChild(appRoot);
 
             microApp.destroy();
 
             expect(mockApp.unmount).toHaveBeenCalled();
-            expect(document.body.contains(mockRoot)).toBe(false);
+            // First child should be removed
+            expect(mountPoint.firstElementChild).toBeNull();
             expect(microApp.app).toBeNull();
             expect(microApp.root).toBeNull();
             expect((microApp as any)._factory).toBeNull();
@@ -633,7 +541,7 @@ describe('MicroApp', () => {
 
             // Mount the first application
             const router1 = createMockRouter({
-                root: '#app1',
+                appId: 'app1',
                 matched: [{ app: 'app1' }],
                 options: { apps: { app1: factory1 } }
             });
@@ -641,12 +549,14 @@ describe('MicroApp', () => {
             microApp._update(router1);
 
             expect(factory1).toHaveBeenCalledWith(router1);
-            expect(mockApp1.mount).toHaveBeenCalledWith(microApp.root);
+            expect(mockApp1.mount).toHaveBeenCalledTimes(1);
+            const mountArg1 = (mockApp1.mount as any).mock.calls[0][0];
+            expect(mountArg1.parentNode).toBe(microApp.root);
             expect(microApp.app).toBe(mockApp1);
 
             // Switch to the second application
             const router2 = createMockRouter({
-                root: '#app2',
+                appId: 'app1', // Same mount point
                 matched: [{ app: 'app2' }],
                 options: { apps: { app2: factory2 } }
             });
@@ -655,14 +565,17 @@ describe('MicroApp', () => {
 
             expect(mockApp1.unmount).toHaveBeenCalled();
             expect(factory2).toHaveBeenCalledWith(router2);
-            expect(mockApp2.mount).toHaveBeenCalledWith(microApp.root);
+            expect(mockApp2.mount).toHaveBeenCalledTimes(1);
+            const mountArg2 = (mockApp2.mount as any).mock.calls[0][0];
+            expect(mountArg2.parentNode).toBe(microApp.root);
             expect(microApp.app).toBe(mockApp2);
+            // Old app's element should be removed
+            expect(mountArg1.parentNode).toBeNull();
 
             // Destroy
             microApp.destroy();
 
             expect(mockApp2.unmount).toHaveBeenCalled();
-            expect(document.body.contains(microApp.root!)).toBe(false);
             expect(microApp.app).toBeNull();
             expect(microApp.root).toBeNull();
         });
@@ -673,7 +586,6 @@ describe('MicroApp', () => {
                 .fn()
                 .mockReturnValue(mockApp);
 
-            // Test dynamic application factory
             const router = createMockRouter({
                 matched: [{ app: dynamicFactory }],
                 options: { apps: {} }
@@ -682,7 +594,7 @@ describe('MicroApp', () => {
             microApp._update(router);
 
             expect(dynamicFactory).toHaveBeenCalledWith(router);
-            expect(mockApp.mount).toHaveBeenCalledWith(microApp.root);
+            expect(mockApp.mount).toHaveBeenCalledTimes(1);
             expect(microApp.app).toBe(mockApp);
         });
 

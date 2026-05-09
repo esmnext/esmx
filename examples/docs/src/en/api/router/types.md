@@ -271,7 +271,7 @@ Handle hook for custom route handling logic.
 
 ```ts
 interface RouterOptions {
-    root?: string | HTMLElement;
+    appId?: string;
     context?: Record<string | symbol, unknown>;
     data?: Record<string | symbol, unknown>;
     routes?: RouteConfig[];

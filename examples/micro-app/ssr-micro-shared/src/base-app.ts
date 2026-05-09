@@ -14,15 +14,14 @@ export abstract class BaseApp {
 
     constructor(protected router: Router) {}
 
-    mount(root: HTMLElement): void {
-        const ssrEl = root.querySelector('[data-ssr]');
-        if (ssrEl) {
-            this.container = ssrEl as HTMLElement;
-        } else {
-            this.container = document.createElement('div');
-            root.appendChild(this.container);
-        }
-        this.onMount(this.container);
+    mount(el: HTMLElement): void {
+        this.container = el;
+        this.onMount(el);
+    }
+
+    hydration(el: HTMLElement): void {
+        this.container = el;
+        this.onHydration(el);
     }
 
     unmount(): void {
@@ -33,6 +32,8 @@ export abstract class BaseApp {
     abstract renderToString(): Promise<string>;
 
     protected abstract onMount(container: HTMLElement): void;
+
+    protected abstract onHydration(container: HTMLElement): void;
 
     protected abstract onUnmount(): void;
 }
