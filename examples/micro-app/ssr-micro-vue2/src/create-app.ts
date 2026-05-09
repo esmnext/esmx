@@ -42,7 +42,7 @@ class Vue2App extends BaseApp {
         if (fn) {
             setSsrStyles(this.router, fn());
         }
-        return html?.trim() ? `<div>${html}</div>` : '';
+        return html?.trim() || '';
     }
 }
 
