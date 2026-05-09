@@ -1,7 +1,7 @@
 import { useRouter } from '@esmx/router-react';
 import { useEffect, useMemo } from 'react';
 
-import { Layout } from 'ssr-micro-shared/src/index';
+import { Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
 
 export function AppContent() {
     const router = useRouter();
@@ -23,7 +23,7 @@ export function AppContent() {
             />
             <div
                 style={{
-                    marginLeft: '260px',
+                    marginLeft: SIDEBAR_WIDTH,
                     minHeight: '100vh',
                     background: '#f8fafc',
                     padding: '32px'

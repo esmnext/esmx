@@ -22,7 +22,7 @@ class Vue3App extends BaseApp {
     }
 
     protected onHydration(container: HTMLElement): void {
-        this.app.mount(container);
+        this.onMount(container);
     }
 
     protected onUnmount(): void {

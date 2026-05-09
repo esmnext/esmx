@@ -1,5 +1,5 @@
 import type { Router } from '@esmx/router';
-import { BaseApp, Layout } from 'ssr-micro-shared/src/index';
+import { BaseApp, Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
 
 export class HtmlApp extends BaseApp {
     private layout: Layout;
@@ -13,7 +13,7 @@ export class HtmlApp extends BaseApp {
         return (
             `<div>` +
             `<div id="${this.layout.headerId}">${this.layout.header}</div>` +
-            `<div style="margin-left: 260px; min-height: 100vh; background: #f8fafc; padding: 32px;">` +
+            `<div style="margin-left: ${SIDEBAR_WIDTH}; min-height: 100vh; background: #f8fafc; padding: 32px;">` +
             `<div style="max-width: 800px; margin: 0 auto;">` +
             `<div style="
                 background: white;

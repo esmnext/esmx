@@ -1,7 +1,7 @@
 <template>
     <div>
         <div :id="layout.headerId" v-html="layout.header"></div>
-        <div style="margin-left: 260px; min-height: 100vh; background: #f8fafc; padding: 32px;">
+        <div :style="mainStyle">
             <div style="max-width: 800px; margin: 0 auto;">
                 <div style="background: white; border-radius: 16px; padding: 48px; border: 1px solid #e2e8f0; text-align: center;">
                     <div style="width: 64px; height: 64px; background: linear-gradient(135deg, #42b883, #369870); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 24px; margin: 0 auto 24px;">V2</div>
@@ -16,17 +16,14 @@
 
 <script setup>
 import { useRouter } from '@esmx/router-vue';
-import { Layout } from 'ssr-micro-shared/src/index';
-import { getCurrentInstance, nextTick, onBeforeUnmount, onMounted } from 'vue';
+import { Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
+import { onBeforeUnmount, onMounted } from 'vue';
 
 const router = useRouter();
 const layout = new Layout({ appId: 'vue2', router });
-const instance = getCurrentInstance();
-const ssr = !!(instance && instance.proxy && instance.proxy.$ssrContext);
+const mainStyle = `margin-left: ${SIDEBAR_WIDTH}; min-height: 100vh; background: #f8fafc; padding: 32px;`;
 
-onMounted(() => {
-    nextTick(() => layout.mount());
-});
+onMounted(() => layout.mount());
 
 onBeforeUnmount(() => layout.unmount());
 </script>

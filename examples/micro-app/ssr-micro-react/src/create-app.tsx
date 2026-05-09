@@ -6,25 +6,25 @@ import { renderToString } from 'react-dom/server';
 import { BaseApp } from 'ssr-micro-shared/src/index';
 import { AppContent } from './app';
 
+function createApp(router) {
+    return () => (
+        <RouterProvider router={router}>
+            <AppContent />
+        </RouterProvider>
+    );
+}
+
 class ReactApp extends BaseApp {
     private reactRoot: ReturnType<typeof createRoot> | null = null;
 
     protected onMount(container: HTMLElement): void {
-        const App = () => (
-            <RouterProvider router={this.router}>
-                <AppContent />
-            </RouterProvider>
-        );
+        const App = createApp(this.router);
         this.reactRoot = createRoot(container);
         this.reactRoot.render(<App />);
     }
 
     protected onHydration(container: HTMLElement): void {
-        const App = () => (
-            <RouterProvider router={this.router}>
-                <AppContent />
-            </RouterProvider>
-        );
+        const App = createApp(this.router);
         this.reactRoot = hydrateRoot(container, <App />);
     }
 
@@ -33,14 +33,10 @@ class ReactApp extends BaseApp {
         this.reactRoot = null;
     }
 
-    renderToString(): Promise<string> {
-        const App = () => (
-            <RouterProvider router={this.router}>
-                <AppContent />
-            </RouterProvider>
-        );
+    renderToString(): string {
+        const App = createApp(this.router);
         const html = renderToString(<App />);
-        return Promise.resolve(html?.trim() ? `<div>${html}</div>` : '');
+        return html?.trim() ? `<div>${html}</div>` : '';
     }
 }
 

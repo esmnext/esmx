@@ -5,6 +5,8 @@ export interface LayoutOptions {
     router: Router;
 }
 
+export const SIDEBAR_WIDTH = '260px';
+
 const NAV_ITEMS = [
     { path: '/', label: 'Home', icon: '🏠' },
     { path: '/html/', label: 'HTML', icon: 'H' },
@@ -75,7 +77,7 @@ export class Layout {
     get header(): string {
         return normalizeHtml(`
             <div style="
-                width: 260px;
+                width: ${SIDEBAR_WIDTH};
                 background: #0f172a;
                 color: white;
                 padding: 24px;
