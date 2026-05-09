@@ -6,6 +6,7 @@ export function createHtmlApp(router: Router): RouterMicroAppOptions {
     const app = new HtmlApp(router);
     return {
         mount: (root) => app.mount(root),
+        hydration: (el) => app.hydration(el),
         unmount: () => app.unmount(),
         renderToString: () => app.renderToString()
     };
