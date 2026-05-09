@@ -1,8 +1,13 @@
 import type { Router } from '@esmx/router';
+import type { ActiveHeadEntry, UseHeadInput } from 'unhead/types';
 import { BaseApp, Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
+// @ts-expect-error Esmx module linking resolves to environment-specific chunk
+import { createHead } from 'unhead';
 
 export class HomeApp extends BaseApp {
     private layout: Layout;
+    private head = createHead({ disableDefaults: true });
+    private headEntry: ActiveHeadEntry<UseHeadInput> | null = null;
 
     private apps = [
         {
@@ -54,6 +59,17 @@ export class HomeApp extends BaseApp {
     constructor(router: Router) {
         super(router);
         this.layout = new Layout({ appId: 'home', router });
+        this.headEntry = this.head.push({
+            title: 'Esmx Micro-App Hub',
+            meta: [
+                {
+                    name: 'description',
+                    content:
+                        'Explore micro-frontend architecture with Esmx Router'
+                }
+            ]
+        });
+        router.context.head = this.head;
     }
 
     private getContentHtml(): string {
@@ -144,6 +160,7 @@ export class HomeApp extends BaseApp {
     }
 
     protected onUnmount(): void {
+        this.headEntry?.dispose();
         this.layout.unmount();
     }
 

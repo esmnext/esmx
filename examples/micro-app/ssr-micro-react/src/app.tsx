@@ -1,5 +1,7 @@
 import { useRouter } from '@esmx/router-react';
+import { useHead } from '@unhead/react';
 import { useEffect, useMemo } from 'react';
+import React from 'react';
 
 import { Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
 
@@ -9,6 +11,16 @@ export function AppContent() {
         () => new Layout({ appId: 'react', router }),
         [router]
     );
+
+    useHead({
+        title: 'React Micro-App',
+        meta: [
+            {
+                name: 'description',
+                content: 'This page is rendered by a React 18 micro-app.'
+            }
+        ]
+    });
 
     useEffect(() => {
         layout.mount();

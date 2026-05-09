@@ -17,6 +17,7 @@
         "@esmx/rspack": "workspace:*",
         "@types/node": "^24.0.0",
         "ssr-micro-shared": "workspace:*",
-        "typescript": "5.8.3"
+        "typescript": "5.8.3",
+        "unhead": "^2.1.0"
     }
 }

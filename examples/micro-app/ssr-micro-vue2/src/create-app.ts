@@ -1,6 +1,8 @@
 import type { RouterMicroAppOptions } from '@esmx/router';
 import { RouterPlugin, useProvideRouter } from '@esmx/router-vue';
 import { BaseApp, setSsrStyles } from 'ssr-micro-shared/src/index';
+// @ts-expect-error Esmx module linking resolves to environment-specific chunk
+import { createHead } from 'unhead';
 import Vue from 'vue';
 import AppComponent from './app.vue';
 
@@ -8,6 +10,7 @@ Vue.use(RouterPlugin);
 
 class Vue2App extends BaseApp {
     private app: Vue;
+    private head = createHead();
 
     constructor(router) {
         super(router);
@@ -17,6 +20,8 @@ class Vue2App extends BaseApp {
             },
             render: (h) => h(AppComponent)
         });
+        this.app.$head = this.head;
+        router.context.head = this.head;
     }
 
     protected onMount(container: HTMLElement): void {

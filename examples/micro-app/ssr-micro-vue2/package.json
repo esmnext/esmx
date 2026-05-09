@@ -22,6 +22,7 @@
         "@types/node": "^24.0.0",
         "ssr-micro-shared": "workspace:*",
         "typescript": "5.8.3",
+        "unhead": "^2.1.0",
         "vue": "2.7.16",
         "vue-server-renderer": "2.7.16",
         "vue-tsc": "^3.0.5"

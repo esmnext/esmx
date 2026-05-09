@@ -11,7 +11,8 @@ export default {
             'ssr-micro-react': '../ssr-micro-react/dist'
         },
         imports: {
-            '@esmx/router': 'ssr-micro-shared/@esmx/router'
+            '@esmx/router': 'ssr-micro-shared/@esmx/router',
+            'unhead': 'ssr-micro-shared/unhead-core'
         }
     },
     async devApp(esmx) {

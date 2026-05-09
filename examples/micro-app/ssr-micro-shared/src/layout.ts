@@ -38,6 +38,7 @@ function generateNavHtml(router: Router): string {
         return normalizeHtml(`
             <a
                 href="${resolved.attributes.href}"
+                onclick="event.preventDefault()"
                 data-nav="${item.path}"
                 style="
                     display: flex;

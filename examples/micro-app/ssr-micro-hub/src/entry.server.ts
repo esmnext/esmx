@@ -1,6 +1,9 @@
 import type { RenderContext } from '@esmx/core';
 import { Router } from '@esmx/router';
 import { getSsrStyles } from 'ssr-micro-shared/src/index';
+// @ts-expect-error Esmx module linking resolves to environment-specific chunk
+import { renderSSRHead } from 'unhead';
+
 import { routes } from './routes';
 
 export default async (rc: RenderContext) => {
@@ -17,19 +20,23 @@ export default async (rc: RenderContext) => {
     });
     await router.replace(url);
     const html = await router.renderToString();
+    const head = router.context.head;
+    const { headTags, htmlAttrs, bodyAttrs } = head
+        ? await renderSSRHead(head)
+        : { headTags: '', htmlAttrs: '', bodyAttrs: '' };
     await rc.commit();
 
     const basePath = new URL(base).pathname;
     const renderStyles = getSsrStyles(router);
 
     rc.html = `<!DOCTYPE html>
-<html lang="en">
+<html lang="en"${htmlAttrs}>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://esmx.dev/logo.svg" type="image/svg+xml">
+    ${headTags}
     ${rc.preload()}
-    <title>Esmx Micro-App Hub</title>
     ${renderStyles}
     ${rc.css()}
     <style>
@@ -47,7 +54,7 @@ export default async (rc: RenderContext) => {
     </style>
     <script>window.__ESMX_BASE__='${basePath}'</script>
 </head>
-<body>
+<body${bodyAttrs}>
     ${html ?? '<div id="app"></div>'}
     ${rc.importmap()}
     ${rc.moduleEntry()}

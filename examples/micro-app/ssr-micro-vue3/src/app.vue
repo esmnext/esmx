@@ -17,11 +17,23 @@
 <script setup lang="ts">
 import { useRouter } from '@esmx/router-vue';
 import { Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
+import { useHead } from '@unhead/vue';
 import { onBeforeUnmount, onMounted } from 'vue';
 
 const router = useRouter();
 const layout = new Layout({ appId: 'vue3', router });
 const mainStyle = `margin-left: ${SIDEBAR_WIDTH}; min-height: 100vh; background: #f8fafc; padding: 32px;`;
+
+useHead({
+    title: 'Vue 3 Micro-App',
+    meta: [
+        {
+            name: 'description',
+            content:
+                'This page is rendered by a Vue 3.5 micro-app with full SSR support.'
+        }
+    ]
+});
 
 onMounted(() => layout.mount());
 onBeforeUnmount(() => layout.unmount());
