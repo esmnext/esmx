@@ -372,7 +372,20 @@ export class Router {
     public async renderToString(throwError = false): Promise<string | null> {
         try {
             const result = await this.microApp.app?.renderToString?.();
-            const hasContent = result && result.trim().length > 0;
+            const trimmed = result?.trim();
+            const hasContent = trimmed && trimmed.length > 0;
+            if (
+                hasContent &&
+                process.env.NODE_ENV !== 'production' &&
+                !trimmed.startsWith('<')
+            ) {
+                throw new Error(
+                    'SSR renderToString() must return HTML wrapped in a root element. ' +
+                        'The returned string must start with an HTML tag (e.g. <div>). ' +
+                        'Current output: ' +
+                        trimmed.slice(0, 100)
+                );
+            }
             const ssrAttr = hasContent ? ' data-ssr' : '';
             return `<div id="${this.appId}"${ssrAttr}>${result ?? ''}</div>`;
         } catch (e) {
