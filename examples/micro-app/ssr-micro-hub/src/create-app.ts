@@ -6,6 +6,7 @@ export function createHomeApp(router: Router): RouterMicroAppOptions {
     const app = new HomeApp(router);
     return {
         mount: (root) => app.mount(root),
+        hydration: (root) => app.hydration(root),
         unmount: () => app.unmount(),
         renderToString: () => app.renderToString()
     };
