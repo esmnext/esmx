@@ -58,6 +58,7 @@ export class HtmlApp extends BaseApp {
     }
 
     protected onMount(container: HTMLElement): void {
+        container.innerHTML = this.render();
         this.layout.mount();
     }
 
