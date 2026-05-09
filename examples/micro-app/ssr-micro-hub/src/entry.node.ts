@@ -23,9 +23,11 @@ export default {
             esmx.middleware(req, res, async () => {
                 const protocol = req.headers['x-forwarded-proto'] || 'http';
                 const host = req.headers.host || 'localhost:3000';
-                const base = `${protocol}://${host}`;
                 const rc = await esmx.render({
-                    params: { url: req.url, base }
+                    params: {
+                        url: `${protocol}://${host}${req.url}`,
+                        base: 'http://localhost:3000/ssr-micro-hub/'
+                    }
                 });
                 res.end(rc.html);
             });
@@ -39,11 +41,11 @@ export default {
     async postBuild(esmx) {
         const base = 'http://localhost:3000/ssr-micro-hub/';
         const pages = [
-            { url: '/', file: 'index.html' },
-            { url: '/html/', file: 'html/index.html' },
-            { url: '/vue2/', file: 'vue2/index.html' },
-            { url: '/vue3/', file: 'vue3/index.html' },
-            { url: '/react/', file: 'react/index.html' }
+            { url: base, file: 'index.html' },
+            { url: base + 'html/', file: 'html/index.html' },
+            { url: base + 'vue2/', file: 'vue2/index.html' },
+            { url: base + 'vue3/', file: 'vue3/index.html' },
+            { url: base + 'react/', file: 'react/index.html' }
         ];
 
         for (const page of pages) {
