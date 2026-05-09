@@ -14,18 +14,23 @@ export function createVue2App(router): RouterMicroAppOptions {
         render: (h) => h(AppComponent)
     });
 
+    let container: HTMLElement | null = null;
+
     return {
         mount(root: HTMLElement) {
             const ssrEl = root.querySelector('[data-ssr]');
             if (ssrEl) {
-                app.$mount(ssrEl as HTMLElement, true);
+                container = ssrEl as HTMLElement;
+                app.$mount(container, true);
             } else {
-                root.appendChild(app.$mount().$el);
+                container = app.$mount().$el as HTMLElement;
+                root.appendChild(container);
             }
         },
         unmount() {
             app.$destroy();
-            app.$el?.remove();
+            container?.remove();
+            container = null;
         },
         async renderToString() {
             const { createRenderer } = await import('vue-server-renderer');
