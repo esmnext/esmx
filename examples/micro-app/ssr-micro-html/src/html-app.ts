@@ -1,10 +1,11 @@
 import type { Router } from '@esmx/router';
-import { Layout } from 'ssr-micro-shared/src/layout';
+import { BaseApp, Layout } from 'ssr-micro-shared/src/index';
 
-export class HtmlApp {
+export class HtmlApp extends BaseApp {
     private layout: Layout;
 
     constructor(router: Router) {
+        super(router);
         this.layout = new Layout({ appId: 'html', router });
     }
 
@@ -54,12 +55,16 @@ export class HtmlApp {
         );
     }
 
-    mount(container: HTMLElement): void {
+    protected onMount(container: HTMLElement): void {
         container.setAttribute('data-ssr', 'false');
         this.layout.mount();
     }
 
-    unmount(): void {
+    protected onUnmount(): void {
         this.layout.unmount();
+    }
+
+    renderToString(): Promise<string> {
+        return Promise.resolve(`<div data-ssr>${this.render()}</div>`);
     }
 }

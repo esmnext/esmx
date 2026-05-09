@@ -1,39 +1,41 @@
 import type { RouterMicroAppOptions } from '@esmx/router';
 import { useProvideRouter } from '@esmx/router-vue';
+import { BaseApp } from 'ssr-micro-shared/src/index';
 import { createSSRApp, h } from 'vue';
-
 import AppComponent from './app.vue';
 
+class Vue3App extends BaseApp {
+    private app: ReturnType<typeof createSSRApp>;
+
+    constructor(router) {
+        super(router);
+        this.app = createSSRApp({
+            setup: () => {
+                useProvideRouter(router);
+            },
+            render: () => h(AppComponent)
+        });
+    }
+
+    protected onMount(container: HTMLElement): void {
+        this.app.mount(container);
+    }
+
+    protected onUnmount(): void {
+        this.app.unmount();
+    }
+
+    async renderToString(): Promise<string> {
+        const { renderToString } = await import('@vue/server-renderer');
+        return renderToString(this.app);
+    }
+}
+
 export function createVue3App(router): RouterMicroAppOptions {
-    const app = createSSRApp({
-        setup() {
-            useProvideRouter(router);
-        },
-        render: () => h(AppComponent)
-    });
-
-    let container: HTMLElement | null = null;
-
+    const app = new Vue3App(router);
     return {
-        mount(root: HTMLElement) {
-            const ssrEl = root.querySelector('[data-ssr]');
-            if (ssrEl) {
-                container = ssrEl as HTMLElement;
-                app.mount(container);
-            } else {
-                container = document.createElement('div');
-                app.mount(container);
-                root.appendChild(container);
-            }
-        },
-        unmount() {
-            app.unmount();
-            container?.remove();
-            container = null;
-        },
-        async renderToString() {
-            const { renderToString } = await import('@vue/server-renderer');
-            return renderToString(app);
-        }
+        mount: (root) => app.mount(root),
+        unmount: () => app.unmount(),
+        renderToString: () => app.renderToString()
     };
 }

@@ -1,7 +1,7 @@
 import { useRouter } from '@esmx/router-react';
 import { useEffect, useMemo } from 'react';
 
-import { Layout } from 'ssr-micro-shared/src/layout';
+import { Layout } from 'ssr-micro-shared/src/index';
 
 export function AppContent() {
     const router = useRouter();

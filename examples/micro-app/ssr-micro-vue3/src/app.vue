@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import { useRouter } from '@esmx/router-vue';
-import { Layout } from 'ssr-micro-shared/src/layout';
+import { Layout } from 'ssr-micro-shared/src/index';
 import { nextTick, onBeforeUnmount, onMounted, useSSRContext } from 'vue';
 
 const router = useRouter();
