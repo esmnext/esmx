@@ -13,6 +13,18 @@ const NAV_ITEMS = [
     { path: '/react/', label: 'React', icon: 'R' }
 ];
 
+/**
+ * Compress whitespace in inline style attribute values so that
+ * v-html hydration comparison passes (Vue2 uses strict equality
+ * against the browser-normalized innerHTML).
+ */
+function normalizeHtml(html: string): string {
+    return html.replace(
+        / style="([^"]*)"/g,
+        (_, s) => ` style="${s.replace(/\s+/g, ' ').trim()}"`
+    );
+}
+
 function generateNavHtml(router: Router): string {
     return NAV_ITEMS.map((item) => {
         const resolved = router.resolveLink({
@@ -21,7 +33,7 @@ function generateNavHtml(router: Router): string {
             exact: 'route'
         });
         const isActive = resolved.isActive;
-        return `
+        return normalizeHtml(`
             <a
                 href="${resolved.attributes.href}"
                 data-nav="${item.path}"
@@ -42,7 +54,7 @@ function generateNavHtml(router: Router): string {
                 <span style="font-size: 1.1rem; width: 24px; text-align: center;">${item.icon}</span>
                 <span>${item.label}</span>
             </a>
-        `;
+        `);
     }).join('');
 }
 
@@ -61,7 +73,7 @@ export class Layout {
     }
 
     get header(): string {
-        return `
+        return normalizeHtml(`
             <div style="
                 width: 260px;
                 background: #0f172a;
@@ -90,7 +102,7 @@ export class Layout {
                     ${generateNavHtml(this.router)}
                 </nav>
             </div>
-        `;
+        `);
     }
 
     get footer(): string {
