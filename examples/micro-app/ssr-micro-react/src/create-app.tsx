@@ -39,7 +39,8 @@ class ReactApp extends BaseApp {
                 <AppContent />
             </RouterProvider>
         );
-        return Promise.resolve(renderToString(<App />));
+        const html = renderToString(<App />);
+        return Promise.resolve(html?.trim() ? `<div>${html}</div>` : '');
     }
 }
 

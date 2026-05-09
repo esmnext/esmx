@@ -31,7 +31,8 @@ class Vue3App extends BaseApp {
 
     async renderToString(): Promise<string> {
         const { renderToString } = await import('@vue/server-renderer');
-        return renderToString(this.app);
+        const html = await renderToString(this.app);
+        return html?.trim() ? `<div>${html}</div>` : '';
     }
 }
 

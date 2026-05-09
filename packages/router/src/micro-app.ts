@@ -53,7 +53,7 @@ export class MicroApp {
                     const appRoot = root.firstElementChild as HTMLElement;
                     if (appRoot) {
                         if (app.hydration) {
-                            app.hydration(root);
+                            app.hydration(appRoot);
                         } else {
                             throw new Error(
                                 'SSR content detected but hydration function not provided'

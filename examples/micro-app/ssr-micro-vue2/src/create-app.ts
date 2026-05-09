@@ -36,7 +36,8 @@ class Vue2App extends BaseApp {
     async renderToString(): Promise<string> {
         const { createRenderer } = await import('vue-server-renderer');
         const renderer = createRenderer();
-        return renderer.renderToString(this.app);
+        const html = await renderer.renderToString(this.app);
+        return html?.trim() ? `<div>${html}</div>` : '';
     }
 }
 
