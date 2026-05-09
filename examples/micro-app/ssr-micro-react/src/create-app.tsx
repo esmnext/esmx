@@ -4,15 +4,13 @@ import { RouterProvider } from '@esmx/router-react';
 import { createRoot, hydrateRoot } from 'react-dom/client';
 import { renderToString } from 'react-dom/server';
 
-import { AppContent, SSRContext } from './app';
+import { AppContent } from './app';
 
 export function createReactApp(router): RouterMicroAppOptions {
-    const AppWithProvider = ({ ssr }: { ssr: boolean }) => (
-        <SSRContext.Provider value={ssr}>
-            <RouterProvider router={router}>
-                <AppContent />
-            </RouterProvider>
-        </SSRContext.Provider>
+    const AppWithProvider = () => (
+        <RouterProvider router={router}>
+            <AppContent />
+        </RouterProvider>
     );
 
     let reactRoot: ReturnType<typeof createRoot> | null = null;
@@ -20,15 +18,15 @@ export function createReactApp(router): RouterMicroAppOptions {
 
     return {
         mount(root: HTMLElement) {
-            const ssrEl = root.querySelector('[data-ssr="true"]');
+            const ssrEl = root.querySelector('[data-ssr]');
             if (ssrEl) {
                 container = ssrEl as HTMLElement;
-                reactRoot = hydrateRoot(container, <AppWithProvider ssr={false} />);
+                reactRoot = hydrateRoot(container, <AppWithProvider />);
             } else {
                 container = document.createElement('div');
                 root.appendChild(container);
                 reactRoot = createRoot(container);
-                reactRoot.render(<AppWithProvider ssr={false} />);
+                reactRoot.render(<AppWithProvider />);
             }
         },
         unmount() {
@@ -40,7 +38,7 @@ export function createReactApp(router): RouterMicroAppOptions {
             container = null;
         },
         renderToString() {
-            return Promise.resolve(renderToString(<AppWithProvider ssr={true} />));
+            return Promise.resolve(renderToString(<AppWithProvider />));
         }
     };
 }

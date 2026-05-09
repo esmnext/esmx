@@ -16,7 +16,7 @@ export function createVue3App(router): RouterMicroAppOptions {
 
     return {
         mount(root: HTMLElement) {
-            const ssrEl = root.querySelector('[data-ssr="true"]');
+            const ssrEl = root.querySelector('[data-ssr]');
             if (ssrEl) {
                 container = ssrEl as HTMLElement;
                 app.mount(container);

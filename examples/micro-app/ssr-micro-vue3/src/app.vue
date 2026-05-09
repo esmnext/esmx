@@ -1,5 +1,5 @@
 <template>
-    <div :data-ssr="ssr">
+    <div data-ssr>
         <div :id="layout.headerId" v-html="layout.header"></div>
         <div style="margin-left: 260px; min-height: 100vh; background: #f8fafc; padding: 32px;">
             <div style="max-width: 800px; margin: 0 auto;">

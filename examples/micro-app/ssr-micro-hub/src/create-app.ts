@@ -8,7 +8,7 @@ export function createHomeApp(router: Router): RouterMicroAppOptions {
 
     return {
         mount(root: HTMLElement) {
-            const ssrEl = root.querySelector('[data-ssr="true"]');
+            const ssrEl = root.querySelector('[data-ssr]');
             if (ssrEl) {
                 container = ssrEl as HTMLElement;
             } else {
@@ -24,7 +24,7 @@ export function createHomeApp(router: Router): RouterMicroAppOptions {
             container = null;
         },
         renderToString() {
-            return `<div data-ssr="true">${app.render()}</div>`;
+            return `<div data-ssr>${app.render()}</div>`;
         }
     };
 }

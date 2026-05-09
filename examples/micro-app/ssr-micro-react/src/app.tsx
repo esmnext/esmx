@@ -1,9 +1,7 @@
 import { useRouter } from '@esmx/router-react';
-import { createContext, useContext, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { Layout } from 'ssr-micro-shared/src/layout';
-
-export const SSRContext = createContext(false);
 
 export function AppContent() {
     const router = useRouter();
@@ -17,10 +15,8 @@ export function AppContent() {
         return () => layout.unmount();
     }, [layout]);
 
-    const ssr = useContext(SSRContext);
-
     return (
-        <div data-ssr={ssr}>
+        <div data-ssr>
             <div
                 id={layout.headerId}
                 dangerouslySetInnerHTML={{ __html: layout.header }}
