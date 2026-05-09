@@ -6,7 +6,7 @@ const base = new URL(basePath, location.origin);
 
 const router = new Router({
     routes,
-    appId: 'root',
+    appId: 'app',
     base,
     resolveLink(link) {
         const { href, origin } = link.route.url;
