@@ -24,7 +24,8 @@ const createMockParsedConfig = (
     match: vi.fn(),
     compile: vi.fn(),
     meta: {},
-    app
+    app,
+    requireIndex: false
 });
 
 const createMockRouter = (
