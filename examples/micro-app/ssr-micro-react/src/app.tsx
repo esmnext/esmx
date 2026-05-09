@@ -16,7 +16,7 @@ export function AppContent() {
     }, [layout]);
 
     return (
-        <div data-ssr>
+        <div>
             <div
                 id={layout.headerId}
                 dangerouslySetInnerHTML={{ __html: layout.header }}
