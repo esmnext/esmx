@@ -5,7 +5,7 @@ import { createRoot, hydrateRoot } from 'react-dom/client';
 import { renderToString } from 'react-dom/server';
 import React from 'react';
 
-import { BaseApp } from 'ssr-micro-shared/src/index';
+import { BaseApp, setRouterHead } from 'ssr-micro-shared/src/index';
 import { AppContent } from './app';
 
 function createApp(router, head) {
@@ -24,7 +24,7 @@ class ReactApp extends BaseApp {
 
     constructor(router) {
         super(router);
-        router.context.head = this.head;
+        setRouterHead(router, this.head);
     }
 
     protected onMount(container: HTMLElement): void {

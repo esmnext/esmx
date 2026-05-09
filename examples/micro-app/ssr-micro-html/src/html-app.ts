@@ -1,8 +1,13 @@
 import type { Router } from '@esmx/router';
-import type { ActiveHeadEntry, UseHeadInput } from 'unhead/types';
-import { BaseApp, Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
+import {
+    BaseApp,
+    Layout,
+    SIDEBAR_WIDTH,
+    setRouterHead
+} from 'ssr-micro-shared/src/index';
 // @ts-expect-error Esmx module linking resolves to environment-specific chunk
 import { createHead } from 'unhead';
+import type { ActiveHeadEntry, UseHeadInput } from 'unhead/types';
 
 export class HtmlApp extends BaseApp {
     private layout: Layout;
@@ -21,7 +26,7 @@ export class HtmlApp extends BaseApp {
                 }
             ]
         });
-        router.context.head = this.head;
+        setRouterHead(router, this.head);
     }
 
     render(): string {

@@ -1,6 +1,6 @@
 import type { RenderContext } from '@esmx/core';
 import { Router } from '@esmx/router';
-import { getSsrStyles } from 'ssr-micro-shared/src/index';
+import { getRouterHead, getSsrStyles } from 'ssr-micro-shared/src/index';
 // @ts-expect-error Esmx module linking resolves to environment-specific chunk
 import { renderSSRHead } from 'unhead';
 
@@ -20,7 +20,7 @@ export default async (rc: RenderContext) => {
     });
     await router.replace(url);
     const html = await router.renderToString();
-    const head = router.context.head;
+    const head = getRouterHead(router);
     const { headTags, htmlAttrs, bodyAttrs } = head
         ? await renderSSRHead(head)
         : { headTags: '', htmlAttrs: '', bodyAttrs: '' };

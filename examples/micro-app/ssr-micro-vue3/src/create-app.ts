@@ -1,7 +1,7 @@
 import type { RouterMicroAppOptions } from '@esmx/router';
 import { useProvideRouter } from '@esmx/router-vue';
 import { createHead } from '@unhead/vue/client';
-import { BaseApp } from 'ssr-micro-shared/src/index';
+import { BaseApp, setRouterHead } from 'ssr-micro-shared/src/index';
 import { createSSRApp, h } from 'vue';
 import AppComponent from './app.vue';
 
@@ -18,7 +18,7 @@ class Vue3App extends BaseApp {
             render: () => h(AppComponent)
         });
         this.app.use(this.head);
-        router.context.head = this.head;
+        setRouterHead(router, this.head);
     }
 
     protected onMount(container: HTMLElement): void {
