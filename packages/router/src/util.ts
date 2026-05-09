@@ -131,3 +131,35 @@ export function decodeParams<T extends Record<string, string | string[]>>(
 
     return result;
 }
+
+/**
+ * Validates that SSR renderToString output contains exactly one root HTML element.
+ * Non-production only - throws if validation fails.
+ */
+export function validateSsrRootElement(html: string): void {
+    const trimmed = html.trim();
+    const firstMatch = trimmed.match(/^<([a-zA-Z][^\s>]*)/);
+    const firstTag = firstMatch?.[1];
+    const lastTag = trimmed.match(/<\/([a-zA-Z][^\s>]*)>\s*$/)?.[1];
+    if (!firstTag || firstTag !== lastTag) {
+        throw new Error(
+            'SSR renderToString() must return exactly one root HTML element. ' +
+                'Current output: ' +
+                trimmed.slice(0, 100)
+        );
+    }
+    // Check if there is trailing content after the root element's closing tag
+    const firstCloseIndex = trimmed.indexOf('</' + firstTag + '>');
+    if (firstCloseIndex !== -1) {
+        const afterClose = trimmed
+            .slice(firstCloseIndex + ('</' + firstTag + '>').length)
+            .trim();
+        if (afterClose.length > 0) {
+            throw new Error(
+                'SSR renderToString() must return exactly one root HTML element. ' +
+                    'Current output: ' +
+                    trimmed.slice(0, 100)
+            );
+        }
+    }
+}

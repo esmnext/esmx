@@ -19,7 +19,12 @@ import type {
     RouteState
 } from './types';
 import { RouterMode, RouteType } from './types';
-import { isNotNullish, isPlainObject, isRouteMatched } from './util';
+import {
+    isNotNullish,
+    isPlainObject,
+    isRouteMatched,
+    validateSsrRootElement
+} from './util';
 
 export class Router {
     public readonly options: RouterOptions;
@@ -375,15 +380,7 @@ export class Router {
             const trimmed = result?.trim();
             const hasContent = trimmed && trimmed.length > 0;
             if (hasContent && process.env.NODE_ENV !== 'production') {
-                const firstTag = trimmed.match(/^<([a-zA-Z][^\s>]*)/)?.[1];
-                const lastTag = trimmed.match(/<\/([a-zA-Z][^\s>]*)>\s*$/)?.[1];
-                if (!firstTag || firstTag !== lastTag) {
-                    throw new Error(
-                        'SSR renderToString() must return exactly one root HTML element. ' +
-                            'Current output: ' +
-                            trimmed.slice(0, 100)
-                    );
-                }
+                validateSsrRootElement(trimmed);
             }
             const ssrAttr = hasContent ? ' data-ssr' : '';
             return `<div id="${this.appId}"${ssrAttr}>${result ?? ''}</div>`;

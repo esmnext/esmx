@@ -11,7 +11,8 @@ import {
     isRouteMatched,
     isUrlEqual,
     isValidConfirmHookResult,
-    removeFromArray
+    removeFromArray,
+    validateSsrRootElement
 } from '../src/util';
 
 const AsyncFunction = (async () => {}).constructor;
@@ -1298,5 +1299,56 @@ describe('decodeParams', () => {
         expect(decoded).toEqual({
             tags: ['javascript frameworks', 'react hooks', 'vue components']
         });
+    });
+});
+
+describe('validateSsrRootElement', () => {
+    test('should pass for single root element', () => {
+        expect(() =>
+            validateSsrRootElement('<div>content</div>')
+        ).not.toThrow();
+        expect(() =>
+            validateSsrRootElement('<section>text</section>')
+        ).not.toThrow();
+    });
+
+    test('should throw for multiple root elements', () => {
+        expect(() =>
+            validateSsrRootElement('<div>a</div><div>b</div>')
+        ).toThrow(
+            'SSR renderToString() must return exactly one root HTML element'
+        );
+    });
+
+    test('should throw for text-only content', () => {
+        expect(() => validateSsrRootElement('plain text')).toThrow(
+            'SSR renderToString() must return exactly one root HTML element'
+        );
+    });
+
+    test('should throw for mixed content without wrapper', () => {
+        expect(() => validateSsrRootElement('text<div>x</div>')).toThrow();
+    });
+
+    test('should throw for self-closing only tags', () => {
+        expect(() => validateSsrRootElement('<img src="a.jpg">')).toThrow();
+    });
+
+    test('should handle whitespace trimming', () => {
+        expect(() =>
+            validateSsrRootElement('  <div>content</div>  ')
+        ).not.toThrow();
+    });
+
+    test('should throw for nested mismatched tags', () => {
+        expect(() =>
+            validateSsrRootElement('<div><span></div></span>')
+        ).toThrow();
+    });
+
+    test('should include output preview in error message', () => {
+        expect(() => validateSsrRootElement('invalid')).toThrow(
+            'Current output: invalid'
+        );
     });
 });
