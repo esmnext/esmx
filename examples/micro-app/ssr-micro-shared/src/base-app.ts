@@ -27,7 +27,6 @@ export abstract class BaseApp {
 
     unmount(): void {
         this.onUnmount();
-        this.container?.remove();
         this.container = null;
     }
 
