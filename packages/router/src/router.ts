@@ -374,17 +374,16 @@ export class Router {
             const result = await this.microApp.app?.renderToString?.();
             const trimmed = result?.trim();
             const hasContent = trimmed && trimmed.length > 0;
-            if (
-                hasContent &&
-                process.env.NODE_ENV !== 'production' &&
-                !trimmed.startsWith('<')
-            ) {
-                throw new Error(
-                    'SSR renderToString() must return HTML wrapped in a root element. ' +
-                        'The returned string must start with an HTML tag (e.g. <div>). ' +
-                        'Current output: ' +
-                        trimmed.slice(0, 100)
-                );
+            if (hasContent && process.env.NODE_ENV !== 'production') {
+                const firstTag = trimmed.match(/^<([a-zA-Z][^\s>]*)/)?.[1];
+                const lastTag = trimmed.match(/<\/([a-zA-Z][^\s>]*)>\s*$/)?.[1];
+                if (!firstTag || firstTag !== lastTag) {
+                    throw new Error(
+                        'SSR renderToString() must return exactly one root HTML element. ' +
+                            'Current output: ' +
+                            trimmed.slice(0, 100)
+                    );
+                }
             }
             const ssrAttr = hasContent ? ' data-ssr' : '';
             return `<div id="${this.appId}"${ssrAttr}>${result ?? ''}</div>`;
