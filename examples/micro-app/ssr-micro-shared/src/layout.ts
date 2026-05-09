@@ -67,6 +67,7 @@ export class Layout {
     public readonly headerId: string;
     public readonly footerId: string;
     private clickHandler: ((e: Event) => void) | null = null;
+    private mobileHandlers: Array<() => void> = [];
 
     constructor(options: LayoutOptions) {
         this.appId = options.appId;
@@ -75,9 +76,77 @@ export class Layout {
         this.footerId = `${options.appId}-footer`;
     }
 
+    private get styleSheet(): string {
+        return `
+            <style>
+                :root {
+                    --esmx-sidebar-width: ${SIDEBAR_WIDTH};
+                }
+                @media (max-width: 767px) {
+                    :root {
+                        --esmx-sidebar-width: 0px;
+                        --esmx-mobile-header-height: 56px;
+                    }
+                    #esmx-sidebar {
+                        transform: translateX(-100%);
+                        transition: transform 0.3s ease;
+                    }
+                    #esmx-sidebar.esmx-open {
+                        transform: translateX(0);
+                    }
+                    #esmx-sidebar-overlay {
+                        display: none;
+                        position: fixed;
+                        inset: 0;
+                        background: rgba(0,0,0,0.5);
+                        z-index: 99;
+                    }
+                    #esmx-sidebar-overlay.esmx-open {
+                        display: block;
+                    }
+                }
+                @media (min-width: 768px) {
+                    #esmx-mobile-header {
+                        display: none !important;
+                    }
+                    #esmx-sidebar-overlay {
+                        display: none !important;
+                    }
+                }
+            </style>
+        `;
+    }
+
     get header(): string {
         return normalizeHtml(`
-            <div style="
+            ${this.styleSheet}
+            <div id="esmx-mobile-header" style="
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 56px;
+                background: #0f172a;
+                color: white;
+                display: flex;
+                align-items: center;
+                padding: 0 16px;
+                z-index: 90;
+                gap: 12px;
+            ">
+                <button id="esmx-menu-btn" style="
+                    background: transparent;
+                    border: none;
+                    color: white;
+                    font-size: 1.5rem;
+                    cursor: pointer;
+                    padding: 4px;
+                    line-height: 1;
+                ">&#9776;</button>
+                <span style="font-weight: 700; font-size: 1.125rem;">Esmx Hub</span>
+            </div>
+            <div id="esmx-sidebar-overlay"></div>
+            <div id="esmx-sidebar" style="
                 width: ${SIDEBAR_WIDTH};
                 background: #0f172a;
                 color: white;
@@ -112,6 +181,17 @@ export class Layout {
         return `<div style="display: none;"></div>`;
     }
 
+    private toggleSidebar(open: boolean): void {
+        const sidebar = document.getElementById('esmx-sidebar');
+        const overlay = document.getElementById('esmx-sidebar-overlay');
+        if (sidebar) {
+            sidebar.classList.toggle('esmx-open', open);
+        }
+        if (overlay) {
+            overlay.classList.toggle('esmx-open', open);
+        }
+    }
+
     mount(): void {
         const container = document.getElementById(this.headerId);
         if (!container) return;
@@ -125,10 +205,30 @@ export class Layout {
             const path = link.getAttribute('data-nav');
             if (path) {
                 this.router.push(path);
+                this.toggleSidebar(false);
             }
         };
 
         container.addEventListener('click', this.clickHandler);
+
+        const menuBtn = document.getElementById('esmx-menu-btn');
+        const overlay = document.getElementById('esmx-sidebar-overlay');
+
+        const openMenu = () => this.toggleSidebar(true);
+        const closeMenu = () => this.toggleSidebar(false);
+
+        if (menuBtn) {
+            menuBtn.addEventListener('click', openMenu);
+            this.mobileHandlers.push(() =>
+                menuBtn.removeEventListener('click', openMenu)
+            );
+        }
+        if (overlay) {
+            overlay.addEventListener('click', closeMenu);
+            this.mobileHandlers.push(() =>
+                overlay.removeEventListener('click', closeMenu)
+            );
+        }
     }
 
     unmount(): void {
@@ -139,5 +239,7 @@ export class Layout {
             }
             this.clickHandler = null;
         }
+        this.mobileHandlers.forEach((cleanup) => cleanup());
+        this.mobileHandlers = [];
     }
 }

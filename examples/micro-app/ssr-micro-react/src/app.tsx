@@ -35,10 +35,11 @@ export function AppContent() {
             />
             <div
                 style={{
-                    marginLeft: SIDEBAR_WIDTH,
+                    marginLeft: 'var(--esmx-sidebar-width, ' + SIDEBAR_WIDTH + ')',
                     minHeight: '100vh',
                     background: '#f8fafc',
-                    padding: '32px'
+                    padding: '32px',
+                    paddingTop: 'calc(32px + var(--esmx-mobile-header-height, 0px))'
                 }}
             >
                 <div style={{ maxWidth: '800px', margin: '0 auto' }}>

@@ -33,7 +33,7 @@ export class HtmlApp extends BaseApp {
         return (
             `<div>` +
             `<div id="${this.layout.headerId}">${this.layout.header}</div>` +
-            `<div style="margin-left: ${SIDEBAR_WIDTH}; min-height: 100vh; background: #f8fafc; padding: 32px;">` +
+            `<div style="margin-left: var(--esmx-sidebar-width, ${SIDEBAR_WIDTH}); min-height: 100vh; background: #f8fafc; padding: 32px; padding-top: calc(32px + var(--esmx-mobile-header-height, 0px));">` +
             `<div style="max-width: 800px; margin: 0 auto;">` +
             `<div style="
                 background: white;
