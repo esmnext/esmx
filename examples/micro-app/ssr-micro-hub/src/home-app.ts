@@ -98,9 +98,11 @@ export class HomeApp extends BaseApp {
 
     render(): string {
         return (
+            `<div>` +
             `<div id="${this.layout.headerId}">${this.layout.header}</div>` +
             `<div style="margin-left: 260px; min-height: 100vh; background: #f8fafc; padding: 32px;">${this.getContentHtml()}</div>` +
-            `<div id="${this.layout.footerId}">${this.layout.footer}</div>`
+            `<div id="${this.layout.footerId}">${this.layout.footer}</div>` +
+            `</div>`
         );
     }
 
