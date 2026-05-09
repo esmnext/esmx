@@ -14,7 +14,7 @@ export default async (rc: RenderContext) => {
             return link;
         }
     });
-    const fullUrl = base.replace(/\/$/, '') + url;
+    const fullUrl = new URL(url.replace(/^\//, ''), base).href;
     await router.replace(fullUrl);
     const html = await router.renderToString();
     await rc.commit();
