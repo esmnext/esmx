@@ -109,20 +109,20 @@ importers:
         specifier: ^24.12.3
         version: 24.12.3
       '@types/react':
-        specifier: ^18.3.1
-        version: 18.3.28
+        specifier: ^19.2.14
+        version: 19.2.14
       '@types/react-dom':
-        specifier: ^18.3.1
-        version: 18.3.7(@types/react@18.3.28)
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.14)
       '@unhead/react':
         specifier: ^2.1.15
-        version: 2.1.15(react@18.3.1)
+        version: 2.1.15(react@19.2.4)
       react:
-        specifier: ^18.3.1
-        version: 18.3.1
+        specifier: ^19.0.6
+        version: 19.2.4
       react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
+        specifier: ^19.0.6
+        version: 19.2.4(react@19.2.4)
       ssr-micro-shared:
         specifier: workspace:*
         version: link:../ssr-micro-shared
@@ -7546,11 +7546,6 @@ snapshots:
     dependencies:
       react: 19.2.4
       unhead: 2.1.10
-
-  '@unhead/react@2.1.15(react@18.3.1)':
-    dependencies:
-      react: 18.3.1
-      unhead: 2.1.15
 
   '@unhead/react@2.1.15(react@19.2.4)':
     dependencies:
