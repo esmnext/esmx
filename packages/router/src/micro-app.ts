@@ -68,15 +68,23 @@ export class MicroApp {
                     // Remove data-ssr attribute after hydration
                     root.removeAttribute('data-ssr');
                 } else {
+                    // Capture all existing children before inserting the new container.
+                    // Old app may have created multiple sibling nodes during its lifecycle.
+                    const oldChildren = Array.from(root.childNodes);
                     const el = document.createElement('div');
                     root.appendChild(el);
                     app.mount(el);
+                    if (oldApp) {
+                        oldApp.unmount();
+                    }
+                    // Remove old children that are still attached to the DOM.
+                    // Some frameworks may have already removed their own nodes during unmount.
+                    oldChildren.forEach((child) => {
+                        if (child.parentNode) {
+                            child.remove();
+                        }
+                    });
                 }
-            }
-            if (oldApp) {
-                const oldElement = root?.firstElementChild;
-                oldApp.unmount();
-                oldElement?.remove();
             }
         }
         this.app = app;
