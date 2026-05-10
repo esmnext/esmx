@@ -8,7 +8,7 @@ export interface LayoutOptions {
 export const SIDEBAR_WIDTH = '260px';
 
 const NAV_ITEMS = [
-    { path: '/', label: 'Home', icon: '🏠' },
+    { path: '/', label: 'Home', icon: 'Hm' },
     { path: '/html/', label: 'HTML', icon: 'H' },
     { path: '/vue2/', label: 'Vue 2', icon: 'V2' },
     { path: '/vue3/', label: 'Vue 3', icon: 'V3' },
@@ -82,6 +82,15 @@ export class Layout {
                 :root {
                     --esmx-sidebar-width: ${SIDEBAR_WIDTH};
                 }
+                #esmx-sidebar a[data-nav]:hover {
+                    background: rgba(59, 130, 246, 0.08);
+                    color: #cbd5e1;
+                }
+                #esmx-menu-btn:focus-visible,
+                #esmx-sidebar-close:focus-visible {
+                    outline: 2px solid #3b82f6;
+                    outline-offset: 2px;
+                }
                 @media (max-width: 767px) {
                     :root {
                         --esmx-sidebar-width: 0px;
@@ -93,6 +102,7 @@ export class Layout {
                     }
                     #esmx-sidebar.esmx-open {
                         transform: translateX(0);
+                        width: min(260px, 80vw);
                     }
                     #esmx-sidebar-overlay {
                         display: none;
@@ -104,12 +114,22 @@ export class Layout {
                     #esmx-sidebar-overlay.esmx-open {
                         display: block;
                     }
+                    #esmx-sidebar-close {
+                        display: block !important;
+                    }
+                    #esmx-main {
+                        padding: 16px !important;
+                        padding-top: calc(16px + var(--esmx-mobile-header-height, 0px)) !important;
+                    }
                 }
                 @media (min-width: 768px) {
                     #esmx-mobile-header {
                         display: none !important;
                     }
                     #esmx-sidebar-overlay {
+                        display: none !important;
+                    }
+                    #esmx-sidebar-close {
                         display: none !important;
                     }
                 }
@@ -174,6 +194,19 @@ export class Layout {
                 <nav style="display: flex; flex-direction: column; gap: 4px;">
                     ${generateNavHtml(this.router)}
                 </nav>
+                <button id="esmx-sidebar-close" style="
+                    display: none;
+                    background: transparent;
+                    border: none;
+                    color: white;
+                    font-size: 1.5rem;
+                    cursor: pointer;
+                    padding: 4px;
+                    line-height: 1;
+                    position: absolute;
+                    top: 16px;
+                    right: 16px;
+                ">&times;</button>
             </div>
         `);
     }
@@ -226,6 +259,7 @@ export class Layout {
 
         const menuBtn = document.getElementById('esmx-menu-btn');
         const overlay = document.getElementById('esmx-sidebar-overlay');
+        const closeBtn = document.getElementById('esmx-sidebar-close');
 
         const openMenu = () => this.toggleSidebar(true);
         const closeMenu = () => this.toggleSidebar(false);
@@ -240,6 +274,12 @@ export class Layout {
             overlay.addEventListener('click', closeMenu);
             this.mobileHandlers.push(() =>
                 overlay.removeEventListener('click', closeMenu)
+            );
+        }
+        if (closeBtn) {
+            closeBtn.addEventListener('click', closeMenu);
+            this.mobileHandlers.push(() =>
+                closeBtn.removeEventListener('click', closeMenu)
             );
         }
     }

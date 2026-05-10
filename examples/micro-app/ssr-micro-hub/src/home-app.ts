@@ -99,7 +99,7 @@ export class HomeApp extends BaseApp {
                         });
                         return `
                         <a href="${resolved.attributes.href}" data-to="${app.to}" style="text-decoration: none; color: inherit; display: block;">
-                            <article style="background: white; border-radius: 16px; padding: 32px; border: 1px solid #e2e8f0; cursor: pointer;">
+                            <article class="esmx-card" style="background: white; border-radius: 16px; padding: 32px; border: 1px solid #e2e8f0; cursor: pointer;">
                                 <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px;">
                                     <div style="width: 56px; height: 56px; background: ${app.iconBg}; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 20px;">${app.icon}</div>
                                     <span style="padding: 4px 12px; border-radius: 100px; font-size: 12px; font-weight: 600; color: ${app.tagColor}; background: ${app.tagBg};">${app.tag}</span>
@@ -121,8 +121,9 @@ export class HomeApp extends BaseApp {
     render(): string {
         return (
             `<div>` +
+            `<style>.esmx-card{transition:box-shadow 0.2s ease,border-color 0.2s ease}.esmx-card:hover{box-shadow:0 4px 20px rgba(0,0,0,0.08);border-color:#cbd5e1}</style>` +
             `<div id="${this.layout.headerId}">${this.layout.header}</div>` +
-            `<div style="margin-left: var(--esmx-sidebar-width, ${SIDEBAR_WIDTH}); min-height: 100vh; background: #f8fafc; padding: 32px; padding-top: calc(32px + var(--esmx-mobile-header-height, 0px));">${this.getContentHtml()}</div>` +
+            `<div id="esmx-main" style="margin-left: var(--esmx-sidebar-width, ${SIDEBAR_WIDTH}); min-height: 100vh; background: #f8fafc; padding: 32px; padding-top: calc(32px + var(--esmx-mobile-header-height, 0px));">${this.getContentHtml()}</div>` +
             `<div id="${this.layout.footerId}">${this.layout.footer}</div>` +
             `</div>`
         );

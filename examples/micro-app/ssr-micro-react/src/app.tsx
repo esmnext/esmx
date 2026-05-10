@@ -34,6 +34,7 @@ export function AppContent() {
                 dangerouslySetInnerHTML={{ __html: layout.header }}
             />
             <div
+                id="esmx-main"
                 style={{
                     marginLeft: 'var(--esmx-sidebar-width, ' + SIDEBAR_WIDTH + ')',
                     minHeight: '100vh',
@@ -53,18 +54,18 @@ export function AppContent() {
                     >
                         <div
                             style={{
-                                width: '64px',
-                                height: '64px',
+                                width: '56px',
+                                height: '56px',
                                 background:
                                     'linear-gradient(135deg, #0ea5e9, #0284c7)',
-                                borderRadius: '16px',
+                                borderRadius: '14px',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 color: 'white',
                                 fontWeight: 700,
-                                fontSize: '24px',
-                                margin: '0 auto 24px'
+                                fontSize: '20px',
+                                margin: '0 auto 20px'
                             }}
                         >
                             R

@@ -33,7 +33,7 @@ export class HtmlApp extends BaseApp {
         return (
             `<div>` +
             `<div id="${this.layout.headerId}">${this.layout.header}</div>` +
-            `<div style="margin-left: var(--esmx-sidebar-width, ${SIDEBAR_WIDTH}); min-height: 100vh; background: #f8fafc; padding: 32px; padding-top: calc(32px + var(--esmx-mobile-header-height, 0px));">` +
+            `<div id="esmx-main" style="margin-left: var(--esmx-sidebar-width, ${SIDEBAR_WIDTH}); min-height: 100vh; background: #f8fafc; padding: 32px; padding-top: calc(32px + var(--esmx-mobile-header-height, 0px));">` +
             `<div style="max-width: 800px; margin: 0 auto;">` +
             `<div style="
                 background: white;
@@ -43,17 +43,17 @@ export class HtmlApp extends BaseApp {
                 text-align: center;
             ">` +
             `<div style="
-                width: 64px;
-                height: 64px;
+                width: 56px;
+                height: 56px;
                 background: linear-gradient(135deg, #f59e0b, #d97706);
-                border-radius: 16px;
+                border-radius: 14px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 color: white;
                 font-weight: 700;
-                font-size: 28px;
-                margin: 0 auto 24px;
+                font-size: 20px;
+                margin: 0 auto 20px;
             ">H</div>` +
             `<h1 style="
                 font-size: 2rem;
