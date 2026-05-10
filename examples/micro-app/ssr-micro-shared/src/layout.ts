@@ -179,7 +179,19 @@ export class Layout {
     }
 
     get footer(): string {
-        return `<div style="display: none;"></div>`;
+        return `<div style="
+            margin-left: var(--esmx-sidebar-width, ${SIDEBAR_WIDTH});
+            padding: 24px 32px;
+            background: #0f172a;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            text-align: center;
+        ">
+            <p style="margin: 0;">
+                Powered by <a href="https://esmx.dev" target="_blank" style="color: #3b82f6; text-decoration: none;">Esmx</a>
+                &copy; ${new Date().getFullYear()}
+            </p>
+        </div>`;
     }
 
     private toggleSidebar(open: boolean): void {
