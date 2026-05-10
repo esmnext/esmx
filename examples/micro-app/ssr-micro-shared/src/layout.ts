@@ -71,16 +71,12 @@ function generateNavHtml(router: Router): string {
 export class Layout {
     public readonly appId: string;
     public readonly router: Router;
-    public readonly headerId: string;
-    public readonly footerId: string;
     private clickHandler: ((e: Event) => void) | null = null;
     private mobileHandlers: Array<() => void> = [];
 
     constructor(options: LayoutOptions) {
         this.appId = options.appId;
         this.router = options.router;
-        this.headerId = `${options.appId}-header`;
-        this.footerId = `${options.appId}-footer`;
     }
 
     private get styleSheet(): string {
@@ -122,13 +118,6 @@ export class Layout {
                         --esmx-glow: rgba(59, 130, 246, 0.04);
                     }
                 }
-                body {
-                    background: var(--esmx-bg-main);
-                    margin: 0;
-                }
-                #${s}-main {
-                    background: radial-gradient(ellipse at 50% 0%, var(--esmx-glow) 0%, transparent 60%), var(--esmx-bg-main);
-                }
                 #${s}-sidebar a[data-nav] {
                     transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
                 }
@@ -166,10 +155,6 @@ export class Layout {
                     }
                     #${s}-sidebar-close {
                         display: block !important;
-                    }
-                    #${s}-main {
-                        padding: 16px !important;
-                        padding-top: calc(16px + var(--esmx-mobile-header-height, 0px)) !important;
                     }
                 }
                 @media (min-width: 768px) {
@@ -297,20 +282,14 @@ export class Layout {
 
     mount(): void {
         const s = this.appId;
-        const container = document.getElementById(this.headerId);
-        if (!container) return;
+        const sidebar = document.getElementById(`${s}-sidebar`);
+        if (!sidebar) return;
 
-        // Assign main content id to header's next sibling (app-internal)
-        const mainEl = container.nextElementSibling as HTMLElement;
-        if (mainEl) {
-            mainEl.id = `${s}-main`;
-        }
-
+        // Nav link clicks
         this.clickHandler = (e: Event) => {
             const target = e.target as HTMLElement;
             const link = target.closest('a[data-nav]') as HTMLElement | null;
             if (!link) return;
-
             e.preventDefault();
             const path = link.getAttribute('data-nav');
             if (path) {
@@ -318,8 +297,7 @@ export class Layout {
                 this.toggleSidebar(false);
             }
         };
-
-        container.addEventListener('click', this.clickHandler);
+        sidebar.addEventListener('click', this.clickHandler);
 
         const menuBtn = document.getElementById(`${s}-menu-btn`);
         const overlay = document.getElementById(`${s}-sidebar-overlay`);
@@ -350,9 +328,9 @@ export class Layout {
 
     unmount(): void {
         if (this.clickHandler) {
-            const container = document.getElementById(this.headerId);
-            if (container) {
-                container.removeEventListener('click', this.clickHandler);
+            const sidebar = document.getElementById(`${this.appId}-sidebar`);
+            if (sidebar) {
+                sidebar.removeEventListener('click', this.clickHandler);
             }
             this.clickHandler = null;
         }
