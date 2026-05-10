@@ -80,6 +80,7 @@ export class HomeApp extends BaseApp {
     private getContentHtml(): string {
         const heroSection = `
             <div style="text-align: center; margin-bottom: 48px;">
+                <img src="https://esmx.dev/logo.svg" alt="Esmx" style="width: 64px; height: 64px; margin-bottom: 16px;" />
                 <h1 style="font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; color: #0f172a; margin-bottom: 16px;">Micro-Frontend Architecture</h1>
                 <p style="font-size: 1.125rem; color: #64748b; max-width: 600px; margin: 0 auto;">
                     Explore how different frontend frameworks coexist in a single application

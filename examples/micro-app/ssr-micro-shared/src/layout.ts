@@ -161,14 +161,15 @@ export class Layout {
                 flex-direction: column;
             ">
                 <div style="
-                    font-size: 1.5rem;
-                    font-weight: 700;
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
                     margin-bottom: 32px;
                     padding-bottom: 16px;
                     border-bottom: 1px solid #334155;
-                    color: #fff;
                 ">
-                    Esmx Hub
+                    <img src="https://esmx.dev/logo.svg" alt="Esmx" style="width: 32px; height: 32px;" />
+                    <span style="font-size: 1.5rem; font-weight: 700; color: #fff;">Esmx Hub</span>
                 </div>
                 <nav style="display: flex; flex-direction: column; gap: 4px;">
                     ${generateNavHtml(this.router)}
