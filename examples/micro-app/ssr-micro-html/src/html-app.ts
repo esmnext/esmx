@@ -50,11 +50,12 @@ export class HtmlApp extends BaseApp {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                color: white;
-                font-weight: 700;
-                font-size: 20px;
                 margin: 0 auto 20px;
-            " role="img" aria-label="HTML">H</div>` +
+            " role="img" aria-label="HTML">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="28" height="28">
+                    <path d="M4 2l2 20 10 8 10-8 2-20H4zm18.4 6H11l.4 4h13l-.6 6.5-7.8 2.2-7.8-2.2-.4-4h3.1l.2 1.5 4.9 1.4 4.9-1.4.4-4.5H9l-.6-7h16.6l-.6 7z" fill="#fff"/>
+                </svg>
+            </div>` +
             `<h1 style="
                 font-size: 2rem;
                 font-weight: 800;

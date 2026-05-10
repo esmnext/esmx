@@ -62,15 +62,17 @@ export function AppContent() {
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                color: 'white',
-                                fontWeight: 700,
-                                fontSize: '20px',
                                 margin: '0 auto 20px'
                             }}
                             role="img"
                             aria-label="React"
                         >
-                            R
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="28" height="28">
+                                <circle cx="16" cy="16" r="3" fill="#fff"/>
+                                <ellipse cx="16" cy="16" rx="15" ry="5.5" fill="none" stroke="#fff" strokeWidth="1.8" transform="rotate(60 16 16)"/>
+                                <ellipse cx="16" cy="16" rx="15" ry="5.5" fill="none" stroke="#fff" strokeWidth="1.8" transform="rotate(-60 16 16)"/>
+                                <ellipse cx="16" cy="16" rx="15" ry="5.5" fill="none" stroke="#fff" strokeWidth="1.8"/>
+                            </svg>
                         </div>
                         <h1
                             style={{
