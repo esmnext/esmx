@@ -13,11 +13,11 @@ export function AppContent() {
     );
 
     useHead({
-        title: 'React Micro-App',
+        title: 'React 19 Micro-App',
         meta: [
             {
                 name: 'description',
-                content: 'This page is rendered by a React 18 micro-app.'
+                content: 'This page is rendered by a React 19 micro-app.'
             }
         ]
     });
@@ -81,7 +81,7 @@ export function AppContent() {
                                 marginBottom: '12px'
                             }}
                         >
-                            React Micro-App
+                            React 19 Micro-App
                         </h1>
                         <p
                             style={{
@@ -90,7 +90,7 @@ export function AppContent() {
                                 marginBottom: '32px'
                             }}
                         >
-                            This page is rendered by a React 18 micro-app.
+                            This page is rendered by a React 19 micro-app.
                         </p>
                     </div>
                 </div>

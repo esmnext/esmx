@@ -50,9 +50,9 @@ export class HomeApp extends BaseApp {
         },
         {
             to: '/react/',
-            title: 'React',
-            subtitle: 'React 18 + Hooks',
-            description: 'React 18 with concurrent features.',
+            title: 'React 19',
+            subtitle: 'React 19 + Hooks',
+            description: 'React 19 with concurrent features.',
             icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24"><circle cx="16" cy="16" r="3" fill="#fff"/><ellipse cx="16" cy="16" rx="15" ry="5.5" fill="none" stroke="#fff" stroke-width="1.8" transform="rotate(60 16 16)"/><ellipse cx="16" cy="16" rx="15" ry="5.5" fill="none" stroke="#fff" stroke-width="1.8" transform="rotate(-60 16 16)"/><ellipse cx="16" cy="16" rx="15" ry="5.5" fill="none" stroke="#fff" stroke-width="1.8"/></svg>',
             iconBg: 'linear-gradient(135deg, #0ea5e9, #0284c7)',
             tag: 'Popular',
