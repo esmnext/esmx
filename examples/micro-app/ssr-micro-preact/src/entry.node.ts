@@ -1,5 +1,8 @@
 import http from 'node:http';
+import { createRequire } from 'node:module';
 import type { EsmxOptions } from '@esmx/core';
+
+const require = createRequire(import.meta.url);
 
 export default {
     modules: {
@@ -15,7 +18,16 @@ export default {
     async devApp(esmx) {
         return import('@esmx/rspack-react').then((m) =>
             m.createRspackReactApp(esmx, {
-                chain() {}
+                chain(ctx) {
+                    ctx.chain.resolve.alias.set(
+                        'react',
+                        require.resolve('preact/compat')
+                    );
+                    ctx.chain.resolve.alias.set(
+                        'react-dom',
+                        require.resolve('preact/compat')
+                    );
+                }
             })
         );
     },
