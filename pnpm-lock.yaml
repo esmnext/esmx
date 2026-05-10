@@ -102,6 +102,9 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/core
     devDependencies:
+      '@esmx/router':
+        specifier: workspace:*
+        version: link:../../../packages/router
       '@esmx/router-react':
         specifier: workspace:*
         version: link:../../../packages/router-react

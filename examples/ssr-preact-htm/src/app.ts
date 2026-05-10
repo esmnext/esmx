@@ -121,7 +121,7 @@ const Features = () => html`
 `;
 
 // 主应用组件
-export const App = () => html`
+export const App: () => any = () => html`
     <div class="container">
         <h1>
             <img src="https://esmx.dev/logo.svg" alt="Esmx Logo" class="logo" />

@@ -63,7 +63,12 @@ export class MicroApp {
                         // No child elements (e.g., Vue 2 comment nodes), fallback to mount
                         const el = document.createElement('div');
                         root.appendChild(el);
-                        app.mount(el);
+                        try {
+                            app.mount(el);
+                        } catch (e) {
+                            el.remove();
+                            throw e;
+                        }
                     }
                     // Remove data-ssr attribute after hydration
                     root.removeAttribute('data-ssr');
@@ -73,9 +78,19 @@ export class MicroApp {
                     const oldChildren = Array.from(root.childNodes);
                     const el = document.createElement('div');
                     root.appendChild(el);
-                    app.mount(el);
+                    try {
+                        app.mount(el);
+                    } catch (e) {
+                        el.remove();
+                        throw e;
+                    }
                     if (oldApp) {
-                        oldApp.unmount();
+                        try {
+                            oldApp.unmount();
+                        } catch (e) {
+                            // eslint-disable-next-line no-console
+                            console.error('MicroApp unmount failed:', e);
+                        }
                     }
                     // Remove old children that are still attached to the DOM.
                     // Some frameworks may have already removed their own nodes during unmount.
@@ -117,10 +132,19 @@ export class MicroApp {
 
     public destroy() {
         this.app?.unmount();
-        this.root?.firstElementChild?.remove();
+        this._clearRoot();
         this.app = null;
         this.root = null;
         this._factory = null;
         this.destroyed = true;
+    }
+
+    private _clearRoot(): void {
+        if (!this.root) {
+            return;
+        }
+        Array.from(this.root.childNodes).forEach((child) => {
+            child.remove();
+        });
     }
 }

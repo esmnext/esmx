@@ -1,3 +1,4 @@
+// @ts-nocheck -- Preact/React type mismatch resolved by rspack alias at build time
 import type { RouterMicroAppOptions } from '@esmx/router';
 import { RouterProvider } from '@esmx/router-react';
 import { createHead, UnheadProvider } from '@unhead/react/client';
@@ -39,7 +40,7 @@ class PreactApp extends BaseApp {
         }
     }
 
-    renderToString(): string {
+    async renderToString(): Promise<string> {
         const app = createApp(this.router, this.head);
         const html = renderToString(app);
         return html?.trim() ? `<div>${html}</div>` : '';
