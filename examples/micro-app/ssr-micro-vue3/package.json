@@ -16,16 +16,16 @@
         "@esmx/core": "workspace:*"
     },
     "devDependencies": {
-        "tsc-alias": "^1.8.16",
+        "tsc-alias": "^1.8.17",
         "@esmx/rspack-vue": "workspace:*",
         "@esmx/router-vue": "workspace:*",
-        "@types/node": "^24.0.0",
+        "@types/node": "^24.12.3",
         "@vue/server-renderer": "^3.5.34",
         "ssr-micro-shared": "workspace:*",
-        "typescript": "5.8.3",
-        "unhead": "^2.1.0",
-        "@unhead/vue": "^2.1.0",
+        "typescript": "6.0.3",
+        "unhead": "^3.1.0",
+        "@unhead/vue": "^3.1.0",
         "vue": "^3.5.34",
-        "vue-tsc": "^3.0.5"
+        "vue-tsc": "^3.2.8"
     }
 } 

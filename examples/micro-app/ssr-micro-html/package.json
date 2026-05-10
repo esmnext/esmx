@@ -15,9 +15,9 @@
     },
     "devDependencies": {
         "@esmx/rspack": "workspace:*",
-        "@types/node": "^24.0.0",
+        "@types/node": "^24.12.3",
         "ssr-micro-shared": "workspace:*",
-        "typescript": "5.8.3",
-        "unhead": "^2.1.0"
+        "typescript": "6.0.3",
+        "unhead": "^3.1.0"
     }
 }

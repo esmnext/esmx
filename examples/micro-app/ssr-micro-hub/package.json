@@ -17,13 +17,13 @@
     "devDependencies": {
         "@esmx/router": "workspace:*",
         "@esmx/rspack": "workspace:*",
-        "@types/node": "^24.0.0",
+        "@types/node": "^24.12.3",
         "ssr-micro-html": "workspace:*",
         "ssr-micro-react": "workspace:*",
         "ssr-micro-shared": "workspace:*",
         "ssr-micro-vue2": "workspace:*",
         "ssr-micro-vue3": "workspace:*",
-        "typescript": "5.8.3",
-        "unhead": "^2.1.0"
+        "typescript": "6.0.3",
+        "unhead": "^3.1.0"
     }
 }

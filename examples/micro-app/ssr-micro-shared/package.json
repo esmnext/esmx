@@ -13,13 +13,13 @@
     "dependencies": {
         "@esmx/core": "workspace:*",
         "@unhead/react": "^2.1.15",
-        "@unhead/vue": "^2.1.0",
-        "unhead": "^2.1.0"
+        "@unhead/vue": "^3.1.0",
+        "unhead": "^3.1.0"
     },
     "devDependencies": {
         "@esmx/rspack": "workspace:*",
         "@esmx/router": "workspace:*",
-        "@types/node": "^24.0.0",
-        "typescript": "5.8.3"
+        "@types/node": "^24.12.3",
+        "typescript": "6.0.3"
     }
 }
