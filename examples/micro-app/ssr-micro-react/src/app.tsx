@@ -38,7 +38,6 @@ export function AppContent() {
                 style={{
                     marginLeft: 'var(--esmx-sidebar-width, ' + SIDEBAR_WIDTH + ')',
                     minHeight: '100vh',
-                    background: '#f8fafc',
                     padding: '32px',
                     paddingTop: 'calc(32px + var(--esmx-mobile-header-height, 0px))'
                 }}
@@ -46,9 +45,10 @@ export function AppContent() {
                 <div style={{ maxWidth: '800px', margin: '0 auto' }}>
                     <div
                         style={{
-                            background: 'white',
+                            background: 'var(--esmx-bg-card)',
                             borderRadius: '16px',
                             padding: '48px',
+                            border: '1px solid var(--esmx-border)',
                             textAlign: 'center'
                         }}
                     >
@@ -78,7 +78,7 @@ export function AppContent() {
                             style={{
                                 fontSize: '2rem',
                                 fontWeight: 800,
-                                color: '#0f172a',
+                                color: 'var(--esmx-text-primary)',
                                 marginBottom: '12px'
                             }}
                         >
@@ -87,7 +87,7 @@ export function AppContent() {
                         <p
                             style={{
                                 fontSize: '1.125rem',
-                                color: '#64748b',
+                                color: 'var(--esmx-text-secondary)',
                                 marginBottom: '32px'
                             }}
                         >

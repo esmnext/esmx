@@ -46,8 +46,8 @@ export default async (rc: RenderContext) => {
         body {
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f8fafc;
-            color: #0f172a;
+            background: var(--esmx-bg-main);
+            color: var(--esmx-text-primary);
             line-height: 1.5;
         }
 

@@ -88,10 +88,52 @@ export class Layout {
             <style>
                 :root {
                     --esmx-sidebar-width: ${SIDEBAR_WIDTH};
+                    --esmx-bg-main: #f8fafc;
+                    --esmx-bg-card: #fff;
+                    --esmx-bg-sidebar: #0f172a;
+                    --esmx-text-primary: #0f172a;
+                    --esmx-text-secondary: #64748b;
+                    --esmx-text-muted: #94a3b8;
+                    --esmx-border: #e2e8f0;
+                    --esmx-border-divider: #334155;
+                    --esmx-link: #3b82f6;
+                    --esmx-nav-hover-bg: rgba(59, 130, 246, 0.08);
+                    --esmx-nav-hover-color: #cbd5e1;
+                    --esmx-card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                    --esmx-card-hover-border: #cbd5e1;
+                    --esmx-glow: rgba(59, 130, 246, 0.06);
+                }
+                @media (prefers-color-scheme: dark) {
+                    :root {
+                        --esmx-bg-main: #0f172a;
+                        --esmx-bg-card: #1e293b;
+                        --esmx-bg-sidebar: #020617;
+                        --esmx-text-primary: #f1f5f9;
+                        --esmx-text-secondary: #94a3b8;
+                        --esmx-text-muted: #64748b;
+                        --esmx-border: #334155;
+                        --esmx-border-divider: #1e293b;
+                        --esmx-link: #60a5fa;
+                        --esmx-nav-hover-bg: rgba(59, 130, 246, 0.12);
+                        --esmx-nav-hover-color: #e2e8f0;
+                        --esmx-card-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                        --esmx-card-hover-border: #475569;
+                        --esmx-glow: rgba(59, 130, 246, 0.04);
+                    }
+                }
+                body {
+                    background: var(--esmx-bg-main);
+                    margin: 0;
+                }
+                #esmx-main {
+                    background: radial-gradient(ellipse at 50% 0%, var(--esmx-glow) 0%, transparent 60%), var(--esmx-bg-main);
+                }
+                #esmx-sidebar a[data-nav] {
+                    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
                 }
                 #esmx-sidebar a[data-nav]:hover {
-                    background: rgba(59, 130, 246, 0.08);
-                    color: #cbd5e1;
+                    background: var(--esmx-nav-hover-bg);
+                    color: var(--esmx-nav-hover-color);
                 }
                 #esmx-menu-btn:focus-visible,
                 #esmx-sidebar-close:focus-visible {
@@ -154,7 +196,7 @@ export class Layout {
                 left: 0;
                 right: 0;
                 height: 56px;
-                background: #0f172a;
+                background: var(--esmx-bg-sidebar);
                 color: white;
                 display: flex;
                 align-items: center;
@@ -176,7 +218,7 @@ export class Layout {
             <div id="esmx-sidebar-overlay"></div>
             <div id="esmx-sidebar" style="
                 width: ${SIDEBAR_WIDTH};
-                background: #0f172a;
+                background: var(--esmx-bg-sidebar);
                 color: white;
                 padding: 24px;
                 position: fixed;
@@ -223,13 +265,13 @@ export class Layout {
         return `<div style="
             margin-left: var(--esmx-sidebar-width, ${SIDEBAR_WIDTH});
             padding: 24px 32px;
-            background: #0f172a;
-            color: #94a3b8;
+            background: var(--esmx-bg-sidebar);
+            color: var(--esmx-text-muted);
             font-size: 0.875rem;
             text-align: center;
         ">
             <p style="margin: 0;">
-                Powered by <a href="https://esmx.dev" target="_blank" style="color: #3b82f6; text-decoration: none;">Esmx</a>
+                Powered by <a href="https://esmx.dev" target="_blank" style="color: var(--esmx-link); text-decoration: none;">Esmx</a>
                 &copy; ${new Date().getFullYear()}
             </p>
         </div>`;

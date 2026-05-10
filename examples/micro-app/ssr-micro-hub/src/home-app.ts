@@ -81,10 +81,10 @@ export class HomeApp extends BaseApp {
         const heroSection = `
             <div style="text-align: center; margin-bottom: 48px;">
                 <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg transform='translate(20,20)'%3E%3Ccircle r='12' fill='none' stroke='%2312B2EF' stroke-width='2.8'/%3E%3Ccircle r='6.2' fill='%23FFA000'/%3E%3C/g%3E%3C/svg%3E" alt="Esmx" style="width: 64px; height: 64px; margin-bottom: 16px;" />
-                <h1 style="font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; color: #0f172a; margin-bottom: 16px;">Micro-Frontend Architecture</h1>
-                <p style="font-size: 1.125rem; color: #64748b; max-width: 600px; margin: 0 auto;">
+                <h1 style="font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; color: var(--esmx-text-primary); margin-bottom: 16px;">Micro-Frontend Architecture</h1>
+                <p style="font-size: 1.125rem; color: var(--esmx-text-secondary); max-width: 600px; margin: 0 auto;">
                     Explore how different frontend frameworks coexist in a single application
-                    powered by <strong style="color: #3b82f6;">Esmx Router</strong>
+                    powered by <strong style="color: var(--esmx-link);">Esmx Router</strong>
                 </p>
             </div>
         `;
@@ -99,14 +99,14 @@ export class HomeApp extends BaseApp {
                         });
                         return `
                         <a href="${resolved.attributes.href}" data-to="${app.to}" style="text-decoration: none; color: inherit; display: block;">
-                            <article class="esmx-card" style="background: white; border-radius: 16px; padding: 32px; border: 1px solid #e2e8f0; cursor: pointer;">
+                            <article class="esmx-card" style="background: var(--esmx-bg-card); border-radius: 16px; padding: 32px; border: 1px solid var(--esmx-border); cursor: pointer;">
                                 <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px;">
                                     <div style="width: 56px; height: 56px; background: ${app.iconBg}; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 20px;" role="img" aria-label="${app.title}">${app.icon}</div>
                                     <span style="padding: 4px 12px; border-radius: 100px; font-size: 0.75rem; font-weight: 600; color: ${app.tagColor}; background: ${app.tagBg};">${app.tag}</span>
                                 </div>
-                                <h2 style="font-size: 1.25rem; font-weight: 700; color: #0f172a; margin-bottom: 4px;">${app.title}</h2>
-                                <p style="font-size: 0.875rem; color: #64748b; margin-bottom: 12px;">${app.subtitle}</p>
-                                <p style="font-size: 0.875rem; color: #94a3b8; margin: 0;">${app.description}</p>
+                                <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--esmx-text-primary); margin-bottom: 4px;">${app.title}</h2>
+                                <p style="font-size: 0.875rem; color: var(--esmx-text-secondary); margin-bottom: 12px;">${app.subtitle}</p>
+                                <p style="font-size: 0.875rem; color: var(--esmx-text-muted); margin: 0;">${app.description}</p>
                             </article>
                         </a>
                     `;
@@ -121,9 +121,9 @@ export class HomeApp extends BaseApp {
     render(): string {
         return (
             `<div>` +
-            `<style>.esmx-card{transition:box-shadow 0.2s ease,border-color 0.2s ease}.esmx-card:hover{box-shadow:0 4px 20px rgba(0,0,0,0.08);border-color:#cbd5e1}</style>` +
+            `<style>.esmx-card{transition:box-shadow 0.2s ease,border-color 0.2s ease,transform 0.2s ease}.esmx-card:hover{box-shadow:var(--esmx-card-shadow);border-color:var(--esmx-card-hover-border);transform:scale(1.01)}</style>` +
             `<div id="${this.layout.headerId}">${this.layout.header}</div>` +
-            `<div id="esmx-main" style="margin-left: var(--esmx-sidebar-width, ${SIDEBAR_WIDTH}); min-height: 100vh; background: #f8fafc; padding: 32px; padding-top: calc(32px + var(--esmx-mobile-header-height, 0px));">${this.getContentHtml()}</div>` +
+            `<div id="esmx-main" style="margin-left: var(--esmx-sidebar-width, ${SIDEBAR_WIDTH}); min-height: 100vh; padding: 32px; padding-top: calc(32px + var(--esmx-mobile-header-height, 0px));">${this.getContentHtml()}</div>` +
             `<div id="${this.layout.footerId}">${this.layout.footer}</div>` +
             `</div>`
         );

@@ -33,13 +33,13 @@ export class HtmlApp extends BaseApp {
         return (
             `<div>` +
             `<div id="${this.layout.headerId}">${this.layout.header}</div>` +
-            `<div id="esmx-main" style="margin-left: var(--esmx-sidebar-width, ${SIDEBAR_WIDTH}); min-height: 100vh; background: #f8fafc; padding: 32px; padding-top: calc(32px + var(--esmx-mobile-header-height, 0px));">` +
+            `<div id="esmx-main" style="margin-left: var(--esmx-sidebar-width, ${SIDEBAR_WIDTH}); min-height: 100vh; padding: 32px; padding-top: calc(32px + var(--esmx-mobile-header-height, 0px));">` +
             `<div style="max-width: 800px; margin: 0 auto;">` +
             `<div style="
-                background: white;
+                background: var(--esmx-bg-card);
                 border-radius: 16px;
                 padding: 48px;
-                border: 1px solid #e2e8f0;
+                border: 1px solid var(--esmx-border);
                 text-align: center;
             ">` +
             `<div style="
@@ -59,12 +59,12 @@ export class HtmlApp extends BaseApp {
             `<h1 style="
                 font-size: 2rem;
                 font-weight: 800;
-                color: #0f172a;
+                color: var(--esmx-text-primary);
                 margin-bottom: 12px;
             ">HTML Micro-App</h1>` +
             `<p style="
                 font-size: 1.125rem;
-                color: #64748b;
+                color: var(--esmx-text-secondary);
                 margin-bottom: 32px;
                 max-width: 500px;
                 margin-left: auto;
