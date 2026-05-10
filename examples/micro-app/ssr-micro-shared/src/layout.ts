@@ -84,6 +84,7 @@ export class Layout {
     }
 
     private get styleSheet(): string {
+        const s = this.appId;
         return `
             <style>
                 :root {
@@ -125,18 +126,18 @@ export class Layout {
                     background: var(--esmx-bg-main);
                     margin: 0;
                 }
-                #esmx-main {
+                #${s}-main {
                     background: radial-gradient(ellipse at 50% 0%, var(--esmx-glow) 0%, transparent 60%), var(--esmx-bg-main);
                 }
-                #esmx-sidebar a[data-nav] {
+                #${s}-sidebar a[data-nav] {
                     transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
                 }
-                #esmx-sidebar a[data-nav]:hover {
+                #${s}-sidebar a[data-nav]:hover {
                     background: var(--esmx-nav-hover-bg);
                     color: var(--esmx-nav-hover-color);
                 }
-                #esmx-menu-btn:focus-visible,
-                #esmx-sidebar-close:focus-visible {
+                #${s}-menu-btn:focus-visible,
+                #${s}-sidebar-close:focus-visible {
                     outline: 2px solid #3b82f6;
                     outline-offset: 2px;
                 }
@@ -145,40 +146,40 @@ export class Layout {
                         --esmx-sidebar-width: 0px;
                         --esmx-mobile-header-height: 56px;
                     }
-                    #esmx-sidebar {
+                    #${s}-sidebar {
                         transform: translateX(-100%);
                         transition: transform 0.3s ease;
                     }
-                    #esmx-sidebar.esmx-open {
+                    #${s}-sidebar.${s}-open {
                         transform: translateX(0) !important;
                         width: min(260px, 80vw) !important;
                     }
-                    #esmx-sidebar-overlay {
+                    #${s}-sidebar-overlay {
                         display: none;
                         position: fixed;
                         inset: 0;
                         background: rgba(0,0,0,0.5);
                         z-index: 99;
                     }
-                    #esmx-sidebar-overlay.esmx-open {
+                    #${s}-sidebar-overlay.${s}-open {
                         display: block;
                     }
-                    #esmx-sidebar-close {
+                    #${s}-sidebar-close {
                         display: block !important;
                     }
-                    #esmx-main {
+                    #${s}-main {
                         padding: 16px !important;
                         padding-top: calc(16px + var(--esmx-mobile-header-height, 0px)) !important;
                     }
                 }
                 @media (min-width: 768px) {
-                    #esmx-mobile-header {
+                    #${s}-mobile-header {
                         display: none !important;
                     }
-                    #esmx-sidebar-overlay {
+                    #${s}-sidebar-overlay {
                         display: none !important;
                     }
-                    #esmx-sidebar-close {
+                    #${s}-sidebar-close {
                         display: none !important;
                     }
                 }
@@ -187,10 +188,11 @@ export class Layout {
     }
 
     get header(): string {
+        const s = this.appId;
         return normalizeHtml(`
             <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg transform='translate(20,20)'%3E%3Ccircle r='12' fill='none' stroke='%2312B2EF' stroke-width='2.8'/%3E%3Ccircle r='6.2' fill='%23FFA000'/%3E%3C/g%3E%3C/svg%3E" type="image/svg+xml" />
             ${this.styleSheet}
-            <div id="esmx-mobile-header" style="
+            <div id="${s}-mobile-header" style="
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -204,7 +206,7 @@ export class Layout {
                 z-index: 90;
                 gap: 12px;
             ">
-                <button id="esmx-menu-btn" style="
+                <button id="${s}-menu-btn" style="
                     background: transparent;
                     border: none;
                     color: white;
@@ -215,8 +217,8 @@ export class Layout {
                 ">&#9776;</button>
                 <span style="font-weight: 700; font-size: 1.125rem;">Esmx Hub</span>
             </div>
-            <div id="esmx-sidebar-overlay"></div>
-            <div id="esmx-sidebar" style="
+            <div id="${s}-sidebar-overlay"></div>
+            <div id="${s}-sidebar" style="
                 width: ${SIDEBAR_WIDTH};
                 background: var(--esmx-bg-sidebar);
                 color: white;
@@ -244,7 +246,7 @@ export class Layout {
                 <nav style="display: flex; flex-direction: column; gap: 4px;">
                     ${generateNavHtml(this.router)}
                 </nav>
-                <button id="esmx-sidebar-close" style="
+                <button id="${s}-sidebar-close" style="
                     display: none;
                     background: transparent;
                     border: none;
@@ -278,22 +280,23 @@ export class Layout {
     }
 
     private toggleSidebar(open: boolean): void {
-        const sidebar = document.getElementById('esmx-sidebar');
-        const overlay = document.getElementById('esmx-sidebar-overlay');
+        const s = this.appId;
+        const sidebar = document.getElementById(`${s}-sidebar`);
+        const overlay = document.getElementById(`${s}-sidebar-overlay`);
         if (sidebar) {
-            sidebar.classList.toggle('esmx-open', open);
-            // Direct style manipulation as fallback for inline style conflicts
+            sidebar.classList.toggle(`${s}-open`, open);
             sidebar.style.transform = open ? 'translateX(0)' : '';
             sidebar.style.width = open ? '' : '';
             sidebar.style.visibility = open ? '' : '';
         }
         if (overlay) {
-            overlay.classList.toggle('esmx-open', open);
+            overlay.classList.toggle(`${s}-open`, open);
             overlay.style.display = open ? 'block' : '';
         }
     }
 
     mount(): void {
+        const s = this.appId;
         const container = document.getElementById(this.headerId);
         if (!container) return;
 
@@ -312,9 +315,9 @@ export class Layout {
 
         container.addEventListener('click', this.clickHandler);
 
-        const menuBtn = document.getElementById('esmx-menu-btn');
-        const overlay = document.getElementById('esmx-sidebar-overlay');
-        const closeBtn = document.getElementById('esmx-sidebar-close');
+        const menuBtn = document.getElementById(`${s}-menu-btn`);
+        const overlay = document.getElementById(`${s}-sidebar-overlay`);
+        const closeBtn = document.getElementById(`${s}-sidebar-close`);
 
         const openMenu = () => this.toggleSidebar(true);
         const closeMenu = () => this.toggleSidebar(false);

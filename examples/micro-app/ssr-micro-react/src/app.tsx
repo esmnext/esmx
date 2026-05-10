@@ -34,7 +34,7 @@ export function AppContent() {
                 dangerouslySetInnerHTML={{ __html: layout.header }}
             />
             <div
-                id="esmx-main"
+                id={layout.appId + '-main'}
                 style={{
                     marginLeft: 'var(--esmx-sidebar-width, ' + SIDEBAR_WIDTH + ')',
                     minHeight: '100vh',
