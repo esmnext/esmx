@@ -120,6 +120,12 @@ importers:
       preact-render-to-string:
         specifier: ^6.6.7
         version: 6.6.7(preact@10.29.1)
+      react:
+        specifier: ^19.0.6
+        version: 19.2.4
+      react-dom:
+        specifier: ^19.0.6
+        version: 19.2.4(react@19.2.4)
       ssr-micro-shared:
         specifier: workspace:*
         version: link:../ssr-micro-shared

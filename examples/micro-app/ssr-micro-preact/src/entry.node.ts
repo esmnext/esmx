@@ -15,14 +15,7 @@ export default {
     async devApp(esmx) {
         return import('@esmx/rspack-react').then((m) =>
             m.createRspackReactApp(esmx, {
-                chain(context) {
-                    context.resolve.alias = {
-                        ...context.resolve.alias,
-                        react: 'preact/compat',
-                        'react-dom': 'preact/compat',
-                        'react-dom/client': 'preact/compat'
-                    };
-                }
+                chain() {}
             })
         );
     },
