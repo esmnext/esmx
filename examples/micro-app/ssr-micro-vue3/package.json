@@ -20,12 +20,12 @@
         "@esmx/rspack-vue": "workspace:*",
         "@esmx/router-vue": "workspace:*",
         "@types/node": "^24.0.0",
-        "@vue/server-renderer": "^3.5.23",
+        "@vue/server-renderer": "^3.5.34",
         "ssr-micro-shared": "workspace:*",
         "typescript": "5.8.3",
         "unhead": "^2.1.0",
         "@unhead/vue": "^2.1.0",
-        "vue": "^3.5.23",
+        "vue": "^3.5.34",
         "vue-tsc": "^3.0.5"
     }
 } 
