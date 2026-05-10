@@ -66,20 +66,20 @@ function createExternalsFunction(
 
         initPromise = (async () => {
             await Promise.all(
-                Object.values(opts.exports)
-                    .filter((value) => value.file)
-                    .map(async (value) => {
-                        const identifier = value.pkg
-                            ? value.name
-                            : value.identifier;
-                        importMap.set(identifier, identifier);
-                        importMap.set(value.name, identifier);
+                Object.values(opts.exports).map(async (value) => {
+                    const identifier = value.pkg
+                        ? value.name
+                        : value.identifier;
+                    importMap.set(identifier, identifier);
+                    importMap.set(value.name, identifier);
 
+                    if (value.file) {
                         const resolvedPath = await resolvePath(value.file);
                         if (resolvedPath) {
                             importMap.set(resolvedPath, identifier);
                         }
-                    })
+                    }
+                })
             );
 
             for (const key of Object.keys(opts.imports)) {
