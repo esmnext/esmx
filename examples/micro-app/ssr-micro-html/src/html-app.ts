@@ -54,7 +54,7 @@ export class HtmlApp extends BaseApp {
                 font-weight: 700;
                 font-size: 20px;
                 margin: 0 auto 20px;
-            ">H</div>` +
+            " role="img" aria-label="HTML">H</div>` +
             `<h1 style="
                 font-size: 2rem;
                 font-weight: 800;

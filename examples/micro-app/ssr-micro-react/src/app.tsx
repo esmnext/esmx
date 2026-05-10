@@ -67,6 +67,8 @@ export function AppContent() {
                                 fontSize: '20px',
                                 margin: '0 auto 20px'
                             }}
+                            role="img"
+                            aria-label="React"
                         >
                             R
                         </div>

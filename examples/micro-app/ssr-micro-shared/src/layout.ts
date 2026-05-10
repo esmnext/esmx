@@ -139,6 +139,7 @@ export class Layout {
 
     get header(): string {
         return normalizeHtml(`
+            <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg transform='translate(20,20)'%3E%3Ccircle r='12' fill='none' stroke='%2312B2EF' stroke-width='2.8'/%3E%3Ccircle r='6.2' fill='%23FFA000'/%3E%3C/g%3E%3C/svg%3E" type="image/svg+xml" />
             ${this.styleSheet}
             <div id="esmx-mobile-header" style="
                 position: fixed;
@@ -188,8 +189,8 @@ export class Layout {
                     padding-bottom: 16px;
                     border-bottom: 1px solid #334155;
                 ">
-                    <img src="https://esmx.dev/logo.svg" alt="Esmx" style="width: 32px; height: 32px;" />
-                    <span style="font-size: 1.5rem; font-weight: 700; color: #fff;">Esmx Hub</span>
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg transform='translate(20,20)'%3E%3Ccircle r='12' fill='none' stroke='%2312B2EF' stroke-width='2.8'/%3E%3Ccircle r='6.2' fill='%23FFA000'/%3E%3C/g%3E%3C/svg%3E" alt="Esmx" style="width: 32px; height: 32px;" />
+                    <span style="font-size: 1.25rem; font-weight: 700; color: #fff;">Esmx Hub</span>
                 </div>
                 <nav style="display: flex; flex-direction: column; gap: 4px;">
                     ${generateNavHtml(this.router)}
