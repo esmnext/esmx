@@ -71,12 +71,16 @@ function generateNavHtml(router: Router): string {
 export class Layout {
     public readonly appId: string;
     public readonly router: Router;
+    public readonly headerId: string;
+    public readonly footerId: string;
     private clickHandler: ((e: Event) => void) | null = null;
     private mobileHandlers: Array<() => void> = [];
 
     constructor(options: LayoutOptions) {
         this.appId = options.appId;
         this.router = options.router;
+        this.headerId = `${options.appId}-header`;
+        this.footerId = `${options.appId}-footer`;
     }
 
     private get styleSheet(): string {
