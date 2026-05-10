@@ -74,8 +74,9 @@ export class MicroApp {
                 }
             }
             if (oldApp) {
+                const oldElement = root?.firstElementChild;
                 oldApp.unmount();
-                root?.firstElementChild?.remove();
+                oldElement?.remove();
             }
         }
         this.app = app;
