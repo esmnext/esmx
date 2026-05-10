@@ -150,8 +150,8 @@ export class Layout {
                         transition: transform 0.3s ease;
                     }
                     #esmx-sidebar.esmx-open {
-                        transform: translateX(0);
-                        width: min(260px, 80vw);
+                        transform: translateX(0) !important;
+                        width: min(260px, 80vw) !important;
                     }
                     #esmx-sidebar-overlay {
                         display: none;
@@ -282,9 +282,14 @@ export class Layout {
         const overlay = document.getElementById('esmx-sidebar-overlay');
         if (sidebar) {
             sidebar.classList.toggle('esmx-open', open);
+            // Direct style manipulation as fallback for inline style conflicts
+            sidebar.style.transform = open ? 'translateX(0)' : '';
+            sidebar.style.width = open ? '' : '';
+            sidebar.style.visibility = open ? '' : '';
         }
         if (overlay) {
             overlay.classList.toggle('esmx-open', open);
+            overlay.style.display = open ? 'block' : '';
         }
     }
 
