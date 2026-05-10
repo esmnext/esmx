@@ -1,7 +1,7 @@
 <template>
     <div>
         <div :id="layout.headerId" v-html="layout.header"></div>
-        <div :id="layout.appId + '-main'" :style="mainStyle">
+        <div :style="mainStyle">
             <div style="max-width: 800px; margin: 0 auto;">
                 <div :style="cardStyle">
                     <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #42b883, #369870); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;" role="img" aria-label="Vue 2">

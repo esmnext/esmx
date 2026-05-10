@@ -123,7 +123,7 @@ export class HomeApp extends BaseApp {
             `<div>` +
             `<style>.esmx-card{transition:box-shadow 0.2s ease,border-color 0.2s ease,transform 0.2s ease}.esmx-card:hover{box-shadow:var(--esmx-card-shadow);border-color:var(--esmx-card-hover-border);transform:scale(1.01)}</style>` +
             `<div id="${this.layout.headerId}">${this.layout.header}</div>` +
-            `<div id="${this.layout.appId}-main" style="margin-left: var(--esmx-sidebar-width, ${SIDEBAR_WIDTH}); min-height: 100vh; padding: 32px; padding-top: calc(32px + var(--esmx-mobile-header-height, 0px));">${this.getContentHtml()}</div>` +
+            `<div style="margin-left: var(--esmx-sidebar-width, ${SIDEBAR_WIDTH}); min-height: 100vh; padding: 32px; padding-top: calc(32px + var(--esmx-mobile-header-height, 0px));">${this.getContentHtml()}</div>` +
             `<div id="${this.layout.footerId}">${this.layout.footer}</div>` +
             `</div>`
         );

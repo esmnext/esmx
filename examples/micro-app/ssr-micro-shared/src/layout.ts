@@ -300,6 +300,12 @@ export class Layout {
         const container = document.getElementById(this.headerId);
         if (!container) return;
 
+        // Assign main content id to header's next sibling (app-internal)
+        const mainEl = container.nextElementSibling as HTMLElement;
+        if (mainEl) {
+            mainEl.id = `${s}-main`;
+        }
+
         this.clickHandler = (e: Event) => {
             const target = e.target as HTMLElement;
             const link = target.closest('a[data-nav]') as HTMLElement | null;
