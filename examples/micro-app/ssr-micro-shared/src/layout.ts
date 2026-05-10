@@ -11,7 +11,8 @@ const SVG_LOGO = {
     esmx: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22%3E%3Cg transform=%22translate(20,20)%22%3E%3Ccircle r=%2212%22 fill=%22none%22 stroke=%22%2312B2EF%22 stroke-width=%222.8%22/%3E%3Ccircle r=%226.2%22 fill=%22%23FFA000%22/%3E%3C/g%3E%3C/svg%3E',
     html: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Cpath d=%22M4 2l2 20 10 8 10-8 2-20H4zm18.4 6H11l.4 4h13l-.6 6.5-7.8 2.2-7.8-2.2-.4-4h3.1l.2 1.5 4.9 1.4 4.9-1.4.4-4.5H9l-.6-7h16.6l-.6 7z%22 fill=%22%23E44D26%22/%3E%3C/svg%3E',
     vue: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Cpath d=%22M16 2L2 28h8.4L16 17.6 21.6 28H30L16 2z%22 fill=%22%2342b883%22/%3E%3Cpath d=%22M16 2l-5.6 9.6L16 19.6l5.6-8L16 2z%22 fill=%22%2335495e%22/%3E%3C/svg%3E',
-    react: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Ccircle cx=%2216%22 cy=%2216%22 r=%223%22 fill=%22%2361DAFB%22/%3E%3Cellipse cx=%2216%22 cy=%2216%22 rx=%2215%22 ry=%225.5%22 fill=%22none%22 stroke=%22%2361DAFB%22 stroke-width=%221.8%22 transform=%22rotate(60 16 16)%22/%3E%3Cellipse cx=%2216%22 cy=%2216%22 rx=%2215%22 ry=%225.5%22 fill=%22none%22 stroke=%22%2361DAFB%22 stroke-width=%221.8%22 transform=%22rotate(-60 16 16)%22/%3E%3Cellipse cx=%2216%22 cy=%2216%22 rx=%2215%22 ry=%225.5%22 fill=%22none%22 stroke=%22%2361DAFB%22 stroke-width=%221.8%22/%3E%3C/svg%3E'
+    react: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Ccircle cx=%2216%22 cy=%2216%22 r=%223%22 fill=%22%2361DAFB%22/%3E%3Cellipse cx=%2216%22 cy=%2216%22 rx=%2215%22 ry=%225.5%22 fill=%22none%22 stroke=%22%2361DAFB%22 stroke-width=%221.8%22 transform=%22rotate(60 16 16)%22/%3E%3Cellipse cx=%2216%22 cy=%2216%22 rx=%2215%22 ry=%225.5%22 fill=%22none%22 stroke=%22%2361DAFB%22 stroke-width=%221.8%22 transform=%22rotate(-60 16 16)%22/%3E%3Cellipse cx=%2216%22 cy=%2216%22 rx=%2215%22 ry=%225.5%22 fill=%22none%22 stroke=%22%2361DAFB%22 stroke-width=%221.8%22/%3E%3C/svg%3E',
+    preact: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Cpolygon points=%2216,2 28,11 28,25 16,30 4,25 4,11%22 fill=%22none%22 stroke=%22%23673ab8%22 stroke-width=%222%22/%3E%3Ccircle cx=%2216%22 cy=%2216%22 r=%224.5%22 fill=%22%23673ab8%22/%3E%3C/svg%3E'
 };
 
 const NAV_ITEMS = [
@@ -19,7 +20,8 @@ const NAV_ITEMS = [
     { path: '/html/', label: 'HTML', svg: SVG_LOGO.html },
     { path: '/vue2/', label: 'Vue 2', svg: SVG_LOGO.vue },
     { path: '/vue3/', label: 'Vue 3', svg: SVG_LOGO.vue },
-    { path: '/react/', label: 'React', svg: SVG_LOGO.react }
+    { path: '/react/', label: 'React', svg: SVG_LOGO.react },
+    { path: '/preact/', label: 'Preact', svg: SVG_LOGO.preact }
 ];
 
 /**

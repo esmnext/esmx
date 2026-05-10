@@ -58,6 +58,17 @@ export class HomeApp extends BaseApp {
             tag: 'Popular',
             tagColor: '#0ea5e9',
             tagBg: 'rgba(14, 165, 233, 0.1)'
+        },
+        {
+            to: '/preact/',
+            title: 'Preact',
+            subtitle: 'Preact 10 + Hooks',
+            description: 'Fast 3kB alternative to React.',
+            icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24"><polygon points="16,2 28,11 28,25 16,30 4,25 4,11" fill="none" stroke="#fff" stroke-width="2"/><circle cx="16" cy="16" r="4.5" fill="#fff"/></svg>',
+            iconBg: 'linear-gradient(135deg, #673ab8, #512da8)',
+            tag: 'Lightweight',
+            tagColor: '#673ab8',
+            tagBg: 'rgba(103, 58, 184, 0.1)'
         }
     ];
 

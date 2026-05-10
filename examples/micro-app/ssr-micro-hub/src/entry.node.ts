@@ -8,11 +8,12 @@ export default {
             'ssr-micro-html': '../ssr-micro-html/dist',
             'ssr-micro-vue2': '../ssr-micro-vue2/dist',
             'ssr-micro-vue3': '../ssr-micro-vue3/dist',
-            'ssr-micro-react': '../ssr-micro-react/dist'
+            'ssr-micro-react': '../ssr-micro-react/dist',
+            'ssr-micro-preact': '../ssr-micro-preact/dist'
         },
         imports: {
             '@esmx/router': 'ssr-micro-shared/@esmx/router',
-            'unhead': 'ssr-micro-shared/unhead-core'
+            unhead: 'ssr-micro-shared/unhead-core'
         }
     },
     async devApp(esmx) {
@@ -46,7 +47,8 @@ export default {
             { url: base + 'html/', file: 'html/index.html' },
             { url: base + 'vue2/', file: 'vue2/index.html' },
             { url: base + 'vue3/', file: 'vue3/index.html' },
-            { url: base + 'react/', file: 'react/index.html' }
+            { url: base + 'react/', file: 'react/index.html' },
+            { url: base + 'preact/', file: 'preact/index.html' }
         ];
 
         for (const page of pages) {

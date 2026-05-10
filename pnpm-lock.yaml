@@ -74,6 +74,9 @@ importers:
       ssr-micro-html:
         specifier: workspace:*
         version: link:../ssr-micro-html
+      ssr-micro-preact:
+        specifier: workspace:*
+        version: link:../ssr-micro-preact
       ssr-micro-react:
         specifier: workspace:*
         version: link:../ssr-micro-react
@@ -86,6 +89,40 @@ importers:
       ssr-micro-vue3:
         specifier: workspace:*
         version: link:../ssr-micro-vue3
+      typescript:
+        specifier: 6.0.3
+        version: 6.0.3
+      unhead:
+        specifier: ^3.1.0
+        version: 3.1.0(vite@7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
+
+  examples/micro-app/ssr-micro-preact:
+    dependencies:
+      '@esmx/core':
+        specifier: workspace:*
+        version: link:../../../packages/core
+    devDependencies:
+      '@esmx/router-react':
+        specifier: workspace:*
+        version: link:../../../packages/router-react
+      '@esmx/rspack-react':
+        specifier: workspace:*
+        version: link:../../../packages/rspack-react
+      '@types/node':
+        specifier: ^24.12.3
+        version: 24.12.3
+      '@unhead/react':
+        specifier: ^2.1.15
+        version: 2.1.15(react@19.2.4)
+      preact:
+        specifier: ^10.29.1
+        version: 10.29.1
+      preact-render-to-string:
+        specifier: ^6.6.7
+        version: 6.6.7(preact@10.29.1)
+      ssr-micro-shared:
+        specifier: workspace:*
+        version: link:../ssr-micro-shared
       typescript:
         specifier: 6.0.3
         version: 6.0.3
@@ -5091,8 +5128,16 @@ packages:
     peerDependencies:
       preact: '>=10 || >= 11.0.0-0'
 
+  preact-render-to-string@6.6.7:
+    resolution: {integrity: sha512-3XdbsX3+vn9dQW+jJI/FsI9rlkgl6dbeUpqLsChak6jp3j3auFqBCkno7VChbMFs5Q8ylBj6DrUkKRwtVN3nvw==}
+    peerDependencies:
+      preact: '>=10 || >= 11.0.0-0'
+
   preact@10.28.4:
     resolution: {integrity: sha512-uKFfOHWuSNpRFVTnljsCluEFq57OKT+0QdOiQo8XWnQ/pSvg7OpX5eNOejELXJMWy+BwM2nobz0FkvzmnpCNsQ==}
+
+  preact@10.29.1:
+    resolution: {integrity: sha512-gQCLc/vWroE8lIpleXtdJhTFDogTdZG9AjMUpVkDf2iTCNwYNWA+u16dL41TqUDJO4gm2IgrcMv3uTpjd4Pwmg==}
 
   prettier@2.8.8:
     resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
@@ -10885,7 +10930,13 @@ snapshots:
     dependencies:
       preact: 10.28.4
 
+  preact-render-to-string@6.6.7(preact@10.29.1):
+    dependencies:
+      preact: 10.29.1
+
   preact@10.28.4: {}
+
+  preact@10.29.1: {}
 
   prettier@2.8.8:
     optional: true

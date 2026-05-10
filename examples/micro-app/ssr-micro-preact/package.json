@@ -1,7 +1,7 @@
 {
-    "name": "ssr-micro-hub",
+    "name": "ssr-micro-preact",
     "version": "1.0.0",
-    "description": "Hub for micro-frontend example",
+    "description": "Preact micro-app for micro-frontend example",
     "type": "module",
     "private": true,
     "scripts": {
@@ -15,16 +15,14 @@
         "@esmx/core": "workspace:*"
     },
     "devDependencies": {
-        "@esmx/router": "workspace:*",
-        "@esmx/rspack": "workspace:*",
+        "@esmx/rspack-react": "workspace:*",
+        "@esmx/router-react": "workspace:*",
         "@types/node": "^24.12.3",
-        "ssr-micro-html": "workspace:*",
-        "ssr-micro-react": "workspace:*",
-        "ssr-micro-preact": "workspace:*",
+        "preact": "^10.29.1",
+        "preact-render-to-string": "^6.6.7",
         "ssr-micro-shared": "workspace:*",
-        "ssr-micro-vue2": "workspace:*",
-        "ssr-micro-vue3": "workspace:*",
         "typescript": "6.0.3",
-        "unhead": "^3.1.0"
+        "unhead": "^3.1.0",
+        "@unhead/react": "^2.1.15"
     }
 }
