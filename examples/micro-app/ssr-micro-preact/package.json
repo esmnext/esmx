@@ -21,7 +21,6 @@
         "preact": "^10.29.1",
         "preact-render-to-string": "^6.6.7",
         "ssr-micro-shared": "workspace:*",
-        "unhead": "^3.1.0",
         "typescript": "6.0.3"
     }
 }

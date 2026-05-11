@@ -1,7 +1,6 @@
 import type { Router } from '@esmx/router';
-import { BaseApp, setRouterHead } from 'ssr-micro-shared/src/index';
-import { createHead } from 'unhead/client';
-import type { ActiveHeadEntry, UseHeadInput } from 'unhead/types';
+import type { ActiveHeadEntry, UseHeadInput } from 'ssr-micro-shared/src/index';
+import { BaseApp } from 'ssr-micro-shared/src/index';
 import './landing-page.css';
 
 const ESMX_LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" shape-rendering="geometricPrecision"><g transform="translate(20,20)"><circle r="12" fill="none" stroke="#12B2EF" stroke-width="2.8"/><circle r="6.2" fill="#FFA000"/></g></svg>`;
@@ -19,7 +18,6 @@ const CHECK_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="1
 const BOOK_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`;
 
 export class LandingApp extends BaseApp {
-    private head = createHead({ disableDefaults: true });
     private headEntry: ActiveHeadEntry<UseHeadInput> | null = null;
 
     constructor(router: Router) {
@@ -34,7 +32,6 @@ export class LandingApp extends BaseApp {
                 }
             ]
         });
-        setRouterHead(router, this.head);
     }
 
     private getNavHtml(): string {
