@@ -5,12 +5,8 @@ export default {
     modules: {
         links: {
             'ssr-micro-shared': '../ssr-micro-shared/dist',
-            'ssr-micro-html': '../ssr-micro-html/dist',
-            'ssr-micro-vue2': '../ssr-micro-vue2/dist',
-            'ssr-micro-vue3': '../ssr-micro-vue3/dist',
             'ssr-micro-react': '../ssr-micro-react/dist',
-            'ssr-micro-preact': '../ssr-micro-preact/dist',
-            'ssr-micro-preact-htm': '../ssr-micro-preact-htm/dist'
+            'ssr-micro-vue3': '../ssr-micro-vue3/dist'
         },
         imports: {
             '@esmx/router': 'ssr-micro-shared/@esmx/router',
@@ -45,13 +41,8 @@ export default {
         const base = 'http://localhost:3000/ssr-micro-hub/';
         const pages = [
             { url: base, file: 'index.html' },
-            { url: base + 'demo/', file: 'demo/index.html' },
-            { url: base + 'html/', file: 'html/index.html' },
-            { url: base + 'vue2/', file: 'vue2/index.html' },
-            { url: base + 'vue3/', file: 'vue3/index.html' },
             { url: base + 'react/', file: 'react/index.html' },
-            { url: base + 'preact/', file: 'preact/index.html' },
-            { url: base + 'preact-htm/', file: 'preact-htm/index.html' }
+            { url: base + 'vue3/', file: 'vue3/index.html' }
         ];
 
         for (const page of pages) {
