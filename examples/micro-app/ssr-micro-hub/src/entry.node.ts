@@ -45,6 +45,7 @@ export default {
         const base = 'http://localhost:3000/ssr-micro-hub/';
         const pages = [
             { url: base, file: 'index.html' },
+            { url: base + 'demo/', file: 'demo/index.html' },
             { url: base + 'html/', file: 'html/index.html' },
             { url: base + 'vue2/', file: 'vue2/index.html' },
             { url: base + 'vue3/', file: 'vue3/index.html' },
