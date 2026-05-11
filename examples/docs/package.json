@@ -10,11 +10,11 @@
     "preview": "rspress preview"
   },
   "devDependencies": {
-    "@rspress/core": "2.0.0-rc.1",
+    "@rspress/core": "2.0.10",
     "@types/node": "^24.10.0",
     "typescript": "5.9.3"
   },
   "dependencies": {
-    "@rspress/plugin-llms": "^2.0.4"
+    "@rspress/plugin-llms": "^2.0.10"
   }
 }
