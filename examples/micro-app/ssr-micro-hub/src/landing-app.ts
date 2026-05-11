@@ -98,12 +98,12 @@ export class LandingApp extends BaseApp {
             `</div>` +
             `<div class="hero-visual reveal reveal-delay-3">` +
             `<div class="esm-flow">` +
-            `<div class="esm-node">app-a</div>` +
-            `<div class="esm-node">app-b</div>` +
-            `<div class="esm-node">app-c</div>` +
-            `<div class="esm-node esm-node-main">Esmx</div>` +
             `<div class="esm-node">vue</div>` +
             `<div class="esm-node">react</div>` +
+            `<div class="esm-node">preact</div>` +
+            `<div class="esm-node esm-node-main">Esmx</div>` +
+            `<div class="esm-node">html</div>` +
+            `<div class="esm-node">solid</div>` +
             `<div class="esm-node">shared</div>` +
             `<div class="esm-node">utils</div>` +
             `<div class="esm-connection esm-connection-1"></div>` +
