@@ -9,6 +9,7 @@ export default {
             'ssr-micro-preact': '../ssr-micro-preact/dist',
             'ssr-micro-preact-htm': '../ssr-micro-preact-htm/dist',
             'ssr-micro-react': '../ssr-micro-react/dist',
+            'ssr-micro-solid': '../ssr-micro-solid/dist',
             'ssr-micro-vue2': '../ssr-micro-vue2/dist',
             'ssr-micro-vue3': '../ssr-micro-vue3/dist'
         },
