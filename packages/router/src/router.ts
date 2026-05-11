@@ -26,6 +26,14 @@ import {
     validateSsrRootElement
 } from './util';
 
+const LAYER_SKIP_TYPES = new Set([
+    RouteType.pushWindow,
+    RouteType.replaceWindow,
+    RouteType.replace,
+    RouteType.restartApp,
+    RouteType.pushLayer
+]);
+
 export class Router {
     public readonly options: RouterOptions;
     public readonly parsedOptions: RouterParsedOptions;
@@ -300,16 +308,7 @@ export class Router {
         const initRoute = await router.replace(toInput);
 
         router.afterEach(async (to, from) => {
-            if (
-                [
-                    RouteType.pushWindow,
-                    RouteType.replaceWindow,
-                    RouteType.replace,
-                    RouteType.restartApp,
-                    RouteType.pushLayer
-                ].includes(to.type)
-            )
-                return;
+            if (LAYER_SKIP_TYPES.has(to.type)) return;
             let keepAlive = false;
             if (layerOptions.keepAlive === 'exact') {
                 keepAlive = to.path === initRoute.path;
