@@ -19,7 +19,7 @@
         "tsc-alias": "^1.8.17",
         "@esmx/rspack-vue": "workspace:*",
         "@esmx/router-vue": "workspace:*",
-        "@types/node": "^24.12.3",
+        "@types/node": "^25.6.2",
         "@vue/server-renderer": "^3.5.34",
         "ssr-micro-shared": "workspace:*",
         "typescript": "6.0.3",

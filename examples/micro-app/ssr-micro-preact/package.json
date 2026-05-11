@@ -17,7 +17,7 @@
     "devDependencies": {
         "@esmx/rspack-react": "workspace:*",
         "@esmx/router": "workspace:*",
-        "@types/node": "^24.12.3",
+        "@types/node": "^25.6.2",
         "preact": "^10.29.1",
         "preact-render-to-string": "^6.6.7",
         "ssr-micro-shared": "workspace:*",

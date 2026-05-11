@@ -44,8 +44,8 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/rspack
       '@types/node':
-        specifier: ^24.12.3
-        version: 24.12.3
+        specifier: ^25.6.2
+        version: 25.6.2
       ssr-micro-shared:
         specifier: workspace:*
         version: link:../ssr-micro-shared
@@ -54,7 +54,7 @@ importers:
         version: 6.0.3
       unhead:
         specifier: ^3.1.0
-        version: 3.1.0(vite@7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
+        version: 3.1.0(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
 
   examples/micro-app/ssr-micro-hub:
     dependencies:
@@ -69,8 +69,8 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/rspack
       '@types/node':
-        specifier: ^24.12.3
-        version: 24.12.3
+        specifier: ^25.6.2
+        version: 25.6.2
       ssr-micro-html:
         specifier: workspace:*
         version: link:../ssr-micro-html
@@ -97,7 +97,7 @@ importers:
         version: 6.0.3
       unhead:
         specifier: ^3.1.0
-        version: 3.1.0(vite@7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
+        version: 3.1.0(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
 
   examples/micro-app/ssr-micro-preact:
     dependencies:
@@ -112,8 +112,8 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/rspack-react
       '@types/node':
-        specifier: ^24.12.3
-        version: 24.12.3
+        specifier: ^25.6.2
+        version: 25.6.2
       preact:
         specifier: ^10.29.1
         version: 10.29.1
@@ -128,7 +128,7 @@ importers:
         version: 6.0.3
       unhead:
         specifier: ^3.1.0
-        version: 3.1.0(vite@7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
+        version: 3.1.0(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
 
   examples/micro-app/ssr-micro-preact-htm:
     dependencies:
@@ -143,8 +143,8 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/rspack-react
       '@types/node':
-        specifier: ^24.12.3
-        version: 24.12.3
+        specifier: ^25.6.2
+        version: 25.6.2
       htm:
         specifier: ^3.1.1
         version: 3.1.1
@@ -162,7 +162,7 @@ importers:
         version: 6.0.3
       unhead:
         specifier: ^3.1.0
-        version: 3.1.0(vite@7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
+        version: 3.1.0(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
 
   examples/micro-app/ssr-micro-react:
     dependencies:
@@ -177,8 +177,8 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/rspack-react
       '@types/node':
-        specifier: ^24.12.3
-        version: 24.12.3
+        specifier: ^25.6.2
+        version: 25.6.2
       '@types/react':
         specifier: ^19.2.14
         version: 19.2.14
@@ -186,14 +186,14 @@ importers:
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.14)
       '@unhead/react':
-        specifier: ^2.1.15
-        version: 2.1.15(react@19.2.4)
+        specifier: ^3.1.0
+        version: 3.1.0(esbuild@0.27.3)(oxc-parser@0.127.0)(react@19.2.6)(typescript@6.0.3)(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))(webpack@5.105.4(esbuild@0.27.3))
       react:
-        specifier: ^19.0.6
-        version: 19.2.4
+        specifier: ^19.2.6
+        version: 19.2.6
       react-dom:
-        specifier: ^19.0.6
-        version: 19.2.4(react@19.2.4)
+        specifier: ^19.2.6
+        version: 19.2.6(react@19.2.6)
       ssr-micro-shared:
         specifier: workspace:*
         version: link:../ssr-micro-shared
@@ -202,7 +202,7 @@ importers:
         version: 6.0.3
       unhead:
         specifier: ^3.1.0
-        version: 3.1.0(vite@7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
+        version: 3.1.0(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
 
   examples/micro-app/ssr-micro-shared:
     dependencies:
@@ -210,14 +210,14 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/core
       '@unhead/react':
-        specifier: ^2.1.15
-        version: 2.1.15(react@19.2.4)
+        specifier: ^3.1.0
+        version: 3.1.0(esbuild@0.27.3)(oxc-parser@0.127.0)(react@19.2.6)(typescript@6.0.3)(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))(webpack@5.105.4(esbuild@0.27.3))
       '@unhead/vue':
         specifier: ^3.1.0
-        version: 3.1.0(esbuild@0.27.3)(typescript@6.0.3)(vite@7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))(vue@3.5.34(typescript@6.0.3))(webpack@5.105.4(esbuild@0.27.3))
+        version: 3.1.0(esbuild@0.27.3)(typescript@6.0.3)(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))(vue@3.5.34(typescript@6.0.3))(webpack@5.105.4(esbuild@0.27.3))
       unhead:
         specifier: ^3.1.0
-        version: 3.1.0(vite@7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
+        version: 3.1.0(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
     devDependencies:
       '@esmx/router':
         specifier: workspace:*
@@ -226,8 +226,8 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/rspack
       '@types/node':
-        specifier: ^24.12.3
-        version: 24.12.3
+        specifier: ^25.6.2
+        version: 25.6.2
       typescript:
         specifier: 6.0.3
         version: 6.0.3
@@ -245,8 +245,8 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/rspack-vue
       '@types/node':
-        specifier: ^24.12.3
-        version: 24.12.3
+        specifier: ^25.6.2
+        version: 25.6.2
       ssr-micro-shared:
         specifier: workspace:*
         version: link:../ssr-micro-shared
@@ -258,7 +258,7 @@ importers:
         version: 6.0.3
       unhead:
         specifier: ^3.1.0
-        version: 3.1.0(vite@7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
+        version: 3.1.0(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
       vue:
         specifier: 2.7.16
         version: 2.7.16
@@ -282,11 +282,11 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/rspack-vue
       '@types/node':
-        specifier: ^24.12.3
-        version: 24.12.3
+        specifier: ^25.6.2
+        version: 25.6.2
       '@unhead/vue':
         specifier: ^3.1.0
-        version: 3.1.0(esbuild@0.27.3)(typescript@6.0.3)(vite@7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))(vue@3.5.34(typescript@6.0.3))(webpack@5.105.4(esbuild@0.27.3))
+        version: 3.1.0(esbuild@0.27.3)(typescript@6.0.3)(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))(vue@3.5.34(typescript@6.0.3))(webpack@5.105.4(esbuild@0.27.3))
       '@vue/server-renderer':
         specifier: ^3.5.34
         version: 3.5.34(vue@3.5.34(typescript@6.0.3))
@@ -301,7 +301,7 @@ importers:
         version: 6.0.3
       unhead:
         specifier: ^3.1.0
-        version: 3.1.0(vite@7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
+        version: 3.1.0(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
       vue:
         specifier: ^3.5.34
         version: 3.5.34(typescript@6.0.3)
@@ -2397,6 +2397,9 @@ packages:
   '@types/node@24.12.3':
     resolution: {integrity: sha512-8oljBDGun9cIsZRJR6fkihn0TSXJI0UDOOhncYaERq6M0JMDoPLxyscwruJcb4GKS6dvK/d8xebYBg27h/duaQ==}
 
+  '@types/node@25.6.2':
+    resolution: {integrity: sha512-sokuT28dxf9JT5Kady1fsXOvI4HVpjZa95NKT5y9PNTIrs2AsobR4GFAA90ZG8M+nxVRLysCXsVj6eGC7Vbrlw==}
+
   '@types/npm-package-arg@6.1.4':
     resolution: {integrity: sha512-vDgdbMy2QXHnAruzlv68pUtXCjmqUk3WrBAsRboRovsOmxbfn/WiYCjmecyKjGztnMps5dWp4Uq2prp+Ilo17Q==}
 
@@ -2503,6 +2506,18 @@ packages:
     resolution: {integrity: sha512-5hfAaZ3XJq9JkspRzZdSPsMrXXA8v/SKiEOxZcN9L40o44byF/50bcQuOLgSSCAx8802mI5VG32KZXWTtsLu9Q==}
     peerDependencies:
       react: '>=18.3.1'
+
+  '@unhead/react@3.1.0':
+    resolution: {integrity: sha512-qOBA80ECsk5+OWNVPXmMAGLdvivSlodU57HWqF4vu5ZNddoVWBMKJXFkYKc45bdXytewNoErThT515rmXcrPWg==}
+    peerDependencies:
+      react: '>=19.2.4'
+      vite: '>=6.4.2'
+      webpack: '>=5.0.0'
+    peerDependenciesMeta:
+      vite:
+        optional: true
+      webpack:
+        optional: true
 
   '@unhead/vue@3.1.0':
     resolution: {integrity: sha512-ib0YCfaoD0lL40Dg1FEQJksZhZ5Q+LMESXUxyfMrtlSUb43+Ha7btUIPyQuAfkjhlTihE1x5i9QdswEdhe0LWg==}
@@ -5268,6 +5283,11 @@ packages:
     peerDependencies:
       react: ^19.2.4
 
+  react-dom@19.2.6:
+    resolution: {integrity: sha512-0prMI+hvBbPjsWnxDLxlCGyM8PN6UuWjEUCYmZhO67xIV9Xasa/r/vDnq+Xyq4Lo27g8QSbO5YzARu0D1Sps3g==}
+    peerDependencies:
+      react: ^19.2.6
+
   react-lazy-with-preload@2.2.1:
     resolution: {integrity: sha512-ONSb8gizLE5jFpdHAclZ6EAAKuFX2JydnFXPPPjoUImZlLjGtKzyBS8SJgJq7CpLgsGKh9QCZdugJyEEOVC16Q==}
 
@@ -5300,6 +5320,10 @@ packages:
 
   react@19.2.4:
     resolution: {integrity: sha512-9nfp2hYpCwOjAN+8TZFGhtWEwgvWHXqESH8qT89AT/lWklpLON22Lc8pEtnpsZz7VmawabSU0gCjnj8aC0euHQ==}
+    engines: {node: '>=0.10.0'}
+
+  react@19.2.6:
+    resolution: {integrity: sha512-sfWGGfavi0xr8Pg0sVsyHMAOziVYKgPLNrS7ig+ivMNb3wbCBw3KxtflsGBAwD3gYQlE/AEZsTLgToRrSCjb0Q==}
     engines: {node: '>=0.10.0'}
 
   read-cmd-shim@6.0.0:
@@ -5881,6 +5905,9 @@ packages:
 
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
+
+  undici-types@7.19.2:
+    resolution: {integrity: sha512-qYVnV5OEm2AW8cJMCpdV20CDyaN3g0AjDlOGf1OW4iaDEx8MwdtChUp4zu4H0VP3nDRF/8RKWH+IPp9uW0YGZg==}
 
   unhead@2.1.10:
     resolution: {integrity: sha512-We8l9uNF8zz6U8lfQaVG70+R/QBfQx1oPIgXin4BtZnK2IQpz6yazQ0qjMNVBDw2ADgF2ea58BtvSK+XX5AS7g==}
@@ -7324,10 +7351,10 @@ snapshots:
   '@rspress/runtime@2.0.0-rc.1':
     dependencies:
       '@rspress/shared': 2.0.0-rc.1
-      '@unhead/react': 2.1.15(react@19.2.4)
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
-      react-router-dom: 6.30.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@unhead/react': 2.1.15(react@19.2.6)
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
+      react-router-dom: 6.30.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
 
   '@rspress/shared@2.0.0-rc.1':
     dependencies:
@@ -7503,6 +7530,10 @@ snapshots:
     dependencies:
       undici-types: 7.16.0
 
+  '@types/node@25.6.2':
+    dependencies:
+      undici-types: 7.19.2
+
   '@types/npm-package-arg@6.1.4': {}
 
   '@types/npm-registry-fetch@8.0.9':
@@ -7602,18 +7633,18 @@ snapshots:
 
   '@ungap/structured-clone@1.3.0': {}
 
-  '@unhead/bundler@3.1.0(esbuild@0.27.3)(typescript@6.0.3)(unhead@3.1.0(vite@7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2)))(vite@7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))(webpack@5.105.4(esbuild@0.27.3))':
+  '@unhead/bundler@3.1.0(esbuild@0.27.3)(typescript@6.0.3)(unhead@3.1.0(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2)))(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))(webpack@5.105.4(esbuild@0.27.3))':
     dependencies:
-      '@vitejs/devtools-kit': 0.1.21(typescript@6.0.3)(vite@7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
+      '@vitejs/devtools-kit': 0.1.21(typescript@6.0.3)(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
       magic-string: 0.30.21
       oxc-parser: 0.127.0
       oxc-walker: 0.7.0(oxc-parser@0.127.0)
       ufo: 1.6.3
-      unhead: 3.1.0(vite@7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
+      unhead: 3.1.0(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
       unplugin: 3.0.0
     optionalDependencies:
       esbuild: 0.27.3
-      vite: 7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2)
+      vite: 7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2)
       webpack: 5.105.4(esbuild@0.27.3)
     transitivePeerDependencies:
       - '@modelcontextprotocol/sdk'
@@ -7626,20 +7657,42 @@ snapshots:
       react: 19.2.4
       unhead: 2.1.10
 
-  '@unhead/react@2.1.15(react@19.2.4)':
+  '@unhead/react@2.1.15(react@19.2.6)':
     dependencies:
-      react: 19.2.4
+      react: 19.2.6
       unhead: 2.1.15
 
-  '@unhead/vue@3.1.0(esbuild@0.27.3)(typescript@6.0.3)(vite@7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))(vue@3.5.34(typescript@6.0.3))(webpack@5.105.4(esbuild@0.27.3))':
+  '@unhead/react@3.1.0(esbuild@0.27.3)(oxc-parser@0.127.0)(react@19.2.6)(typescript@6.0.3)(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))(webpack@5.105.4(esbuild@0.27.3))':
     dependencies:
-      '@unhead/bundler': 3.1.0(esbuild@0.27.3)(typescript@6.0.3)(unhead@3.1.0(vite@7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2)))(vite@7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))(webpack@5.105.4(esbuild@0.27.3))
+      '@unhead/bundler': 3.1.0(esbuild@0.27.3)(typescript@6.0.3)(unhead@3.1.0(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2)))(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))(webpack@5.105.4(esbuild@0.27.3))
+      magic-string: 0.30.21
+      oxc-walker: 0.7.0(oxc-parser@0.127.0)
+      react: 19.2.6
+      unhead: 3.1.0(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
+      unplugin: 3.0.0
+    optionalDependencies:
+      vite: 7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2)
+      webpack: 5.105.4(esbuild@0.27.3)
+    transitivePeerDependencies:
+      - '@modelcontextprotocol/sdk'
+      - '@unhead/cli'
+      - bufferutil
+      - esbuild
+      - lightningcss
+      - oxc-parser
+      - rolldown
+      - typescript
+      - utf-8-validate
+
+  '@unhead/vue@3.1.0(esbuild@0.27.3)(typescript@6.0.3)(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))(vue@3.5.34(typescript@6.0.3))(webpack@5.105.4(esbuild@0.27.3))':
+    dependencies:
+      '@unhead/bundler': 3.1.0(esbuild@0.27.3)(typescript@6.0.3)(unhead@3.1.0(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2)))(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))(webpack@5.105.4(esbuild@0.27.3))
       hookable: 6.1.1
-      unhead: 3.1.0(vite@7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
+      unhead: 3.1.0(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))
       unplugin: 3.0.0
       vue: 3.5.34(typescript@6.0.3)
     optionalDependencies:
-      vite: 7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2)
+      vite: 7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2)
       webpack: 5.105.4(esbuild@0.27.3)
     transitivePeerDependencies:
       - '@modelcontextprotocol/sdk'
@@ -7655,7 +7708,7 @@ snapshots:
     dependencies:
       valibot: 1.4.0(typescript@6.0.3)
 
-  '@vitejs/devtools-kit@0.1.21(typescript@6.0.3)(vite@7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))':
+  '@vitejs/devtools-kit@0.1.21(typescript@6.0.3)(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2))':
     dependencies:
       ansis: 4.2.0
       birpc: 4.0.0
@@ -7667,7 +7720,7 @@ snapshots:
       perfect-debounce: 2.1.0
       sirv: 3.0.2
       tinyexec: 1.1.2
-      vite: 7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2)
+      vite: 7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2)
     transitivePeerDependencies:
       - '@modelcontextprotocol/sdk'
       - bufferutil
@@ -9751,7 +9804,7 @@ snapshots:
     dependencies:
       estree-walker: 3.0.3
       magic-string: 0.30.21
-      mlly: 1.8.0
+      mlly: 1.8.2
       regexp-tree: 0.1.27
       type-level-regexp: 0.1.17
       ufo: 1.6.3
@@ -11050,6 +11103,11 @@ snapshots:
       react: 19.2.4
       scheduler: 0.27.0
 
+  react-dom@19.2.6(react@19.2.6):
+    dependencies:
+      react: 19.2.6
+      scheduler: 0.27.0
+
   react-lazy-with-preload@2.2.1: {}
 
   react-reconciler@0.33.0(react@19.2.4):
@@ -11066,16 +11124,30 @@ snapshots:
       react-dom: 19.2.4(react@19.2.4)
       react-router: 6.30.3(react@19.2.4)
 
+  react-router-dom@6.30.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6):
+    dependencies:
+      '@remix-run/router': 1.23.2
+      react: 19.2.6
+      react-dom: 19.2.6(react@19.2.6)
+      react-router: 6.30.3(react@19.2.6)
+
   react-router@6.30.3(react@19.2.4):
     dependencies:
       '@remix-run/router': 1.23.2
       react: 19.2.4
+
+  react-router@6.30.3(react@19.2.6):
+    dependencies:
+      '@remix-run/router': 1.23.2
+      react: 19.2.6
 
   react@18.3.1:
     dependencies:
       loose-envify: 1.4.0
 
   react@19.2.4: {}
+
+  react@19.2.6: {}
 
   read-cmd-shim@6.0.0: {}
 
@@ -11834,6 +11906,8 @@ snapshots:
 
   undici-types@7.16.0: {}
 
+  undici-types@7.19.2: {}
+
   unhead@2.1.10:
     dependencies:
       hookable: 6.0.1
@@ -11842,12 +11916,12 @@ snapshots:
     dependencies:
       hookable: 6.1.1
 
-  unhead@3.1.0(vite@7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2)):
+  unhead@3.1.0(vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2)):
     dependencies:
       hookable: 6.1.1
       unplugin: 3.0.0
     optionalDependencies:
-      vite: 7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2)
+      vite: 7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2)
 
   unified@11.0.5:
     dependencies:
@@ -11902,7 +11976,7 @@ snapshots:
     dependencies:
       '@jridgewell/remapping': 2.3.5
       acorn: 8.16.0
-      picomatch: 4.0.3
+      picomatch: 4.0.4
       webpack-virtual-modules: 0.6.2
 
   unplugin@3.0.0:
@@ -12004,7 +12078,7 @@ snapshots:
       terser: 5.46.0
       yaml: 2.8.2
 
-  vite@7.3.1(@types/node@24.12.3)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2):
+  vite@7.3.1(@types/node@25.6.2)(jiti@2.6.1)(less@4.5.1)(terser@5.46.0)(yaml@2.8.2):
     dependencies:
       esbuild: 0.27.3
       fdir: 6.5.0(picomatch@4.0.3)
@@ -12013,7 +12087,7 @@ snapshots:
       rollup: 4.59.0
       tinyglobby: 0.2.15
     optionalDependencies:
-      '@types/node': 24.12.3
+      '@types/node': 25.6.2
       fsevents: 2.3.3
       jiti: 2.6.1
       less: 4.5.1

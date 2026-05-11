@@ -17,7 +17,7 @@
     "devDependencies": {
         "@esmx/router": "workspace:*",
         "@esmx/rspack": "workspace:*",
-        "@types/node": "^24.12.3",
+        "@types/node": "^25.6.2",
         "ssr-micro-html": "workspace:*",
         "ssr-micro-react": "workspace:*",
         "ssr-micro-preact": "workspace:*",
