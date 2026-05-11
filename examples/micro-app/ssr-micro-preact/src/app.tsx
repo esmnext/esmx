@@ -1,25 +1,12 @@
 import { useEffect, useMemo } from 'preact/hooks';
 
-import { useRouter } from '@esmx/router-react';
-import { useHead } from '@unhead/react';
 import { Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
 
-export function AppContent() {
-    const router = useRouter();
+export function AppContent({ router }) {
     const layout = useMemo(
         () => new Layout({ appId: 'preact', router }),
         [router]
     );
-
-    useHead({
-        title: 'Preact Micro-App',
-        meta: [
-            {
-                name: 'description',
-                content: 'This page is rendered by a Preact 10 micro-app.'
-            }
-        ]
-    });
 
     useEffect(() => {
         layout.mount();
@@ -34,7 +21,7 @@ export function AppContent() {
             />
             <div
                 style={{
-                    marginLeft: 'var(--esmx-sidebar-width, ' + SIDEBAR_WIDTH + ')',
+                    marginLeft: `var(--esmx-sidebar-width, ${SIDEBAR_WIDTH})`,
                     minHeight: '100vh',
                     padding: '32px',
                     paddingTop: 'calc(32px + var(--esmx-mobile-header-height, 0px))'
@@ -54,8 +41,7 @@ export function AppContent() {
                             style={{
                                 width: '56px',
                                 height: '56px',
-                                background:
-                                    'linear-gradient(135deg, #673ab8, #512da8)',
+                                background: 'linear-gradient(135deg, #673ab8, #512da8)',
                                 borderRadius: '14px',
                                 display: 'flex',
                                 alignItems: 'center',
@@ -66,27 +52,14 @@ export function AppContent() {
                             aria-label="Preact"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="28" height="28">
-                                <path d="M16 2L2 16l14 14 14-14L16 2z" fill="#fff" opacity="0.9"/>
-                                <circle cx="16" cy="16" r="5" fill="none" stroke="#fff" stroke-width="2"/>
+                                <polygon points="16,2 28,11 28,25 16,30 4,25 4,11" fill="none" stroke="#fff" stroke-width="2"/>
+                                <circle cx="16" cy="16" r="4.5" fill="#fff"/>
                             </svg>
                         </div>
-                        <h1
-                            style={{
-                                fontSize: '2rem',
-                                fontWeight: 800,
-                                color: 'var(--esmx-text-primary)',
-                                marginBottom: '12px'
-                            }}
-                        >
+                        <h1 style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--esmx-text-primary)', marginBottom: '12px' }}>
                             Preact Micro-App
                         </h1>
-                        <p
-                            style={{
-                                fontSize: '1.125rem',
-                                color: 'var(--esmx-text-secondary)',
-                                marginBottom: '32px'
-                            }}
-                        >
+                        <p style={{ fontSize: '1.125rem', color: 'var(--esmx-text-secondary)', marginBottom: '32px' }}>
                             This page is rendered by a Preact 10 micro-app.
                         </p>
                     </div>

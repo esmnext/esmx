@@ -1,8 +1,5 @@
 import http from 'node:http';
-import { createRequire } from 'node:module';
 import type { EsmxOptions } from '@esmx/core';
-
-const require = createRequire(import.meta.url);
 
 export default {
     modules: {
@@ -10,8 +7,7 @@ export default {
             'ssr-micro-shared': '../ssr-micro-shared/dist'
         },
         imports: {
-            '@esmx/router': 'ssr-micro-shared/@esmx/router',
-            unhead: 'ssr-micro-shared/unhead-core'
+            '@esmx/router': 'ssr-micro-shared/@esmx/router'
         },
         exports: ['pkg:preact', 'root:src/routes.ts']
     },
@@ -20,13 +16,15 @@ export default {
             m.createRspackReactApp(esmx, {
                 chain(ctx) {
                     ctx.chain.resolve.alias.set(
-                        'react',
-                        require.resolve('preact/compat')
+                        'react/jsx-runtime',
+                        'preact/jsx-runtime'
                     );
                     ctx.chain.resolve.alias.set(
-                        'react-dom',
-                        require.resolve('preact/compat')
+                        'react/jsx-dev-runtime',
+                        'preact/jsx-dev-runtime'
                     );
+                    ctx.chain.resolve.alias.set('react', 'preact/compat');
+                    ctx.chain.resolve.alias.set('react-dom', 'preact/compat');
                 }
             })
         );

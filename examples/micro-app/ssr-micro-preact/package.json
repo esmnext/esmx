@@ -16,16 +16,11 @@
     },
     "devDependencies": {
         "@esmx/rspack-react": "workspace:*",
-        "@esmx/router-react": "workspace:*",
         "@esmx/router": "workspace:*",
         "@types/node": "^24.12.3",
         "preact": "^10.29.1",
         "preact-render-to-string": "^6.6.7",
         "ssr-micro-shared": "workspace:*",
-        "react": "^19.0.6",
-        "react-dom": "^19.0.6",
-        "typescript": "6.0.3",
-        "unhead": "^3.1.0",
-        "@unhead/react": "^2.1.15"
+        "typescript": "6.0.3"
     }
 }
