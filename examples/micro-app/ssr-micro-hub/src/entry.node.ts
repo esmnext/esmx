@@ -5,12 +5,15 @@ export default {
     modules: {
         links: {
             'ssr-micro-shared': '../ssr-micro-shared/dist',
+            'ssr-micro-html': '../ssr-micro-html/dist',
+            'ssr-micro-preact': '../ssr-micro-preact/dist',
+            'ssr-micro-preact-htm': '../ssr-micro-preact-htm/dist',
             'ssr-micro-react': '../ssr-micro-react/dist',
+            'ssr-micro-vue2': '../ssr-micro-vue2/dist',
             'ssr-micro-vue3': '../ssr-micro-vue3/dist'
         },
         imports: {
-            '@esmx/router': 'ssr-micro-shared/@esmx/router',
-            unhead: 'ssr-micro-shared/unhead-core'
+            '@esmx/router': 'ssr-micro-shared/@esmx/router'
         }
     },
     async devApp(esmx) {

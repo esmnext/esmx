@@ -6,7 +6,7 @@ import {
     setSsrStyles
 } from 'ssr-micro-shared/src/index';
 // @ts-expect-error Esmx module linking resolves to environment-specific chunk
-import { createHead } from 'unhead';
+import { createHead } from 'unhead/client';
 import Vue from 'vue';
 import AppComponent from './app.vue';
 

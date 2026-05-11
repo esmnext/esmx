@@ -2,7 +2,7 @@ import type { RenderContext } from '@esmx/core';
 import { Router } from '@esmx/router';
 import { getRouterHead, getSsrStyles } from 'ssr-micro-shared/src/index';
 // @ts-expect-error Esmx module linking resolves to environment-specific chunk
-import { renderSSRHead } from 'unhead';
+import { renderSSRHead } from 'unhead/server';
 
 import { routes } from './routes';
 

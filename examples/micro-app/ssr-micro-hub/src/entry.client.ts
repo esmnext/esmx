@@ -1,7 +1,4 @@
 import { Router } from '@esmx/router';
-import { setRouterHead } from 'ssr-micro-shared/src/index';
-// @ts-expect-error Esmx module linking resolves to environment-specific chunk
-import { createHead } from 'unhead';
 
 import { routes } from './routes';
 
@@ -18,7 +15,5 @@ const router = new Router({
         return link;
     }
 });
-
-setRouterHead(router, createHead({ disableDefaults: true }));
 
 await router.replace(location.href);

@@ -7,8 +7,7 @@ export default {
             'ssr-micro-shared': '../ssr-micro-shared/dist'
         },
         imports: {
-            '@esmx/router': 'ssr-micro-shared/@esmx/router',
-            'unhead': 'ssr-micro-shared/unhead-core'
+            '@esmx/router': 'ssr-micro-shared/@esmx/router'
         },
         exports: ['pkg:react', 'pkg:react-dom', 'root:src/routes.ts']
     },
