@@ -21,7 +21,8 @@ const NAV_ITEMS = [
     { path: '/vue2/', label: 'Vue 2', svg: SVG_LOGO.vue },
     { path: '/vue3/', label: 'Vue 3', svg: SVG_LOGO.vue },
     { path: '/react/', label: 'React', svg: SVG_LOGO.react },
-    { path: '/preact/', label: 'Preact', svg: SVG_LOGO.preact }
+    { path: '/preact/', label: 'Preact', svg: SVG_LOGO.preact },
+    { path: '/preact-htm/', label: 'Preact HTM', svg: SVG_LOGO.preact }
 ];
 
 /**

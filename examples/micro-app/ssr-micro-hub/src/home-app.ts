@@ -69,6 +69,17 @@ export class HomeApp extends BaseApp {
             tag: 'Lightweight',
             tagColor: '#673ab8',
             tagBg: 'rgba(103, 58, 184, 0.1)'
+        },
+        {
+            to: '/preact-htm/',
+            title: 'Preact HTM',
+            subtitle: 'Preact 10 + HTM',
+            description: 'Preact with Hyperscript Tagged Markup.',
+            icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24"><polygon points="16,2 28,11 28,25 16,30 4,25 4,11" fill="none" stroke="#fff" stroke-width="2"/><text x="16" y="22" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">H</text></svg>',
+            iconBg: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+            tag: 'No JSX',
+            tagColor: '#8b5cf6',
+            tagBg: 'rgba(139, 92, 246, 0.1)'
         }
     ];
 
