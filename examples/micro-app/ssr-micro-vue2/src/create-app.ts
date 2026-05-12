@@ -51,6 +51,9 @@ class Vue2App extends BaseApp {
         if (fn) {
             setSsrStyles(this.router, fn());
         }
+        // Note: Vue2 uses replacement hydration logic via $mount(container, true).
+        // Unlike other frameworks, it does not require an extra <div> wrapper
+        // because the hydration process replaces the entire container content.
         return html?.trim() || '';
     }
 }
