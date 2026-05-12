@@ -34,8 +34,7 @@ class PreactApp extends BaseApp {
     }
 
     async renderToString(): Promise<string> {
-        const html = renderToString(<AppContent router={this.router} />);
-        return html?.trim() ? `<div>${html}</div>` : '';
+        return renderToString(<AppContent router={this.router} />);
     }
 }
 
