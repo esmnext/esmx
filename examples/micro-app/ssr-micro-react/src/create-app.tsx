@@ -45,7 +45,8 @@ class ReactApp extends BaseApp {
 
     async renderToString(): Promise<string> {
         const App = createApp(this.router, this.head);
-        return renderToString(<App />);
+        const html = renderToString(<App />);
+        return html?.trim() ? `<div>${html}</div>` : '';
     }
 }
 

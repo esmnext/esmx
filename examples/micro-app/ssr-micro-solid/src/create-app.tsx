@@ -40,7 +40,8 @@ class SolidApp extends BaseApp {
     }
 
     async renderToString(): Promise<string> {
-        return renderToString(() => <AppContent router={this.router} />);
+        const html = renderToString(() => <AppContent router={this.router} />);
+        return html?.trim() ? `<div>${html}</div>` : '';
     }
 }
 
