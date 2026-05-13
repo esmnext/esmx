@@ -6,12 +6,15 @@ import type { ModuleLinkPluginOptions } from './types';
 
 export function initModuleLink(
     chain: RspackChain,
-    options: ModuleLinkPluginOptions
+    options: ModuleLinkPluginOptions,
+    isProduction = false
 ): void {
     const opts = parseOptions(options);
     applyChainConfig1(chain, opts);
 
-    chain.plugin('module-link-manifest').use(ManifestPlugin, [opts]);
+    chain
+        .plugin('module-link-manifest')
+        .use(ManifestPlugin, [opts, isProduction]);
 }
 
 export type { ModuleLinkPluginOptions } from './types';

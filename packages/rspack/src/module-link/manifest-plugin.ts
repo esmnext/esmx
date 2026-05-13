@@ -10,7 +10,10 @@ import type {
 export const RSPACK_PLUGIN_NAME = 'rspack-module-link-plugin';
 
 export class ManifestPlugin {
-    constructor(private opts: ParsedModuleLinkPluginOptions) {}
+    constructor(
+        private opts: ParsedModuleLinkPluginOptions,
+        private isProduction: boolean
+    ) {}
 
     apply(compiler: Compiler) {
         const opts = this.opts;
