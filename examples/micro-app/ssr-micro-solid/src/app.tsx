@@ -1,7 +1,17 @@
+import { onCleanup, onMount } from 'solid-js';
+
 import { Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
 
 export function AppContent(props: { router: any }) {
     const layout = new Layout({ appId: 'solid', router: props.router });
+
+    onMount(() => {
+        layout.mount();
+    });
+
+    onCleanup(() => {
+        layout.unmount();
+    });
 
     return (
         <div>
