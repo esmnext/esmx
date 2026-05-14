@@ -1,5 +1,10 @@
 import type { RouterMicroAppOptions } from '@esmx/router';
-import { hydrate, render, renderToString } from 'solid-js/web';
+import {
+    generateHydrationScript,
+    hydrate,
+    render,
+    renderToString
+} from 'solid-js/web';
 
 import { BaseApp } from 'ssr-micro-shared/src/index';
 import { AppContent } from './app';
@@ -40,7 +45,10 @@ class SolidApp extends BaseApp {
     }
 
     async renderToString(): Promise<string> {
-        return renderToString(() => <AppContent router={this.router} />);
+        const html = renderToString(() => <AppContent router={this.router} />);
+        if (!html?.trim()) return '';
+        const hydrationScript = generateHydrationScript();
+        return `${hydrationScript}<div>${html}</div>`;
     }
 }
 
