@@ -25,6 +25,7 @@
         "ssr-micro-preact-htm": "workspace:*",
         "ssr-micro-shared": "workspace:*",
         "ssr-micro-solid": "workspace:*",
+        "ssr-micro-svelte": "workspace:*",
         "ssr-micro-vue2": "workspace:*",
         "ssr-micro-vue3": "workspace:*",
         "typescript": "6.0.3"

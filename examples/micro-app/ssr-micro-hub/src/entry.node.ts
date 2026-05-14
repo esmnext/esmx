@@ -11,6 +11,7 @@ export default {
             'ssr-micro-preact-htm': '../ssr-micro-preact-htm/dist',
             'ssr-micro-react': '../ssr-micro-react/dist',
             'ssr-micro-solid': '../ssr-micro-solid/dist',
+            'ssr-micro-svelte': '../ssr-micro-svelte/dist',
             'ssr-micro-vue2': '../ssr-micro-vue2/dist',
             'ssr-micro-vue3': '../ssr-micro-vue3/dist'
         },
@@ -54,7 +55,8 @@ export default {
             { url: base + 'react/', file: 'react/index.html' },
             { url: base + 'preact/', file: 'preact/index.html' },
             { url: base + 'preact-htm/', file: 'preact-htm/index.html' },
-            { url: base + 'solid/', file: 'solid/index.html' }
+            { url: base + 'solid/', file: 'solid/index.html' },
+            { url: base + 'svelte/', file: 'svelte/index.html' }
         ];
 
         for (const page of pages) {
