@@ -1,88 +1,99 @@
 import type { Router } from '@esmx/router';
-import { renderThunked } from '@lit-labs/ssr';
+import { renderThunked, html as ssrHtml } from '@lit-labs/ssr';
 import { collectResult } from '@lit-labs/ssr/lib/render-result.js';
 import { hydrate } from '@lit-labs/ssr-client';
 import type { TemplateResult } from 'lit';
 import { html, render as litRender } from 'lit';
+import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import type { ActiveHeadEntry, UseHeadInput } from 'ssr-micro-shared/src/index';
 import { BaseApp, Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
 
-function createTemplate(layout: Layout): TemplateResult {
+/**
+ * Hydratable content template — regular `lit` html with markers.
+ * Must not contain unsafeHTML or raw HTML injection.
+ */
+function createContentTemplate(): TemplateResult {
     return html`
-        <div>
-            <div id="${layout.headerId}"></div>
-            <div
-                style="margin-left: var(--esmx-sidebar-width, ${SIDEBAR_WIDTH}); min-height: 100vh; padding: 32px; padding-top: calc(32px + var(--esmx-mobile-header-height, 0px));"
-            >
-                <div style="max-width: 800px; margin: 0 auto;">
+        <div
+            style="margin-left: var(--esmx-sidebar-width, ${SIDEBAR_WIDTH}); min-height: 100vh; padding: 32px; padding-top: calc(32px + var(--esmx-mobile-header-height, 0px));"
+        >
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div
+                    style="
+                        background: var(--esmx-bg-card);
+                        border-radius: 16px;
+                        padding: 48px;
+                        border: 1px solid var(--esmx-border);
+                        text-align: center;
+                    "
+                >
                     <div
                         style="
-                            background: var(--esmx-bg-card);
-                            border-radius: 16px;
-                            padding: 48px;
-                            border: 1px solid var(--esmx-border);
-                            text-align: center;
+                            width: 56px;
+                            height: 56px;
+                            background: linear-gradient(135deg, #324FFF, #283593);
+                            border-radius: 14px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            margin: 0 auto 20px;
+                        "
+                        role="img"
+                        aria-label="Lit"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 32 32"
+                            width="28"
+                            height="28"
+                        >
+                            <path
+                                d="M16 2C7.16 2 2 12 2 17c0 0 3-3 5-3s5 3 9 3 9-3 13 3c0-5-5.16-16-13-16z"
+                                fill="#fff"
+                            />
+                        </svg>
+                    </div>
+                    <h1
+                        style="
+                            font-size: 2rem;
+                            font-weight: 800;
+                            color: var(--esmx-text-primary);
+                            margin-bottom: 12px;
                         "
                     >
-                        <div
-                            style="
-                                width: 56px;
-                                height: 56px;
-                                background: linear-gradient(135deg, #324FFF, #283593);
-                                border-radius: 14px;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                margin: 0 auto 20px;
-                            "
-                            role="img"
-                            aria-label="Lit"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 32 32"
-                                width="28"
-                                height="28"
-                            >
-                                <path
-                                    d="M16 2C7.16 2 2 12 2 17c0 0 3-3 5-3s5 3 9 3 9-3 13 3c0-5-5.16-16-13-16z"
-                                    fill="#fff"
-                                />
-                            </svg>
-                        </div>
-                        <h1
-                            style="
-                                font-size: 2rem;
-                                font-weight: 800;
-                                color: var(--esmx-text-primary);
-                                margin-bottom: 12px;
-                            "
-                        >
-                            Lit Micro-App
-                        </h1>
-                        <p
-                            style="
-                                font-size: 1.125rem;
-                                color: var(--esmx-text-secondary);
-                                margin-bottom: 32px;
-                            "
-                        >
-                            This page is rendered by a Lit micro-app using Web
-                            Components.
-                        </p>
-                    </div>
+                        Lit Micro-App
+                    </h1>
+                    <p
+                        style="
+                            font-size: 1.125rem;
+                            color: var(--esmx-text-secondary);
+                            margin-bottom: 32px;
+                        "
+                    >
+                        This page is rendered by a Lit micro-app using Web
+                        Components.
+                    </p>
                 </div>
             </div>
-            <div id="${layout.footerId}"></div>
         </div>
     `;
 }
 
-function fillLayout(container: HTMLElement, layout: Layout): void {
-    const headerEl = container.querySelector(`#${layout.headerId}`);
-    if (headerEl) headerEl.innerHTML = layout.header;
-    const footerEl = container.querySelector(`#${layout.footerId}`);
-    if (footerEl) footerEl.innerHTML = layout.footer;
+/**
+ * Server-only outer template — @lit-labs/ssr html, no hydration markers.
+ * Wraps the hydratable content template with static header/footer HTML.
+ */
+function createSsrTemplate(
+    layout: Layout,
+    content: TemplateResult
+): ReturnType<typeof ssrHtml> {
+    return ssrHtml`
+        <div>
+            ${unsafeHTML(`<div id="${layout.headerId}">${layout.header}</div>`)}
+            ${content}
+            ${unsafeHTML(`<div id="${layout.footerId}">${layout.footer}</div>`)}
+        </div>
+    `;
 }
 
 export class LitApp extends BaseApp {
@@ -105,16 +116,25 @@ export class LitApp extends BaseApp {
     }
 
     protected onMount(container: HTMLElement): void {
-        const template = createTemplate(this.layout);
-        litRender(template, container);
-        fillLayout(container, this.layout);
+        // Pure CSR: build full DOM with header/footer, then render Lit content
+        container.innerHTML = `<div><div id="${this.layout.headerId}">${this.layout.header}</div><div data-lit-content></div><div id="${this.layout.footerId}">${this.layout.footer}</div></div>`;
+        const contentEl = container.querySelector(
+            '[data-lit-content]'
+        ) as HTMLElement | null;
+        if (contentEl) {
+            litRender(createContentTemplate(), contentEl);
+        }
         this.layout.mount();
     }
 
     protected onHydration(container: HTMLElement): void {
-        const template = createTemplate(this.layout);
-        hydrate(template, container);
-        fillLayout(container, this.layout);
+        // Hydrate only the content area — header/footer are static server-rendered HTML.
+        const contentEl = container.querySelector(
+            '[data-lit-content]'
+        ) as HTMLElement | null;
+        if (contentEl) {
+            hydrate(createContentTemplate(), contentEl);
+        }
         this.layout.mount();
     }
 
@@ -124,21 +144,11 @@ export class LitApp extends BaseApp {
     }
 
     async renderToString(): Promise<string> {
-        const template = createTemplate(this.layout);
-        const result = renderThunked(template);
-        let html = await collectResult(result);
-        // Lit SSR produces empty <div id="..."></div> containers.
-        // Inject header/footer content into them via string replacement.
-        // This is safe because Lit hydrate() only cares about template
-        // expressions — extra content in static elements is ignored.
-        html = html.replace(
-            `id="${this.layout.headerId}"></div>`,
-            `id="${this.layout.headerId}">${this.layout.header}</div>`
-        );
-        html = html.replace(
-            `id="${this.layout.footerId}"></div>`,
-            `id="${this.layout.footerId}">${this.layout.footer}</div>`
-        );
-        return html;
+        const content = createContentTemplate();
+        // Wrap hydratable content with a data attribute so onHydration can find it
+        const wrappedContent = html`<div data-lit-content>${content}</div>`;
+        const full = createSsrTemplate(this.layout, wrappedContent);
+        const result = renderThunked(full);
+        return collectResult(result);
     }
 }
