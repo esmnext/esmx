@@ -9,7 +9,7 @@ export default {
         imports: {
             '@esmx/router': 'ssr-micro-shared/@esmx/router'
         },
-        exports: ['pkg:svelte', 'root:src/routes.ts']
+        exports: ['root:src/routes.ts']
     },
     async devApp(esmx) {
         const { createRspackHtmlApp, rspack } = await import('@esmx/rspack');
