@@ -48,7 +48,7 @@ class SolidApp extends BaseApp {
         const html = renderToString(() => <AppContent router={this.router} />);
         if (!html?.trim()) return '';
         const hydrationScript = generateHydrationScript();
-        return `${hydrationScript}<div>${html}</div>`;
+        return `<div>${hydrationScript}${html}</div>`;
     }
 }
 
