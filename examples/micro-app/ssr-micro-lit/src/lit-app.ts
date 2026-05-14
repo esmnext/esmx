@@ -1,7 +1,6 @@
 import type { Router } from '@esmx/router';
 import { renderThunked } from '@lit-labs/ssr';
 import { collectResult } from '@lit-labs/ssr/lib/render-result.js';
-import { hydrate } from '@lit-labs/ssr-client';
 import type { TemplateResult } from 'lit';
 import { html, render as litRender } from 'lit';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
@@ -105,8 +104,10 @@ export class LitApp extends BaseApp {
     }
 
     protected onHydration(container: HTMLElement): void {
-        const template = createTemplate(this.layout);
-        hydrate(template, container);
+        // SSR output is already complete HTML — just attach sidebar event handlers.
+        // Lit hydrate() cannot reconcile templates with unsafeHTML() expressions
+        // (header/footer) because SSR output lacks Lit's hydration marker comments.
+        container; // keep param for interface compliance
         this.layout.mount();
     }
 
