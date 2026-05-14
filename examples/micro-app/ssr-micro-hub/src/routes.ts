@@ -1,4 +1,5 @@
 import { routes as htmlRoutes } from 'ssr-micro-html/src/routes';
+import { routes as litRoutes } from 'ssr-micro-lit/src/routes';
 import { routes as preactRoutes } from 'ssr-micro-preact/src/routes';
 import { routes as preactHtmRoutes } from 'ssr-micro-preact-htm/src/routes';
 import { routes as reactRoutes } from 'ssr-micro-react/src/routes';
@@ -17,6 +18,7 @@ export const routes = [
         app: createHomeApp
     },
     ...htmlRoutes,
+    ...litRoutes,
     ...vue2Routes,
     ...vue3Routes,
     ...reactRoutes,

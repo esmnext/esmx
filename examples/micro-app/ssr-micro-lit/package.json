@@ -1,7 +1,7 @@
 {
-    "name": "ssr-micro-hub",
+    "name": "ssr-micro-lit",
     "version": "1.0.0",
-    "description": "Hub for micro-frontend example",
+    "description": "Lit micro-app for micro-frontend example",
     "type": "module",
     "private": true,
     "scripts": {
@@ -15,18 +15,13 @@
         "@esmx/core": "workspace:*"
     },
     "devDependencies": {
-        "@esmx/router": "workspace:*",
         "@esmx/rspack": "workspace:*",
+        "@esmx/router": "workspace:*",
+        "@lit-labs/ssr": "^4.1.0",
+        "@lit-labs/ssr-client": "^1.1.8",
         "@types/node": "^25.6.2",
-        "ssr-micro-html": "workspace:*",
-        "ssr-micro-lit": "workspace:*",
-        "ssr-micro-react": "workspace:*",
-        "ssr-micro-preact": "workspace:*",
-        "ssr-micro-preact-htm": "workspace:*",
+        "lit": "^3.3.0",
         "ssr-micro-shared": "workspace:*",
-        "ssr-micro-solid": "workspace:*",
-        "ssr-micro-vue2": "workspace:*",
-        "ssr-micro-vue3": "workspace:*",
         "typescript": "6.0.3"
     }
 }

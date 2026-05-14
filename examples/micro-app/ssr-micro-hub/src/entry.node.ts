@@ -6,6 +6,7 @@ export default {
         links: {
             'ssr-micro-shared': '../ssr-micro-shared/dist',
             'ssr-micro-html': '../ssr-micro-html/dist',
+            'ssr-micro-lit': '../ssr-micro-lit/dist',
             'ssr-micro-preact': '../ssr-micro-preact/dist',
             'ssr-micro-preact-htm': '../ssr-micro-preact-htm/dist',
             'ssr-micro-react': '../ssr-micro-react/dist',
@@ -47,6 +48,7 @@ export default {
             { url: base, file: 'index.html' },
             { url: base + 'demo/', file: 'demo/index.html' },
             { url: base + 'html/', file: 'html/index.html' },
+            { url: base + 'lit/', file: 'lit/index.html' },
             { url: base + 'vue2/', file: 'vue2/index.html' },
             { url: base + 'vue3/', file: 'vue3/index.html' },
             { url: base + 'react/', file: 'react/index.html' },
