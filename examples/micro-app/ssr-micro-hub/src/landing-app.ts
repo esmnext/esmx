@@ -85,6 +85,7 @@ export class LandingApp extends BaseApp {
             `<p class="hero-subtitle reveal reveal-delay-2">基于原生 ESM + Import Maps，支持 CSR/SSR 与模块链接。用浏览器原生模块机制实现应用组合与代码共享，零额外运行时开销。</p>` +
             `<div class="hero-actions reveal reveal-delay-3">` +
             `<a href="#quickstart" class="btn btn-primary">快速开始${ARROW_RIGHT_ICON}</a>` +
+            `<a href="#" class="btn btn-primary" data-to="/demo/">探索在线 Demo${ARROW_RIGHT_ICON}</a>` +
             `<a href="https://github.com/esmnext/esmx" target="_blank" class="btn btn-outline">${GITHUB_ICON}GitHub</a>` +
             `</div>` +
             `<div class="hero-trust reveal reveal-delay-4">` +
@@ -316,24 +317,24 @@ export class LandingApp extends BaseApp {
             `<p class="section-desc">不受框架限制，自由选择最适合业务场景的技术栈</p>` +
             `</div>` +
             '<div class="ecosystem-logos reveal reveal-delay-1">' +
-            '<div class="ecosystem-item">' +
+            '<a href="#" class="ecosystem-item" data-to="/vue3/">' +
             logos.vue +
-            '<span>Vue</span></div>' +
-            '<div class="ecosystem-item">' +
+            '<span>Vue</span></a>' +
+            '<a href="#" class="ecosystem-item" data-to="/react/">' +
             logos.react +
-            '<span>React</span></div>' +
-            '<div class="ecosystem-item">' +
+            '<span>React</span></a>' +
+            '<a href="#" class="ecosystem-item" data-to="/preact/">' +
             logos.preact +
-            '<span>Preact</span></div>' +
-            '<div class="ecosystem-item">' +
+            '<span>Preact</span></a>' +
+            '<a href="#" class="ecosystem-item" data-to="/solid/">' +
             logos.solid +
-            '<span>Solid</span></div>' +
-            '<div class="ecosystem-item">' +
+            '<span>Solid</span></a>' +
+            '<a href="#" class="ecosystem-item" data-to="/html/">' +
             logos.html5 +
-            '<span>HTML5</span></div>' +
-            '<div class="ecosystem-item">' +
+            '<span>HTML5</span></a>' +
+            '<a href="#" class="ecosystem-item" data-to="/svelte/">' +
             logos.svelte +
-            '<span>Svelte</span></div>' +
+            '<span>Svelte</span></a>' +
             '</div>' +
             `</div>` +
             `</section>`
@@ -367,6 +368,18 @@ export class LandingApp extends BaseApp {
             this.getFeaturesHtml() +
             this.getCodeDemoHtml() +
             this.getEcosystemHtml() +
+            `<section class="section" style="text-align: center;">
+                <div class="container">
+                    <div class="section-header reveal">
+                        <span class="section-label">LIVE DEMO</span>
+                        <h2 class="section-title">9 种框架，一个应用</h2>
+                        <p class="section-desc">无需刷新页面，一键切换前端框架，感受原生 ESM 的极致体验</p>
+                    </div>
+                    <a href="#" class="btn btn-primary" data-to="/demo/" style="font-size: 1.1rem; padding: 14px 32px;">
+                        立即体验 ${ARROW_RIGHT_ICON}
+                    </a>
+                </div>
+            </section>` +
             this.getFooterHtml() +
             `</div>`
         );
@@ -430,6 +443,17 @@ export class LandingApp extends BaseApp {
             }
         );
         revealElements.forEach((el) => revealObserver.observe(el));
+
+        // SPA navigation for data-to links (demo CTA, ecosystem items)
+        container.querySelectorAll('[data-to]').forEach((el) => {
+            el.addEventListener('click', (e) => {
+                e.preventDefault();
+                const to = (e.currentTarget as HTMLElement).getAttribute(
+                    'data-to'
+                );
+                if (to) this.router.push(to);
+            });
+        });
 
         container.querySelectorAll('a[href^="#"]').forEach((anchor) => {
             anchor.addEventListener('click', (e) => {

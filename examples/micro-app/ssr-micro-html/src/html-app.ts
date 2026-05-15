@@ -1,6 +1,12 @@
 import type { Router } from '@esmx/router';
 import type { ActiveHeadEntry, UseHeadInput } from 'ssr-micro-shared/src/index';
-import { BaseApp, Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
+import {
+    BaseApp,
+    getAppState,
+    Layout,
+    SIDEBAR_WIDTH,
+    setAppState
+} from 'ssr-micro-shared/src/index';
 
 export class HtmlApp extends BaseApp {
     private layout: Layout;
@@ -71,10 +77,24 @@ export class HtmlApp extends BaseApp {
 
     protected onMount(container: HTMLElement): void {
         container.innerHTML = this.render();
+        setAppState(this.router, {
+            visitCount: getAppState(this.router).visitCount + 1,
+            lastVisited: 'html',
+            frameworkVisits: {
+                html: (getAppState(this.router).frameworkVisits.html || 0) + 1
+            }
+        });
         this.layout.mount();
     }
 
     protected onHydration(container: HTMLElement): void {
+        setAppState(this.router, {
+            visitCount: getAppState(this.router).visitCount + 1,
+            lastVisited: 'html',
+            frameworkVisits: {
+                html: (getAppState(this.router).frameworkVisits.html || 0) + 1
+            }
+        });
         this.layout.mount();
     }
 

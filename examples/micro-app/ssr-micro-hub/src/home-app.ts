@@ -72,6 +72,39 @@ export class HomeApp extends BaseApp {
             tag: 'No JSX',
             tagColor: '#8b5cf6',
             tagBg: 'rgba(139, 92, 246, 0.1)'
+        },
+        {
+            to: '/lit/',
+            title: 'Lit',
+            subtitle: 'Web Components + SSR',
+            description: 'Standards-based Web Components with Lit SSR.',
+            icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24"><path d="M16 2C7.16 2 2 12 2 17c0 0 3-3 5-3s5 3 9 3 9-3 13 3c0-5-5.16-16-13-16z" fill="#fff"/><circle cx="16" cy="18" r="3" fill="#283593"/></svg>',
+            iconBg: 'linear-gradient(135deg, #324FFF, #283593)',
+            tag: 'W3C',
+            tagColor: '#324FFF',
+            tagBg: 'rgba(50, 79, 255, 0.1)'
+        },
+        {
+            to: '/solid/',
+            title: 'SolidJS',
+            subtitle: 'Fine-grained Reactivity',
+            description: 'No VDOM, signals-based reactive UI.',
+            icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24"><path d="M16 2L2 12l6 18h20l6-18L16 2z" fill="#fff"/></svg>',
+            iconBg: 'linear-gradient(135deg, #2c4f7c, #446b9e)',
+            tag: 'Signals',
+            tagColor: '#2c4f7c',
+            tagBg: 'rgba(44, 79, 124, 0.1)'
+        },
+        {
+            to: '/svelte/',
+            title: 'Svelte 5',
+            subtitle: 'Compiler-driven Runes',
+            description: 'Reactive components with $state and $derived.',
+            icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24"><path d="M15.9 1.8C8.3 1.8 2.1 8 2.1 15.6c0 0 .3-.3.8-.7 2.6-2 7.8-7.8 9.4-7.8 1.4 0 2 4.3 4.2 10.7.8 2.4 1.7 5.1 2.6 7.2 1.7 3.9 3.6 6.6 5.6 6.6 3.6 0 5.2-3 5.2-5.6 0-2.3-1.3-4.1-2.5-3.9-.7.1-1.2.8-1.2 1.6 0 .6.4 1.2 1 1.5.4.2.8.4 1.2.6-.7 1.4-1.9 2.1-3 1.9-1.8-.3-3.1-3.1-4.4-6C18.4 14.5 15.6 1.8 15.9 1.8z" fill="#fff"/></svg>',
+            iconBg: 'linear-gradient(135deg, #ff3e00, #bf2e00)',
+            tag: 'Runes',
+            tagColor: '#ff3e00',
+            tagBg: 'rgba(255, 62, 0, 0.1)'
         }
     ];
 

@@ -2,7 +2,7 @@ import type { RouterMicroAppOptions } from '@esmx/router';
 import { hydrate, render } from 'preact';
 import { renderToString } from 'preact-render-to-string';
 
-import { BaseApp } from 'ssr-micro-shared/src/index';
+import { BaseApp, getAppState, setAppState } from 'ssr-micro-shared/src/index';
 import { AppContent } from './app';
 
 class PreactApp extends BaseApp {
@@ -20,10 +20,24 @@ class PreactApp extends BaseApp {
     }
 
     protected onMount(container: HTMLElement): void {
+        setAppState(this.router, {
+            visitCount: getAppState(this.router).visitCount + 1,
+            lastVisited: 'preact',
+            frameworkVisits: {
+                preact: (getAppState(this.router).frameworkVisits.preact || 0) + 1
+            }
+        });
         render(<AppContent router={this.router} />, container);
     }
 
     protected onHydration(container: HTMLElement): void {
+        setAppState(this.router, {
+            visitCount: getAppState(this.router).visitCount + 1,
+            lastVisited: 'preact',
+            frameworkVisits: {
+                preact: (getAppState(this.router).frameworkVisits.preact || 0) + 1
+            }
+        });
         hydrate(<AppContent router={this.router} />, container);
     }
 

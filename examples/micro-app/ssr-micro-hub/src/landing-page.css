@@ -1167,6 +1167,7 @@ svg {
     border-radius: var(--radius-lg);
     transition: all var(--transition-base);
     opacity: 0.6;
+    text-decoration: none;
 }
 
 .landing-page .ecosystem-item:hover {

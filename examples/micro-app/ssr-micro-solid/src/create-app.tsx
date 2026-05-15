@@ -6,7 +6,7 @@ import {
     renderToString
 } from 'solid-js/web';
 
-import { BaseApp } from 'ssr-micro-shared/src/index';
+import { BaseApp, getAppState, setAppState } from 'ssr-micro-shared/src/index';
 import { AppContent } from './app';
 
 class SolidApp extends BaseApp {
@@ -26,6 +26,13 @@ class SolidApp extends BaseApp {
     }
 
     protected onMount(container: HTMLElement): void {
+        setAppState(this.router, {
+            visitCount: getAppState(this.router).visitCount + 1,
+            lastVisited: 'solid',
+            frameworkVisits: {
+                solid: (getAppState(this.router).frameworkVisits.solid || 0) + 1
+            }
+        });
         this.dispose = render(
             () => <AppContent router={this.router} />,
             container
@@ -33,6 +40,13 @@ class SolidApp extends BaseApp {
     }
 
     protected onHydration(container: HTMLElement): void {
+        setAppState(this.router, {
+            visitCount: getAppState(this.router).visitCount + 1,
+            lastVisited: 'solid',
+            frameworkVisits: {
+                solid: (getAppState(this.router).frameworkVisits.solid || 0) + 1
+            }
+        });
         this.dispose = hydrate(
             () => <AppContent router={this.router} />,
             container

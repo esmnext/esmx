@@ -1,6 +1,11 @@
 import type { RouterMicroAppOptions } from '@esmx/router';
 import { RouterPlugin, useProvideRouter } from '@esmx/router-vue';
-import { BaseApp, setSsrStyles } from 'ssr-micro-shared/src/index';
+import {
+    BaseApp,
+    getAppState,
+    setAppState,
+    setSsrStyles
+} from 'ssr-micro-shared/src/index';
 import Vue from 'vue';
 import AppComponent from './app.vue';
 
@@ -21,12 +26,26 @@ class Vue2App extends BaseApp {
     }
 
     protected onMount(container: HTMLElement): void {
+        setAppState(this.router, {
+            visitCount: getAppState(this.router).visitCount + 1,
+            lastVisited: 'vue2',
+            frameworkVisits: {
+                vue2: (getAppState(this.router).frameworkVisits.vue2 || 0) + 1
+            }
+        });
         const el = document.createElement('div');
         container.appendChild(el);
         this.app.$mount(el);
     }
 
     protected onHydration(container: HTMLElement): void {
+        setAppState(this.router, {
+            visitCount: getAppState(this.router).visitCount + 1,
+            lastVisited: 'vue2',
+            frameworkVisits: {
+                vue2: (getAppState(this.router).frameworkVisits.vue2 || 0) + 1
+            }
+        });
         this.app.$mount(container, true);
     }
 

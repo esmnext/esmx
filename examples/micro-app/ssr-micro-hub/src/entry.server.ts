@@ -30,6 +30,9 @@ export default async (rc: RenderContext) => {
 
     const basePath = new URL(base).pathname;
     const renderStyles = getSsrStyles(router);
+    const contextJson = JSON.stringify({
+        'esmx:appState': router.context['esmx:appState']
+    });
 
     rc.html = `<!DOCTYPE html>
 <html lang="en"${htmlAttrs}>
@@ -55,6 +58,7 @@ export default async (rc: RenderContext) => {
 
     </style>
     <script>window.__ESMX_BASE__='${basePath}'</script>
+    <script>window.__ESMX_CONTEXT__=${contextJson}</script>
 </head>
 <body${bodyAttrs}>
     ${html ?? '<div id="app"></div>'}

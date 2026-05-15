@@ -1,7 +1,12 @@
 import type { RouterMicroAppOptions } from '@esmx/router';
 import { useProvideRouter } from '@esmx/router-vue';
 import { createHead } from '@unhead/vue/client';
-import { BaseApp, setRouterHead } from 'ssr-micro-shared/src/index';
+import {
+    BaseApp,
+    getAppState,
+    setAppState,
+    setRouterHead
+} from 'ssr-micro-shared/src/index';
 import { createSSRApp, h } from 'vue';
 import AppComponent from './app.vue';
 
@@ -22,10 +27,24 @@ class Vue3App extends BaseApp {
     }
 
     protected onMount(container: HTMLElement): void {
+        setAppState(this.router, {
+            visitCount: getAppState(this.router).visitCount + 1,
+            lastVisited: 'vue3',
+            frameworkVisits: {
+                vue3: (getAppState(this.router).frameworkVisits.vue3 || 0) + 1
+            }
+        });
         this.app.mount(container);
     }
 
     protected onHydration(container: HTMLElement): void {
+        setAppState(this.router, {
+            visitCount: getAppState(this.router).visitCount + 1,
+            lastVisited: 'vue3',
+            frameworkVisits: {
+                vue3: (getAppState(this.router).frameworkVisits.vue3 || 0) + 1
+            }
+        });
         this.onMount(container);
     }
 

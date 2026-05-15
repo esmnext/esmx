@@ -6,7 +6,13 @@ import type { TemplateResult } from 'lit';
 import { html, render as litRender } from 'lit';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import type { ActiveHeadEntry, UseHeadInput } from 'ssr-micro-shared/src/index';
-import { BaseApp, Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
+import {
+    BaseApp,
+    getAppState,
+    Layout,
+    SIDEBAR_WIDTH,
+    setAppState
+} from 'ssr-micro-shared/src/index';
 
 /**
  * Hydratable content template — regular `lit` html with markers.
@@ -116,6 +122,13 @@ export class LitApp extends BaseApp {
     }
 
     protected onMount(container: HTMLElement): void {
+        setAppState(this.router, {
+            visitCount: getAppState(this.router).visitCount + 1,
+            lastVisited: 'lit',
+            frameworkVisits: {
+                lit: (getAppState(this.router).frameworkVisits.lit || 0) + 1
+            }
+        });
         // Pure CSR: build full DOM with header/footer, then render Lit content
         container.innerHTML = `<div><div id="${this.layout.headerId}">${this.layout.header}</div><div data-lit-content></div><div id="${this.layout.footerId}">${this.layout.footer}</div></div>`;
         const contentEl = container.querySelector(
@@ -128,6 +141,13 @@ export class LitApp extends BaseApp {
     }
 
     protected onHydration(container: HTMLElement): void {
+        setAppState(this.router, {
+            visitCount: getAppState(this.router).visitCount + 1,
+            lastVisited: 'lit',
+            frameworkVisits: {
+                lit: (getAppState(this.router).frameworkVisits.lit || 0) + 1
+            }
+        });
         // Hydrate only the content area — header/footer are static server-rendered HTML.
         const contentEl = container.querySelector(
             '[data-lit-content]'

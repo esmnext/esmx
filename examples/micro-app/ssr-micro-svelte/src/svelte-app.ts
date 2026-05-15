@@ -1,6 +1,11 @@
 import type { Router } from '@esmx/router';
 import type { ActiveHeadEntry, UseHeadInput } from 'ssr-micro-shared/src/index';
-import { BaseApp, Layout } from 'ssr-micro-shared/src/index';
+import {
+    BaseApp,
+    getAppState,
+    Layout,
+    setAppState
+} from 'ssr-micro-shared/src/index';
 
 import App from './App.svelte';
 
@@ -25,6 +30,14 @@ export class SvelteApp extends BaseApp {
     }
 
     protected onMount(container: HTMLElement): void {
+        setAppState(this.router, {
+            visitCount: getAppState(this.router).visitCount + 1,
+            lastVisited: 'svelte',
+            frameworkVisits: {
+                svelte:
+                    (getAppState(this.router).frameworkVisits.svelte || 0) + 1
+            }
+        });
         import('svelte').then(async ({ mount, tick }) => {
             this.svelteApp = mount(App, {
                 target: container,
@@ -36,6 +49,14 @@ export class SvelteApp extends BaseApp {
     }
 
     protected onHydration(container: HTMLElement): void {
+        setAppState(this.router, {
+            visitCount: getAppState(this.router).visitCount + 1,
+            lastVisited: 'svelte',
+            frameworkVisits: {
+                svelte:
+                    (getAppState(this.router).frameworkVisits.svelte || 0) + 1
+            }
+        });
         import('svelte').then(async ({ hydrate, tick }) => {
             this.svelteApp = hydrate(App, {
                 target: container,

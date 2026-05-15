@@ -1,4 +1,6 @@
 import type { Router } from '@esmx/router';
+import type { AppState } from './app-state';
+import { getAppState, subscribeAppState } from './app-state';
 
 export interface LayoutOptions {
     appId: string;
@@ -83,6 +85,7 @@ export class Layout {
     public readonly footerId: string;
     private clickHandler: ((e: Event) => void) | null = null;
     private mobileHandlers: Array<() => void> = [];
+    private unsubStats: (() => void) | null = null;
 
     constructor(options: LayoutOptions) {
         this.appId = options.appId;
@@ -243,6 +246,14 @@ export class Layout {
                 <nav style="display: flex; flex-direction: column; gap: 4px;">
                     ${generateNavHtml(this.router)}
                 </nav>
+                <div id="${s}-stats" style="
+                    margin-top: auto;
+                    padding-top: 16px;
+                    border-top: 1px solid var(--esmx-border-divider);
+                    font-size: 0.75rem;
+                    color: var(--esmx-text-muted);
+                    line-height: 1.8;
+                "></div>
                 <button id="${s}-sidebar-close" style="
                     display: none;
                     background: transparent;
@@ -292,6 +303,33 @@ export class Layout {
         }
     }
 
+    private renderStats(): void {
+        const el = document.getElementById(`${this.appId}-stats`);
+        if (!el) return;
+        const state: AppState = getAppState(this.router);
+        const visits = state.frameworkVisits;
+        const total = Object.values(visits).reduce(
+            (a: number, b: number) => a + b,
+            0
+        );
+        const sorted = Object.entries(visits)
+            .sort(([, a], [, b]) => (b as number) - (a as number))
+            .slice(0, 3);
+        const top =
+            sorted.length > 0
+                ? sorted.map(([k, v]) => `${k}: ${v}`).join(', ')
+                : '—';
+        el.innerHTML = [
+            `Total visits: <strong>${total}</strong>`,
+            `Top 3: ${top}`,
+            state.lastVisited
+                ? `Current: <strong>${state.lastVisited}</strong>`
+                : ''
+        ]
+            .filter(Boolean)
+            .join('<br>');
+    }
+
     mount(): void {
         const s = this.appId;
         const sidebar = document.getElementById(`${s}-sidebar`);
@@ -336,9 +374,18 @@ export class Layout {
                 closeBtn.removeEventListener('click', closeMenu)
             );
         }
+
+        this.renderStats();
+        this.unsubStats = subscribeAppState(this.router, () =>
+            this.renderStats()
+        );
     }
 
     unmount(): void {
+        if (this.unsubStats) {
+            this.unsubStats();
+            this.unsubStats = null;
+        }
         if (this.clickHandler) {
             const sidebar = document.getElementById(`${this.appId}-sidebar`);
             if (sidebar) {

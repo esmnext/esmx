@@ -5,7 +5,7 @@ import { createRoot, hydrateRoot } from 'react-dom/client';
 import { renderToString } from 'react-dom/server';
 import React from 'react';
 
-import { BaseApp, setRouterHead } from 'ssr-micro-shared/src/index';
+import { BaseApp, getAppState, setAppState, setRouterHead } from 'ssr-micro-shared/src/index';
 import { AppContent } from './app';
 
 function createApp(router, head) {
@@ -28,12 +28,26 @@ class ReactApp extends BaseApp {
     }
 
     protected onMount(container: HTMLElement): void {
+        setAppState(this.router, {
+            visitCount: getAppState(this.router).visitCount + 1,
+            lastVisited: 'react',
+            frameworkVisits: {
+                react: (getAppState(this.router).frameworkVisits.react || 0) + 1
+            }
+        });
         const App = createApp(this.router, this.head);
         this.reactRoot = createRoot(container);
         this.reactRoot.render(<App />);
     }
 
     protected onHydration(container: HTMLElement): void {
+        setAppState(this.router, {
+            visitCount: getAppState(this.router).visitCount + 1,
+            lastVisited: 'react',
+            frameworkVisits: {
+                react: (getAppState(this.router).frameworkVisits.react || 0) + 1
+            }
+        });
         const App = createApp(this.router, this.head);
         this.reactRoot = hydrateRoot(container, <App />);
     }
