@@ -1,20 +1,7 @@
 import { useRouter } from '@esmx/router-react';
 import { useHead } from '@unhead/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import React from 'react';
-
-function Counter() {
-    const [count, setCount] = useState(0);
-    return (
-        <div>
-            <div style={{fontSize: '3rem', fontWeight: 800, color: 'var(--esmx-text-primary)', margin: '0 0 12px'}}>{count}</div>
-            <div style={{display: 'flex', gap: '12px', justifyContent: 'center'}}>
-                <button onClick={() => setCount(c => c + 1)} style={{padding: '8px 24px', borderRadius: '8px', border: 'none', background: 'var(--esmx-link)', color: '#fff', cursor: 'pointer', fontSize: '1.2rem'}}>+1</button>
-                <button onClick={() => setCount(c => c - 1)} style={{padding: '8px 24px', borderRadius: '8px', border: 'none', background: '#ef4444', color: '#fff', cursor: 'pointer', fontSize: '1.2rem'}}>-1</button>
-            </div>
-        </div>
-    );
-}
 
 import { Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
 
@@ -86,7 +73,25 @@ export function AppContent() {
                                 <ellipse cx="16" cy="16" rx="15" ry="5.5" fill="none" stroke="#fff" strokeWidth="1.8"/>
                             </svg>
                         </div>
-                        <Counter />
+                        <h1
+                            style={{
+                                fontSize: '2rem',
+                                fontWeight: 800,
+                                color: 'var(--esmx-text-primary)',
+                                marginBottom: '12px'
+                            }}
+                        >
+                            React 19 Micro-App
+                        </h1>
+                        <p
+                            style={{
+                                fontSize: '1.125rem',
+                                color: 'var(--esmx-text-secondary)',
+                                marginBottom: '32px'
+                            }}
+                        >
+                            This page is rendered by a React 19 micro-app.
+                        </p>
                     </div>
                 </div>
             </div>

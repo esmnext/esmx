@@ -6,11 +6,6 @@
     }
 
     let { layout }: Props = $props();
-
-    let r = $state(255);
-    let g = $state(62);
-    let b = $state(0);
-    let color = $derived(`rgb(${r},${g},${b})`);
 </script>
 
 <div>
@@ -39,26 +34,16 @@
                         />
                     </svg>
                 </div>
-                <div
-                    style="width:120px;height:120px;border-radius:16px;margin:12px auto;background:{color};box-shadow:0 4px 20px {color}66;"
-                />
-                <div style="max-width:300px;margin:0 auto;">
-                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-                        <span style="color:#ef4444;width:16px;font-weight:700;">R</span>
-                        <input type="range" min="0" max="255" bind:value={r} style="flex:1;" />
-                        <span style="font-family:monospace;width:32px;color:var(--esmx-text-primary);">{r}</span>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-                        <span style="color:#10b981;width:16px;font-weight:700;">G</span>
-                        <input type="range" min="0" max="255" bind:value={g} style="flex:1;" />
-                        <span style="font-family:monospace;width:32px;color:var(--esmx-text-primary);">{g}</span>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:8px;">
-                        <span style="color:#3b82f6;width:16px;font-weight:700;">B</span>
-                        <input type="range" min="0" max="255" bind:value={b} style="flex:1;" />
-                        <span style="font-family:monospace;width:32px;color:var(--esmx-text-primary);">{b}</span>
-                    </div>
-                </div>
+                <h1
+                    style="font-size: 2rem; font-weight: 800; color: var(--esmx-text-primary); margin-bottom: 12px;"
+                >
+                    Svelte 5 Micro-App
+                </h1>
+                <p
+                    style="font-size: 1.125rem; color: var(--esmx-text-secondary); margin-bottom: 32px;"
+                >
+                    This page is rendered by a Svelte 5 micro-app using runes.
+                </p>
             </div>
         </div>
     </div>
