@@ -399,31 +399,6 @@ importers:
         specifier: ^3.2.8
         version: 3.2.8(typescript@6.0.3)
 
-  examples/ssr-preact-htm:
-    dependencies:
-      '@esmx/core':
-        specifier: workspace:*
-        version: link:../../packages/core
-    devDependencies:
-      '@esmx/rspack':
-        specifier: workspace:*
-        version: link:../../packages/rspack
-      '@types/node':
-        specifier: ^24.0.10
-        version: 24.11.0
-      htm:
-        specifier: ^3.1.1
-        version: 3.1.1
-      preact:
-        specifier: ^10.26.2
-        version: 10.28.4
-      preact-render-to-string:
-        specifier: ^6.5.13
-        version: 6.6.6(preact@10.28.4)
-      typescript:
-        specifier: ^5.8.3
-        version: 5.9.3
-
   examples/templates/react-csr:
     dependencies:
       '@esmx/core':
@@ -5421,18 +5396,10 @@ packages:
     resolution: {integrity: sha512-OW/rX8O/jXnm82Ey1k44pObPtdblfiuWnrd8X7GJ7emImCOstunGbXUpp7HdBrFQX6rJzn3sPT397Wp5aCwCHg==}
     engines: {node: ^10 || ^12 || >=14}
 
-  preact-render-to-string@6.6.6:
-    resolution: {integrity: sha512-EfqZJytnjJldV+YaaqhthU2oXsEf5e+6rDv957p+zxAvNfFLQOPfvBOTncscQ+akzu6Wrl7s3Pa0LjUQmWJsGQ==}
-    peerDependencies:
-      preact: '>=10 || >= 11.0.0-0'
-
   preact-render-to-string@6.6.7:
     resolution: {integrity: sha512-3XdbsX3+vn9dQW+jJI/FsI9rlkgl6dbeUpqLsChak6jp3j3auFqBCkno7VChbMFs5Q8ylBj6DrUkKRwtVN3nvw==}
     peerDependencies:
       preact: '>=10 || >= 11.0.0-0'
-
-  preact@10.28.4:
-    resolution: {integrity: sha512-uKFfOHWuSNpRFVTnljsCluEFq57OKT+0QdOiQo8XWnQ/pSvg7OpX5eNOejELXJMWy+BwM2nobz0FkvzmnpCNsQ==}
 
   preact@10.29.1:
     resolution: {integrity: sha512-gQCLc/vWroE8lIpleXtdJhTFDogTdZG9AjMUpVkDf2iTCNwYNWA+u16dL41TqUDJO4gm2IgrcMv3uTpjd4Pwmg==}
@@ -11539,15 +11506,9 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  preact-render-to-string@6.6.6(preact@10.28.4):
-    dependencies:
-      preact: 10.28.4
-
   preact-render-to-string@6.6.7(preact@10.29.1):
     dependencies:
       preact: 10.29.1
-
-  preact@10.28.4: {}
 
   preact@10.29.1: {}
 
