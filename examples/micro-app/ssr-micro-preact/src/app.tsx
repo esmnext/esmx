@@ -1,6 +1,26 @@
-import { useEffect, useMemo } from 'preact/hooks';
+import { useEffect, useMemo, useState, useRef } from 'preact/hooks';
 
 import { Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
+
+function Ball() {
+    const [pos, setPos] = useState(0);
+    const dirRef = useRef(1);
+    useEffect(() => {
+        const id = setInterval(() => {
+            setPos(p => {
+                const n = p + dirRef.current * 4;
+                if (n > 230 || n < 0) dirRef.current = -dirRef.current;
+                return n > 230 ? 230 : n < 0 ? 0 : n;
+            });
+        }, 16);
+        return () => clearInterval(id);
+    }, []);
+    return (
+        <div style={{ width: '260px', height: '40px', background: 'var(--esmx-bg-main)', borderRadius: '20px', position: 'relative', margin: '16px auto', overflow: 'hidden' }}>
+            <div style={{ width: '28px', height: '28px', background: 'linear-gradient(135deg,#673ab8,#512da8)', borderRadius: '50%', position: 'absolute', top: '6px', left: `${pos}px` }} />
+        </div>
+    );
+}
 
 export function AppContent({ router }) {
     const layout = useMemo(
@@ -59,8 +79,9 @@ export function AppContent({ router }) {
                         <h1 style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--esmx-text-primary)', marginBottom: '12px' }}>
                             Preact Micro-App
                         </h1>
+                        <Ball />
                         <p style={{ fontSize: '1.125rem', color: 'var(--esmx-text-secondary)', marginBottom: '32px' }}>
-                            This page is rendered by a Preact 10 micro-app.
+                            Bouncing ball animation (3KB runtime)
                         </p>
                     </div>
                 </div>

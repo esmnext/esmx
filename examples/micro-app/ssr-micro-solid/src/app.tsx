@@ -1,4 +1,25 @@
-import { onCleanup, onMount } from 'solid-js';
+import { createSignal, onCleanup, onMount } from 'solid-js';
+
+function ColorMixer() {
+    const [r, setR] = createSignal(59);
+    const [g, setG] = createSignal(130);
+    const [b, setB] = createSignal(246);
+    const color = () => `rgb(${r()}, ${g()}, ${b()})`;
+    return (
+        <div>
+            <div style={{width: '120px', height: '120px', borderRadius: '16px', margin: '12px auto', background: color(), boxShadow: `0 4px 20px ${color()}66`}} />
+            <div style={{maxWidth: '300px', margin: '0 auto'}}>
+                {[['R', r, setR, '#ef4444'], ['G', g, setG, '#10b981'], ['B', b, setB, '#3b82f6']].map(([label, val, set, color]) => (
+                    <div style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px'}}>
+                        <span style={{color, width: '16px', fontWeight: 700}}>{label}</span>
+                        <input type="range" min="0" max="255" value={val()} onInput={e => set(Number(e.target.value))} style={{flex: 1}} />
+                        <span style={{fontFamily: 'monospace', width: '32px', color: 'var(--esmx-text-primary)'}}>{val()}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
 
 import { Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
 
@@ -63,25 +84,7 @@ export function AppContent(props: { router: any }) {
                                 />
                             </svg>
                         </div>
-                        <h1
-                            style={{
-                                'font-size': '2rem',
-                                'font-weight': 800,
-                                color: 'var(--esmx-text-primary)',
-                                'margin-bottom': '12px'
-                            }}
-                        >
-                            SolidJS Micro-App
-                        </h1>
-                        <p
-                            style={{
-                                'font-size': '1.125rem',
-                                color: 'var(--esmx-text-secondary)',
-                                'margin-bottom': '32px'
-                            }}
-                        >
-                            This page is rendered by a SolidJS micro-app.
-                        </p>
+                        <ColorMixer />
                     </div>
                 </div>
             </div>

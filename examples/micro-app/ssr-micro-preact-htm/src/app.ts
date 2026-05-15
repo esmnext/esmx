@@ -1,5 +1,5 @@
 import { html } from 'htm/preact';
-import { useEffect, useMemo } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 
 import { Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
 
@@ -10,6 +10,23 @@ const h1Style =
     'font-size:2rem;font-weight:800;color:var(--esmx-text-primary);margin-bottom:12px';
 const pStyle =
     'font-size:1.125rem;color:var(--esmx-text-secondary);margin-bottom:32px';
+
+function Clock() {
+    const [time, setTime] = useState(new Date().toLocaleTimeString());
+    useEffect(() => {
+        const id = setInterval(
+            () => setTime(new Date().toLocaleTimeString()),
+            1000
+        );
+        return () => clearInterval(id);
+    }, []);
+    return html`
+        <div style="font-size:3rem;font-weight:800;font-family:monospace;color:var(--esmx-text-primary);margin:12px 0;">
+            ${time}
+        </div>
+        <p style="color:var(--esmx-text-secondary);">Live clock using HTM tagged templates</p>
+    `;
+}
 
 export function AppContent({ router }) {
     const layout = useMemo(
@@ -35,7 +52,7 @@ export function AppContent({ router }) {
                             </svg>
                         </div>
                         <h1 style=${h1Style}>Preact + HTM Micro-App</h1>
-                        <p style=${pStyle}>This page is rendered by a Preact 10 micro-app using HTM (Hyperscript Tagged Markup).</p>
+                        ${Clock()}
                     </div>
                 </div>
             </div>

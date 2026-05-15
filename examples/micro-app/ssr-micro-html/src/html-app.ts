@@ -39,34 +39,9 @@ export class HtmlApp extends BaseApp {
                 border: 1px solid var(--esmx-border);
                 text-align: center;
             ">` +
-            `<div style="
-                width: 56px;
-                height: 56px;
-                background: linear-gradient(135deg, #f59e0b, #d97706);
-                border-radius: 14px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin: 0 auto 20px;
-            " role="img" aria-label="HTML">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="28" height="28">
-                    <path d="M4 2l2 20 10 8 10-8 2-20H4zm18.4 6H11l.4 4h13l-.6 6.5-7.8 2.2-7.8-2.2-.4-4h3.1l.2 1.5 4.9 1.4 4.9-1.4.4-4.5H9l-.6-7h16.6l-.6 7z" fill="#fff"/>
-                </svg>
-            </div>` +
-            `<h1 style="
-                font-size: 2rem;
-                font-weight: 800;
-                color: var(--esmx-text-primary);
-                margin-bottom: 12px;
-            ">HTML Micro-App</h1>` +
-            `<p style="
-                font-size: 1.125rem;
-                color: var(--esmx-text-secondary);
-                margin-bottom: 32px;
-                max-width: 500px;
-                margin-left: auto;
-                margin-right: auto;
-            ">Pure HTML + TypeScript micro-app.</p>` +
+            `<h1 style="margin:0 0 16px;font-weight:800;color:var(--esmx-text-primary);">HTML Micro-App</h1>` +
+            `<textarea id="html-input" placeholder="Type something..." style="width:100%;min-height:80px;padding:12px;border-radius:8px;border:1px solid var(--esmx-border);background:var(--esmx-bg-main);color:var(--esmx-text-primary);resize:vertical;font-family:inherit;box-sizing:border-box;"></textarea>` +
+            `<p id="html-stats" style="font-size:1rem;color:var(--esmx-text-secondary);margin:12px 0;">Characters: 0 | Words: 0</p>` +
             `</div>` +
             `</div>` +
             `</div>` +
@@ -84,6 +59,7 @@ export class HtmlApp extends BaseApp {
                 html: (getAppState(this.router).frameworkVisits.html || 0) + 1
             }
         });
+        this.initDemo(container);
         this.layout.mount();
     }
 
@@ -95,7 +71,22 @@ export class HtmlApp extends BaseApp {
                 html: (getAppState(this.router).frameworkVisits.html || 0) + 1
             }
         });
+        this.initDemo(container);
         this.layout.mount();
+    }
+
+    private initDemo(container: HTMLElement): void {
+        const input = container.querySelector(
+            '#html-input'
+        ) as HTMLTextAreaElement | null;
+        const stats = container.querySelector(
+            '#html-stats'
+        ) as HTMLElement | null;
+        if (!input || !stats) return;
+        input.addEventListener('input', () => {
+            const text = input.value;
+            stats.textContent = `Characters: ${text.length} | Words: ${text.split(/\s+/).filter(Boolean).length}`;
+        });
     }
 
     protected onUnmount(): void {
