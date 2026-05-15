@@ -1,7 +1,18 @@
 import { html } from 'htm/preact';
-import { useEffect, useMemo } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 
 import { Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
+
+function Counter() {
+    const [count, setCount] = useState(0);
+    return html`<div style="margin:16px 0;">
+        <div style="font-size:3rem;font-weight:800;color:var(--esmx-text-primary);margin-bottom:12px;">${count}</div>
+        <div style="display:flex;gap:12px;justify-content:center;">
+            <button onClick=${() => setCount((c) => c + 1)} style="padding:8px 24px;border-radius:8px;border:none;background:var(--esmx-link);color:#fff;cursor:pointer;font-size:1.2rem;">+</button>
+            <button onClick=${() => setCount((c) => c - 1)} style="padding:8px 24px;border-radius:8px;border:none;background:#ef4444;color:#fff;cursor:pointer;font-size:1.2rem;">-</button>
+        </div>
+    </div>`;
+}
 
 const badgeStyle =
     'width:56px;height:56px;background:linear-gradient(135deg, #8b5cf6, #7c3aed);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px';
@@ -35,7 +46,7 @@ export function AppContent({ router }) {
                             </svg>
                         </div>
                         <h1 style=${h1Style}>Preact + HTM Micro-App</h1>
-                        <p style=${pStyle}>This page is rendered by a Preact 10 micro-app using HTM (Hyperscript Tagged Markup).</p>
+                        <${Counter} />
                     </div>
                 </div>
             </div>

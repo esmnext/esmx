@@ -69,16 +69,13 @@ function createContentTemplate(): TemplateResult {
                     >
                         Lit Micro-App
                     </h1>
-                    <p
-                        style="
-                            font-size: 1.125rem;
-                            color: var(--esmx-text-secondary);
-                            margin-bottom: 32px;
-                        "
-                    >
-                        This page is rendered by a Lit micro-app using Web
-                        Components.
-                    </p>
+                    <div style="margin:16px 0;">
+                        <div id="lit-count" style="font-size:3rem;font-weight:800;color:var(--esmx-text-primary);margin-bottom:12px;">0</div>
+                        <div style="display:flex;gap:12px;justify-content:center;">
+                            <button id="lit-inc" style="padding:8px 24px;border-radius:8px;border:none;background:var(--esmx-link);color:#fff;cursor:pointer;font-size:1.2rem;">+</button>
+                            <button id="lit-dec" style="padding:8px 24px;border-radius:8px;border:none;background:#ef4444;color:#fff;cursor:pointer;font-size:1.2rem;">-</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -138,6 +135,7 @@ export class LitApp extends BaseApp {
             litRender(createContentTemplate(), contentEl);
         }
         this.layout.mount();
+        this.initDemo(container);
     }
 
     protected onHydration(container: HTMLElement): void {
@@ -156,6 +154,21 @@ export class LitApp extends BaseApp {
             hydrate(createContentTemplate(), contentEl);
         }
         this.layout.mount();
+        this.initDemo(container);
+    }
+
+    private initDemo(container: HTMLElement): void {
+        const countEl = container.querySelector('#lit-count');
+        const incEl = container.querySelector('#lit-inc');
+        const decEl = container.querySelector('#lit-dec');
+        if (countEl && incEl && decEl) {
+            incEl.addEventListener('click', () => {
+                countEl.textContent = String(Number(countEl.textContent) + 1);
+            });
+            decEl.addEventListener('click', () => {
+                countEl.textContent = String(Number(countEl.textContent) - 1);
+            });
+        }
     }
 
     protected onUnmount(): void {

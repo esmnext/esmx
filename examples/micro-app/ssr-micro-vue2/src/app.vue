@@ -11,7 +11,13 @@
                         </svg>
                     </div>
                     <h1 style="font-size: 2rem; font-weight: 800; color: var(--esmx-text-primary); margin-bottom: 12px;">Vue 2 Micro-App</h1>
-                    <p style="font-size: 1.125rem; color: var(--esmx-text-secondary); margin-bottom: 32px; max-width: 500px; margin-left: auto; margin-right: auto;">This page is rendered by a Vue 2.7 micro-app.</p>
+                    <div style="margin:16px 0;">
+                    <div style="font-size:3rem;font-weight:800;color:var(--esmx-text-primary);margin-bottom:12px;">{{ count }}</div>
+                    <div style="display:flex;gap:12px;justify-content:center;">
+                        <button @click="count++" style="padding:8px 24px;border-radius:8px;border:none;background:var(--esmx-link);color:#fff;cursor:pointer;font-size:1.2rem;">+</button>
+                        <button @click="count--" style="padding:8px 24px;border-radius:8px;border:none;background:#ef4444;color:#fff;cursor:pointer;font-size:1.2rem;">-</button>
+                    </div>
+                </div>
                 </div>
             </div>
         </div>
@@ -23,13 +29,14 @@
 import { useRouter } from '@esmx/router-vue';
 import { Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
 import { useHead } from 'unhead';
-import { getCurrentInstance, onBeforeUnmount, onMounted } from 'vue';
+import { getCurrentInstance, onBeforeUnmount, onMounted, ref } from 'vue';
 
 const router = useRouter();
 const layout = new Layout({ appId: 'vue2', router });
 const mainStyle = `margin-left: var(--esmx-sidebar-width, ${SIDEBAR_WIDTH}); min-height: 100vh; padding: 32px; padding-top: calc(32px + var(--esmx-mobile-header-height, 0px));`;
 const cardStyle =
     'background: var(--esmx-bg-card); border-radius: 16px; padding: 48px; border: 1px solid var(--esmx-border); text-align: center;';
+const count = ref(0);
 
 const instance = getCurrentInstance();
 const head = instance.proxy.$root.$head;

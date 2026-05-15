@@ -1,9 +1,20 @@
 import { useRouter } from '@esmx/router-react';
 import { useHead } from '@unhead/react';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import React from 'react';
 
 import { Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
+
+function Counter() {
+    const [count, setCount] = useState(0);
+    return <div style={{margin:'16px 0'}}>
+        <div style={{fontSize:'3rem',fontWeight:800,color:'var(--esmx-text-primary)',marginBottom:'12px'}}>{count}</div>
+        <div style={{display:'flex',gap:'12px',justifyContent:'center'}}>
+            <button onClick={() => setCount(c => c + 1)} style={{padding:'8px 24px',borderRadius:'8px',border:'none',background:'var(--esmx-link)',color:'#fff',cursor:'pointer',fontSize:'1.2rem'}}>+</button>
+            <button onClick={() => setCount(c => c - 1)} style={{padding:'8px 24px',borderRadius:'8px',border:'none',background:'#ef4444',color:'#fff',cursor:'pointer',fontSize:'1.2rem'}}>-</button>
+        </div>
+    </div>;
+}
 
 export function AppContent() {
     const router = useRouter();
@@ -83,15 +94,7 @@ export function AppContent() {
                         >
                             React 19 Micro-App
                         </h1>
-                        <p
-                            style={{
-                                fontSize: '1.125rem',
-                                color: 'var(--esmx-text-secondary)',
-                                marginBottom: '32px'
-                            }}
-                        >
-                            This page is rendered by a React 19 micro-app.
-                        </p>
+                        <Counter />
                     </div>
                 </div>
             </div>

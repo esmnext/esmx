@@ -6,6 +6,8 @@
     }
 
     let { layout }: Props = $props();
+
+    let count = $state(0);
 </script>
 
 <div>
@@ -39,11 +41,13 @@
                 >
                     Svelte 5 Micro-App
                 </h1>
-                <p
-                    style="font-size: 1.125rem; color: var(--esmx-text-secondary); margin-bottom: 32px;"
-                >
-                    This page is rendered by a Svelte 5 micro-app using runes.
-                </p>
+                <div style="margin:16px 0;">
+                    <div style="font-size:3rem;font-weight:800;color:var(--esmx-text-primary);margin-bottom:12px;">{count}</div>
+                    <div style="display:flex;gap:12px;justify-content:center;">
+                        <button onclick={() => count++} style="padding:8px 24px;border-radius:8px;border:none;background:var(--esmx-link);color:#fff;cursor:pointer;font-size:1.2rem;">+</button>
+                        <button onclick={() => count--} style="padding:8px 24px;border-radius:8px;border:none;background:#ef4444;color:#fff;cursor:pointer;font-size:1.2rem;">-</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
