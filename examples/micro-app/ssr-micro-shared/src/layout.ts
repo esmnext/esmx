@@ -21,7 +21,6 @@ const SVG_LOGO = {
 };
 
 const NAV_ITEMS = [
-    { path: '/', label: 'Home', svg: SVG_LOGO.esmx },
     { path: '/html/', label: 'HTML', svg: SVG_LOGO.html },
     { path: '/lit/', label: 'Lit', svg: SVG_LOGO.lit },
     { path: '/vue2/', label: 'Vue 2', svg: SVG_LOGO.vue },
@@ -232,17 +231,20 @@ export class Layout {
                 display: flex;
                 flex-direction: column;
             ">
-                <div style="
+                <a href="/" data-nav="/" style="
                     display: flex;
                     align-items: center;
                     gap: 12px;
                     margin-bottom: 32px;
                     padding-bottom: 16px;
                     border-bottom: 1px solid #334155;
+                    text-decoration: none;
+                    color: inherit;
+                    cursor: pointer;
                 ">
                     <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg transform='translate(20,20)'%3E%3Ccircle r='12' fill='none' stroke='%2312B2EF' stroke-width='2.8'/%3E%3Ccircle r='6.2' fill='%23FFA000'/%3E%3C/g%3E%3C/svg%3E" alt="Esmx" style="width: 32px; height: 32px;" />
                     <span style="font-size: 1.25rem; font-weight: 700; color: #fff;">Esmx Hub</span>
-                </div>
+                </a>
                 <nav style="display: flex; flex-direction: column; gap: 4px;">
                     ${generateNavHtml(this.router)}
                 </nav>
