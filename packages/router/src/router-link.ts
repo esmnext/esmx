@@ -224,15 +224,18 @@ export function createLinkResolver(
 
     const navigate = createNavigateFunction(router, props, type);
 
-    return {
-        route,
-        type,
-        isActive,
-        isExactActive,
-        isExternal,
-        tag: props.tag || 'a',
-        attributes,
-        navigate,
-        createEventHandlers
-    };
+    return router.parsedOptions.resolveLink(
+        {
+            route,
+            type,
+            isActive,
+            isExactActive,
+            isExternal,
+            tag: props.tag || 'a',
+            attributes,
+            navigate,
+            createEventHandlers
+        },
+        props
+    );
 }

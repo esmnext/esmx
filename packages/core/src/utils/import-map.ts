@@ -197,5 +197,30 @@ export function createImportMap({
 export function createClientImportMap(options: GetImportMapOptions): ImportMap {
     const base = createImportMap(options);
     const fixed = fixImportMapNestedScopes(base);
-    return compressImportMap(fixed);
+    const compressed = compressImportMap(fixed);
+
+    // Collect integrity from all manifests
+    // Manifest integrity keys are relative filenames (e.g., "src/routes.xxx.mjs")
+    // Import map values are absolute URLs (e.g., "/ssr-micro-vue2/src/routes.xxx.mjs")
+    // Must convert relative paths to absolute URLs to match browser expectations
+    const integrity: Record<string, string> = {};
+    for (const manifest of options.manifests) {
+        if (manifest.integrity) {
+            for (const [filePath, hash] of Object.entries(manifest.integrity)) {
+                // Convert relative file path to absolute URL path
+                // e.g., "src/routes.xxx.mjs" -> "/ssr-micro-vue2/src/routes.xxx.mjs"
+                const urlPath = `/${manifest.name}/${filePath}`;
+                integrity[urlPath] = hash;
+            }
+        }
+    }
+
+    if (Object.keys(integrity).length > 0) {
+        return {
+            ...compressed,
+            integrity
+        };
+    }
+
+    return compressed;
 }

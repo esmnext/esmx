@@ -63,10 +63,6 @@ npx create-esmx@latest my-app
 
 | Project Name | Tech Stack | Live Preview |
 |-------------|------------|--------------|
-| [**ssr-html**](https://github.com/esmnext/esmx/tree/master/examples/ssr-html) | Native HTML + TypeScript | [Preview](https://esmx.dev/ssr-html/) |
-| [**ssr-vue2-host**](https://github.com/esmnext/esmx/tree/master/examples/ssr-vue2-host) | Vue 2.7 + SSR | [Preview](https://esmx.dev/ssr-vue2-host/) |
-| [**ssr-vue2-remote**](https://github.com/esmnext/esmx/tree/master/examples/ssr-vue2-remote) | Vue 2.7 | [Preview](https://esmx.dev/ssr-vue2-remote/) |
-| [**ssr-preact-htm**](https://github.com/esmnext/esmx/tree/master/examples/ssr-preact-htm) | Preact + HTM | [Preview](https://esmx.dev/ssr-preact-htm/) |
 
 ---
 

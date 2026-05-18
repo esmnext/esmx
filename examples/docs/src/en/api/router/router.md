@@ -34,7 +34,7 @@ Router operation modes:
 - **Type Definition**:
 ```ts
 interface RouterOptions {
-    root?: string | HTMLElement;
+    appId?: string;
     context?: Record<string | symbol, unknown>;
     data?: Record<string | symbol, unknown>;
     routes?: RouteConfig[];
@@ -55,7 +55,7 @@ interface RouterOptions {
 ```
 
 Router configuration options:
-- `root`: Application mounting container, can be a CSS selector string or HTMLElement, defaults to `'#root'`
+- `appId`: Application mount container ID, pure string (without `#` prefix), defaults to `'app'`
 - `context`: Shared context object accessible across routes
 - `data`: Shared data object accessible across routes
 - `routes`: Array of route configuration objects
@@ -89,12 +89,12 @@ console.log(currentRoute.path);    // '/user/123'
 console.log(currentRoute.params);  // { id: '123' }
 ```
 
-### root
+### appId
 
-- **Type**: `string | HTMLElement`
+- **Type**: `string`
 - **Read-only**: `true`
 
-Gets the configured root element or selector.
+Gets the configured application mount container ID.
 
 ### mode
 

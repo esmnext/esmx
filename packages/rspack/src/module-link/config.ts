@@ -73,9 +73,11 @@ function createExternalsFunction(
                     importMap.set(identifier, identifier);
                     importMap.set(value.name, identifier);
 
-                    const resolvedPath = await resolvePath(value.file);
-                    if (resolvedPath) {
-                        importMap.set(resolvedPath, identifier);
+                    if (value.file) {
+                        const resolvedPath = await resolvePath(value.file);
+                        if (resolvedPath) {
+                            importMap.set(resolvedPath, identifier);
+                        }
                     }
                 })
             );

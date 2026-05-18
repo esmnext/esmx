@@ -71,7 +71,11 @@ export function isUrlEqual(url1: URL, url2?: URL | null): boolean {
     // Copy and sort query parameters
     (url1 = new URL(url1)).searchParams.sort();
     (url2 = new URL(url2)).searchParams.sort();
-    // Avoid trailing hash symbol impact from empty hash
+    // Normalize trailing empty hash:
+    // new URL('https://a.com/path#').href includes a trailing '#',
+    // but new URL('https://a.com/path').href does not.
+    // Assigning hash to itself triggers the setter to re-normalize the URL,
+    // ensuring both forms produce the same href.
     url1.hash = url1.hash;
     url2.hash = url2.hash;
     return url1.href === url2.href;
@@ -130,4 +134,36 @@ export function decodeParams<T extends Record<string, string | string[]>>(
     }
 
     return result;
+}
+
+/**
+ * Validates that SSR renderToString output contains exactly one root HTML element.
+ * Non-production only - throws if validation fails.
+ */
+export function validateSsrRootElement(html: string): void {
+    const trimmed = html.trim();
+    const firstMatch = trimmed.match(/^<([a-zA-Z][^\s>]*)/);
+    const firstTag = firstMatch?.[1];
+    const lastTag = trimmed.match(/<\/([a-zA-Z][^\s>]*)>\s*$/)?.[1];
+    if (!firstTag || firstTag !== lastTag) {
+        throw new Error(
+            'SSR renderToString() must return exactly one root HTML element. ' +
+                'Current output: ' +
+                trimmed.slice(0, 100)
+        );
+    }
+    // Check if there is trailing content after the root element's closing tag
+    const firstCloseIndex = trimmed.indexOf('</' + firstTag + '>');
+    if (firstCloseIndex !== -1) {
+        const afterClose = trimmed
+            .slice(firstCloseIndex + ('</' + firstTag + '>').length)
+            .trim();
+        if (afterClose.length > 0) {
+            throw new Error(
+                'SSR renderToString() must return exactly one root HTML element. ' +
+                    'Current output: ' +
+                    trimmed.slice(0, 100)
+            );
+        }
+    }
 }

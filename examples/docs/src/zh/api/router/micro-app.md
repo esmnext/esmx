@@ -31,7 +31,7 @@ interface RouterMicroAppOptions {
 将应用挂载到给定的 DOM 元素中。当 Router 导航到绑定此微应用的路由时调用。
 
 - **参数**：
-  - `el: HTMLElement` - 要挂载到的 DOM 元素（来自 [`RouterOptions.root`](/api/router/router#root)）
+  - `el: HTMLElement` - 要挂载到的 DOM 元素（来自 [`RouterOptions.appId`](/api/router/router#appid)）
 
 ### unmount
 
@@ -73,7 +73,7 @@ type RouterMicroApp =
 
 ```ts
 const router = new Router({
-  root: '#app',
+  appId: 'app',
   routes: [
     {
       path: '/react',
@@ -203,7 +203,7 @@ const html = await router.renderToString();
 
 ## 根元素
 
-`RouterOptions` 中的 [`root`](/api/router/router#root) 选项决定微应用挂载的位置：
+`RouterOptions` 中的 [`appId`](/api/router/router#appid) 选项决定微应用挂载的位置：
 
 - 如果元素在 DOM 中存在，则复用它
 - 如果不存在，则创建一个 `<div>` 并追加到 `document.body`

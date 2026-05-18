@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "ignoreDeprecations": "6.0",
+        "baseUrl": ".",
+        "isolatedModules": true,
+        "resolveJsonModule": true,
+        "target": "ESNext",
+        "lib": ["ESNext", "DOM"],
+        "strict": true,
+        "skipLibCheck": true,
+        "types": ["@types/node"],
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "jsx": "react-jsx",
+        "jsxImportSource": "preact"
+    },
+    "include": ["src"],
+    "exclude": ["dist", "node_modules"]
+}

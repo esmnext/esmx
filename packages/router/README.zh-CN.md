@@ -56,7 +56,7 @@ import { Router, RouterMode } from '@esmx/router';
 
 // 创建路由器实例
 const router = new Router({
-  root: '#app', // 浏览器环境的根挂载点（可选，默认空字符串）
+  appId: 'app', // 应用挂载容器 ID（可选，默认 'app'）
   mode: RouterMode.history,
   routes: [
     { path: '/', component: () => '首页' },

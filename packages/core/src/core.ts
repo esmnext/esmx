@@ -965,17 +965,22 @@ export class Esmx {
                   src: string;
                   filepath: string;
                   code: string;
+                  integrity: Record<string, string> | null;
               }
             : {
                   src: null;
                   filepath: null;
                   code: string;
+                  integrity: Record<string, string> | null;
               }
     > {
         return this.readied.cache(
             `getImportMap-${mode}`,
             async (): Promise<any> => {
                 const importmap = await this.getImportMap('client');
+                const integrity = (importmap as any).integrity as
+                    | Record<string, string>
+                    | undefined;
                 const { basePathPlaceholder } = this;
                 let filepath: string | null = null;
                 if (this._importmapHash === null) {
@@ -1023,7 +1028,8 @@ document.head.appendChild(script);
                     return {
                         src,
                         filepath,
-                        code: `<script data-base="${basePathPlaceholder}" src="${src}"></script>`
+                        code: `<script data-base="${basePathPlaceholder}" src="${src}"></script>`,
+                        integrity: integrity ?? null
                     };
                 }
                 if (basePathPlaceholder) {
@@ -1041,7 +1047,8 @@ document.head.appendChild(script);
                 return {
                     src: null,
                     filepath: null,
-                    code: `<script type="importmap">${serialize(importmap, { isJSON: true, unsafe: true })}</script>`
+                    code: `<script type="importmap">${serialize(importmap, { isJSON: true, unsafe: true })}</script>`,
+                    integrity: integrity ?? null
                 };
             }
         );

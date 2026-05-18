@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "ignoreDeprecations": "6.0",
+        "isolatedModules": true,
+        "resolveJsonModule": true,
+        "target": "ESNext",
+        "lib": ["ESNext", "DOM"],
+        "strict": true,
+        "skipLibCheck": true,
+        "types": ["@types/node"],
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true
+    },
+    "include": ["src"],
+    "exclude": ["dist", "node_modules"]
+}

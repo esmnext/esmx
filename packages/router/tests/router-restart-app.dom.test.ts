@@ -11,6 +11,11 @@ describe('Router.restartApp Focused Tests', () => {
     let mockApps: Record<string, ReturnType<typeof vi.fn>>;
 
     beforeEach(async () => {
+        // Create default root element for appId 'app'
+        const rootEl = document.createElement('div');
+        rootEl.id = 'app';
+        document.body.appendChild(rootEl);
+
         mockApps = {
             home: vi.fn(() => ({ mount: vi.fn(), unmount: vi.fn() })),
             about: vi.fn(() => ({ mount: vi.fn(), unmount: vi.fn() })),
@@ -35,6 +40,7 @@ describe('Router.restartApp Focused Tests', () => {
     afterEach(() => {
         router.destroy();
         vi.clearAllMocks();
+        document.body.innerHTML = '';
     });
 
     describe('🎯 Core Functionality Tests', () => {

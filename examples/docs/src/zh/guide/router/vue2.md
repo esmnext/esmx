@@ -105,7 +105,7 @@ import { createVueApp } from './create-app';
 import { routes } from './routes';
 
 const router = new Router({
-  root: '#app',
+  appId: 'app',
   mode: RouterMode.history,
   routes
 });

@@ -19,7 +19,20 @@ import type {
     RouteState
 } from './types';
 import { RouterMode, RouteType } from './types';
-import { isNotNullish, isPlainObject, isRouteMatched } from './util';
+import {
+    isNotNullish,
+    isPlainObject,
+    isRouteMatched,
+    validateSsrRootElement
+} from './util';
+
+const LAYER_SKIP_TYPES = new Set([
+    RouteType.pushWindow,
+    RouteType.replaceWindow,
+    RouteType.replace,
+    RouteType.restartApp,
+    RouteType.pushLayer
+]);
 
 export class Router {
     public readonly options: RouterOptions;
@@ -47,8 +60,8 @@ export class Router {
         return this.parsedOptions.data;
     }
 
-    public get root() {
-        return this.parsedOptions.root;
+    public get appId() {
+        return this.parsedOptions.appId;
     }
     public get mode(): RouterMode {
         return this.parsedOptions.mode;
@@ -266,7 +279,7 @@ export class Router {
             ...this.options,
             context: this.parsedOptions.context,
             mode: RouterMode.memory,
-            root: undefined,
+            appId: undefined,
             ...layerOptions.routerOptions,
             handleBackBoundary(router) {
                 router.destroy();
@@ -295,16 +308,7 @@ export class Router {
         const initRoute = await router.replace(toInput);
 
         router.afterEach(async (to, from) => {
-            if (
-                [
-                    RouteType.pushWindow,
-                    RouteType.replaceWindow,
-                    RouteType.replace,
-                    RouteType.restartApp,
-                    RouteType.pushLayer
-                ].includes(to.type)
-            )
-                return;
+            if (LAYER_SKIP_TYPES.has(to.type)) return;
             let keepAlive = false;
             if (layerOptions.keepAlive === 'exact') {
                 keepAlive = to.path === initRoute.path;
@@ -372,7 +376,13 @@ export class Router {
     public async renderToString(throwError = false): Promise<string | null> {
         try {
             const result = await this.microApp.app?.renderToString?.();
-            return result ?? null;
+            const trimmed = result?.trim();
+            const hasContent = trimmed && trimmed.length > 0;
+            if (hasContent && process.env.NODE_ENV !== 'production') {
+                validateSsrRootElement(trimmed);
+            }
+            const ssrAttr = hasContent ? ' data-ssr' : '';
+            return `<div id="${this.appId}"${ssrAttr}>${result ?? ''}</div>`;
         } catch (e) {
             if (throwError) throw e;
             else console.error(e);

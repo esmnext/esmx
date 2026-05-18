@@ -56,7 +56,7 @@ import { Router, RouterMode } from '@esmx/router';
 
 // Create router instance
 const router = new Router({
-  root: '#app', // DOM mount target (optional, defaults to '')
+  appId: 'app', // Application mount container ID (optional, defaults to 'app')
   mode: RouterMode.history,
   routes: [
     { path: '/', component: () => 'Home Page' },

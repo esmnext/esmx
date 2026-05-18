@@ -31,7 +31,7 @@ interface RouterMicroAppOptions {
 Mount the application into the given DOM element. Called when the router navigates to a route bound to this micro-app.
 
 - **Parameters**:
-  - `el: HTMLElement` - The DOM element to mount into (from [`RouterOptions.root`](/api/router/router#root))
+  - `el: HTMLElement` - The DOM element to mount into (from [`RouterOptions.appId`](/api/router/router#appid))
 
 ### unmount
 
@@ -73,7 +73,7 @@ Micro-apps are registered via the `apps` option on the Router and referenced by 
 
 ```ts
 const router = new Router({
-  root: '#app',
+  appId: 'app',
   routes: [
     {
       path: '/react',
@@ -203,7 +203,7 @@ const html = await router.renderToString();
 
 ## Root Element
 
-The [`root`](/api/router/router#root) option in `RouterOptions` determines where micro-apps are mounted:
+The [`appId`](/api/router/router#appid) option in `RouterOptions` determines where micro-apps are mounted:
 
 - If the element exists in the DOM, it's reused
 - If it doesn't exist, a `<div>` is created and appended to `document.body`

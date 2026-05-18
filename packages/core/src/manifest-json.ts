@@ -28,6 +28,12 @@ export interface ManifestJson {
      * Type: Record<source file, compilation information>
      */
     chunks: ManifestJsonChunks;
+    /**
+     * Subresource Integrity (SRI) hashes for build output files.
+     * Only generated in production builds to avoid development overhead.
+     * Type: Record<file path, integrity hash>
+     */
+    integrity?: Record<string, string>;
 }
 
 /**

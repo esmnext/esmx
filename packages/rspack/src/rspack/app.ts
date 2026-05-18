@@ -293,6 +293,12 @@ function rewriteBuild(esmx: Esmx, options: RspackAppOptions = {}) {
         if (!ok) {
             return false;
         }
+
+        // Update manifest with integrity hashes after all optimizations
+        if (esmx.isProd) {
+            await updateManifestIntegrity(esmx);
+        }
+
         esmx.writeSync(
             esmx.resolvePath('dist/index.mjs'),
             `
@@ -313,4 +319,61 @@ start();
         console.log(esmx.generateSizeReport().text);
         return pack(esmx);
     };
+}
+
+import crypto from 'node:crypto';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+
+async function updateManifestIntegrity(esmx: Esmx): Promise<void> {
+    const clientDir = esmx.resolvePath('dist/client');
+    const manifestPath = path.join(clientDir, 'manifest.json');
+
+    try {
+        const manifestContent = await fs.readFile(manifestPath, 'utf-8');
+        const manifest = JSON.parse(manifestContent);
+
+        const integrity: Record<string, string> = {};
+
+        // Walk dist/client directory
+        async function walkDir(
+            dir: string,
+            relativeDir: string = ''
+        ): Promise<void> {
+            const entries = await fs.readdir(dir, { withFileTypes: true });
+
+            for (const entry of entries) {
+                const fullPath = path.join(dir, entry.name);
+                const relativePath = relativeDir
+                    ? `${relativeDir}/${entry.name}`
+                    : entry.name;
+
+                if (entry.isDirectory()) {
+                    await walkDir(fullPath, relativePath);
+                } else if (
+                    entry.isFile() &&
+                    (entry.name.endsWith('.mjs') ||
+                        entry.name.endsWith('.js')) &&
+                    !entry.name.includes('hot-update') &&
+                    entry.name !== 'manifest.json'
+                ) {
+                    const content = await fs.readFile(fullPath);
+                    const hash = crypto
+                        .createHash('sha384')
+                        .update(content)
+                        .digest('base64');
+                    integrity[relativePath] = `sha384-${hash}`;
+                }
+            }
+        }
+
+        await walkDir(clientDir);
+
+        if (Object.keys(integrity).length > 0) {
+            manifest.integrity = integrity;
+            await fs.writeFile(manifestPath, JSON.stringify(manifest, null, 4));
+        }
+    } catch {
+        // Silently skip if manifest or dist/client doesn't exist
+    }
 }
