@@ -4,11 +4,11 @@ import { Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
 
 function Counter() {
     const [count, setCount] = createSignal(0);
-    return <div style={{margin:'16px 0'}}>
-        <div style={{fontSize:'3rem',fontWeight:800,color:'var(--esmx-text-primary)',marginBottom:'12px'}}>{count()}</div>
-        <div style={{display:'flex',gap:'12px',justifyContent:'center'}}>
-            <button onClick={() => setCount(c => c + 1)} style={{padding:'8px 24px',borderRadius:'8px',border:'none',background:'var(--esmx-link)',color:'#fff',cursor:'pointer',fontSize:'1.2rem'}}>+</button>
-            <button onClick={() => setCount(c => c - 1)} style={{padding:'8px 24px',borderRadius:'8px',border:'none',background:'#ef4444',color:'#fff',cursor:'pointer',fontSize:'1.2rem'}}>-</button>
+    return <div style="margin:16px 0;">
+        <div style="font-size:3rem;font-weight:800;color:var(--esmx-text-primary);margin-bottom:12px;">{count()}</div>
+        <div style="display:flex;gap:12px;justify-content:center;">
+            <button onClick={() => setCount(c => c + 1)} style="padding:8px 24px;border-radius:8px;border:none;background:var(--esmx-link);color:#fff;cursor:pointer;font-size:1.2rem;">+</button>
+            <button onClick={() => setCount(c => c - 1)} style="padding:8px 24px;border-radius:8px;border:none;background:#ef4444;color:#fff;cursor:pointer;font-size:1.2rem;">-</button>
         </div>
     </div>;
 }
