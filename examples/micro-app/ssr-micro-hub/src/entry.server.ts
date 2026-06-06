@@ -3,7 +3,9 @@ import { Router } from '@esmx/router';
 import {
     getRouterHead,
     getSsrStyles,
-    renderSSRHead
+    type Locale,
+    renderSSRHead,
+    setLocale
 } from 'ssr-micro-shared/src/index';
 
 import { routes } from './routes';
@@ -11,6 +13,11 @@ import { routes } from './routes';
 export default async (rc: RenderContext) => {
     const url = rc.params.url as string;
     const base = (rc.params.base as string) || 'http://localhost:3000';
+    // Locale is decided here: explicitly via params (SSG/postBuild) or, for a
+    // real server, from the request. Validated/narrowed — no `as`.
+    const localeParam = rc.params.locale;
+    const locale: Locale =
+        localeParam === 'zh' || localeParam === 'en' ? localeParam : 'en';
     const router = new Router({
         routes,
         base: new URL(base),
@@ -20,6 +27,7 @@ export default async (rc: RenderContext) => {
             return link;
         }
     });
+    setLocale(router, locale);
     await router.replace(url);
     const html = await router.renderToString();
     const { headTags, htmlAttrs, bodyAttrs } = renderSSRHead(
@@ -30,11 +38,12 @@ export default async (rc: RenderContext) => {
     const basePath = new URL(base).pathname;
     const renderStyles = getSsrStyles(router);
     const contextJson = JSON.stringify({
-        'esmx:appState': router.context['esmx:appState']
+        'esmx:appState': router.context['esmx:appState'],
+        'esmx:locale': router.context['esmx:locale']
     });
 
     rc.html = `<!DOCTYPE html>
-<html lang="en"${htmlAttrs}>
+<html lang="${locale}"${htmlAttrs}>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

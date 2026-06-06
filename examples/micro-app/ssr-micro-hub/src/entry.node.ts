@@ -44,25 +44,45 @@ export default {
     },
 
     async postBuild(esmx) {
-        const base = 'http://localhost:3000/ssr-micro-hub/';
-        const pages = [
-            { url: base, file: 'index.html' },
-            { url: base + 'demo/', file: 'demo/index.html' },
-            { url: base + 'html/', file: 'html/index.html' },
-            { url: base + 'lit/', file: 'lit/index.html' },
-            { url: base + 'vue2/', file: 'vue2/index.html' },
-            { url: base + 'vue3/', file: 'vue3/index.html' },
-            { url: base + 'react/', file: 'react/index.html' },
-            { url: base + 'preact/', file: 'preact/index.html' },
-            { url: base + 'preact-htm/', file: 'preact-htm/index.html' },
-            { url: base + 'solid/', file: 'solid/index.html' },
-            { url: base + 'svelte/', file: 'svelte/index.html' }
+        // Static i18n: locale comes from the build loop (not a request), so we
+        // render each route once per locale into a per-locale path. The router
+        // base carries the locale (/ssr-micro-hub/<locale>/) while the asset
+        // base stays /ssr-micro-hub/ (assets are shared across locales).
+        const locales = ['en', 'zh'];
+        const routes = [
+            '',
+            'demo/',
+            'html/',
+            'lit/',
+            'vue2/',
+            'vue3/',
+            'react/',
+            'preact/',
+            'preact-htm/',
+            'solid/',
+            'svelte/'
         ];
 
-        for (const page of pages) {
-            const rc = await esmx.render({ params: { url: page.url, base } });
-            const filePath = esmx.resolvePath('dist/client', page.file);
-            esmx.writeSync(filePath, rc.html);
+        for (const locale of locales) {
+            const base = `http://localhost:3000/ssr-micro-hub/${locale}/`;
+            for (const route of routes) {
+                const rc = await esmx.render({
+                    params: { url: base + route, base, locale }
+                });
+                esmx.writeSync(
+                    esmx.resolvePath(
+                        'dist/client',
+                        `${locale}/${route}index.html`
+                    ),
+                    rc.html
+                );
+            }
         }
+
+        // Root → default locale.
+        esmx.writeSync(
+            esmx.resolvePath('dist/client', 'index.html'),
+            '<!doctype html><meta http-equiv="refresh" content="0; url=en/">'
+        );
     }
 } satisfies EsmxOptions;

@@ -1,6 +1,7 @@
 import type { Router } from '@esmx/router';
 import type { AppState } from './app-state';
 import { getAppState, subscribeAppState } from './app-state';
+import { t } from './i18n';
 
 export interface LayoutOptions {
     appId: string;
@@ -34,9 +35,7 @@ export function installNavDelegate(router: Router): void {
         'click',
         (e) => {
             const target = e.target as HTMLElement | null;
-            const link = target?.closest?.(
-                'a[data-nav]'
-            ) as HTMLElement | null;
+            const link = target?.closest?.('a[data-nav]') as HTMLElement | null;
             if (!link) {
                 return;
             }
@@ -289,6 +288,16 @@ export class Layout {
                 <nav style="display: flex; flex-direction: column; gap: 4px;">
                     ${generateNavHtml(this.router)}
                 </nav>
+                <button id="${s}-lang" style="
+                    margin-top: 12px;
+                    padding: 8px 12px;
+                    border-radius: 8px;
+                    border: 1px solid var(--esmx-border);
+                    background: transparent;
+                    color: #94a3b8;
+                    cursor: pointer;
+                    font: inherit;
+                ">${t(this.router, 'switchLang')}</button>
                 <div id="${s}-stats" style="
                     margin-top: auto;
                     padding-top: 16px;
@@ -363,10 +372,10 @@ export class Layout {
                 ? sorted.map(([k, v]) => `${k}: ${v}`).join(', ')
                 : '—';
         el.innerHTML = [
-            `Total visits: <strong>${total}</strong>`,
-            `Top 3: ${top}`,
+            `${t(this.router, 'statsTotal')}: <strong>${total}</strong>`,
+            `${t(this.router, 'statsTop')}: ${top}`,
             state.lastVisited
-                ? `Current: <strong>${state.lastVisited}</strong>`
+                ? `${t(this.router, 'statsCurrent')}: <strong>${state.lastVisited}</strong>`
                 : ''
         ]
             .filter(Boolean)
@@ -382,6 +391,22 @@ export class Layout {
         // delegate (installed once) so there is no per-app binding gap during
         // SPA transitions — see installNavDelegate.
         installNavDelegate(this.router);
+
+        // Language toggle: navigate to the same route under the other locale's
+        // pre-rendered static page (full load — each locale is its own SSG output).
+        const langBtn = document.getElementById(`${s}-lang`);
+        if (langBtn) {
+            const onLang = () => {
+                const p = location.pathname;
+                location.href = p.includes('/zh/')
+                    ? p.replace('/zh/', '/en/')
+                    : p.replace('/en/', '/zh/');
+            };
+            langBtn.addEventListener('click', onLang);
+            this.mobileHandlers.push(() =>
+                langBtn.removeEventListener('click', onLang)
+            );
+        }
 
         const menuBtn = document.getElementById(`${s}-menu-btn`);
         const overlay = document.getElementById(`${s}-sidebar-overlay`);
