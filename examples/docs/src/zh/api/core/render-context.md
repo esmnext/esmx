@@ -526,6 +526,8 @@ rc.html = `
 
 生成模块预加载标签。预加载收集到的 ESM 模块，优化首屏加载性能。
 
+当 manifest 携带 [`integrity`](./manifest-json.md#integrity) 哈希时（生产构建），每个 `<link rel="modulepreload">` 标签会附加 `integrity` 属性，用于子资源完整性校验。
+
 ```ts
 rc.html = `
   <body>

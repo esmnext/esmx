@@ -22,6 +22,7 @@ interface ManifestJson {
   exports: ManifestJsonExports;
   files: string[];
   chunks: ManifestJsonChunks;
+  integrity?: Record<string, string>;
 }
 ```
 
@@ -49,6 +50,11 @@ interface ManifestJson {
 
 - **Type**: `ManifestJsonChunks`
 - **Description**: Compiled file information mapping, where keys are source files and values are compilation details
+
+#### integrity
+
+- **Type**: `Record<string, string>`
+- **Description**: Subresource Integrity (SRI) hashes for build output files, where keys are relative file paths and values are `sha384-` integrity strings. Only generated in production builds to avoid development overhead. Consumed by [`RenderContext.modulePreload()`](./render-context.md#modulepreload) and injected into the client import map.
 
 ### ManifestJsonExports
 

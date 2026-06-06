@@ -19,6 +19,7 @@ The interface every micro-app must implement.
 ```ts
 interface RouterMicroAppOptions {
   mount: (el: HTMLElement) => void;
+  hydration?: (el: HTMLElement) => void;
   unmount: () => void;
   renderToString?: () => Awaitable<string>;
 }
@@ -32,6 +33,15 @@ Mount the application into the given DOM element. Called when the router navigat
 
 - **Parameters**:
   - `el: HTMLElement` - The DOM element to mount into (from [`RouterOptions.appId`](/api/router/router#appid))
+
+### hydration
+
+- **Type**: `(el: HTMLElement) => void`
+
+Hydrate server-rendered markup instead of mounting from scratch. When the container produced by [`router.renderToString()`](/api/router/router#rendertostring) carries the `data-ssr` marker, the router calls `hydration` with the existing SSR root element rather than `mount`. If SSR content is present but no `hydration` function is provided, the router throws an error.
+
+- **Parameters**:
+  - `el: HTMLElement` - The pre-rendered SSR root element to hydrate into
 
 ### unmount
 

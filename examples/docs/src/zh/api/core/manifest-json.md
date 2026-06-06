@@ -22,6 +22,7 @@ interface ManifestJson {
   exports: ManifestJsonExports;
   files: string[];
   chunks: ManifestJsonChunks;
+  integrity?: Record<string, string>;
 }
 ```
 
@@ -49,6 +50,11 @@ interface ManifestJson {
 
 - **类型**: `ManifestJsonChunks`
 - **描述**: 编译文件信息，key为源文件，value为编译信息
+
+#### integrity
+
+- **类型**: `Record<string, string>`
+- **描述**: 构建输出文件的子资源完整性（SRI）哈希，key 为相对文件路径，value 为 `sha384-` 完整性字符串。仅在生产构建中生成，以避免开发期开销。由 [`RenderContext.modulePreload()`](./render-context.md#modulepreload) 消费，并注入到客户端导入映射中。
 
 ### ManifestJsonExports
 

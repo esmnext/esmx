@@ -19,6 +19,7 @@ head:
 ```ts
 interface RouterMicroAppOptions {
   mount: (el: HTMLElement) => void;
+  hydration?: (el: HTMLElement) => void;
   unmount: () => void;
   renderToString?: () => Awaitable<string>;
 }
@@ -32,6 +33,15 @@ interface RouterMicroAppOptions {
 
 - **参数**：
   - `el: HTMLElement` - 要挂载到的 DOM 元素（来自 [`RouterOptions.appId`](/api/router/router#appid)）
+
+### hydration
+
+- **类型**: `(el: HTMLElement) => void`
+
+对服务端渲染的标记进行水合，而非从零挂载。当 [`router.renderToString()`](/api/router/router#rendertostring) 生成的容器带有 `data-ssr` 标记时，Router 会调用 `hydration` 并传入已存在的 SSR 根元素，而不是 `mount`。若存在 SSR 内容但未提供 `hydration` 函数，Router 将抛出错误。
+
+- **参数**：
+  - `el: HTMLElement` - 待水合的预渲染 SSR 根元素
 
 ### unmount
 
