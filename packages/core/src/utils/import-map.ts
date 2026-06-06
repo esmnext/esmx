@@ -1,6 +1,12 @@
 import type { ImportMap, ScopesMap, SpecifierMap } from '@esmx/import';
 import { pathWithoutIndex } from './path-without-index';
 
+/**
+ * Import map with `imports` and `scopes` fully resolved. The optional
+ * `integrity` field is layered on later by {@link createClientImportMap}.
+ */
+type ResolvedImportMap = Required<Pick<ImportMap, 'imports' | 'scopes'>>;
+
 export interface ImportMapManifest {
     name: string;
     exports: Record<
@@ -13,6 +19,12 @@ export interface ImportMapManifest {
         }
     >;
     scopes: Record<string, Record<string, string>>;
+    /**
+     * Subresource Integrity hashes for this module's build output files.
+     * Keys are relative file paths (e.g. "src/routes.xxx.mjs"), values are
+     * integrity strings (e.g. "sha384-..."). Only present in production builds.
+     */
+    integrity?: Record<string, string>;
 }
 
 export interface GetImportMapOptions {
@@ -102,8 +114,8 @@ export function createScopesMap(
  * @see https://issues.chromium.org/issues/453147451
  */
 export function fixImportMapNestedScopes(
-    importMap: Required<ImportMap>
-): Required<ImportMap> {
+    importMap: ResolvedImportMap
+): ResolvedImportMap {
     Object.entries(importMap.scopes)
         .sort(([pathA], [pathB]) => {
             const depthA = pathA.split('/').length;
@@ -125,8 +137,8 @@ export function fixImportMapNestedScopes(
     return importMap;
 }
 
-export function compressImportMap(importMap: Required<ImportMap>): ImportMap {
-    const compressed: Required<ImportMap> = {
+export function compressImportMap(importMap: ResolvedImportMap): ImportMap {
+    const compressed: ResolvedImportMap = {
         imports: { ...importMap.imports },
         scopes: {}
     };
@@ -184,7 +196,7 @@ export function createImportMap({
     manifests,
     getFile,
     getScope
-}: GetImportMapOptions): Required<ImportMap> {
+}: GetImportMapOptions): ResolvedImportMap {
     const imports = createImportsMap(manifests, getFile);
 
     const scopes = createScopesMap(imports, manifests, getScope);

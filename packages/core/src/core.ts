@@ -978,9 +978,7 @@ export class Esmx {
             `getImportMap-${mode}`,
             async (): Promise<any> => {
                 const importmap = await this.getImportMap('client');
-                const integrity = (importmap as any).integrity as
-                    | Record<string, string>
-                    | undefined;
+                const { integrity } = importmap;
                 const { basePathPlaceholder } = this;
                 let filepath: string | null = null;
                 if (this._importmapHash === null) {
