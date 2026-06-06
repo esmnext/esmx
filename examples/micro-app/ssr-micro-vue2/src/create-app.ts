@@ -1,4 +1,4 @@
-import type { RouterMicroAppOptions } from '@esmx/router';
+import type { Router, RouterMicroAppOptions } from '@esmx/router';
 import { RouterPlugin, useProvideRouter } from '@esmx/router-vue';
 import {
     BaseApp,
@@ -14,7 +14,7 @@ Vue.use(RouterPlugin);
 class Vue2App extends BaseApp {
     private app: Vue;
 
-    constructor(router) {
+    constructor(router: Router) {
         super(router);
         this.app = new Vue({
             setup: () => {
@@ -22,7 +22,18 @@ class Vue2App extends BaseApp {
             },
             render: (h) => h(AppComponent)
         });
-        this.app.$head = this.head;
+    }
+
+    protected getHead() {
+        return {
+            title: 'Vue 2 Micro-App',
+            meta: [
+                {
+                    name: 'description',
+                    content: 'This page is rendered by a Vue 2.7 micro-app.'
+                }
+            ]
+        };
     }
 
     protected onMount(container: HTMLElement): void {
@@ -69,7 +80,7 @@ class Vue2App extends BaseApp {
     }
 }
 
-export function createVue2App(router): RouterMicroAppOptions {
+export function createVue2App(router: Router): RouterMicroAppOptions {
     const app = new Vue2App(router);
     return {
         mount: (el) => app.mount(el),

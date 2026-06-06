@@ -1,20 +1,14 @@
-import type { RouterMicroAppOptions } from '@esmx/router';
+import type { Router, RouterMicroAppOptions } from '@esmx/router';
 import { useProvideRouter } from '@esmx/router-vue';
-import { createHead } from '@unhead/vue/client';
-import {
-    BaseApp,
-    getAppState,
-    setAppState,
-    setRouterHead
-} from 'ssr-micro-shared/src/index';
+import { headSymbol } from '@unhead/vue';
+import { BaseApp, getAppState, setAppState } from 'ssr-micro-shared/src/index';
 import { createSSRApp, h } from 'vue';
 import AppComponent from './app.vue';
 
 class Vue3App extends BaseApp {
     private app: ReturnType<typeof createSSRApp>;
-    private head = createHead();
 
-    constructor(router) {
+    constructor(router: Router) {
         super(router);
         this.app = createSSRApp({
             setup: () => {
@@ -22,8 +16,10 @@ class Vue3App extends BaseApp {
             },
             render: () => h(AppComponent)
         });
-        this.app.use(this.head);
-        setRouterHead(router, this.head);
+        // Point @unhead/vue's `useHead` at the shared router-scoped head so the
+        // component uses idiomatic `useHead` while still writing to the one head
+        // that owns the document. `app.use(head)` is just `provide(headSymbol)`.
+        this.app.provide(headSymbol, this.head);
     }
 
     protected onMount(container: HTMLElement): void {
@@ -59,7 +55,7 @@ class Vue3App extends BaseApp {
     }
 }
 
-export function createVue3App(router): RouterMicroAppOptions {
+export function createVue3App(router: Router): RouterMicroAppOptions {
     const app = new Vue3App(router);
     return {
         mount: (el) => app.mount(el),

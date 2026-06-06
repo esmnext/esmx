@@ -1,14 +1,18 @@
-import type { RouterMicroAppOptions } from '@esmx/router';
+import type { Router, RouterMicroAppOptions } from '@esmx/router';
 import { RouterProvider } from '@esmx/router-react';
-import { createHead, UnheadProvider } from '@unhead/react/client';
+import { UnheadProvider } from '@unhead/react/client';
 import { createRoot, hydrateRoot } from 'react-dom/client';
 import { renderToString } from 'react-dom/server';
 import React from 'react';
+import type { Unhead } from 'unhead/types';
 
-import { BaseApp, getAppState, setAppState, setRouterHead } from 'ssr-micro-shared/src/index';
+import { BaseApp, getAppState, setAppState } from 'ssr-micro-shared/src/index';
 import { AppContent } from './app';
 
-function createApp(router, head) {
+function createApp(router: Router, head: Unhead<any>) {
+    // Point @unhead/react's `useHead` at the shared router-scoped head so the
+    // component uses idiomatic `useHead` while writing to the one head that owns
+    // the document.
     return () => (
         <UnheadProvider head={head}>
             <RouterProvider router={router}>
@@ -20,12 +24,6 @@ function createApp(router, head) {
 
 class ReactApp extends BaseApp {
     private reactRoot: ReturnType<typeof createRoot> | null = null;
-    private head = createHead();
-
-    constructor(router) {
-        super(router);
-        setRouterHead(router, this.head);
-    }
 
     protected onMount(container: HTMLElement): void {
         setAppState(this.router, {
@@ -64,7 +62,7 @@ class ReactApp extends BaseApp {
     }
 }
 
-export function createReactApp(router): RouterMicroAppOptions {
+export function createReactApp(router: Router): RouterMicroAppOptions {
     const app = new ReactApp(router);
     return {
         mount: (el) => app.mount(el),

@@ -9,6 +9,48 @@ export interface LayoutOptions {
 
 export const SIDEBAR_WIDTH = '260px';
 
+const NAV_DELEGATE = 'esmx:navDelegate';
+
+/**
+ * Installs a single document-level (capture-phase) click delegate per router
+ * that turns clicks on `a[data-nav]` links into SPA `router.push` navigations.
+ *
+ * Why a document delegate instead of a per-sidebar handler: framework apps
+ * (React/Preact) bind their handler inside an effect that runs after render, so
+ * there is a brief window where the sidebar DOM exists but no handler is
+ * attached — a rapid click then falls through to the native `<a href>` and
+ * triggers a full page reload. A delegate installed once on `document` (capture
+ * phase, so it always runs first) has no such per-app binding gap.
+ *
+ * Idempotent per router (flag stored on `router.context`, same convention as
+ * app-state / head).
+ */
+export function installNavDelegate(router: Router): void {
+    if (router.context[NAV_DELEGATE]) {
+        return;
+    }
+    router.context[NAV_DELEGATE] = true;
+    document.addEventListener(
+        'click',
+        (e) => {
+            const target = e.target as HTMLElement | null;
+            const link = target?.closest?.(
+                'a[data-nav]'
+            ) as HTMLElement | null;
+            if (!link) {
+                return;
+            }
+            const path = link.getAttribute('data-nav');
+            if (!path) {
+                return;
+            }
+            e.preventDefault();
+            router.push(path);
+        },
+        true
+    );
+}
+
 const SVG_LOGO = {
     esmx: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22%3E%3Cg transform=%22translate(20,20)%22%3E%3Ccircle r=%2212%22 fill=%22none%22 stroke=%22%2312B2EF%22 stroke-width=%222.8%22/%3E%3Ccircle r=%226.2%22 fill=%22%23FFA000%22/%3E%3C/g%3E%3C/svg%3E',
     html: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Cpath d=%22M4 2l2 20 10 8 10-8 2-20H4zm18.4 6H11l.4 4h13l-.6 6.5-7.8 2.2-7.8-2.2-.4-4h3.1l.2 1.5 4.9 1.4 4.9-1.4.4-4.5H9l-.6-7h16.6l-.6 7z%22 fill=%22%23E44D26%22/%3E%3C/svg%3E',
@@ -82,7 +124,6 @@ export class Layout {
     public readonly router: Router;
     public readonly headerId: string;
     public readonly footerId: string;
-    private clickHandler: ((e: Event) => void) | null = null;
     private mobileHandlers: Array<() => void> = [];
     private unsubStats: (() => void) | null = null;
 
@@ -337,19 +378,10 @@ export class Layout {
         const sidebar = document.getElementById(`${s}-sidebar`);
         if (!sidebar) return;
 
-        // Nav link clicks
-        this.clickHandler = (e: Event) => {
-            const target = e.target as HTMLElement;
-            const link = target.closest('a[data-nav]') as HTMLElement | null;
-            if (!link) return;
-            e.preventDefault();
-            const path = link.getAttribute('data-nav');
-            if (path) {
-                this.router.push(path);
-                this.toggleSidebar(false);
-            }
-        };
-        sidebar.addEventListener('click', this.clickHandler);
+        // Nav link clicks are handled by a single router-scoped document
+        // delegate (installed once) so there is no per-app binding gap during
+        // SPA transitions — see installNavDelegate.
+        installNavDelegate(this.router);
 
         const menuBtn = document.getElementById(`${s}-menu-btn`);
         const overlay = document.getElementById(`${s}-sidebar-overlay`);
@@ -387,13 +419,6 @@ export class Layout {
         if (this.unsubStats) {
             this.unsubStats();
             this.unsubStats = null;
-        }
-        if (this.clickHandler) {
-            const sidebar = document.getElementById(`${this.appId}-sidebar`);
-            if (sidebar) {
-                sidebar.removeEventListener('click', this.clickHandler);
-            }
-            this.clickHandler = null;
         }
         this.mobileHandlers.forEach((cleanup) => cleanup());
         this.mobileHandlers = [];

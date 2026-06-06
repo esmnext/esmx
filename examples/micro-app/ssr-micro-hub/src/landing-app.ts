@@ -1,5 +1,4 @@
 import type { Router } from '@esmx/router';
-import type { ActiveHeadEntry, UseHeadInput } from 'ssr-micro-shared/src/index';
 import { BaseApp } from 'ssr-micro-shared/src/index';
 import './landing-page.css';
 
@@ -18,11 +17,12 @@ const CHECK_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="1
 const BOOK_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`;
 
 export class LandingApp extends BaseApp {
-    private headEntry: ActiveHeadEntry<UseHeadInput> | null = null;
-
     constructor(router: Router) {
         super(router);
-        this.headEntry = this.head.push({
+    }
+
+    protected getHead() {
+        return {
             title: 'Esmx - 基于原生 ESM 的通用渲染框架',
             meta: [
                 {
@@ -31,7 +31,7 @@ export class LandingApp extends BaseApp {
                         '基于原生 ESM + Import Maps 的通用渲染框架，支持 CSR/SSR 与模块链接，零额外运行时开销'
                 }
             ]
-        });
+        };
     }
 
     private getNavHtml(): string {
@@ -394,9 +394,7 @@ export class LandingApp extends BaseApp {
         this.initScripts(container);
     }
 
-    protected onUnmount(): void {
-        this.headEntry?.dispose();
-    }
+    protected onUnmount(): void {}
 
     renderToString(): Promise<string> {
         return Promise.resolve(this.render());

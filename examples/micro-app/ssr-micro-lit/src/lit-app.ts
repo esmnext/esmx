@@ -5,7 +5,6 @@ import { hydrate } from '@lit-labs/ssr-client';
 import type { TemplateResult } from 'lit';
 import { html, render as litRender } from 'lit';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
-import type { ActiveHeadEntry, UseHeadInput } from 'ssr-micro-shared/src/index';
 import {
     BaseApp,
     getAppState,
@@ -101,12 +100,14 @@ function createSsrTemplate(
 
 export class LitApp extends BaseApp {
     private layout: Layout;
-    private headEntry: ActiveHeadEntry<UseHeadInput> | null = null;
 
     constructor(router: Router) {
         super(router);
         this.layout = new Layout({ appId: 'lit', router });
-        this.headEntry = this.head.push({
+    }
+
+    protected getHead() {
+        return {
             title: 'Lit Micro-App',
             meta: [
                 {
@@ -115,7 +116,7 @@ export class LitApp extends BaseApp {
                         'This page is rendered by a Lit micro-app using Web Components.'
                 }
             ]
-        });
+        };
     }
 
     protected onMount(container: HTMLElement): void {
@@ -172,7 +173,6 @@ export class LitApp extends BaseApp {
     }
 
     protected onUnmount(): void {
-        this.headEntry?.dispose();
         this.layout.unmount();
     }
 

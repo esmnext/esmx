@@ -1,4 +1,5 @@
 import { Router } from '@esmx/router';
+import { installNavDelegate } from 'ssr-micro-shared/src/index';
 
 import { routes } from './routes';
 
@@ -17,5 +18,9 @@ const router = new Router({
         return link;
     }
 });
+
+// Install the nav-click delegate before the first app mounts, so sidebar links
+// are intercepted from the very first interaction (no per-app binding gap).
+installNavDelegate(router);
 
 await router.replace(location.href);

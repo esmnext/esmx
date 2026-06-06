@@ -1,23 +1,19 @@
 import type { Router } from '@esmx/router';
-import type { ActiveHeadEntry, UseHeadInput } from 'ssr-micro-shared/src/index';
-import {
-    BaseApp,
-    getAppState,
-    Layout,
-    setAppState
-} from 'ssr-micro-shared/src/index';
+import { BaseApp, getAppState, Layout, setAppState } from 'ssr-micro-shared/src/index';
 
 import App from './App.svelte';
 
 export class SvelteApp extends BaseApp {
     private layout: Layout;
     private svelteApp: Record<string, any> | null = null;
-    private headEntry: ActiveHeadEntry<UseHeadInput> | null = null;
 
     constructor(router: Router) {
         super(router);
         this.layout = new Layout({ appId: 'svelte', router });
-        this.headEntry = this.head.push({
+    }
+
+    protected getHead() {
+        return {
             title: 'Svelte 5 Micro-App',
             meta: [
                 {
@@ -26,7 +22,7 @@ export class SvelteApp extends BaseApp {
                         'This page is rendered by a Svelte 5 micro-app using runes.'
                 }
             ]
-        });
+        };
     }
 
     protected onMount(container: HTMLElement): void {
@@ -68,10 +64,10 @@ export class SvelteApp extends BaseApp {
     }
 
     protected onUnmount(): void {
-        this.headEntry?.dispose();
-        if (this.svelteApp) {
+        const svelteApp = this.svelteApp;
+        if (svelteApp) {
             import('svelte').then(({ unmount }) => {
-                unmount(this.svelteApp);
+                unmount(svelteApp);
                 this.svelteApp = null;
             });
         }

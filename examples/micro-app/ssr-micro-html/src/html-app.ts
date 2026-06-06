@@ -1,5 +1,4 @@
 import type { Router } from '@esmx/router';
-import type { ActiveHeadEntry, UseHeadInput } from 'ssr-micro-shared/src/index';
 import {
     BaseApp,
     getAppState,
@@ -10,20 +9,19 @@ import {
 
 export class HtmlApp extends BaseApp {
     private layout: Layout;
-    private headEntry: ActiveHeadEntry<UseHeadInput> | null = null;
 
     constructor(router: Router) {
         super(router);
         this.layout = new Layout({ appId: 'html', router });
-        this.headEntry = this.head.push({
+    }
+
+    protected getHead() {
+        return {
             title: 'HTML Micro-App',
             meta: [
-                {
-                    name: 'description',
-                    content: 'Pure HTML + TypeScript micro-app.'
-                }
+                { name: 'description', content: 'Pure HTML + TypeScript micro-app.' }
             ]
-        });
+        };
     }
 
     render(): string {
@@ -114,7 +112,6 @@ export class HtmlApp extends BaseApp {
     }
 
     protected onUnmount(): void {
-        this.headEntry?.dispose();
         this.layout.unmount();
     }
 

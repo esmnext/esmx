@@ -1,3 +1,4 @@
+import type { Router } from '@esmx/router';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 
 import { Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
@@ -13,7 +14,7 @@ function Counter() {
     </div>;
 }
 
-export function AppContent({ router }) {
+export function AppContent({ router }: { router: Router }) {
     const layout = useMemo(
         () => new Layout({ appId: 'preact', router }),
         [router]

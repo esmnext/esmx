@@ -38,6 +38,7 @@ const cardStyle =
     'background: var(--esmx-bg-card); border-radius: 16px; padding: 48px; border: 1px solid var(--esmx-border); text-align: center;';
 const count = ref(0);
 
+// Idiomatic Vue head: writes into the shared head provided by create-app.
 useHead({
     title: 'Vue 3 Micro-App',
     meta: [

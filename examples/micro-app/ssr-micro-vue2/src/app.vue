@@ -27,9 +27,9 @@
 
 <script setup>
 import { useRouter } from '@esmx/router-vue';
-import { Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
+import { getRouterHead, Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
 import { useHead } from 'unhead';
-import { getCurrentInstance, onBeforeUnmount, onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 const router = useRouter();
 const layout = new Layout({ appId: 'vue2', router });
@@ -38,10 +38,9 @@ const cardStyle =
     'background: var(--esmx-bg-card); border-radius: 16px; padding: 48px; border: 1px solid var(--esmx-border); text-align: center;';
 const count = ref(0);
 
-const instance = getCurrentInstance();
-const head = instance.proxy.$root.$head;
-
-const headEntry = useHead(head, {
+// Vue 2.7 head: @unhead/vue 3.x requires Vue >=3.5, so use unhead core `useHead`
+// with the shared router-scoped head explicitly (idiomatic composition-API style).
+const headEntry = useHead(getRouterHead(router), {
     title: 'Vue 2 Micro-App',
     meta: [
         {

@@ -22,10 +22,9 @@ export default async (rc: RenderContext) => {
     });
     await router.replace(url);
     const html = await router.renderToString();
-    const head = getRouterHead(router);
-    const { headTags, htmlAttrs, bodyAttrs } = head
-        ? await renderSSRHead(head)
-        : { headTags: '', htmlAttrs: '', bodyAttrs: '' };
+    const { headTags, htmlAttrs, bodyAttrs } = renderSSRHead(
+        getRouterHead(router)
+    );
     await rc.commit();
 
     const basePath = new URL(base).pathname;

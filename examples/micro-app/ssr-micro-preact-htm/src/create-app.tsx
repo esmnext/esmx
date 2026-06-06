@@ -1,4 +1,4 @@
-import type { RouterMicroAppOptions } from '@esmx/router';
+import type { Router, RouterMicroAppOptions } from '@esmx/router';
 import { hydrate, render } from 'preact';
 import { renderToString } from 'preact-render-to-string';
 
@@ -6,9 +6,8 @@ import { BaseApp, getAppState, setAppState } from 'ssr-micro-shared/src/index';
 import { AppContent } from './app';
 
 class PreactHtmApp extends BaseApp {
-    constructor(router) {
-        super(router);
-        this.head.push({
+    protected getHead() {
+        return {
             title: 'Preact + HTM Micro-App',
             meta: [
                 {
@@ -17,7 +16,7 @@ class PreactHtmApp extends BaseApp {
                         'This page is rendered by a Preact 10 micro-app using HTM.'
                 }
             ]
-        });
+        };
     }
 
     protected onMount(container: HTMLElement): void {
@@ -54,7 +53,7 @@ class PreactHtmApp extends BaseApp {
     }
 }
 
-export function createPreactHtmApp(router): RouterMicroAppOptions {
+export function createPreactHtmApp(router: Router): RouterMicroAppOptions {
     const app = new PreactHtmApp(router);
     return {
         mount: (el) => app.mount(el),

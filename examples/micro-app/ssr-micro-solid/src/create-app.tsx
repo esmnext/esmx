@@ -1,4 +1,4 @@
-import type { RouterMicroAppOptions } from '@esmx/router';
+import type { Router, RouterMicroAppOptions } from '@esmx/router';
 import {
     generateHydrationScript,
     hydrate,
@@ -12,9 +12,8 @@ import { AppContent } from './app';
 class SolidApp extends BaseApp {
     private dispose: (() => void) | null = null;
 
-    constructor(router) {
-        super(router);
-        this.head.push({
+    protected getHead() {
+        return {
             title: 'SolidJS Micro-App',
             meta: [
                 {
@@ -22,7 +21,7 @@ class SolidApp extends BaseApp {
                     content: 'This page is rendered by a SolidJS micro-app.'
                 }
             ]
-        });
+        };
     }
 
     protected onMount(container: HTMLElement): void {
@@ -66,7 +65,7 @@ class SolidApp extends BaseApp {
     }
 }
 
-export function createSolidApp(router): RouterMicroAppOptions {
+export function createSolidApp(router: Router): RouterMicroAppOptions {
     const app = new SolidApp(router);
     return {
         mount: (el) => app.mount(el),

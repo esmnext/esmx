@@ -23,6 +23,7 @@ export function AppContent() {
         [router]
     );
 
+    // Idiomatic React head: writes into the shared head provided via UnheadProvider.
     useHead({
         title: 'React 19 Micro-App',
         meta: [

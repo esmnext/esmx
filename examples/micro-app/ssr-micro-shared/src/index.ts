@@ -7,6 +7,6 @@ export {
     subscribeAppState
 } from './app-state';
 export { BaseApp } from './base-app';
-export { getRouterHead, setRouterHead } from './head-manager';
-export { Layout, SIDEBAR_WIDTH } from './layout';
+export { getRouterHead } from './head-manager';
+export { installNavDelegate, Layout, SIDEBAR_WIDTH } from './layout';
 export { getSsrStyles, setSsrStyles } from './ssr-styles';

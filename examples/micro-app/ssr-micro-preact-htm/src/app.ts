@@ -1,3 +1,4 @@
+import type { Router } from '@esmx/router';
 import { html } from 'htm/preact';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 
@@ -19,10 +20,8 @@ const badgeStyle =
 const cardStyle = `background:var(--esmx-bg-card);border-radius:16px;padding:48px;border:1px solid var(--esmx-border);text-align:center`;
 const h1Style =
     'font-size:2rem;font-weight:800;color:var(--esmx-text-primary);margin-bottom:12px';
-const pStyle =
-    'font-size:1.125rem;color:var(--esmx-text-secondary);margin-bottom:32px';
 
-export function AppContent({ router }) {
+export function AppContent({ router }: { router: Router }) {
     const layout = useMemo(
         () => new Layout({ appId: 'preact-htm', router }),
         [router]

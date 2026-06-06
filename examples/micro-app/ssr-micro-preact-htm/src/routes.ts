@@ -1,5 +1,5 @@
 import type { RouteConfig } from '@esmx/router';
-import { createPreactHtmApp } from './create-app.tsx';
+import { createPreactHtmApp } from './create-app';
 
 export const routes: RouteConfig[] = [
     {
