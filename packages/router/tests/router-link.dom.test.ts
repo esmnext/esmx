@@ -1478,4 +1478,59 @@ describe('router-link.ts - RouterLink DOM Environment Tests', () => {
             expect(result.isExactActive).toBe(false);
         });
     });
+
+    describe('🔧 resolveLink option', () => {
+        it('should leave the resolved link unchanged by default', () => {
+            const props: RouterLinkProps = {
+                to: '/about'
+            };
+
+            const result = createLinkResolver(router, props);
+
+            expect(result.attributes.href).toBe('https://example.com/about');
+        });
+
+        it('should allow customizing the resolved link', async () => {
+            const customRouter = createRouter({
+                routes: [
+                    { path: '/', component: 'Home' },
+                    { path: '/about', component: 'About' }
+                ],
+                resolveLink: (link) => ({
+                    ...link,
+                    attributes: {
+                        ...link.attributes,
+                        href: `${link.attributes.href}?utm=test`,
+                        'data-custom': 'yes'
+                    }
+                })
+            });
+            await customRouter.push('/');
+
+            const result = createLinkResolver(customRouter, { to: '/about' });
+
+            expect(result.attributes.href).toBe(
+                'https://example.com/about?utm=test'
+            );
+            expect(result.attributes['data-custom']).toBe('yes');
+        });
+
+        it('should receive the original props as the second argument', async () => {
+            const seen: RouterLinkProps[] = [];
+            const customRouter = createRouter({
+                routes: [{ path: '/about', component: 'About' }],
+                resolveLink: (link, props) => {
+                    seen.push(props);
+                    return link;
+                }
+            });
+            await customRouter.push('/about');
+
+            createLinkResolver(customRouter, { to: '/about', tag: 'button' });
+
+            expect(seen).toHaveLength(1);
+            expect(seen[0].to).toBe('/about');
+            expect(seen[0].tag).toBe('button');
+        });
+    });
 });
