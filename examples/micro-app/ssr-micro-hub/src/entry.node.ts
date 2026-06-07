@@ -44,11 +44,12 @@ export default {
     },
 
     async postBuild(esmx) {
-        // Static i18n: locale comes from the build loop (not a request), so we
-        // render each route once per locale into a per-locale path. The router
-        // base carries the locale (/ssr-micro-hub/<locale>/) while the asset
-        // base stays /ssr-micro-hub/ (assets are shared across locales).
-        const locales = ['en', 'zh'];
+        // English is the default locale, served at the root; Chinese is rendered
+        // under a `/zh/` directory. The asset base stays `/ssr-micro-hub/` for
+        // both (assets are shared) — the locale lives in the route path, so the
+        // client can switch via SPA navigation (history pushState, no full page
+        // reload). Locale is derived from the URL in entry.server.
+        const base = 'http://localhost:3000/ssr-micro-hub/';
         const routes = [
             '',
             'demo/',
@@ -63,26 +64,19 @@ export default {
             'svelte/'
         ];
 
-        for (const locale of locales) {
-            const base = `http://localhost:3000/ssr-micro-hub/${locale}/`;
+        for (const prefix of ['', 'zh/']) {
             for (const route of routes) {
                 const rc = await esmx.render({
-                    params: { url: base + route, base, locale }
+                    params: { url: base + prefix + route, base }
                 });
                 esmx.writeSync(
                     esmx.resolvePath(
                         'dist/client',
-                        `${locale}/${route}index.html`
+                        `${prefix}${route}index.html`
                     ),
                     rc.html
                 );
             }
         }
-
-        // Root → default locale.
-        esmx.writeSync(
-            esmx.resolvePath('dist/client', 'index.html'),
-            '<!doctype html><meta http-equiv="refresh" content="0; url=en/">'
-        );
     }
 } satisfies EsmxOptions;

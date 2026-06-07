@@ -3,7 +3,7 @@ import { Router } from '@esmx/router';
 import {
     getRouterHead,
     getSsrStyles,
-    type Locale,
+    localeFromPath,
     renderSSRHead,
     setLocale
 } from 'ssr-micro-shared/src/index';
@@ -12,15 +12,20 @@ import { routes } from './routes';
 
 export default async (rc: RenderContext) => {
     const url = rc.params.url as string;
-    const base = (rc.params.base as string) || 'http://localhost:3000';
-    // Locale is decided here: explicitly via params (SSG/postBuild) or, for a
-    // real server, from the request. Validated/narrowed — no `as`.
-    const localeParam = rc.params.locale;
-    const locale: Locale =
-        localeParam === 'zh' || localeParam === 'en' ? localeParam : 'en';
+    const base = (rc.params.base as string) || 'http://localhost:3000/';
+    const baseURL = new URL(base);
+    // The URL is the source of truth for locale: `/zh/...` is Chinese, the root
+    // is the default English. The base is locale-agnostic; the locale lives in
+    // the route path, so it is derived from the path relative to the base
+    // (mirroring the router's own base-strip on match). `url` may be relative
+    // (live server passes `req.url`), so it is resolved against the base.
+    const routePath = new URL(url, baseURL).pathname.slice(
+        baseURL.pathname.length - 1
+    );
+    const locale = localeFromPath(routePath);
     const router = new Router({
         routes,
-        base: new URL(base),
+        base: baseURL,
         resolveLink(link) {
             const { href, origin } = link.route.url;
             link.attributes.href = href.slice(origin.length) || '/';
@@ -35,7 +40,6 @@ export default async (rc: RenderContext) => {
     );
     await rc.commit();
 
-    const basePath = new URL(base).pathname;
     const renderStyles = getSsrStyles(router);
     const contextJson = JSON.stringify({
         'esmx:appState': router.context['esmx:appState'],
@@ -65,7 +69,7 @@ export default async (rc: RenderContext) => {
         }
 
     </style>
-    <script>window.__ESMX_BASE__='${basePath}'</script>
+    <script>window.__ESMX_BASE__='${baseURL.pathname}'</script>
     <script>window.__ESMX_CONTEXT__=${contextJson}</script>
 </head>
 <body${bodyAttrs}>

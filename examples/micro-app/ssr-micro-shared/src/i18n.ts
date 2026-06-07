@@ -4,6 +4,7 @@ export type Locale = 'en' | 'zh';
 
 const LOCALE = 'esmx:locale';
 const LISTENERS = 'esmx:locale:listeners';
+const LOCALE_SYNC = 'esmx:locale:sync';
 
 const messages = {
     en: {
@@ -52,4 +53,32 @@ export function subscribeLocale(router: Router, fn: () => void): () => void {
     const listeners = router.context[LISTENERS] as Set<() => void>;
     listeners.add(fn);
     return () => listeners.delete(fn);
+}
+
+/**
+ * The URL is the source of truth for locale: `/zh/...` is Chinese, everything
+ * else is the default English. The route path is already base-relative, so the
+ * shared `/ssr-micro-hub/` mount point never appears here.
+ */
+export function localeFromPath(path: string): Locale {
+    return /^\/zh(\/|$)/.test(path) ? 'zh' : 'en';
+}
+
+/**
+ * Keep the shared locale aligned with the active route — installed once per
+ * router. Every successful navigation (toggle, nav link, browser back/forward)
+ * re-derives the locale from the path and republishes it, so `t()` and the
+ * Layout always match the URL without a full page reload.
+ */
+export function installLocaleSync(router: Router): void {
+    if (router.context[LOCALE_SYNC]) {
+        return;
+    }
+    router.context[LOCALE_SYNC] = true;
+    router.afterEach((to) => {
+        const locale = localeFromPath(to.path);
+        if (getLocale(router) !== locale) {
+            setLocale(router, locale);
+        }
+    });
 }

@@ -1,7 +1,13 @@
 import type { Router } from '@esmx/router';
 import type { AppState } from './app-state';
 import { getAppState, subscribeAppState } from './app-state';
-import { t } from './i18n';
+import {
+    getLocale,
+    installLocaleSync,
+    localeFromPath,
+    subscribeLocale,
+    t
+} from './i18n';
 
 export interface LayoutOptions {
     appId: string;
@@ -85,10 +91,21 @@ function normalizeHtml(html: string): string {
     );
 }
 
+/** Locale-aware home route: `/` in English, `/zh/` in Chinese. */
+function homeNav(router: Router): { to: string; href: string } {
+    const to = getLocale(router) === 'zh' ? '/zh/' : '/';
+    const resolved = router.resolveLink({ to, type: 'push', exact: 'route' });
+    return { to, href: resolved.attributes.href };
+}
+
 function generateNavHtml(router: Router): string {
+    // In Chinese, every link targets its `/zh`-prefixed route so navigation
+    // keeps the user inside the locale (the same static page set exists there).
+    const prefix = getLocale(router) === 'zh' ? '/zh' : '';
     return NAV_ITEMS.map((item) => {
+        const to = prefix + item.path;
         const resolved = router.resolveLink({
-            to: item.path,
+            to,
             type: 'push',
             exact: 'route'
         });
@@ -96,7 +113,7 @@ function generateNavHtml(router: Router): string {
         return normalizeHtml(`
             <a
                 href="${resolved.attributes.href}"
-                data-nav="${item.path}"
+                data-nav="${to}"
                 style="
                     display: flex;
                     align-items: center;
@@ -125,6 +142,7 @@ export class Layout {
     public readonly footerId: string;
     private mobileHandlers: Array<() => void> = [];
     private unsubStats: (() => void) | null = null;
+    private unsubLocale: (() => void) | null = null;
 
     constructor(options: LayoutOptions) {
         this.appId = options.appId;
@@ -228,6 +246,7 @@ export class Layout {
 
     get header(): string {
         const s = this.appId;
+        const home = homeNav(this.router);
         return normalizeHtml(`
             <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg transform='translate(20,20)'%3E%3Ccircle r='12' fill='none' stroke='%2312B2EF' stroke-width='2.8'/%3E%3Ccircle r='6.2' fill='%23FFA000'/%3E%3C/g%3E%3C/svg%3E" type="image/svg+xml" />
             ${this.styleSheet}
@@ -271,7 +290,7 @@ export class Layout {
                 display: flex;
                 flex-direction: column;
             ">
-                <a href="/" data-nav="/" style="
+                <a id="${s}-home" href="${home.href}" data-nav="${home.to}" style="
                     display: flex;
                     align-items: center;
                     gap: 12px;
@@ -285,7 +304,7 @@ export class Layout {
                     <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cg transform='translate(20,20)'%3E%3Ccircle r='12' fill='none' stroke='%2312B2EF' stroke-width='2.8'/%3E%3Ccircle r='6.2' fill='%23FFA000'/%3E%3C/g%3E%3C/svg%3E" alt="Esmx" style="width: 32px; height: 32px;" />
                     <span style="font-size: 1.25rem; font-weight: 700; color: #fff;">Esmx Hub</span>
                 </a>
-                <nav style="display: flex; flex-direction: column; gap: 4px;">
+                <nav id="${s}-nav" style="display: flex; flex-direction: column; gap: 4px;">
                     ${generateNavHtml(this.router)}
                 </nav>
                 <button id="${s}-lang" style="
@@ -392,15 +411,24 @@ export class Layout {
         // SPA transitions — see installNavDelegate.
         installNavDelegate(this.router);
 
-        // Language toggle: navigate to the same route under the other locale's
-        // pre-rendered static page (full load — each locale is its own SSG output).
+        // Keep the shared locale in sync with the route on every navigation, so
+        // the sidebar re-renders (via subscribeLocale below) whenever the URL's
+        // locale changes — including the toggle's SPA push and back/forward.
+        installLocaleSync(this.router);
+
+        // Language toggle: switch to the same route under the other locale via
+        // SPA navigation (history pushState — no full page reload). English is
+        // the default at the root; Chinese lives under `/zh/`. The locale-sync
+        // hook then republishes the locale and the sidebar re-renders in place.
         const langBtn = document.getElementById(`${s}-lang`);
         if (langBtn) {
             const onLang = () => {
-                const p = location.pathname;
-                location.href = p.includes('/zh/')
-                    ? p.replace('/zh/', '/en/')
-                    : p.replace('/en/', '/zh/');
+                const path = this.router.route.path;
+                const target =
+                    localeFromPath(path) === 'zh'
+                        ? path.replace(/^\/zh/, '') || '/'
+                        : `/zh${path}`;
+                this.router.push(target);
             };
             langBtn.addEventListener('click', onLang);
             this.mobileHandlers.push(() =>
@@ -438,12 +466,46 @@ export class Layout {
         this.unsubStats = subscribeAppState(this.router, () =>
             this.renderStats()
         );
+
+        // Re-render the locale-dependent sidebar (toggle label + stats) and sync
+        // <html lang> whenever the shared locale changes — no reload.
+        this.renderLocale();
+        this.unsubLocale = subscribeLocale(this.router, () =>
+            this.renderLocale()
+        );
+    }
+
+    private renderLocale(): void {
+        const s = this.appId;
+        const langBtn = document.getElementById(`${s}-lang`);
+        if (langBtn) {
+            langBtn.textContent = t(this.router, 'switchLang');
+        }
+        // Re-point nav + home links at the active locale's routes so clicks stay
+        // within the locale (the app instance is reused across `/x/` ↔ `/zh/x/`,
+        // so the sidebar must be patched in place rather than re-rendered).
+        const nav = document.getElementById(`${s}-nav`);
+        if (nav) {
+            nav.innerHTML = generateNavHtml(this.router);
+        }
+        const homeLink = document.getElementById(`${s}-home`);
+        if (homeLink) {
+            const home = homeNav(this.router);
+            homeLink.setAttribute('href', home.href);
+            homeLink.setAttribute('data-nav', home.to);
+        }
+        document.documentElement.lang = getLocale(this.router);
+        this.renderStats();
     }
 
     unmount(): void {
         if (this.unsubStats) {
             this.unsubStats();
             this.unsubStats = null;
+        }
+        if (this.unsubLocale) {
+            this.unsubLocale();
+            this.unsubLocale = null;
         }
         this.mobileHandlers.forEach((cleanup) => cleanup());
         this.mobileHandlers = [];

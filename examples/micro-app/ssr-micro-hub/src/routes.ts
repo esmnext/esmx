@@ -1,3 +1,4 @@
+import type { RouteConfig } from '@esmx/router';
 import { routes as htmlRoutes } from 'ssr-micro-html/src/routes';
 import { routes as litRoutes } from 'ssr-micro-lit/src/routes';
 import { routes as preactRoutes } from 'ssr-micro-preact/src/routes';
@@ -9,7 +10,7 @@ import { routes as vue2Routes } from 'ssr-micro-vue2/src/routes';
 import { routes as vue3Routes } from 'ssr-micro-vue3/src/routes';
 import { createHomeApp, createLandingApp } from './create-app';
 
-export const routes = [
+const baseRoutes: RouteConfig[] = [
     {
         path: '/',
         app: createLandingApp
@@ -27,4 +28,20 @@ export const routes = [
     ...preactHtmRoutes,
     ...solidRoutes,
     ...svelteRoutes
+];
+
+/**
+ * English is the default locale and is served at the root (`/demo/`). Chinese
+ * pages live under a `/zh` path prefix (`/zh/demo/`) — the same micro-app
+ * factories are reused, since only the shared Layout is localized. Registering
+ * both lets the SPA router match `/zh/...` so the language toggle can switch via
+ * `router.push` (history navigation) instead of a full page reload.
+ */
+function prefixLocale(routes: RouteConfig[], prefix: string): RouteConfig[] {
+    return routes.map((route) => ({ ...route, path: prefix + route.path }));
+}
+
+export const routes: RouteConfig[] = [
+    ...baseRoutes,
+    ...prefixLocale(baseRoutes, '/zh')
 ];
