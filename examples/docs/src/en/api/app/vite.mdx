@@ -1,0 +1,117 @@
+---
+titleSuffix: "Esmx Framework Vite Build Tool"
+description: "Esmx framework's Vite build tool, providing native ESM module-linking build capabilities for standard and HTML applications, with real module-level HMR in development."
+head:
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, Vite, Rollup, build tool, application building, HTML application, TypeScript, CSS, HMR, SSR, Module Linking"
+---
+
+import { PackageManagerTabs } from '@theme';
+
+# @esmx/vite
+
+The Vite package provides a set of APIs for creating and configuring Vite applications, supporting the building and development of standard applications and HTML applications. It emits native ESM module-federation artifacts consumed by `@esmx/core`, and provides real module-level HMR in development through Vite's dev server.
+
+## Installation
+
+Use package manager to install `@esmx/vite` as a development dependency:
+
+<PackageManagerTabs command="install @esmx/vite -D" />
+
+## Type Exports
+
+### BuildTarget
+
+```ts
+type BuildTarget = 'node' | 'client' | 'server'
+```
+
+Build target environment type that defines the application's build target environment:
+- `node`: Build code to run in Node.js environment
+- `client`: Build code to run in browser environment
+- `server`: Build code to run in server environment
+
+### ViteAppConfigContext
+
+```ts
+interface ViteAppConfigContext {
+  esmx: Esmx
+  buildTarget: BuildTarget
+  config: InlineConfig
+  options: ViteAppOptions
+}
+```
+
+Vite application configuration context interface, provides context information accessible in the configuration hook function:
+- `esmx`: Esmx framework instance
+- `buildTarget`: Current build target (`client`/`server`/`node`)
+- `config`: Vite [`InlineConfig`](https://vite.dev/guide/api-javascript.html#inlineconfig) object — mutate it to customize the build (e.g. add a framework plugin)
+- `options`: Application configuration options
+
+### ViteAppOptions
+
+```ts
+interface ViteAppOptions {
+  minimize?: boolean
+  config?: (context: ViteAppConfigContext) => void
+}
+```
+
+Vite application configuration options interface:
+- `minimize`: Whether to enable code minification; `true` to enable, `false` to disable, `undefined` to automatically decide based on environment (enabled in production, disabled in development)
+- `config`: Configuration hook function called for each build target before the build starts, used to mutate the resolved Vite configuration. It also applies to the development server.
+
+### ViteHtmlAppOptions
+
+```ts
+interface ViteHtmlAppOptions extends ViteAppOptions {}
+```
+
+Options for a no-framework HTML application. Vite natively handles TypeScript, CSS and static assets, so unlike the Rspack equivalent no extra loader options are exposed.
+
+## Function Exports
+
+### createViteApp
+
+```ts
+function createViteApp(esmx: Esmx, options?: ViteAppOptions): Promise<App>
+```
+
+Create a standard Vite application instance.
+
+**Parameters:**
+- `esmx` — Esmx framework instance
+- `options` — Vite application configuration options
+
+**Returns:**
+- Returns a `Promise` that resolves to the created application instance
+
+### createViteHtmlApp
+
+```ts
+function createViteHtmlApp(esmx: Esmx, options?: ViteHtmlAppOptions): Promise<App>
+```
+
+Create an HTML-type Vite application instance (no UI framework).
+
+**Parameters:**
+- `esmx` — Esmx framework instance
+- `options` — HTML application configuration options
+
+**Returns:**
+- Returns a `Promise` that resolves to the created HTML application instance
+
+```ts title="src/entry.node.ts"
+export default {
+  async devApp(esmx) {
+    return import('@esmx/vite').then((m) => m.createViteHtmlApp(esmx));
+  }
+};
+```
+
+## Module Exports
+
+### vite
+
+Re-exports all contents from the `vite` package, providing complete Vite core functionality.
