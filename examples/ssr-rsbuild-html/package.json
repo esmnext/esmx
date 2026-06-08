@@ -1,0 +1,21 @@
+{
+    "name": "ssr-rsbuild-html",
+    "version": "1.0.0",
+    "description": "HTML SSR app powered by Esmx + Rsbuild",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "esmx dev",
+        "build": "esmx build",
+        "preview": "esmx preview",
+        "start": "esmx start"
+    },
+    "dependencies": {
+        "@esmx/core": "workspace:*"
+    },
+    "devDependencies": {
+        "@esmx/rsbuild": "workspace:*",
+        "@types/node": "^24.0.0",
+        "typescript": "5.9.3"
+    }
+}

@@ -1,0 +1,98 @@
+:root {
+    --esmx-primary: #001137;
+    --esmx-secondary: #273498;
+    --esmx-accent: #0074c2;
+    --esmx-light: #00abe7;
+    --esmx-sun-core: #ffa000;
+    --esmx-sun-rays: #ffc107;
+    --react-color: #61dafb;
+    --react-dark: #20232a;
+    --border-color: rgba(0, 17, 55, 0.12);
+    --shadow-color: rgba(0, 17, 55, 0.05);
+    --text-primary: #213547;
+    --text-secondary: #666;
+    --bg-card: #fcfcfc;
+    --bg-hover: rgba(255, 250, 240, 0.8);
+    --font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-family);
+    color: var(--text-primary);
+    background-color: white;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+    font-family: var(--font-family);
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3.5rem;
+    margin-bottom: 3rem;
+}
+
+.logo-link {
+    text-decoration: none;
+    position: relative;
+}
+
+.logo-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 6.5em;
+    height: 6.5em;
+    border-radius: 12px;
+    background-color: var(--bg-card);
+    padding: 1em;
+    box-shadow: 0 2px 12px var(--shadow-color);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.logo-wrapper:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px var(--shadow-color);
+}
+
+.logo {
+    height: 100%;
+    width: auto;
+    transition: transform 0.3s ease;
+}
+
+.logo-wrapper:hover .logo {
+    transform: scale(1.1);
+}
+
+.logo-wrapper.esmx:hover {
+    background-color: rgba(255, 192, 7, 0.1);
+    border-color: var(--esmx-sun-rays);
+}
+
+.logo-wrapper.react:hover {
+    background-color: rgba(97, 218, 251, 0.1);
+    border-color: var(--react-color);
+}
+
+@media (max-width: 768px) {
+    .logo-container {
+        gap: 2rem;
+    }
+
+    .logo-wrapper {
+        width: 5em;
+        height: 5em;
+    }
+}
