@@ -4,7 +4,8 @@ import {
     buildSeoHead,
     getAppState,
     Layout,
-    setAppState
+    setAppState,
+    t
 } from 'ssr-micro-shared/src/index';
 
 import App from './App.svelte';
@@ -21,9 +22,8 @@ export class SvelteApp extends BaseApp {
     protected getHead() {
         return buildSeoHead(this.router, {
             path: '/svelte/',
-            title: 'Svelte 5 Micro-App',
-            description:
-                'This page is rendered by a Svelte 5 micro-app using runes.'
+            title: t(this.router, 'fwSvelteTitle'),
+            description: t(this.router, 'fwSvelteDesc')
         });
     }
 
@@ -39,7 +39,10 @@ export class SvelteApp extends BaseApp {
         import('svelte').then(async ({ mount, tick }) => {
             this.svelteApp = mount(App, {
                 target: container,
-                props: { layout: this.layout }
+                props: {
+                    layout: this.layout,
+                    title: t(this.router, 'fwSvelteTitle')
+                }
             });
             await tick();
             this.layout.mount();
@@ -58,7 +61,10 @@ export class SvelteApp extends BaseApp {
         import('svelte').then(async ({ hydrate, tick }) => {
             this.svelteApp = hydrate(App, {
                 target: container,
-                props: { layout: this.layout }
+                props: {
+                    layout: this.layout,
+                    title: t(this.router, 'fwSvelteTitle')
+                }
             });
             await tick();
             this.layout.mount();
@@ -78,7 +84,12 @@ export class SvelteApp extends BaseApp {
 
     async renderToString(): Promise<string> {
         const { render } = await import('svelte/server');
-        const { body } = render(App, { props: { layout: this.layout } });
+        const { body } = render(App, {
+            props: {
+                layout: this.layout,
+                title: t(this.router, 'fwSvelteTitle')
+            }
+        });
         return body?.trim() ? `<div>${body}</div>` : '';
     }
 }

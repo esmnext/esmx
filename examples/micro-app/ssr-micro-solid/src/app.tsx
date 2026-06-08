@@ -1,6 +1,6 @@
 import { createSignal, onCleanup, onMount } from 'solid-js';
 
-import { Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
+import { Layout, SIDEBAR_WIDTH, t } from 'ssr-micro-shared/src/index';
 
 function Counter() {
     const [count, setCount] = createSignal(0);
@@ -82,7 +82,7 @@ export function AppContent(props: { router: any }) {
                                 'margin-bottom': '12px'
                             }}
                         >
-                            SolidJS Micro-App
+                            {t(props.router, 'fwSolidTitle')}
                         </h1>
                         <Counter />
                     </div>

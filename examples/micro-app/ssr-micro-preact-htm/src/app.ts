@@ -2,7 +2,7 @@ import type { Router } from '@esmx/router';
 import { html } from 'htm/preact';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 
-import { Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
+import { Layout, SIDEBAR_WIDTH, t } from 'ssr-micro-shared/src/index';
 
 function Counter() {
     const [count, setCount] = useState(0);
@@ -44,7 +44,7 @@ export function AppContent({ router }: { router: Router }) {
                                 <text x="16" y="22" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">H</text>
                             </svg>
                         </div>
-                        <h1 style=${h1Style}>Preact + HTM Micro-App</h1>
+                        <h1 style=${h1Style}>${t(router, 'fwPreactHtmTitle')}</h1>
                         <${Counter} />
                     </div>
                 </div>

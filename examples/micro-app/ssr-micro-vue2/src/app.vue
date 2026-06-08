@@ -10,7 +10,7 @@
                             <path d="M16 2l-5.6 9.6L16 19.6l5.6-8L16 2z" fill="#35495e" opacity="0.8"/>
                         </svg>
                     </div>
-                    <h1 style="font-size: 2rem; font-weight: 800; color: var(--esmx-text-primary); margin-bottom: 12px;">Vue 2 Micro-App</h1>
+                    <h1 style="font-size: 2rem; font-weight: 800; color: var(--esmx-text-primary); margin-bottom: 12px;">{{ title }}</h1>
                     <div style="margin:16px 0;">
                     <div style="font-size:3rem;font-weight:800;color:var(--esmx-text-primary);margin-bottom:12px;">{{ count }}</div>
                     <div style="display:flex;gap:12px;justify-content:center;">
@@ -27,8 +27,7 @@
 
 <script setup>
 import { useRouter } from '@esmx/router-vue';
-import { getRouterHead, Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
-import { useHead } from 'unhead';
+import { Layout, SIDEBAR_WIDTH, t } from 'ssr-micro-shared/src/index';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 const router = useRouter();
@@ -37,23 +36,11 @@ const mainStyle = `margin-left: var(--esmx-sidebar-width, ${SIDEBAR_WIDTH}); min
 const cardStyle =
     'background: var(--esmx-bg-card); border-radius: 16px; padding: 48px; border: 1px solid var(--esmx-border); text-align: center;';
 const count = ref(0);
-
-// Vue 2.7 head: @unhead/vue 3.x requires Vue >=3.5, so use unhead core `useHead`
-// with the shared router-scoped head explicitly (idiomatic composition-API style).
-const headEntry = useHead(getRouterHead(router), {
-    title: 'Vue 2 Micro-App',
-    meta: [
-        {
-            name: 'description',
-            content: 'This page is rendered by a Vue 2.7 micro-app.'
-        }
-    ]
-});
+// The full <head> (title, description, canonical, OG, …) is provided once by
+// Vue2App.getHead() via buildSeoHead; here we only need the localized heading.
+const title = t(router, 'fwVue2Title');
 
 onMounted(() => layout.mount());
 
-onBeforeUnmount(() => {
-    headEntry.dispose();
-    layout.unmount();
-});
+onBeforeUnmount(() => layout.unmount());
 </script>

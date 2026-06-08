@@ -3,9 +3,10 @@
 
     interface Props {
         layout: Layout;
+        title: string;
     }
 
-    let { layout }: Props = $props();
+    let { layout, title }: Props = $props();
 
     let count = $state(0);
 </script>
@@ -39,7 +40,7 @@
                 <h1
                     style="font-size: 2rem; font-weight: 800; color: var(--esmx-text-primary); margin-bottom: 12px;"
                 >
-                    Svelte 5 Micro-App
+                    {title}
                 </h1>
                 <div style="margin:16px 0;">
                     <div style="font-size:3rem;font-weight:800;color:var(--esmx-text-primary);margin-bottom:12px;">{count}</div>

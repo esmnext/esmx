@@ -5,7 +5,8 @@ import {
     buildSeoHead,
     getAppState,
     setAppState,
-    setSsrStyles
+    setSsrStyles,
+    t
 } from 'ssr-micro-shared/src/index';
 import Vue from 'vue';
 import AppComponent from './app.vue';
@@ -28,8 +29,8 @@ class Vue2App extends BaseApp {
     protected getHead() {
         return buildSeoHead(this.router, {
             path: '/vue2/',
-            title: 'Vue 2 Micro-App',
-            description: 'This page is rendered by a Vue 2.7 micro-app.'
+            title: t(this.router, 'fwVue2Title'),
+            description: t(this.router, 'fwVue2Desc')
         });
     }
 

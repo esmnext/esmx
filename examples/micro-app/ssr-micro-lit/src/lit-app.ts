@@ -11,14 +11,15 @@ import {
     getAppState,
     Layout,
     SIDEBAR_WIDTH,
-    setAppState
+    setAppState,
+    t
 } from 'ssr-micro-shared/src/index';
 
 /**
  * Hydratable content template — regular `lit` html with markers.
  * Must not contain unsafeHTML or raw HTML injection.
  */
-function createContentTemplate(): TemplateResult {
+function createContentTemplate(title: string): TemplateResult {
     return html`
         <div
             style="margin-left: var(--esmx-sidebar-width, ${SIDEBAR_WIDTH}); min-height: 100vh; padding: 32px; padding-top: calc(32px + var(--esmx-mobile-header-height, 0px));"
@@ -67,7 +68,7 @@ function createContentTemplate(): TemplateResult {
                             margin-bottom: 12px;
                         "
                     >
-                        Lit Micro-App
+                        ${title}
                     </h1>
                     <div style="margin:16px 0;">
                         <div id="lit-count" style="font-size:3rem;font-weight:800;color:var(--esmx-text-primary);margin-bottom:12px;">0</div>
@@ -110,9 +111,8 @@ export class LitApp extends BaseApp {
     protected getHead() {
         return buildSeoHead(this.router, {
             path: '/lit/',
-            title: 'Lit Micro-App',
-            description:
-                'This page is rendered by a Lit micro-app using Web Components.'
+            title: t(this.router, 'fwLitTitle'),
+            description: t(this.router, 'fwLitDesc')
         });
     }
 
@@ -130,7 +130,10 @@ export class LitApp extends BaseApp {
             '[data-lit-content]'
         ) as HTMLElement | null;
         if (contentEl) {
-            litRender(createContentTemplate(), contentEl);
+            litRender(
+                createContentTemplate(t(this.router, 'fwLitTitle')),
+                contentEl
+            );
         }
         this.layout.mount();
         this.initDemo(container);
@@ -149,7 +152,10 @@ export class LitApp extends BaseApp {
             '[data-lit-content]'
         ) as HTMLElement | null;
         if (contentEl) {
-            hydrate(createContentTemplate(), contentEl);
+            hydrate(
+                createContentTemplate(t(this.router, 'fwLitTitle')),
+                contentEl
+            );
         }
         this.layout.mount();
         this.initDemo(container);
@@ -174,7 +180,7 @@ export class LitApp extends BaseApp {
     }
 
     async renderToString(): Promise<string> {
-        const content = createContentTemplate();
+        const content = createContentTemplate(t(this.router, 'fwLitTitle'));
         // Wrap hydratable content with a data attribute so onHydration can find it
         const wrappedContent = html`<div data-lit-content>${content}</div>`;
         const full = createSsrTemplate(this.layout, wrappedContent);

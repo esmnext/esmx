@@ -81,7 +81,31 @@ const messages = {
         liveDesc:
             'Switch frameworks with one click and no page reload — feel native ESM at its best',
         liveBtn: 'Try It Now',
-        footerDocs: 'Docs'
+        footerDocs: 'Docs',
+
+        // Framework demo pages
+        fwReactTitle: 'React 19 Micro-App',
+        fwReactDesc: 'This page is rendered by a React 19 micro-app.',
+        fwVue3Title: 'Vue 3 Micro-App',
+        fwVue3Desc:
+            'This page is rendered by a Vue 3.5 micro-app with full SSR support.',
+        fwVue2Title: 'Vue 2 Micro-App',
+        fwVue2Desc: 'This page is rendered by a Vue 2.7 micro-app.',
+        fwSolidTitle: 'SolidJS Micro-App',
+        fwSolidDesc: 'This page is rendered by a SolidJS micro-app.',
+        fwPreactTitle: 'Preact Micro-App',
+        fwPreactDesc: 'This page is rendered by a Preact 10 micro-app.',
+        fwPreactHtmTitle: 'Preact + HTM Micro-App',
+        fwPreactHtmDesc:
+            'This page is rendered by a Preact 10 micro-app using HTM.',
+        fwSvelteTitle: 'Svelte 5 Micro-App',
+        fwSvelteDesc:
+            'This page is rendered by a Svelte 5 micro-app using runes.',
+        fwLitTitle: 'Lit Micro-App',
+        fwLitDesc:
+            'This page is rendered by a Lit micro-app using Web Components.',
+        fwHtmlTitle: 'HTML Micro-App',
+        fwHtmlDesc: 'Pure HTML + TypeScript micro-app.'
     },
     zh: {
         // Sidebar (Layout)
@@ -151,7 +175,27 @@ const messages = {
         liveTitle: '9 种框架，一个应用',
         liveDesc: '无需刷新页面，一键切换前端框架，感受原生 ESM 的极致体验',
         liveBtn: '立即体验',
-        footerDocs: '文档'
+        footerDocs: '文档',
+
+        // Framework demo pages
+        fwReactTitle: 'React 19 微应用',
+        fwReactDesc: '本页由 React 19 微应用渲染。',
+        fwVue3Title: 'Vue 3 微应用',
+        fwVue3Desc: '本页由支持完整 SSR 的 Vue 3.5 微应用渲染。',
+        fwVue2Title: 'Vue 2 微应用',
+        fwVue2Desc: '本页由 Vue 2.7 微应用渲染。',
+        fwSolidTitle: 'SolidJS 微应用',
+        fwSolidDesc: '本页由 SolidJS 微应用渲染。',
+        fwPreactTitle: 'Preact 微应用',
+        fwPreactDesc: '本页由 Preact 10 微应用渲染。',
+        fwPreactHtmTitle: 'Preact + HTM 微应用',
+        fwPreactHtmDesc: '本页由使用 HTM 的 Preact 10 微应用渲染。',
+        fwSvelteTitle: 'Svelte 5 微应用',
+        fwSvelteDesc: '本页由使用 runes 的 Svelte 5 微应用渲染。',
+        fwLitTitle: 'Lit 微应用',
+        fwLitDesc: '本页由使用 Web Components 的 Lit 微应用渲染。',
+        fwHtmlTitle: 'HTML 微应用',
+        fwHtmlDesc: '纯 HTML + TypeScript 微应用。'
     }
 } as const;
 type MessageKey = keyof (typeof messages)['en'];

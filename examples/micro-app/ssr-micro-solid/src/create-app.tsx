@@ -10,7 +10,8 @@ import {
     BaseApp,
     buildSeoHead,
     getAppState,
-    setAppState
+    setAppState,
+    t
 } from 'ssr-micro-shared/src/index';
 import { AppContent } from './app';
 
@@ -20,8 +21,8 @@ class SolidApp extends BaseApp {
     protected getHead() {
         return buildSeoHead(this.router, {
             path: '/solid/',
-            title: 'SolidJS Micro-App',
-            description: 'This page is rendered by a SolidJS micro-app.'
+            title: t(this.router, 'fwSolidTitle'),
+            description: t(this.router, 'fwSolidDesc')
         });
     }
 

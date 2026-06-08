@@ -6,7 +6,8 @@ import {
     BaseApp,
     buildSeoHead,
     getAppState,
-    setAppState
+    setAppState,
+    t
 } from 'ssr-micro-shared/src/index';
 import { AppContent } from './app';
 
@@ -14,9 +15,8 @@ class PreactHtmApp extends BaseApp {
     protected getHead() {
         return buildSeoHead(this.router, {
             path: '/preact-htm/',
-            title: 'Preact + HTM Micro-App',
-            description:
-                'This page is rendered by a Preact 10 micro-app using HTM.'
+            title: t(this.router, 'fwPreactHtmTitle'),
+            description: t(this.router, 'fwPreactHtmDesc')
         });
     }
 

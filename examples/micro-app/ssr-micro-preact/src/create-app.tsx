@@ -6,7 +6,8 @@ import {
     BaseApp,
     buildSeoHead,
     getAppState,
-    setAppState
+    setAppState,
+    t
 } from 'ssr-micro-shared/src/index';
 import { AppContent } from './app';
 
@@ -14,8 +15,8 @@ class PreactApp extends BaseApp {
     protected getHead() {
         return buildSeoHead(this.router, {
             path: '/preact/',
-            title: 'Preact Micro-App',
-            description: 'This page is rendered by a Preact 10 micro-app.'
+            title: t(this.router, 'fwPreactTitle'),
+            description: t(this.router, 'fwPreactDesc')
         });
     }
 

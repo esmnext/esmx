@@ -3,7 +3,12 @@ import { useHead } from '@unhead/react';
 import { useEffect, useMemo, useState } from 'react';
 import React from 'react';
 
-import { buildSeoHead, Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
+import {
+    buildSeoHead,
+    Layout,
+    SIDEBAR_WIDTH,
+    t
+} from 'ssr-micro-shared/src/index';
 
 function Counter() {
     const [count, setCount] = useState(0);
@@ -27,8 +32,8 @@ export function AppContent() {
     useHead(
         buildSeoHead(router, {
             path: '/react/',
-            title: 'React 19 Micro-App',
-            description: 'This page is rendered by a React 19 micro-app.'
+            title: t(router, 'fwReactTitle'),
+            description: t(router, 'fwReactDesc')
         })
     );
 
@@ -91,7 +96,7 @@ export function AppContent() {
                                 marginBottom: '12px'
                             }}
                         >
-                            React 19 Micro-App
+                            {t(router, 'fwReactTitle')}
                         </h1>
                         <Counter />
                     </div>
