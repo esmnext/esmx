@@ -20,4 +20,6 @@ export {
     t
 } from './i18n';
 export { installNavDelegate, Layout, SIDEBAR_WIDTH } from './layout';
+export type { SeoOptions } from './seo';
+export { buildSeoHead, landingLd, organizationLd } from './seo';
 export { getSsrStyles, setSsrStyles } from './ssr-styles';

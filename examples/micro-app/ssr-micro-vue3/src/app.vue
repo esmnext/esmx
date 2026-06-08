@@ -28,7 +28,11 @@
 <script setup lang="ts">
 import { useRouter } from '@esmx/router-vue';
 import { useHead } from '@unhead/vue';
-import { Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
+import {
+    buildSeoHead,
+    Layout,
+    SIDEBAR_WIDTH
+} from 'ssr-micro-shared/src/index';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 const router = useRouter();
@@ -39,16 +43,14 @@ const cardStyle =
 const count = ref(0);
 
 // Idiomatic Vue head: writes into the shared head provided by create-app.
-useHead({
-    title: 'Vue 3 Micro-App',
-    meta: [
-        {
-            name: 'description',
-            content:
-                'This page is rendered by a Vue 3.5 micro-app with full SSR support.'
-        }
-    ]
-});
+useHead(
+    buildSeoHead(router, {
+        path: '/vue3/',
+        title: 'Vue 3 Micro-App',
+        description:
+            'This page is rendered by a Vue 3.5 micro-app with full SSR support.'
+    })
+);
 
 onMounted(() => layout.mount());
 onBeforeUnmount(() => layout.unmount());

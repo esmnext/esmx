@@ -28,6 +28,7 @@ export default defineConfig({
     icon: '/favicon.ico',
     base: '/',
     logo: '/logo.svg',
+    globalUIComponents: [path.join(__dirname, 'src/components/SeoHead')],
     builderConfig: {
         performance: {
             buildCache: false

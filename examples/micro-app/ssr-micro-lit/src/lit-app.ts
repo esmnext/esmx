@@ -7,6 +7,7 @@ import { html, render as litRender } from 'lit';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import {
     BaseApp,
+    buildSeoHead,
     getAppState,
     Layout,
     SIDEBAR_WIDTH,
@@ -107,16 +108,12 @@ export class LitApp extends BaseApp {
     }
 
     protected getHead() {
-        return {
+        return buildSeoHead(this.router, {
+            path: '/lit/',
             title: 'Lit Micro-App',
-            meta: [
-                {
-                    name: 'description',
-                    content:
-                        'This page is rendered by a Lit micro-app using Web Components.'
-                }
-            ]
-        };
+            description:
+                'This page is rendered by a Lit micro-app using Web Components.'
+        });
     }
 
     protected onMount(container: HTMLElement): void {

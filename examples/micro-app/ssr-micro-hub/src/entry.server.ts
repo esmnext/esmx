@@ -49,9 +49,7 @@ export default async (rc: RenderContext) => {
     rc.html = `<!DOCTYPE html>
 <html lang="${locale}"${htmlAttrs}>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="https://esmx.dev/logo.svg" type="image/svg+xml">
+    <link rel="icon" href="/logo.svg" type="image/svg+xml">
     ${headTags}
     ${rc.preload()}
     ${renderStyles}

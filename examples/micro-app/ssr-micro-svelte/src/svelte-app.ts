@@ -1,5 +1,11 @@
 import type { Router } from '@esmx/router';
-import { BaseApp, getAppState, Layout, setAppState } from 'ssr-micro-shared/src/index';
+import {
+    BaseApp,
+    buildSeoHead,
+    getAppState,
+    Layout,
+    setAppState
+} from 'ssr-micro-shared/src/index';
 
 import App from './App.svelte';
 
@@ -13,16 +19,12 @@ export class SvelteApp extends BaseApp {
     }
 
     protected getHead() {
-        return {
+        return buildSeoHead(this.router, {
+            path: '/svelte/',
             title: 'Svelte 5 Micro-App',
-            meta: [
-                {
-                    name: 'description',
-                    content:
-                        'This page is rendered by a Svelte 5 micro-app using runes.'
-                }
-            ]
-        };
+            description:
+                'This page is rendered by a Svelte 5 micro-app using runes.'
+        });
     }
 
     protected onMount(container: HTMLElement): void {

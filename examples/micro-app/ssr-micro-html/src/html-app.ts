@@ -1,6 +1,7 @@
 import type { Router } from '@esmx/router';
 import {
     BaseApp,
+    buildSeoHead,
     getAppState,
     Layout,
     SIDEBAR_WIDTH,
@@ -16,12 +17,11 @@ export class HtmlApp extends BaseApp {
     }
 
     protected getHead() {
-        return {
+        return buildSeoHead(this.router, {
+            path: '/html/',
             title: 'HTML Micro-App',
-            meta: [
-                { name: 'description', content: 'Pure HTML + TypeScript micro-app.' }
-            ]
-        };
+            description: 'Pure HTML + TypeScript micro-app.'
+        });
     }
 
     render(): string {

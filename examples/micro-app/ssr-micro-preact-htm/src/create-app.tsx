@@ -2,21 +2,22 @@ import type { Router, RouterMicroAppOptions } from '@esmx/router';
 import { hydrate, render } from 'preact';
 import { renderToString } from 'preact-render-to-string';
 
-import { BaseApp, getAppState, setAppState } from 'ssr-micro-shared/src/index';
+import {
+    BaseApp,
+    buildSeoHead,
+    getAppState,
+    setAppState
+} from 'ssr-micro-shared/src/index';
 import { AppContent } from './app';
 
 class PreactHtmApp extends BaseApp {
     protected getHead() {
-        return {
+        return buildSeoHead(this.router, {
+            path: '/preact-htm/',
             title: 'Preact + HTM Micro-App',
-            meta: [
-                {
-                    name: 'description',
-                    content:
-                        'This page is rendered by a Preact 10 micro-app using HTM.'
-                }
-            ]
-        };
+            description:
+                'This page is rendered by a Preact 10 micro-app using HTM.'
+        });
     }
 
     protected onMount(container: HTMLElement): void {

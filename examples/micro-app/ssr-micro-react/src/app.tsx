@@ -3,7 +3,7 @@ import { useHead } from '@unhead/react';
 import { useEffect, useMemo, useState } from 'react';
 import React from 'react';
 
-import { Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
+import { buildSeoHead, Layout, SIDEBAR_WIDTH } from 'ssr-micro-shared/src/index';
 
 function Counter() {
     const [count, setCount] = useState(0);
@@ -24,15 +24,13 @@ export function AppContent() {
     );
 
     // Idiomatic React head: writes into the shared head provided via UnheadProvider.
-    useHead({
-        title: 'React 19 Micro-App',
-        meta: [
-            {
-                name: 'description',
-                content: 'This page is rendered by a React 19 micro-app.'
-            }
-        ]
-    });
+    useHead(
+        buildSeoHead(router, {
+            path: '/react/',
+            title: 'React 19 Micro-App',
+            description: 'This page is rendered by a React 19 micro-app.'
+        })
+    );
 
     useEffect(() => {
         layout.mount();

@@ -1,5 +1,7 @@
 import {
     BaseApp,
+    buildSeoHead,
+    landingLd,
     localeFromPath,
     localePath,
     subscribeLocale,
@@ -36,15 +38,13 @@ export class LandingApp extends BaseApp {
     private unsubLocale: (() => void) | null = null;
 
     protected getHead() {
-        return {
+        const description = t(this.router, 'landingMetaDesc');
+        return buildSeoHead(this.router, {
+            path: '/',
             title: t(this.router, 'landingMetaTitle'),
-            meta: [
-                {
-                    name: 'description',
-                    content: t(this.router, 'landingMetaDesc')
-                }
-            ]
-        };
+            description,
+            jsonLd: landingLd(description)
+        });
     }
 
     private getNavHtml(): string {

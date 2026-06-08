@@ -12,6 +12,9 @@ function findAllHtmlFiles(dir, baseDir = dir, files = []) {
         const fullPath = join(dir, entry.name);
 
         if (entry.isDirectory()) {
+            // Coverage reports are internal artifacts: excluded from the sitemap
+            // (and disallowed in robots.txt) so search engines never index them.
+            if (entry.name === 'coverage') continue;
             findAllHtmlFiles(fullPath, baseDir, files);
         } else if (entry.isFile() && extname(entry.name) === '.html') {
             if (entry.name === '404.html' || entry.name.startsWith('google')) {
@@ -28,6 +31,27 @@ function findAllHtmlFiles(dir, baseDir = dir, files = []) {
     }
 
     return files;
+}
+
+/**
+ * Build `<xhtml:link>` hreflang alternates for a URL path. English lives at the
+ * root and Chinese under `/zh`, the single scheme the whole site shares, so the
+ * en/zh pair is derived deterministically and each page advertises both plus
+ * `x-default` (→ English). Computed symmetrically so an en page and its zh
+ * counterpart reference the exact same alternate URLs.
+ */
+function hreflangLinks(urlPath, baseUrl) {
+    const isZh =
+        urlPath === '/zh' || urlPath === '/zh/' || urlPath.startsWith('/zh/');
+    const enPath = isZh ? urlPath.replace(/^\/zh/, '') || '/' : urlPath;
+    const zhPath = isZh ? urlPath : urlPath === '/' ? '/zh/' : `/zh${urlPath}`;
+    const enHref = `${baseUrl}${enPath}`;
+    const zhHref = `${baseUrl}${zhPath}`;
+    return (
+        `<xhtml:link rel="alternate" hreflang="en" href="${enHref}"/>` +
+        `<xhtml:link rel="alternate" hreflang="zh" href="${zhHref}"/>` +
+        `<xhtml:link rel="alternate" hreflang="x-default" href="${enHref}"/>`
+    );
 }
 
 function generateSitemapXml(htmlFiles, baseUrl) {
@@ -67,18 +91,19 @@ function generateSitemapXml(htmlFiles, baseUrl) {
             url,
             lastmod,
             priority,
-            changefreq
+            changefreq,
+            alternates: hreflangLinks(urlPath, baseUrl)
         });
     }
 
     const urlset = urls
         .map(
             (item) =>
-                `<url><loc>${item.url}</loc><lastmod>${item.lastmod}</lastmod><priority>${item.priority}</priority><changefreq>${item.changefreq}</changefreq></url>`
+                `<url><loc>${item.url}</loc><lastmod>${item.lastmod}</lastmod><priority>${item.priority}</priority><changefreq>${item.changefreq}</changefreq>${item.alternates}</url>`
         )
         .join('');
 
-    return `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urlset}</urlset>`;
+    return `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">${urlset}</urlset>`;
 }
 
 function processHtmlLinks(htmlFiles) {
