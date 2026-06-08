@@ -1,5 +1,10 @@
-import type { Router } from '@esmx/router';
-import { BaseApp } from 'ssr-micro-shared/src/index';
+import {
+    BaseApp,
+    localeFromPath,
+    localePath,
+    subscribeLocale,
+    t
+} from 'ssr-micro-shared/src/index';
 import './landing-page.css';
 
 const ESMX_LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" shape-rendering="geometricPrecision"><g transform="translate(20,20)"><circle r="12" fill="none" stroke="#12B2EF" stroke-width="2.8"/><circle r="6.2" fill="#FFA000"/></g></svg>`;
@@ -17,18 +22,15 @@ const CHECK_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="1
 const BOOK_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`;
 
 export class LandingApp extends BaseApp {
-    constructor(router: Router) {
-        super(router);
-    }
+    private unsubLocale: (() => void) | null = null;
 
     protected getHead() {
         return {
-            title: 'Esmx - 基于原生 ESM 的通用渲染框架',
+            title: t(this.router, 'landingMetaTitle'),
             meta: [
                 {
                     name: 'description',
-                    content:
-                        '基于原生 ESM + Import Maps 的通用渲染框架，支持 CSR/SSR 与模块链接，零额外运行时开销'
+                    content: t(this.router, 'landingMetaDesc')
                 }
             ]
         };
@@ -43,12 +45,13 @@ export class LandingApp extends BaseApp {
             `Esmx` +
             `</a>` +
             `<div class="nav-links">` +
-            `<a href="#features">特性</a>` +
-            `<a href="#quickstart">快速开始</a>` +
-            `<a href="#ecosystem">生态</a>` +
-            `<a href="https://esmx.dev" target="_blank">文档</a>` +
+            `<a href="#features">${t(this.router, 'navFeatures')}</a>` +
+            `<a href="#quickstart">${t(this.router, 'navQuickstart')}</a>` +
+            `<a href="#ecosystem">${t(this.router, 'navEcosystem')}</a>` +
+            `<a href="https://esmx.dev" target="_blank">${t(this.router, 'navDocs')}</a>` +
             `</div>` +
             `<div class="nav-cta">` +
+            `<button type="button" id="landingLangToggle" class="btn btn-outline btn-sm">${t(this.router, 'switchLang')}</button>` +
             `<a href="https://github.com/esmnext/esmx" target="_blank" class="btn btn-outline btn-sm">` +
             GITHUB_ICON +
             `GitHub` +
@@ -59,11 +62,12 @@ export class LandingApp extends BaseApp {
             `</button>` +
             `</div>` +
             `<div class="nav-mobile-menu" id="landingMobileMenu">` +
-            `<a href="#features">特性</a>` +
-            `<a href="#quickstart">快速开始</a>` +
-            `<a href="#ecosystem">生态</a>` +
-            `<a href="https://esmx.dev" target="_blank">文档</a>` +
+            `<a href="#features">${t(this.router, 'navFeatures')}</a>` +
+            `<a href="#quickstart">${t(this.router, 'navQuickstart')}</a>` +
+            `<a href="#ecosystem">${t(this.router, 'navEcosystem')}</a>` +
+            `<a href="https://esmx.dev" target="_blank">${t(this.router, 'navDocs')}</a>` +
             `<a href="https://github.com/esmnext/esmx" target="_blank">GitHub</a>` +
+            `<button type="button" id="landingLangToggleMobile" class="btn btn-outline btn-sm">${t(this.router, 'switchLang')}</button>` +
             `</div>` +
             `</nav>`
         );
@@ -79,13 +83,13 @@ export class LandingApp extends BaseApp {
             `<div class="hero-content">` +
             `<div class="hero-badge reveal">` +
             `<span class="hero-badge-dot"></span>` +
-            `v3.0.0-rc.117 预览版` +
+            t(this.router, 'heroBadge') +
             `</div>` +
-            `<h1 class="hero-title reveal reveal-delay-1">基于原生 ESM 的<span class="hero-title-gradient">通用渲染框架</span></h1>` +
-            `<p class="hero-subtitle reveal reveal-delay-2">基于原生 ESM + Import Maps，支持 CSR/SSR 与模块链接。用浏览器原生模块机制实现应用组合与代码共享，零额外运行时开销。</p>` +
+            `<h1 class="hero-title reveal reveal-delay-1">${t(this.router, 'heroTitleLead')}<span class="hero-title-gradient">${t(this.router, 'heroTitleGradient')}</span></h1>` +
+            `<p class="hero-subtitle reveal reveal-delay-2">${t(this.router, 'heroSubtitle')}</p>` +
             `<div class="hero-actions reveal reveal-delay-3">` +
-            `<a href="#quickstart" class="btn btn-primary">快速开始${ARROW_RIGHT_ICON}</a>` +
-            `<a href="#" class="btn btn-primary" data-to="/demo/">探索在线 Demo${ARROW_RIGHT_ICON}</a>` +
+            `<a href="#quickstart" class="btn btn-primary">${t(this.router, 'heroBtnQuickstart')}${ARROW_RIGHT_ICON}</a>` +
+            `<a href="#" class="btn btn-primary" data-to="${localePath(this.router, '/demo/')}">${t(this.router, 'heroBtnDemo')}${ARROW_RIGHT_ICON}</a>` +
             `<a href="https://github.com/esmnext/esmx" target="_blank" class="btn btn-outline">${GITHUB_ICON}GitHub</a>` +
             `</div>` +
             `<div class="hero-trust reveal reveal-delay-4">` +
@@ -122,12 +126,12 @@ export class LandingApp extends BaseApp {
             `<div class="painpoint-card reveal reveal-delay-${delay}">` +
             `<div class="painpoint-header">` +
             `<span class="painpoint-icon bad">${X_ICON}</span>` +
-            `<span class="painpoint-label-bad">传统方案</span>` +
+            `<span class="painpoint-label-bad">${t(this.router, 'painLabelBad')}</span>` +
             `</div>` +
             `<div class="painpoint-list">` +
-            `<div class="painpoint-item"><span class="mark bad">${X_ICON}</span><span>运行时沙箱模拟，性能损耗大</span></div>` +
-            `<div class="painpoint-item"><span class="mark bad">${X_ICON}</span><span>自定义模块加载器，与标准不兼容</span></div>` +
-            `<div class="painpoint-item"><span class="mark bad">${X_ICON}</span><span>Proxy 劫持全局对象，调试困难</span></div>` +
+            `<div class="painpoint-item"><span class="mark bad">${X_ICON}</span><span>${t(this.router, 'painBad1')}</span></div>` +
+            `<div class="painpoint-item"><span class="mark bad">${X_ICON}</span><span>${t(this.router, 'painBad2')}</span></div>` +
+            `<div class="painpoint-item"><span class="mark bad">${X_ICON}</span><span>${t(this.router, 'painBad3')}</span></div>` +
             `</div>` +
             `<div class="painpoint-divider"></div>` +
             `<div class="painpoint-header">` +
@@ -145,22 +149,13 @@ export class LandingApp extends BaseApp {
             `<div class="container">` +
             `<div class="section-header reveal">` +
             `<span class="section-label">WHY ESMX</span>` +
-            `<h2 class="section-title">为什么需要 Esmx？</h2>` +
-            `<p class="section-desc">传统方案依赖模拟和包装层带来运行时负担，Esmx 用原生机制从根本上解决问题</p>` +
+            `<h2 class="section-title">${t(this.router, 'whyTitle')}</h2>` +
+            `<p class="section-desc">${t(this.router, 'whyDesc')}</p>` +
             `</div>` +
             `<div class="painpoints-grid">` +
-            this.getPainPointCard(
-                '1',
-                '浏览器原生 ESM 加载，零额外运行时开销，基于模块作用域天然隔离'
-            ) +
-            this.getPainPointCard(
-                '2',
-                '标准 ESM import/export 语法，零学习成本，任意框架混用'
-            ) +
-            this.getPainPointCard(
-                '3',
-                '灵活的 SSR 策略，基于 Rspack 的高性能构建，Module Linking 跨应用共享'
-            ) +
+            this.getPainPointCard('1', t(this.router, 'painSolution1')) +
+            this.getPainPointCard('2', t(this.router, 'painSolution2')) +
+            this.getPainPointCard('3', t(this.router, 'painSolution3')) +
             `</div>` +
             `</div>` +
             `</section>`
@@ -197,45 +192,45 @@ export class LandingApp extends BaseApp {
             `<div class="container">` +
             `<div class="section-header reveal">` +
             `<span class="section-label">FEATURES</span>` +
-            `<h2 class="section-title">核心特性</h2>` +
-            `<p class="section-desc">六大核心能力，重新定义微前端开发体验</p>` +
+            `<h2 class="section-title">${t(this.router, 'featuresTitle')}</h2>` +
+            `<p class="section-desc">${t(this.router, 'featuresDesc')}</p>` +
             `</div>` +
             `<div class="features-grid">` +
             this.getFeatureCard(
                 '1',
                 icons.zero,
-                '零运行时开销',
-                '浏览器原生 ESM 加载，无需沙箱、代理或包装层。模块即加载，加载即执行，相比传统方案显著降低运行时开销。'
+                t(this.router, 'feat1Title'),
+                t(this.router, 'feat1Desc')
             ) +
             this.getFeatureCard(
                 '2',
                 icons.esm,
-                '标准 ESM 语法',
-                '使用熟悉的 import/export，零学习成本。不需要掌握任何专有 API，就像编写普通应用一样自然。'
+                t(this.router, 'feat2Title'),
+                t(this.router, 'feat2Desc')
             ) +
             this.getFeatureCard(
                 '3',
                 icons.ssr,
-                'SSR 支持',
-                '灵活的服务端渲染策略，SEO 友好，首屏极速。每个应用都可以独立进行服务端渲染。'
+                t(this.router, 'feat3Title'),
+                t(this.router, 'feat3Desc')
             ) +
             this.getFeatureCard(
                 '4',
                 icons.multi,
-                '多框架自由组合',
-                'Vue、React、Preact、原生 HTML 开箱即用，Solid、Svelte 等框架通过扩展配置即可支持。不再被单一框架束缚。'
+                t(this.router, 'feat4Title'),
+                t(this.router, 'feat4Desc')
             ) +
             this.getFeatureCard(
                 '5',
                 icons.link,
-                'Module Linking',
-                '基于 ESM Import Maps 的跨应用模块共享方案，编译时解析依赖关系，运行时直接加载。告别冗余打包，实现真正的模块复用。'
+                t(this.router, 'feat5Title'),
+                t(this.router, 'feat5Desc')
             ) +
             this.getFeatureCard(
                 '6',
                 icons.build,
-                '高性能构建',
-                '基于 Rspack（Rust 驱动），构建速度快，与 Webpack 生态兼容。支持 HMR、代码分割与内容哈希缓存。'
+                t(this.router, 'feat6Title'),
+                t(this.router, 'feat6Desc')
             ) +
             `</div>` +
             `</div>` +
@@ -249,8 +244,8 @@ export class LandingApp extends BaseApp {
             `<div class="container">` +
             `<div class="section-header reveal">` +
             `<span class="section-label">QUICK START</span>` +
-            `<h2 class="section-title">3 分钟开始</h2>` +
-            `<p class="section-desc">一条命令创建项目，即刻开始开发</p>` +
+            `<h2 class="section-title">${t(this.router, 'quickstartTitle')}</h2>` +
+            `<p class="section-desc">${t(this.router, 'quickstartDesc')}</p>` +
             `</div>` +
             `<div class="code-demo-grid">` +
             `<div class="terminal reveal reveal-delay-1">` +
@@ -313,26 +308,26 @@ export class LandingApp extends BaseApp {
             `<div class="container">` +
             `<div class="section-header reveal">` +
             `<span class="section-label">ECOSYSTEM</span>` +
-            `<h2 class="section-title">支持任意前端框架</h2>` +
-            `<p class="section-desc">不受框架限制，自由选择最适合业务场景的技术栈</p>` +
+            `<h2 class="section-title">${t(this.router, 'ecoTitle')}</h2>` +
+            `<p class="section-desc">${t(this.router, 'ecoDesc')}</p>` +
             `</div>` +
             '<div class="ecosystem-logos reveal reveal-delay-1">' +
-            '<a href="#" class="ecosystem-item" data-to="/vue3/">' +
+            `<a href="#" class="ecosystem-item" data-to="${localePath(this.router, '/vue3/')}">` +
             logos.vue +
             '<span>Vue</span></a>' +
-            '<a href="#" class="ecosystem-item" data-to="/react/">' +
+            `<a href="#" class="ecosystem-item" data-to="${localePath(this.router, '/react/')}">` +
             logos.react +
             '<span>React</span></a>' +
-            '<a href="#" class="ecosystem-item" data-to="/preact/">' +
+            `<a href="#" class="ecosystem-item" data-to="${localePath(this.router, '/preact/')}">` +
             logos.preact +
             '<span>Preact</span></a>' +
-            '<a href="#" class="ecosystem-item" data-to="/solid/">' +
+            `<a href="#" class="ecosystem-item" data-to="${localePath(this.router, '/solid/')}">` +
             logos.solid +
             '<span>Solid</span></a>' +
-            '<a href="#" class="ecosystem-item" data-to="/html/">' +
+            `<a href="#" class="ecosystem-item" data-to="${localePath(this.router, '/html/')}">` +
             logos.html5 +
             '<span>HTML5</span></a>' +
-            '<a href="#" class="ecosystem-item" data-to="/svelte/">' +
+            `<a href="#" class="ecosystem-item" data-to="${localePath(this.router, '/svelte/')}">` +
             logos.svelte +
             '<span>Svelte</span></a>' +
             '</div>' +
@@ -352,7 +347,7 @@ export class LandingApp extends BaseApp {
             `<p class="footer-copyright">MIT License &copy; 2025 Esmx Team</p>` +
             `<div class="footer-links">` +
             `<a href="https://github.com/esmnext/esmx" target="_blank">${GITHUB_ICON}GitHub</a>` +
-            `<a href="https://esmx.dev" target="_blank">${BOOK_ICON}文档</a>` +
+            `<a href="https://esmx.dev" target="_blank">${BOOK_ICON}${t(this.router, 'footerDocs')}</a>` +
             `</div>` +
             `</div>` +
             `</footer>`
@@ -372,11 +367,11 @@ export class LandingApp extends BaseApp {
                 <div class="container">
                     <div class="section-header reveal">
                         <span class="section-label">LIVE DEMO</span>
-                        <h2 class="section-title">9 种框架，一个应用</h2>
-                        <p class="section-desc">无需刷新页面，一键切换前端框架，感受原生 ESM 的极致体验</p>
+                        <h2 class="section-title">${t(this.router, 'liveTitle')}</h2>
+                        <p class="section-desc">${t(this.router, 'liveDesc')}</p>
                     </div>
-                    <a href="#" class="btn btn-primary" data-to="/demo/" style="font-size: 1.1rem; padding: 14px 32px;">
-                        立即体验 ${ARROW_RIGHT_ICON}
+                    <a href="#" class="btn btn-primary" data-to="${localePath(this.router, '/demo/')}" style="font-size: 1.1rem; padding: 14px 32px;">
+                        ${t(this.router, 'liveBtn')} ${ARROW_RIGHT_ICON}
                     </a>
                 </div>
             </section>` +
@@ -388,13 +383,31 @@ export class LandingApp extends BaseApp {
     protected onMount(container: HTMLElement): void {
         container.innerHTML = this.render();
         this.initScripts(container);
+        this.watchLocale(container);
     }
 
     protected onHydration(container: HTMLElement): void {
         this.initScripts(container);
+        this.watchLocale(container);
     }
 
-    protected onUnmount(): void {}
+    /**
+     * Re-render the whole landing page in place when the locale changes — the
+     * app instance is reused across `/` <-> `/zh/`, so a full content swap (then
+     * re-init of the scroll/nav scripts) is the simplest correct refresh. No
+     * page reload: the language toggle drives an SPA `router.push`.
+     */
+    private watchLocale(container: HTMLElement): void {
+        this.unsubLocale = subscribeLocale(this.router, () => {
+            container.innerHTML = this.render();
+            this.initScripts(container);
+        });
+    }
+
+    protected onUnmount(): void {
+        this.unsubLocale?.();
+        this.unsubLocale = null;
+    }
 
     renderToString(): Promise<string> {
         return Promise.resolve(this.render());
@@ -402,6 +415,24 @@ export class LandingApp extends BaseApp {
 
     private initScripts(container: HTMLElement): void {
         document.documentElement.classList.add('js-enabled');
+
+        // Language toggle (desktop + mobile): switch to the same page under the
+        // other locale via SPA navigation (`/` <-> `/zh/`). No full page reload;
+        // the locale-sync hook then re-renders this page in the new language.
+        const switchLocale = () => {
+            const path = this.router.route.path;
+            const target =
+                localeFromPath(path) === 'zh'
+                    ? path.replace(/^\/zh/, '') || '/'
+                    : `/zh${path}`;
+            this.router.push(target);
+        };
+        for (const id of ['#landingLangToggle', '#landingLangToggleMobile']) {
+            container
+                .querySelector(id)
+                ?.addEventListener('click', switchLocale);
+        }
+
         const mobileToggle = container.querySelector(
             '#landingMobileToggle'
         ) as HTMLElement | null;

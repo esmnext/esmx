@@ -8,11 +8,13 @@ export {
 } from './app-state';
 export { BaseApp } from './base-app';
 export { getRouterHead } from './head-manager';
-export type { Locale } from './i18n';
+export type { CardText, Locale } from './i18n';
 export {
+    getCardText,
     getLocale,
     installLocaleSync,
     localeFromPath,
+    localePath,
     setLocale,
     subscribeLocale,
     t
