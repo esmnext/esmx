@@ -3,5 +3,7 @@
     "rspack-vue",
     "rspack-react",
     "vite",
+    "vite-react",
+    "vite-vue",
     "rsbuild"
 ]

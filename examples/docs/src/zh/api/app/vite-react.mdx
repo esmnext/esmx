@@ -1,0 +1,59 @@
+---
+titleSuffix: "Esmx 框架 Vite React 预设"
+description: "Esmx 框架的 Vite React 预设，通过 @vitejs/plugin-react 在 @esmx/vite 之上增加 JSX 转换与 Fast Refresh。"
+head:
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, Vite, React, JSX, Fast Refresh, 预设, SSR, 模块链接"
+---
+
+import { PackageManagerTabs } from '@theme';
+
+# @esmx/vite-react
+
+`@esmx/vite` 的 React 预设。它在基础 Vite 集成之上加入 [`@vitejs/plugin-react`](https://github.com/vitejs/vite-plugin-react)（JSX 转换 + Fast Refresh），并重新导出 `@esmx/vite` 的全部内容。
+
+## 安装
+
+<PackageManagerTabs command="install @esmx/vite-react -D" />
+
+`react` 与 `react-dom` 为 peer 依赖，需在你的项目中安装。
+
+## 类型导出
+
+### ViteReactAppOptions
+
+```ts
+interface ViteReactAppOptions extends ViteAppOptions {}
+```
+
+配置选项，与 [`ViteAppOptions`](./vite#viteappoptions) 完全一致。React 插件通过配置钩子自动注入，作用于所有构建目标及开发服务器。
+
+## 函数导出
+
+### createViteReactApp
+
+```ts
+function createViteReactApp(esmx: Esmx, options?: ViteReactAppOptions): Promise<App>
+```
+
+创建一个 Vite + React 的 Esmx 应用实例。
+
+**参数：**
+- `esmx` — Esmx 框架实例
+- `options` — Vite React 应用配置选项
+
+**返回值：**
+- 返回一个 `Promise`，解析为创建的应用实例
+
+```ts title="src/entry.node.ts"
+export default {
+  async devApp(esmx) {
+    return import('@esmx/vite-react').then((m) => m.createViteReactApp(esmx));
+  }
+};
+```
+
+## 重新导出
+
+本包重新导出 [`@esmx/vite`](./vite) 的全部成员（如 `createViteApp`、`BuildTarget`、`vite`），因此可直接从 `@esmx/vite-react` 导入基础 API。
