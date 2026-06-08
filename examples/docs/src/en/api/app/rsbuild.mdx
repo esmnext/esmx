@@ -1,0 +1,117 @@
+---
+titleSuffix: "Esmx Framework Rsbuild Build Tool"
+description: "Esmx framework's Rsbuild build tool, built on the Rspack kernel, providing native ESM module-linking build capabilities for standard and HTML applications with real HMR in development."
+head:
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, Rsbuild, Rspack, build tool, application building, HTML application, TypeScript, CSS, HMR, SSR, Module Linking"
+---
+
+import { PackageManagerTabs } from '@theme';
+
+# @esmx/rsbuild
+
+The Rsbuild package provides a set of APIs for creating and configuring Rsbuild applications, supporting the building and development of standard applications and HTML applications. It is built on the Rspack kernel and emits native ESM module-federation artifacts consumed by `@esmx/core`, with real HMR in development.
+
+## Installation
+
+Use package manager to install `@esmx/rsbuild` as a development dependency:
+
+<PackageManagerTabs command="install @esmx/rsbuild -D" />
+
+## Type Exports
+
+### BuildTarget
+
+```ts
+type BuildTarget = 'node' | 'client' | 'server'
+```
+
+Build target environment type that defines the application's build target environment:
+- `node`: Build code to run in Node.js environment
+- `client`: Build code to run in browser environment
+- `server`: Build code to run in server environment
+
+### RsbuildAppConfigContext
+
+```ts
+interface RsbuildAppConfigContext {
+  esmx: Esmx
+  buildTarget: BuildTarget
+  config: RsbuildConfig
+  options: RsbuildAppOptions
+}
+```
+
+Rsbuild application configuration context interface, provides context information accessible in the configuration hook function:
+- `esmx`: Esmx framework instance
+- `buildTarget`: Current build target (`client`/`server`/`node`)
+- `config`: Rsbuild [`RsbuildConfig`](https://rsbuild.rs/config/) object — mutate it to customize the build (e.g. add an Rsbuild plugin)
+- `options`: Application configuration options
+
+### RsbuildAppOptions
+
+```ts
+interface RsbuildAppOptions {
+  minimize?: boolean
+  config?: (context: RsbuildAppConfigContext) => void
+}
+```
+
+Rsbuild application configuration options interface:
+- `minimize`: Whether to enable code minification; `true` to enable, `false` to disable, `undefined` to automatically decide based on environment (enabled in production, disabled in development)
+- `config`: Configuration hook function called for each build target before the build starts, used to mutate the resolved Rsbuild configuration. It also applies to the development server.
+
+### RsbuildHtmlAppOptions
+
+```ts
+interface RsbuildHtmlAppOptions extends RsbuildAppOptions {}
+```
+
+Options for a no-framework HTML application. Rsbuild handles TypeScript, CSS and assets out of the box, so no extra loader options are exposed.
+
+## Function Exports
+
+### createRsbuildApp
+
+```ts
+function createRsbuildApp(esmx: Esmx, options?: RsbuildAppOptions): Promise<App>
+```
+
+Create a standard Rsbuild application instance.
+
+**Parameters:**
+- `esmx` — Esmx framework instance
+- `options` — Rsbuild application configuration options
+
+**Returns:**
+- Returns a `Promise` that resolves to the created application instance
+
+### createRsbuildHtmlApp
+
+```ts
+function createRsbuildHtmlApp(esmx: Esmx, options?: RsbuildHtmlAppOptions): Promise<App>
+```
+
+Create an HTML-type Rsbuild application instance (no UI framework).
+
+**Parameters:**
+- `esmx` — Esmx framework instance
+- `options` — HTML application configuration options
+
+**Returns:**
+- Returns a `Promise` that resolves to the created HTML application instance
+
+```ts title="src/entry.node.ts"
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rsbuild').then((m) => m.createRsbuildHtmlApp(esmx));
+  }
+};
+```
+
+## Module Exports
+
+### rspack
+
+Re-exports `rspack` from `@rsbuild/core`, providing access to the underlying Rspack core functionality.

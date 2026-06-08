@@ -2,5 +2,6 @@
     "rspack",
     "rspack-vue",
     "rspack-react",
-    "vite"
+    "vite",
+    "rsbuild"
 ]
