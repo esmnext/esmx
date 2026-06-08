@@ -34,6 +34,64 @@ function localizedUrl(lang: string, path: string): string {
     return path === '/' ? `${SITE_ORIGIN}/` : `${SITE_ORIGIN}${path}`;
 }
 
+/** The page's primary structured-data entity, mirroring the docs' TechArticle. */
+function webPageLd(
+    canonical: string,
+    title: string,
+    description: string,
+    lang: string
+): Record<string, unknown> {
+    return {
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        name: title,
+        description,
+        url: canonical,
+        inLanguage: lang,
+        isPartOf: {
+            '@type': 'WebSite',
+            name: SITE_NAME,
+            url: `${SITE_ORIGIN}/`
+        },
+        primaryImageOfPage: { '@type': 'ImageObject', url: OG_IMAGE },
+        publisher: {
+            '@type': 'Organization',
+            name: SITE_NAME,
+            url: SITE_ORIGIN
+        }
+    };
+}
+
+/**
+ * BreadcrumbList from the locale-agnostic path segments (Home → Demo, …).
+ * Returns `[]` for the home page, where a single-item breadcrumb adds nothing.
+ */
+function breadcrumbLd(lang: string, path: string): Record<string, unknown>[] {
+    const segments = path.split('/').filter(Boolean);
+    if (segments.length === 0) return [];
+    const items = [{ name: 'Home', url: localizedUrl(lang, '/') }];
+    let acc = '';
+    for (const segment of segments) {
+        acc += `/${segment}`;
+        const name = segment
+            .replace(/-/g, ' ')
+            .replace(/\b\w/g, (c) => c.toUpperCase());
+        items.push({ name, url: localizedUrl(lang, `${acc}/`) });
+    }
+    return [
+        {
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: items.map((item, index) => ({
+                '@type': 'ListItem',
+                position: index + 1,
+                name: item.name,
+                item: item.url
+            }))
+        }
+    ];
+}
+
 export function buildSeoHead(
     router: Router,
     options: SeoOptions
@@ -45,6 +103,15 @@ export function buildSeoHead(
     const canonical = localizedUrl(lang, path);
     const enUrl = localizedUrl('en', path);
     const zhUrl = localizedUrl('zh', path);
+
+    // Every page carries a primary entity (WebPage) + breadcrumb, then any
+    // page-specific nodes the caller adds (e.g. the landing's Organization /
+    // WebSite / SoftwareApplication) — consistent with the docs' SeoHead.
+    const structuredData = [
+        webPageLd(canonical, title, description, lang),
+        ...breadcrumbLd(lang, path),
+        ...(jsonLd ?? [])
+    ];
 
     return {
         title,
@@ -69,7 +136,7 @@ export function buildSeoHead(
             { name: 'twitter:description', content: description },
             { name: 'twitter:image', content: OG_IMAGE }
         ],
-        script: (jsonLd ?? []).map((entry) => ({
+        script: structuredData.map((entry) => ({
             type: 'application/ld+json',
             innerHTML: JSON.stringify(entry)
         }))
