@@ -5,5 +5,7 @@
     "vite",
     "vite-react",
     "vite-vue",
-    "rsbuild"
+    "rsbuild",
+    "rsbuild-react",
+    "rsbuild-vue"
 ]

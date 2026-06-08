@@ -1,0 +1,59 @@
+---
+titleSuffix: "Esmx Framework Rsbuild Vue Preset"
+description: "Esmx framework's Rsbuild Vue 3 preset, adding Single-File Component support on top of @esmx/rsbuild via @rsbuild/plugin-vue."
+head:
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, Rsbuild, Vue, Vue 3, SFC, preset, SSR, Module Linking"
+---
+
+import { PackageManagerTabs } from '@theme';
+
+# @esmx/rsbuild-vue
+
+The Vue 3 preset for `@esmx/rsbuild`. It adds [`@rsbuild/plugin-vue`](https://rsbuild.rs/plugins/list/plugin-vue) (SFC compilation + HMR) on top of the base Rsbuild integration, and re-exports everything from `@esmx/rsbuild`.
+
+## Installation
+
+<PackageManagerTabs command="install @esmx/rsbuild-vue -D" />
+
+`vue` (>=3) is a peer dependency and must be installed in your project.
+
+## Type Exports
+
+### RsbuildVueAppOptions
+
+```ts
+interface RsbuildVueAppOptions extends RsbuildAppOptions {}
+```
+
+Configuration options, identical to [`RsbuildAppOptions`](./rsbuild#rsbuildappoptions). The Vue plugin is injected automatically through the config hook, applying to every build target.
+
+## Function Exports
+
+### createRsbuildVueApp
+
+```ts
+function createRsbuildVueApp(esmx: Esmx, options?: RsbuildVueAppOptions): Promise<App>
+```
+
+Create an Rsbuild + Vue 3 Esmx application instance.
+
+**Parameters:**
+- `esmx` — Esmx framework instance
+- `options` — Rsbuild Vue application configuration options
+
+**Returns:**
+- Returns a `Promise` that resolves to the created application instance
+
+```ts title="src/entry.node.ts"
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rsbuild-vue').then((m) => m.createRsbuildVueApp(esmx));
+  }
+};
+```
+
+## Re-exports
+
+This package re-exports all members of [`@esmx/rsbuild`](./rsbuild) (e.g. `createRsbuildApp`, `BuildTarget`, `rspack`), so you can import the base APIs directly from `@esmx/rsbuild-vue`.
