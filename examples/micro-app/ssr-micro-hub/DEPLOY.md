@@ -1,87 +1,49 @@
 # Single-domain deployment: landing + docs
 
-The Esmx landing page (this micro-app hub) and the documentation site
-(`examples/docs`, an Rspress build) are served from **one domain**. The hub owns
-the home page and the live demo; the docs own everything else. Neither build is
-modified to know about the other — a gateway splits traffic by path.
+The micro-app hub (this package) and the documentation site (`examples/docs`, an
+Rspress build) ship from **one domain** as a single static directory. The hub's
+landing page is the site home; the docs provide the content pages. There is no
+runtime gateway — the split is baked into the build output.
 
-## Who owns which path
+## How the merged output is assembled
 
-English is the default locale at the site root; Chinese lives under `/zh`. The
-same split applies in both locales.
+The root build (`build/tasks/artifacts.mjs`, run by `pnpm build`) produces
+`dist/` in this order:
 
-| Path | Served by |
-| --- | --- |
-| `/`, `/zh` | hub — landing page |
-| `/demo/`, `/zh/demo/` | hub — demo dashboard |
-| `/html/` `/lit/` `/vue2/` `/vue3/` `/react/` `/preact/` `/preact-htm/` `/solid/` `/svelte/` (and `/zh/...`) | hub — per-framework micro-app routes |
-| `/ssr-micro-*/...` | hub — all client assets (chunks, importmap, runtime) |
-| `/guide/...`, `/api/...`, `/blog/...` (and `/zh/...`) | docs |
-| `/static/...`, `/favicon.ico`, `/robots.txt`, `/llms.txt`, `/logo.svg`, `/404.html` | docs |
+1. Every example with a `dist/client` is copied to `dist/<package-name>/` — this
+   is how each module's client assets land under `/ssr-micro-<name>/`.
+2. The docs (`examples/docs/dist/client`) are copied to the `dist/` root,
+   providing `/guide`, `/api`, `/blog`, `/static`, and the root files
+   (`favicon.ico`, `robots.txt`, `llms.txt`, …). **The docs no longer emit a
+   home page** (`src/en/index.md` and `src/zh/index.md` were removed), so they
+   contribute no `/index.html`.
+3. The hub's `dist/client` is overlaid on the `dist/` root, adding the landing at
+   `/` and `/zh`, plus the demo and per-framework pages (`/demo/`, `/vue3/`, …).
 
-Key facts that make the split unambiguous:
+## Resulting URL map
 
-- The hub references **every** client asset under a `/ssr-micro-<name>/` prefix
-  (see the built `index.html`), so hub assets never collide with the docs'
-  `/static/` and root files.
-- The only page paths both builds emit are `/` and `/zh` (each has an
-  `index.html`). The hub wins both — that is the whole point of "replace the
-  home page with the micro-app". The docs' own home is shadowed, which is why
-  the landing's **Docs** link targets `/guide/start/introduction`, not `/`.
-
-## Reverse-proxy gateway (recommended)
-
-Run each build with its own server and let the gateway route between them. The
-hub server (`esmx start`) correctly serves the `/ssr-micro-*/` assets for all
-linked modules; the docs server (`rspress preview`) serves the static docs.
-
-```nginx
-upstream esmx_hub  { server 127.0.0.1:3000; }  # esmx start  (ssr-micro-hub)
-upstream esmx_docs { server 127.0.0.1:4173; }  # rspress preview (examples/docs)
-
-server {
-    listen 80;
-    server_name esmx.dev;
-
-    # Hub client assets — one prefix covers the hub and every linked module.
-    location ~ ^/ssr-micro-[a-z0-9-]+/ {
-        proxy_pass http://esmx_hub;
-    }
-
-    # Hub pages: landing + demo + per-framework routes, in both locales.
-    # Anchored so docs paths like /guide or /zh/guide fall through to the default.
-    location ~ ^/(zh/)?(demo|html|lit|vue2|vue3|react|preact|preact-htm|solid|svelte)(/|$) {
-        proxy_pass http://esmx_hub;
-    }
-    location = /    { proxy_pass http://esmx_hub; }
-    location = /zh  { proxy_pass http://esmx_hub; }
-    location = /zh/ { proxy_pass http://esmx_hub; }
-
-    # Everything else is documentation.
-    location / {
-        proxy_pass http://esmx_docs;
-    }
-}
+```
+/                          → hub landing (English)
+/zh                        → hub landing (Chinese)
+/demo/ /zh/demo/           → hub demo dashboard
+/html/ /lit/ /vue2/ /vue3/ /react/ /preact/ /preact-htm/ /solid/ /svelte/
+  (and /zh/...)            → hub per-framework pages
+/guide/... /api/... /blog/... (and /zh/...) → docs
+/static/... root files     → docs
+/ssr-micro-<name>/...      → all client assets (chunks, importmap, runtime)
 ```
 
-Build and run both sides:
+## Why it works without collisions
 
-```bash
-# Hub (this package)
-pnpm --filter ssr-micro-hub build
-pnpm --filter ssr-micro-hub start      # listens on :3000
-
-# Docs
-pnpm --filter docs build
-pnpm --filter docs preview             # listens on :4173 (adjust to match upstream)
-```
-
-## Static-hosting note
-
-A pure static merge (copy `examples/docs/dist/client`, then overlay the hub
-output so its `index.html` / `zh/index.html` win) is possible for the docs, but
-the hub's `/ssr-micro-*/` assets are **not** bundled into a single directory —
-they are served per linked module via Esmx module linking. Serving the hub
-statically therefore requires mapping each module's `dist` to its
-`/ssr-micro-<name>/` path. Unless you have that mapping in place, prefer the
-reverse-proxy setup above, where `esmx start` handles it for you.
+- The hub renders at the **root base** (`__ESMX_BASE__='/'`), set in
+  `entry.node.ts`'s `postBuild`, so the landing functions when served at `/` —
+  hydration and SPA navigation use the correct base.
+- Client assets are namespaced by **module name** (`/ssr-micro-<name>/`),
+  independent of the render base, so they never collide with the docs' `/static/`
+  or content trees.
+- The only paths both builds would emit are `/` and `/zh`. The docs no longer
+  emit a home, and the hub overlay is applied last, so the landing wins
+  unambiguously — this is the "replace the home page with the micro-app" intent.
+- The landing's cross-app links to the docs are plain `<a href>` (not the SPA
+  `data-to`), so clicking **Docs** is a full-page navigation the static host
+  serves from the docs tree, not an in-app router push.

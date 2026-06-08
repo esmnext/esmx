@@ -54,4 +54,19 @@ export async function copyArtifacts() {
             `Copied ${toDisplayPath(docsPath)} to ${toDisplayPath(config.outDir)}`
         );
     }
+
+    // The micro-app hub owns the site root: overlay its root-based pages
+    // (landing at `/` and `/zh`, plus the demo/per-framework routes) on top of
+    // the docs content. The docs no longer emit a home page, so the only files
+    // this adds at the root are the hub's HTML entry points; the docs' `/guide`,
+    // `/api`, and `/blog` trees are untouched. Hub client assets keep their
+    // `/ssr-micro-hub/` namespace (already copied above by package name), so the
+    // overlaid HTML resolves its scripts without duplicating assets at the root.
+    const hub = ssrDirs.find(({ name }) => name === 'ssr-micro-hub');
+    if (hub) {
+        cpSync(hub.path, config.outDir, { recursive: true });
+        log.info(
+            `Overlaid ${toDisplayPath(hub.path)} onto ${toDisplayPath(config.outDir)} (site root)`
+        );
+    }
 }
