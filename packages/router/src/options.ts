@@ -64,7 +64,7 @@ export function parsedOptions(
     const compiledRoutes = createRouteMatches(routes);
     return Object.freeze<RouterParsedOptions>({
         rootStyle: options.rootStyle || false,
-        root: options.root || '',
+        appId: options.appId || 'app',
         context: options.context || {},
         data: options.data || {},
         req: options.req || null,
@@ -86,7 +86,8 @@ export function parsedOptions(
         fallback: options.fallback ?? fallback,
         nextTick: options.nextTick ?? (() => {}),
         handleBackBoundary: options.handleBackBoundary ?? (() => {}),
-        handleLayerClose: options.handleLayerClose ?? (() => {})
+        handleLayerClose: options.handleLayerClose ?? (() => {}),
+        resolveLink: options.resolveLink ?? ((link) => link)
     });
 }
 

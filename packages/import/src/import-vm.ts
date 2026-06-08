@@ -9,6 +9,34 @@ import type { ImportMap } from './types';
 
 const requireSync = createRequire(import.meta.url);
 
+let lazyGlobalsMaterialized = false;
+
+/**
+ * Materializes Node's lazily-defined `DOMException` global in the main realm
+ * before a vm SSR context is created.
+ *
+ * Node installs `DOMException` as a lazy getter on the global object. When that
+ * getter is first invoked from inside a vm context — which happens when an SSR
+ * library copies/enumerates `globalThis` during rendering (e.g. `@lit-labs/ssr`
+ * runs `Object.assign(globalThis, window)`) — Node hits an `isolate_data`
+ * native assertion and aborts the entire process, because vm contexts do not
+ * carry Node's per-context data.
+ *
+ * This is a robustness property of esmx's own vm execution sandbox, not a shim
+ * for any specific framework: reading the global here, in the main realm,
+ * replaces the lazy getter with a plain data property on the shared global so
+ * code running inside the vm only ever observes a concrete value. It runs once
+ * and has no observable effect beyond eagerly instantiating a global that would
+ * otherwise be created on first access anyway.
+ */
+function materializeLazyGlobals(): void {
+    if (lazyGlobalsMaterialized) {
+        return;
+    }
+    lazyGlobalsMaterialized = true;
+    void globalThis.DOMException;
+}
+
 export interface VmImportOptions {
     readFileSync?: (path: string) => string;
 }
@@ -203,6 +231,7 @@ export function createVmImport(
         sandbox?: vm.Context,
         options?: vm.CreateContextOptions
     ) => {
+        materializeLazyGlobals();
         const context = vm.createContext(sandbox, options);
         const cache = new Map<string, vm.SourceTextModule>();
         const linkStatus = new Map<string, Promise<void>>();

@@ -2,6 +2,7 @@ import { assert, describe, test } from 'vitest';
 import type { GetImportMapOptions, ImportMapManifest } from './import-map';
 import {
     compressImportMap,
+    createClientImportMap,
     createImportMap,
     createImportsMap,
     createScopesMap,
@@ -1775,6 +1776,82 @@ describe('compressImportMap', () => {
         assert.deepEqual(result, {
             imports: { vue: '/x/vue.final.mjs' },
             scopes: { '/c/': { vue: '/y/vue2.final.mjs' } }
+        });
+    });
+});
+
+describe('createClientImportMap integrity', () => {
+    const getFile = (name: string, file: string) => `/${name}/${file}`;
+    const getScope = (name: string, scope: string) => scope;
+
+    test('omits integrity when no manifest provides it', () => {
+        const manifests: ImportMapManifest[] = [
+            {
+                name: 'module-a',
+                exports: {
+                    index: {
+                        name: 'index',
+                        pkg: false,
+                        file: 'src/index.mjs',
+                        identifier: 'module-a'
+                    }
+                },
+                scopes: {}
+            }
+        ];
+
+        const result = createClientImportMap({ manifests, getFile, getScope });
+
+        assert.isUndefined(result.integrity);
+    });
+
+    test('converts relative integrity paths to absolute URL paths', () => {
+        const manifests: ImportMapManifest[] = [
+            {
+                name: 'ssr-micro-vue2',
+                exports: {
+                    routes: {
+                        name: 'routes',
+                        pkg: false,
+                        file: 'src/routes.xxx.mjs',
+                        identifier: 'ssr-micro-vue2/routes'
+                    }
+                },
+                scopes: {},
+                integrity: {
+                    'src/routes.xxx.mjs': 'sha384-abc'
+                }
+            }
+        ];
+
+        const result = createClientImportMap({ manifests, getFile, getScope });
+
+        assert.deepEqual(result.integrity, {
+            '/ssr-micro-vue2/src/routes.xxx.mjs': 'sha384-abc'
+        });
+    });
+
+    test('merges integrity across multiple manifests', () => {
+        const manifests: ImportMapManifest[] = [
+            {
+                name: 'module-a',
+                exports: {},
+                scopes: {},
+                integrity: { 'src/a.mjs': 'sha384-a' }
+            },
+            {
+                name: 'module-b',
+                exports: {},
+                scopes: {},
+                integrity: { 'src/b.mjs': 'sha384-b' }
+            }
+        ];
+
+        const result = createClientImportMap({ manifests, getFile, getScope });
+
+        assert.deepEqual(result.integrity, {
+            '/module-a/src/a.mjs': 'sha384-a',
+            '/module-b/src/b.mjs': 'sha384-b'
         });
     });
 });

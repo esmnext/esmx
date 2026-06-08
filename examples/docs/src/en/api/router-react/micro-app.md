@@ -74,7 +74,7 @@ import App from './App';
 import { routes } from './routes';
 
 const router = new Router({
-    root: '#app',
+    appId: 'app',
     mode: RouterMode.history,
     routes,
     apps: (router) => ({

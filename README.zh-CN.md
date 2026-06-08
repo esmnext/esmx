@@ -63,10 +63,6 @@ npx create-esmx@latest my-app
 
 | 项目名称 | 技术栈 | 在线预览 |
 |----------|--------|----------|
-| [**ssr-html**](https://github.com/esmnext/esmx/tree/master/examples/ssr-html) | 原生 HTML + TypeScript | [预览](https://esmx.dev/ssr-html/) |
-| [**ssr-vue2-host**](https://github.com/esmnext/esmx/tree/master/examples/ssr-vue2-host) | Vue 2.7 + SSR | [预览](https://esmx.dev/ssr-vue2-host/) |
-| [**ssr-vue2-remote**](https://github.com/esmnext/esmx/tree/master/examples/ssr-vue2-remote) | Vue 2.7 | [预览](https://esmx.dev/ssr-vue2-remote/) |
-| [**ssr-preact-htm**](https://github.com/esmnext/esmx/tree/master/examples/ssr-preact-htm) | Preact + HTM | [预览](https://esmx.dev/ssr-preact-htm/) |
 
 ---
 

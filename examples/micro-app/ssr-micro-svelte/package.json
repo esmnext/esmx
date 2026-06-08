@@ -1,0 +1,26 @@
+{
+    "name": "ssr-micro-svelte",
+    "version": "1.0.0",
+    "description": "Svelte 5 micro-app for micro-frontend example",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "esmx dev",
+        "build": "esmx build",
+        "preview": "esmx preview",
+        "start": "esmx start",
+        "lint:type": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@esmx/core": "workspace:*"
+    },
+    "devDependencies": {
+        "@esmx/rspack": "workspace:*",
+        "@esmx/router": "workspace:*",
+        "@types/node": "^25.6.2",
+        "ssr-micro-shared": "workspace:*",
+        "svelte": "^5.0.0",
+        "svelte-loader": "^3.2.0",
+        "typescript": "6.0.3"
+    }
+}

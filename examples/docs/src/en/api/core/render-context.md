@@ -527,6 +527,8 @@ rc.html = `
 
 Generates module preload tags. Preloads collected ESM modules, optimizing first-screen loading performance.
 
+When the manifest carries [`integrity`](./manifest-json.md#integrity) hashes (production builds), an `integrity` attribute is added to each `<link rel="modulepreload">` tag for Subresource Integrity verification.
+
 ```ts
 rc.html = `
   <body>

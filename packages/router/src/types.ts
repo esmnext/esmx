@@ -280,6 +280,7 @@ export type RouterLayerOptions = Omit<
 // ============================================================================
 export interface RouterMicroAppOptions {
     mount: (el: HTMLElement) => void;
+    hydration?: (el: HTMLElement) => void;
     unmount: () => void;
     renderToString?: () => Awaitable<string>;
 }
@@ -295,28 +296,18 @@ export type RouterMicroApp =
 // ============================================================================
 export interface RouterOptions {
     /**
-     * Application mounting container
-     * - Can be a DOM selector string (e.g., '#app', '.container', '[data-mount]')
-     * - Can be an HTMLElement object
-     * - Defaults to '#root'
+     * Application mount container ID
+     * - Pure string ID, no '#' prefix needed
+     * - Client-side: uses document.getElementById(appId)
+     * - Server-side: generates <div id="${appId}"> wrapper
+     * - Defaults to 'app'
      *
      * @example
      * ```typescript
-     * // Using ID selector
-     * new Router({ root: '#my-app' })
-     *
-     * // Using class selector
-     * new Router({ root: '.app-container' })
-     *
-     * // Using attribute selector
-     * new Router({ root: '[data-router-mount]' })
-     *
-     * // Passing DOM element directly
-     * const element = document.getElementById('app');
-     * new Router({ root: element })
+     * new Router({ appId: 'app' })
      * ```
      */
-    root?: string | HTMLElement;
+    appId?: string;
     context?: Record<string | symbol, unknown>;
     data?: Record<string | symbol, unknown>;
     routes?: RouteConfig[];
@@ -335,6 +326,10 @@ export interface RouterOptions {
     zIndex?: number;
     handleBackBoundary?: (router: Router) => void;
     handleLayerClose?: (router: Router, data?: any) => void;
+    resolveLink?: (
+        link: RouterLinkResolved,
+        props: RouterLinkProps
+    ) => RouterLinkResolved;
 }
 
 export interface RouterParsedOptions extends Readonly<Required<RouterOptions>> {

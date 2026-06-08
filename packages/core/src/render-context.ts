@@ -676,9 +676,14 @@ export class RenderContext {
         modulepreload: [],
         resources: []
     };
-    private _importMap: { src: string | null; code: string } = {
+    private _importMap: {
+        src: string | null;
+        code: string;
+        integrity: Record<string, string> | null;
+    } = {
         src: '',
-        code: ''
+        code: '',
+        integrity: null
     };
     /**
      * Define the generation mode for importmap
@@ -1319,8 +1324,15 @@ export class RenderContext {
      * ```
      */
     public modulePreload() {
+        const { integrity } = this._importMap;
         return this.files.modulepreload
-            .map((url) => `<link rel="modulepreload" href="${url}">`)
+            .map((url) => {
+                const hash = integrity?.[url];
+                if (hash) {
+                    return `<link rel="modulepreload" href="${url}" integrity="${hash}">`;
+                }
+                return `<link rel="modulepreload" href="${url}">`;
+            })
             .join('');
     }
 }

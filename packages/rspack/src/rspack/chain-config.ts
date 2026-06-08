@@ -106,7 +106,11 @@ export function createChainConfig(
 
     chain.set('lazyCompilation', false);
 
-    initModuleLink(chain, createModuleLinkConfig(esmx, buildTarget));
+    initModuleLink(
+        chain,
+        createModuleLinkConfig(esmx, buildTarget),
+        esmx.isProd
+    );
 
     return chain;
 }

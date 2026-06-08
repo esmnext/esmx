@@ -34,7 +34,7 @@ enum RouterMode {
 - **类型定义**：
 ```ts
 interface RouterOptions {
-    root?: string | HTMLElement;
+    appId?: string;
     context?: Record<string | symbol, unknown>;
     data?: Record<string | symbol, unknown>;
     routes?: RouteConfig[];
@@ -55,7 +55,7 @@ interface RouterOptions {
 ```
 
 路由器配置选项：
-- `root`：应用挂载容器，可以是 CSS 选择器字符串或 HTMLElement，默认为 `'#root'`
+- `appId`：应用挂载容器 ID，纯字符串（不带 `#` 前缀），默认为 `'app'`
 - `context`：跨路由共享的上下文对象
 - `data`：跨路由共享的数据对象
 - `routes`：路由配置对象数组
@@ -89,12 +89,12 @@ console.log(currentRoute.path);    // '/user/123'
 console.log(currentRoute.params);  // { id: '123' }
 ```
 
-### root
+### appId
 
-- **类型**：`string | HTMLElement`
+- **类型**：`string`
 - **只读**：`true`
 
-获取配置的根元素或选择器。
+获取配置的应用挂载容器 ID。
 
 ### mode
 

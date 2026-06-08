@@ -1,0 +1,33 @@
+{
+    "name": "ssr-micro-hub",
+    "version": "1.0.0",
+    "description": "Hub for micro-frontend example",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "esmx dev",
+        "build": "esmx build",
+        "preview": "esmx preview",
+        "start": "esmx start",
+        "lint:type": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@esmx/core": "workspace:*"
+    },
+    "devDependencies": {
+        "@esmx/router": "workspace:*",
+        "@esmx/rspack": "workspace:*",
+        "@types/node": "^25.6.2",
+        "ssr-micro-html": "workspace:*",
+        "ssr-micro-lit": "workspace:*",
+        "ssr-micro-react": "workspace:*",
+        "ssr-micro-preact": "workspace:*",
+        "ssr-micro-preact-htm": "workspace:*",
+        "ssr-micro-shared": "workspace:*",
+        "ssr-micro-solid": "workspace:*",
+        "ssr-micro-svelte": "workspace:*",
+        "ssr-micro-vue2": "workspace:*",
+        "ssr-micro-vue3": "workspace:*",
+        "typescript": "6.0.3"
+    }
+}

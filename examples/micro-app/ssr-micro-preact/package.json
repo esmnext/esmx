@@ -1,0 +1,26 @@
+{
+    "name": "ssr-micro-preact",
+    "version": "1.0.0",
+    "description": "Preact micro-app for micro-frontend example",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "esmx dev",
+        "build": "esmx build",
+        "preview": "esmx preview",
+        "start": "esmx start",
+        "lint:type": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@esmx/core": "workspace:*"
+    },
+    "devDependencies": {
+        "@esmx/rspack-react": "workspace:*",
+        "@esmx/router": "workspace:*",
+        "@types/node": "^25.6.2",
+        "preact": "^10.29.1",
+        "preact-render-to-string": "^6.6.7",
+        "ssr-micro-shared": "workspace:*",
+        "typescript": "6.0.3"
+    }
+}

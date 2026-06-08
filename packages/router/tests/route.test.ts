@@ -35,7 +35,7 @@ describe('Route Class Complete Test Suite', () => {
         ];
 
         const routerOptions: RouterOptions = {
-            root: '#test',
+            appId: 'test',
             context: { version: '1.0.0' },
             routes: mockRoutes,
             mode: RouterMode.history,
@@ -1793,7 +1793,7 @@ describe('🔍 Route Class Depth Test - Missing Scenario Supplement', () => {
         ];
 
         const routerOptions: RouterOptions = {
-            root: '#test',
+            appId: 'test',
             context: { version: '1.0.0' },
             routes: mockRoutes,
             mode: RouterMode.history,
