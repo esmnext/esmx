@@ -265,6 +265,14 @@ const rc = await esmx.render({
 });
 ```
 
+### command
+
+- **类型**: `COMMAND`
+- **只读**: `true`
+- **抛出**: `NotReadyError` - 框架未初始化时
+
+获取当前正在执行的命令（`dev` / `build` / `preview` / `start`），在调用 `init()` 时设置。
+
 ### COMMAND
 
 - **类型**: `typeof COMMAND`
@@ -465,6 +473,23 @@ const htmlPath = esmx.resolvePath('dist/client', 'index.html');
 async postBuild(esmx) {
   const htmlPath = esmx.resolvePath('dist/client', 'index.html');
   const success = esmx.writeSync(htmlPath, '<html>...</html>');
+}
+```
+
+### write()
+
+异步写入文件内容。
+
+- **参数**:
+  - `filepath`: `string` - 文件的绝对路径
+  - `data`: `any` - 要写入的数据，可以是字符串、Buffer 或对象
+- **返回值**: `Promise<boolean>` - 写入是否成功
+
+- **示例**:
+```ts title="src/entry.node.ts"
+async postBuild(esmx) {
+  const htmlPath = esmx.resolvePath('dist/client', 'index.html');
+  const success = await esmx.write(htmlPath, '<html>...</html>');
 }
 ```
 

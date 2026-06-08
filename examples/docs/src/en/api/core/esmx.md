@@ -265,6 +265,14 @@ const rc = await esmx.render({
 });
 ```
 
+### command
+
+- **Type**: `COMMAND`
+- **Read-only**: `true`
+- **Throws**: `NotReadyError` - When framework is not initialized
+
+Gets the command currently being executed (`dev` / `build` / `preview` / `start`), set when `init()` is called.
+
 ### COMMAND
 
 - **Type**: `typeof COMMAND`
@@ -465,6 +473,23 @@ Synchronously writes file content.
 async postBuild(esmx) {
   const htmlPath = esmx.resolvePath('dist/client', 'index.html');
   const success = esmx.writeSync(htmlPath, '<html>...</html>');
+}
+```
+
+### write()
+
+Asynchronously writes file content.
+
+- **Parameters**:
+  - `filepath`: `string` - Absolute path of file
+  - `data`: `any` - Data to write, can be string, Buffer, or object
+- **Returns**: `Promise<boolean>` - Whether write was successful
+
+- **Example**:
+```ts title="src/entry.node.ts"
+async postBuild(esmx) {
+  const htmlPath = esmx.resolvePath('dist/client', 'index.html');
+  const success = await esmx.write(htmlPath, '<html>...</html>');
 }
 ```
 
