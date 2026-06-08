@@ -113,4 +113,19 @@ export default {
 
 Esmx implements the decoupling of build tools. Whether using Rspack, Webpack, Vite, or esbuild, as long as its build output contains a resource manifest that complies with the [ManifestJson specification](/api/core/manifest-json), Esmx can recognize and link these modules.
 
+Besides the default Rspack integration, Esmx ships two additional official build-tool integrations that expose the same builder API:
+
+- **Rsbuild** — [`@esmx/rsbuild`](/api/app/rsbuild) (built on the Rspack kernel), with framework presets [`@esmx/rsbuild-react`](/api/app/rsbuild-react) and [`@esmx/rsbuild-vue`](/api/app/rsbuild-vue).
+- **Vite** — [`@esmx/vite`](/api/app/vite) (Rollup-based, with real module-level HMR in development), with framework presets [`@esmx/vite-react`](/api/app/vite-react) and [`@esmx/vite-vue`](/api/app/vite-vue).
+
+For example, switching the HTML application above to Vite only requires changing the import:
+
+```ts title="src/entry.node.ts"
+export default {
+  async devApp(esmx) {
+    return import('@esmx/vite').then((m) => m.createViteHtmlApp(esmx));
+  }
+} satisfies EsmxOptions;
+```
+
 This design gives developers full freedom of technology selection, allowing them to choose the most suitable build solution for different scenarios without being locked into a specific toolchain.
