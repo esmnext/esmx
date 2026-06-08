@@ -114,6 +114,10 @@ export function buildSeoHead(
     ];
 
     return {
+        // Single source of truth for the document language; the server shell
+        // renders `<html${htmlAttrs}>` with no hardcoded lang, so this is the
+        // only `lang` attribute and it tracks the URL locale.
+        htmlAttrs: { lang },
         title,
         link: [
             { rel: 'canonical', href: canonical },
