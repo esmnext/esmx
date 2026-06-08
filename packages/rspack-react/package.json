@@ -46,7 +46,7 @@
     },
     "dependencies": {
         "@esmx/rspack": "workspace:*",
-        "@rspack/plugin-react-refresh": "^2.0.0"
+        "@rspack/plugin-react-refresh": "^2.0.2"
     },
     "devDependencies": {
         "@biomejs/biome": "2.3.7",
