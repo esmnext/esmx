@@ -47,7 +47,7 @@ export default async (rc: RenderContext) => {
     });
 
     rc.html = `<!DOCTYPE html>
-<html lang="${locale}"${htmlAttrs}>
+<html${htmlAttrs}>
 <head>
     <link rel="icon" href="/logo.svg" type="image/svg+xml">
     ${headTags}
