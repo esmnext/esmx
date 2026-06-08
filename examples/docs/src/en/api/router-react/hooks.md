@@ -116,6 +116,28 @@ function CurrentPath() {
 }
 ```
 
+## useLink()
+
+- **Parameters**: `props: RouterLinkProps`
+- **Returns**: `RouterLinkResolved`
+- **Throws**: `Error` — If called outside a `RouterProvider`
+
+Resolves navigation state for a target location, returning the resolved route, the computed `href`, active/exact-active state and a `navigate` handler. This is the headless primitive that powers [`RouterLink`](./components#routerlink); use it to build custom link components. Equivalent to `useLink()` in `@esmx/router-vue`.
+
+```tsx
+import { useLink } from '@esmx/router-react';
+
+function CustomLink({ to, children }) {
+    const link = useLink({ to, type: 'push', exact: 'include' });
+
+    return (
+        <a href={link.href} onClick={link.navigate}>
+            {children}
+        </a>
+    );
+}
+```
+
 ## Implementation Notes
 
 `@esmx/router-react` uses React Context to pass the router instance and current route state through the component tree:

@@ -116,6 +116,28 @@ function CurrentPath() {
 }
 ```
 
+## useLink()
+
+- **参数**：`props: RouterLinkProps`
+- **返回值**：`RouterLinkResolved`
+- **抛出**：`Error` — 在 `RouterProvider` 之外调用时
+
+为目标位置解析导航状态，返回解析后的路由、计算出的 `href`、激活/精确激活状态以及 `navigate` 处理函数。这是驱动 [`RouterLink`](./components#routerlink) 的无头原语，可用它来构建自定义链接组件。等价于 `@esmx/router-vue` 的 `useLink()`。
+
+```tsx
+import { useLink } from '@esmx/router-react';
+
+function CustomLink({ to, children }) {
+    const link = useLink({ to, type: 'push', exact: 'include' });
+
+    return (
+        <a href={link.href} onClick={link.navigate}>
+            {children}
+        </a>
+    );
+}
+```
+
 ## 实现说明
 
 `@esmx/router-react` 使用 React Context 在组件树中传递路由实例和当前路由状态：
