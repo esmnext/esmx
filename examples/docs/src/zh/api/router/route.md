@@ -260,6 +260,20 @@ route.state // { cartId: 'abc' }
 
 导航是否应保持当前滚动位置而不是滚动到顶部。
 
+### confirm
+
+- **类型**：`RouteConfirmHook | null`
+- **只读**：`true`
+
+自定义确认处理器，用于覆盖默认的路由切换确认逻辑。未提供时为 `null`。
+
+### layer
+
+- **类型**：`RouteLayerOptions | null`
+- **只读**：`true`
+
+弹层路由的弹层配置。非弹层路由时为 `null`。
+
 ### isPush
 
 - **类型**：`boolean`
