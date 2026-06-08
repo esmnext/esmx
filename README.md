@@ -22,7 +22,7 @@
 ## 🚀 Core Features
 
 - **Zero Runtime Overhead** - Based on native ESM + Import Map, no sandbox or proxy
-- **High-Performance Build** - Powered by Rspack, significantly faster builds
+- **High-Performance Build** - Powered by Rspack, Rsbuild or Vite, significantly faster builds
 - **Complete SSR Support** - High-performance SSR, SEO-friendly
 - **Standard ESM Syntax** - No framework-specific APIs, minimal learning curve
 - **Multi-Framework Support** - Vue, React, Preact, Solid, and more
@@ -56,6 +56,12 @@ npx create-esmx@latest my-app
 | [**@esmx/rspack**](https://github.com/esmnext/esmx/tree/master/packages/rspack) | <a href="https://www.npmjs.com/package/@esmx/rspack"><img src="https://img.shields.io/npm/v/@esmx/rspack.svg" alt="npm version" /></a> | 🔵 **Preview** | Framework-agnostic Rspack tool |
 | [**@esmx/rspack-vue**](https://github.com/esmnext/esmx/tree/master/packages/rspack-vue) | <a href="https://www.npmjs.com/package/@esmx/rspack-vue"><img src="https://img.shields.io/npm/v/@esmx/rspack-vue.svg" alt="npm version" /></a> | 🔵 **Preview** | Rspack tool for Vue |
 | [**@esmx/rspack-react**](https://github.com/esmnext/esmx/tree/master/packages/rspack-react) | <a href="https://www.npmjs.com/package/@esmx/rspack-react"><img src="https://img.shields.io/npm/v/@esmx/rspack-react.svg" alt="npm version" /></a> | 🔵 **Preview** | Rspack tool for React |
+| [**@esmx/rsbuild**](https://github.com/esmnext/esmx/tree/master/packages/rsbuild) | <a href="https://www.npmjs.com/package/@esmx/rsbuild"><img src="https://img.shields.io/npm/v/@esmx/rsbuild.svg" alt="npm version" /></a> | 🔵 **Preview** | Framework-agnostic Rsbuild tool |
+| [**@esmx/rsbuild-vue**](https://github.com/esmnext/esmx/tree/master/packages/rsbuild-vue) | <a href="https://www.npmjs.com/package/@esmx/rsbuild-vue"><img src="https://img.shields.io/npm/v/@esmx/rsbuild-vue.svg" alt="npm version" /></a> | 🔵 **Preview** | Rsbuild tool for Vue |
+| [**@esmx/rsbuild-react**](https://github.com/esmnext/esmx/tree/master/packages/rsbuild-react) | <a href="https://www.npmjs.com/package/@esmx/rsbuild-react"><img src="https://img.shields.io/npm/v/@esmx/rsbuild-react.svg" alt="npm version" /></a> | 🔵 **Preview** | Rsbuild tool for React |
+| [**@esmx/vite**](https://github.com/esmnext/esmx/tree/master/packages/vite) | <a href="https://www.npmjs.com/package/@esmx/vite"><img src="https://img.shields.io/npm/v/@esmx/vite.svg" alt="npm version" /></a> | 🔵 **Preview** | Framework-agnostic Vite tool |
+| [**@esmx/vite-vue**](https://github.com/esmnext/esmx/tree/master/packages/vite-vue) | <a href="https://www.npmjs.com/package/@esmx/vite-vue"><img src="https://img.shields.io/npm/v/@esmx/vite-vue.svg" alt="npm version" /></a> | 🔵 **Preview** | Vite tool for Vue |
+| [**@esmx/vite-react**](https://github.com/esmnext/esmx/tree/master/packages/vite-react) | <a href="https://www.npmjs.com/package/@esmx/vite-react"><img src="https://img.shields.io/npm/v/@esmx/vite-react.svg" alt="npm version" /></a> | 🔵 **Preview** | Vite tool for React |
 | [**@esmx/import**](https://github.com/esmnext/esmx/tree/master/packages/import) | <a href="https://www.npmjs.com/package/@esmx/import"><img src="https://img.shields.io/npm/v/@esmx/import.svg" alt="npm version" /></a> | 🔵 **Preview** | Import map utilities |
 | [**create-esmx**](https://github.com/esmnext/esmx/tree/master/packages/create-esmx) | <a href="https://www.npmjs.com/package/create-esmx"><img src="https://img.shields.io/npm/v/create-esmx.svg" alt="npm version" /></a> | 🔵 **Preview** | Project scaffolding tool |
 

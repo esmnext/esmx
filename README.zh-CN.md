@@ -22,7 +22,7 @@
 ## 🚀 核心特性
 
 - **零运行时开销** - 基于原生 ESM + Import Map，无沙箱代理
-- **高性能构建** - 基于 Rspack，构建速度显著提升
+- **高性能构建** - 基于 Rspack、Rsbuild 或 Vite，构建速度显著提升
 - **完整 SSR 支持** - 高性能 SSR，SEO 友好
 - **标准 ESM 语法** - 无框架特定 API，学习曲线平缓
 - **多框架支持** - 支持 Vue、React、Preact、Solid 等多种前端框架
@@ -56,6 +56,12 @@ npx create-esmx@latest my-app
 | [**@esmx/rspack**](https://github.com/esmnext/esmx/tree/master/packages/rspack) | <a href="https://www.npmjs.com/package/@esmx/rspack"><img src="https://img.shields.io/npm/v/@esmx/rspack.svg" alt="npm version" /></a> | 🔵 **预览** | 框架无关的 Rspack 工具 |
 | [**@esmx/rspack-vue**](https://github.com/esmnext/esmx/tree/master/packages/rspack-vue) | <a href="https://www.npmjs.com/package/@esmx/rspack-vue"><img src="https://img.shields.io/npm/v/@esmx/rspack-vue.svg" alt="npm version" /></a> | 🔵 **预览** | Vue 专用的 Rspack 工具 |
 | [**@esmx/rspack-react**](https://github.com/esmnext/esmx/tree/master/packages/rspack-react) | <a href="https://www.npmjs.com/package/@esmx/rspack-react"><img src="https://img.shields.io/npm/v/@esmx/rspack-react.svg" alt="npm version" /></a> | 🔵 **预览** | React 专用的 Rspack 工具 |
+| [**@esmx/rsbuild**](https://github.com/esmnext/esmx/tree/master/packages/rsbuild) | <a href="https://www.npmjs.com/package/@esmx/rsbuild"><img src="https://img.shields.io/npm/v/@esmx/rsbuild.svg" alt="npm version" /></a> | 🔵 **预览** | 框架无关的 Rsbuild 工具 |
+| [**@esmx/rsbuild-vue**](https://github.com/esmnext/esmx/tree/master/packages/rsbuild-vue) | <a href="https://www.npmjs.com/package/@esmx/rsbuild-vue"><img src="https://img.shields.io/npm/v/@esmx/rsbuild-vue.svg" alt="npm version" /></a> | 🔵 **预览** | Vue 专用的 Rsbuild 工具 |
+| [**@esmx/rsbuild-react**](https://github.com/esmnext/esmx/tree/master/packages/rsbuild-react) | <a href="https://www.npmjs.com/package/@esmx/rsbuild-react"><img src="https://img.shields.io/npm/v/@esmx/rsbuild-react.svg" alt="npm version" /></a> | 🔵 **预览** | React 专用的 Rsbuild 工具 |
+| [**@esmx/vite**](https://github.com/esmnext/esmx/tree/master/packages/vite) | <a href="https://www.npmjs.com/package/@esmx/vite"><img src="https://img.shields.io/npm/v/@esmx/vite.svg" alt="npm version" /></a> | 🔵 **预览** | 框架无关的 Vite 工具 |
+| [**@esmx/vite-vue**](https://github.com/esmnext/esmx/tree/master/packages/vite-vue) | <a href="https://www.npmjs.com/package/@esmx/vite-vue"><img src="https://img.shields.io/npm/v/@esmx/vite-vue.svg" alt="npm version" /></a> | 🔵 **预览** | Vue 专用的 Vite 工具 |
+| [**@esmx/vite-react**](https://github.com/esmnext/esmx/tree/master/packages/vite-react) | <a href="https://www.npmjs.com/package/@esmx/vite-react"><img src="https://img.shields.io/npm/v/@esmx/vite-react.svg" alt="npm version" /></a> | 🔵 **预览** | React 专用的 Vite 工具 |
 | [**@esmx/import**](https://github.com/esmnext/esmx/tree/master/packages/import) | <a href="https://www.npmjs.com/package/@esmx/import"><img src="https://img.shields.io/npm/v/@esmx/import.svg" alt="npm version" /></a> | 🔵 **预览** | Import Map 工具 |
 | [**create-esmx**](https://github.com/esmnext/esmx/tree/master/packages/create-esmx) | <a href="https://www.npmjs.com/package/create-esmx"><img src="https://img.shields.io/npm/v/create-esmx.svg" alt="npm version" /></a> | 🔵 **预览** | 项目脚手架工具 |
 
