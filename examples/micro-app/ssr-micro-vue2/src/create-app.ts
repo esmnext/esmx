@@ -2,9 +2,11 @@ import type { Router, RouterMicroAppOptions } from '@esmx/router';
 import { RouterPlugin, useProvideRouter } from '@esmx/router-vue';
 import {
     BaseApp,
+    buildSeoHead,
     getAppState,
     setAppState,
-    setSsrStyles
+    setSsrStyles,
+    t
 } from 'ssr-micro-shared/src/index';
 import Vue from 'vue';
 import AppComponent from './app.vue';
@@ -25,15 +27,11 @@ class Vue2App extends BaseApp {
     }
 
     protected getHead() {
-        return {
-            title: 'Vue 2 Micro-App',
-            meta: [
-                {
-                    name: 'description',
-                    content: 'This page is rendered by a Vue 2.7 micro-app.'
-                }
-            ]
-        };
+        return buildSeoHead(this.router, {
+            path: '/vue2/',
+            title: t(this.router, 'fwVue2Title'),
+            description: t(this.router, 'fwVue2Desc')
+        });
     }
 
     protected onMount(container: HTMLElement): void {

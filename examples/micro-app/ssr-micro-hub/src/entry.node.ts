@@ -44,12 +44,15 @@ export default {
     },
 
     async postBuild(esmx) {
-        // English is the default locale, served at the root; Chinese is rendered
-        // under a `/zh/` directory. The asset base stays `/ssr-micro-hub/` for
-        // both (assets are shared) — the locale lives in the route path, so the
-        // client can switch via SPA navigation (history pushState, no full page
-        // reload). Locale is derived from the URL in entry.server.
-        const base = 'http://localhost:3000/ssr-micro-hub/';
+        // The hub owns the deployed site root: its landing replaces the docs
+        // home at `/`, and the demo/per-framework pages sit at `/demo/`,
+        // `/vue3/`, etc. English is the default locale at the root; Chinese is
+        // rendered under a `/zh/` directory. The render base is therefore the
+        // root — client assets keep their per-module `/ssr-micro-<name>/`
+        // namespace regardless of this base, so they never collide with the
+        // docs. Locale is derived from the URL in entry.server, and the client
+        // can switch via SPA navigation (history pushState, no full reload).
+        const base = 'http://localhost:3000/';
         const routes = [
             '',
             'demo/',

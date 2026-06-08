@@ -6,22 +6,24 @@ import {
     renderToString
 } from 'solid-js/web';
 
-import { BaseApp, getAppState, setAppState } from 'ssr-micro-shared/src/index';
+import {
+    BaseApp,
+    buildSeoHead,
+    getAppState,
+    setAppState,
+    t
+} from 'ssr-micro-shared/src/index';
 import { AppContent } from './app';
 
 class SolidApp extends BaseApp {
     private dispose: (() => void) | null = null;
 
     protected getHead() {
-        return {
-            title: 'SolidJS Micro-App',
-            meta: [
-                {
-                    name: 'description',
-                    content: 'This page is rendered by a SolidJS micro-app.'
-                }
-            ]
-        };
+        return buildSeoHead(this.router, {
+            path: '/solid/',
+            title: t(this.router, 'fwSolidTitle'),
+            description: t(this.router, 'fwSolidDesc')
+        });
     }
 
     protected onMount(container: HTMLElement): void {

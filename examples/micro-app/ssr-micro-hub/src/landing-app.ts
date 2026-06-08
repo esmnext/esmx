@@ -1,5 +1,7 @@
 import {
     BaseApp,
+    buildSeoHead,
+    landingLd,
     localeFromPath,
     localePath,
     subscribeLocale,
@@ -21,19 +23,28 @@ const CHECK_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="1
 
 const BOOK_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`;
 
+/**
+ * The docs (a separate Rspress build) are served on the same single domain as
+ * this hub: English at the site root, Chinese under `/zh`. Since the landing
+ * page owns `/` and `/zh`, the docs home is shadowed — the entry link must
+ * point at a real content page, not `/`. `localePath` adds the `/zh` prefix in
+ * Chinese, matching Rspress's default-locale-at-root URL scheme. These stay
+ * plain `<a href>` (not `data-to`) so the click is a full-page navigation the
+ * gateway routes to Rspress, not an in-app SPA push.
+ */
+const DOCS_ENTRY_PATH = '/guide/start/introduction';
+
 export class LandingApp extends BaseApp {
     private unsubLocale: (() => void) | null = null;
 
     protected getHead() {
-        return {
+        const description = t(this.router, 'landingMetaDesc');
+        return buildSeoHead(this.router, {
+            path: '/',
             title: t(this.router, 'landingMetaTitle'),
-            meta: [
-                {
-                    name: 'description',
-                    content: t(this.router, 'landingMetaDesc')
-                }
-            ]
-        };
+            description,
+            jsonLd: landingLd(description)
+        });
     }
 
     private getNavHtml(): string {
@@ -48,7 +59,7 @@ export class LandingApp extends BaseApp {
             `<a href="#features">${t(this.router, 'navFeatures')}</a>` +
             `<a href="#quickstart">${t(this.router, 'navQuickstart')}</a>` +
             `<a href="#ecosystem">${t(this.router, 'navEcosystem')}</a>` +
-            `<a href="https://esmx.dev" target="_blank">${t(this.router, 'navDocs')}</a>` +
+            `<a href="${localePath(this.router, DOCS_ENTRY_PATH)}">${t(this.router, 'navDocs')}</a>` +
             `</div>` +
             `<div class="nav-cta">` +
             `<button type="button" id="landingLangToggle" class="btn btn-outline btn-sm">${t(this.router, 'switchLang')}</button>` +
@@ -65,7 +76,7 @@ export class LandingApp extends BaseApp {
             `<a href="#features">${t(this.router, 'navFeatures')}</a>` +
             `<a href="#quickstart">${t(this.router, 'navQuickstart')}</a>` +
             `<a href="#ecosystem">${t(this.router, 'navEcosystem')}</a>` +
-            `<a href="https://esmx.dev" target="_blank">${t(this.router, 'navDocs')}</a>` +
+            `<a href="${localePath(this.router, DOCS_ENTRY_PATH)}">${t(this.router, 'navDocs')}</a>` +
             `<a href="https://github.com/esmnext/esmx" target="_blank">GitHub</a>` +
             `<button type="button" id="landingLangToggleMobile" class="btn btn-outline btn-sm">${t(this.router, 'switchLang')}</button>` +
             `</div>` +
@@ -347,7 +358,7 @@ export class LandingApp extends BaseApp {
             `<p class="footer-copyright">MIT License &copy; 2025 Esmx Team</p>` +
             `<div class="footer-links">` +
             `<a href="https://github.com/esmnext/esmx" target="_blank">${GITHUB_ICON}GitHub</a>` +
-            `<a href="https://esmx.dev" target="_blank">${BOOK_ICON}${t(this.router, 'footerDocs')}</a>` +
+            `<a href="${localePath(this.router, DOCS_ENTRY_PATH)}">${BOOK_ICON}${t(this.router, 'footerDocs')}</a>` +
             `</div>` +
             `</div>` +
             `</footer>`

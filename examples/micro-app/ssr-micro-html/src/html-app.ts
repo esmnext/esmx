@@ -1,10 +1,12 @@
 import type { Router } from '@esmx/router';
 import {
     BaseApp,
+    buildSeoHead,
     getAppState,
     Layout,
     SIDEBAR_WIDTH,
-    setAppState
+    setAppState,
+    t
 } from 'ssr-micro-shared/src/index';
 
 export class HtmlApp extends BaseApp {
@@ -16,12 +18,11 @@ export class HtmlApp extends BaseApp {
     }
 
     protected getHead() {
-        return {
-            title: 'HTML Micro-App',
-            meta: [
-                { name: 'description', content: 'Pure HTML + TypeScript micro-app.' }
-            ]
-        };
+        return buildSeoHead(this.router, {
+            path: '/html/',
+            title: t(this.router, 'fwHtmlTitle'),
+            description: t(this.router, 'fwHtmlDesc')
+        });
     }
 
     render(): string {
@@ -56,7 +57,7 @@ export class HtmlApp extends BaseApp {
                 font-weight: 800;
                 color: var(--esmx-text-primary);
                 margin-bottom: 12px;
-            ">HTML Micro-App</h1>` +
+            ">${t(this.router, 'fwHtmlTitle')}</h1>` +
             `<div style="margin:16px 0;">
     <div id="html-count" style="font-size:3rem;font-weight:800;color:var(--esmx-text-primary);margin-bottom:12px;">0</div>
     <div style="display:flex;gap:12px;justify-content:center;">

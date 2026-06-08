@@ -1,6 +1,7 @@
 import type { Router } from '@esmx/router';
 import {
     BaseApp,
+    buildSeoHead,
     getCardText,
     Layout,
     localePath,
@@ -103,15 +104,11 @@ export class HomeApp extends BaseApp {
     }
 
     protected getHead() {
-        return {
+        return buildSeoHead(this.router, {
+            path: '/demo/',
             title: t(this.router, 'homeMetaTitle'),
-            meta: [
-                {
-                    name: 'description',
-                    content: t(this.router, 'homeMetaDesc')
-                }
-            ]
-        };
+            description: t(this.router, 'homeMetaDesc')
+        });
     }
 
     private getContentHtml(): string {

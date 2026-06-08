@@ -12,6 +12,9 @@ function findAllHtmlFiles(dir, baseDir = dir, files = []) {
         const fullPath = join(dir, entry.name);
 
         if (entry.isDirectory()) {
+            // Coverage reports are internal artifacts: excluded from the sitemap
+            // (and disallowed in robots.txt) so search engines never index them.
+            if (entry.name === 'coverage') continue;
             findAllHtmlFiles(fullPath, baseDir, files);
         } else if (entry.isFile() && extname(entry.name) === '.html') {
             if (entry.name === '404.html' || entry.name.startsWith('google')) {
@@ -30,55 +33,68 @@ function findAllHtmlFiles(dir, baseDir = dir, files = []) {
     return files;
 }
 
-function generateSitemapXml(htmlFiles, baseUrl) {
-    const urls = [];
-
-    for (const file of htmlFiles) {
-        let urlPath;
-
-        if (file.isIndex) {
-            urlPath = dirname(file.path);
-
-            if (urlPath === '.') {
-                urlPath = '/';
-            } else {
-                if (!urlPath.startsWith('/')) {
-                    urlPath = '/' + urlPath;
-                }
-                if (!urlPath.endsWith('/')) {
-                    urlPath += '/';
-                }
-            }
-        } else {
-            const parsedPath = parse(file.path);
-            urlPath = join(parsedPath.dir, parsedPath.name);
-
-            if (!urlPath.startsWith('/')) {
-                urlPath = '/' + urlPath;
-            }
-        }
-
-        const url = `${baseUrl}${urlPath}`;
-        const lastmod = new Date().toISOString();
-        const priority = urlPath === '/' ? '1.0' : '0.8';
-        const changefreq = urlPath === '/' ? 'weekly' : 'monthly';
-
-        urls.push({
-            url,
-            lastmod,
-            priority,
-            changefreq
-        });
+/** Derive the public URL path for a built HTML file (clean-url aware). */
+function computeUrlPath(file) {
+    if (file.isIndex) {
+        let urlPath = dirname(file.path);
+        if (urlPath === '.') return '/';
+        if (!urlPath.startsWith('/')) urlPath = '/' + urlPath;
+        if (!urlPath.endsWith('/')) urlPath += '/';
+        return urlPath;
     }
+    const parsedPath = parse(file.path);
+    const urlPath = join(parsedPath.dir, parsedPath.name);
+    return urlPath.startsWith('/') ? urlPath : '/' + urlPath;
+}
 
-    const urlset = urls
-        .map(
-            (item) =>
-                `<url><loc>${item.url}</loc><lastmod>${item.lastmod}</lastmod><priority>${item.priority}</priority><changefreq>${item.changefreq}</changefreq></url>`
-        )
+/**
+ * The en/zh counterparts of a URL path. English lives at the root and Chinese
+ * under `/zh` — the single scheme the whole site shares — so the pair is derived
+ * deterministically and symmetrically (an en page and its zh counterpart resolve
+ * to the same two paths).
+ */
+function localeVariants(urlPath) {
+    const isZh =
+        urlPath === '/zh' || urlPath === '/zh/' || urlPath.startsWith('/zh/');
+    const enPath = isZh ? urlPath.replace(/^\/zh/, '') || '/' : urlPath;
+    const zhPath = isZh ? urlPath : urlPath === '/' ? '/zh/' : `/zh${urlPath}`;
+    return { enPath, zhPath };
+}
+
+/**
+ * hreflang `<xhtml:link>` alternates for a URL — emitted only when both language
+ * versions actually exist (checked against `known`). Monolingual pages (e.g. the
+ * standalone framework demos that have no `/zh` variant) get no alternates, so
+ * the sitemap never advertises a fabricated URL that would 404.
+ */
+function hreflangLinks(urlPath, baseUrl, known) {
+    const { enPath, zhPath } = localeVariants(urlPath);
+    if (!known.has(enPath) || !known.has(zhPath)) return '';
+    return (
+        `<xhtml:link rel="alternate" hreflang="en" href="${baseUrl}${enPath}"/>` +
+        `<xhtml:link rel="alternate" hreflang="zh" href="${baseUrl}${zhPath}"/>` +
+        `<xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}${enPath}"/>`
+    );
+}
+
+function generateSitemapXml(htmlFiles, baseUrl) {
+    const entries = htmlFiles.map((file) => ({
+        urlPath: computeUrlPath(file)
+    }));
+    const known = new Set(entries.map((entry) => entry.urlPath));
+
+    const urlset = entries
+        .map(({ urlPath }) => {
+            const loc = `${baseUrl}${urlPath}`;
+            const lastmod = new Date().toISOString();
+            const priority = urlPath === '/' ? '1.0' : '0.8';
+            const changefreq = urlPath === '/' ? 'weekly' : 'monthly';
+            const alternates = hreflangLinks(urlPath, baseUrl, known);
+            return `<url><loc>${loc}</loc><lastmod>${lastmod}</lastmod><priority>${priority}</priority><changefreq>${changefreq}</changefreq>${alternates}</url>`;
+        })
         .join('');
 
-    return `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urlset}</urlset>`;
+    return `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">${urlset}</urlset>`;
 }
 
 function processHtmlLinks(htmlFiles) {
