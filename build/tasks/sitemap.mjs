@@ -33,74 +33,65 @@ function findAllHtmlFiles(dir, baseDir = dir, files = []) {
     return files;
 }
 
+/** Derive the public URL path for a built HTML file (clean-url aware). */
+function computeUrlPath(file) {
+    if (file.isIndex) {
+        let urlPath = dirname(file.path);
+        if (urlPath === '.') return '/';
+        if (!urlPath.startsWith('/')) urlPath = '/' + urlPath;
+        if (!urlPath.endsWith('/')) urlPath += '/';
+        return urlPath;
+    }
+    const parsedPath = parse(file.path);
+    const urlPath = join(parsedPath.dir, parsedPath.name);
+    return urlPath.startsWith('/') ? urlPath : '/' + urlPath;
+}
+
 /**
- * Build `<xhtml:link>` hreflang alternates for a URL path. English lives at the
- * root and Chinese under `/zh`, the single scheme the whole site shares, so the
- * en/zh pair is derived deterministically and each page advertises both plus
- * `x-default` (→ English). Computed symmetrically so an en page and its zh
- * counterpart reference the exact same alternate URLs.
+ * The en/zh counterparts of a URL path. English lives at the root and Chinese
+ * under `/zh` — the single scheme the whole site shares — so the pair is derived
+ * deterministically and symmetrically (an en page and its zh counterpart resolve
+ * to the same two paths).
  */
-function hreflangLinks(urlPath, baseUrl) {
+function localeVariants(urlPath) {
     const isZh =
         urlPath === '/zh' || urlPath === '/zh/' || urlPath.startsWith('/zh/');
     const enPath = isZh ? urlPath.replace(/^\/zh/, '') || '/' : urlPath;
     const zhPath = isZh ? urlPath : urlPath === '/' ? '/zh/' : `/zh${urlPath}`;
-    const enHref = `${baseUrl}${enPath}`;
-    const zhHref = `${baseUrl}${zhPath}`;
+    return { enPath, zhPath };
+}
+
+/**
+ * hreflang `<xhtml:link>` alternates for a URL — emitted only when both language
+ * versions actually exist (checked against `known`). Monolingual pages (e.g. the
+ * standalone framework demos that have no `/zh` variant) get no alternates, so
+ * the sitemap never advertises a fabricated URL that would 404.
+ */
+function hreflangLinks(urlPath, baseUrl, known) {
+    const { enPath, zhPath } = localeVariants(urlPath);
+    if (!known.has(enPath) || !known.has(zhPath)) return '';
     return (
-        `<xhtml:link rel="alternate" hreflang="en" href="${enHref}"/>` +
-        `<xhtml:link rel="alternate" hreflang="zh" href="${zhHref}"/>` +
-        `<xhtml:link rel="alternate" hreflang="x-default" href="${enHref}"/>`
+        `<xhtml:link rel="alternate" hreflang="en" href="${baseUrl}${enPath}"/>` +
+        `<xhtml:link rel="alternate" hreflang="zh" href="${baseUrl}${zhPath}"/>` +
+        `<xhtml:link rel="alternate" hreflang="x-default" href="${baseUrl}${enPath}"/>`
     );
 }
 
 function generateSitemapXml(htmlFiles, baseUrl) {
-    const urls = [];
+    const entries = htmlFiles.map((file) => ({
+        urlPath: computeUrlPath(file)
+    }));
+    const known = new Set(entries.map((entry) => entry.urlPath));
 
-    for (const file of htmlFiles) {
-        let urlPath;
-
-        if (file.isIndex) {
-            urlPath = dirname(file.path);
-
-            if (urlPath === '.') {
-                urlPath = '/';
-            } else {
-                if (!urlPath.startsWith('/')) {
-                    urlPath = '/' + urlPath;
-                }
-                if (!urlPath.endsWith('/')) {
-                    urlPath += '/';
-                }
-            }
-        } else {
-            const parsedPath = parse(file.path);
-            urlPath = join(parsedPath.dir, parsedPath.name);
-
-            if (!urlPath.startsWith('/')) {
-                urlPath = '/' + urlPath;
-            }
-        }
-
-        const url = `${baseUrl}${urlPath}`;
-        const lastmod = new Date().toISOString();
-        const priority = urlPath === '/' ? '1.0' : '0.8';
-        const changefreq = urlPath === '/' ? 'weekly' : 'monthly';
-
-        urls.push({
-            url,
-            lastmod,
-            priority,
-            changefreq,
-            alternates: hreflangLinks(urlPath, baseUrl)
-        });
-    }
-
-    const urlset = urls
-        .map(
-            (item) =>
-                `<url><loc>${item.url}</loc><lastmod>${item.lastmod}</lastmod><priority>${item.priority}</priority><changefreq>${item.changefreq}</changefreq>${item.alternates}</url>`
-        )
+    const urlset = entries
+        .map(({ urlPath }) => {
+            const loc = `${baseUrl}${urlPath}`;
+            const lastmod = new Date().toISOString();
+            const priority = urlPath === '/' ? '1.0' : '0.8';
+            const changefreq = urlPath === '/' ? 'weekly' : 'monthly';
+            const alternates = hreflangLinks(urlPath, baseUrl, known);
+            return `<url><loc>${loc}</loc><lastmod>${lastmod}</lastmod><priority>${priority}</priority><changefreq>${changefreq}</changefreq>${alternates}</url>`;
+        })
         .join('');
 
     return `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">${urlset}</urlset>`;
