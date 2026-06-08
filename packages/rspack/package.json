@@ -65,18 +65,18 @@
     "dependencies": {
         "@esmx/import": "workspace:*",
         "@npmcli/arborist": "^9.1.6",
-        "@rspack/core": "^2.0.0",
+        "@rspack/core": "^2.0.6",
         "css-loader": "^7.1.2",
         "less-loader": "^12.3.0",
         "node-polyfill-webpack-plugin": "^4.1.0",
         "pacote": "^21.0.0",
-        "rspack-chain": "^2.0.1",
+        "rspack-chain": "^2.0.2",
         "style-loader": "^4.0.0",
         "style-resources-loader": "^1.5.0",
         "upath": "^2.0.1",
         "webpack-hot-middleware": "^2.26.1",
         "webpack-node-externals": "~3.0.0",
-        "worker-rspack-loader": "^3.1.2"
+        "worker-rspack-loader": "^3.1.5"
     },
     "devDependencies": {
         "@biomejs/biome": "2.3.7",
