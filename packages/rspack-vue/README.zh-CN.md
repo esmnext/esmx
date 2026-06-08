@@ -51,19 +51,18 @@ yarn add @esmx/rspack-vue -D
 
 ## 🚀 快速开始
 
+在 `entry.node.ts` 中使用：
+
 ```typescript
-import { createEsmx } from '@esmx/core';
-import { createRspackVue } from '@esmx/rspack-vue';
+import type { EsmxOptions } from '@esmx/core';
 
-const esmx = createEsmx({
-  app: {
-    name: 'vue-app',
-    entry: './src/index.ts'
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rspack-vue').then((m) =>
+      m.createRspackVue3App(esmx)
+    );
   }
-});
-
-const rspack = createRspackVue(esmx);
-await rspack.build();
+} satisfies EsmxOptions;
 ```
 
 ## 📚 文档

@@ -51,19 +51,18 @@ yarn add @esmx/rspack-react -D
 
 ## 🚀 Quick Start
 
+Use it from your `entry.node.ts`:
+
 ```typescript
-import { createEsmx } from '@esmx/core';
-import { createRspackReact } from '@esmx/rspack-react';
+import type { EsmxOptions } from '@esmx/core';
 
-const esmx = createEsmx({
-  app: {
-    name: 'react-app',
-    entry: './src/index.tsx'
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rspack-react').then((m) =>
+      m.createRspackReactApp(esmx)
+    );
   }
-});
-
-const rspack = createRspackReact(esmx);
-await rspack.build();
+} satisfies EsmxOptions;
 ```
 
 ## 📚 Documentation
