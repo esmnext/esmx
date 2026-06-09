@@ -1351,4 +1351,25 @@ describe('validateSsrRootElement', () => {
             'Current output: invalid'
         );
     });
+
+    test('should pass for a single root nesting same-tag children', () => {
+        // A root <div> wrapping child <div>s is one root — the matching close
+        // must be found by depth, not the first inner </div>.
+        expect(() =>
+            validateSsrRootElement('<div><div>a</div><div>b</div></div>')
+        ).not.toThrow();
+        expect(() =>
+            validateSsrRootElement(
+                '<div><div id="header"></div><div><button>+</button></div></div>'
+            )
+        ).not.toThrow();
+    });
+
+    test('should still throw for sibling roots sharing the tag', () => {
+        expect(() =>
+            validateSsrRootElement('<div><div>a</div></div><div>b</div>')
+        ).toThrow(
+            'SSR renderToString() must return exactly one root HTML element'
+        );
+    });
 });

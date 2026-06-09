@@ -66,7 +66,14 @@ export async function createViteDevServer(
     const injectHmrClient: Plugin = {
         name: 'esmx:inject-vite-client',
         apply: 'serve',
-        transform(code, id) {
+        transform(code, id, options) {
+            // The HMR client is browser-only. The same entry sources (e.g.
+            // src/routes.ts) are also evaluated during SSR (ssrLoadModule), and
+            // injecting `@vite/client` there makes the SSR module runner try to
+            // load a browser URL and crash — so never inject for SSR.
+            if (options?.ssr) {
+                return null;
+            }
             const file = id.split('?')[0];
             if (clientEntrySources.has(file)) {
                 return {

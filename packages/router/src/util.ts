@@ -152,18 +152,33 @@ export function validateSsrRootElement(html: string): void {
                 trimmed.slice(0, 100)
         );
     }
-    // Check if there is trailing content after the root element's closing tag
-    const firstCloseIndex = trimmed.indexOf('</' + firstTag + '>');
-    if (firstCloseIndex !== -1) {
-        const afterClose = trimmed
-            .slice(firstCloseIndex + ('</' + firstTag + '>').length)
-            .trim();
-        if (afterClose.length > 0) {
-            throw new Error(
-                'SSR renderToString() must return exactly one root HTML element. ' +
-                    'Current output: ' +
-                    trimmed.slice(0, 100)
-            );
+    // Find the ROOT element's matching close tag by depth-counting occurrences
+    // of the root tag, so a single root that nests same-tag children (e.g. a
+    // `<div>` wrapping child `<div>`s — very common) is not mistaken for
+    // multiple roots. A naive "first `</tag>`" scan matches an inner close and
+    // wrongly reports trailing content. Anything after the matched root close is
+    // a sibling root → invalid.
+    const tagRe = new RegExp(`<(/?)${firstTag}(?:\\s[^>]*)?(/?)>`, 'g');
+    let depth = 0;
+    let rootCloseEnd = -1;
+    let tag: RegExpExecArray | null = tagRe.exec(trimmed);
+    while (tag !== null) {
+        if (tag[1] === '/') {
+            depth--;
+            if (depth === 0) {
+                rootCloseEnd = tagRe.lastIndex;
+                break;
+            }
+        } else if (tag[2] !== '/') {
+            depth++;
         }
+        tag = tagRe.exec(trimmed);
+    }
+    if (rootCloseEnd === -1 || trimmed.slice(rootCloseEnd).trim().length > 0) {
+        throw new Error(
+            'SSR renderToString() must return exactly one root HTML element. ' +
+                'Current output: ' +
+                trimmed.slice(0, 100)
+        );
     }
 }

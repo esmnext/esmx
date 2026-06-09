@@ -31,15 +31,22 @@ function resolveLink(link: ReturnType<Router['resolveLink']>) {
     return link;
 }
 
-/** Prepend a `/` → primary-route redirect for standalone single-app runs. */
-function withStandaloneRedirect(
+/**
+ * In standalone mode the only mounted route is the remote's own (e.g.
+ * `/vite-vue/`), so hitting the site root renders nothing. Map the root to the
+ * remote's primary route so `/` shows the app. Done by rewriting the target URL
+ * (not a redirect route) because a server-side `redirect` route resolves to a
+ * 3xx status instead of rendering — this keeps `/` a normal 200 render, and
+ * the same mapping on the client keeps SSR/hydration in lockstep.
+ */
+function standaloneTarget(
+    url: string,
+    rootPath: string,
     routes: RouteConfig[],
     standalone: boolean
-): RouteConfig[] {
-    if (!standalone || routes.length === 0) return routes;
-    const primary = routes[0].path;
-    if (primary === '/') return routes;
-    return [{ path: '/', redirect: primary }, ...routes];
+): string {
+    if (!standalone || routes.length === 0) return url;
+    return url === rootPath || url === '/' ? routes[0].path : url;
 }
 
 /**
@@ -67,7 +74,7 @@ export async function renderHost(
     const locale = localeFromPath(routePath);
 
     const router = new Router({
-        routes: withStandaloneRedirect(routes, standalone),
+        routes,
         base: baseURL,
         resolveLink
     });
@@ -75,7 +82,9 @@ export async function renderHost(
         router.context[STANDALONE_KEY] = true;
     }
     setLocale(router, locale);
-    await router.replace(url);
+    await router.replace(
+        standaloneTarget(url, baseURL.pathname, routes, standalone)
+    );
     const html = await router.renderToString();
     const { headTags, htmlAttrs, bodyAttrs } = renderSSRHead(
         getRouterHead(router)
@@ -140,7 +149,7 @@ export async function hydrateHost(
     const context = window.__ESMX_CONTEXT__ || {};
 
     const router = new Router({
-        routes: withStandaloneRedirect(routes, standalone),
+        routes,
         appId: 'app',
         base,
         context,
@@ -153,6 +162,14 @@ export async function hydrateHost(
     installNavDelegate(router);
     installLocaleSync(router);
 
-    await router.replace(location.href);
+    // Standalone root → primary route (same mapping as the server, so SSR and
+    // hydration target the same route); otherwise replay the full current URL.
+    const atRoot =
+        location.pathname === base.pathname || location.pathname === '/';
+    const target =
+        standalone && routes.length > 0 && atRoot
+            ? routes[0].path
+            : location.href;
+    await router.replace(target);
     return router;
 }
