@@ -1855,3 +1855,50 @@ describe('createClientImportMap integrity', () => {
         });
     });
 });
+
+describe('createClientImportMap code-split chunk scopes', () => {
+    const getFile = (name: string, file: string) => `/${name}/${file}`;
+    const getScope = (name: string, scope: string) => `/${name}${scope}`;
+
+    const makeVueModule = (name: string, hash: string): ImportMapManifest => ({
+        name,
+        exports: {
+            entry: {
+                name: 'entry',
+                pkg: false,
+                file: `src/entry.client.${hash}.mjs`,
+                identifier: `${name}/src/entry.client`
+            },
+            vue: {
+                name: 'vue',
+                pkg: true,
+                file: `vue.${hash}.mjs`,
+                identifier: `${name}/vue`
+            }
+        },
+        scopes: { '': { vue: `${name}/vue` } },
+        // A Vite-style code-split chunk that is NOT an export.
+        chunks: { routesChunk: { js: `chunks/routes.${hash}.mjs` } }
+    });
+
+    test('scopes a module code-split chunk to its own externals', () => {
+        // Two modules each bundling a different "vue" file → vue must stay
+        // scoped (never promoted to a single global import).
+        const manifests = [
+            makeVueModule('app-a', 'aaa'),
+            makeVueModule('app-b', 'bbb')
+        ];
+
+        const result = createClientImportMap({ manifests, getFile, getScope });
+
+        assert.isUndefined(result.imports?.vue);
+        assert.equal(
+            result.scopes?.['/app-a/chunks/routes.aaa.mjs']?.vue,
+            '/app-a/vue.aaa.mjs'
+        );
+        assert.equal(
+            result.scopes?.['/app-b/chunks/routes.bbb.mjs']?.vue,
+            '/app-b/vue.bbb.mjs'
+        );
+    });
+});

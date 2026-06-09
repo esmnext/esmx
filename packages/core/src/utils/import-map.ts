@@ -20,6 +20,12 @@ export interface ImportMapManifest {
     >;
     scopes: Record<string, Record<string, string>>;
     /**
+     * Emitted chunk files (keyed arbitrarily). Each chunk's `js` is a relative
+     * path (e.g. "chunks/routes.xxx.mjs"). Used so a module's scope also covers
+     * its code-split chunks, not just its export files.
+     */
+    chunks?: Record<string, { js: string }>;
+    /**
      * Subresource Integrity hashes for this module's build output files.
      * Keys are relative file paths (e.g. "src/routes.xxx.mjs"), values are
      * integrity strings (e.g. "sha384-..."). Only present in production builds.
@@ -137,6 +143,46 @@ export function fixImportMapNestedScopes(
     return importMap;
 }
 
+/**
+ * A module's code-split chunk files (e.g. Vite/Rollup facade+impl splits) are
+ * not exports, so they are absent from `imports` and miss the per-file scopes
+ * produced by {@link fixImportMapNestedScopes}. Those chunks still import the
+ * module's bare externals (e.g. "vue"), so without a scope the browser throws
+ * "Failed to resolve module specifier". This adds, for each chunk file, the
+ * module's bare-specifier mappings — but only the ones NOT already satisfied by
+ * a matching global `imports` entry. Runs AFTER compression so it never skews
+ * the global-promotion heuristic (which would wrongly hoist a multi-version
+ * dep like "vue"). rspack's all-in-one output has no such chunks, so this is a
+ * no-op there.
+ */
+function addCodeSplitChunkScopes(
+    importMap: ImportMap,
+    base: ResolvedImportMap,
+    options: GetImportMapOptions
+): void {
+    for (const manifest of options.manifests) {
+        const moduleScope = manifest.scopes?.[''];
+        const chunks = manifest.chunks;
+        if (!moduleScope || !chunks) continue;
+
+        const resolved: SpecifierMap = {};
+        for (const [specifier, identifier] of Object.entries(moduleScope)) {
+            const target = base.imports[identifier] ?? identifier;
+            // Skip specifiers a global import already resolves to the same file.
+            if (importMap.imports?.[specifier] === target) continue;
+            resolved[specifier] = target;
+        }
+        if (Object.keys(resolved).length === 0) continue;
+
+        for (const chunk of Object.values(chunks)) {
+            if (!chunk.js) continue;
+            const url = options.getFile(manifest.name, chunk.js);
+            importMap.scopes ??= {};
+            importMap.scopes[url] = { ...importMap.scopes[url], ...resolved };
+        }
+    }
+}
+
 export function compressImportMap(importMap: ResolvedImportMap): ImportMap {
     const compressed: ResolvedImportMap = {
         imports: { ...importMap.imports },
@@ -210,6 +256,9 @@ export function createClientImportMap(options: GetImportMapOptions): ImportMap {
     const base = createImportMap(options);
     const fixed = fixImportMapNestedScopes(base);
     const compressed = compressImportMap(fixed);
+    // Code-split chunk files are not exports, so they miss the per-file scopes
+    // above. Add them post-compression so it never skews global promotion.
+    addCodeSplitChunkScopes(compressed, base, options);
 
     // Collect integrity from all manifests
     // Manifest integrity keys are relative filenames (e.g., "src/routes.xxx.mjs")
