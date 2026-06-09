@@ -68,6 +68,7 @@ const SVG_LOGO = {
 };
 
 const NAV_ITEMS = [
+    // Rspack-built remotes (the original set).
     { path: '/html/', label: 'HTML', svg: SVG_LOGO.html },
     { path: '/lit/', label: 'Lit', svg: SVG_LOGO.lit },
     { path: '/vue2/', label: 'Vue 2', svg: SVG_LOGO.vue },
@@ -76,7 +77,15 @@ const NAV_ITEMS = [
     { path: '/preact/', label: 'Preact', svg: SVG_LOGO.preact },
     { path: '/preact-htm/', label: 'Preact HTM', svg: SVG_LOGO.preact },
     { path: '/solid/', label: 'Solid', svg: SVG_LOGO.solid },
-    { path: '/svelte/', label: 'Svelte', svg: SVG_LOGO.svelte }
+    { path: '/svelte/', label: 'Svelte', svg: SVG_LOGO.svelte },
+    // Vite-built remotes — same host, different bundler (heterogeneous).
+    { path: '/vite-html/', label: 'Vite HTML', svg: SVG_LOGO.html },
+    { path: '/vite-react/', label: 'Vite React', svg: SVG_LOGO.react },
+    { path: '/vite-vue/', label: 'Vite Vue', svg: SVG_LOGO.vue },
+    // Rsbuild-built remotes.
+    { path: '/rsbuild-html/', label: 'Rsbuild HTML', svg: SVG_LOGO.html },
+    { path: '/rsbuild-react/', label: 'Rsbuild React', svg: SVG_LOGO.react },
+    { path: '/rsbuild-vue/', label: 'Rsbuild Vue', svg: SVG_LOGO.vue }
 ];
 
 /**
