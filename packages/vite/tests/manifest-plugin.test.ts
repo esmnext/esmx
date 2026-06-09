@@ -1,7 +1,10 @@
 import type { Rollup } from 'vite';
 import { describe, expect, test } from 'vitest';
 
-import { chunkSourceKey } from '../src/vite/manifest-plugin';
+import {
+    chunkSourceKey,
+    esmxManifestPlugin
+} from '../src/vite/manifest-plugin';
 
 function makeChunk(chunk: {
     name: string;
@@ -68,5 +71,27 @@ describe('chunkSourceKey', () => {
         );
 
         expect(key).toBe('my-app@src/shared.ts');
+    });
+});
+
+describe('esmxManifestPlugin', () => {
+    test('runs generateBundle in the post phase so SRI hashes the final code', () => {
+        const plugin = esmxManifestPlugin({
+            moduleName: 'my-app',
+            exports: [],
+            integrity: true,
+            root: '/app',
+            injectChunkName: false
+        });
+
+        // Must be order:'post' — Vite's build-import-analysis rewrites
+        // dynamic-import preload markers in its own generateBundle, so SRI
+        // computed earlier would not match the file the browser fetches.
+        const hook = plugin.generateBundle as
+            | { order?: string; handler?: unknown }
+            | undefined;
+        expect(typeof hook).toBe('object');
+        expect(hook?.order).toBe('post');
+        expect(typeof hook?.handler).toBe('function');
     });
 });

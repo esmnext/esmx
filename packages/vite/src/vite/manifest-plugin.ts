@@ -80,79 +80,89 @@ export function esmxManifestPlugin(options: EsmxManifestPluginOptions): Plugin {
                 map: null
             };
         },
-        generateBundle(_outputOptions, bundle) {
-            const exportsField: ManifestJson['exports'] = {};
-            for (const exp of exports) {
-                const chunk = Object.values(bundle).find(
-                    (c) =>
-                        c.type === 'chunk' && c.isEntry && c.name === exp.name
-                );
-                if (!chunk || chunk.type !== 'chunk') {
-                    throw new Error(
-                        `[esmx:manifest] missing output chunk for export "${exp.name}"`
+        // order: 'post' so this runs AFTER Vite's build-import-analysis
+        // rewrites dynamic-import preload markers (__VITE_PRELOAD__) in its own
+        // generateBundle. Otherwise the SRI hash is computed over pre-rewrite
+        // code and won't match the file the browser fetches (only code-split
+        // chunks are affected — they carry the preload dependency array).
+        generateBundle: {
+            order: 'post',
+            handler(_outputOptions, bundle) {
+                const exportsField: ManifestJson['exports'] = {};
+                for (const exp of exports) {
+                    const chunk = Object.values(bundle).find(
+                        (c) =>
+                            c.type === 'chunk' &&
+                            c.isEntry &&
+                            c.name === exp.name
                     );
-                }
-                exportsField[exp.name] = {
-                    name: exp.name,
-                    pkg: exp.pkg,
-                    file: chunk.fileName,
-                    identifier: `${moduleName}/${exp.name}`
-                };
-            }
-
-            const scopes: ManifestJson['scopes'] = { '': {} };
-            for (const exp of exports) {
-                if (exp.pkg) {
-                    scopes[''][exp.name] = `${moduleName}/${exp.name}`;
-                }
-            }
-
-            const files = Object.keys(bundle);
-            const chunks: ManifestJson['chunks'] = {};
-            for (const [fileName, c] of Object.entries(bundle)) {
-                if (c.type === 'chunk') {
-                    const key = chunkSourceKey(moduleName, root, c);
-                    // viteMetadata carries the CSS emitted for a chunk; it is
-                    // present at generateBundle time but absent from Rollup's
-                    // OutputChunk type, hence the guarded access.
-                    const importedCss = (
-                        c as { viteMetadata?: { importedCss: Set<string> } }
-                    ).viteMetadata?.importedCss;
-                    chunks[key] = {
-                        name: key,
-                        js: fileName,
-                        css: importedCss ? [...importedCss] : [],
-                        resources: []
+                    if (!chunk || chunk.type !== 'chunk') {
+                        throw new Error(
+                            `[esmx:manifest] missing output chunk for export "${exp.name}"`
+                        );
+                    }
+                    exportsField[exp.name] = {
+                        name: exp.name,
+                        pkg: exp.pkg,
+                        file: chunk.fileName,
+                        identifier: `${moduleName}/${exp.name}`
                     };
                 }
-            }
 
-            const manifest: ManifestJson = {
-                name: moduleName,
-                exports: exportsField,
-                scopes,
-                files,
-                chunks
-            };
-
-            if (integrity) {
-                const integrityMap: Record<string, string> = {};
-                for (const [fileName, c] of Object.entries(bundle)) {
-                    const source = c.type === 'chunk' ? c.code : c.source;
-                    const hash = crypto
-                        .createHash('sha384')
-                        .update(source as string | Uint8Array)
-                        .digest('base64');
-                    integrityMap[fileName] = `sha384-${hash}`;
+                const scopes: ManifestJson['scopes'] = { '': {} };
+                for (const exp of exports) {
+                    if (exp.pkg) {
+                        scopes[''][exp.name] = `${moduleName}/${exp.name}`;
+                    }
                 }
-                manifest.integrity = integrityMap;
-            }
 
-            this.emitFile({
-                type: 'asset',
-                fileName: 'manifest.json',
-                source: JSON.stringify(manifest, null, 4)
-            });
+                const files = Object.keys(bundle);
+                const chunks: ManifestJson['chunks'] = {};
+                for (const [fileName, c] of Object.entries(bundle)) {
+                    if (c.type === 'chunk') {
+                        const key = chunkSourceKey(moduleName, root, c);
+                        // viteMetadata carries the CSS emitted for a chunk; it is
+                        // present at generateBundle time but absent from Rollup's
+                        // OutputChunk type, hence the guarded access.
+                        const importedCss = (
+                            c as { viteMetadata?: { importedCss: Set<string> } }
+                        ).viteMetadata?.importedCss;
+                        chunks[key] = {
+                            name: key,
+                            js: fileName,
+                            css: importedCss ? [...importedCss] : [],
+                            resources: []
+                        };
+                    }
+                }
+
+                const manifest: ManifestJson = {
+                    name: moduleName,
+                    exports: exportsField,
+                    scopes,
+                    files,
+                    chunks
+                };
+
+                if (integrity) {
+                    const integrityMap: Record<string, string> = {};
+                    for (const [fileName, c] of Object.entries(bundle)) {
+                        const source = c.type === 'chunk' ? c.code : c.source;
+                        const hash = crypto
+                            .createHash('sha384')
+                            .update(source as string | Uint8Array)
+                            .digest('base64');
+                        integrityMap[fileName] = `sha384-${hash}`;
+                    }
+                    manifest.integrity = integrityMap;
+                }
+
+                this.emitFile({
+                    type: 'asset',
+                    fileName: 'manifest.json',
+                    source: JSON.stringify(manifest, null, 4)
+                });
+            }
         }
     };
 }
