@@ -4,8 +4,13 @@ import { routes as litRoutes } from 'ssr-micro-lit/src/routes';
 import { routes as preactRoutes } from 'ssr-micro-preact/src/routes';
 import { routes as preactHtmRoutes } from 'ssr-micro-preact-htm/src/routes';
 import { routes as reactRoutes } from 'ssr-micro-react/src/routes';
+import { routes as rsbuildHtmlRoutes } from 'ssr-micro-rsbuild-html/src/routes';
+import { routes as rsbuildReactRoutes } from 'ssr-micro-rsbuild-react/src/routes';
 import { routes as solidRoutes } from 'ssr-micro-solid/src/routes';
 import { routes as svelteRoutes } from 'ssr-micro-svelte/src/routes';
+import { routes as viteHtmlRoutes } from 'ssr-micro-vite-html/src/routes';
+import { routes as viteReactRoutes } from 'ssr-micro-vite-react/src/routes';
+import { routes as viteVueRoutes } from 'ssr-micro-vite-vue/src/routes';
 import { routes as vue2Routes } from 'ssr-micro-vue2/src/routes';
 import { routes as vue3Routes } from 'ssr-micro-vue3/src/routes';
 import { createHomeApp, createLandingApp } from './create-app';
@@ -27,7 +32,12 @@ const baseRoutes: RouteConfig[] = [
     ...preactRoutes,
     ...preactHtmRoutes,
     ...solidRoutes,
-    ...svelteRoutes
+    ...svelteRoutes,
+    ...viteHtmlRoutes,
+    ...viteReactRoutes,
+    ...viteVueRoutes,
+    ...rsbuildHtmlRoutes,
+    ...rsbuildReactRoutes
 ];
 
 /**

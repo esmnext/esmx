@@ -83,6 +83,15 @@ importers:
       ssr-micro-react:
         specifier: workspace:*
         version: link:../ssr-micro-react
+      ssr-micro-rsbuild-html:
+        specifier: workspace:*
+        version: link:../ssr-micro-rsbuild-html
+      ssr-micro-rsbuild-react:
+        specifier: workspace:*
+        version: link:../ssr-micro-rsbuild-react
+      ssr-micro-rsbuild-vue:
+        specifier: workspace:*
+        version: link:../ssr-micro-rsbuild-vue
       ssr-micro-shared:
         specifier: workspace:*
         version: link:../ssr-micro-shared
@@ -92,6 +101,15 @@ importers:
       ssr-micro-svelte:
         specifier: workspace:*
         version: link:../ssr-micro-svelte
+      ssr-micro-vite-html:
+        specifier: workspace:*
+        version: link:../ssr-micro-vite-html
+      ssr-micro-vite-react:
+        specifier: workspace:*
+        version: link:../ssr-micro-vite-react
+      ssr-micro-vite-vue:
+        specifier: workspace:*
+        version: link:../ssr-micro-vite-vue
       ssr-micro-vue2:
         specifier: workspace:*
         version: link:../ssr-micro-vue2

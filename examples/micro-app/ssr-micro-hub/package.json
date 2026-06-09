@@ -28,6 +28,12 @@
         "ssr-micro-svelte": "workspace:*",
         "ssr-micro-vue2": "workspace:*",
         "ssr-micro-vue3": "workspace:*",
+        "ssr-micro-vite-html": "workspace:*",
+        "ssr-micro-vite-react": "workspace:*",
+        "ssr-micro-vite-vue": "workspace:*",
+        "ssr-micro-rsbuild-html": "workspace:*",
+        "ssr-micro-rsbuild-react": "workspace:*",
+        "ssr-micro-rsbuild-vue": "workspace:*",
         "typescript": "6.0.3"
     }
 }

@@ -13,7 +13,13 @@ export default {
             'ssr-micro-solid': '../ssr-micro-solid/dist',
             'ssr-micro-svelte': '../ssr-micro-svelte/dist',
             'ssr-micro-vue2': '../ssr-micro-vue2/dist',
-            'ssr-micro-vue3': '../ssr-micro-vue3/dist'
+            'ssr-micro-vue3': '../ssr-micro-vue3/dist',
+            'ssr-micro-vite-html': '../ssr-micro-vite-html/dist',
+            'ssr-micro-vite-react': '../ssr-micro-vite-react/dist',
+            'ssr-micro-vite-vue': '../ssr-micro-vite-vue/dist',
+            'ssr-micro-rsbuild-html': '../ssr-micro-rsbuild-html/dist',
+            'ssr-micro-rsbuild-react': '../ssr-micro-rsbuild-react/dist',
+            'ssr-micro-rsbuild-vue': '../ssr-micro-rsbuild-vue/dist'
         },
         imports: {
             '@esmx/router': 'ssr-micro-shared/@esmx/router'

@@ -126,6 +126,11 @@ export function createRsbuildConfig(
         tools: {
             htmlPlugin: false,
             rspack: (rspackConfig) => {
+                // Disable persistent cache in production so federation chunks
+                // are always emitted from the current config (mirrors
+                // @esmx/rspack's `cache(!isProd)`); stale cache otherwise drops
+                // tree-shaken exports non-deterministically.
+                rspackConfig.cache = !isProd;
                 rspackConfig.output = rspackConfig.output ?? {};
                 rspackConfig.output.module = true;
                 rspackConfig.output.chunkFormat = 'module';
@@ -165,6 +170,12 @@ export function createRsbuildConfig(
 
                 rspackConfig.optimization = rspackConfig.optimization ?? {};
                 rspackConfig.optimization.avoidEntryIife = true;
+                // Federation chunks expose their exports to OTHER bundles via
+                // the import map, so an export unused within this bundle (e.g.
+                // vue's `ssrUtils`, consumed only by @vue/server-renderer) must
+                // not be tree-shaken away. Rsbuild's production defaults would
+                // drop it; keep all exports like @esmx/rspack's library mode.
+                rspackConfig.optimization.usedExports = false;
 
                 rspackConfig.plugins = rspackConfig.plugins ?? [];
                 rspackConfig.plugins.push(

@@ -1,12 +1,76 @@
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import type { Esmx } from '@esmx/core';
-import type { InlineConfig } from 'vite';
+import type { InlineConfig, Plugin } from 'vite';
 import type { BuildTarget } from './build-target';
 import {
     esmxManifestPlugin,
     type ManifestExportInput
 } from './manifest-plugin';
+
+type RequireFn = ReturnType<typeof createRequire>;
+
+/** Virtual-id prefix for pkg-export re-export entries. */
+const PKG_REEXPORT_PREFIX = '\0esmx-pkg-reexport:';
+
+interface PkgReexport {
+    /** Resolved absolute path of the real package entry. */
+    path: string;
+    /** Statically re-exported named exports (valid JS identifiers only). */
+    names: string[];
+}
+
+const IDENTIFIER_RE = /^[A-Za-z_$][A-Za-z0-9_$]*$/;
+const RESERVED = new Set(['default', '__esModule']);
+
+/**
+ * Enumerate a package's named exports by loading it in Node. CommonJS packages
+ * such as react assign their exports at runtime (inside conditional
+ * `./cjs/*.js` files), so neither `export *` nor Rollup's static analysis can
+ * recover them — but `Object.keys(require(pkg))` can.
+ */
+function resolvePkgNames(requireFn: RequireFn, target: string): string[] {
+    try {
+        const mod = requireFn(target);
+        if (!mod || typeof mod !== 'object') return [];
+        return Object.keys(mod).filter(
+            (k) => IDENTIFIER_RE.test(k) && !RESERVED.has(k)
+        );
+    } catch {
+        return [];
+    }
+}
+
+/**
+ * Build a virtual entry per pkg export that re-exports the real package as a
+ * federation chunk with STATIC named exports.
+ *
+ * Pointing the Rollup entry straight at a CommonJS package (e.g. react) yields
+ * only a `default` export, breaking `import { useState } from 'react'` for
+ * consumers resolved through the import map. We instead emit explicit
+ * `export const <name> = __m.<name>` bindings (names discovered by loading the
+ * package in Node), matching what rspack produces, plus a default export.
+ */
+function esmxPkgReexportPlugin(reexports: Map<string, PkgReexport>): Plugin {
+    return {
+        name: 'esmx:pkg-reexport',
+        resolveId(id) {
+            return reexports.has(id) ? id : null;
+        },
+        load(id) {
+            const entry = reexports.get(id);
+            if (!entry) return null;
+            const spec = JSON.stringify(entry.path);
+            const lines = [`import __m from ${spec};`, 'export default __m;'];
+            for (const name of entry.names) {
+                lines.push(
+                    `export const ${name} = __m[${JSON.stringify(name)}];`
+                );
+            }
+            return lines.join('\n');
+        }
+    };
+}
 
 export interface ViteAppOptions {
     /** Enable minification. Defaults to production. */
@@ -99,14 +163,25 @@ export function createViteConfig(
     const targetExports = resolveTargetExports(esmx, buildTarget);
     const requireFromRoot = createRequire(path.join(esmx.root, 'index.js'));
     const input: Record<string, string> = {};
+    // Virtual re-export entries for pkg exports (see esmxPkgReexportPlugin).
+    const pkgReexports = new Map<string, PkgReexport>();
     for (const exp of targetExports) {
-        // Each export resolves to an ABSOLUTE module path so it is a real entry
-        // input. The external predicate matches the bare specifier string
-        // (e.g. "react"), never this resolved path — otherwise Rollup would
-        // reject "entry module cannot be external".
-        input[exp.name] = exp.pkg
-            ? requireFromRoot.resolve(exp.file)
-            : path.resolve(esmx.root, exp.file);
+        if (exp.pkg) {
+            // A pkg export (e.g. "react") is built as its own federation chunk
+            // with explicit static named exports, so consumers doing
+            // `import { useState } from 'react'` resolve correctly at runtime.
+            const virtualId = `${PKG_REEXPORT_PREFIX}${exp.name}`;
+            const resolved = requireFromRoot.resolve(exp.file);
+            pkgReexports.set(virtualId, {
+                path: resolved,
+                names: resolvePkgNames(requireFromRoot, resolved)
+            });
+            input[exp.name] = virtualId;
+        } else {
+            // File exports resolve to an ABSOLUTE path so they are real entry
+            // inputs (the external predicate matches bare specifiers only).
+            input[exp.name] = path.resolve(esmx.root, exp.file);
+        }
     }
 
     const manifestExports: ManifestExportInput[] = targetExports.map((e) => ({
@@ -141,6 +216,13 @@ export function createViteConfig(
             // Self-reference: `import 'name/src/x'` resolves into the project.
             alias: { [esmx.name]: esmx.root }
         },
+        // For SSR builds Vite externalizes deps to node_modules by default,
+        // which would load a SECOND copy of react/vue (breaking shared hooks /
+        // SSR internals). Bundle everything instead; the only externals are the
+        // federation bare specifiers handled by rollupOptions.external, so
+        // subpaths like react-dom/server are inlined yet still import the single
+        // federated react/react-dom.
+        ssr: isClient ? undefined : { noExternal: true },
         build: {
             outDir: esmx.resolvePath('dist', buildTarget),
             emptyOutDir: isProd,
@@ -164,6 +246,7 @@ export function createViteConfig(
             }
         },
         plugins: [
+            esmxPkgReexportPlugin(pkgReexports),
             esmxManifestPlugin({
                 moduleName: esmx.name,
                 exports: manifestExports,
