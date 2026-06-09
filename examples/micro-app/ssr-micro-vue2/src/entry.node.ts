@@ -31,17 +31,19 @@ export default {
     },
 
     async server(esmx) {
+        const port = Number(process.env.PORT) || 3003;
+        const base = `http://localhost:${port}/`;
         const server = http.createServer((req, res) => {
             esmx.middleware(req, res, async () => {
                 const rc = await esmx.render({
-                    params: { url: req.url }
+                    params: { url: req.url, base }
                 });
                 res.end(rc.html);
             });
         });
 
-        server.listen(3000, () => {
-            console.log('Vue2 micro-app: http://localhost:3000');
+        server.listen(port, () => {
+            console.log(`Vue 2 micro-app: ${base}`);
         });
     }
 } satisfies EsmxOptions;
