@@ -1901,4 +1901,82 @@ describe('createClientImportMap code-split chunk scopes', () => {
             '/app-b/vue.bbb.mjs'
         );
     });
+
+    test('skips a chunk scope when a global import already resolves it', () => {
+        // A single module → its sole "vue" target gets promoted to a global
+        // import, so the chunk needs no redundant scope of its own.
+        const result = createClientImportMap({
+            manifests: [makeVueModule('solo', 'aaa')],
+            getFile,
+            getScope
+        });
+
+        assert.equal(result.imports?.vue, '/solo/vue.aaa.mjs');
+        assert.isUndefined(result.scopes?.['/solo/chunks/routes.aaa.mjs']);
+    });
+
+    test('is a no-op for all-in-one manifests without code-split chunks', () => {
+        const allInOne: ImportMapManifest = {
+            name: 'rspack-app',
+            exports: {
+                entry: {
+                    name: 'entry',
+                    pkg: false,
+                    file: 'src/entry.client.zzz.mjs',
+                    identifier: 'rspack-app/src/entry.client'
+                },
+                vue: {
+                    name: 'vue',
+                    pkg: true,
+                    file: 'vue.zzz.mjs',
+                    identifier: 'rspack-app/vue'
+                }
+            },
+            scopes: { '': { vue: 'rspack-app/vue' } }
+            // no `chunks` — rspack all-in-one output
+        };
+        // Pair with a different-vue module so vue stays scoped, not promoted.
+        const result = createClientImportMap({
+            manifests: [allInOne, makeVueModule('app-b', 'bbb')],
+            getFile,
+            getScope
+        });
+
+        const invented = Object.keys(result.scopes ?? {}).filter((k) =>
+            k.startsWith('/rspack-app/chunks/')
+        );
+        assert.deepEqual(invented, []);
+    });
+
+    test('applies all of a module externals to its chunk', () => {
+        const make = (name: string, hash: string): ImportMapManifest => ({
+            name,
+            exports: {
+                vue: {
+                    name: 'vue',
+                    pkg: true,
+                    file: `vue.${hash}.mjs`,
+                    identifier: `${name}/vue`
+                },
+                pinia: {
+                    name: 'pinia',
+                    pkg: true,
+                    file: `pinia.${hash}.mjs`,
+                    identifier: `${name}/pinia`
+                }
+            },
+            scopes: { '': { vue: `${name}/vue`, pinia: `${name}/pinia` } },
+            chunks: { storeChunk: { js: `chunks/store.${hash}.mjs` } }
+        });
+        // Two modules with different targets → both externals stay scoped.
+        const result = createClientImportMap({
+            manifests: [make('app-a', 'aaa'), make('app-b', 'bbb')],
+            getFile,
+            getScope
+        });
+
+        const scope = result.scopes?.['/app-a/chunks/store.aaa.mjs'];
+        assert.equal(scope?.vue, '/app-a/vue.aaa.mjs');
+        assert.equal(scope?.pinia, '/app-a/pinia.aaa.mjs');
+    });
 });
