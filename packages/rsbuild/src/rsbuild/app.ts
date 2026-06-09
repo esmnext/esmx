@@ -148,8 +148,13 @@ async function createDevMiddleware(
     const serverCompiler =
         (await serverInstance.createCompiler()) as unknown as CompilerLike;
 
-    clientCompiler.watch({}, () => {});
-    serverCompiler.watch({}, () => {});
+    // Surface fatal watch errors instead of swallowing them; per-build compile
+    // errors are still reported by Rsbuild's own stats reporter.
+    const onWatchError = (target: string) => (err: unknown) => {
+        if (err) console.error(`[esmx:rsbuild] ${target} watch error:`, err);
+    };
+    clientCompiler.watch({}, onWatchError('client'));
+    serverCompiler.watch({}, onWatchError('server'));
 
     const hot = hotMiddleware(clientCompiler as never, {
         path: `${esmx.basePath}hot-middleware`

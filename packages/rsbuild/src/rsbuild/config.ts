@@ -39,7 +39,7 @@ function resolveTargetExports(
 }
 
 /** Predicate marking specifiers external (resolved by the esmx import map). */
-function createIsExternal(
+export function createIsExternal(
     esmx: Esmx,
     buildTarget: BuildTarget
 ): (request: string) => boolean {
@@ -190,7 +190,12 @@ export function createRsbuildConfig(
                     new EsmxManifestPlugin({
                         moduleName: esmx.name,
                         exports: manifestExports,
-                        integrity: isProd
+                        integrity: isProd,
+                        root: esmx.root,
+                        // Server build seeds core's SSR chunk set via
+                        // import.meta.chunkName so federated chunk CSS is
+                        // collected at commit().
+                        injectChunkName: buildTarget === 'server'
                     })
                 );
 

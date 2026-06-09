@@ -36,7 +36,14 @@ function resolvePkgNames(requireFn: RequireFn, target: string): string[] {
         return Object.keys(mod).filter(
             (k) => IDENTIFIER_RE.test(k) && !RESERVED.has(k)
         );
-    } catch {
+    } catch (error) {
+        // Not silent: failing to enumerate names degrades the re-export to
+        // `default`-only, which breaks `import { x } from '<pkg>'` for
+        // consumers — warn loudly with the cause so it is diagnosable.
+        const message = error instanceof Error ? error.message : String(error);
+        console.warn(
+            `[esmx:vite] failed to enumerate named exports of "${target}" (${message}); only its default export will be re-exported, so named imports of this federated package may fail at runtime.`
+        );
         return [];
     }
 }
@@ -111,7 +118,7 @@ function resolveTargetExports(
  * imports and resolved by the esmx import map at runtime. Mirrors the rspack
  * module-link externals + nodeExternals behavior.
  */
-function createExternalPredicate(
+export function createExternalPredicate(
     esmx: Esmx,
     buildTarget: BuildTarget
 ): (id: string) => boolean {
@@ -250,7 +257,11 @@ export function createViteConfig(
             esmxManifestPlugin({
                 moduleName: esmx.name,
                 exports: manifestExports,
-                integrity: isProd
+                integrity: isProd,
+                root: esmx.root,
+                // The server build seeds core's SSR chunk set via
+                // import.meta.chunkName so federated chunk CSS is collected.
+                injectChunkName: buildTarget === 'server'
             })
         ]
     };

@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import path from 'node:path';
 import type { ManifestJson } from '@esmx/core';
 import { rspack } from '@rsbuild/core';
 
@@ -15,6 +16,31 @@ export interface EsmxManifestPluginOptions {
     moduleName: string;
     exports: ManifestExportInput[];
     integrity: boolean;
+    /** Project root; chunk keys are derived from source paths relative to it. */
+    root: string;
+    /**
+     * Inject `import.meta.chunkName` into each chunk (server build only). At SSR
+     * `RenderContext.commit()` time core collects a chunk's CSS/resources only
+     * when its source-path key is in the executed chunk set, seeded from these
+     * injected names. Mirrors @esmx/rspack's `injectChunkName`.
+     */
+    injectChunkName: boolean;
+}
+
+/**
+ * Stable chunk identity `${moduleName}@${source-path}` — the chunk's primary
+ * JS module relative to the project root, matching @esmx/rspack's
+ * `generateIdentifier` and core's hardcoded entry key. Aligns the client
+ * manifest's chunk keys with the `import.meta.chunkName` injected on the server
+ * build, so SSR `commit()` collects the right CSS/resources.
+ */
+export function chunkSourceKey(
+    moduleName: string,
+    root: string,
+    nameForCondition: string
+): string {
+    const rel = path.relative(root, nameForCondition).split(path.sep).join('/');
+    return `${moduleName}@${rel}`;
 }
 
 /**
@@ -30,8 +56,77 @@ export class EsmxManifestPlugin {
     }
 
     apply(compiler: import('@rsbuild/core').Rspack.Compiler): void {
-        const { moduleName, exports, integrity } = this.options;
+        const { moduleName, exports, integrity, root, injectChunkName } =
+            this.options;
         compiler.hooks.thisCompilation.tap('EsmxManifest', (compilation) => {
+            // Source-path keyed chunk list (mirrors @esmx/rspack's getChunks):
+            // pick each chunk's primary JS module and key it by that module's
+            // path relative to root. Shared by manifest emit and injection so
+            // the keys are identical.
+            const collectChunks = (): Array<{
+                key: string;
+                js: string;
+                css: string[];
+            }> => {
+                const stats = compilation.getStats().toJson({
+                    all: false,
+                    chunks: true,
+                    modules: true,
+                    chunkModules: true,
+                    ids: true
+                });
+                const result: Array<{
+                    key: string;
+                    js: string;
+                    css: string[];
+                }> = [];
+                for (const chunk of stats.chunks ?? []) {
+                    const module = chunk.modules
+                        ?.slice()
+                        .sort((a, b) => (a.index ?? -1) - (b.index ?? -1))
+                        .find((m) => m.moduleType?.includes('javascript/'));
+                    if (!module?.nameForCondition) continue;
+                    const js = chunk.files?.find((f) => f.endsWith('.mjs'));
+                    if (!js) continue;
+                    result.push({
+                        key: chunkSourceKey(
+                            moduleName,
+                            root,
+                            module.nameForCondition
+                        ),
+                        js,
+                        css:
+                            chunk.files?.filter((f) => f.endsWith('.css')) ?? []
+                    });
+                }
+                return result;
+            };
+
+            // Server build: announce each chunk's source-path identity so core
+            // can collect its CSS/resources at SSR commit(). Runs before the
+            // manifest/integrity stage so the injected code is hashed.
+            if (injectChunkName) {
+                compilation.hooks.processAssets.tap(
+                    {
+                        name: 'EsmxManifestInject',
+                        stage: compiler.rspack.Compilation
+                            .PROCESS_ASSETS_STAGE_ADDITIONS
+                    },
+                    (assets) => {
+                        for (const { key, js } of collectChunks()) {
+                            const asset = assets[js];
+                            if (!asset) continue;
+                            compilation.updateAsset(
+                                js,
+                                new RawSource(
+                                    `import.meta.chunkName = import.meta.chunkName ?? ${JSON.stringify(key)};\n${asset.source()}`
+                                )
+                            );
+                        }
+                    }
+                );
+            }
+
             compilation.hooks.processAssets.tap(
                 {
                     name: 'EsmxManifest',
@@ -73,21 +168,8 @@ export class EsmxManifestPlugin {
                     }
 
                     const chunks: ManifestJson['chunks'] = {};
-                    for (const chunk of compilation.chunks) {
-                        const js = [...chunk.files].find((f) =>
-                            f.endsWith('.mjs')
-                        );
-                        if (js) {
-                            const key = `${moduleName}@${chunk.name ?? chunk.id}`;
-                            chunks[key] = {
-                                name: key,
-                                js,
-                                css: [...chunk.files].filter((f) =>
-                                    f.endsWith('.css')
-                                ),
-                                resources: []
-                            };
-                        }
+                    for (const { key, js, css } of collectChunks()) {
+                        chunks[key] = { name: key, js, css, resources: [] };
                     }
 
                     const manifest: ManifestJson = {

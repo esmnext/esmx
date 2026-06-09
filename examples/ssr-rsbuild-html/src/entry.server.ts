@@ -10,7 +10,7 @@ export default async (rc: RenderContext) => {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     ${rc.preload()}
-    <title>Esmx + Vite SSR</title>
+    <title>Esmx + Rsbuild SSR</title>
     ${rc.css()}
 </head>
 <body>

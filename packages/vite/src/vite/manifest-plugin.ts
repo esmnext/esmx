@@ -1,6 +1,9 @@
 import crypto from 'node:crypto';
+import path from 'node:path';
 import type { ManifestJson } from '@esmx/core';
-import type { Plugin } from 'vite';
+import type { Plugin, Rollup } from 'vite';
+
+type RenderedChunk = Rollup.RenderedChunk;
 
 /**
  * Description of a single export the bundler must emit as its own ESM entry.
@@ -18,6 +21,39 @@ export interface EsmxManifestPluginOptions {
     exports: ManifestExportInput[];
     /** Compute SRI hashes (production only). */
     integrity: boolean;
+    /** Project root; chunk keys are derived from source paths relative to it. */
+    root: string;
+    /**
+     * Inject `import.meta.chunkName` into each chunk (server build only). At SSR
+     * `RenderContext.commit()` time core collects a chunk's CSS/resources only
+     * when its source-path key is in the executed chunk set, which is seeded
+     * from these injected names. Mirrors @esmx/rspack's `injectChunkName`.
+     */
+    injectChunkName: boolean;
+}
+
+/**
+ * Stable, cross-build chunk identity: `${moduleName}@${source-path}` where the
+ * source path is the chunk's facade module relative to the project root. This
+ * matches @esmx/rspack's `generateIdentifier` (and core's hardcoded entry key
+ * `${name}@src/entry.client.ts`), so the client manifest's chunk keys align
+ * with the `import.meta.chunkName` injected into the server build. Virtual
+ * modules (pkg re-exports, prefixed with `\0`) have no source path and fall
+ * back to the output chunk name.
+ */
+export function chunkSourceKey(
+    moduleName: string,
+    root: string,
+    chunk: RenderedChunk
+): string {
+    const source =
+        chunk.facadeModuleId ??
+        chunk.moduleIds.find((id) => !id.startsWith('\0'));
+    if (source && !source.startsWith('\0')) {
+        const rel = path.relative(root, source).split(path.sep).join('/');
+        return `${moduleName}@${rel}`;
+    }
+    return `${moduleName}@${chunk.name}`;
 }
 
 /**
@@ -29,9 +65,21 @@ export interface EsmxManifestPluginOptions {
  * provided for completeness and SRI.
  */
 export function esmxManifestPlugin(options: EsmxManifestPluginOptions): Plugin {
-    const { moduleName, exports, integrity } = options;
+    const { moduleName, exports, integrity, root, injectChunkName } = options;
     return {
         name: 'esmx:manifest',
+        renderChunk(code, chunk) {
+            // Seed core's SSR chunk set: the server build's chunks announce
+            // their own source-path identity so commit() can collect the
+            // matching client chunk's CSS/resources. Done in renderChunk (not
+            // generateBundle) so the prepend is part of the hashed output.
+            if (!injectChunkName) return null;
+            const key = chunkSourceKey(moduleName, root, chunk);
+            return {
+                code: `import.meta.chunkName = import.meta.chunkName ?? ${JSON.stringify(key)};\n${code}`,
+                map: null
+            };
+        },
         generateBundle(_outputOptions, bundle) {
             const exportsField: ManifestJson['exports'] = {};
             for (const exp of exports) {
@@ -63,7 +111,7 @@ export function esmxManifestPlugin(options: EsmxManifestPluginOptions): Plugin {
             const chunks: ManifestJson['chunks'] = {};
             for (const [fileName, c] of Object.entries(bundle)) {
                 if (c.type === 'chunk') {
-                    const key = `${moduleName}@${c.name}`;
+                    const key = chunkSourceKey(moduleName, root, c);
                     // viteMetadata carries the CSS emitted for a chunk; it is
                     // present at generateBundle time but absent from Rollup's
                     // OutputChunk type, hence the guarded access.
