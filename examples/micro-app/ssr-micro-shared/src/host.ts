@@ -9,8 +9,7 @@ import { getSsrStyles } from './ssr-styles';
 declare global {
     interface Window {
         __ESMX_BASE__?: string;
-        // biome-ignore lint/suspicious/noExplicitAny: serialized router context
-        __ESMX_CONTEXT__?: any;
+        __ESMX_CONTEXT__?: Record<string, unknown>;
     }
 }
 
