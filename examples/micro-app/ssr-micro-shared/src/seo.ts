@@ -1,5 +1,5 @@
 import type { Router } from '@esmx/router';
-import type { UseHeadInput } from 'unhead/types';
+import type { SerializableHead } from 'unhead/types';
 
 import { getLocale } from './i18n';
 
@@ -95,7 +95,7 @@ function breadcrumbLd(lang: string, path: string): Record<string, unknown>[] {
 export function buildSeoHead(
     router: Router,
     options: SeoOptions
-): UseHeadInput {
+): SerializableHead {
     const { path, title, description, ogType = 'website', jsonLd } = options;
     const lang = getLocale(router);
     const altLang = lang === 'zh' ? 'en' : 'zh';
