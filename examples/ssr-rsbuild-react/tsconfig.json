@@ -17,8 +17,8 @@
         
         "baseUrl": ".",
         "paths": {
-            "react-csr-demo/src/*": ["./src/*"],
-            "react-csr-demo/*": ["./*"]
+            "ssr-rsbuild-react/src/*": ["./src/*"],
+            "ssr-rsbuild-react/*": ["./*"]
         }
     },
     "include": ["src"],

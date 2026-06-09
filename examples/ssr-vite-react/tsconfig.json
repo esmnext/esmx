@@ -17,8 +17,8 @@
         
         "baseUrl": ".",
         "paths": {
-            "react-csr-demo/src/*": ["./src/*"],
-            "react-csr-demo/*": ["./*"]
+            "ssr-vite-react/src/*": ["./src/*"],
+            "ssr-vite-react/*": ["./*"]
         }
     },
     "include": ["src"],

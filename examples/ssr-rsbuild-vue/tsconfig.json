@@ -17,8 +17,8 @@
         
         "baseUrl": ".",
         "paths": {
-            "vue-csr-demo/src/*": ["./src/*"],
-            "vue-csr-demo/*": ["./*"]
+            "ssr-rsbuild-vue/src/*": ["./src/*"],
+            "ssr-rsbuild-vue/*": ["./*"]
         }
     },
     "include": ["src"],
