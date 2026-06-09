@@ -2,7 +2,7 @@ import HelloWorld from './components/hello-world';
 import './app.css';
 
 export default function App() {
-    const title = 'React CSR Demo';
+    const title = 'React SSR Demo';
 
     return (
         <div id="app" className="container">

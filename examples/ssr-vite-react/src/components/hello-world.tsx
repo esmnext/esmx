@@ -23,7 +23,7 @@ export default function HelloWorld({ msg }: HelloWorldProps) {
             </div>
 
             <p>
-                Experience React with client-side rendering powered by Esmx
+                Experience React with server-side rendering powered by Esmx
                 framework
             </p>
         </div>

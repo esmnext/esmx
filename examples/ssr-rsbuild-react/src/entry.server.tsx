@@ -1,6 +1,11 @@
 import type { RenderContext } from '@esmx/core';
+import { renderToString } from 'react-dom/server';
+import { createApp } from './create-app';
 
 export default async (rc: RenderContext) => {
+    const { app } = createApp();
+    const appHtml = renderToString(app);
+
     await rc.commit();
 
     rc.html = `<!DOCTYPE html>
@@ -8,15 +13,15 @@ export default async (rc: RenderContext) => {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="React with Client-Side Rendering powered by Esmx framework">
-    <meta name="keywords" content="React, CSR, Client-Side Rendering, Esmx, React.js, JavaScript, TypeScript, Rspack">
+    <meta name="description" content="React with Server-Side Rendering powered by Esmx framework">
+    <meta name="keywords" content="React, SSR, Server-Side Rendering, Esmx, React.js, JavaScript, TypeScript, Rsbuild">
     <link rel="icon" href="https://esmx.dev/logo.svg" type="image/svg+xml">
     ${rc.preload()}
-    <title>React CSR Demo | Powered by Esmx</title>
+    <title>React SSR Demo | Powered by Esmx</title>
     ${rc.css()}
 </head>
 <body>
-    <div id="app"></div>
+    <div id="app">${appHtml}</div>
     ${rc.importmap()}
     ${rc.moduleEntry()}
     ${rc.modulePreload()}

@@ -21,7 +21,7 @@ const count = ref<number>(0);
 			</p>
 		</div>
 
-		<p>Experience Vue with client-side rendering powered by Esmx framework</p>
+		<p>Experience Vue with server-side rendering powered by Esmx framework</p>
 	</div>
 </template>
 
