@@ -19,6 +19,13 @@ export const SIDEBAR_WIDTH = '260px';
 const NAV_DELEGATE = 'esmx:navDelegate';
 
 /**
+ * Router-context flag set by the standalone host (see host.ts). When present,
+ * the sidebar hides the cross-remote navigation — those remotes are not mounted
+ * in a single-app run, so their links would 404.
+ */
+export const STANDALONE_KEY = 'esmx:standalone';
+
+/**
  * Installs a single document-level (capture-phase) click delegate per router
  * that turns clicks on `a[data-nav]` links into SPA `router.push` navigations.
  *
@@ -111,15 +118,44 @@ function generateNavHtml(router: Router): string {
     // In Chinese, every link targets its `/zh`-prefixed route so navigation
     // keeps the user inside the locale (the same static page set exists there).
     const prefix = getLocale(router) === 'zh' ? '/zh' : '';
-    return NAV_ITEMS.map((item) => {
-        const to = prefix + item.path;
-        const resolved = router.resolveLink({
-            to,
-            type: 'push',
-            exact: 'route'
-        });
-        const isActive = resolved.isActive;
-        return normalizeHtml(`
+    // Standalone: only this remote is mounted, so show just its own (active)
+    // entry — the other remotes' links would 404. A badge marks the mode.
+    const standalone = Boolean(router.context[STANDALONE_KEY]);
+    const items = standalone
+        ? NAV_ITEMS.filter(
+              (item) =>
+                  router.resolveLink({
+                      to: prefix + item.path,
+                      type: 'push',
+                      exact: 'route'
+                  }).isActive
+          )
+        : NAV_ITEMS;
+    const badge = standalone
+        ? `<div style="
+                padding: 6px 12px;
+                margin-bottom: 8px;
+                border-radius: 6px;
+                background: rgba(255, 160, 0, 0.15);
+                color: #ffa000;
+                font-size: 0.7rem;
+                font-weight: 700;
+                letter-spacing: 0.05em;
+                text-transform: uppercase;
+            ">Standalone</div>`
+        : '';
+    return (
+        badge +
+        items
+            .map((item) => {
+                const to = prefix + item.path;
+                const resolved = router.resolveLink({
+                    to,
+                    type: 'push',
+                    exact: 'route'
+                });
+                const isActive = resolved.isActive;
+                return normalizeHtml(`
             <a
                 href="${resolved.attributes.href}"
                 data-nav="${to}"
@@ -141,7 +177,9 @@ function generateNavHtml(router: Router): string {
                 <span>${item.label}</span>
             </a>
         `);
-    }).join('');
+            })
+            .join('')
+    );
 }
 
 export class Layout {

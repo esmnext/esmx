@@ -1,33 +1,7 @@
-import { Router } from '@esmx/router';
-import {
-    installLocaleSync,
-    installNavDelegate
-} from 'ssr-micro-shared/src/index';
+import { hydrateHost } from 'ssr-micro-shared/src/index';
 
 import { routes } from './routes';
 
-const basePath = window.__ESMX_BASE__ || '/';
-const base = new URL(basePath, location.origin);
-const context = window.__ESMX_CONTEXT__ || {};
-
-const router = new Router({
-    routes,
-    appId: 'app',
-    base,
-    context,
-    resolveLink(link) {
-        const { href, origin } = link.route.url;
-        link.attributes.href = href.slice(origin.length) || '/';
-        return link;
-    }
-});
-
-// Install the nav-click delegate before the first app mounts, so sidebar links
-// are intercepted from the very first interaction (no per-app binding gap).
-installNavDelegate(router);
-
-// Keep the shared locale aligned with the URL on every navigation (the URL is
-// the source of truth: `/zh/...` is Chinese, the root is English).
-installLocaleSync(router);
-
-await router.replace(location.href);
+// Client hydration delegated to the shared host helper (same one each remote
+// uses standalone). Hub mode mounts the full cross-remote router.
+await hydrateHost(routes);

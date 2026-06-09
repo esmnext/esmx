@@ -22,3 +22,6 @@ remotes
 /Dockerfile
 examples/templates/
 .codebuddy
+
+# Local Preview MCP dev-server config (not part of the project)
+.claude/launch.json
