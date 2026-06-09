@@ -1,0 +1,32 @@
+{
+    "name": "ssr-micro-vite-vue",
+    "version": "1.0.0",
+    "description": "Vue3 micro-app (Vite) for micro-frontend example",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "esmx dev",
+        "build": "esmx build",
+        "preview": "esmx preview",
+        "start": "esmx start",
+        "lint:type": "vue-tsc --noEmit",
+        "build:type": "vue-tsc --declaration --emitDeclarationOnly --noEmit false --outDir dist/src && tsc-alias -p tsconfig.json --outDir dist/src"
+    },
+    "dependencies": {
+        "@esmx/core": "workspace:*"
+    },
+    "devDependencies": {
+        "tsc-alias": "^1.8.17",
+        "@esmx/vite-vue": "workspace:*",
+        "@esmx/router": "workspace:*",
+        "@esmx/router-vue": "workspace:*",
+        "@types/node": "^25.6.2",
+        "@vue/server-renderer": "^3.5.34",
+        "ssr-micro-shared": "workspace:*",
+        "typescript": "6.0.3",
+        "unhead": "^3.1.0",
+        "@unhead/vue": "^3.1.0",
+        "vue": "^3.5.34",
+        "vue-tsc": "^3.2.8"
+    }
+} 
