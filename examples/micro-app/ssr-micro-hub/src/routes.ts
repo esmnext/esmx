@@ -6,6 +6,7 @@ import { routes as preactHtmRoutes } from 'ssr-micro-preact-htm/src/routes';
 import { routes as reactRoutes } from 'ssr-micro-react/src/routes';
 import { routes as rsbuildHtmlRoutes } from 'ssr-micro-rsbuild-html/src/routes';
 import { routes as rsbuildReactRoutes } from 'ssr-micro-rsbuild-react/src/routes';
+import { routes as rsbuildVueRoutes } from 'ssr-micro-rsbuild-vue/src/routes';
 import { routes as solidRoutes } from 'ssr-micro-solid/src/routes';
 import { routes as svelteRoutes } from 'ssr-micro-svelte/src/routes';
 import { routes as viteHtmlRoutes } from 'ssr-micro-vite-html/src/routes';
@@ -37,7 +38,8 @@ const baseRoutes: RouteConfig[] = [
     ...viteReactRoutes,
     ...viteVueRoutes,
     ...rsbuildHtmlRoutes,
-    ...rsbuildReactRoutes
+    ...rsbuildReactRoutes,
+    ...rsbuildVueRoutes
 ];
 
 /**

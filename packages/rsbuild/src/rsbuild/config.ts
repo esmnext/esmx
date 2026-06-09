@@ -1,4 +1,3 @@
-import { createRequire } from 'node:module';
 import path from 'node:path';
 import type { Esmx } from '@esmx/core';
 import { type RsbuildConfig, rspack } from '@rsbuild/core';
@@ -89,15 +88,15 @@ export function createRsbuildConfig(
     const isProd = esmx.isProd;
 
     const targetExports = resolveTargetExports(esmx, buildTarget);
-    const requireFromRoot = createRequire(path.join(esmx.root, 'index.js'));
     const entry: Record<string, string | string[]> = {};
     for (const exp of targetExports) {
-        // pkg exports resolve to an ABSOLUTE module path so the entry's own
-        // request is not caught by the external predicate (which matches the
-        // bare specifier). Otherwise the entry becomes an empty self-reexport.
-        const resolved = exp.pkg
-            ? requireFromRoot.resolve(exp.file)
-            : path.resolve(esmx.root, exp.file);
+        // pkg exports stay as the BARE specifier (e.g. "vue") so rspack's
+        // resolution — and any `resolve.alias` such as `vue$` → the runtime
+        // build set by @esmx/rsbuild-vue — applies to the federation entry.
+        // (rspack builds the entry module itself; externals only affect
+        // imports of it from other modules.) File exports resolve to an
+        // absolute path.
+        const resolved = exp.pkg ? exp.file : path.resolve(esmx.root, exp.file);
         entry[exp.name] =
             isClient && ctx.preEntries?.length
                 ? [...ctx.preEntries, resolved]
@@ -149,11 +148,20 @@ export function createRsbuildConfig(
                 rspackConfig.externalsType = 'module';
                 const externals: Array<unknown> = [
                     (
-                        data: { request?: string },
+                        data: {
+                            request?: string;
+                            contextInfo?: { issuer?: string };
+                        },
                         callback: (err?: null, result?: string) => void
                     ) => {
                         const request = data.request ?? '';
-                        if (isExternal(request)) {
+                        // Only externalize a federation specifier when it is
+                        // imported BY another module (has an issuer). The pkg
+                        // export's own entry module has no issuer and must be
+                        // built, not externalized into an empty re-export —
+                        // mirrors @esmx/rspack's module-link externals.
+                        const issuer = data.contextInfo?.issuer;
+                        if (issuer && isExternal(request)) {
                             return callback(null, `module ${request}`);
                         }
                         callback();
