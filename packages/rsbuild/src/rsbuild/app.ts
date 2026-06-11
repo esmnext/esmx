@@ -68,7 +68,12 @@ async function buildInstance(
 ) {
     return createRsbuild({
         cwd: esmx.root,
-        rsbuildConfig: createRsbuildConfig(esmx, buildTarget, options, ctx)
+        rsbuildConfig: await createRsbuildConfig(
+            esmx,
+            buildTarget,
+            options,
+            ctx
+        )
     });
 }
 

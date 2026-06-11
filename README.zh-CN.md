@@ -63,6 +63,7 @@ npx create-esmx@latest my-app
 | [**@esmx/vite-vue**](https://github.com/esmnext/esmx/tree/master/packages/vite-vue) | <a href="https://www.npmjs.com/package/@esmx/vite-vue"><img src="https://img.shields.io/npm/v/@esmx/vite-vue.svg" alt="npm version" /></a> | 🔵 **预览** | Vue 专用的 Vite 工具 |
 | [**@esmx/vite-react**](https://github.com/esmnext/esmx/tree/master/packages/vite-react) | <a href="https://www.npmjs.com/package/@esmx/vite-react"><img src="https://img.shields.io/npm/v/@esmx/vite-react.svg" alt="npm version" /></a> | 🔵 **预览** | React 专用的 Vite 工具 |
 | [**@esmx/import**](https://github.com/esmnext/esmx/tree/master/packages/import) | <a href="https://www.npmjs.com/package/@esmx/import"><img src="https://img.shields.io/npm/v/@esmx/import.svg" alt="npm version" /></a> | 🔵 **预览** | Import Map 工具 |
+| [**@esmx/pkg-wrapper**](https://github.com/esmnext/esmx/tree/master/packages/pkg-wrapper) | <a href="https://www.npmjs.com/package/@esmx/pkg-wrapper"><img src="https://img.shields.io/npm/v/@esmx/pkg-wrapper.svg" alt="npm version" /></a> | 🔵 **预览** | 为联邦入口生成 CJS / ESM 具名导出 wrapper |
 | [**create-esmx**](https://github.com/esmnext/esmx/tree/master/packages/create-esmx) | <a href="https://www.npmjs.com/package/create-esmx"><img src="https://img.shields.io/npm/v/create-esmx.svg" alt="npm version" /></a> | 🔵 **预览** | 项目脚手架工具 |
 
 ## 🎯 演示项目

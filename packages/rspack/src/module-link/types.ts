@@ -17,6 +17,15 @@ export interface ModuleLinkPluginOptions {
     injectChunkName?: boolean;
     preEntries?: string[];
     deps?: string[];
+    /**
+     * Absolute paths of pkg-export wrapper files (one per pkg export). When
+     * the externals function sees an import whose issuer is one of these
+     * wrappers, it skips externalization — the wrapper IS the federation
+     * chunk for that package, so externalizing its inner
+     * `import __m from '<pkg-path>'` would route back to the wrapper itself
+     * (cyclic).
+     */
+    wrapperFiles?: string[];
 }
 
 export interface ParsedModuleLinkPluginOptions {
@@ -28,4 +37,5 @@ export interface ParsedModuleLinkPluginOptions {
     injectChunkName: boolean;
     preEntries: string[];
     deps: string[];
+    wrapperFiles: string[];
 }

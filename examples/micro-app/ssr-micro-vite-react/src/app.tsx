@@ -1,7 +1,6 @@
 import { useRouter } from '@esmx/router-react';
 import { useHead } from '@unhead/react';
-import { useEffect, useMemo, useState } from 'react';
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import {
     buildSeoHead,
@@ -12,13 +11,56 @@ import {
 
 function Counter() {
     const [count, setCount] = useState(0);
-    return <div style={{margin:'16px 0'}}>
-        <div style={{fontSize:'3rem',fontWeight:800,color:'var(--esmx-text-primary)',marginBottom:'12px'}}>{count}</div>
-        <div style={{display:'flex',gap:'12px',justifyContent:'center'}}>
-            <button onClick={() => setCount(c => c + 1)} style={{padding:'8px 24px',borderRadius:'8px',border:'none',background:'var(--esmx-link)',color:'#fff',cursor:'pointer',fontSize:'1.2rem'}}>+</button>
-            <button onClick={() => setCount(c => c - 1)} style={{padding:'8px 24px',borderRadius:'8px',border:'none',background:'#ef4444',color:'#fff',cursor:'pointer',fontSize:'1.2rem'}}>-</button>
+    return (
+        <div style={{ margin: '16px 0' }}>
+            <div
+                style={{
+                    fontSize: '3rem',
+                    fontWeight: 800,
+                    color: 'var(--esmx-text-primary)',
+                    marginBottom: '12px'
+                }}
+            >
+                {count}
+            </div>
+            <div
+                style={{
+                    display: 'flex',
+                    gap: '12px',
+                    justifyContent: 'center'
+                }}
+            >
+                <button
+                    onClick={() => setCount((c) => c + 1)}
+                    style={{
+                        padding: '8px 24px',
+                        borderRadius: '8px',
+                        border: 'none',
+                        background: 'var(--esmx-link)',
+                        color: '#fff',
+                        cursor: 'pointer',
+                        fontSize: '1.2rem'
+                    }}
+                >
+                    +
+                </button>
+                <button
+                    onClick={() => setCount((c) => c - 1)}
+                    style={{
+                        padding: '8px 24px',
+                        borderRadius: '8px',
+                        border: 'none',
+                        background: '#ef4444',
+                        color: '#fff',
+                        cursor: 'pointer',
+                        fontSize: '1.2rem'
+                    }}
+                >
+                    -
+                </button>
+            </div>
         </div>
-    </div>;
+    );
 }
 
 export function AppContent() {
@@ -50,10 +92,12 @@ export function AppContent() {
             />
             <div
                 style={{
-                    marginLeft: 'var(--esmx-sidebar-width, ' + SIDEBAR_WIDTH + ')',
+                    marginLeft:
+                        'var(--esmx-sidebar-width, ' + SIDEBAR_WIDTH + ')',
                     minHeight: '100vh',
                     padding: '32px',
-                    paddingTop: 'calc(32px + var(--esmx-mobile-header-height, 0px))'
+                    paddingTop:
+                        'calc(32px + var(--esmx-mobile-header-height, 0px))'
                 }}
             >
                 <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -81,11 +125,42 @@ export function AppContent() {
                             role="img"
                             aria-label="React"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="28" height="28">
-                                <circle cx="16" cy="16" r="3" fill="#fff"/>
-                                <ellipse cx="16" cy="16" rx="15" ry="5.5" fill="none" stroke="#fff" strokeWidth="1.8" transform="rotate(60 16 16)"/>
-                                <ellipse cx="16" cy="16" rx="15" ry="5.5" fill="none" stroke="#fff" strokeWidth="1.8" transform="rotate(-60 16 16)"/>
-                                <ellipse cx="16" cy="16" rx="15" ry="5.5" fill="none" stroke="#fff" strokeWidth="1.8"/>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 32 32"
+                                width="28"
+                                height="28"
+                            >
+                                <circle cx="16" cy="16" r="3" fill="#fff" />
+                                <ellipse
+                                    cx="16"
+                                    cy="16"
+                                    rx="15"
+                                    ry="5.5"
+                                    fill="none"
+                                    stroke="#fff"
+                                    strokeWidth="1.8"
+                                    transform="rotate(60 16 16)"
+                                />
+                                <ellipse
+                                    cx="16"
+                                    cy="16"
+                                    rx="15"
+                                    ry="5.5"
+                                    fill="none"
+                                    stroke="#fff"
+                                    strokeWidth="1.8"
+                                    transform="rotate(-60 16 16)"
+                                />
+                                <ellipse
+                                    cx="16"
+                                    cy="16"
+                                    rx="15"
+                                    ry="5.5"
+                                    fill="none"
+                                    stroke="#fff"
+                                    strokeWidth="1.8"
+                                />
                             </svg>
                         </div>
                         <h1

@@ -1,6 +1,8 @@
 import path from 'node:path';
 import type { Esmx } from '@esmx/core';
+import { buildPkgWrapper } from '@esmx/pkg-wrapper';
 import { type RsbuildConfig, rspack } from '@rsbuild/core';
+import RspackVirtualModulePlugin from 'rspack-plugin-virtual-module';
 import nodeExternals from 'webpack-node-externals';
 import type { BuildTarget } from './build-target';
 import {
@@ -77,26 +79,51 @@ export interface CreateRsbuildConfigContext {
 /**
  * Translate esmx's module config into an Rsbuild config for one build target.
  */
-export function createRsbuildConfig(
+export async function createRsbuildConfig(
     esmx: Esmx,
     buildTarget: BuildTarget,
     options: RsbuildAppOptions,
     ctx: CreateRsbuildConfigContext = {}
-): RsbuildConfig {
+): Promise<RsbuildConfig> {
     const isClient = buildTarget === 'client';
     const isNode = buildTarget === 'node';
     const isProd = esmx.isProd;
 
     const targetExports = resolveTargetExports(esmx, buildTarget);
     const entry: Record<string, string | string[]> = {};
+    // Each `pkg:react` export becomes a VIRTUAL MODULE — a wrapper that
+    // imports the real package by its original bare specifier and re-exports
+    // every named field explicitly. Without this, rsbuild's dev mode does not
+    // enumerate CJS named exports for a bare-specifier entry and
+    // `import { useState } from 'react'` resolves to undefined.
+    //
+    // The virtual is registered with `webpack-virtual-modules` under a
+    // pseudo-path; the federation entry points at that pseudo-path. The
+    // wrapper's own `import * as __ns from 'react'` keeps the bundler's
+    // resolver / aliases working — externals must skip it (issuer = wrapper)
+    // to avoid routing back to the wrapper itself.
+    const virtualModules: Record<string, string> = {};
+    const wrapperFiles = new Set<string>();
+    const virtualBaseDir = path.join(
+        esmx.root,
+        'node_modules',
+        `.esmx-virtual-${esmx.name}`
+    );
     for (const exp of targetExports) {
-        // pkg exports stay as the BARE specifier (e.g. "vue") so rspack's
-        // resolution — and any `resolve.alias` such as `vue$` → the runtime
-        // build set by @esmx/rsbuild-vue — applies to the federation entry.
-        // (rspack builds the entry module itself; externals only affect
-        // imports of it from other modules.) File exports resolve to an
-        // absolute path.
-        const resolved = exp.pkg ? exp.file : path.resolve(esmx.root, exp.file);
+        let resolved: string;
+        if (exp.pkg) {
+            const { source } = await buildPkgWrapper({
+                root: esmx.root,
+                spec: exp.file
+            });
+            const safeName = `${exp.file.replace(/[^A-Za-z0-9_-]/g, '_')}.mjs`;
+            virtualModules[safeName] = source;
+            const actualPath = path.join(virtualBaseDir, safeName);
+            wrapperFiles.add(actualPath);
+            resolved = actualPath;
+        } else {
+            resolved = path.resolve(esmx.root, exp.file);
+        }
         entry[exp.name] =
             isClient && ctx.preEntries?.length
                 ? [...ctx.preEntries, resolved]
@@ -161,6 +188,13 @@ export function createRsbuildConfig(
                         // built, not externalized into an empty re-export —
                         // mirrors @esmx/rspack's module-link externals.
                         const issuer = data.contextInfo?.issuer;
+                        // The wrapper IS the federation chunk for its package;
+                        // its inner `import __m from '<abs-pkg-path>'` must not
+                        // be externalized or it would route back to the
+                        // wrapper itself (cyclic).
+                        if (issuer && wrapperFiles.has(issuer)) {
+                            return callback();
+                        }
                         if (issuer && isExternal(request)) {
                             return callback(null, `module ${request}`);
                         }
@@ -186,6 +220,14 @@ export function createRsbuildConfig(
                 rspackConfig.optimization.usedExports = false;
 
                 rspackConfig.plugins = rspackConfig.plugins ?? [];
+                if (Object.keys(virtualModules).length > 0) {
+                    rspackConfig.plugins.push(
+                        new RspackVirtualModulePlugin(
+                            virtualModules,
+                            `.esmx-virtual-${esmx.name}`
+                        )
+                    );
+                }
                 rspackConfig.plugins.push(
                     new EsmxManifestPlugin({
                         moduleName: esmx.name,

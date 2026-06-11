@@ -25,7 +25,8 @@ class PreactApp extends BaseApp {
             visitCount: getAppState(this.router).visitCount + 1,
             lastVisited: 'preact',
             frameworkVisits: {
-                preact: (getAppState(this.router).frameworkVisits.preact || 0) + 1
+                preact:
+                    (getAppState(this.router).frameworkVisits.preact || 0) + 1
             }
         });
         render(<AppContent router={this.router} />, container);
@@ -36,7 +37,8 @@ class PreactApp extends BaseApp {
             visitCount: getAppState(this.router).visitCount + 1,
             lastVisited: 'preact',
             frameworkVisits: {
-                preact: (getAppState(this.router).frameworkVisits.preact || 0) + 1
+                preact:
+                    (getAppState(this.router).frameworkVisits.preact || 0) + 1
             }
         });
         hydrate(<AppContent router={this.router} />, container);

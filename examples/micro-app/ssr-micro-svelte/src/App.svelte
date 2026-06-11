@@ -1,14 +1,14 @@
 <script lang="ts">
-    import type { Layout } from 'ssr-micro-shared/src/index';
+import type { Layout } from 'ssr-micro-shared/src/index';
 
-    interface Props {
-        layout: Layout;
-        title: string;
-    }
+interface Props {
+    layout: Layout;
+    title: string;
+}
 
-    let { layout, title }: Props = $props();
+const { layout, title }: Props = $props();
 
-    let count = $state(0);
+const count = $state(0);
 </script>
 
 <div>

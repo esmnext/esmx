@@ -63,6 +63,7 @@ npx create-esmx@latest my-app
 | [**@esmx/vite-vue**](https://github.com/esmnext/esmx/tree/master/packages/vite-vue) | <a href="https://www.npmjs.com/package/@esmx/vite-vue"><img src="https://img.shields.io/npm/v/@esmx/vite-vue.svg" alt="npm version" /></a> | 🔵 **Preview** | Vite tool for Vue |
 | [**@esmx/vite-react**](https://github.com/esmnext/esmx/tree/master/packages/vite-react) | <a href="https://www.npmjs.com/package/@esmx/vite-react"><img src="https://img.shields.io/npm/v/@esmx/vite-react.svg" alt="npm version" /></a> | 🔵 **Preview** | Vite tool for React |
 | [**@esmx/import**](https://github.com/esmnext/esmx/tree/master/packages/import) | <a href="https://www.npmjs.com/package/@esmx/import"><img src="https://img.shields.io/npm/v/@esmx/import.svg" alt="npm version" /></a> | 🔵 **Preview** | Import map utilities |
+| [**@esmx/pkg-wrapper**](https://github.com/esmnext/esmx/tree/master/packages/pkg-wrapper) | <a href="https://www.npmjs.com/package/@esmx/pkg-wrapper"><img src="https://img.shields.io/npm/v/@esmx/pkg-wrapper.svg" alt="npm version" /></a> | 🔵 **Preview** | CJS / ESM named-export wrappers for federation entries |
 | [**create-esmx**](https://github.com/esmnext/esmx/tree/master/packages/create-esmx) | <a href="https://www.npmjs.com/package/create-esmx"><img src="https://img.shields.io/npm/v/create-esmx.svg" alt="npm version" /></a> | 🔵 **Preview** | Project scaffolding tool |
 
 ## 🎯 Demo Projects

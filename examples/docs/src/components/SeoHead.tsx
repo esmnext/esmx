@@ -42,7 +42,9 @@ function splitLocale(routePath: string): { lang: 'en' | 'zh'; path: string } {
 
 function localizedUrl(lang: 'en' | 'zh', path: string): string {
     const suffix = path === '/' ? '' : path;
-    return lang === 'zh' ? `${SITE_ORIGIN}/zh${suffix}` : `${SITE_ORIGIN}${suffix}`;
+    return lang === 'zh'
+        ? `${SITE_ORIGIN}/zh${suffix}`
+        : `${SITE_ORIGIN}${suffix}`;
 }
 
 /** ISO 8601 date from Rspress's lastUpdatedTime (epoch ms or string), if usable. */

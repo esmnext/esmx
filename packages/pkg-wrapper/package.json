@@ -1,10 +1,10 @@
 {
-    "name": "@esmx/vite",
-    "description": "A Vite integration for the Esmx micro-frontend framework, providing Module Linking and SSR capabilities.",
+    "name": "@esmx/pkg-wrapper",
+    "description": "Builds federation-entry wrappers (`esmx://<spec>` virtual modules) that expose every named export of a CJS or ESM package as static ESM re-exports — used by @esmx/rspack, @esmx/rsbuild, and @esmx/vite to give CJS packages like React proper named exports across dev and prod.",
     "repository": {
         "type": "git",
         "url": "https://github.com/esmnext/esmx.git",
-        "directory": "packages/vite"
+        "directory": "packages/pkg-wrapper"
     },
     "homepage": "https://github.com/esmnext/esmx",
     "bugs": {
@@ -13,15 +13,11 @@
     "template": "library-node",
     "license": "MIT",
     "keywords": [
-        "Vite",
-        "Rollup",
-        "TypeScript",
-        "JavaScript",
-        "CSS",
-        "Build Tool",
-        "Module Linking",
-        "SSR",
-        "Development Experience"
+        "esmx",
+        "module-federation",
+        "cjs-to-esm",
+        "wrapper",
+        "virtual-module"
     ],
     "scripts": {
         "lint:js": "biome check --write --no-errors-on-unmatched",
@@ -34,16 +30,12 @@
     "engines": {
         "node": ">=24"
     },
-    "peerDependencies": {
-        "@esmx/core": "*"
-    },
     "dependencies": {
-        "@esmx/import": "workspace:*",
-        "vite": "^8.0.0"
+        "cjs-module-lexer": "^1.4.3",
+        "es-module-lexer": "^1.7.0"
     },
     "devDependencies": {
         "@biomejs/biome": "2.3.7",
-        "@esmx/core": "workspace:*",
         "@types/node": "^24.0.0",
         "@vitest/coverage-v8": "3.2.4",
         "typescript": "5.9.3",

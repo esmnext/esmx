@@ -18,7 +18,7 @@
         "noFallthroughCasesInSwitch": true,
         "noUnusedLocals": false,
         "noUnusedParameters": false,
-        "moduleResolution": "bundler",
+        "moduleResolution": "node",
         "esModuleInterop": true,
         "skipLibCheck": true,
         "allowSyntheticDefaultImports": true,
@@ -26,23 +26,11 @@
         "noEmit": true
     },
     "include": [
-        "server",
-        "test",
         "src",
-        "bin",
-        ".eslintrc.cjs",
         "*.mjs",
-        "./build.config.ts",
-        "private",
-        "public",
-        "**.cjs",
-        "**.js",
-        "**.mjs",
-        "**.ts",
-        "tests"
+        "*.ts"
     ],
     "exclude": [
-        "dist",
-        "template"
+        "dist"
     ]
 }

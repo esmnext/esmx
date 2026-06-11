@@ -36,7 +36,9 @@
     },
     "dependencies": {
         "@esmx/import": "workspace:*",
+        "@esmx/pkg-wrapper": "workspace:*",
         "@rsbuild/core": "^2.0.5",
+        "rspack-plugin-virtual-module": "^1.0.1",
         "webpack-hot-middleware": "^2.26.1",
         "webpack-node-externals": "~3.0.0"
     },

@@ -25,7 +25,9 @@ class PreactHtmApp extends BaseApp {
             visitCount: getAppState(this.router).visitCount + 1,
             lastVisited: 'preact-htm',
             frameworkVisits: {
-                'preact-htm': (getAppState(this.router).frameworkVisits['preact-htm'] || 0) + 1
+                'preact-htm':
+                    (getAppState(this.router).frameworkVisits['preact-htm'] ||
+                        0) + 1
             }
         });
         render(<AppContent router={this.router} />, container);
@@ -36,7 +38,9 @@ class PreactHtmApp extends BaseApp {
             visitCount: getAppState(this.router).visitCount + 1,
             lastVisited: 'preact-htm',
             frameworkVisits: {
-                'preact-htm': (getAppState(this.router).frameworkVisits['preact-htm'] || 0) + 1
+                'preact-htm':
+                    (getAppState(this.router).frameworkVisits['preact-htm'] ||
+                        0) + 1
             }
         });
         hydrate(<AppContent router={this.router} />, container);

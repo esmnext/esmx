@@ -26,6 +26,7 @@ export function parseOptions(
         scopes: options.scopes ?? {},
         injectChunkName: options.injectChunkName ?? false,
         preEntries: options.preEntries ?? [],
-        deps
+        deps,
+        wrapperFiles: options.wrapperFiles ?? []
     };
 }

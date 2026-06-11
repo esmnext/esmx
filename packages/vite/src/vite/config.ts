@@ -3,6 +3,7 @@ import path from 'node:path';
 import type { Esmx } from '@esmx/core';
 import type { InlineConfig, Plugin } from 'vite';
 import type { BuildTarget } from './build-target';
+import { esmxExternalRequirePlugin } from './external-require-plugin';
 import {
     esmxManifestPlugin,
     type ManifestExportInput
@@ -198,6 +199,22 @@ export function createViteConfig(
 
     const isExternal = createExternalPredicate(esmx, buildTarget);
 
+    // Federation bare specifiers (e.g. "react", "react-dom", "vue", linked
+    // micro deps) — passed to the require-rewrite plugin so it knows which
+    // `__require("X")` calls to convert to ESM imports.
+    const externalEnv =
+        buildTarget === 'node'
+            ? esmx.moduleConfig.environments.server
+            : esmx.moduleConfig.environments[buildTarget];
+    const externalNames = new Set<string>();
+    for (const scope of Object.values(externalEnv.scopes)) {
+        for (const key of Object.keys(scope)) externalNames.add(key);
+    }
+    for (const key of Object.keys(externalEnv.imports)) externalNames.add(key);
+    for (const dep of Object.keys(esmx.moduleConfig.links)) {
+        if (dep !== esmx.name) externalNames.add(dep);
+    }
+
     const hashed = isProd && !isNode;
     const entryFileNames = hashed ? '[name].[hash].final.mjs' : '[name].mjs';
     const chunkFileNames = isProd
@@ -254,6 +271,9 @@ export function createViteConfig(
         },
         plugins: [
             esmxPkgReexportPlugin(pkgReexports),
+            ...(externalNames.size
+                ? [esmxExternalRequirePlugin([...externalNames])]
+                : []),
             esmxManifestPlugin({
                 moduleName: esmx.name,
                 exports: manifestExports,

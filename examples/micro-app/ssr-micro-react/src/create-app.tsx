@@ -1,12 +1,11 @@
 import type { Router, RouterMicroAppOptions } from '@esmx/router';
 import { RouterProvider } from '@esmx/router-react';
 import { UnheadProvider } from '@unhead/react/client';
+import React from 'react';
 import { createRoot, hydrateRoot } from 'react-dom/client';
 import { renderToString } from 'react-dom/server';
-import React from 'react';
-import type { Unhead } from 'unhead/types';
-
 import { BaseApp, getAppState, setAppState } from 'ssr-micro-shared/src/index';
+import type { Unhead } from 'unhead/types';
 import { AppContent } from './app';
 
 function createApp(router: Router, head: Unhead<any>) {
