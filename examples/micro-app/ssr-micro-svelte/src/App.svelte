@@ -8,7 +8,8 @@ interface Props {
 
 const { layout, title }: Props = $props();
 
-const count = $state(0);
+// biome-ignore lint/style/useConst: Svelte 5 $state rune requires `let` for reassignable bindings
+let count = $state(0);
 </script>
 
 <div>
