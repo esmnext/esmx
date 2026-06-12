@@ -150,14 +150,27 @@ function assertHydratable(html, name) {
 }
 
 function spawnServer(target) {
-    const child = spawn('pnpm', ['--filter', `./${target.dir}`, 'start'], {
-        stdio: ['ignore', 'pipe', 'pipe'],
-        env: {
-            ...process.env,
-            PORT: String(target.port),
-            NODE_ENV: 'production'
+    // Bypass `pnpm --filter X start` (workspace resolution + npm-script overhead
+    // is ~5-10s per spawn on CI). Run dist/index.mjs directly with cwd set so
+    // esmx can find its dist/server/manifest.json. Each example's dist is
+    // already self-contained from `pnpm build:examples`.
+    // --import @esmx/core/cli installs the Node ESM loader hook esmx uses for
+    // bundler-handled assets (.css side-effect imports → no-op SyntheticModule)
+    // and entry.node.ts extension resolution. Without it federation-style
+    // imports crash at startup with ERR_UNKNOWN_FILE_EXTENSION.
+    const child = spawn(
+        process.execPath,
+        ['--import', '@esmx/core/cli', 'dist/index.mjs'],
+        {
+            cwd: target.dir,
+            stdio: ['ignore', 'pipe', 'pipe'],
+            env: {
+                ...process.env,
+                PORT: String(target.port),
+                NODE_ENV: 'production'
+            }
         }
-    });
+    );
     child._stderr = '';
     child.stderr.on('data', (b) => {
         child._stderr += b.toString();

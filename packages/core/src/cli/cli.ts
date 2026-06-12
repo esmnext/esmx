@@ -111,7 +111,7 @@ export function resolve(
     nextResolve: Function
 ) {
     if (
-        context?.parentURL.endsWith('.ts') &&
+        context?.parentURL?.endsWith('.ts') &&
         specifier.startsWith('.') &&
         !specifier.endsWith('.ts')
     ) {
