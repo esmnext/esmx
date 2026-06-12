@@ -39,11 +39,18 @@ jobs:
           corepack prepare pnpm@10.0.0 --activate
           pnpm --version
 
-      - name: Install
-        run: pnpm install --frozen-lockfile
-
-      - name: Build (packages then examples with bin relink)
-        run: pnpm build
+      - name: Install + build packages + relink + build examples
+        run: |
+          # The full `pnpm build` script also runs the whole test+coverage matrix,
+          # which is unnecessary for baseline capture. Do the install/build dance
+          # manually so we only spend CI time on what's needed for screenshots.
+          pnpm install --frozen-lockfile
+          pnpm build:packages
+          # Re-run install so the workspace bin symlinks pick up the freshly
+          # built `packages/core/dist/cli/index.mjs` (pnpm only links bins at
+          # install time; on first install dist didn't exist yet).
+          pnpm install --frozen-lockfile
+          pnpm build:examples
 
       - name: Capture hub baselines
         env:
@@ -73,5 +80,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: visual-baselines
-          path: tests/visual/__snapshots__/**
+          # Playwright's default snapshot path is <spec>-snapshots/, not __snapshots__/.
+          path: tests/visual/visual.spec.ts-snapshots/**
           retention-days: 30
