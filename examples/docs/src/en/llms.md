@@ -1,10 +1,10 @@
 ---
 titleSuffix: "Using Esmx with an AI assistant"
-description: "Single-file briefing on the Esmx framework for LLMs. Feed this page to Claude/Cursor/Copilot/Gemini before asking them to write Esmx code."
+description: "Single-file briefing on the Esmx framework for LLMs: the package.json esmx module protocol, validate/migrate CLI loop, and legacy syntax. Feed this page to Claude/Cursor/Copilot/Gemini before asking them to write Esmx code."
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx,LLM,AI assistant,Claude,Cursor,Copilot,Gemini"
+      content: "Esmx,LLM,AI assistant,Claude,Cursor,Copilot,Gemini,module protocol"
 ---
 
 # Using Esmx with an AI assistant
@@ -28,8 +28,8 @@ head:
    ESM loader (no jsdom).
 4. **Bundler-agnostic**: official integrations for **Rspack**, **Rsbuild**,
    and **Vite 8**. Same federation manifest format across all three.
-5. **One `package.json` field** (`esmx`) declares your remote's exports and
-   dependencies. Everything else is standard JS/TS/Vue/React/etc.
+5. **One `package.json` field** (`esmx`) declares your remote's entries,
+   exports, and dependencies. Everything else is standard JS/TS/Vue/React/etc.
 
 ## Mental model
 
@@ -37,7 +37,7 @@ Forget Module Federation's `expose`/`share`, qiankun's
 `bootstrap`/`mount`/`unmount`, single-spa's `registerApplication`. Esmx has
 none of those.
 
-A **remote** is a published ESM package. Its `package.json` lists what it
+A **remote** is a published ESM package. Its `package.json` declares what it
 exports. A **host** imports those exports through an `<script type="importmap">`
 the framework generates. That's it.
 
@@ -68,11 +68,183 @@ pnpm dev
 Templates available: `react-csr`, `react-ssr`, `vue-csr`, `vue-ssr`,
 `vue2-csr`, `vue2-ssr`, `shared-modules` (for a federated dep package).
 
+## The module protocol: declare in `package.json` `esmx`
+
+All protocol facts live in **one `package.json` field**, `esmx`, with
+exactly **four optional sub-fields**. `entry.node.ts` keeps only
+*behavior* (`devApp`, `server`, `postBuild`) — protocol facts placed
+there are an error (`E_PROTOCOL_IN_BEHAVIOR`).
+
+| Field | Meaning |
+|---|---|
+| `entry` | The framework entries (`client` / `server`), declared like any other export. Library-only modules simply omit it. |
+| `exports` | Subpath map with **logical names**: keys are `./<name>`, values are relative source files or `{ client, server }` forks (`false` disables a side). Consumers never see your physical paths. |
+| `provides` | Plain array of third-party packages this module re-exports for consumers (e.g. `["vue"]`). The provided version is your **resolved installed version**, captured into the manifest at build time. |
+| `uses` | Plain array of **module names** you consume from. Not specifiers, not versions — just names. **Array order is load-bearing** (see the merge rule below). |
+
+A module's declaration is strictly **local knowledge**: you can write it —
+human or agent — knowing nothing about any other module. Three roles cover
+every project:
+
+### Role 1 — provider (a shared platform package)
+
+```json
+{
+    "name": "shared",
+    "version": "3.2.1",
+    "esmx": {
+        "entry": {
+            "client": "./src/entry.client.ts",
+            "server": "./src/entry.server.ts"
+        },
+        "exports": {
+            "./ui": "./src/ui/index.ts",
+            "./store": {
+                "client": "./src/store.client.ts",
+                "server": "./src/store.server.ts"
+            }
+        },
+        "provides": ["vue", "@esmx/router"]
+    }
+}
+```
+
+Consumers import `'shared/ui'` — a logical name. Renaming
+`src/ui/index.ts` is no longer a breaking change.
+
+### Role 2 — consumer + provider (a feature remote)
+
+```json
+{
+    "name": "cart",
+    "version": "1.8.0",
+    "dependencies": { "shared": "^3.0.0" },
+    "peerDependencies": { "vue": "^3.4.0", "@esmx/router": "^3.0.0" },
+    "esmx": {
+        "entry": {
+            "client": "./src/entry.client.ts",
+            "server": "./src/entry.server.ts"
+        },
+        "exports": { "./widget": "./src/cart-widget.ts" },
+        "uses": ["shared"]
+    }
+}
+```
+
+Note what is **absent**: no `imports` map, no per-specifier wiring, no
+version field inside `esmx`. The version range lives where npm already
+puts it — `dependencies` (∪ `peerDependencies`) — and is validated at
+build time against the mounted artifact's actual version.
+
+### Role 3 — composer (the host)
+
+```json
+{
+    "name": "host",
+    "version": "2.0.0",
+    "dependencies": { "shared": "^3.0.0", "cart": "^1.5.0" },
+    "peerDependencies": { "vue": "^3.4.0", "@esmx/router": "^3.0.0" },
+    "esmx": {
+        "entry": {
+            "client": "./src/entry.client.ts",
+            "server": "./src/entry.server.ts"
+        },
+        "uses": ["shared", "cart"]
+    }
+}
+```
+
+`uses` is **transitive**: if `cart` uses `shared`, a host that uses `cart`
+gets `shared`'s supply through the chain. Business apps declare one line
+and stay ignorant of the chain's depth.
+
+### How wiring is derived (you never write it)
+
+Two rules replace every hand-written mapping:
+
+**The merge rule** — one sentence:
+`supply(M) = merge(supply(uses[0]), …, supply(uses[n]), M.provides)` —
+later entries override earlier ones, the module's own `provides` is the
+implicit last element, so **the order of the `uses` array decides who
+wins** when two modules provide the same package (list generic-to-specific;
+the specific layer wins, same convention family as `Object.assign`).
+
+**The lookup rule** — applied per specifier as the bundler traverses your
+code, no pre-pass, no declaration:
+
+```
+bare specifier found in my merged supply table → externalized, wired to the winner
+found nowhere                                  → my own bundled copy, isolated by
+                                                 per-module import-map scopes
+```
+
+Single-instance sharing is therefore inherent (one winner per package, the
+entire closure rewired to it), and multi-version coexistence needs zero
+vocabulary — a module that bundles its own copy is scope-isolated
+automatically. Type-only imports (`import type`) never produce wiring.
+
+### Diagnostics: the complete taxonomy
+
+Every failure is **build-time**, machine-readable, and carries
+*what / why / fix* — and every fix is an edit to a declaration that
+already exists, never a new concept.
+
+| Code | Kind | What it means | Typical fix |
+|---|---|---|---|
+| `E_NOT_LINKED` | error | A name in `uses` is absent from the mount table. | `npm install` the module (npm packages auto-mount at `node_modules/<name>/dist`) or add a `links` override. |
+| `E_NOT_BUILT` | error | Mounted, but no built artifact yet. Blocks only manifest-dependent checks, not declaration wiring. | Build the listed modules first. |
+| `E_CYCLE` | error | The `uses` chain (or mount walk) revisits a module. | Architecture error — break the cycle; it is never silently ignored. |
+| `E_VERSION` | error | Either *intent* (the winner's version violates a layer's `dependencies`/`peerDependencies` range) or *substitution safety* (a losing provider's chunks were built against an incompatible version — same-major minimum). Names the layer and which check failed. | Align the named layer's range, or upgrade/rebuild the provider. |
+| `E_NOT_USED` | error | You imported `'mod/export'` but `mod` is not in your `uses` chain. | Add `"mod"` to `uses` (and `dependencies`). |
+| `E_NO_EXPORT` | error | The export name is absent from the provider's declaration. Message lists the module's actual exports. | Fix the import specifier, or add the export to the provider's `esmx.exports`. |
+| `E_PROTOCOL` | error | A mounted manifest's `protocol` is newer than this linker supports. | Upgrade `@esmx/core`. |
+| `E_PROTOCOL_IN_BEHAVIOR` | error | Protocol facts (a `modules` config) found in `entry.node.ts`. | Move them to `package.json` `esmx` — `esmx migrate` does this for you. |
+| `W_MULTI_CANDIDATE` | warning | A package had multiple providers in the merge chain. Reports winner, losers, and rewired layers. | Expected for layered bases; reorder `uses` if the wrong layer won. |
+| `W_NO_RANGE` | warning | A layer consumes a provided package without declaring any version range. | Add the package to `dependencies` or `peerDependencies`. |
+| `W_TYPE_DRIFT` | warning | Your `devDependencies` types copy diverges from the elected winner's resolved version (the version your code actually runs on). | Align the `devDependencies` version. |
+
+### The verification loop: `esmx validate --json`
+
+`esmx validate` is a **build-free dry run** of the whole resolution: mount
+walk, version checks, supply merge, export checks. Run it after every
+declaration edit; the judge of a correct declaration is its exit status,
+not human reading. With `--json` it emits a structured envelope — errors
+AND warnings:
+
+```json
+{
+    "diagnostics": [
+        {
+            "code": "E_VERSION",
+            "check": "substitution-safety",
+            "module": "base",
+            "package": "vue",
+            "found": "3.0.2",
+            "required": "built against 3.4.21 (same major)",
+            "message": "what happened and why",
+            "fix": "the declaration edit to make"
+        }
+    ]
+}
+```
+
+`check` appears on `E_VERSION` entries and is either `"intent"` or
+`"substitution-safety"`. An empty `diagnostics` array means the
+declarations fully determine a valid wiring.
+
+### Adopting on an existing project: `esmx migrate`
+
+`esmx migrate` is a codemod: it lifts a legacy `entry.node.ts` `modules`
+config (`pkg:`/`root:` exports, `imports`) into the `package.json` `esmx`
+declaration and rewrites consumer import sites to logical names, emitting
+a machine-readable report of every change. Run `esmx validate --json`
+afterwards.
+
 ## A minimal Rspack remote
 
-Three files. Copy-paste runnable.
+Three files plus the client entry. Copy-paste runnable.
 
-**`package.json`**:
+**`package.json`** — protocol facts live here:
 
 ```json
 {
@@ -85,6 +257,15 @@ Three files. Copy-paste runnable.
         "build": "esmx build",
         "start": "esmx start"
     },
+    "esmx": {
+        "entry": {
+            "client": "./src/entry.client.ts",
+            "server": "./src/entry.server.ts"
+        },
+        "exports": {
+            "./app": "./src/app.ts"
+        }
+    },
     "dependencies": {
         "@esmx/core": "^3.0.0-rc.117"
     },
@@ -94,20 +275,14 @@ Three files. Copy-paste runnable.
 }
 ```
 
-**`src/entry.node.ts`** — Esmx config + Node HTTP server:
+**`src/entry.node.ts`** — behavior only (dev server + Node HTTP server),
+no protocol facts:
 
 ```ts
 import http from 'node:http';
 import type { EsmxOptions } from '@esmx/core';
 
 export default {
-    modules: {
-        // Exports this remote publishes for hosts / other remotes to import.
-        // `file: ''` makes a name visible without binding it to an entry.
-        exports: {
-            './app': { file: './src/app' }
-        }
-    },
     async devApp(esmx) {
         return import('@esmx/rspack').then((m) => m.createRspackApp(esmx));
     },
@@ -148,6 +323,12 @@ export default async (rc: RenderContext) => {
 };
 ```
 
+**`src/entry.client.ts`** — client entry (hydration bootstrap):
+
+```ts
+console.log('hydrated');
+```
+
 That's the entire app. Run `pnpm dev` and visit `http://localhost:3000`.
 
 ## A minimal Vite remote
@@ -171,52 +352,45 @@ same import map.** The bundler choice is purely a developer-experience knob.
 
 `@esmx/rsbuild` works the same way (`m.createRsbuildApp(esmx)`).
 
-## Exposing modules
-
-Add entries under `modules.exports` in `entry.node.ts`:
-
-```ts
-modules: {
-    exports: {
-        './app': { file: './src/app' },
-        './card': { file: './src/components/card.vue' },
-        './utils': { file: './src/utils' }
-    }
-}
-```
-
-A consuming remote (or the host) imports them by the remote's package name +
-the export path:
-
-```ts
-import { Card } from 'my-remote/card';
-```
-
-The framework rewrites that bare import via the import map it built from
-your remote's manifest.
-
 ## Consuming another remote
 
-In the host's `entry.node.ts`:
+Add it to `dependencies` and `uses` — that's the whole wiring:
 
-```ts
-modules: {
-    // Map "import 'my-remote/...'" to my-remote's manifest at this URL.
-    links: {
-        'my-remote': 'http://localhost:4000'
+```json
+{
+    "dependencies": { "my-remote": "^0.1.0" },
+    "esmx": {
+        "entry": {
+            "client": "./src/entry.client.ts",
+            "server": "./src/entry.server.ts"
+        },
+        "uses": ["my-remote"]
     }
 }
 ```
 
-Then in your code:
+Then in your code, import by **logical export name**:
 
 ```ts
-import { Card } from 'my-remote/card';
+import { App } from 'my-remote/app';
 ```
 
-The host fetches `my-remote`'s manifest once, builds an import map from it,
-and injects the map into every SSR HTML response. The browser uses it
-natively — no client-side loader.
+Modules installed via npm **auto-mount** at `node_modules/<name>/dist` —
+no path configuration. For monorepo siblings or deploy directories, a
+`links` entry (an *environment* fact, kept in `entry.node.ts`'s `modules`
+block today) overrides the mount point:
+
+```ts
+modules: {
+    links: {
+        'my-remote': '../my-remote/dist'
+    }
+}
+```
+
+The consumer builds an import map from the mounted module's manifest and
+injects it into every SSR HTML response. The browser resolves it natively
+— no client-side loader.
 
 ## CSS in federation
 
@@ -281,13 +455,80 @@ await hydrateApp();
 Vue, `hydrateRoot(...)` for React) on the same component tree the server
 rendered.
 
+## Legacy syntax (deprecated — removed in the next major)
+
+> **For NEW code, always use the `package.json` `esmx` declaration above.**
+> The syntax below still works during the transition and you WILL see it in
+> existing projects — recognize it, maintain it, and offer `esmx migrate`
+> when asked to modernize. Do not generate it for new modules.
+
+Legacy projects keep all protocol facts in `entry.node.ts` under a
+`modules` key with four fields:
+
+```ts
+// entry.node.ts (LEGACY)
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+    modules: {
+        // Where mounted modules live (hand-written relative dist paths).
+        links: {
+            'shared': '../shared/dist'
+        },
+        // Manual specifier → provider wiring (replaced by the supply merge).
+        imports: {
+            'vue': 'shared/vue'
+        },
+        // String-prefix DSL:
+        //   'pkg:vue'           → re-export the npm package "vue"
+        //                         (new protocol: provides: ["vue"])
+        //   'root:src/index.ts' → expose a source file; the PUBLIC name IS
+        //                         the source path ("shared/src/index")
+        //                         (new protocol: exports: {"./ui": "./src/ui/index.ts"})
+        exports: [
+            'pkg:vue',
+            'root:src/index.ts'
+        ]
+    },
+    async devApp(esmx) { /* ... */ },
+    async server(esmx) { /* ... */ }
+} satisfies EsmxOptions;
+```
+
+Key differences from the new protocol — these are the legacy traps:
+
+- **Public export names equal source paths.** A legacy consumer writes
+  `import { x } from 'shared/src/index'` — the provider's directory layout
+  is the API, and renaming a source file breaks every consumer. Under the
+  new protocol, only logical names (`'shared/ui'`) are public; there is no
+  `./src/*` passthrough.
+- **Wiring is manual.** Every consumer hand-writes `imports` lines that
+  the new protocol derives from declarations.
+- **Nothing is validated until runtime.** No version checks, no export
+  checks, no structured diagnostics.
+
+`esmx migrate` converts all of this mechanically. Per RFC 0001 the legacy
+syntax is removed entirely in a later phase — there is no long-term dual
+syntax.
+
 ## What does NOT exist
 
 Don't generate these — they aren't real APIs:
 
 - `Esmx.register(...)` / `registerApplication(...)` (single-spa style)
 - `bootstrap` / `mount` / `unmount` / `update` lifecycle exports (qiankun style)
-- `expose` / `shared` / `singleton` config (Module Federation style)
+- `expose` / `shared` / `singleton` / `optional` / `resolutions` / `sealed`
+  config (Module Federation style). Esmx needs **no sharing-arbitration
+  vocabulary at all**: composition is a static merge resolved at build
+  time — single-instance sharing is inherent (one winner per package,
+  whole closure rewired), and multi-instance coexistence is just a module
+  bundling its own scope-isolated copy.
+- A resolution lockfile (`esmx.resolution.json` or similar). **The import
+  map emitted into `dist` IS the resolution result**; declarations alone
+  fully determine it. Diagnostics live in `esmx validate` and the build
+  log, not in a committed artifact.
+- A specifier-level needs map inside `esmx.uses` — `uses` is a plain array
+  of module names; the bundler discovers specifiers itself.
 - `useStyles()` / `injectGlobalStyles()` hooks
 - `<MicroApp />` JSX components
 - `window.__POWERED_BY_QIANKUN__` globals
@@ -297,6 +538,10 @@ If you find yourself writing any of those, you're probably thinking of a
 different framework.
 
 ## Common errors and what they mean
+
+**First reflex: run `esmx validate --json`.** Most wiring mistakes surface
+there as a structured diagnostic (see the taxonomy above) with the fix
+spelled out.
 
 **`SyntaxError: Unexpected token '.'` during dev SSR.**
 You imported a `.css` file from a path the framework's loader didn't
@@ -309,10 +554,13 @@ The CLI's Node ESM loader hook handles this, but if your `entry.node.ts`
 transitively imports a `.css` file in code that the bundler doesn't pre-process,
 move that import into a JS-eval-only path (e.g. `entry.client.ts`).
 
-**`Cannot find module '<remote>/<export>'`.**
-Three checks: (1) is `'<remote>'` listed in `modules.links` of the
-consumer? (2) is `'<export>'` listed in `modules.exports` of the producer?
-(3) did the producer build (the host reads its `dist/manifest.json`)?
+**`Cannot find module '<remote>/<export>'` at runtime.**
+On the new protocol this is almost always caught earlier as `E_NOT_LINKED`
+(remote not mounted), `E_NOT_USED` (remote missing from your `uses`),
+`E_NO_EXPORT` (export not declared), or `E_NOT_BUILT` (no artifact yet) —
+run `esmx validate`. On a legacy project, check: (1) is `'<remote>'` in the
+consumer's `modules.links`? (2) is the export in the producer's
+`modules.exports`? (3) did the producer build (`dist/manifest.json` exists)?
 
 **Hydration mismatch / `<div data-ssr>` blanking after mount.**
 The client tree disagrees with the server-rendered HTML. Typical cause:
