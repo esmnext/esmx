@@ -9,6 +9,26 @@ export {
     type SpecifierMap
 } from './core';
 export type {
+    Diagnostic,
+    DiagnosticCheck,
+    DiagnosticCodeValue,
+    DiagnosticSeverity,
+    EsmxDeclaration,
+    EsmxDeclarationEntry,
+    EsmxDeclarationExportFork,
+    EsmxDeclarationExportValue,
+    ReadDeclarationResult,
+    ResolveDeclarationOptions,
+    ResolveDeclarationResult,
+    SupplyEntry
+} from './declaration';
+export {
+    DiagnosticCode,
+    esmxDeclarationSchema,
+    readDeclaration,
+    resolveDeclaration
+} from './declaration';
+export type {
     ManifestJson,
     ManifestJsonChunk,
     ManifestJsonChunks,

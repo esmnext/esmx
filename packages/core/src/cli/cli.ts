@@ -4,6 +4,7 @@ import pkg from '../../package.json' with { type: 'json' };
 
 import { COMMAND, Esmx, type EsmxOptions } from '../core';
 import { resolveImportPath } from '../utils/resolve-path';
+import { runValidate, VALIDATE_HELP } from './validate';
 
 async function getSrcOptions(): Promise<EsmxOptions> {
     return import(resolveImportPath(process.cwd(), './src/entry.node.ts')).then(
@@ -30,6 +31,35 @@ async function getDistOptions(): Promise<EsmxOptions> {
 }
 
 export async function cli(command: string) {
+    if (command === 'validate') {
+        // Handled before the banner: `--json` must keep stdout pure JSON.
+        const flags = process.argv.slice(3);
+        if (flags.includes('--help')) {
+            console.log(VALIDATE_HELP);
+            return;
+        }
+        const result = await runValidate(process.cwd(), {
+            json: flags.includes('--json')
+        });
+        console.log(result.output);
+        if (result.exitCode !== 0) {
+            process.exit(result.exitCode);
+        }
+        return;
+    }
+    if (command === 'migrate') {
+        // Handled before the banner: `--json` must keep stdout pure JSON.
+        const opts = await getSrcOptions();
+        const { runMigrate } = await import('../declaration/migrate');
+        const ok = runMigrate(process.cwd(), opts.modules, {
+            dryRun: process.argv.includes('--dry-run'),
+            json: process.argv.includes('--json')
+        });
+        if (!ok) {
+            process.exit(17);
+        }
+        return;
+    }
     console.log(`🔥 ${styleText('yellow', 'Esmx')} v${pkg.version}
     `);
     if (

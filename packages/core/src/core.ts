@@ -8,6 +8,7 @@ import type { ImportMap, ScopesMap, SpecifierMap } from '@esmx/import';
 
 import serialize from 'serialize-javascript';
 import { type App, createApp } from './app';
+import { resolveModuleOptions } from './declaration';
 import { getManifestList, type ManifestJson } from './manifest-json';
 import {
     type ModuleConfig,
@@ -396,13 +397,14 @@ export class Esmx {
             throw new Error('Cannot be initialized repeatedly');
         }
 
-        const { name } = await this.readJson(
+        const packageJson = await this.readJson<Record<string, unknown>>(
             path.resolve(this.root, 'package.json')
         );
+        const name = String(packageJson.name);
         const moduleConfig = parseModuleConfig(
             name,
             this.root,
-            this._options.modules
+            resolveModuleOptions(this.root, packageJson, this._options.modules)
         );
         const packConfig = parsePackConfig(this._options.packs);
         this._readied = {
