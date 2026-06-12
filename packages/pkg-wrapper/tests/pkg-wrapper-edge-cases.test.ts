@@ -26,7 +26,9 @@ async function writePkg(
     const dir = path.join(fixtureRoot, 'node_modules', name);
     await fs.mkdir(dir, { recursive: true });
     for (const [file, content] of Object.entries(files)) {
-        await fs.writeFile(path.join(dir, file), content);
+        const target = path.join(dir, file);
+        await fs.mkdir(path.dirname(target), { recursive: true });
+        await fs.writeFile(target, content);
     }
 }
 
@@ -160,6 +162,31 @@ beforeAll(async () => {
             ''
         ].join('\n')
     });
+
+    // Simulates packages like vue whose `./dist/*` exports map points at a
+    // single-line minified bundle that es-module-lexer can't parse, while
+    // the root entry remains lexable.
+    await writePkg('minified-subpath-pkg', {
+        'package.json': JSON.stringify({
+            name: 'minified-subpath-pkg',
+            version: '1.0.0',
+            type: 'module',
+            exports: {
+                '.': './index.mjs',
+                './dist/*': './dist/*'
+            }
+        }),
+        'index.mjs': [
+            'export const alpha = 1;',
+            'export const beta = 2;',
+            'export default { alpha, beta };',
+            ''
+        ].join('\n'),
+        // Unterminated template literal — es-module-lexer raises Parse error,
+        // matching the failure mode we observed on real minified bundles
+        // (vue.runtime.esm-browser.prod.js et al).
+        'dist/bundle.prod.js': 'const e = `unterminated;\nexport default e;\n'
+    });
 });
 
 afterAll(async () => {
@@ -282,6 +309,23 @@ describe('inspectPkg deep subpath specifiers (real packages)', () => {
         expect(rootEntry.names).toContain('createPortal');
         expect(rootEntry.names).not.toContain('createRoot');
         expect(subpath.names).toContain('createRoot');
+    });
+
+    it('falls back to the package root entry when a deep subpath resolves to an unlexable bundle', async () => {
+        // The fixture maps `./dist/*` to a contrived "minified" file the
+        // ESM lexer rejects. Without the fallback the wrapper would degrade
+        // to default-only re-export and lose `alpha` / `beta`.
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        const r = await inspectPkg(
+            fixtureRoot,
+            'minified-subpath-pkg/dist/bundle.prod.js'
+        );
+        expect(r.names).toEqual(expect.arrayContaining(['alpha', 'beta']));
+        expect(r.hasDefault).toBe(true);
+        // The fallback path should not log the "failed to enumerate" warning —
+        // it succeeded on the second attempt.
+        expect(warnSpy).not.toHaveBeenCalled();
+        warnSpy.mockRestore();
     });
 });
 

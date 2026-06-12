@@ -388,10 +388,9 @@ export async function inspectPkg(
     spec: string
 ): Promise<{ names: string[]; hasDefault: boolean }> {
     await ensureLexers();
-    try {
-        const file = resolveFromRoot(root, spec);
+    const requireFrom = createRequire(path.join(root, 'index.js'));
+    const lexFile = (file: string) => {
         const kind = detectModuleKind(file);
-        const requireFrom = createRequire(path.join(root, 'index.js'));
         if (kind === 'esm') {
             const r = lexESMRecursive(file, requireFrom, new Set());
             return {
@@ -409,13 +408,47 @@ export async function inspectPkg(
             ),
             hasDefault: true
         };
-    } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
+    };
+    try {
+        return lexFile(resolveFromRoot(root, spec));
+    } catch (firstError) {
+        // Deep-subpath specifiers like `pkg:vue/dist/vue.runtime.esm-browser.prod.js`
+        // can resolve to minified single-line bundles that es-module-lexer
+        // can't parse. The package's root entry typically declares the same
+        // (or a superset of) named API surface, so retry there — the
+        // federation wrapper just needs a static names list that the bundler
+        // also sees, and the bundler resolves the actual deep subpath itself
+        // via the import-map alias the host sets.
+        const baseSpec = bareSpecOf(spec);
+        if (baseSpec && baseSpec !== spec) {
+            try {
+                return lexFile(resolveFromRoot(root, baseSpec));
+            } catch {
+                // fall through to the original error reporting below
+            }
+        }
+        const message =
+            firstError instanceof Error
+                ? firstError.message
+                : String(firstError);
         console.warn(
             `[esmx:pkg-wrapper] failed to enumerate named exports of "${spec}" (${message}); only its default export will be re-exported, so named imports of this federated package may fail at runtime.`
         );
         return { names: [], hasDefault: false };
     }
+}
+
+/**
+ * Extract the bare package name from a deep specifier:
+ * `vue/dist/vue.runtime.esm-browser.prod.js` → `vue`,
+ * `@scope/pkg/sub` → `@scope/pkg`. Returns `null` if the input is already
+ * a bare package name (no subpath to strip).
+ */
+function bareSpecOf(spec: string): string | null {
+    const segments = spec.split('/');
+    const nameSegments = spec.startsWith('@') ? 2 : 1;
+    if (segments.length <= nameSegments) return null;
+    return segments.slice(0, nameSegments).join('/');
 }
 
 /**

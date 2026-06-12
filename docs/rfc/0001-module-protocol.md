@@ -169,29 +169,47 @@ for each bare specifier S lexed from my source:
   **resolved installed version**, captured into the manifest at build
   time (a concrete version, never a range — range-vs-range satisfaction
   is ill-defined and explicitly rejected).
-- **`uses`** — needs, with semver ranges.
-  - Bare package (`vue`): must be satisfied by a mounted provider.
-    Consuming via `uses` is **consume-only by definition**: the specifier
-    is externalized and the consumer never bundles its own copy. A module
-    that wants its own bundled copy simply does not declare `uses` —
-    per-module import-map scopes isolate it naturally (this is how the
-    hub's vue2/vue3 coexistence already works, with zero protocol
-    vocabulary).
-  - Module export (`shared/ui`): the module must be mounted, the export
-    must exist, and the mounted artifact's version must satisfy the
-    consumer's `dependencies` range (R6: a `uses` range of `*` or
-    omission defaults to the `dependencies` range — declare once).
+- **`uses`** — a plain array of module names: *which mounted modules I
+  consume from*. Each entry must resolve against the mount table
+  (`E_NOT_LINKED` otherwise). Granularity is deliberately the **module**,
+  not the specifier — mirroring npm, where you depend on a package, not
+  on its individual exports:
+  - Specifier-level needs are NOT declared: they are lexed from the
+    consumer's own source imports (an existing mechanism — the bundler
+    lexes them anyway to decide externalization). A bare specifier found
+    in a used module's `provides` is externalized and wired to it; a
+    specifier found nowhere is bundled as the consumer's own copy,
+    isolated by per-module import-map scopes (this is how the hub's
+    vue2/vue3 coexistence already works, with zero protocol vocabulary).
+  - Version ranges are NOT declared here: the `dependencies` range is
+    the single source of truth, validated against the mounted artifact's
+    transcribed version (`E_VERSION` on mismatch). Bare-package version
+    expectations are validated against the consumer's own
+    devDependencies copy (the types copy), with drift warnings.
+  - `uses` is transitive: a base module may itself use another base
+    (`ssr-vue-base` uses `ssr-base`), forming layered platform chains;
+    resolution walks the chain with cycle detection. Business apps
+    declare one line and stay ignorant of the chain's depth.
+  - Overlapping supply across the chain is **merged with deterministic
+    precedence**, not rejected: layered bases legitimately override
+    lower layers (a vue-base lays a vue-specific layer over a generic
+    base). Precedence: **own `provides` > nearer chain layer > later
+    entry in the `uses` array** (generic-to-specific listing, the
+    specific layer wins — `Object.assign` semantics). Own-provides
+    priority is forced by instance consistency: a module that provides
+    `vue` downstream must itself run on the copy it provides.
 
 There is deliberately **no arbitration field** (no `resolutions`, no
-`singleton`/`optional` flags). Module Federation needs those because its
-sharing is negotiated at runtime; esmx composition is static and
-declared, so every conflict is an architecture error whose fix lives in
-declarations that already exist (remove one side's `provides`, narrow a
-`uses` range, or drop `uses` and bundle your own copy). Because no
-mechanism can resolve one specifier to two providers, single-instance
-sharing is an inherent property of the model, not a flag. Multi-instance
-coexistence happens only when a module bundles its own copy — today's
-natural, scope-isolated behavior.
+`singleton`/`optional` flags) and **no specifier-level needs map**.
+Module Federation needs arbitration because its sharing is negotiated at
+runtime; esmx composition is static and declared: every wiring decision
+is derived from declaration structure (chain distance and array order),
+and the remaining failure modes are architecture errors whose fixes live
+in declarations that already exist. Because election (§7) picks exactly
+one winner per bare package and rewires the whole closure to it,
+single-instance sharing is an inherent property of the model, not a
+flag. Multi-instance coexistence happens only when a module bundles its
+own copy — today's natural, scope-isolated behavior.
 
 ### 4.2 What is deleted
 
@@ -212,7 +230,7 @@ Additive changes to `dist/<env>/manifest.json`:
   "version": "1.8.0",               // NEW: transcribed from package.json
   "exports": { "widget": { "name": "widget", "pkg": false, "file": "...", "identifier": "cart/widget" } },
   "provides": { "vue": "3.4.21" },  // NEW: resolved versions captured at build
-  "uses": { "vue": "^3.4.0" },      // NEW: transcribed needs
+  "uses": ["shared"],               // NEW: transcribed consumption edges
   "scopes": {}, "files": [], "chunks": {}, "integrity": {}
 }
 ```
@@ -263,23 +281,46 @@ versions and artifact-version validation, which degrade to
 declaration-level wiring.
 
 ```
-for each uses entry (spec, range) across the mounted graph:
-  module-export spec ("cart/widget"):
-    E_NOT_LINKED   module not mounted (distinguishes "not declared" from
-                   "declared but not built" — different fixes)
-    E_NO_EXPORT    export absent (lists what the module actually exports)
-    E_VERSION      mounted artifact version ∉ dependencies range
-  bare-package spec ("vue"):
-    candidates = mounted modules declaring it in provides
-                 whose resolved version satisfies range
-    1 candidate  → wire imports[spec] = "<provider>/<spec>"
-    0 candidates → E_NO_PROVIDER (lists each mounted module's provides;
-                   fix: mount a provider, or drop `uses` to bundle own copy)
-    >1           → E_MULTIPLE_PROVIDERS (fix: remove one side's
-                   `provides`, or narrow the `uses` range)
+phase 1 — consumption graph:
+  for each name in my uses[] (transitively, with cycle detection):
+    name ∉ mount table              → E_NOT_LINKED (distinguishes "not
+                                      declared" from "declared but not
+                                      built" — different fixes)
+    artifact version ∉ dependencies range → E_VERSION
+
+phase 2 — supply election (per bare package P in the closure):
+  candidates = every module in the closure declaring P in provides
+  winner W   = highest precedence candidate:
+               own provides > nearer chain layer > later uses[] entry
+  rewire     = EVERY layer's P — including losing providers' own
+               internal chunks — points at W. Import maps make this a
+               link-time rewiring of the scope table; no artifact is
+               touched. Losing copies are dropped from the map
+               (reported as unused in the audit artifact).
+  validate   = W's resolved version must satisfy every layer's
+               dependencies range for P → E_VERSION naming the
+               incompatible layer. A layer never silently "falls back"
+               to its own copy — that would split instances.
+
+phase 3 — wiring by lookup (per specifier lexed from my source):
+  module-export form ("shared/ui"):
+    exporter ∉ my uses chain        → E_NOT_USED
+    export absent from declaration  → E_NO_EXPORT (lists actual exports)
+    else                            → externalize, wire to identifier
+  bare package ("vue"):
+    elected in phase 2              → externalize, wire to winner
+    no candidate anywhere           → bundle own copy (scope-isolated)
+
 all failures are build-time; every error carries what / why / fix —
 and every fix is an edit to an existing declaration, never a new concept
 ```
+
+Election is the link-time, deterministic analogue of Module Federation's
+runtime share-scope negotiation — same problem, solved statically: the
+composer's import map is the single late-binding point, so overlapping
+supply resolves to one winner per package with the entire closure
+rewired to it, before anything ships. The one-sentence rule: **nearest
+wins, self first, the whole chain follows the winner.**
 
 Multi-version coexistence needs no resolver vocabulary: modules that
 bundle their own copy are isolated by per-module import map scopes
@@ -381,8 +422,9 @@ watch-invalidation machinery across three dev paths is future work).
    multi-version case the compression heuristic guards against.
 2. **Hub migration green**: the 16-module hub fully migrated to the new
    protocol, smoke + visual CI passing. It is the realistic stress test.
-3. **`provides`/`uses` semantics tests**: consume-only externalization,
-   `E_MULTIPLE_PROVIDERS` / `E_NO_PROVIDER` guidance quality,
+3. **`provides`/`uses` semantics tests**: election precedence (own >
+   nearer > later array entry), whole-closure rewiring incl. losing
+   providers' internal chunks, per-layer `E_VERSION` guidance quality,
    own-copy scope isolation, version-drift warnings.
 
 ## 11. Expert review record
@@ -405,6 +447,8 @@ Three independent reviews, each grounded in the source. Dispositions:
 | Dev-watch staleness of auto-wiring | Bundler review | **Scoped out of v1**, documented (§10) |
 | `exports` encapsulation vs raw dist mount | TS review | **Documented as intentional** (§6) |
 | Pack-time package.json rewrite reliability | TS review | **Adopted**: staging dir + publint-class validation (§8) |
+| Specifier-level `uses` map duplicates facts that already exist (source imports declare needs; `dependencies` declares ranges) | Maintainer | **Adopted**: `uses` reduced to a module-name array referencing the mount table; the external-dependency graph is generated by lookup (lexed specifiers × used modules' supply), never hand-declared (§4.1, §7) |
+| Overlapping supply in layered base chains (base and vue-base both provide vue) is the normal case, not an error — merge semantics needed | Maintainer | **Adopted**: `E_MULTIPLE_PROVIDERS` replaced by deterministic election (own > nearer > later array entry) with whole-closure rewiring and per-layer version validation — MF's runtime share-scope negotiation solved statically at link time (§4.1, §7) |
 
 ## 12. Non-goals / future work
 
