@@ -28,13 +28,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup pnpm + node
+      - name: Setup node 24 (container ships node 20)
         run: |
-          # Container ships node 20+; install pnpm via corepack.
+          # The playwright image bundles node 20 but the repo requires >=24.
+          # Install node 24 via NodeSource and replace the runtime in PATH.
+          curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
+          apt-get install -y nodejs
+          node --version
           corepack enable
           corepack prepare pnpm@10.0.0 --activate
           pnpm --version
-          node --version
 
       - name: Install
         run: pnpm install --frozen-lockfile
