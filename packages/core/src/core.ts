@@ -632,7 +632,7 @@ export class Esmx {
             await this._options.postBuild?.(this);
             return true;
         } catch (e) {
-            console.error(e);
+            console.error('[@esmx/core] postBuild hook failed:', e);
             return false;
         }
     }

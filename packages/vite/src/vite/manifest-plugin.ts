@@ -57,6 +57,53 @@ export function chunkSourceKey(
 }
 
 /**
+ * Per-chunk record emitted into the federation manifest. CSS files travel
+ * through here — `chunks[].css[]` is read by the host's renderHost to inject
+ * `<link rel="stylesheet">` into `<head>`. Same contract as @esmx/rspack and
+ * @esmx/rsbuild; cross-bundler symmetry. See G section of redesign-plan.md.
+ */
+export interface CollectedChunk {
+    key: string;
+    js: string;
+    css: string[];
+}
+
+interface ViteOutputChunk {
+    type: string;
+    fileName?: string;
+    /** Set by Vite during generateBundle; not in Rollup's public type. */
+    viteMetadata?: { importedCss?: Set<string> };
+}
+
+/**
+ * Pure bundle → chunk list. Reads `chunk.viteMetadata.importedCss` (the
+ * Vite/Rolldown convention for CSS emitted alongside a JS chunk). Exported so
+ * unit tests can exercise CSS extraction without a real Vite build.
+ */
+export function collectChunksFromBundle(
+    bundle: Record<string, unknown>,
+    moduleName: string,
+    root: string
+): CollectedChunk[] {
+    const result: CollectedChunk[] = [];
+    for (const [fileName, c] of Object.entries(bundle)) {
+        const chunk = c as ViteOutputChunk;
+        if (chunk.type !== 'chunk') continue;
+        const importedCss = chunk.viteMetadata?.importedCss;
+        result.push({
+            key: chunkSourceKey(
+                moduleName,
+                root,
+                c as unknown as RenderedChunk
+            ),
+            js: fileName,
+            css: importedCss ? [...importedCss] : []
+        });
+    }
+    return result;
+}
+
+/**
  * Rollup/Vite plugin that emits an esmx-format manifest.json into the bundle.
  *
  * The manifest is the contract @esmx/core consumes to build import maps and to
@@ -98,7 +145,7 @@ export function esmxManifestPlugin(options: EsmxManifestPluginOptions): Plugin {
                     );
                     if (!chunk || chunk.type !== 'chunk') {
                         throw new Error(
-                            `[esmx:manifest] missing output chunk for export "${exp.name}"`
+                            `[@esmx/vite] manifest: vite produced no entry chunk for export "${exp.name}". Check that modules.exports in entry.node.ts lists "${exp.name}" and that build.rollupOptions.input includes it.`
                         );
                     }
                     exportsField[exp.name] = {
@@ -118,22 +165,12 @@ export function esmxManifestPlugin(options: EsmxManifestPluginOptions): Plugin {
 
                 const files = Object.keys(bundle);
                 const chunks: ManifestJson['chunks'] = {};
-                for (const [fileName, c] of Object.entries(bundle)) {
-                    if (c.type === 'chunk') {
-                        const key = chunkSourceKey(moduleName, root, c);
-                        // viteMetadata carries the CSS emitted for a chunk; it is
-                        // present at generateBundle time but absent from Rollup's
-                        // OutputChunk type, hence the guarded access.
-                        const importedCss = (
-                            c as { viteMetadata?: { importedCss: Set<string> } }
-                        ).viteMetadata?.importedCss;
-                        chunks[key] = {
-                            name: key,
-                            js: fileName,
-                            css: importedCss ? [...importedCss] : [],
-                            resources: []
-                        };
-                    }
+                for (const { key, js, css } of collectChunksFromBundle(
+                    bundle,
+                    moduleName,
+                    root
+                )) {
+                    chunks[key] = { name: key, js, css, resources: [] };
                 }
 
                 const manifest: ManifestJson = {

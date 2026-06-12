@@ -88,6 +88,11 @@ export async function renderHost(
     const { headTags, htmlAttrs, bodyAttrs } = renderSSRHead(
         getRouterHead(router)
     );
+    // Register this module's chunk (which carries the shared CSS — see G
+    // section of `.claude/redesign-plan.md`) so commit() collects it into
+    // `files.css` and `rc.css()` emits `<link rel="stylesheet">` for the
+    // shared design tokens + components on every SSR'd page.
+    rc.importMetaSet.add(import.meta);
     await rc.commit();
 
     const renderStyles = getSsrStyles(router);

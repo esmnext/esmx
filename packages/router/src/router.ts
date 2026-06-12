@@ -385,7 +385,7 @@ export class Router {
             return `<div id="${this.appId}"${ssrAttr}>${result ?? ''}</div>`;
         } catch (e) {
             if (throwError) throw e;
-            else console.error(e);
+            else console.error('[@esmx/router] SSR render failed:', e);
             return null;
         }
     }

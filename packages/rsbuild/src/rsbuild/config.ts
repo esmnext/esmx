@@ -157,6 +157,7 @@ export async function createRsbuildConfig(
                 // @esmx/rspack's `cache(!isProd)`); stale cache otherwise drops
                 // tree-shaken exports non-deterministically.
                 rspackConfig.cache = !isProd;
+
                 rspackConfig.output = rspackConfig.output ?? {};
                 rspackConfig.output.module = true;
                 rspackConfig.output.chunkFormat = 'module';

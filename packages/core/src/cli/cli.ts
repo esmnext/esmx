@@ -119,3 +119,29 @@ export function resolve(
     }
     return nextResolve(specifier, context);
 }
+
+/**
+ * Style assets imported via standard `import './x.css'` are part of esmx's
+ * federation contract (manifest's `chunks[*].css[]` — see G section). On the
+ * cli/build path Node's native loader hits these when reading the user's
+ * `entry.node.ts` config (which transitively imports a remote's source). They
+ * have no server-side behaviour — emit a no-op ESM module so the loader chain
+ * continues cleanly. Mirrors `@esmx/import`'s VM-linker hook.
+ */
+const STYLE_ASSET_RE =
+    /\.(?:css|scss|sass|less|stylus|styl|pcss|postcss)(?:\?.*)?$/i;
+
+export async function load(
+    url: string,
+    context: Record<string, any>,
+    nextLoad: Function
+) {
+    if (STYLE_ASSET_RE.test(url)) {
+        return {
+            format: 'module',
+            shortCircuit: true,
+            source: `export default ${JSON.stringify(url)}; export const href = ${JSON.stringify(url)};`
+        };
+    }
+    return nextLoad(url, context);
+}

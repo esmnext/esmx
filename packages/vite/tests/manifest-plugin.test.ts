@@ -3,6 +3,7 @@ import { describe, expect, test } from 'vitest';
 
 import {
     chunkSourceKey,
+    collectChunksFromBundle,
     esmxManifestPlugin
 } from '../src/vite/manifest-plugin';
 
@@ -93,5 +94,117 @@ describe('esmxManifestPlugin', () => {
         expect(typeof hook).toBe('object');
         expect(hook?.order).toBe('post');
         expect(typeof hook?.handler).toBe('function');
+    });
+});
+
+describe('collectChunksFromBundle — CSS extraction', () => {
+    const ROOT = '/app';
+
+    test('reads viteMetadata.importedCss into chunks[].css[]', () => {
+        const out = collectChunksFromBundle(
+            {
+                'src/entry.client.aaa.mjs': {
+                    type: 'chunk',
+                    name: 'src/entry.client',
+                    facadeModuleId: `${ROOT}/src/entry.client.ts`,
+                    moduleIds: [],
+                    viteMetadata: {
+                        importedCss: new Set(['assets/entry.client.bbb.css'])
+                    }
+                }
+            },
+            'my-app',
+            ROOT
+        );
+
+        expect(out).toEqual([
+            {
+                key: 'my-app@src/entry.client.ts',
+                js: 'src/entry.client.aaa.mjs',
+                css: ['assets/entry.client.bbb.css']
+            }
+        ]);
+    });
+
+    test('returns empty css[] when chunk has no importedCss metadata', () => {
+        const out = collectChunksFromBundle(
+            {
+                'vue.111.mjs': {
+                    type: 'chunk',
+                    name: 'vue',
+                    facadeModuleId: `${ROOT}/node_modules/vue/index.mjs`,
+                    moduleIds: []
+                }
+            },
+            'my-app',
+            ROOT
+        );
+
+        expect(out[0].css).toEqual([]);
+    });
+
+    test('preserves all CSS files from a chunk with multiple imports', () => {
+        const out = collectChunksFromBundle(
+            {
+                'chunks/widget.111.mjs': {
+                    type: 'chunk',
+                    name: 'widget',
+                    facadeModuleId: `${ROOT}/src/widget.ts`,
+                    moduleIds: [],
+                    viteMetadata: {
+                        importedCss: new Set([
+                            'assets/widget.aaa.css',
+                            'assets/widget.theme.bbb.css'
+                        ])
+                    }
+                }
+            },
+            'my-app',
+            ROOT
+        );
+
+        expect(out[0].css.sort()).toEqual([
+            'assets/widget.aaa.css',
+            'assets/widget.theme.bbb.css'
+        ]);
+    });
+
+    test('skips non-chunk assets in the bundle (CSS-only, JSON, etc.)', () => {
+        const out = collectChunksFromBundle(
+            {
+                'orphan.css': {
+                    type: 'asset',
+                    fileName: 'orphan.css'
+                },
+                'data.json': { type: 'asset', fileName: 'data.json' }
+            },
+            'my-app',
+            ROOT
+        );
+
+        expect(out).toEqual([]);
+    });
+
+    test('returns [] for an empty bundle', () => {
+        expect(collectChunksFromBundle({}, 'my-app', ROOT)).toEqual([]);
+    });
+
+    test('falls back to chunk name for virtual modules (no source path)', () => {
+        const out = collectChunksFromBundle(
+            {
+                'react.111.mjs': {
+                    type: 'chunk',
+                    name: 'react',
+                    facadeModuleId: '\0esmx-pkg-reexport:react',
+                    moduleIds: ['\0esmx-pkg-reexport:react'],
+                    viteMetadata: { importedCss: new Set() }
+                }
+            },
+            'my-app',
+            ROOT
+        );
+
+        expect(out[0].key).toBe('my-app@react');
+        expect(out[0].css).toEqual([]);
     });
 });

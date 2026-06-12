@@ -1,59 +1,46 @@
 import type { Router } from '@esmx/router';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 
-import { Layout, SIDEBAR_WIDTH, t } from 'ssr-micro-shared/src/index';
+import { Layout, t } from 'ssr-micro-shared/src/index';
+
+const SOURCE_SNIPPET = `import { useState } from 'preact/hooks'
+
+export function Counter() {
+  const [count, setCount] = useState(0)
+  return (
+    <>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(c => c + 1)}>+</button>
+      <button onClick={() => setCount(c => c - 1)}>−</button>
+    </>
+  )
+}`;
 
 function Counter() {
     const [count, setCount] = useState(0);
     return (
-        <div style={{ margin: '16px 0' }}>
-            <div
-                style={{
-                    fontSize: '3rem',
-                    fontWeight: 800,
-                    color: 'var(--esmx-text-primary)',
-                    marginBottom: '12px'
-                }}
-            >
-                {count}
+        <>
+            <div class="esmx-stat">
+                <div class="esmx-stat__label">Count</div>
+                <div class="esmx-stat__value">{count}</div>
             </div>
-            <div
-                style={{
-                    display: 'flex',
-                    gap: '12px',
-                    justifyContent: 'center'
-                }}
-            >
+            <div class="esmx-demo-card__actions">
                 <button
+                    type="button"
+                    class="esmx-btn esmx-btn--primary"
                     onClick={() => setCount((c) => c + 1)}
-                    style={{
-                        padding: '8px 24px',
-                        borderRadius: '8px',
-                        border: 'none',
-                        background: 'var(--esmx-link)',
-                        color: '#fff',
-                        cursor: 'pointer',
-                        fontSize: '1.2rem'
-                    }}
                 >
                     +
                 </button>
                 <button
+                    type="button"
+                    class="esmx-btn"
                     onClick={() => setCount((c) => c - 1)}
-                    style={{
-                        padding: '8px 24px',
-                        borderRadius: '8px',
-                        border: 'none',
-                        background: '#ef4444',
-                        color: '#fff',
-                        cursor: 'pointer',
-                        fontSize: '1.2rem'
-                    }}
                 >
-                    -
+                    −
                 </button>
             </div>
-        </div>
+        </>
     );
 }
 
@@ -74,69 +61,41 @@ export function AppContent({ router }: { router: Router }) {
                 id={layout.headerId}
                 dangerouslySetInnerHTML={{ __html: layout.header }}
             />
-            <div
-                style={{
-                    marginLeft: `var(--esmx-sidebar-width, ${SIDEBAR_WIDTH})`,
-                    minHeight: '100vh',
-                    padding: '32px',
-                    paddingTop:
-                        'calc(32px + var(--esmx-mobile-header-height, 0px))'
-                }}
-            >
-                <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-                    <div
-                        style={{
-                            background: 'var(--esmx-bg-card)',
-                            borderRadius: '16px',
-                            padding: '48px',
-                            border: '1px solid var(--esmx-border)',
-                            textAlign: 'center'
-                        }}
-                    >
-                        <div
-                            style={{
-                                width: '56px',
-                                height: '56px',
-                                background:
-                                    'linear-gradient(135deg, #673ab8, #512da8)',
-                                borderRadius: '14px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                margin: '0 auto 20px'
-                            }}
-                            role="img"
-                            aria-label="Preact"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 32 32"
-                                width="28"
-                                height="28"
-                            >
-                                <polygon
-                                    points="16,2 28,11 28,25 16,30 4,25 4,11"
-                                    fill="none"
-                                    stroke="#fff"
-                                    stroke-width="2"
-                                />
-                                <circle cx="16" cy="16" r="4.5" fill="#fff" />
-                            </svg>
+            <main class="esmx-demo-main">
+                <article class="esmx-demo-card">
+                    <section class="esmx-demo-card__source esmx-code">
+                        <header class="esmx-code__header">
+                            <span class="esmx-code__file">src/app.tsx</span>
+                        </header>
+                        <div class="esmx-code__body">
+                            <pre>{SOURCE_SNIPPET}</pre>
                         </div>
-                        <h1
-                            style={{
-                                fontSize: '2rem',
-                                fontWeight: 800,
-                                color: 'var(--esmx-text-primary)',
-                                marginBottom: '12px'
-                            }}
-                        >
+                    </section>
+
+                    <section class="esmx-demo-card__rendered">
+                        <h1 class="esmx-demo-card__title">
                             {t(router, 'fwPreactTitle')}
                         </h1>
                         <Counter />
-                    </div>
-                </div>
-            </div>
+                        <div class="esmx-demo-card__tags">
+                            <span class="esmx-badge esmx-badge--preact">
+                                <span
+                                    class="esmx-dot esmx-dot--preact"
+                                    aria-hidden="true"
+                                />
+                                Preact 10
+                            </span>
+                            <span class="esmx-badge">Rspack</span>
+                            <span class="esmx-badge">SSR</span>
+                        </div>
+                    </section>
+                </article>
+
+                <footer class="esmx-demo-source">
+                    source ·{' '}
+                    <code>examples/micro-app/ssr-micro-preact/src/app.tsx</code>
+                </footer>
+            </main>
             <div
                 id={layout.footerId}
                 dangerouslySetInnerHTML={{ __html: layout.footer }}

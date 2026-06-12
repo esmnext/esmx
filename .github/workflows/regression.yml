@@ -1,0 +1,192 @@
+name: Regression
+
+on:
+  push:
+    branches: [master, main, feat-*]
+  pull_request:
+
+jobs:
+  units-and-types:
+    name: Units + Types
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 10
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'pnpm'
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Type check
+        run: pnpm lint:type
+      - name: Unit tests
+        run: pnpm test
+
+  validate-llms:
+    name: llms.md code-block parse
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 10
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'pnpm'
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Validate llms.md code blocks
+        run: pnpm validate:llms
+
+  build-and-smoke:
+    name: Build + SSR smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 10
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'pnpm'
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm build:packages
+
+      - name: Build examples
+        run: pnpm build:examples
+
+      - name: SSR smoke (prod build + curl + hydration markers)
+        run: node scripts/smoke.mjs
+
+      - name: Upload smoke log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-failure-logs
+          path: |
+            examples/**/dist/**/*.log
+            ~/.npm/_logs/**
+          retention-days: 7
+
+  visual:
+    name: Visual regression
+    needs: build-and-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 10
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'pnpm'
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Build packages
+        run: pnpm build:packages
+
+      - name: Build examples
+        run: pnpm build:examples
+
+      - name: Start hub + capture visual baselines (compare mode)
+        env:
+          VISUAL_GROUP: hub
+        run: |
+          node scripts/start-all.mjs --group=hub &
+          SERVER_PID=$!
+          # start-all prints READY <ports> when all servers are healthy.
+          # Wait up to 60s for hub on :3000.
+          for i in $(seq 1 120); do
+            if curl -sf http://127.0.0.1:3000/ -o /dev/null; then break; fi
+            sleep 0.5
+          done
+          pnpm test:visual
+          STATUS=$?
+          kill $SERVER_PID 2>/dev/null || true
+          exit $STATUS
+
+      - name: Start standalone + capture visual baselines (compare mode)
+        env:
+          VISUAL_GROUP: standalone
+        run: |
+          node scripts/start-all.mjs --group=standalone &
+          SERVER_PID=$!
+          for i in $(seq 1 120); do
+            if curl -sf http://127.0.0.1:3005/ -o /dev/null; then break; fi
+            sleep 0.5
+          done
+          pnpm test:visual
+          STATUS=$?
+          kill $SERVER_PID 2>/dev/null || true
+          exit $STATUS
+
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
+
+  lighthouse:
+    name: Lighthouse / a11y / SEO
+    needs: build-and-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 10
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'pnpm'
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm build:packages
+
+      - name: Build examples
+        run: pnpm build:examples
+
+      - name: Start hub server
+        run: |
+          node scripts/start-all.mjs --group=hub &
+          for _ in $(seq 1 120); do
+            if curl -sf http://127.0.0.1:3000/ -o /dev/null; then break; fi
+            sleep 0.5
+          done
+
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: ./.lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true

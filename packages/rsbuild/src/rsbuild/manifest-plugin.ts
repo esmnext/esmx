@@ -44,6 +44,61 @@ export function chunkSourceKey(
 }
 
 /**
+ * Per-chunk record the manifest emits. CSS files travel through here — the
+ * host's renderHost reads `css[]` for each touched chunk and injects
+ * `<link rel="stylesheet">` into `<head>`, which is how `import './x.css'`
+ * inside a remote ultimately delivers the stylesheet to the browser without
+ * the runtime evaluating CSS as JS. See G section of `.claude/redesign-plan.md`.
+ */
+export interface CollectedChunk {
+    /** Stable source-path-keyed identity (`<moduleName>@<rel-path>`). */
+    key: string;
+    /** Primary `.mjs` asset for the chunk. */
+    js: string;
+    /** Every `.css` asset the chunk emitted. */
+    css: string[];
+}
+
+interface CollectStats {
+    chunks?: Array<{
+        files?: string[];
+        modules?: Array<{
+            index?: number;
+            moduleType?: string;
+            nameForCondition?: string | null;
+        }>;
+    }>;
+}
+
+/**
+ * Pure stats → chunk list, exported so unit tests can exercise the CSS
+ * extraction without spinning up a real rspack/rsbuild build. The plugin's
+ * `collectChunks` closure is a one-line call into this.
+ */
+export function collectChunksFromStats(
+    stats: CollectStats,
+    moduleName: string,
+    root: string
+): CollectedChunk[] {
+    const result: CollectedChunk[] = [];
+    for (const chunk of stats.chunks ?? []) {
+        const module = chunk.modules
+            ?.slice()
+            .sort((a, b) => (a.index ?? -1) - (b.index ?? -1))
+            .find((m) => m.moduleType?.includes('javascript/'));
+        if (!module?.nameForCondition) continue;
+        const js = chunk.files?.find((f) => f.endsWith('.mjs'));
+        if (!js) continue;
+        result.push({
+            key: chunkSourceKey(moduleName, root, module.nameForCondition),
+            js,
+            css: chunk.files?.filter((f) => f.endsWith('.css')) ?? []
+        });
+    }
+    return result;
+}
+
+/**
  * Rspack plugin emitting an esmx-format manifest.json, mirroring
  * @esmx/rspack's ManifestPlugin. The entrypoint -> output file mapping is read
  * from the compilation, the bundler-native source of truth.
@@ -62,12 +117,9 @@ export class EsmxManifestPlugin {
             // Source-path keyed chunk list (mirrors @esmx/rspack's getChunks):
             // pick each chunk's primary JS module and key it by that module's
             // path relative to root. Shared by manifest emit and injection so
-            // the keys are identical.
-            const collectChunks = (): Array<{
-                key: string;
-                js: string;
-                css: string[];
-            }> => {
+            // the keys are identical. Delegates to `collectChunksFromStats`
+            // for testability.
+            const collectChunks = (): CollectedChunk[] => {
                 const stats = compilation.getStats().toJson({
                     all: false,
                     chunks: true,
@@ -75,31 +127,7 @@ export class EsmxManifestPlugin {
                     chunkModules: true,
                     ids: true
                 });
-                const result: Array<{
-                    key: string;
-                    js: string;
-                    css: string[];
-                }> = [];
-                for (const chunk of stats.chunks ?? []) {
-                    const module = chunk.modules
-                        ?.slice()
-                        .sort((a, b) => (a.index ?? -1) - (b.index ?? -1))
-                        .find((m) => m.moduleType?.includes('javascript/'));
-                    if (!module?.nameForCondition) continue;
-                    const js = chunk.files?.find((f) => f.endsWith('.mjs'));
-                    if (!js) continue;
-                    result.push({
-                        key: chunkSourceKey(
-                            moduleName,
-                            root,
-                            module.nameForCondition
-                        ),
-                        js,
-                        css:
-                            chunk.files?.filter((f) => f.endsWith('.css')) ?? []
-                    });
-                }
-                return result;
+                return collectChunksFromStats(stats, moduleName, root);
             };
 
             // Server build: announce each chunk's source-path identity so core
@@ -140,7 +168,7 @@ export class EsmxManifestPlugin {
                         );
                         if (!entrypoint) {
                             throw new Error(
-                                `[EsmxManifest] missing entrypoint "${exp.name}"`
+                                `[@esmx/rsbuild] manifest: no webpack entrypoint produced for export "${exp.name}". Check that modules.exports in entry.node.ts lists "${exp.name}" and that the bundler config registered it as an entry.`
                             );
                         }
                         const chunk = entrypoint.getEntrypointChunk();
@@ -149,7 +177,7 @@ export class EsmxManifestPlugin {
                         );
                         if (!file) {
                             throw new Error(
-                                `[EsmxManifest] no .mjs output for "${exp.name}"`
+                                `[@esmx/rsbuild] manifest: entrypoint "${exp.name}" produced no .mjs file. Esmx federation requires ESM output — ensure output.module is true and library.type is "module" in the rsbuild config.`
                             );
                         }
                         exportsField[exp.name] = {

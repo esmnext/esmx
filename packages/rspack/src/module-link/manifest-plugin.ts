@@ -1,4 +1,4 @@
-import type { Compilation, Compiler, StatsCompilation } from '@rspack/core';
+import type { Compiler, StatsChunk, StatsCompilation } from '@rspack/core';
 import upath from 'upath';
 import type {
     ManifestJson,
@@ -12,7 +12,7 @@ export const RSPACK_PLUGIN_NAME = 'rspack-module-link-plugin';
 export class ManifestPlugin {
     constructor(
         private opts: ParsedModuleLinkPluginOptions,
-        private isProduction: boolean
+        isProduction: boolean
     ) {}
 
     apply(compiler: Compiler) {
@@ -44,12 +44,21 @@ export class ManifestPlugin {
                         const resources = Object.keys(assets)
                             .map(transFileName)
                             .filter((file) => !file.includes('hot-update'));
+                        const chunksStats = compilation.getStats().toJson({
+                            all: false,
+                            chunks: true,
+                            modules: true,
+                            chunkModules: true,
+                            ids: true
+                        });
+                        const root =
+                            compilation.options.context ?? process.cwd();
                         manifestJson = {
                             name: opts.name,
                             exports: exports,
                             scopes: opts.scopes,
                             files: resources,
-                            chunks: getChunks(opts, compilation)
+                            chunks: getChunks(opts, chunksStats, root)
                         };
                         const { RawSource } = compiler.rspack.sources;
 
@@ -118,34 +127,40 @@ export function getExports(
     return exports;
 }
 
-function getChunks(
+/**
+ * Build the `chunks` section of the federation manifest from rspack stats.
+ *
+ * Each emitted chunk that owns at least one JS module gets a manifest entry
+ * keyed by a stable, root-relative identifier (`<remote>@<source-path>`). The
+ * entry lists:
+ *
+ *   - `js`   — the chunk's primary JS asset
+ *   - `css`  — every `.css` file the chunk emitted; consumed by the host's
+ *              renderHost to inject `<link rel="stylesheet">` into `<head>`
+ *              (G5). This is how `import './x.css'` in a remote translates
+ *              into stylesheet delivery in the browser without the runtime
+ *              having to evaluate CSS as JS.
+ *   - `resources` — auxiliary assets (sourcemaps, images, fonts) so the host
+ *              can preload / fingerprint them.
+ *
+ * Pure function over stats + root path — kept testable without booting a
+ * real rspack build.
+ */
+export function getChunks(
     opts: ParsedModuleLinkPluginOptions,
-    compilation: Compilation
-) {
-    const stats = compilation.getStats().toJson({
-        all: false,
-        chunks: true,
-        modules: true,
-        chunkModules: true,
-        ids: true
-    });
+    stats: StatsCompilation,
+    root: string
+): ManifestJsonChunks {
     const buildChunks: ManifestJsonChunks = {};
     if (!stats.chunks) return buildChunks;
 
     for (const chunk of stats.chunks) {
-        const module = chunk.modules
-            ?.sort((a, b) => {
-                return (a.index ?? -1) - (b?.index ?? -1);
-            })
-            ?.find((module) => {
-                return module.moduleType?.includes('javascript/');
-            });
+        const module = pickPrimaryJsModule(chunk);
         if (!module?.nameForCondition) continue;
 
         const js = chunk.files?.find((file) => file.endsWith(opts.ext));
         if (!js) continue;
 
-        const root = compilation.options.context ?? process.cwd();
         const name = generateIdentifier({
             root,
             name: opts.name,
@@ -162,6 +177,12 @@ function getChunks(
         };
     }
     return buildChunks;
+}
+
+function pickPrimaryJsModule(chunk: StatsChunk) {
+    return chunk.modules
+        ?.sort((a, b) => (a.index ?? -1) - (b?.index ?? -1))
+        ?.find((module) => module.moduleType?.includes('javascript/'));
 }
 
 export function generateIdentifier({

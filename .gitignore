@@ -25,3 +25,7 @@ examples/templates/
 
 # Local Preview MCP dev-server config (not part of the project)
 .claude/launch.json
+
+# Playwright
+test-results/
+playwright-report/

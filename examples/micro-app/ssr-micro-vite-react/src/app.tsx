@@ -1,65 +1,47 @@
 import { useRouter } from '@esmx/router-react';
 import { useHead } from '@unhead/react';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import {
-    buildSeoHead,
-    Layout,
-    SIDEBAR_WIDTH,
-    t
-} from 'ssr-micro-shared/src/index';
+import { buildSeoHead, Layout, t } from 'ssr-micro-shared/src/index';
+
+const SOURCE_SNIPPET = `import { useState } from 'react'
+
+export function Counter() {
+  const [count, setCount] = useState(0)
+  return (
+    <>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(c => c + 1)}>+</button>
+      <button onClick={() => setCount(c => c - 1)}>−</button>
+    </>
+  )
+}`;
 
 function Counter() {
     const [count, setCount] = useState(0);
     return (
-        <div style={{ margin: '16px 0' }}>
-            <div
-                style={{
-                    fontSize: '3rem',
-                    fontWeight: 800,
-                    color: 'var(--esmx-text-primary)',
-                    marginBottom: '12px'
-                }}
-            >
-                {count}
+        <>
+            <div className="esmx-stat">
+                <div className="esmx-stat__label">Count</div>
+                <div className="esmx-stat__value">{count}</div>
             </div>
-            <div
-                style={{
-                    display: 'flex',
-                    gap: '12px',
-                    justifyContent: 'center'
-                }}
-            >
+            <div className="esmx-demo-card__actions">
                 <button
+                    type="button"
+                    className="esmx-btn esmx-btn--primary"
                     onClick={() => setCount((c) => c + 1)}
-                    style={{
-                        padding: '8px 24px',
-                        borderRadius: '8px',
-                        border: 'none',
-                        background: 'var(--esmx-link)',
-                        color: '#fff',
-                        cursor: 'pointer',
-                        fontSize: '1.2rem'
-                    }}
                 >
                     +
                 </button>
                 <button
+                    type="button"
+                    className="esmx-btn"
                     onClick={() => setCount((c) => c - 1)}
-                    style={{
-                        padding: '8px 24px',
-                        borderRadius: '8px',
-                        border: 'none',
-                        background: '#ef4444',
-                        color: '#fff',
-                        cursor: 'pointer',
-                        fontSize: '1.2rem'
-                    }}
                 >
-                    -
+                    −
                 </button>
             </div>
-        </div>
+        </>
     );
 }
 
@@ -70,10 +52,9 @@ export function AppContent() {
         [router]
     );
 
-    // Idiomatic React head: writes into the shared head provided via UnheadProvider.
     useHead(
         buildSeoHead(router, {
-            path: '/react/',
+            path: '/vite-react/',
             title: t(router, 'fwReactTitle'),
             description: t(router, 'fwReactDesc')
         })
@@ -90,93 +71,43 @@ export function AppContent() {
                 id={layout.headerId}
                 dangerouslySetInnerHTML={{ __html: layout.header }}
             />
-            <div
-                style={{
-                    marginLeft:
-                        'var(--esmx-sidebar-width, ' + SIDEBAR_WIDTH + ')',
-                    minHeight: '100vh',
-                    padding: '32px',
-                    paddingTop:
-                        'calc(32px + var(--esmx-mobile-header-height, 0px))'
-                }}
-            >
-                <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-                    <div
-                        style={{
-                            background: 'var(--esmx-bg-card)',
-                            borderRadius: '16px',
-                            padding: '48px',
-                            border: '1px solid var(--esmx-border)',
-                            textAlign: 'center'
-                        }}
-                    >
-                        <div
-                            style={{
-                                width: '56px',
-                                height: '56px',
-                                background:
-                                    'linear-gradient(135deg, #0ea5e9, #0284c7)',
-                                borderRadius: '14px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                margin: '0 auto 20px'
-                            }}
-                            role="img"
-                            aria-label="React"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 32 32"
-                                width="28"
-                                height="28"
-                            >
-                                <circle cx="16" cy="16" r="3" fill="#fff" />
-                                <ellipse
-                                    cx="16"
-                                    cy="16"
-                                    rx="15"
-                                    ry="5.5"
-                                    fill="none"
-                                    stroke="#fff"
-                                    strokeWidth="1.8"
-                                    transform="rotate(60 16 16)"
-                                />
-                                <ellipse
-                                    cx="16"
-                                    cy="16"
-                                    rx="15"
-                                    ry="5.5"
-                                    fill="none"
-                                    stroke="#fff"
-                                    strokeWidth="1.8"
-                                    transform="rotate(-60 16 16)"
-                                />
-                                <ellipse
-                                    cx="16"
-                                    cy="16"
-                                    rx="15"
-                                    ry="5.5"
-                                    fill="none"
-                                    stroke="#fff"
-                                    strokeWidth="1.8"
-                                />
-                            </svg>
+            <main className="esmx-demo-main">
+                <article className="esmx-demo-card">
+                    <section className="esmx-demo-card__source esmx-code">
+                        <header className="esmx-code__header">
+                            <span className="esmx-code__file">src/app.tsx</span>
+                        </header>
+                        <div className="esmx-code__body">
+                            <pre>{SOURCE_SNIPPET}</pre>
                         </div>
-                        <h1
-                            style={{
-                                fontSize: '2rem',
-                                fontWeight: 800,
-                                color: 'var(--esmx-text-primary)',
-                                marginBottom: '12px'
-                            }}
-                        >
+                    </section>
+
+                    <section className="esmx-demo-card__rendered">
+                        <h1 className="esmx-demo-card__title">
                             {t(router, 'fwReactTitle')}
                         </h1>
                         <Counter />
-                    </div>
-                </div>
-            </div>
+                        <div className="esmx-demo-card__tags">
+                            <span className="esmx-badge esmx-badge--react">
+                                <span
+                                    className="esmx-dot esmx-dot--react"
+                                    aria-hidden="true"
+                                />
+                                React 19
+                            </span>
+                            <span className="esmx-badge">Vite 8</span>
+                            <span className="esmx-badge">SSR</span>
+                        </div>
+                    </section>
+                </article>
+
+                <footer className="esmx-demo-source">
+                    source ·{' '}
+                    <code>
+                        examples/micro-app/ssr-micro-vite-react/src/app.tsx
+                    </code>
+                </footer>
+            </main>
             <div
                 id={layout.footerId}
                 dangerouslySetInnerHTML={{ __html: layout.footer }}

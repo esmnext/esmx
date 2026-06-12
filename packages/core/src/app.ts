@@ -138,7 +138,7 @@ async function createStartRender(esmx: Esmx) {
 function createErrorRender(esmx: Esmx) {
     return (options?: RenderContextOptions) => {
         throw new Error(
-            `App instance is only available in production and can only execute built artifacts.`
+            `[@esmx/core] esmx.render() is only available in production. The current process is in dev mode and has no built artifacts. Run \`esmx build\` first, then start the server with NODE_ENV=production node dist/index.mjs.`
         );
     };
 }

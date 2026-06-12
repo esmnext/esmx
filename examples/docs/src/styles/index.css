@@ -1,26 +1,80 @@
+/*
+ * Esmx docs site theme overrides — apply the design system tokens from
+ * `examples/micro-app/ssr-micro-shared/src/styles/tokens.css` over Rspress's
+ * default `--rp-*` variables. Spec: `.claude/design-direction.md` §3-§5.
+ *
+ * The docs site is its own Rspress build (not a federation remote), so we
+ * inline the token values rather than `@import`ing the shared file —
+ * Rspress's CSS pipeline rewrites paths in ways that workspace-dep imports
+ * don't survive. Update both when adding a token here.
+ */
+
 :root {
-    --rp-c-brand: #12b2ef;
-    --rp-c-brand-light: #5bcbf5;
-    --rp-c-brand-lighter: #e8f7fe;
-    --rp-c-brand-dark: #0e8ec0;
-    --rp-c-brand-darker: #0b739e;
-    --rp-c-brand-tint: rgba(18, 178, 239, 0.16);
-    --rp-container-info-border: #12b2ef33;
-    --rp-container-info-text: #0e8ec0;
-    --rp-container-info-bg: #12b2ef0f;
-    --rp-container-info-code-bg: #12b2ef1a;
-    --rp-container-warning-border: #ffa00066;
-    --rp-container-warning-text: #cc8100;
-    --rp-container-warning-bg: #ffa0001a;
-    --rp-container-warning-code-bg: #ffa0001a;
+    /* Brand → Rspress brand */
+    --rp-c-brand: #0091e2;
+    --rp-c-brand-light: #48b9ec;
+    --rp-c-brand-lighter: #e6f3fa;
+    --rp-c-brand-dark: #0079bd;
+    --rp-c-brand-darker: #00669e;
+    --rp-c-brand-tint: rgba(0, 145, 226, 0.16);
+
+    /* Info / warning containers — keep info on brand, warning on the
+       --esmx-warning amber to match the rest of the design system. */
+    --rp-container-info-border: rgba(0, 145, 226, 0.2);
+    --rp-container-info-text: #0079bd;
+    --rp-container-info-bg: rgba(0, 145, 226, 0.06);
+    --rp-container-info-code-bg: rgba(0, 145, 226, 0.1);
+    --rp-container-warning-border: rgba(217, 119, 6, 0.4);
+    --rp-container-warning-text: #d97706;
+    --rp-container-warning-bg: rgba(217, 119, 6, 0.08);
+    --rp-container-warning-code-bg: rgba(217, 119, 6, 0.12);
+
+    /* Typography — line up with --esmx-font-* / --esmx-fs-* */
+    --rp-font-family-base:
+        "Inter Variable", ui-sans-serif, system-ui, -apple-system, "PingFang SC",
+        "Microsoft YaHei", sans-serif;
+    --rp-font-family-mono:
+        "JetBrains Mono Variable", ui-monospace, "SF Mono", Menlo, Consolas,
+        monospace;
+
+    /* Spacing / radius — Rspress reads a few of these; keep them on the
+       4 px / 6 px / 8 px scale from tokens.css §13. */
+    --rp-radius-small: 4px;
+    --rp-radius-medium: 6px;
+    --rp-radius-large: 8px;
 }
+
 .rspress-logo {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
 }
+
 @media (max-width: 640px) {
     .rspress-logo {
-        width: 40px;
-        height: 40px;
+        width: 32px;
+        height: 32px;
     }
+}
+
+/* Typography refinements — tighter heading weights match
+   tokens.css's --esmx-fw-semibold (600); Rspress defaults to 700 which
+   reads heavier than the rest of the design system. Use :where() so
+   page-level overrides still win without specificity fights. */
+:where(.rspress-doc h1) {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+}
+:where(.rspress-doc h2, .rspress-doc h3) {
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    line-height: 1.3;
+}
+
+/* Code block — mono-font + line-height match tokens.css §6.3 spec. */
+:where(.rspress-doc pre code, .rspress-doc :not(pre) > code) {
+    font-family: var(--rp-font-family-mono);
+}
+:where(.rspress-doc pre) {
+    line-height: 1.55;
 }

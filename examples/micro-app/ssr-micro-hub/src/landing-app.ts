@@ -85,6 +85,22 @@ export class LandingApp extends BaseApp {
     }
 
     private getHeroHtml(): string {
+        // Per design-direction.md §7.3: hero is text + a real `package.json`
+        // snippet showing esmx's most distinctive API surface (the `exports`
+        // field). No illustration, no logo grid — code is the demo.
+        const PKG_JSON_SNIPPET = `{
+  "name": "@your/remote",
+  "type": "module",
+  "esmx": {
+    "exports": {
+      "./components": {
+        "browser": "...",
+        "server":  "..."
+      },
+      "pkg:react": { "pkg": true }
+    }
+  }
+}`;
         return (
             `<section class="hero">` +
             `<div class="hero-bg"></div>` +
@@ -110,21 +126,9 @@ export class LandingApp extends BaseApp {
             `</div>` +
             `</div>` +
             `<div class="hero-visual reveal reveal-delay-3">` +
-            `<div class="esm-flow">` +
-            `<div class="esm-node">vue</div>` +
-            `<div class="esm-node">react</div>` +
-            `<div class="esm-node">preact</div>` +
-            `<div class="esm-node esm-node-main">Esmx</div>` +
-            `<div class="esm-node">html</div>` +
-            `<div class="esm-node">solid</div>` +
-            `<div class="esm-node">shared</div>` +
-            `<div class="esm-node">utils</div>` +
-            `<div class="esm-connection esm-connection-1"></div>` +
-            `<div class="esm-connection esm-connection-2"></div>` +
-            `<div class="esm-connection esm-connection-3"></div>` +
-            `<div class="esm-connection esm-connection-4"></div>` +
-            `<div class="esm-connection esm-connection-5"></div>` +
-            `<div class="esm-connection esm-connection-6"></div>` +
+            `<div class="hero-code">` +
+            `<div class="hero-code__header"><span class="hero-code__file">package.json</span></div>` +
+            `<pre class="hero-code__body">${PKG_JSON_SNIPPET}</pre>` +
             `</div>` +
             `</div>` +
             `</div>` +
@@ -365,6 +369,71 @@ export class LandingApp extends BaseApp {
         );
     }
 
+    private getMatrixHtml(): string {
+        // 7 frameworks × 3 bundlers cell map. `null` = no demo for that combo,
+        // string = relative URL into the hub for the live demo. Mirrors
+        // home-app.ts DEMOS but tabulated for at-a-glance density.
+        const MATRIX: Array<
+            [string, string, [string | null, string | null, string | null]]
+        > = [
+            // [framework label, framework dot class, [vite, rspack, rsbuild]]
+            [
+                'Vue 3',
+                'esmx-dot--vue',
+                ['/vite-vue/', '/vue3/', '/rsbuild-vue/']
+            ],
+            ['Vue 2.7', 'esmx-dot--vue', [null, '/vue2/', null]],
+            [
+                'React 19',
+                'esmx-dot--react',
+                ['/vite-react/', '/react/', '/rsbuild-react/']
+            ],
+            ['Preact 10', 'esmx-dot--preact', [null, '/preact/', null]],
+            ['SolidJS', 'esmx-dot--solid', [null, '/solid/', null]],
+            ['Svelte 5', 'esmx-dot--svelte', [null, '/svelte/', null]],
+            ['Lit', 'esmx-dot--lit', [null, '/lit/', null]],
+            [
+                'HTML',
+                'esmx-dot--html',
+                ['/vite-html/', '/html/', '/rsbuild-html/']
+            ]
+        ];
+
+        const rows = MATRIX.map(([label, dot, cells]) => {
+            const tds = cells
+                .map((url) => {
+                    if (!url)
+                        return `<td class="matrix__cell matrix__cell--empty">—</td>`;
+                    const to = localePath(this.router, url);
+                    const resolved = this.router.resolveLink({
+                        to,
+                        type: 'push'
+                    });
+                    return `<td class="matrix__cell"><a href="${resolved.attributes.href}" data-to="${to}" class="matrix__dot" aria-label="${label}"></a></td>`;
+                })
+                .join('');
+            return `<tr><th scope="row"><span class="esmx-dot ${dot}" aria-hidden="true"></span>${label}</th>${tds}</tr>`;
+        }).join('');
+
+        return (
+            `<section class="section matrix-section" id="matrix">` +
+            `<div class="container">` +
+            `<div class="section-header reveal">` +
+            `<span class="section-label">21 LIVE DEMOS</span>` +
+            `<h2 class="section-title">Framework × Bundler</h2>` +
+            `<p class="section-desc">Every cell is one running federation remote. Click to open it.</p>` +
+            `</div>` +
+            `<div class="matrix-wrap reveal">` +
+            `<table class="matrix">` +
+            `<thead><tr><th></th><th>Vite 8</th><th>Rspack</th><th>Rsbuild</th></tr></thead>` +
+            `<tbody>${rows}</tbody>` +
+            `</table>` +
+            `</div>` +
+            `</div>` +
+            `</section>`
+        );
+    }
+
     render(): string {
         return (
             `<div class="landing-page">` +
@@ -374,6 +443,7 @@ export class LandingApp extends BaseApp {
             this.getFeaturesHtml() +
             this.getCodeDemoHtml() +
             this.getEcosystemHtml() +
+            this.getMatrixHtml() +
             `<section class="section" style="text-align: center;">
                 <div class="container">
                     <div class="section-header reveal">

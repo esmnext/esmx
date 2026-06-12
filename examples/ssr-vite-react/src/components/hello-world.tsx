@@ -1,31 +1,62 @@
 import { useState } from 'react';
-import './hello-world.css';
 
-interface HelloWorldProps {
-    msg: string;
-}
+const SOURCE_SNIPPET = `import { useState } from 'react'
 
-export default function HelloWorld({ msg }: HelloWorldProps) {
+export default function HelloWorld() {
+  const [count, setCount] = useState(0)
+  return (
+    <>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(c => c + 1)}>+</button>
+      <button onClick={() => setCount(c => c - 1)}>−</button>
+    </>
+  )
+}`;
+
+export default function HelloWorld() {
     const [count, setCount] = useState<number>(0);
 
     return (
-        <div>
-            <h1>{msg}</h1>
-
-            <div className="card">
-                <button type="button" onClick={() => setCount(count + 1)}>
-                    Counter: {count}
-                </button>
-                <p>
-                    Edit
-                    <code>components/HelloWorld.tsx</code> to test HMR
-                </p>
-            </div>
-
-            <p>
-                Experience React with server-side rendering powered by Esmx
-                framework
+        <>
+            <h1 className="demo__title">React 19 SSR</h1>
+            <p className="demo__message">
+                Server-rendered by Esmx on Vite, then hydrated by React 19 in
+                place. The counter below works after hydration.
             </p>
-        </div>
+            <div className="demo__code">
+                <pre>{SOURCE_SNIPPET}</pre>
+            </div>
+            <div className="demo__stat">
+                <div className="demo__stat-label">Count</div>
+                <div className="demo__stat-value">{count}</div>
+            </div>
+            <div className="demo__actions">
+                <button
+                    type="button"
+                    className="demo__btn demo__btn--primary"
+                    onClick={() => setCount((c) => c + 1)}
+                >
+                    +
+                </button>
+                <button
+                    type="button"
+                    className="demo__btn"
+                    onClick={() => setCount((c) => c - 1)}
+                >
+                    −
+                </button>
+            </div>
+            <div className="demo__tags">
+                <span className="demo__badge demo__badge--react">
+                    <span
+                        className="demo__dot demo__dot--react"
+                        aria-hidden="true"
+                    />
+                    React 19
+                </span>
+                <span className="demo__badge">Vite 8</span>
+                <span className="demo__badge">SSR</span>
+            </div>
+        </>
     );
 }

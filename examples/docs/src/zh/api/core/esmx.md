@@ -11,7 +11,24 @@ head:
 
 ## 简介
 
-Esmx 是一个基于 Rspack 的高性能 Web 应用框架，提供了完整的应用生命周期管理、静态资源处理和 SSR 能力。
+Esmx 是一个基于 Rspack 的高性能 Web 应用框架,提供了完整的应用生命周期管理、静态资源处理和 SSR 能力。
+
+## 文件路径约定
+
+本页有几个 API 读写**框架约定路径**的文件。这些路径不能通过 `EsmxOptions` 配置 — 改名或挪位置框架就找不到了。
+
+| 路径 | 作用 |
+|------|------|
+| `src/entry.node.ts` | 你的 `EsmxOptions` 默认导出。CLI 在 `esmx dev` / `esmx build` / `esmx start` 时读取。 |
+| `src/entry.server.ts` | SSR 入口,导出 `default async (rc: RenderContext) => { rc.html = ... }`。由 `esmx.render()` 加载。 |
+| `src/entry.client.ts` | 浏览器 hydrate 入口。打包后由 SSR HTML 通过 `rc.moduleEntry()` 引用。 |
+| `dist/client/manifest.json` | `esmx build` 生成。客户端 bundle 的联邦 manifest。 |
+| `dist/server/manifest.json` | `esmx build` 生成。服务端 bundle 的联邦 manifest。 |
+| `dist/node/src/entry.node.mjs` | `esmx build` 生成。`esmx start` 导入的已编译 `entry.node.ts`。 |
+| `dist/index.mjs` | `esmx build` 写的启动桩;非用户编辑。 |
+
+本页所有代码示例都假设这些路径。
+
 
 ## 类型定义
 

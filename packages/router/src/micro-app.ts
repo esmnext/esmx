@@ -89,7 +89,10 @@ export class MicroApp {
                             oldApp.unmount();
                         } catch (e) {
                             // eslint-disable-next-line no-console
-                            console.error('MicroApp unmount failed:', e);
+                            console.error(
+                                '[@esmx/router] MicroApp unmount failed during route transition. Check the framework unmount hook returned by your render function (Vue: app.unmount, React: root.unmount, etc.).',
+                                e
+                            );
                         }
                     }
                     // Remove old children that are still attached to the DOM.

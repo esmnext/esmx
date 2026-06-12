@@ -68,7 +68,11 @@ Module linking configuration is located in the `modules` field of the `entry.nod
 
 ### Library Mode (lib)
 
-`lib` configuration specifies whether the current module is in pure library mode. When set to `true`, the module will not automatically create default entry file exports (such as `src/entry.client` and `src/entry.server`).
+`lib` configuration specifies whether the current module is in pure library mode.
+
+**Default behaviour (`lib: false`)**: Esmx automatically exports two entries — `src/entry.client.ts` (browser hydration) and `src/entry.server.ts` (SSR render). They become available as `<module-name>/src/entry.client` and `<module-name>/src/entry.server` through the federation manifest.
+
+**Library mode (`lib: true`)**: auto-discovery is disabled. The framework only emits whatever you list explicitly under `exports`. Use this for shared dependency packages (utility libraries, design systems) that don't render their own SSR shell.
 
 ```typescript
 // shared-modules/entry.node.ts
@@ -210,8 +214,8 @@ export default {
 ```
 
 **Prefix Processing Instructions**:
-- `pkg:axios` → Keeps original package name import, suitable for third-party npm packages
-- `root:src/utils/date-utils.ts` → Converts to module-relative path, suitable for project internal source modules
+- `pkg:axios` → Keeps the original package name as the import specifier; the bundler resolves it through `node_modules`. Use this for re-exporting third-party packages so other remotes can `import 'your-module/axios'`.
+- `root:src/utils/date-utils.ts` → Resolves the path **relative to the module root** (the directory containing `entry.node.ts`). The file extension is stripped during bundling, so consumers import it as `your-module/src/utils/date-utils` (no `.ts`). Use this for exporting project-internal source files.
 
 **File Extension Support**: For `root:` prefix configuration, supports extensions like `.js`, `.mjs`, `.cjs`, `.jsx`, `.mjsx`, `.cjsx`, `.ts`, `.mts`, `.cts`, `.tsx`, `.mtsx`, `.ctsx`. Extensions are automatically removed during configuration. For `pkg:` prefix and normal string configuration, extensions are not removed.
 

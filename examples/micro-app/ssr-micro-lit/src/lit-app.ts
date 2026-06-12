@@ -10,83 +10,63 @@ import {
     buildSeoHead,
     getAppState,
     Layout,
-    SIDEBAR_WIDTH,
     setAppState,
     t
 } from 'ssr-micro-shared/src/index';
 
+const SOURCE_SNIPPET = `import { html } from 'lit'
+
+export const counter = (count: number) => html\`
+  <p>Count: \${count}</p>
+  <button id="inc">+</button>
+  <button id="dec">−</button>
+\`
+`;
+
 /**
  * Hydratable content template — regular `lit` html with markers.
- * Must not contain unsafeHTML or raw HTML injection.
+ * Composes the shared `.esmx-demo-card` primitive from
+ * `ssr-micro-shared/src/styles/components.css`.
  */
 function createContentTemplate(title: string): TemplateResult {
     return html`
-        <div
-            style="margin-left: var(--esmx-sidebar-width, ${SIDEBAR_WIDTH}); min-height: 100vh; padding: 32px; padding-top: calc(32px + var(--esmx-mobile-header-height, 0px));"
-        >
-            <div style="max-width: 800px; margin: 0 auto;">
-                <div
-                    style="
-                        background: var(--esmx-bg-card);
-                        border-radius: 16px;
-                        padding: 48px;
-                        border: 1px solid var(--esmx-border);
-                        text-align: center;
-                    "
-                >
-                    <div
-                        style="
-                            width: 56px;
-                            height: 56px;
-                            background: linear-gradient(135deg, #324FFF, #283593);
-                            border-radius: 14px;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            margin: 0 auto 20px;
-                        "
-                        role="img"
-                        aria-label="Lit"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 32 32"
-                            width="28"
-                            height="28"
-                        >
-                            <path
-                                d="M16 2C7.16 2 2 12 2 17c0 0 3-3 5-3s5 3 9 3 9-3 13 3c0-5-5.16-16-13-16z"
-                                fill="#fff"
-                            />
-                        </svg>
+        <main class="esmx-demo-main">
+            <article class="esmx-demo-card">
+                <section class="esmx-demo-card__source esmx-code">
+                    <header class="esmx-code__header">
+                        <span class="esmx-code__file">src/lit-app.ts</span>
+                    </header>
+                    <div class="esmx-code__body">
+                        <pre>${SOURCE_SNIPPET}</pre>
                     </div>
-                    <h1
-                        style="
-                            font-size: 2rem;
-                            font-weight: 800;
-                            color: var(--esmx-text-primary);
-                            margin-bottom: 12px;
-                        "
-                    >
-                        ${title}
-                    </h1>
-                    <div style="margin:16px 0;">
-                        <div id="lit-count" style="font-size:3rem;font-weight:800;color:var(--esmx-text-primary);margin-bottom:12px;">0</div>
-                        <div style="display:flex;gap:12px;justify-content:center;">
-                            <button id="lit-inc" style="padding:8px 24px;border-radius:8px;border:none;background:var(--esmx-link);color:#fff;cursor:pointer;font-size:1.2rem;">+</button>
-                            <button id="lit-dec" style="padding:8px 24px;border-radius:8px;border:none;background:#ef4444;color:#fff;cursor:pointer;font-size:1.2rem;">-</button>
-                        </div>
+                </section>
+                <section class="esmx-demo-card__rendered">
+                    <h1 class="esmx-demo-card__title">${title}</h1>
+                    <div class="esmx-stat">
+                        <div class="esmx-stat__label">Count</div>
+                        <div id="lit-count" class="esmx-stat__value">0</div>
                     </div>
-                </div>
-            </div>
-        </div>
+                    <div class="esmx-demo-card__actions">
+                        <button id="lit-inc" type="button" class="esmx-btn esmx-btn--primary">+</button>
+                        <button id="lit-dec" type="button" class="esmx-btn">−</button>
+                    </div>
+                    <div class="esmx-demo-card__tags">
+                        <span class="esmx-badge esmx-badge--lit">
+                            <span class="esmx-dot esmx-dot--lit" aria-hidden="true"></span>
+                            Lit
+                        </span>
+                        <span class="esmx-badge">Rspack</span>
+                        <span class="esmx-badge">SSR</span>
+                    </div>
+                </section>
+            </article>
+            <footer class="esmx-demo-source">
+                source · <code>examples/micro-app/ssr-micro-lit/src/lit-app.ts</code>
+            </footer>
+        </main>
     `;
 }
 
-/**
- * Server-only outer template — @lit-labs/ssr html, no hydration markers.
- * Wraps the hydratable content template with static header/footer HTML.
- */
 function createSsrTemplate(
     layout: Layout,
     content: TemplateResult
@@ -124,7 +104,6 @@ export class LitApp extends BaseApp {
                 lit: (getAppState(this.router).frameworkVisits.lit || 0) + 1
             }
         });
-        // Pure CSR: build full DOM with header/footer, then render Lit content
         container.innerHTML = `<div><div id="${this.layout.headerId}">${this.layout.header}</div><div data-lit-content></div><div id="${this.layout.footerId}">${this.layout.footer}</div></div>`;
         const contentEl = container.querySelector(
             '[data-lit-content]'
@@ -147,7 +126,6 @@ export class LitApp extends BaseApp {
                 lit: (getAppState(this.router).frameworkVisits.lit || 0) + 1
             }
         });
-        // Hydrate only the content area — header/footer are static server-rendered HTML.
         const contentEl = container.querySelector(
             '[data-lit-content]'
         ) as HTMLElement | null;
@@ -181,7 +159,6 @@ export class LitApp extends BaseApp {
 
     async renderToString(): Promise<string> {
         const content = createContentTemplate(t(this.router, 'fwLitTitle'));
-        // Wrap hydratable content with a data attribute so onHydration can find it
         const wrappedContent = html`<div data-lit-content>${content}</div>`;
         const full = createSsrTemplate(this.layout, wrappedContent);
         const result = renderThunked(full);

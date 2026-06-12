@@ -1,127 +1,134 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import HelloWorld from './components/hello-world.vue';
-
-const title = ref<string>('Vue CSR Demo');
 </script>
 
 <template>
-	<div class="container">
-		<div class="logo-container">
-			<a href="https://esmx.dev" target="_blank" class="logo-link">
-				<div class="logo-wrapper esmx">
-					<img src="https://esmx.dev/logo.svg" class="logo" alt="Esmx logo" />
-				</div>
-			</a>
-			<a href="https://vuejs.org/" target="_blank" class="logo-link">
-				<div class="logo-wrapper vue">
-					<img src="https://vuejs.org/logo.svg" class="logo" alt="Vue logo" />
-				</div>
-			</a>
-		</div>
-		<HelloWorld :msg="title" />
-	</div>
+    <main class="demo">
+        <article class="demo__card">
+            <HelloWorld />
+            <p class="demo__source">
+                source ·
+                <code>src/app.vue</code>
+            </p>
+        </article>
+    </main>
 </template>
 
 <style>
+/* Inline token set — standalone demos own their CSS. */
 :root {
-	--esmx-primary: #001137;
-	--esmx-secondary: #273498;
-	--esmx-accent: #0074C2;
-	--esmx-light: #00ABE7;
-	--esmx-sun-core: #FFA000;
-	--esmx-sun-rays: #FFC107;
-	--vue-color: #42b883;
-	--vue-dark: #33a06f;
-	--border-color: rgba(0, 17, 55, 0.12);
-	--shadow-color: rgba(0, 17, 55, 0.05);
-	--text-primary: #213547;
-	--text-secondary: #666;
-	--bg-card: #fcfcfc;
-	--bg-hover: rgba(255, 250, 240, 0.8);
-	--font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    --esmx-brand: #0091e2;
+    --esmx-bg-canvas: #fdfdfd;
+    --esmx-bg-paper: #ffffff;
+    --esmx-bg-subtle: #f5f7f9;
+    --esmx-border: #e5e9ed;
+    --esmx-text-primary: #0c1117;
+    --esmx-text-secondary: #5a6473;
+    --esmx-text-muted: #8b949e;
+    --esmx-fw-vue: #41b883;
+    --esmx-font-sans: 'Inter Variable', system-ui, -apple-system, sans-serif;
+    --esmx-font-mono: 'JetBrains Mono Variable', ui-monospace, 'SF Mono', Menlo, monospace;
 }
-
+@media (prefers-color-scheme: dark) {
+    :root {
+        --esmx-bg-canvas: #0c1117;
+        --esmx-bg-paper: #161b22;
+        --esmx-bg-subtle: #1c232c;
+        --esmx-border: #30363d;
+        --esmx-text-primary: #e6edf3;
+        --esmx-text-secondary: #8b949e;
+        --esmx-text-muted: #6e7681;
+    }
+}
+* { box-sizing: border-box; }
 body {
-	margin: 0;
-	font-family: var(--font-family);
-	color: var(--text-primary);
-	background-color: white;
-	line-height: 1.6;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    min-height: 100vh;
+    background: var(--esmx-bg-canvas);
+    color: var(--esmx-text-primary);
+    font-family: var(--esmx-font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
 }
-</style>
-
-<style scoped>
-.container {
-	max-width: 1280px;
-	margin: 0 auto;
-	padding: 2rem;
-	text-align: center;
-	font-family: var(--font-family);
+.demo { max-width: 960px; margin: 0 auto; padding: 64px 24px; }
+.demo__card {
+    background: var(--esmx-bg-paper);
+    border: 1px solid var(--esmx-border);
+    border-radius: 8px;
+    padding: 24px;
 }
-
-.logo-container {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	gap: 3.5rem;
-	margin-bottom: 3rem;
+.demo__title { margin: 0 0 16px; font-size: 2rem; font-weight: 600; line-height: 1.2; }
+.demo__message { margin: 0 0 24px; color: var(--esmx-text-secondary); }
+.demo__code {
+    background: var(--esmx-bg-subtle);
+    border-radius: 6px;
+    padding: 16px 20px;
+    overflow-x: auto;
+    margin: 0 0 16px;
+    font-family: var(--esmx-font-mono);
+    font-size: 0.875rem;
+    line-height: 1.55;
 }
-
-.logo-link {
-	text-decoration: none;
-	position: relative;
+.demo__code pre { margin: 0; }
+.demo__stat { display: inline-flex; flex-direction: column; gap: 4px; padding: 16px 0; }
+.demo__stat-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--esmx-text-muted);
+    font-weight: 500;
 }
-
-.logo-wrapper {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	width: 6.5em;
-	height: 6.5em;
-	border-radius: 12px;
-	background-color: var(--bg-card);
-	padding: 1em;
-	box-shadow: 0 2px 12px var(--shadow-color);
-	border: 1px solid var(--border-color);
-	transition: all 0.3s ease;
+.demo__stat-value {
+    font-family: var(--esmx-font-mono);
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.2;
 }
-
-.logo-wrapper:hover {
-	transform: translateY(-5px);
-	box-shadow: 0 5px 15px var(--shadow-color);
+.demo__actions { display: flex; gap: 8px; margin: 8px 0 16px; }
+.demo__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 14px;
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--esmx-text-primary);
+    background: transparent;
+    border: 1px solid var(--esmx-border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 100ms;
 }
-
-.logo {
-	height: 100%;
-	width: auto;
-	transition: transform 0.3s ease;
+.demo__btn:hover { background: var(--esmx-bg-subtle); }
+.demo__btn--primary {
+    color: #fff;
+    background: var(--esmx-brand);
+    border-color: var(--esmx-brand);
 }
-
-.logo-wrapper:hover .logo {
-	transform: scale(1.1);
+.demo__btn--primary:hover { background: #0079bd; border-color: #0079bd; }
+.demo__tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.demo__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    font-family: var(--esmx-font-mono);
+    font-size: 0.75rem;
+    color: var(--esmx-text-secondary);
+    border: 1px solid var(--esmx-border);
+    border-radius: 9999px;
 }
-
-.logo-wrapper.esmx:hover {
-	background-color: rgba(255, 192, 7, 0.1);
-	border-color: var(--esmx-sun-rays);
+.demo__badge--vue { color: var(--esmx-fw-vue); border-color: var(--esmx-fw-vue); }
+.demo__dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    background: var(--esmx-text-muted);
 }
-
-.logo-wrapper.vue:hover {
-	background-color: rgba(66, 184, 131, 0.1);
-	border-color: var(--vue-color);
-}
-
-@media (max-width: 768px) {
-	.logo-container {
-		gap: 2rem;
-	}
-	
-	.logo-wrapper {
-		width: 5em;
-		height: 5em;
-	}
-}
+.demo__dot--vue { background: var(--esmx-fw-vue); }
+.demo__source { margin-top: 16px; color: var(--esmx-text-muted); font-size: 0.875rem; }
+.demo__source code { font-family: var(--esmx-font-mono); font-size: 0.75rem; }
 </style>

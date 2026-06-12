@@ -4,5 +4,6 @@
     "csr",
     "alias",
     "base-path",
-    "module-linking"
+    "module-linking",
+    "styles"
 ]
