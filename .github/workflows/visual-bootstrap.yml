@@ -8,6 +8,13 @@ name: Visual baselines (bootstrap)
 
 on:
   workflow_dispatch:
+  # ONE-SHOT: registers the workflow + generates initial baselines. Remove
+  # this block once the artifact is downloaded and tests/visual/__snapshots__/
+  # is committed — leave only workflow_dispatch for future refreshes.
+  push:
+    branches: [feat-vite-rsbuild-bundler-support]
+    paths:
+      - '.github/workflows/visual-bootstrap.yml'
 
 jobs:
   bootstrap:
