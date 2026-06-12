@@ -19,23 +19,25 @@ on:
 jobs:
   bootstrap:
     runs-on: ubuntu-latest
+    # Run inside the Playwright image so chromium + system deps are pre-baked.
+    # `playwright install` from CDN has been flaky; this avoids it entirely.
+    container:
+      image: mcr.microsoft.com/playwright:v1.48.2-jammy
+      options: --user root --ipc=host
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 10
-          run_install: false
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: 'pnpm'
+
+      - name: Setup pnpm + node
+        run: |
+          # Container ships node 20+; install pnpm via corepack.
+          corepack enable
+          corepack prepare pnpm@10.0.0 --activate
+          pnpm --version
+          node --version
 
       - name: Install
         run: pnpm install --frozen-lockfile
-
-      - name: Install Playwright Chromium
-        run: pnpm exec playwright install --with-deps chromium
 
       - name: Build (packages then examples with bin relink)
         run: pnpm build
