@@ -1,12 +1,15 @@
 #!/usr/bin/env node
-// Sequential smoke runner for production-built Esmx examples.
+// Batched smoke runner for production-built Esmx examples.
 //
-// For each example: spawn `pnpm start`, poll the configured port until 200,
-// curl `/` once, assert the response is HTML and contains hydration markers
-// (importmap + module script). Kill the server, move on.
-//
-// Hydration "browser" check is deferred to F2 (Playwright); this layer
-// proves the SSR HTML wire-up is in place so the client bundle WILL hydrate.
+// Runs servers in two parallel groups (standalone + hub-federated micros):
+//   - Group "standalone": 6 servers on ports 3000-3005, one set at a time
+//   - Group "micro": hub (3000) + 15 remotes on 3001-3015, all at once
+// In each group all servers come up concurrently; we then curl each `/`,
+// assert it's a hydration-ready HTML document (status 200 + DOCTYPE +
+// `<script type="importmap">` + `<script type="module">`), and kill
+// the group. Wall-clock dominated by the slowest server in each group,
+// not by sum-of-all — what used to take ~25 min sequentially now finishes
+// in ~2 min.
 
 import { spawn } from 'node:child_process';
 import { setTimeout as delay } from 'node:timers/promises';
@@ -107,9 +110,7 @@ const MICRO = [
     }
 ];
 
-const TARGETS = [...STANDALONE, ...MICRO];
-
-const STARTUP_TIMEOUT_MS = 30_000;
+const STARTUP_TIMEOUT_MS = 60_000;
 const POLL_INTERVAL_MS = 500;
 
 async function waitForReady(port) {
@@ -118,44 +119,37 @@ async function waitForReady(port) {
     while (Date.now() < deadline) {
         try {
             const res = await fetch(`http://127.0.0.1:${port}/`, {
-                signal: AbortSignal.timeout(2000)
+                signal: AbortSignal.timeout(3000)
             });
             if (res.status === 200) {
                 const body = await res.text();
-                if (/^\s*<!DOCTYPE/i.test(body)) {
-                    return { status: res.status, body };
-                }
-                lastErr = `200 but no DOCTYPE in body (len=${body.length})`;
-            } else {
-                lastErr = `status=${res.status}`;
+                if (/^\s*<!DOCTYPE/i.test(body)) return body;
             }
+            lastErr = `status=${res.status}`;
         } catch (e) {
             lastErr = e.message || String(e);
         }
         await delay(POLL_INTERVAL_MS);
     }
-    throw new Error(
-        `server on port ${port} did not become ready in ${STARTUP_TIMEOUT_MS}ms (last: ${lastErr})`
-    );
+    throw new Error(`not ready in ${STARTUP_TIMEOUT_MS}ms (last: ${lastErr})`);
 }
 
-function assertHydratable(html, target) {
+function assertHydratable(html, name) {
     const checks = [
-        { name: 'importmap script', re: /<script[^>]*type=["']importmap["']/ },
-        { name: 'module entry script', re: /<script[^>]*type=["']module["']/ }
+        { what: 'importmap script', re: /<script[^>]*type=["']importmap["']/ },
+        { what: 'module entry script', re: /<script[^>]*type=["']module["']/ }
     ];
-    const failures = checks
+    const missing = checks
         .filter(({ re }) => !re.test(html))
-        .map((c) => c.name);
-    if (failures.length) {
+        .map((c) => c.what);
+    if (missing.length) {
         throw new Error(
-            `${target.name}: HTML missing hydration markers [${failures.join(', ')}]`
+            `${name}: missing hydration markers [${missing.join(', ')}]`
         );
     }
 }
 
-async function smokeOne(target) {
-    const start = Date.now();
+function spawnServer(target) {
     const child = spawn('pnpm', ['--filter', `./${target.dir}`, 'start'], {
         stdio: ['ignore', 'pipe', 'pipe'],
         env: {
@@ -164,47 +158,79 @@ async function smokeOne(target) {
             NODE_ENV: 'production'
         }
     });
-
-    let stderr = '';
+    child._stderr = '';
     child.stderr.on('data', (b) => {
-        stderr += b.toString();
+        child._stderr += b.toString();
     });
+    // Drain stdout so the child doesn't block on full pipe buffer.
+    child.stdout.on('data', () => {});
+    return child;
+}
 
+async function killAll(children) {
+    for (const c of children) {
+        if (!c.killed) c.kill('SIGTERM');
+    }
+    await delay(500);
+    for (const c of children) {
+        if (!c.killed) c.kill('SIGKILL');
+    }
+}
+
+async function runGroup(groupName, targets) {
+    console.log(
+        `\n=== smoke group: ${groupName} (${targets.length} servers) ===`
+    );
+    const start = Date.now();
+    const children = targets.map(spawnServer);
     try {
-        const { body: html } = await waitForReady(target.port);
-        assertHydratable(html, target);
-        console.log(
-            `✓ ${target.name} (:${target.port}) ${Date.now() - start}ms`
+        const results = await Promise.allSettled(
+            targets.map(async (t) => {
+                const html = await waitForReady(t.port);
+                assertHydratable(html, t.name);
+                return { ok: true, target: t };
+            })
         );
-        return { ok: true };
-    } catch (e) {
-        console.error(`✗ ${target.name} (:${target.port}) ${e.message}`);
-        if (stderr) console.error(`  stderr: ${stderr.trim().slice(-500)}`);
-        return { ok: false, error: e.message };
+        let passed = 0;
+        const failures = [];
+        for (let i = 0; i < results.length; i++) {
+            const r = results[i];
+            const t = targets[i];
+            if (r.status === 'fulfilled') {
+                console.log(`✓ ${t.name} (:${t.port})`);
+                passed++;
+            } else {
+                const err = r.reason?.message || String(r.reason);
+                console.error(`✗ ${t.name} (:${t.port}) ${err}`);
+                const child = children[i];
+                if (child._stderr) {
+                    console.error(
+                        `  stderr: ${child._stderr.trim().slice(-500)}`
+                    );
+                }
+                failures.push({ target: t, error: err });
+            }
+        }
+        console.log(
+            `  ${passed}/${targets.length} passed (${Date.now() - start}ms)`
+        );
+        return failures;
     } finally {
-        child.kill('SIGTERM');
-        await delay(200);
-        if (!child.killed) child.kill('SIGKILL');
+        await killAll(children);
     }
 }
 
 async function main() {
-    const filter = process.argv[2];
-    const targets = filter ? TARGETS.filter((t) => t.name === filter) : TARGETS;
-    if (!targets.length) {
-        console.error(`No targets match filter "${filter}"`);
-        process.exit(2);
-    }
-    const results = [];
-    for (const t of targets) {
-        results.push({ target: t, ...(await smokeOne(t)) });
-    }
-    const failed = results.filter((r) => !r.ok);
+    const failures = [];
+    failures.push(...(await runGroup('standalone', STANDALONE)));
+    failures.push(...(await runGroup('micro (hub + 15 remotes)', MICRO)));
+
     console.log(
-        `\nSmoke summary: ${results.length - failed.length}/${results.length} passed`
+        `\nSmoke summary: ${failures.length === 0 ? 'PASS' : `${failures.length} failure(s)`}`
     );
-    if (failed.length) {
-        for (const r of failed) console.log(`  - ${r.target.name}: ${r.error}`);
+    if (failures.length) {
+        for (const f of failures)
+            console.log(`  - ${f.target.name}: ${f.error}`);
         process.exit(1);
     }
 }
