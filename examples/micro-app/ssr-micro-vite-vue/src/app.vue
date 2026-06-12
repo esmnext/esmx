@@ -61,10 +61,8 @@
 </template>
 
 <script setup lang="ts">
-// @ts-expect-error CSS handled by bundler loader, not tsc.
-import 'ssr-micro-shared/src/styles/tokens.css';
-// @ts-expect-error CSS handled by bundler loader, not tsc.
-import 'ssr-micro-shared/src/styles/components.css';
+// CSS loaded via shared package's JS shim — keeps tsc out of bundler-only paths.
+import 'ssr-micro-shared/src/styles/index.js';
 
 import { useRouter } from '@esmx/router-vue';
 import { useHead } from '@unhead/vue';

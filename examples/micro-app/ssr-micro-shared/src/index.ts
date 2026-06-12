@@ -1,11 +1,10 @@
 // CSS side-effect imports — own them at the federation root so consumers
 // don't need to import workspace-dep stylesheets (which rsbuild silently
-// drops). Each consuming remote reaches ssr-micro-shared anyway, and the
-// host's renderHost emits `<link>` for these chunks from this manifest.
-// @ts-expect-error CSS handled by bundler loader, not tsc.
-import './styles/tokens.css';
-// @ts-expect-error CSS handled by bundler loader, not tsc.
-import './styles/components.css';
+// drops). The actual `import './*.css'` lives in a sibling .js shim so tsc
+// stays out of bundler-only concerns. Each consuming remote reaches
+// ssr-micro-shared anyway, and the host's renderHost emits `<link>` for
+// these chunks from this manifest.
+import './styles/index.js';
 
 export { renderSSRHead } from 'unhead/server';
 export type { ActiveHeadEntry, Unhead, UseHeadInput } from 'unhead/types';
