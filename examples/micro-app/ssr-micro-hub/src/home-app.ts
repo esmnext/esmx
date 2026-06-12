@@ -303,10 +303,10 @@ const HUB_STYLES = `
 }
 .hub-callout__body {
     margin: 0;
-    color: var(--esmx-text-secondary);
+    color: var(--esmx-text-primary);
     font-size: var(--esmx-fs-sm);
 }
-.hub-callout a { color: var(--esmx-brand); font-family: var(--esmx-font-mono); }
+.hub-callout a { color: var(--esmx-brand-hover); text-decoration: underline; font-family: var(--esmx-font-mono); }
 @media (max-width: 767px) {
     .hub-main { padding: var(--esmx-space-6) var(--esmx-space-4); }
     .hub-table th, .hub-table td { padding: var(--esmx-space-2) var(--esmx-space-3); }

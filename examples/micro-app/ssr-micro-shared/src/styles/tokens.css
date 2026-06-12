@@ -15,8 +15,8 @@
 
 :root {
     /* ─── 1. Brand (single, used sparingly) ─────────────────────────── */
-    --esmx-brand: #0091e2; /* Links, primary CTA, active state, brand badge */
-    --esmx-brand-hover: #0079bd; /* Hover on brand */
+    --esmx-brand: #0077b3; /* Links, primary CTA, active state, brand badge (WCAG AA on white) */
+    --esmx-brand-hover: #0069a8; /* Hover on brand */
     --esmx-brand-soft: #e6f3fa; /* Soft fill (badge bg, focus ring bg) */
 
     /* ─── 2. Surfaces ───────────────────────────────────────────────── */
@@ -33,7 +33,7 @@
     /* ─── 4. Text ───────────────────────────────────────────────────── */
     --esmx-text-primary: #0c1117; /* Headings, body */
     --esmx-text-secondary: #5a6473; /* Subheading, description */
-    --esmx-text-muted: #8b949e; /* Metadata, placeholder, URL, timestamp */
+    --esmx-text-muted: #5d6b7a; /* Metadata, placeholder, URL, timestamp (WCAG AA on white) */
     --esmx-text-inverse: #ffffff; /* Text on primary button / dark surface */
 
     /* ─── 5. Status (mode-agnostic) ─────────────────────────────────── */
@@ -43,7 +43,7 @@
     --esmx-info: #0091e2; /* Same as brand */
 
     /* ─── 6. Framework colors (dots & labels ONLY — never as fill) ──── */
-    --esmx-fw-react: #149eca;
+    --esmx-fw-react: #0e7a9e; /* WCAG AA on white for badge/label text */
     --esmx-fw-vue: #41b883;
     --esmx-fw-preact: #673ab8;
     --esmx-fw-solid: #2c4f7c;
