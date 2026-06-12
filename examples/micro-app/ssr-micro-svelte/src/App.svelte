@@ -11,9 +11,9 @@ const { layout, title }: Props = $props();
 // biome-ignore lint/style/useConst: Svelte 5 $state rune requires `let` for reassignable bindings
 let count = $state(0);
 
-const sourceSnippet = `<script lang="ts">
+const sourceSnippet = `${'<scr' + 'ipt lang="ts">'}
   let count = $state(0)
-</script>
+${'</scr' + 'ipt>'}
 
 <p>Count: {count}</p>
 <button onclick={() => count++}>+</button>
