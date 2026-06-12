@@ -223,9 +223,8 @@ function resolveRel(
  * Resolve a bare specifier from a project root. Try in order:
  *
  * 1. **`findPackageJSON`** (Node 24+): finds the target package's
- *    `package.json` from `root`'s `node_modules` walk, then resolves the
- *    specifier's subpath in its `exports` map (`.` for the root entry,
- *    `./client` for `react-dom/client`). Works for ESM-only packages whose
+ *    `package.json` from `root`'s `node_modules` walk, then reads its
+ *    `exports['.']` for the right entry. Works for ESM-only packages whose
  *    `exports` lacks a `require` condition (e.g. `@esmx/router`). Reliable
  *    regardless of the caller's own cwd / module context — unlike
  *    `import.meta.resolve(spec, parent)`, whose second arg Node ignores for
@@ -241,7 +240,7 @@ function resolveFromRoot(root: string, spec: string): string {
         const pjPath = findPackageJSON(spec, fromFile);
         if (pjPath) {
             const pj = JSON.parse(fs.readFileSync(pjPath, 'utf8'));
-            const entry = pickEntry(pj, parseSubpath(spec));
+            const entry = pickEntry(pj);
             if (entry) return path.join(path.dirname(pjPath), entry);
         }
     } catch {
@@ -257,97 +256,22 @@ function resolveFromRoot(root: string, spec: string): string {
 }
 
 /**
- * Extract the `exports`-map subpath from a bare specifier: `react-dom` → `.`,
- * `react-dom/client` → `./client`, `@scope/pkg/deep/file` → `./deep/file`.
- */
-function parseSubpath(spec: string): string {
-    const nameSegments = spec.startsWith('@') ? 2 : 1;
-    const rest = spec.split('/').slice(nameSegments).join('/');
-    return rest ? `./${rest}` : '.';
-}
-
-/**
- * Pick the file path the package wants to expose for `subpath` under the
- * Node environment, mirroring Node's condition precedence:
+ * Pick the file path the package wants to expose for the default entry under
+ * the Node environment, mirroring Node's condition precedence:
  *
  *   - `import` then `module` over `require` / `default` for ESM-first packages
  *   - `node` over `browser` / `default` for environment branching
  *   - Walks nested condition maps recursively (handles vue's
  *     `import → { types, node, default }` shape)
- *
- * Subpaths are matched against the `exports` map by exact key first, then by
- * single-`*` patterns (`./*`, `./deep/*.js`) with Node's longest-prefix
- * precedence. `module`/`main` only ever describe the root entry, so they are
- * skipped for subpaths — the caller falls back to `require.resolve` instead.
  */
-function pickEntry(
-    pj: Record<string, unknown>,
-    subpath: string
-): string | null {
+function pickEntry(pj: Record<string, unknown>): string | null {
     const exports = pj.exports as undefined | string | Record<string, unknown>;
-    const target = selectExportsTarget(exports, subpath);
-    const fromExports = pickFromCondition(target);
-    if (fromExports) return fromExports;
-    if (subpath !== '.') return null;
+    const dot = exports && typeof exports === 'object' ? exports['.'] : exports;
+    const fromDot = pickFromCondition(dot);
+    if (fromDot) return fromDot;
     if (typeof pj.module === 'string') return pj.module;
     if (typeof pj.main === 'string') return pj.main;
     return null;
-}
-
-function selectExportsTarget(
-    exports: undefined | string | Record<string, unknown>,
-    subpath: string
-): unknown {
-    if (!exports || typeof exports !== 'object') {
-        return subpath === '.' ? exports : null;
-    }
-    const map = exports as Record<string, unknown>;
-    // A map whose keys don't start with '.' is a bare conditions object that
-    // only describes the root entry (`exports: { import: ..., require: ... }`).
-    const isSubpathMap = Object.keys(map).some((k) => k.startsWith('.'));
-    if (!isSubpathMap) return subpath === '.' ? map : null;
-    if (subpath in map) return map[subpath];
-    let best: {
-        prefixLength: number;
-        value: unknown;
-        wildcard: string;
-    } | null = null;
-    for (const [key, value] of Object.entries(map)) {
-        const star = key.indexOf('*');
-        if (star === -1 || key.indexOf('*', star + 1) !== -1) continue;
-        const prefix = key.slice(0, star);
-        const suffix = key.slice(star + 1);
-        if (
-            subpath.length < prefix.length + suffix.length ||
-            !subpath.startsWith(prefix) ||
-            !subpath.endsWith(suffix)
-        ) {
-            continue;
-        }
-        if (!best || prefix.length > best.prefixLength) {
-            best = {
-                prefixLength: prefix.length,
-                value,
-                wildcard: subpath.slice(
-                    prefix.length,
-                    subpath.length - suffix.length
-                )
-            };
-        }
-    }
-    return best ? substituteWildcard(best.value, best.wildcard) : null;
-}
-
-function substituteWildcard(value: unknown, wildcard: string): unknown {
-    if (typeof value === 'string') return value.replaceAll('*', wildcard);
-    if (value && typeof value === 'object') {
-        const out: Record<string, unknown> = {};
-        for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
-            out[k] = substituteWildcard(v, wildcard);
-        }
-        return out;
-    }
-    return value;
 }
 
 const NODE_PREFERRED_CONDITIONS = [
