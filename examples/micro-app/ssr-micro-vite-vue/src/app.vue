@@ -61,8 +61,8 @@
 </template>
 
 <script setup lang="ts">
-// CSS loaded via shared package's JS shim — keeps tsc out of bundler-only paths.
-import 'ssr-micro-shared/src/styles/index.js';
+// CSS comes in via the ssr-micro-shared index.ts side-effects — no need to
+// re-import here. The shared module owns all design-system stylesheets.
 
 import { useRouter } from '@esmx/router-vue';
 import { useHead } from '@unhead/vue';

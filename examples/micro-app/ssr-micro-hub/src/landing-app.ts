@@ -85,22 +85,21 @@ export class LandingApp extends BaseApp {
     }
 
     private getHeroHtml(): string {
-        // Per design-direction.md §7.3: hero is text + a real `package.json`
-        // snippet showing esmx's most distinctive API surface (the `exports`
-        // field). No illustration, no logo grid — code is the demo.
-        const PKG_JSON_SNIPPET = `{
-  "name": "@your/remote",
-  "type": "module",
-  "esmx": {
-    "exports": {
-      "./components": {
-        "browser": "...",
-        "server":  "..."
-      },
-      "pkg:react": { "pkg": true }
-    }
+        // Hero shows the actual minimum esmx config — the file the framework
+        // really reads on every build. `modules.exports` is the distinctive
+        // API surface: declare what to share, get a manifest + import map
+        // for free.
+        const ENTRY_NODE_SNIPPET = `import type { EsmxOptions } from '@esmx/core';
+
+export default {
+  modules: {
+    exports: [
+      'root:src/routes',
+      'pkg:react',
+      'pkg:react-dom'
+    ]
   }
-}`;
+} satisfies EsmxOptions;`;
         return (
             `<section class="hero">` +
             `<div class="hero-bg"></div>` +
@@ -116,7 +115,7 @@ export class LandingApp extends BaseApp {
             `<p class="hero-subtitle reveal reveal-delay-2">${t(this.router, 'heroSubtitle')}</p>` +
             `<div class="hero-actions reveal reveal-delay-3">` +
             `<a href="#quickstart" class="btn btn-primary">${t(this.router, 'heroBtnQuickstart')}${ARROW_RIGHT_ICON}</a>` +
-            `<a href="#" class="btn btn-primary" data-to="${localePath(this.router, '/demo/')}">${t(this.router, 'heroBtnDemo')}${ARROW_RIGHT_ICON}</a>` +
+            `<a href="${localePath(this.router, '/demo/')}" class="btn btn-primary" data-to="${localePath(this.router, '/demo/')}">${t(this.router, 'heroBtnDemo')}${ARROW_RIGHT_ICON}</a>` +
             `<a href="https://github.com/esmnext/esmx" target="_blank" class="btn btn-outline">${GITHUB_ICON}GitHub</a>` +
             `</div>` +
             `<div class="hero-trust reveal reveal-delay-4">` +
@@ -127,8 +126,8 @@ export class LandingApp extends BaseApp {
             `</div>` +
             `<div class="hero-visual reveal reveal-delay-3">` +
             `<div class="hero-code">` +
-            `<div class="hero-code__header"><span class="hero-code__file">package.json</span></div>` +
-            `<pre class="hero-code__body">${PKG_JSON_SNIPPET}</pre>` +
+            `<div class="hero-code__header"><span class="hero-code__file">src/entry.node.ts</span></div>` +
+            `<pre class="hero-code__body">${ENTRY_NODE_SNIPPET}</pre>` +
             `</div>` +
             `</div>` +
             `</div>` +
@@ -327,22 +326,22 @@ export class LandingApp extends BaseApp {
             `<p class="section-desc">${t(this.router, 'ecoDesc')}</p>` +
             `</div>` +
             '<div class="ecosystem-logos reveal reveal-delay-1">' +
-            `<a href="#" class="ecosystem-item" data-to="${localePath(this.router, '/vue3/')}">` +
+            `<a href="${localePath(this.router, '/vue3/')}" class="ecosystem-item" data-to="${localePath(this.router, '/vue3/')}">` +
             logos.vue +
             '<span>Vue</span></a>' +
-            `<a href="#" class="ecosystem-item" data-to="${localePath(this.router, '/react/')}">` +
+            `<a href="${localePath(this.router, '/react/')}" class="ecosystem-item" data-to="${localePath(this.router, '/react/')}">` +
             logos.react +
             '<span>React</span></a>' +
-            `<a href="#" class="ecosystem-item" data-to="${localePath(this.router, '/preact/')}">` +
+            `<a href="${localePath(this.router, '/preact/')}" class="ecosystem-item" data-to="${localePath(this.router, '/preact/')}">` +
             logos.preact +
             '<span>Preact</span></a>' +
-            `<a href="#" class="ecosystem-item" data-to="${localePath(this.router, '/solid/')}">` +
+            `<a href="${localePath(this.router, '/solid/')}" class="ecosystem-item" data-to="${localePath(this.router, '/solid/')}">` +
             logos.solid +
             '<span>Solid</span></a>' +
-            `<a href="#" class="ecosystem-item" data-to="${localePath(this.router, '/html/')}">` +
+            `<a href="${localePath(this.router, '/html/')}" class="ecosystem-item" data-to="${localePath(this.router, '/html/')}">` +
             logos.html5 +
             '<span>HTML5</span></a>' +
-            `<a href="#" class="ecosystem-item" data-to="${localePath(this.router, '/svelte/')}">` +
+            `<a href="${localePath(this.router, '/svelte/')}" class="ecosystem-item" data-to="${localePath(this.router, '/svelte/')}">` +
             logos.svelte +
             '<span>Svelte</span></a>' +
             '</div>' +
@@ -451,7 +450,7 @@ export class LandingApp extends BaseApp {
                         <h2 class="section-title">${t(this.router, 'liveTitle')}</h2>
                         <p class="section-desc">${t(this.router, 'liveDesc')}</p>
                     </div>
-                    <a href="#" class="btn btn-primary" data-to="${localePath(this.router, '/demo/')}" style="font-size: 1.1rem; padding: 14px 32px;">
+                    <a href="${localePath(this.router, '/demo/')}" class="btn btn-primary" data-to="${localePath(this.router, '/demo/')}" style="font-size: 1.1rem; padding: 14px 32px;">
                         ${t(this.router, 'liveBtn')} ${ARROW_RIGHT_ICON}
                     </a>
                 </div>
