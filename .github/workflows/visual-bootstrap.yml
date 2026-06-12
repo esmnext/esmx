@@ -19,7 +19,7 @@ on:
 jobs:
   bootstrap:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v2
@@ -37,11 +37,8 @@ jobs:
       - name: Install Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium
 
-      - name: Build packages
-        run: pnpm build:packages
-
-      - name: Build examples
-        run: pnpm build:examples
+      - name: Build (packages then examples with bin relink)
+        run: pnpm build
 
       - name: Capture hub baselines
         env:

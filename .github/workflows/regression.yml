@@ -62,11 +62,8 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Build packages
-        run: pnpm build:packages
-
-      - name: Build examples
-        run: pnpm build:examples
+      - name: Build (packages then examples with bin relink)
+        run: pnpm build
 
       - name: SSR smoke (prod build + curl + hydration markers)
         run: node scripts/smoke.mjs
@@ -103,11 +100,8 @@ jobs:
       - name: Install Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium
 
-      - name: Build packages
-        run: pnpm build:packages
-
-      - name: Build examples
-        run: pnpm build:examples
+      - name: Build (packages then examples with bin relink)
+        run: pnpm build
 
       - name: Start hub + capture visual baselines (compare mode)
         env:
@@ -170,11 +164,8 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Build packages
-        run: pnpm build:packages
-
-      - name: Build examples
-        run: pnpm build:examples
+      - name: Build (packages then examples with bin relink)
+        run: pnpm build
 
       - name: Start hub server
         run: |
