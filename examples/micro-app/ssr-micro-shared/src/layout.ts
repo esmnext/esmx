@@ -168,7 +168,7 @@ function generateNavHtml(router: Router): string {
                     text-decoration: none;
                     color: ${isActive ? '#fff' : '#94a3b8'};
                     background: ${isActive ? 'rgba(59, 130, 246, 0.15)' : 'transparent'};
-                    border-left: ${isActive ? '3px solid #3b82f6' : '3px solid transparent'};
+                    border-left: ${isActive ? '3px solid var(--esmx-link)' : '3px solid transparent'};
                     cursor: pointer;
                     font-weight: ${isActive ? '600' : '400'};
                 "
@@ -209,10 +209,10 @@ export class Layout {
                     --esmx-bg-sidebar: #0f172a;
                     --esmx-text-primary: #0f172a;
                     --esmx-text-secondary: #64748b;
-                    --esmx-text-muted: #94a3b8;
+                    --esmx-text-muted: #5d6b7a;
                     --esmx-border: #e2e8f0;
                     --esmx-border-divider: #334155;
-                    --esmx-link: #3b82f6;
+                    --esmx-link: #2563eb;
                     --esmx-nav-hover-bg: rgba(59, 130, 246, 0.08);
                     --esmx-nav-hover-color: #cbd5e1;
                     --esmx-card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -311,7 +311,7 @@ export class Layout {
                 z-index: 90;
                 gap: 12px;
             ">
-                <button id="${s}-menu-btn" style="
+                <button id="${s}-menu-btn" aria-label="${t(this.router, 'menuLabel')}" style="
                     background: transparent;
                     border: none;
                     color: white;
@@ -369,10 +369,10 @@ export class Layout {
                     padding-top: 16px;
                     border-top: 1px solid var(--esmx-border-divider);
                     font-size: 0.75rem;
-                    color: var(--esmx-text-muted);
+                    color: #94a3b8;
                     line-height: 1.8;
                 "></div>
-                <button id="${s}-sidebar-close" style="
+                <button id="${s}-sidebar-close" aria-label="${t(this.router, 'closeLabel')}" style="
                     display: none;
                     background: transparent;
                     border: none;
@@ -394,12 +394,12 @@ export class Layout {
             margin-left: var(--esmx-sidebar-width, ${SIDEBAR_WIDTH});
             padding: 24px 32px;
             background: var(--esmx-bg-sidebar);
-            color: var(--esmx-text-muted);
+            color: #94a3b8;
             font-size: 0.875rem;
             text-align: center;
         ">
             <p style="margin: 0;">
-                Powered by <a href="https://esmx.dev" target="_blank" style="color: var(--esmx-link); text-decoration: none;">Esmx</a>
+                Powered by <a href="https://esmx.dev" target="_blank" style="color: #60a5fa; text-decoration: underline;">Esmx</a>
                 &copy; ${new Date().getFullYear()}
             </p>
         </div>`;

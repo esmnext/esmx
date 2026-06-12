@@ -13,13 +13,15 @@ const messages = {
         statsTop: 'Top 3',
         statsCurrent: 'Current',
         switchLang: '中文',
+        menuLabel: 'Open menu',
+        closeLabel: 'Close menu',
 
         // Dashboard (HomeApp)
         homeMetaTitle: 'Esmx Micro-App Hub',
         homeMetaDesc: 'Explore micro-frontend architecture with Esmx Router',
         homeHeroTitle: 'Micro-Frontend Architecture',
         homeHeroSubtitle:
-            'Explore how different frontend frameworks coexist in a single application powered by <strong style="color: var(--esmx-link);">Esmx Router</strong>',
+            'Explore how different frontend frameworks coexist in a single application powered by <strong style="color: var(--esmx-brand);">Esmx Router</strong>',
 
         // Landing page (LandingApp)
         landingMetaTitle:
@@ -116,13 +118,15 @@ const messages = {
         statsTop: '前 3 名',
         statsCurrent: '当前',
         switchLang: 'English',
+        menuLabel: '打开菜单',
+        closeLabel: '关闭菜单',
 
         // Dashboard (HomeApp)
         homeMetaTitle: 'Esmx 微应用中心',
         homeMetaDesc: '使用 Esmx Router 探索微前端架构',
         homeHeroTitle: '微前端架构',
         homeHeroSubtitle:
-            '探索不同前端框架如何在由 <strong style="color: var(--esmx-link);">Esmx Router</strong> 驱动的单个应用中共存',
+            '探索不同前端框架如何在由 <strong style="color: var(--esmx-brand);">Esmx Router</strong> 驱动的单个应用中共存',
 
         // Landing page (LandingApp)
         landingMetaTitle: 'Esmx - 基于原生 ESM 的通用渲染框架',
