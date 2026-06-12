@@ -31,6 +31,11 @@ export default {
 
     async server(esmx) {
         const server = http.createServer((req, res) => {
+            if (req.url === '/robots.txt' || req.url === '/robots.txt/') {
+                res.writeHead(200, { 'content-type': 'text/plain' });
+                res.end('User-agent: *\nAllow: /\nSitemap: https://esmx.dev/sitemap.xml\n');
+                return;
+            }
             esmx.middleware(req, res, async () => {
                 const protocol = req.headers['x-forwarded-proto'] || 'http';
                 const host = req.headers.host || 'localhost:3000';
@@ -87,5 +92,9 @@ export default {
                 );
             }
         }
+        esmx.writeSync(
+            esmx.resolvePath('dist/client', 'robots.txt'),
+            'User-agent: *\nAllow: /\nSitemap: https://esmx.dev/sitemap.xml\n'
+        );
     }
 } satisfies EsmxOptions;
