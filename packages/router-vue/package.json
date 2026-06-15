@@ -65,10 +65,10 @@
     "devDependencies": {
         "@biomejs/biome": "2.3.7",
         "@types/node": "^24.0.0",
-        "@vitest/coverage-v8": "3.2.4",
+        "@vitest/coverage-v8": "3.2.6",
         "typescript": "5.9.3",
         "unbuild": "3.6.1",
-        "vitest": "3.2.4",
+        "vitest": "3.2.6",
         "vue": "3.5.23",
         "vue2": "npm:vue@2.7.16"
     },
