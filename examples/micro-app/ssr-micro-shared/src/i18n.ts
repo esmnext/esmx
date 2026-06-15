@@ -13,13 +13,15 @@ const messages = {
         statsTop: 'Top 3',
         statsCurrent: 'Current',
         switchLang: '中文',
+        menuLabel: 'Open menu',
+        closeLabel: 'Close menu',
 
         // Dashboard (HomeApp)
         homeMetaTitle: 'Esmx Micro-App Hub',
         homeMetaDesc: 'Explore micro-frontend architecture with Esmx Router',
         homeHeroTitle: 'Micro-Frontend Architecture',
         homeHeroSubtitle:
-            'Explore how different frontend frameworks coexist in a single application powered by <strong style="color: var(--esmx-link);">Esmx Router</strong>',
+            'Explore how different frontend frameworks coexist in a single application powered by <strong style="color: var(--esmx-brand);">Esmx Router</strong>',
 
         // Landing page (LandingApp)
         landingMetaTitle:
@@ -37,19 +39,22 @@ const messages = {
             "Based on native ESM + Import Maps, with CSR/SSR and module linking. Compose applications and share code through the browser's native module system — zero extra runtime overhead.",
         heroBtnQuickstart: 'Quick Start',
         heroBtnDemo: 'Explore Live Demo',
-        whyTitle: 'Why Esmx?',
+        whyTitle: 'Built for the agent era',
         whyDesc:
-            'Traditional approaches lean on simulation and wrapper layers that add runtime overhead — Esmx solves it at the root with native mechanisms',
+            'Other micro-frontend frameworks invented their own lifecycle hooks, loader DSLs, and globals. Esmx is plain ESM + import maps — the same surface LLMs were trained on. Less to learn, less to hallucinate.',
         painLabelBad: 'Traditional',
-        painBad1: 'Runtime sandbox simulation with heavy performance cost',
-        painBad2: 'Custom module loaders, incompatible with the standard',
-        painBad3: 'Proxy-hijacked globals make debugging hard',
+        painBad1:
+            'Custom lifecycle hooks (bootstrap, mount, unmount, runtime sandbox)',
+        painBad2:
+            'Proprietary loader DSL (expose/share, registerApplication, qiankun.start)',
+        painBad3:
+            'Proxy-hijacked globals make stack traces opaque and tooling fragile',
         painSolution1:
-            'Browser-native ESM loading, zero extra runtime overhead, natural isolation via module scope',
+            'No lifecycle to learn — your remote is a standard ESM module the host imports.',
         painSolution2:
-            'Standard ESM import/export syntax, zero learning curve, mix any frameworks',
+            "Federation is `import './x'` resolved by a standard import map. Your AI assistant already knows the API.",
         painSolution3:
-            'Flexible SSR strategy, high-performance Rspack builds, cross-app sharing via Module Linking',
+            'Stack traces, devtools, and source maps point at the real module — no proxy in between.',
         featuresTitle: 'Core Features',
         featuresDesc:
             'Six core capabilities that redefine the micro-frontend experience',
@@ -113,13 +118,15 @@ const messages = {
         statsTop: '前 3 名',
         statsCurrent: '当前',
         switchLang: 'English',
+        menuLabel: '打开菜单',
+        closeLabel: '关闭菜单',
 
         // Dashboard (HomeApp)
         homeMetaTitle: 'Esmx 微应用中心',
         homeMetaDesc: '使用 Esmx Router 探索微前端架构',
         homeHeroTitle: '微前端架构',
         homeHeroSubtitle:
-            '探索不同前端框架如何在由 <strong style="color: var(--esmx-link);">Esmx Router</strong> 驱动的单个应用中共存',
+            '探索不同前端框架如何在由 <strong style="color: var(--esmx-brand);">Esmx Router</strong> 驱动的单个应用中共存',
 
         // Landing page (LandingApp)
         landingMetaTitle: 'Esmx - 基于原生 ESM 的通用渲染框架',
@@ -136,18 +143,20 @@ const messages = {
             '基于原生 ESM + Import Maps，支持 CSR/SSR 与模块链接。用浏览器原生模块机制实现应用组合与代码共享，零额外运行时开销。',
         heroBtnQuickstart: '快速开始',
         heroBtnDemo: '探索在线 Demo',
-        whyTitle: '为什么需要 Esmx？',
+        whyTitle: '为 agent 时代而生',
         whyDesc:
-            '传统方案依赖模拟和包装层带来运行时负担，Esmx 用原生机制从根本上解决问题',
+            '其他微前端框架发明了自己的生命周期钩子、loader DSL 和全局对象。Esmx 只是原生 ESM + import map —— 跟 LLM 训练数据同一表面。学得少,幻觉少。',
         painLabelBad: '传统方案',
-        painBad1: '运行时沙箱模拟，性能损耗大',
-        painBad2: '自定义模块加载器，与标准不兼容',
-        painBad3: 'Proxy 劫持全局对象，调试困难',
+        painBad1: '自定义生命周期钩子(bootstrap、mount、unmount、运行时沙箱)',
+        painBad2:
+            '专有 loader DSL(expose/share、registerApplication、qiankun.start)',
+        painBad3: 'Proxy 劫持全局,栈追踪难读懂,工具链脆弱',
         painSolution1:
-            '浏览器原生 ESM 加载，零额外运行时开销，基于模块作用域天然隔离',
-        painSolution2: '标准 ESM import/export 语法，零学习成本，任意框架混用',
+            '没有需要学的生命周期 —— 远程就是一个标准 ESM 模块,host import 即可',
+        painSolution2:
+            "联邦 = `import './x'` + 标准 import map 解析。你的 AI 助手已经会这套 API",
         painSolution3:
-            '灵活的 SSR 策略，基于 Rspack 的高性能构建，Module Linking 跨应用共享',
+            '栈追踪、devtools、source map 都指向真实模块,中间没有 proxy',
         featuresTitle: '核心特性',
         featuresDesc: '六大核心能力，重新定义微前端开发体验',
         feat1Title: '零运行时开销',

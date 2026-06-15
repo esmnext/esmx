@@ -1,0 +1,61 @@
+---
+titleSuffix: "Esmx Framework Rsbuild React Preset"
+description: "Esmx framework's Rsbuild React preset, adding JSX transform and Fast Refresh on top of @esmx/rsbuild via @rsbuild/plugin-react."
+head:
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, Rsbuild, React, JSX, Fast Refresh, preset, SSR, Module Linking"
+---
+
+import { PackageManagerTabs } from '@theme';
+
+# @esmx/rsbuild-react
+
+The React preset for `@esmx/rsbuild`. It adds [`@rsbuild/plugin-react`](https://rsbuild.rs/plugins/list/plugin-react) (JSX transform + Fast Refresh) on top of the base Rsbuild integration, and re-exports everything from `@esmx/rsbuild`.
+
+## Installation
+
+<PackageManagerTabs command="install @esmx/rsbuild-react -D" />
+
+`react` and `react-dom` are peer dependencies and must be installed in your project.
+
+## Type Exports
+
+### RsbuildReactAppOptions
+
+```ts
+interface RsbuildReactAppOptions extends RsbuildAppOptions {}
+```
+
+Configuration options, identical to [`RsbuildAppOptions`](./rsbuild#rsbuildappoptions). The React plugin is injected automatically through the config hook, applying to every build target.
+
+## Function Exports
+
+### createRsbuildReactApp
+
+```ts
+function createRsbuildReactApp(esmx: Esmx, options?: RsbuildReactAppOptions): Promise<App>
+```
+
+Create an Rsbuild + React Esmx application instance.
+
+**Parameters:**
+- `esmx` — Esmx framework instance
+- `options` — Rsbuild React application configuration options
+
+**Returns:**
+- Returns a `Promise` that resolves to the created application instance
+
+```ts title="src/entry.node.ts"
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rsbuild-react').then((m) =>
+      m.createRsbuildReactApp(esmx)
+    );
+  }
+};
+```
+
+## Re-exports
+
+This package re-exports all members of [`@esmx/rsbuild`](./rsbuild) (e.g. `createRsbuildApp`, `BuildTarget`, `rspack`), so you can import the base APIs directly from `@esmx/rsbuild-react`.

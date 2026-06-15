@@ -9,11 +9,38 @@ export {
     type SpecifierMap
 } from './core';
 export type {
+    Diagnostic,
+    DiagnosticCheck,
+    DiagnosticCodeValue,
+    DiagnosticSeverity,
+    EsmxDeclaration,
+    EsmxDeclarationEntry,
+    EsmxDeclarationExportFork,
+    EsmxDeclarationExportValue,
+    ReadDeclarationResult,
+    ResolveDeclarationOptions,
+    ResolveDeclarationResult,
+    SupplyEntry,
+    SupplyGroup
+} from './declaration';
+export {
+    DiagnosticCode,
+    esmxDeclarationSchema,
+    readDeclaration,
+    resolveDeclaration
+} from './declaration';
+export type {
     ManifestJson,
     ManifestJsonChunk,
     ManifestJsonChunks,
     ManifestJsonExport,
-    ManifestJsonExports
+    ManifestJsonExports,
+    ManifestJsonProvide,
+    ManifestProtocolFields
+} from './manifest-json';
+export {
+    buildManifestProtocolFields,
+    MANIFEST_PROTOCOL_VERSION
 } from './manifest-json';
 export type {
     ModuleConfig,

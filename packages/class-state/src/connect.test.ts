@@ -337,7 +337,7 @@ test('No a submit function modification state', () => {
     const user = connectStore(User, 'user');
     assert.Throw(() => {
         user.setName('jack');
-    }, "Change the state in the agreed commit function, For example, $name('jack')");
+    }, '[@esmx/class-state] Direct assignment to state.name is not allowed outside a commit function. Call the auto-generated mutator $name("jack") instead, or wrap the change in store.commit(s => s.name = ...).');
 });
 
 test('Equal submit function', () => {

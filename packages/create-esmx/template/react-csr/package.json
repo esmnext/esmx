@@ -1,6 +1,15 @@
 {
     "name": "{{projectName}}",
     "version": "1.0.0",
+    "esmx": {
+        "entry": {
+            "client": "./src/entry.client.ts",
+            "server": "./src/entry.server.tsx"
+        },
+        "provides": [
+            "react"
+        ]
+    },
     "description": "React Client-Side Rendering framework",
     "type": "module",
     "private": true,
@@ -13,17 +22,16 @@
         "build:type": "tsc --declaration --emitDeclarationOnly --outDir dist/src && tsc-alias -p tsconfig.json --outDir dist/src"
     },
     "dependencies": {
-        "@esmx/core": "{{esmxVersion}}",
-        "react": "^18.0.0",
-        "react-dom": "^18.0.0"
+        "@esmx/core": "{{esmxVersion}}"
     },
     "devDependencies": {
-        "tsc-alias": "^1.8.16",
         "@esmx/rspack-react": "{{esmxVersion}}",
         "@types/node": "^24.0.0",
-        "@types/react": "^18.0.0",
-        "@types/react-dom": "^18.0.0",
+        "@types/react": "^19.2.14",
+        "@types/react-dom": "^19.2.1",
+        "react": "^19.2.6",
+        "react-dom": "^19.2.6",
+        "tsc-alias": "^1.8.16",
         "typescript": "5.8.3"
     }
 }
-

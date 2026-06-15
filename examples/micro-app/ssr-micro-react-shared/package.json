@@ -1,0 +1,44 @@
+{
+    "name": "ssr-micro-react-shared",
+    "version": "1.0.0",
+    "esmx": {
+        "entry": {
+            "client": "./src/entry.client.ts",
+            "server": "./src/entry.server.ts"
+        },
+        "provides": [
+            "react",
+            "react-dom"
+        ]
+    },
+    "description": "Shared React 19 runtime for the micro-frontend example: single authoritative provider of the react stack, consumed by the react apps via uses (no per-app provides, no multi-candidate election)",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "esmx dev",
+        "build": "esmx build",
+        "preview": "esmx preview",
+        "start": "esmx start",
+        "build:dts": "tsc -p tsconfig.json --declaration --emitDeclarationOnly --outDir dist --rootDir ."
+    },
+    "dependencies": {
+        "@esmx/core": "workspace:*"
+    },
+    "devDependencies": {
+        "@esmx/router-react": "workspace:*",
+        "@esmx/rspack": "workspace:*",
+        "@types/node": "^25.6.2",
+        "@types/react": "^19.2.14",
+        "@types/react-dom": "^19.2.3",
+        "@unhead/react": "^3.1.0",
+        "react": "^19.2.6",
+        "react-dom": "^19.2.6",
+        "typescript": "6.0.3"
+    },
+    "exports": {
+        "./*": {
+            "types": "./src/*.d.ts",
+            "default": "./src/*.ts"
+        }
+    }
+}

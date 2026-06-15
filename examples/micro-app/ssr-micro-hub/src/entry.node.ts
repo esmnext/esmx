@@ -2,29 +2,19 @@ import http from 'node:http';
 import type { EsmxOptions } from '@esmx/core';
 
 export default {
-    modules: {
-        links: {
-            'ssr-micro-shared': '../ssr-micro-shared/dist',
-            'ssr-micro-html': '../ssr-micro-html/dist',
-            'ssr-micro-lit': '../ssr-micro-lit/dist',
-            'ssr-micro-preact': '../ssr-micro-preact/dist',
-            'ssr-micro-preact-htm': '../ssr-micro-preact-htm/dist',
-            'ssr-micro-react': '../ssr-micro-react/dist',
-            'ssr-micro-solid': '../ssr-micro-solid/dist',
-            'ssr-micro-svelte': '../ssr-micro-svelte/dist',
-            'ssr-micro-vue2': '../ssr-micro-vue2/dist',
-            'ssr-micro-vue3': '../ssr-micro-vue3/dist'
-        },
-        imports: {
-            '@esmx/router': 'ssr-micro-shared/@esmx/router'
-        }
-    },
     async devApp(esmx) {
         return import('@esmx/rspack').then((m) => m.createRspackHtmlApp(esmx));
     },
 
     async server(esmx) {
         const server = http.createServer((req, res) => {
+            if (req.url === '/robots.txt' || req.url === '/robots.txt/') {
+                res.writeHead(200, { 'content-type': 'text/plain' });
+                res.end(
+                    'User-agent: *\nAllow: /\nSitemap: https://esmx.dev/sitemap.xml\n'
+                );
+                return;
+            }
             esmx.middleware(req, res, async () => {
                 const protocol = req.headers['x-forwarded-proto'] || 'http';
                 const host = req.headers.host || 'localhost:3000';
@@ -81,5 +71,9 @@ export default {
                 );
             }
         }
+        esmx.writeSync(
+            esmx.resolvePath('dist/client', 'robots.txt'),
+            'User-agent: *\nAllow: /\nSitemap: https://esmx.dev/sitemap.xml\n'
+        );
     }
 } satisfies EsmxOptions;

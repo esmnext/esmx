@@ -236,10 +236,12 @@ async function createMiddleware(
     if (esmx.command !== esmx.COMMAND.dev) {
         return [];
     }
-    const rsBuild = createRsBuild([
-        generateBuildConfig(esmx, options, 'client'),
-        generateBuildConfig(esmx, options, 'server')
-    ]);
+    const rsBuild = createRsBuild(
+        await Promise.all([
+            generateBuildConfig(esmx, options, 'client'),
+            generateBuildConfig(esmx, options, 'server')
+        ])
+    );
     rsBuild.watch();
 
     // @ts-expect-error
@@ -257,11 +259,11 @@ async function createMiddleware(
     ];
 }
 
-function generateBuildConfig(
+async function generateBuildConfig(
     esmx: Esmx,
     options: RspackAppOptions,
     buildTarget: BuildTarget
-): RspackOptions {
+): Promise<RspackOptions> {
     return createRspackConfig(esmx, buildTarget, options);
 }
 
@@ -291,7 +293,11 @@ function rewriteBuild(esmx: Esmx, options: RspackAppOptions = {}) {
     }
     return async (): Promise<boolean> => {
         const ok = await createRsBuild(
-            targets.map((target) => generateBuildConfig(esmx, options, target))
+            await Promise.all(
+                targets.map((target) =>
+                    generateBuildConfig(esmx, options, target)
+                )
+            )
         ).build();
         if (!ok) {
             return false;

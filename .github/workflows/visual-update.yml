@@ -1,0 +1,63 @@
+name: Visual baseline update
+
+# Regenerate the visual-regression PNG baselines in the SAME Linux/Chromium
+# image CI compares against, then upload them as an artifact to commit.
+# Needed because client-rendered pages (e.g. standalone-vite-html) only
+# render fully when their server and Playwright are co-located on localhost,
+# which the host-server `scripts/visual-run.sh` helper cannot reproduce.
+on:
+  workflow_dispatch:
+
+jobs:
+  update:
+    name: Regenerate baselines
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.48.2-jammy
+      options: --user root --ipc=host
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup node 24 + pnpm
+        run: |
+          curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
+          apt-get install -y nodejs
+          corepack enable
+          corepack prepare pnpm@10.0.0 --activate
+
+      - name: Install + build packages + relink + build examples
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build:packages
+          pnpm install --frozen-lockfile
+          pnpm build:examples
+
+      - name: Regenerate hub baselines
+        env:
+          VISUAL_GROUP: hub
+        run: |
+          node scripts/start-all.mjs --group=hub &
+          for _ in $(seq 1 120); do
+            if curl -sf http://127.0.0.1:3000/ -o /dev/null; then break; fi
+            sleep 0.5
+          done
+          pnpm test:visual:update
+
+      - name: Regenerate standalone baselines
+        env:
+          VISUAL_GROUP: standalone
+        run: |
+          node scripts/start-all.mjs --group=standalone &
+          for _ in $(seq 1 120); do
+            if curl -sf http://127.0.0.1:3005/ -o /dev/null; then break; fi
+            sleep 0.5
+          done
+          pnpm test:visual:update
+
+      - name: Upload regenerated baselines
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-baselines
+          path: tests/visual/visual.spec.ts-snapshots/
+          retention-days: 3

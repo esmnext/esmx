@@ -18,7 +18,6 @@ interface ModuleConfig {
     lib?: boolean;
     links?: Record<string, string>;
     imports?: ModuleConfigImportMapping;
-    scopes?: Record<string, ModuleConfigImportMapping>;
     exports?: ModuleConfigExportExports;
 }
 ```
@@ -39,11 +38,6 @@ interface ModuleConfig {
 
 * **类型**: `ModuleConfigImportMapping`
 * **描述**: 模块导入映射配置。键为本地模块标识符，值为远程模块路径。支持环境特定的配置。
-
-### scopes
-
-* **类型**: `Record<string, ModuleConfigImportMapping>`
-* **描述**: 模块范围映射配置。键为目录路径前缀，值为该范围内的导入映射配置。
 
 ### exports
 

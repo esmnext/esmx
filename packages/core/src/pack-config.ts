@@ -20,15 +20,8 @@ import type { Esmx } from './core';
  * import type { EsmxOptions } from '@esmx/core';
  *
  * export default {
- *   modules: {
- *     // Configure modules to export
- *     exports: [
- *       'root:src/components/button.vue',
- *       'root:src/utils/format.ts',
- *       'pkg:vue',
- *       'pkg:vue-router'
- *     ]
- *   },
+ *   // Module exports/provides are declared in package.json "esmx"
+ *   // (RFC 0001), not here. entry.node.ts keeps behavior + packaging.
  *   // Packaging configuration
  *   pack: {
  *     // Enable packaging functionality

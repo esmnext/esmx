@@ -50,21 +50,21 @@ yarn add @esmx/core
 
 ## 🚀 Quick Start
 
+Define your app in `entry.node.ts`, choosing a build-tool integration in `devApp`:
+
 ```typescript
-import { createEsmx } from '@esmx/core';
+import type { EsmxOptions } from '@esmx/core';
 
-const esmx = createEsmx({
-  app: {
-    name: 'my-app',
-    entry: './src/index.ts'
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rspack').then((m) => m.createRspackHtmlApp(esmx));
   }
-});
-
-await esmx.build();
-await esmx.start();
+} satisfies EsmxOptions;
 ```
 
-📖 [完整文档](https://esmx.dev/guide/start/getting-started.html)
+Then drive it with the `esmx` CLI: `esmx dev`, `esmx build`, `esmx start`.
+
+📖 [Documentation](https://esmx.dev/guide/start/getting-started.html)
 
 ## 📚 Documentation
 

@@ -6,7 +6,7 @@ import {
     localePath,
     subscribeLocale,
     t
-} from 'ssr-micro-shared/src/index';
+} from 'ssr-micro-shared/index';
 import './landing-page.css';
 
 const ESMX_LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" shape-rendering="geometricPrecision"><g transform="translate(20,20)"><circle r="12" fill="none" stroke="#12B2EF" stroke-width="2.8"/><circle r="6.2" fill="#FFA000"/></g></svg>`;
@@ -51,8 +51,8 @@ export class LandingApp extends BaseApp {
         return (
             `<nav class="nav">` +
             `<div class="container nav-inner">` +
-            `<a href="#" class="nav-logo">` +
-            ESMX_LOGO_SVG +
+            `<a href="/" class="nav-logo">` +
+            `<span aria-hidden="true">${ESMX_LOGO_SVG}</span>` +
             `Esmx` +
             `</a>` +
             `<div class="nav-links">` +
@@ -64,7 +64,7 @@ export class LandingApp extends BaseApp {
             `<div class="nav-cta">` +
             `<button type="button" id="landingLangToggle" class="btn btn-outline btn-sm">${t(this.router, 'switchLang')}</button>` +
             `<a href="https://github.com/esmnext/esmx" target="_blank" class="btn btn-outline btn-sm">` +
-            GITHUB_ICON +
+            `<span aria-hidden="true">${GITHUB_ICON}</span>` +
             `GitHub` +
             `</a>` +
             `</div>` +
@@ -85,6 +85,19 @@ export class LandingApp extends BaseApp {
     }
 
     private getHeroHtml(): string {
+        // Hero shows the actual minimum esmx config — the package.json
+        // "esmx" declaration the framework really reads on every build.
+        // `exports` + `provides` are the distinctive API surface: declare
+        // what to share, get a manifest + import map for free.
+        const ESMX_DECLARATION_SNIPPET = `{
+  "name": "my-remote",
+  "esmx": {
+    "exports": {
+      "./routes": "./src/routes.ts"
+    },
+    "provides": ["react", "react-dom"]
+  }
+}`;
         return (
             `<section class="hero">` +
             `<div class="hero-bg"></div>` +
@@ -99,32 +112,20 @@ export class LandingApp extends BaseApp {
             `<h1 class="hero-title reveal reveal-delay-1">${t(this.router, 'heroTitleLead')}<span class="hero-title-gradient">${t(this.router, 'heroTitleGradient')}</span></h1>` +
             `<p class="hero-subtitle reveal reveal-delay-2">${t(this.router, 'heroSubtitle')}</p>` +
             `<div class="hero-actions reveal reveal-delay-3">` +
-            `<a href="#quickstart" class="btn btn-primary">${t(this.router, 'heroBtnQuickstart')}${ARROW_RIGHT_ICON}</a>` +
-            `<a href="#" class="btn btn-primary" data-to="${localePath(this.router, '/demo/')}">${t(this.router, 'heroBtnDemo')}${ARROW_RIGHT_ICON}</a>` +
-            `<a href="https://github.com/esmnext/esmx" target="_blank" class="btn btn-outline">${GITHUB_ICON}GitHub</a>` +
+            `<a href="#quickstart" class="btn btn-primary">${t(this.router, 'heroBtnQuickstart')}<span aria-hidden="true">${ARROW_RIGHT_ICON}</span></a>` +
+            `<a href="${localePath(this.router, '/demo/')}" class="btn btn-primary" data-to="${localePath(this.router, '/demo/')}">${t(this.router, 'heroBtnDemo')}<span aria-hidden="true">${ARROW_RIGHT_ICON}</span></a>` +
+            `<a href="https://github.com/esmnext/esmx" target="_blank" class="btn btn-outline"><span aria-hidden="true">${GITHUB_ICON}</span>GitHub</a>` +
             `</div>` +
             `<div class="hero-trust reveal reveal-delay-4">` +
-            `<span class="hero-trust-item">${STAR_ICON}GitHub</span>` +
+            `<span class="hero-trust-item"><span aria-hidden="true">${STAR_ICON}</span>GitHub</span>` +
             `<span class="hero-trust-item">@esmx/core v3.0.0-rc.117</span>` +
             `<span class="hero-trust-item">MIT License</span>` +
             `</div>` +
             `</div>` +
             `<div class="hero-visual reveal reveal-delay-3">` +
-            `<div class="esm-flow">` +
-            `<div class="esm-node">vue</div>` +
-            `<div class="esm-node">react</div>` +
-            `<div class="esm-node">preact</div>` +
-            `<div class="esm-node esm-node-main">Esmx</div>` +
-            `<div class="esm-node">html</div>` +
-            `<div class="esm-node">solid</div>` +
-            `<div class="esm-node">shared</div>` +
-            `<div class="esm-node">utils</div>` +
-            `<div class="esm-connection esm-connection-1"></div>` +
-            `<div class="esm-connection esm-connection-2"></div>` +
-            `<div class="esm-connection esm-connection-3"></div>` +
-            `<div class="esm-connection esm-connection-4"></div>` +
-            `<div class="esm-connection esm-connection-5"></div>` +
-            `<div class="esm-connection esm-connection-6"></div>` +
+            `<div class="hero-code">` +
+            `<div class="hero-code__header"><span class="hero-code__file">package.json</span></div>` +
+            `<pre class="hero-code__body">${ESMX_DECLARATION_SNIPPET}</pre>` +
             `</div>` +
             `</div>` +
             `</div>` +
@@ -136,17 +137,17 @@ export class LandingApp extends BaseApp {
         return (
             `<div class="painpoint-card reveal reveal-delay-${delay}">` +
             `<div class="painpoint-header">` +
-            `<span class="painpoint-icon bad">${X_ICON}</span>` +
+            `<span class="painpoint-icon bad" aria-hidden="true">${X_ICON}</span>` +
             `<span class="painpoint-label-bad">${t(this.router, 'painLabelBad')}</span>` +
             `</div>` +
             `<div class="painpoint-list">` +
-            `<div class="painpoint-item"><span class="mark bad">${X_ICON}</span><span>${t(this.router, 'painBad1')}</span></div>` +
-            `<div class="painpoint-item"><span class="mark bad">${X_ICON}</span><span>${t(this.router, 'painBad2')}</span></div>` +
-            `<div class="painpoint-item"><span class="mark bad">${X_ICON}</span><span>${t(this.router, 'painBad3')}</span></div>` +
+            `<div class="painpoint-item"><span class="mark bad" aria-hidden="true">${X_ICON}</span><span>${t(this.router, 'painBad1')}</span></div>` +
+            `<div class="painpoint-item"><span class="mark bad" aria-hidden="true">${X_ICON}</span><span>${t(this.router, 'painBad2')}</span></div>` +
+            `<div class="painpoint-item"><span class="mark bad" aria-hidden="true">${X_ICON}</span><span>${t(this.router, 'painBad3')}</span></div>` +
             `</div>` +
             `<div class="painpoint-divider"></div>` +
             `<div class="painpoint-header">` +
-            `<span class="painpoint-icon good">${CHECK_ICON}</span>` +
+            `<span class="painpoint-icon good" aria-hidden="true">${CHECK_ICON}</span>` +
             `<span class="painpoint-label-good">Esmx</span>` +
             `</div>` +
             `<div class="painpoint-solution">${solution}</div>` +
@@ -209,37 +210,37 @@ export class LandingApp extends BaseApp {
             `<div class="features-grid">` +
             this.getFeatureCard(
                 '1',
-                icons.zero,
+                `<span aria-hidden="true">${icons.zero}</span>`,
                 t(this.router, 'feat1Title'),
                 t(this.router, 'feat1Desc')
             ) +
             this.getFeatureCard(
                 '2',
-                icons.esm,
+                `<span aria-hidden="true">${icons.esm}</span>`,
                 t(this.router, 'feat2Title'),
                 t(this.router, 'feat2Desc')
             ) +
             this.getFeatureCard(
                 '3',
-                icons.ssr,
+                `<span aria-hidden="true">${icons.ssr}</span>`,
                 t(this.router, 'feat3Title'),
                 t(this.router, 'feat3Desc')
             ) +
             this.getFeatureCard(
                 '4',
-                icons.multi,
+                `<span aria-hidden="true">${icons.multi}</span>`,
                 t(this.router, 'feat4Title'),
                 t(this.router, 'feat4Desc')
             ) +
             this.getFeatureCard(
                 '5',
-                icons.link,
+                `<span aria-hidden="true">${icons.link}</span>`,
                 t(this.router, 'feat5Title'),
                 t(this.router, 'feat5Desc')
             ) +
             this.getFeatureCard(
                 '6',
-                icons.build,
+                `<span aria-hidden="true">${icons.build}</span>`,
                 t(this.router, 'feat6Title'),
                 t(this.router, 'feat6Desc')
             ) +
@@ -280,22 +281,17 @@ export class LandingApp extends BaseApp {
             `<span class="terminal-dot red"></span>` +
             `<span class="terminal-dot yellow"></span>` +
             `<span class="terminal-dot green"></span>` +
-            `<span class="terminal-title">src/entry.node.ts</span>` +
+            `<span class="terminal-title">package.json</span>` +
             `</div>` +
             `<div class="terminal-body">` +
-            `<div><span class="sh-keyword">import type</span> { <span class="sh-function">EsmxOptions</span> } <span class="sh-keyword">from</span> <span class="sh-string">'@esmx/core'</span>;</div>` +
-            `<div class="terminal-spacer">&nbsp;</div>` +
-            `<div><span class="sh-keyword">export default</span> {</div>` +
-            `<div>&nbsp;&nbsp;<span class="sh-property">modules</span>: {</div>` +
-            `<div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="sh-property">links</span>: {</div>` +
-            `<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sh-property">shared</span>: <span class="sh-string">'../shared-modules/dist'</span></div>` +
-            `<div>&nbsp;&nbsp;&nbsp;&nbsp;},</div>` +
-            `<div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="sh-property">imports</span>: {</div>` +
-            `<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sh-property">vue</span>: <span class="sh-string">'shared-modules/vue'</span>,</div>` +
-            `<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sh-property">utils</span>: <span class="sh-string">'shared-modules/utils'</span></div>` +
-            `<div>&nbsp;&nbsp;&nbsp;&nbsp;}</div>` +
+            `<div>{</div>` +
+            `<div>&nbsp;&nbsp;<span class="sh-property">"dependencies"</span>: {</div>` +
+            `<div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="sh-property">"shared-modules"</span>: <span class="sh-string">"^1.0.0"</span></div>` +
+            `<div>&nbsp;&nbsp;},</div>` +
+            `<div>&nbsp;&nbsp;<span class="sh-property">"esmx"</span>: {</div>` +
+            `<div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="sh-property">"uses"</span>: [<span class="sh-string">"shared-modules"</span>]</div>` +
             `<div>&nbsp;&nbsp;}</div>` +
-            `<div>} <span class="sh-keyword">satisfies</span> <span class="sh-function">EsmxOptions</span>;</div>` +
+            `<div>}</div>` +
             `</div>` +
             `</div>` +
             `</div>` +
@@ -323,23 +319,23 @@ export class LandingApp extends BaseApp {
             `<p class="section-desc">${t(this.router, 'ecoDesc')}</p>` +
             `</div>` +
             '<div class="ecosystem-logos reveal reveal-delay-1">' +
-            `<a href="#" class="ecosystem-item" data-to="${localePath(this.router, '/vue3/')}">` +
-            logos.vue +
+            `<a href="${localePath(this.router, '/vue3/')}" class="ecosystem-item" data-to="${localePath(this.router, '/vue3/')}">` +
+            `<span aria-hidden="true">${logos.vue}</span>` +
             '<span>Vue</span></a>' +
-            `<a href="#" class="ecosystem-item" data-to="${localePath(this.router, '/react/')}">` +
-            logos.react +
+            `<a href="${localePath(this.router, '/react/')}" class="ecosystem-item" data-to="${localePath(this.router, '/react/')}">` +
+            `<span aria-hidden="true">${logos.react}</span>` +
             '<span>React</span></a>' +
-            `<a href="#" class="ecosystem-item" data-to="${localePath(this.router, '/preact/')}">` +
-            logos.preact +
+            `<a href="${localePath(this.router, '/preact/')}" class="ecosystem-item" data-to="${localePath(this.router, '/preact/')}">` +
+            `<span aria-hidden="true">${logos.preact}</span>` +
             '<span>Preact</span></a>' +
-            `<a href="#" class="ecosystem-item" data-to="${localePath(this.router, '/solid/')}">` +
-            logos.solid +
+            `<a href="${localePath(this.router, '/solid/')}" class="ecosystem-item" data-to="${localePath(this.router, '/solid/')}">` +
+            `<span aria-hidden="true">${logos.solid}</span>` +
             '<span>Solid</span></a>' +
-            `<a href="#" class="ecosystem-item" data-to="${localePath(this.router, '/html/')}">` +
-            logos.html5 +
+            `<a href="${localePath(this.router, '/html/')}" class="ecosystem-item" data-to="${localePath(this.router, '/html/')}">` +
+            `<span aria-hidden="true">${logos.html5}</span>` +
             '<span>HTML5</span></a>' +
-            `<a href="#" class="ecosystem-item" data-to="${localePath(this.router, '/svelte/')}">` +
-            logos.svelte +
+            `<a href="${localePath(this.router, '/svelte/')}" class="ecosystem-item" data-to="${localePath(this.router, '/svelte/')}">` +
+            `<span aria-hidden="true">${logos.svelte}</span>` +
             '<span>Svelte</span></a>' +
             '</div>' +
             `</div>` +
@@ -352,16 +348,81 @@ export class LandingApp extends BaseApp {
             `<footer class="footer">` +
             `<div class="container footer-inner">` +
             `<div class="footer-brand">` +
-            ESMX_LOGO_SVG +
+            `<span aria-hidden="true">${ESMX_LOGO_SVG}</span>` +
             `Esmx` +
             `</div>` +
             `<p class="footer-copyright">MIT License &copy; 2025 Esmx Team</p>` +
             `<div class="footer-links">` +
-            `<a href="https://github.com/esmnext/esmx" target="_blank">${GITHUB_ICON}GitHub</a>` +
-            `<a href="${localePath(this.router, DOCS_ENTRY_PATH)}">${BOOK_ICON}${t(this.router, 'footerDocs')}</a>` +
+            `<a href="https://github.com/esmnext/esmx" target="_blank"><span aria-hidden="true">${GITHUB_ICON}</span>GitHub</a>` +
+            `<a href="${localePath(this.router, DOCS_ENTRY_PATH)}"><span aria-hidden="true">${BOOK_ICON}</span>${t(this.router, 'footerDocs')}</a>` +
             `</div>` +
             `</div>` +
             `</footer>`
+        );
+    }
+
+    private getMatrixHtml(): string {
+        // 7 frameworks × 3 bundlers cell map. `null` = no demo for that combo,
+        // string = relative URL into the hub for the live demo. Mirrors
+        // home-app.ts DEMOS but tabulated for at-a-glance density.
+        const MATRIX: Array<
+            [string, string, [string | null, string | null, string | null]]
+        > = [
+            // [framework label, framework dot class, [vite, rspack, rsbuild]]
+            [
+                'Vue 3',
+                'esmx-dot--vue',
+                ['/vite-vue/', '/vue3/', '/rsbuild-vue/']
+            ],
+            ['Vue 2.7', 'esmx-dot--vue', [null, '/vue2/', null]],
+            [
+                'React 19',
+                'esmx-dot--react',
+                ['/vite-react/', '/react/', '/rsbuild-react/']
+            ],
+            ['Preact 10', 'esmx-dot--preact', [null, '/preact/', null]],
+            ['SolidJS', 'esmx-dot--solid', [null, '/solid/', null]],
+            ['Svelte 5', 'esmx-dot--svelte', [null, '/svelte/', null]],
+            ['Lit', 'esmx-dot--lit', [null, '/lit/', null]],
+            [
+                'HTML',
+                'esmx-dot--html',
+                ['/vite-html/', '/html/', '/rsbuild-html/']
+            ]
+        ];
+
+        const rows = MATRIX.map(([label, dot, cells]) => {
+            const tds = cells
+                .map((url) => {
+                    if (!url)
+                        return `<td class="matrix__cell matrix__cell--empty">—</td>`;
+                    const to = localePath(this.router, url);
+                    const resolved = this.router.resolveLink({
+                        to,
+                        type: 'push'
+                    });
+                    return `<td class="matrix__cell"><a href="${resolved.attributes.href}" data-to="${to}" class="matrix__dot" aria-label="${label}"></a></td>`;
+                })
+                .join('');
+            return `<tr><th scope="row"><span class="esmx-dot ${dot}" aria-hidden="true"></span>${label}</th>${tds}</tr>`;
+        }).join('');
+
+        return (
+            `<section class="section matrix-section" id="matrix">` +
+            `<div class="container">` +
+            `<div class="section-header reveal">` +
+            `<span class="section-label">21 LIVE DEMOS</span>` +
+            `<h2 class="section-title">Framework × Bundler</h2>` +
+            `<p class="section-desc">Every cell is one running federation remote. Click to open it.</p>` +
+            `</div>` +
+            `<div class="matrix-wrap reveal">` +
+            `<table class="matrix">` +
+            `<thead><tr><th></th><th>Vite 8</th><th>Rspack</th><th>Rsbuild</th></tr></thead>` +
+            `<tbody>${rows}</tbody>` +
+            `</table>` +
+            `</div>` +
+            `</div>` +
+            `</section>`
         );
     }
 
@@ -374,6 +435,7 @@ export class LandingApp extends BaseApp {
             this.getFeaturesHtml() +
             this.getCodeDemoHtml() +
             this.getEcosystemHtml() +
+            this.getMatrixHtml() +
             `<section class="section" style="text-align: center;">
                 <div class="container">
                     <div class="section-header reveal">
@@ -381,8 +443,8 @@ export class LandingApp extends BaseApp {
                         <h2 class="section-title">${t(this.router, 'liveTitle')}</h2>
                         <p class="section-desc">${t(this.router, 'liveDesc')}</p>
                     </div>
-                    <a href="#" class="btn btn-primary" data-to="${localePath(this.router, '/demo/')}" style="font-size: 1.1rem; padding: 14px 32px;">
-                        ${t(this.router, 'liveBtn')} ${ARROW_RIGHT_ICON}
+                    <a href="${localePath(this.router, '/demo/')}" class="btn btn-primary" data-to="${localePath(this.router, '/demo/')}" style="font-size: 1.1rem; padding: 14px 32px;">
+                        ${t(this.router, 'liveBtn')} <span aria-hidden="true">${ARROW_RIGHT_ICON}</span>
                     </a>
                 </div>
             </section>` +

@@ -11,7 +11,24 @@ head:
 
 ## 简介
 
-Esmx 是一个基于 Rspack 的高性能 Web 应用框架，提供了完整的应用生命周期管理、静态资源处理和 SSR 能力。
+Esmx 是一个基于 Rspack 的高性能 Web 应用框架,提供了完整的应用生命周期管理、静态资源处理和 SSR 能力。
+
+## 文件路径约定
+
+本页有几个 API 读写**框架约定路径**的文件。这些路径不能通过 `EsmxOptions` 配置 — 改名或挪位置框架就找不到了。
+
+| 路径 | 作用 |
+|------|------|
+| `src/entry.node.ts` | 你的 `EsmxOptions` 默认导出。CLI 在 `esmx dev` / `esmx build` / `esmx start` 时读取。 |
+| `src/entry.server.ts` | SSR 入口,导出 `default async (rc: RenderContext) => { rc.html = ... }`。由 `esmx.render()` 加载。 |
+| `src/entry.client.ts` | 浏览器 hydrate 入口。打包后由 SSR HTML 通过 `rc.moduleEntry()` 引用。 |
+| `dist/client/manifest.json` | `esmx build` 生成。客户端 bundle 的联邦 manifest。 |
+| `dist/server/manifest.json` | `esmx build` 生成。服务端 bundle 的联邦 manifest。 |
+| `dist/node/src/entry.node.mjs` | `esmx build` 生成。`esmx start` 导入的已编译 `entry.node.ts`。 |
+| `dist/index.mjs` | `esmx build` 写的启动桩;非用户编辑。 |
+
+本页所有代码示例都假设这些路径。
+
 
 ## 类型定义
 
@@ -265,6 +282,14 @@ const rc = await esmx.render({
 });
 ```
 
+### command
+
+- **类型**: `COMMAND`
+- **只读**: `true`
+- **抛出**: `NotReadyError` - 框架未初始化时
+
+获取当前正在执行的命令（`dev` / `build` / `preview` / `start`），在调用 `init()` 时设置。
+
 ### COMMAND
 
 - **类型**: `typeof COMMAND`
@@ -465,6 +490,23 @@ const htmlPath = esmx.resolvePath('dist/client', 'index.html');
 async postBuild(esmx) {
   const htmlPath = esmx.resolvePath('dist/client', 'index.html');
   const success = esmx.writeSync(htmlPath, '<html>...</html>');
+}
+```
+
+### write()
+
+异步写入文件内容。
+
+- **参数**:
+  - `filepath`: `string` - 文件的绝对路径
+  - `data`: `any` - 要写入的数据，可以是字符串、Buffer 或对象
+- **返回值**: `Promise<boolean>` - 写入是否成功
+
+- **示例**:
+```ts title="src/entry.node.ts"
+async postBuild(esmx) {
+  const htmlPath = esmx.resolvePath('dist/client', 'index.html');
+  const success = await esmx.write(htmlPath, '<html>...</html>');
 }
 ```
 

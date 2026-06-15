@@ -1,0 +1,117 @@
+---
+titleSuffix: "Esmx 框架 Rsbuild 构建工具"
+description: "Esmx 框架的 Rsbuild 构建工具，基于 Rspack 内核，为标准应用与 HTML 应用提供原生 ESM 模块链接构建能力，并在开发环境提供真正的 HMR。"
+head:
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, Rsbuild, Rspack, 构建工具, 应用构建, HTML 应用, TypeScript, CSS, HMR, SSR, 模块链接"
+---
+
+import { PackageManagerTabs } from '@theme';
+
+# @esmx/rsbuild
+
+Rsbuild 包提供了一组用于创建和配置 Rsbuild 应用的 API，支持标准应用与 HTML 应用的构建和开发。它基于 Rspack 内核，产出可被 `@esmx/core` 消费的原生 ESM 模块联邦产物，并在开发环境提供真正的 HMR。
+
+## 安装
+
+使用包管理器将 `@esmx/rsbuild` 安装为开发依赖：
+
+<PackageManagerTabs command="install @esmx/rsbuild -D" />
+
+## 类型导出
+
+### BuildTarget
+
+```ts
+type BuildTarget = 'node' | 'client' | 'server'
+```
+
+构建目标环境类型，定义应用的构建目标环境：
+- `node`：构建运行于 Node.js 环境的代码
+- `client`：构建运行于浏览器环境的代码
+- `server`：构建运行于服务端环境的代码
+
+### RsbuildAppConfigContext
+
+```ts
+interface RsbuildAppConfigContext {
+  esmx: Esmx
+  buildTarget: BuildTarget
+  config: RsbuildConfig
+  options: RsbuildAppOptions
+}
+```
+
+Rsbuild 应用配置上下文接口，提供在配置钩子函数中可访问的上下文信息：
+- `esmx`：Esmx 框架实例
+- `buildTarget`：当前构建目标（`client`/`server`/`node`）
+- `config`：Rsbuild [`RsbuildConfig`](https://rsbuild.rs/config/) 对象——通过修改它来自定义构建（例如添加 Rsbuild 插件）
+- `options`：应用配置选项
+
+### RsbuildAppOptions
+
+```ts
+interface RsbuildAppOptions {
+  minimize?: boolean
+  config?: (context: RsbuildAppConfigContext) => void
+}
+```
+
+Rsbuild 应用配置选项接口：
+- `minimize`：是否启用代码压缩；`true` 启用，`false` 禁用，`undefined` 根据环境自动决定（生产启用、开发禁用）
+- `config`：配置钩子函数，在每个构建目标开始构建前调用，用于修改解析后的 Rsbuild 配置。该钩子同样作用于开发服务器。
+
+### RsbuildHtmlAppOptions
+
+```ts
+interface RsbuildHtmlAppOptions extends RsbuildAppOptions {}
+```
+
+无框架 HTML 应用的选项。Rsbuild 开箱即用地处理 TypeScript、CSS 和静态资源，因此不暴露额外的 loader 选项。
+
+## 函数导出
+
+### createRsbuildApp
+
+```ts
+function createRsbuildApp(esmx: Esmx, options?: RsbuildAppOptions): Promise<App>
+```
+
+创建一个标准的 Rsbuild 应用实例。
+
+**参数：**
+- `esmx` — Esmx 框架实例
+- `options` — Rsbuild 应用配置选项
+
+**返回值：**
+- 返回一个 `Promise`，解析为创建的应用实例
+
+### createRsbuildHtmlApp
+
+```ts
+function createRsbuildHtmlApp(esmx: Esmx, options?: RsbuildHtmlAppOptions): Promise<App>
+```
+
+创建一个 HTML 类型的 Rsbuild 应用实例（无 UI 框架）。
+
+**参数：**
+- `esmx` — Esmx 框架实例
+- `options` — HTML 应用配置选项
+
+**返回值：**
+- 返回一个 `Promise`，解析为创建的 HTML 应用实例
+
+```ts title="src/entry.node.ts"
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rsbuild').then((m) => m.createRsbuildHtmlApp(esmx));
+  }
+};
+```
+
+## 模块导出
+
+### rspack
+
+从 `@rsbuild/core` 重新导出 `rspack`，提供对底层 Rspack 核心能力的访问。

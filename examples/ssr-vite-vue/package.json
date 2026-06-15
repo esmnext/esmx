@@ -1,0 +1,31 @@
+{
+    "name": "ssr-vite-vue",
+    "version": "1.0.0",
+    "esmx": {
+        "entry": {
+            "client": "./src/entry.client.ts",
+            "server": "./src/entry.server.ts"
+        },
+        "provides": [
+            "vue"
+        ]
+    },
+    "description": "Vue app powered by Esmx + Vite",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "esmx dev",
+        "build": "esmx build",
+        "preview": "esmx preview",
+        "start": "esmx start"
+    },
+    "dependencies": {
+        "@esmx/core": "workspace:*"
+    },
+    "devDependencies": {
+        "@esmx/vite-vue": "workspace:*",
+        "@types/node": "^24.0.0",
+        "vue": "^3.5.18",
+        "typescript": "5.9.3"
+    }
+}

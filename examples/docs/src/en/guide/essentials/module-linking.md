@@ -9,359 +9,282 @@ head:
 
 # Module Linking
 
-Module Linking is a **cross-application code sharing solution** provided by Esmx. It is based on browser-native ESM (ECMAScript Modules) standards, allowing multiple applications to share code modules without requiring additional runtime libraries.
+Module Linking is the **cross-application code sharing solution** provided by Esmx. It is based on browser-native ESM (ECMAScript Modules) standards, letting multiple applications share code modules without any additional runtime library.
 
 ## Core Advantages
 
-- **Zero Runtime Overhead**: Directly uses browser-native ESM loader, without introducing any proxy or wrapper layer
-- **Efficient Sharing**: Resolves dependencies at compile time through Import Maps, with direct loading at runtime
-- **Version Isolation**: Supports different applications using different versions of the same module, avoiding conflicts
-- **Simple and Easy to Use**: Intuitive configuration, fully compatible with native ESM syntax
+- **Zero Runtime Overhead**: Uses the browser-native ESM loader directly, with no proxy or wrapper layer.
+- **Efficient Sharing**: Dependencies are resolved at build time through Import Maps; modules load directly at runtime.
+- **Version Isolation**: Different applications can use different versions of the same package, with coexisting majors isolated automatically.
+- **Simple to Use**: Declarative configuration that stays fully compatible with native ESM syntax.
 
-In simple terms, module linking is a "module sharing manager" that allows different applications to safely and efficiently share code, as simple as using local modules.
+In short, module linking is a "module sharing manager" that lets different applications share code as safely and easily as using local modules.
 
-## Quick Start
+## The model: declare in `package.json` `esmx`
 
-### Basic Example
+All protocol facts live in **one `package.json` field**, `esmx`, with exactly **four optional sub-fields**. `entry.node.ts` keeps only *behavior* (`devApp`, `server`, `postBuild`) plus environment links — putting protocol facts there is an error (`E_PROTOCOL_IN_BEHAVIOR`).
 
-Assume we have a shared module application (shared-modules) and a business application (business-app):
+| Field | Meaning |
+|---|---|
+| `entry` | The framework entries (`client` / `server`), each a `./`-relative source path or `false` to disable that side. Omit it for library-only modules. |
+| `exports` | Subpath map with **logical names**: keys are `./<name>`, values are `./`-relative source files or a `{ client, server }` fork (`false` disables a side). Consumers never see your physical paths. |
+| `provides` | Plain array of third-party packages this module re-exports for consumers (e.g. `["vue"]`). The provided version is your **resolved installed version**, captured into the manifest at build time. |
+| `uses` | Plain array of **module names** you consume from. Not specifiers, not versions — just names. **Array order is load-bearing** (see the merge rule below). |
 
-```typescript
-import type { EsmxOptions } from '@esmx/core';
+A module's declaration is strictly **local knowledge**: you can write it knowing nothing about any other module. Three roles cover every project.
 
-export default {
-  modules: {
-    exports: [
-      'pkg:axios',
-      'root:src/utils/format.ts'
-    ]
-  }
-} satisfies EsmxOptions;
+### Role 1 — provider (a shared platform package)
 
-export default {
-  modules: {
-    links: { 'shared-modules': '../shared-modules/dist' },
-    imports: { 'axios': 'shared-modules/axios' }
-  }
-} satisfies EsmxOptions;
-```
-
-Usage in the business application:
-
-```typescript
-// business-app/src/api/orders.ts
-import axios from 'axios';
-import { formatDate } from 'shared-modules/src/utils/format';
-
-export async function fetchOrders() {
-  const response = await axios.get('/api/orders');
-  return response.data.map(order => ({
-    ...order,
-    date: formatDate(order.createdAt)
-  }));
+```json
+{
+    "name": "shared",
+    "version": "3.2.1",
+    "esmx": {
+        "entry": {
+            "client": "./src/entry.client.ts",
+            "server": "./src/entry.server.ts"
+        },
+        "exports": {
+            "./ui": "./src/ui/index.ts",
+            "./store": {
+                "client": "./src/store.client.ts",
+                "server": "./src/store.server.ts"
+            }
+        },
+        "provides": ["vue", "@esmx/router"]
+    }
 }
 ```
 
-## Core Configuration
+Consumers import `'shared/ui'` — a logical name. Renaming `src/ui/index.ts` is no longer a breaking change.
 
-Module linking configuration is located in the `modules` field of the `entry.node.ts` file, containing five core configuration items:
+### Role 2 — consumer + provider (a feature remote)
 
-### Library Mode (lib)
-
-`lib` configuration specifies whether the current module is in pure library mode. When set to `true`, the module will not automatically create default entry file exports (such as `src/entry.client` and `src/entry.server`).
-
-```typescript
-// shared-modules/entry.node.ts
-import type { EsmxOptions } from '@esmx/core';
-
-export default {
-  modules: {
-    lib: true,
-    exports: [
-      'pkg:axios',
-      'root:src/utils/format.ts',
-      {
-        'date-utils': './src/utils/date.ts',
-        'api-client': './src/api/index.ts'
-      }
-    ]
-  }
-} satisfies EsmxOptions;
-```
-
-**Use Cases**:
-- **Pure Library Modules**: Only provide utility functions, components, etc., without needing to run independently
-- **Shared Code Packages**: Focus on code sharing, without application logic
-- **Type Definition Modules**: Mainly export TypeScript type definitions
-
-**Notes**:
-- When `lib: true` is enabled, the module will not automatically create default exports for `src/entry.client` and `src/entry.server`
-- You need to explicitly specify what to export through `exports` configuration
-- Suitable for being referenced as a dependency module by other applications, not suitable for running as an independent application
-
-### Module Linking (links)
-
-`links` configuration specifies the paths where the current module links to other modules:
-
-```typescript
-// business-app/entry.node.ts
-import type { EsmxOptions } from '@esmx/core';
-
-export default {
-  modules: {
-    links: {
-      'shared-modules': '../shared-modules/dist',
-      'api-utils': '/var/www/api-utils/dist'
+```json
+{
+    "name": "cart",
+    "version": "1.8.0",
+    "dependencies": { "shared": "^3.0.0" },
+    "peerDependencies": { "vue": "^3.4.0", "@esmx/router": "^3.0.0" },
+    "esmx": {
+        "entry": {
+            "client": "./src/entry.client.ts",
+            "server": "./src/entry.server.ts"
+        },
+        "exports": { "./widget": "./src/cart-widget.ts" },
+        "uses": ["shared"]
     }
-  }
-} satisfies EsmxOptions;
+}
 ```
 
-### Module Imports (imports)
+Note what is **absent**: no `imports` map, no per-specifier wiring, no version field inside `esmx`. The version range lives where npm already puts it — `dependencies` (∪ `peerDependencies`) — and is validated at build time against the mounted artifact's actual version.
 
-`imports` configuration maps local module names to remote module identifiers, supporting standard imports and environment-specific configuration:
+### Role 3 — composer (the host)
 
-```typescript
-// business-app/entry.node.ts
+```json
+{
+    "name": "host",
+    "version": "2.0.0",
+    "dependencies": { "shared": "^3.0.0", "cart": "^1.5.0" },
+    "peerDependencies": { "vue": "^3.4.0", "@esmx/router": "^3.0.0" },
+    "esmx": {
+        "entry": {
+            "client": "./src/entry.client.ts",
+            "server": "./src/entry.server.ts"
+        },
+        "uses": ["shared", "cart"]
+    }
+}
+```
+
+`uses` is **transitive**: if `cart` uses `shared`, a host that uses `cart` gets `shared`'s supply through the chain. Business apps declare one line and stay ignorant of the chain's depth.
+
+## How wiring is derived (you never write it)
+
+Two rules replace every hand-written mapping.
+
+**The merge rule** — one sentence:
+`supply(M) = merge(supply(uses[0]), …, supply(uses[n]), M.provides)` — later entries override earlier ones, the module's own `provides` is the implicit last element, so **the order of the `uses` array decides who wins** when two modules provide the same package (list generic-to-specific; the specific layer wins, same convention family as `Object.assign`). Elections are **per major version** — coexisting majors (e.g. vue 2 and vue 3) are isolated islands, each with its own winner, and every consumer wires to the major satisfying its own declared range.
+
+**The lookup rule** — applied per specifier as the bundler traverses your code, no pre-pass, no declaration:
+
+```
+bare specifier found in my merged supply table → externalized, wired to the winner
+found nowhere                                  → my own bundled copy, isolated by
+                                                 per-module import-map scopes
+```
+
+Single-instance sharing is therefore inherent (one winner per package, the entire closure rewired to it), and multi-version coexistence needs zero extra vocabulary — a module that bundles its own copy is scope-isolated automatically. Type-only imports (`import type`) never produce wiring.
+
+## Mounting: where artifacts come from
+
+Any module resolvable through `node_modules` **auto-mounts** at `node_modules/<name>/dist` — no path configuration. This covers registry installs *and* monorepo siblings: a pnpm `workspace:*` dependency symlink is followed and realpath'd, so a normal `dependencies` entry plus the `uses` name is the whole story.
+
+Only for artifact directories that are **not** npm-resolvable (deploy paths, `@esmx/fetch` output) do you add an explicit `links` entry. `links` is an **environment fact**, not a protocol fact, so it is the one `modules` key still allowed in `entry.node.ts`:
+
+```ts
+// host/entry.node.ts — environment links only, no protocol facts
+import type { EsmxOptions } from '@esmx/core';
+
 export default {
-  modules: {
-    links: {
-      'shared-modules': '../shared-modules/dist'
+    modules: {
+        links: {
+            'my-remote': '/srv/deploy/my-remote/dist'
+        }
     },
-    imports: {
-      'axios': 'shared-modules/axios',
-      'lodash': 'shared-modules/lodash',
-      'storage': {
-        client: 'shared-modules/storage/client',
-        server: 'shared-modules/storage/server'
-      }
-    }
-  }
+    async devApp(esmx) { /* ... */ },
+    async server(esmx) { /* ... */ }
 } satisfies EsmxOptions;
 ```
 
-### Scope Mapping (scopes)
+## Importing shared code
 
-`scopes` configuration defines import mappings for specific directory scopes or package scopes, achieving version isolation and dependency replacement. Supports directory scope mapping and package scope mapping.
-
-#### Directory Scope Mapping
-
-Directory scope mapping only affects module imports under specific directories, achieving version isolation between different directories.
-
-The following example shows how to use `scopes` configuration to specify different Vue versions for modules under the `vue2/` directory:
+Once a module is in your `dependencies` and `uses`, import its exports by **logical name**:
 
 ```typescript
-// shared-modules/entry.node.ts
-import type { EsmxOptions } from '@esmx/core';
+// host/src/api/orders.ts
+import { App } from 'shared/ui';        // a logical export name
+import axios from 'axios';              // a provided package — wired to the winner
 
-export default {
-  modules: {
-    scopes: {
-      'vue2/': {
-        'vue': 'shared-modules/vue2',
-        'vue-router': 'shared-modules/vue2-router'
-      }
-    }
-  }
-} satisfies EsmxOptions;
+export async function fetchOrders() {
+    const response = await axios.get('/api/orders');
+    return response.data;
+}
 ```
 
-#### Package Scope Mapping
+`axios` resolves to whatever module *provides* it (via `provides: ["axios"]`) in your merged supply table; `shared/ui` resolves to the logical export the `shared` module declared. You never name a physical path or write an import map by hand.
 
-Package scope mapping affects dependency resolution within specific packages, used for dependency replacement and version management:
+## Verify your wiring: `esmx validate`
 
-```typescript
-// shared-modules/entry.node.ts
-import type { EsmxOptions } from '@esmx/core';
+`esmx validate` is a **build-free dry run** of the whole resolution — mount walk, version checks, supply merge, export checks. Run it after every declaration edit:
 
-export default {
-  modules: {
-    scopes: {
-      'vue': {
-        '@vue/shared': 'shared-modules/@vue/shared'
-      }
-    }
-  }
-} satisfies EsmxOptions;
+```bash
+esmx validate          # human-readable report
+esmx validate --json   # machine-readable envelope (CI / agents)
 ```
 
-### Module Exports (exports)
+It exits non-zero only when an error-severity diagnostic is found; warnings alone exit 0. A package without an `esmx` field reports `protocol: "legacy"` and exits 0. The full diagnostic taxonomy (`E_NOT_LINKED`, `E_VERSION`, `E_SCHEMA`, `W_MULTI_CANDIDATE`, …) is documented in the [LLM briefing](/llms.md#diagnostics-the-complete-taxonomy).
 
-`exports` configuration defines what the module provides externally, only supports array format:
+## Complete example: multi-version coexistence
 
-```typescript
-// shared-modules/entry.node.ts
-import type { EsmxOptions } from '@esmx/core';
+A shared base provides two majors of Vue side by side; each business app wires to the one its declared range satisfies — no manual `imports` anywhere.
 
-export default {
-  modules: {
-    exports: [
-      'pkg:axios',
-      'pkg:lodash',
-      'root:src/utils/date-utils.ts',
-      'root:src/components/Chart.js',
-      {
-        'api': './src/api.ts',
-        'store': './src/store.ts'
-      }
-    ]
-  }
-} satisfies EsmxOptions;
-```
+### Shared base (`shared`)
 
-**Prefix Processing Instructions**:
-- `pkg:axios` → Keeps original package name import, suitable for third-party npm packages
-- `root:src/utils/date-utils.ts` → Converts to module-relative path, suitable for project internal source modules
-
-**File Extension Support**: For `root:` prefix configuration, supports extensions like `.js`, `.mjs`, `.cjs`, `.jsx`, `.mjsx`, `.cjsx`, `.ts`, `.mts`, `.cts`, `.tsx`, `.mtsx`, `.ctsx`. Extensions are automatically removed during configuration. For `pkg:` prefix and normal string configuration, extensions are not removed.
-
-## Advanced Configuration
-
-### Environment-Differentiated Build
-
-Export different module implementations based on the runtime environment (client or server):
-
-```typescript title="entry.node.ts"
-exports: [
-  {
-    'src/storage/db': {
-      client: './src/storage/indexedDB',
-      server: './src/storage/mongoAdapter'
-    }
-  },
-  {
-    'src/client-only': {
-      client: './src/client-feature',
-      server: false
-    }
-  }
-]
-```
-
-### Mixed Configuration Format
-
-`exports` supports multiple configuration formats mixed together:
-
-```typescript title="entry.node.ts"
-exports: [
-  'pkg:axios',
-  'root:src/utils/format.ts',
-  {
-    'api': './src/api/index.ts'
-  },
-  {
-    'components': './src/components/index.ts'
-  },
-  {
-    'storage': {
-      client: './src/storage/browser.ts',
-      server: './src/storage/node.ts'
-    }
-  }
-]
-```
-
-## Complete Example
-
-Complete example based on actual project structure:
-
-### Shared Module (shared-modules)
-
-```typescript
-// shared-modules/entry.node.ts
-import type { EsmxOptions } from '@esmx/core';
-
-export default {
-  modules: {
-    lib: true,
-    exports: [
-      'pkg:@esmx/router',
-      {
-        vue: 'pkg:vue/dist/vue.runtime.esm-browser.js',
-        '@esmx/router-vue': 'pkg:@esmx/router-vue',
-        vue2: 'pkg:vue2/dist/vue.runtime.esm.js',
-        'vue2/@esmx/router-vue': 'pkg:@esmx/router-vue'
-      }
-    ],
-    scopes: {
-      'vue2/': {
-        vue: 'shared-modules/vue2'
-      }
-    }
-  }
-} satisfies EsmxOptions;
-```
-
-### Vue 3 Application (vue3-app)
-
-```typescript
-// vue3-app/entry.node.ts
-import type { EsmxOptions } from '@esmx/core';
-
-export default {
-  modules: {
-    links: {
-      'shared-modules': '../shared-modules/dist'
+```json
+{
+    "name": "shared",
+    "version": "1.0.0",
+    "dependencies": {
+        "vue": "^3.5.0",
+        "vue2": "npm:vue@^2.7.0",
+        "@esmx/router": "^3.0.0"
     },
-    imports: {
-      'vue': 'shared-modules/vue',
-      '@esmx/router': 'shared-modules/@esmx/router',
-      '@esmx/router-vue': 'shared-modules/@esmx/router-vue'
-    },
-    exports: [
-      'root:src/routes.ts'
-    ]
-  }
-} satisfies EsmxOptions;
-```
-
-### Vue 2 Application (vue2-app)
-
-```typescript
-// vue2-app/entry.node.ts
-import type { EsmxOptions } from '@esmx/core';
-
-export default {
-  modules: {
-    links: {
-      'shared-modules': '../shared-modules/dist'
-    },
-    imports: {
-      'vue': 'shared-modules/vue2',
-      '@esmx/router': 'shared-modules/vue2/@esmx/router',
-      '@esmx/router-vue': 'shared-modules/vue2/@esmx/router-vue'
-    },
-    exports: [
-      'root:src/routes.ts'
-    ]
-  }
-} satisfies EsmxOptions;
-```
-
-### Aggregation Application (business-app)
-
-```typescript
-// business-app/entry.node.ts
-import type { EsmxOptions } from '@esmx/core';
-
-export default {
-  modules: {
-    links: {
-      'shared-modules': '../shared-modules/dist',
-      'vue2-app': '../vue2-app/dist',
-      'vue3-app': '../vue3-app/dist'
-    },
-    imports: {
-      '@esmx/router': 'shared-modules/vue2/@esmx/router'
+    "esmx": {
+        "provides": ["vue", "vue2", "@esmx/router"]
     }
-  }
+}
+```
+
+### Vue 3 application (`vue3-app`)
+
+```json
+{
+    "name": "vue3-app",
+    "version": "1.0.0",
+    "dependencies": { "shared": "workspace:*" },
+    "peerDependencies": { "vue": "^3.5.0", "@esmx/router": "^3.0.0" },
+    "esmx": {
+        "entry": {
+            "client": "./src/entry.client.ts",
+            "server": "./src/entry.server.ts"
+        },
+        "exports": { "./routes": "./src/routes.ts" },
+        "uses": ["shared"]
+    }
+}
+```
+
+### Vue 2 application (`vue2-app`)
+
+```json
+{
+    "name": "vue2-app",
+    "version": "1.0.0",
+    "dependencies": { "shared": "workspace:*", "vue": "npm:vue@^2.7.0" },
+    "esmx": {
+        "entry": {
+            "client": "./src/entry.client.ts",
+            "server": "./src/entry.server.ts"
+        },
+        "exports": { "./routes": "./src/routes.ts" },
+        "uses": ["shared"]
+    }
+}
+```
+
+### Aggregation host (`host`)
+
+```json
+{
+    "name": "host",
+    "version": "1.0.0",
+    "dependencies": {
+        "shared": "workspace:*",
+        "vue2-app": "workspace:*",
+        "vue3-app": "workspace:*"
+    },
+    "esmx": {
+        "entry": {
+            "client": "./src/entry.client.ts",
+            "server": "./src/entry.server.ts"
+        },
+        "uses": ["shared", "vue2-app", "vue3-app"]
+    }
+}
+```
+
+This shows:
+
+- **Shared base**: provides multi-version framework support; version isolation comes from npm aliases (`npm:vue@^2.7.0`) plus the `provides` declaration — each major is an isolated election group.
+- **Vue 3 / Vue 2 applications**: each declares its own Vue range and only exports its route config; the resolver wires each to the matching major automatically.
+- **Aggregation host**: a single entry that composes the sub-applications — one `uses` line per child, no manual import map.
+
+Run `esmx validate --json` after building the children to confirm the whole graph resolves.
+
+## Legacy syntax (removed in the next major)
+
+> **For NEW code, always use the `package.json` `esmx` declaration above.** The syntax below still works during the transition and you WILL see it in existing projects — recognize it, maintain it, and rewrite it to the new declaration to modernize. Do not write it for new modules.
+
+Legacy projects keep all protocol facts in `entry.node.ts` under a `modules` key:
+
+```ts
+// entry.node.ts (LEGACY)
+import type { EsmxOptions } from '@esmx/core';
+
+export default {
+    modules: {
+        // Where mounted modules live (hand-written relative dist paths).
+        links: { 'shared': '../shared/dist' },
+        // Manual specifier → provider wiring (replaced by the supply merge).
+        imports: { 'vue': 'shared/vue' },
+        // String-prefix DSL:
+        //   'pkg:vue'           → re-export the npm package "vue"
+        //                         (new protocol: provides: ["vue"])
+        //   'root:src/index.ts' → expose a source file; the PUBLIC name IS
+        //                         the source path ("shared/src/index")
+        //                         (new protocol: exports: { "./ui": "./src/ui/index.ts" })
+        exports: ['pkg:vue', 'root:src/index.ts']
+    },
+    async devApp(esmx) { /* ... */ },
+    async server(esmx) { /* ... */ }
 } satisfies EsmxOptions;
 ```
 
-This configuration demonstrates:
-- **Shared Module**: Provides multi-version framework support, achieves version isolation through scope mapping
-- **Vue 3 Application**: Business application using Vue 3, only exports route configuration
-- **Vue 2-Specific Application**: Business application specifically using Vue 2, only exports route configuration
-- **Aggregation Application**: Unified entry, coordinates sub-applications of different versions, includes complete Vue module imports
+The legacy traps the new protocol removes:
 
-The above configuration shows common dependency management scenarios in real projects, with clear module responsibilities and clear dependency relationships.
+- **Public export names equal source paths.** A legacy consumer writes `import { x } from 'shared/src/index'` — the directory layout is the API, and renaming a source file breaks every consumer. Under the new protocol only logical names (`'shared/ui'`) are public.
+- **Wiring is manual.** Every consumer hand-writes `imports` lines that the new protocol derives from declarations.
+- **Nothing is validated until runtime.** No version checks, no export checks, no structured diagnostics.
+
+Converting all of this is a mechanical rewrite (codemod-able, but there is no shipped command). Per RFC 0001 the legacy syntax is removed entirely in a later phase — there is no long-term dual syntax.

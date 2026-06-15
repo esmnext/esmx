@@ -7,7 +7,7 @@ import {
     setAppState,
     setSsrStyles,
     t
-} from 'ssr-micro-shared/src/index';
+} from 'ssr-micro-shared/index';
 import Vue from 'vue';
 import AppComponent from './app.vue';
 

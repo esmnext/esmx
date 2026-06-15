@@ -1,0 +1,59 @@
+---
+titleSuffix: "Esmx Framework Vite Vue Preset"
+description: "Esmx framework's Vite Vue 3 preset, adding Single-File Component support on top of @esmx/vite via @vitejs/plugin-vue."
+head:
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, Vite, Vue, Vue 3, SFC, preset, SSR, Module Linking"
+---
+
+import { PackageManagerTabs } from '@theme';
+
+# @esmx/vite-vue
+
+The Vue 3 preset for `@esmx/vite`. It adds [`@vitejs/plugin-vue`](https://github.com/vitejs/vite-plugin-vue) (SFC compilation + HMR) on top of the base Vite integration, and re-exports everything from `@esmx/vite`.
+
+## Installation
+
+<PackageManagerTabs command="install @esmx/vite-vue -D" />
+
+`vue` (>=3) is a peer dependency and must be installed in your project.
+
+## Type Exports
+
+### ViteVueAppOptions
+
+```ts
+interface ViteVueAppOptions extends ViteAppOptions {}
+```
+
+Configuration options, identical to [`ViteAppOptions`](./vite#viteappoptions). The Vue plugin is injected automatically through the config hook, applying to every build target and the dev server.
+
+## Function Exports
+
+### createViteVueApp
+
+```ts
+function createViteVueApp(esmx: Esmx, options?: ViteVueAppOptions): Promise<App>
+```
+
+Create a Vite + Vue 3 Esmx application instance.
+
+**Parameters:**
+- `esmx` — Esmx framework instance
+- `options` — Vite Vue application configuration options
+
+**Returns:**
+- Returns a `Promise` that resolves to the created application instance
+
+```ts title="src/entry.node.ts"
+export default {
+  async devApp(esmx) {
+    return import('@esmx/vite-vue').then((m) => m.createViteVueApp(esmx));
+  }
+};
+```
+
+## Re-exports
+
+This package re-exports all members of [`@esmx/vite`](./vite) (e.g. `createViteApp`, `BuildTarget`, `vite`), so you can import the base APIs directly from `@esmx/vite-vue`.

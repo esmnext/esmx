@@ -4,6 +4,7 @@ import pkg from '../../package.json' with { type: 'json' };
 
 import { COMMAND, Esmx, type EsmxOptions } from '../core';
 import { resolveImportPath } from '../utils/resolve-path';
+import { runValidate, VALIDATE_HELP } from './validate';
 
 async function getSrcOptions(): Promise<EsmxOptions> {
     return import(resolveImportPath(process.cwd(), './src/entry.node.ts')).then(
@@ -30,6 +31,22 @@ async function getDistOptions(): Promise<EsmxOptions> {
 }
 
 export async function cli(command: string) {
+    if (command === 'validate') {
+        // Handled before the banner: `--json` must keep stdout pure JSON.
+        const flags = process.argv.slice(3);
+        if (flags.includes('--help')) {
+            console.log(VALIDATE_HELP);
+            return;
+        }
+        const result = await runValidate(process.cwd(), {
+            json: flags.includes('--json')
+        });
+        console.log(result.output);
+        if (result.exitCode !== 0) {
+            process.exit(result.exitCode);
+        }
+        return;
+    }
     console.log(`🔥 ${styleText('yellow', 'Esmx')} v${pkg.version}
     `);
     if (
@@ -111,11 +128,37 @@ export function resolve(
     nextResolve: Function
 ) {
     if (
-        context?.parentURL.endsWith('.ts') &&
+        context?.parentURL?.endsWith('.ts') &&
         specifier.startsWith('.') &&
         !specifier.endsWith('.ts')
     ) {
         return nextResolve(specifier + '.ts', context);
     }
     return nextResolve(specifier, context);
+}
+
+/**
+ * Style assets imported via standard `import './x.css'` are part of esmx's
+ * federation contract (manifest's `chunks[*].css[]` — see G section). On the
+ * cli/build path Node's native loader hits these when reading the user's
+ * `entry.node.ts` config (which transitively imports a remote's source). They
+ * have no server-side behaviour — emit a no-op ESM module so the loader chain
+ * continues cleanly. Mirrors `@esmx/import`'s VM-linker hook.
+ */
+const STYLE_ASSET_RE =
+    /\.(?:css|scss|sass|less|stylus|styl|pcss|postcss)(?:\?.*)?$/i;
+
+export async function load(
+    url: string,
+    context: Record<string, any>,
+    nextLoad: Function
+) {
+    if (STYLE_ASSET_RE.test(url)) {
+        return {
+            format: 'module',
+            shortCircuit: true,
+            source: `export default ${JSON.stringify(url)}; export const href = ${JSON.stringify(url)};`
+        };
+    }
+    return nextLoad(url, context);
 }

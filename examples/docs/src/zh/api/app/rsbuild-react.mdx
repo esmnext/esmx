@@ -1,0 +1,61 @@
+---
+titleSuffix: "Esmx 框架 Rsbuild React 预设"
+description: "Esmx 框架的 Rsbuild React 预设，通过 @rsbuild/plugin-react 在 @esmx/rsbuild 之上增加 JSX 转换与 Fast Refresh。"
+head:
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, Rsbuild, React, JSX, Fast Refresh, 预设, SSR, 模块链接"
+---
+
+import { PackageManagerTabs } from '@theme';
+
+# @esmx/rsbuild-react
+
+`@esmx/rsbuild` 的 React 预设。它在基础 Rsbuild 集成之上加入 [`@rsbuild/plugin-react`](https://rsbuild.rs/plugins/list/plugin-react)（JSX 转换 + Fast Refresh），并重新导出 `@esmx/rsbuild` 的全部内容。
+
+## 安装
+
+<PackageManagerTabs command="install @esmx/rsbuild-react -D" />
+
+`react` 与 `react-dom` 为 peer 依赖，需在你的项目中安装。
+
+## 类型导出
+
+### RsbuildReactAppOptions
+
+```ts
+interface RsbuildReactAppOptions extends RsbuildAppOptions {}
+```
+
+配置选项，与 [`RsbuildAppOptions`](./rsbuild#rsbuildappoptions) 完全一致。React 插件通过配置钩子自动注入，作用于所有构建目标。
+
+## 函数导出
+
+### createRsbuildReactApp
+
+```ts
+function createRsbuildReactApp(esmx: Esmx, options?: RsbuildReactAppOptions): Promise<App>
+```
+
+创建一个 Rsbuild + React 的 Esmx 应用实例。
+
+**参数：**
+- `esmx` — Esmx 框架实例
+- `options` — Rsbuild React 应用配置选项
+
+**返回值：**
+- 返回一个 `Promise`，解析为创建的应用实例
+
+```ts title="src/entry.node.ts"
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rsbuild-react').then((m) =>
+      m.createRsbuildReactApp(esmx)
+    );
+  }
+};
+```
+
+## 重新导出
+
+本包重新导出 [`@esmx/rsbuild`](./rsbuild) 的全部成员（如 `createRsbuildApp`、`BuildTarget`、`rspack`），因此可直接从 `@esmx/rsbuild-react` 导入基础 API。

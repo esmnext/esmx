@@ -21,14 +21,17 @@ export function createLoaderImport(baseURL: URL, importMap: ImportMap = {}) {
         registered = JSON.stringify(importMap);
     } else if (registered !== JSON.stringify(importMap)) {
         throw new Error(
-            `'createLoaderImport()' can only be created once and cannot be created repeatedly`
+            `[@esmx/import] createLoaderImport() is a per-process singleton and was called twice with different importMap data. Ensure your app initializes the loader exactly once at startup.`
         );
     }
     return (specifier: string): Promise<Record<string, any>> => {
         try {
             return import(specifier);
         } catch (e) {
-            throw new Error(`Failed to import '${specifier}'`);
+            const cause = e instanceof Error ? e.message : String(e);
+            throw new Error(
+                `[@esmx/import] Failed to import '${specifier}'. Verify the specifier is declared in the importMap (modules.imports in entry.node.ts) or matches a federated module name. Original error: ${cause}`
+            );
         }
     };
 }

@@ -611,4 +611,145 @@ describe('createVmImport', () => {
             expect(namespace.filename).toBe(memPath('meta.mjs'));
         });
     });
+
+    /**
+     * Style assets are part of esmx's federation contract (manifest's
+     * `chunks[*].css[]`). On the server they must NOT be parsed as JS — the
+     * VM linker intercepts them, returns a SyntheticModule exposing the asset
+     * URL, and lets `import './x.css'` succeed without side effects (the
+     * actual stylesheet reaches the browser via a `<link>` tag the host emits
+     * from the manifest, not by evaluating this module).
+     */
+    describe('style asset imports', () => {
+        it('does not parse .css as JS — side-effect import resolves cleanly', async () => {
+            const cssPath = path.join(tempDir, 'styles.css');
+            fs.writeFileSync(
+                cssPath,
+                '/* contains a dot selector — would crash the JS parser */\n.btn { color: red; }'
+            );
+            const consumerPath = path.join(tempDir, 'consumer.mjs');
+            fs.writeFileSync(
+                consumerPath,
+                `import './styles.css';\nexport const ok = true;`
+            );
+
+            const namespace = await vmImport(
+                './consumer.mjs',
+                `file://${tempDir}/entry.mjs`
+            );
+
+            expect(namespace.ok).toBe(true);
+        });
+
+        it('exposes the asset URL as default + href named export', async () => {
+            const cssPath = path.join(tempDir, 'theme.css');
+            fs.writeFileSync(cssPath, ':root { --x: 1; }');
+            const consumerPath = path.join(tempDir, 'consumer.mjs');
+            fs.writeFileSync(
+                consumerPath,
+                `import url, { href } from './theme.css';\nexport { url, href };`
+            );
+
+            const namespace = await vmImport(
+                './consumer.mjs',
+                `file://${tempDir}/entry.mjs`
+            );
+
+            const expected = new URL('theme.css', `file://${tempDir}/`).href;
+            expect(namespace.url).toBe(expected);
+            expect(namespace.href).toBe(expected);
+        });
+
+        it.each([
+            'scss',
+            'sass',
+            'less',
+            'stylus',
+            'styl',
+            'pcss',
+            'postcss'
+        ])('treats .%s as a style asset', async (ext) => {
+            const assetPath = path.join(tempDir, `styles.${ext}`);
+            fs.writeFileSync(
+                assetPath,
+                '.x { color: red; } // would crash JS parser'
+            );
+            const consumerPath = path.join(tempDir, `c-${ext}.mjs`);
+            fs.writeFileSync(
+                consumerPath,
+                `import './styles.${ext}';\nexport const ok = true;`
+            );
+
+            const namespace = await vmImport(
+                `./c-${ext}.mjs`,
+                `file://${tempDir}/entry.mjs`
+            );
+
+            expect(namespace.ok).toBe(true);
+        });
+
+        it('tolerates query-string suffixes (?inline, ?url)', async () => {
+            const cssPath = path.join(tempDir, 'q.css');
+            fs.writeFileSync(cssPath, '.q {}');
+            const consumerPath = path.join(tempDir, 'qc.mjs');
+            // The on-disk file is `q.css`; the import specifier carries a
+            // bundler-style suffix. Node's import.meta.resolve normalises this
+            // to a file URL with the query preserved.
+            fs.writeFileSync(
+                consumerPath,
+                `import './q.css?inline';\nexport const ok = true;`
+            );
+
+            const namespace = await vmImport(
+                './qc.mjs',
+                `file://${tempDir}/entry.mjs`
+            );
+
+            expect(namespace.ok).toBe(true);
+        });
+
+        it('caches style modules — same URL imported twice yields one module', async () => {
+            const cssPath = path.join(tempDir, 'shared.css');
+            fs.writeFileSync(cssPath, '.s {}');
+            const aPath = path.join(tempDir, 'a.mjs');
+            const bPath = path.join(tempDir, 'b.mjs');
+            const rootPath = path.join(tempDir, 'root.mjs');
+            fs.writeFileSync(
+                aPath,
+                `import url from './shared.css';\nexport { url as a };`
+            );
+            fs.writeFileSync(
+                bPath,
+                `import url from './shared.css';\nexport { url as b };`
+            );
+            fs.writeFileSync(
+                rootPath,
+                `export { a } from './a.mjs';\nexport { b } from './b.mjs';`
+            );
+
+            const namespace = await vmImport(
+                './root.mjs',
+                `file://${tempDir}/entry.mjs`
+            );
+
+            expect(namespace.a).toBeDefined();
+            expect(namespace.a).toBe(namespace.b);
+        });
+
+        it('does not affect non-style imports', async () => {
+            const jsPath = path.join(tempDir, 'normal.mjs');
+            fs.writeFileSync(
+                jsPath,
+                'export const value = 42;\nexport default "x";'
+            );
+
+            const namespace = await vmImport(
+                './normal.mjs',
+                `file://${tempDir}/entry.mjs`
+            );
+
+            expect(namespace.value).toBe(42);
+            expect(namespace.default).toBe('x');
+        });
+    });
 });

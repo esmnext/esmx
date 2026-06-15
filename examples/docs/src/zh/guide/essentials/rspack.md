@@ -113,4 +113,19 @@ export default {
 
 Esmx 实现了构建工具的解耦。无论是使用 Rspack、Webpack、Vite 还是 esbuild，只要其构建产物中包含一份符合 [ManifestJson 规范](/api/core/manifest-json) 的资源清单，Esmx 就能识别并链接这些模块。
 
+除默认的 Rspack 集成外，Esmx 还提供了两套官方构建工具集成，暴露相同的构建器 API：
+
+- **Rsbuild** — [`@esmx/rsbuild`](/api/app/rsbuild)（基于 Rspack 内核），框架预设 [`@esmx/rsbuild-react`](/api/app/rsbuild-react) 与 [`@esmx/rsbuild-vue`](/api/app/rsbuild-vue)。
+- **Vite** — [`@esmx/vite`](/api/app/vite)（基于 Rollup，开发环境提供真正的模块级 HMR），框架预设 [`@esmx/vite-react`](/api/app/vite-react) 与 [`@esmx/vite-vue`](/api/app/vite-vue)。
+
+例如，将上面的 HTML 应用切换到 Vite 只需修改导入：
+
+```ts title="src/entry.node.ts"
+export default {
+  async devApp(esmx) {
+    return import('@esmx/vite').then((m) => m.createViteHtmlApp(esmx));
+  }
+} satisfies EsmxOptions;
+```
+
 这种设计赋予了开发者充分的技术选型自由，可以为不同场景选择最适合的构建方案，而无需锁定在特定工具链上。

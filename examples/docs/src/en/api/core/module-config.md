@@ -18,7 +18,6 @@ interface ModuleConfig {
     lib?: boolean;
     links?: Record<string, string>;
     imports?: ModuleConfigImportMapping;
-    scopes?: Record<string, ModuleConfigImportMapping>;
     exports?: ModuleConfigExportExports;
 }
 ```
@@ -39,11 +38,6 @@ interface ModuleConfig {
 
 * **Type**: `ModuleConfigImportMapping`
 * **Description**: Module import mapping configuration, where the key is the local module identifier and the value is the remote module path. Supports environment-specific configuration.
-
-### scopes
-
-* **Type**: `Record<string, ModuleConfigImportMapping>`
-* **Description**: Module scope mapping configuration, where the key is the directory path prefix and the value is the import mapping configuration within that scope.
 
 ### exports
 

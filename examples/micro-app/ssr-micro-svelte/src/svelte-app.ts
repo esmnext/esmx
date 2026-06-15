@@ -6,7 +6,7 @@ import {
     Layout,
     setAppState,
     t
-} from 'ssr-micro-shared/src/index';
+} from 'ssr-micro-shared/index';
 
 import App from './App.svelte';
 

@@ -4,6 +4,11 @@
         "jsx": "react-jsx",
         "jsxImportSource": "preact"
     },
-    "include": ["src"],
-    "exclude": ["dist", "node_modules"]
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "dist",
+        "node_modules"
+    ]
 }

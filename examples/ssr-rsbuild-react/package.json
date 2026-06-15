@@ -1,0 +1,35 @@
+{
+    "name": "ssr-rsbuild-react",
+    "version": "1.0.0",
+    "esmx": {
+        "entry": {
+            "client": "./src/entry.client.ts",
+            "server": "./src/entry.server.tsx"
+        },
+        "provides": [
+            "react",
+            "react-dom"
+        ]
+    },
+    "description": "React app powered by Esmx + Rsbuild",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "esmx dev",
+        "build": "esmx build",
+        "preview": "esmx preview",
+        "start": "esmx start"
+    },
+    "dependencies": {
+        "@esmx/core": "workspace:*",
+        "react": "^19.2.6",
+        "react-dom": "^19.2.6"
+    },
+    "devDependencies": {
+        "@esmx/rsbuild-react": "workspace:*",
+        "@types/node": "^24.0.0",
+        "@types/react": "^19.2.14",
+        "@types/react-dom": "^19.2.1",
+        "typescript": "5.9.3"
+    }
+}

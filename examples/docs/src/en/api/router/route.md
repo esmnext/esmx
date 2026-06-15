@@ -260,6 +260,20 @@ route.state // { cartId: 'abc' }
 
 Whether the navigation should maintain the current scroll position rather than scrolling to top.
 
+### confirm
+
+- **Type**: `RouteConfirmHook | null`
+- **Read-only**: `true`
+
+Custom confirm handler that overrides the default route-transition confirm logic. `null` when not provided.
+
+### layer
+
+- **Type**: `RouteLayerOptions | null`
+- **Read-only**: `true`
+
+Layer configuration for layer routes. `null` for non-layer routes.
+
 ### isPush
 
 - **Type**: `boolean`

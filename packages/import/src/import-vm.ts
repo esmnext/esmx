@@ -9,6 +9,33 @@ import type { ImportMap } from './types';
 
 const requireSync = createRequire(import.meta.url);
 
+/**
+ * Cache value type. Style-asset imports (`*.css`, `*.scss`, etc.) materialize
+ * as a `SyntheticModule` exposing the asset URL; everything else parses through
+ * `SourceTextModule`. Both inherit from the (internal) base `vm.Module` and
+ * expose the `namespace` getter the public API ultimately returns.
+ */
+type CachedVmModule = vm.SourceTextModule | vm.SyntheticModule;
+
+/**
+ * Extensions that the esmx federation contract treats as STYLE ASSETS rather
+ * than executable JS modules. On the server they materialize as no-op synthetic
+ * modules exposing the asset URL — they have no observable side effect there,
+ * because there is no document. Browsers receive the stylesheet via a
+ * `<link rel="stylesheet">` that the host injects from the federation manifest
+ * (`chunks[*].css[]`), not by evaluating these modules. See
+ * `docs/design/principles.md` P1 and the G section of the redesign plan.
+ *
+ * Query strings (`?inline`, `?url`) are tolerated — bundlers sometimes attach
+ * them when rewriting CSS imports.
+ */
+const STYLE_ASSET_RE =
+    /\.(?:css|scss|sass|less|stylus|styl|pcss|postcss)(?:\?.*)?$/i;
+
+function isStyleAsset(url: string): boolean {
+    return STYLE_ASSET_RE.test(url);
+}
+
 let lazyGlobalsMaterialized = false;
 
 /**
@@ -91,10 +118,10 @@ export function createVmImport(
         specifier: string,
         parent: string,
         context: vm.Context,
-        cache: Map<string, vm.SourceTextModule>,
+        cache: Map<string, CachedVmModule>,
         linkStatus: Map<string, Promise<void>>,
         moduleIds: string[]
-    ): vm.SourceTextModule | vm.SyntheticModule {
+    ): CachedVmModule {
         if (isBuiltin(specifier)) {
             const nodeModule = requireSync(specifier);
             const keys = Object.keys(nodeModule);
@@ -134,6 +161,36 @@ export function createVmImport(
         const cachedModule = cache.get(meta.url);
         if (cachedModule) {
             return cachedModule;
+        }
+
+        // Style assets (.css and friends) are part of esmx's federation
+        // contract but carry no observable server-side behaviour — the host
+        // emits a `<link rel="stylesheet">` from the manifest, not by
+        // evaluating the file. Return a SyntheticModule exposing the asset
+        // URL so user code that writes `import sheet from './x.css'`
+        // typechecks and runs without the VM trying to parse CSS as JS.
+        if (isStyleAsset(meta.url)) {
+            const exportNames = ['default', 'href'];
+            const styleModule = new vm.SyntheticModule(
+                exportNames,
+                function evaluateCallback() {
+                    this.setExport('default', meta.url);
+                    this.setExport('href', meta.url);
+                },
+                { identifier: specifier, context }
+            );
+            cache.set(meta.url, styleModule);
+            const linkResult = styleModule.link(() => {
+                throw new TypeError(
+                    `Style modules should not be linked: ${specifier}`
+                );
+            });
+            const linkPromise =
+                linkResult && typeof linkResult.then === 'function'
+                    ? linkResult.then(() => styleModule.evaluate())
+                    : styleModule.evaluate();
+            linkStatus.set(meta.url, linkPromise);
+            return styleModule;
         }
 
         let text: string;
@@ -190,7 +247,7 @@ export function createVmImport(
         specifier: string,
         parent: string,
         context: vm.Context,
-        cache: Map<string, vm.SourceTextModule>,
+        cache: Map<string, CachedVmModule>,
         linkStatus: Map<string, Promise<void>>,
         moduleIds: string[]
     ) {
@@ -233,7 +290,7 @@ export function createVmImport(
     ) => {
         materializeLazyGlobals();
         const context = vm.createContext(sandbox, options);
-        const cache = new Map<string, vm.SourceTextModule>();
+        const cache = new Map<string, CachedVmModule>();
         const linkStatus = new Map<string, Promise<void>>();
         const module = await moduleLinker(
             specifier,

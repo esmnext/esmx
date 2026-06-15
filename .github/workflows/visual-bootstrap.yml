@@ -1,0 +1,78 @@
+name: Visual baselines (bootstrap)
+
+# Regenerate Playwright PNG baselines from a clean CI environment.
+# Trigger manually (workflow_dispatch); the resulting snapshots are uploaded
+# as an artifact for human review + commit. This is the canonical way to
+# refresh tests/visual/__snapshots__/ — local macOS captures will diverge
+# from the Linux Chromium CI runner and cannot be committed as-is.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    # Run inside the Playwright image so chromium + system deps are pre-baked.
+    # `playwright install` from CDN has been flaky; this avoids it entirely.
+    container:
+      image: mcr.microsoft.com/playwright:v1.48.2-jammy
+      options: --user root --ipc=host
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup node 24 (container ships node 20)
+        run: |
+          # The playwright image bundles node 20 but the repo requires >=24.
+          # Install node 24 via NodeSource and replace the runtime in PATH.
+          curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
+          apt-get install -y nodejs
+          node --version
+          corepack enable
+          corepack prepare pnpm@10.0.0 --activate
+          pnpm --version
+
+      - name: Install + build packages + relink + build examples
+        run: |
+          # The full `pnpm build` script also runs the whole test+coverage matrix,
+          # which is unnecessary for baseline capture. Do the install/build dance
+          # manually so we only spend CI time on what's needed for screenshots.
+          pnpm install --frozen-lockfile
+          pnpm build:packages
+          # Re-run install so the workspace bin symlinks pick up the freshly
+          # built `packages/core/dist/cli/index.mjs` (pnpm only links bins at
+          # install time; on first install dist didn't exist yet).
+          pnpm install --frozen-lockfile
+          pnpm build:examples
+
+      - name: Capture hub baselines
+        env:
+          VISUAL_GROUP: hub
+        run: |
+          node scripts/start-all.mjs --group=hub &
+          for _ in $(seq 1 120); do
+            if curl -sf http://127.0.0.1:3000/ -o /dev/null; then break; fi
+            sleep 0.5
+          done
+          pnpm test:visual:update || true
+          pkill -f "scripts/start-all.mjs" || true
+
+      - name: Capture standalone baselines
+        env:
+          VISUAL_GROUP: standalone
+        run: |
+          node scripts/start-all.mjs --group=standalone &
+          for _ in $(seq 1 120); do
+            if curl -sf http://127.0.0.1:3005/ -o /dev/null; then break; fi
+            sleep 0.5
+          done
+          pnpm test:visual:update || true
+          pkill -f "scripts/start-all.mjs" || true
+
+      - name: Upload baselines
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-baselines
+          # Playwright's default snapshot path is <spec>-snapshots/, not __snapshots__/.
+          path: tests/visual/visual.spec.ts-snapshots/**
+          retention-days: 30

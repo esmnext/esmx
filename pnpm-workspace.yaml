@@ -1,5 +1,14 @@
-
 packages:
-    - 'packages/*'
-    - 'examples/**'
-    - '!**/dist/**'
+  - 'packages/*'
+  - 'examples/**'
+  - '!**/dist/**'
+verifyDepsBeforeRun: false
+allowBuilds:
+  '@biomejs/biome': true
+  '@gez/router-vue': true
+  esbuild: true
+  core-js: false
+  swiper: false
+  puppeteer: false
+  protobufjs: false
+  less: false

@@ -1,0 +1,59 @@
+---
+titleSuffix: "Esmx 框架 Rsbuild Vue 预设"
+description: "Esmx 框架的 Rsbuild Vue 3 预设，通过 @rsbuild/plugin-vue 在 @esmx/rsbuild 之上增加单文件组件支持。"
+head:
+  - - "meta"
+    - name: "keywords"
+      content: "Esmx, Rsbuild, Vue, Vue 3, SFC, 预设, SSR, 模块链接"
+---
+
+import { PackageManagerTabs } from '@theme';
+
+# @esmx/rsbuild-vue
+
+`@esmx/rsbuild` 的 Vue 3 预设。它在基础 Rsbuild 集成之上加入 [`@rsbuild/plugin-vue`](https://rsbuild.rs/plugins/list/plugin-vue)（SFC 编译 + HMR），并重新导出 `@esmx/rsbuild` 的全部内容。
+
+## 安装
+
+<PackageManagerTabs command="install @esmx/rsbuild-vue -D" />
+
+`vue`（>=3）为 peer 依赖，需在你的项目中安装。
+
+## 类型导出
+
+### RsbuildVueAppOptions
+
+```ts
+interface RsbuildVueAppOptions extends RsbuildAppOptions {}
+```
+
+配置选项，与 [`RsbuildAppOptions`](./rsbuild#rsbuildappoptions) 完全一致。Vue 插件通过配置钩子自动注入，作用于所有构建目标。
+
+## 函数导出
+
+### createRsbuildVueApp
+
+```ts
+function createRsbuildVueApp(esmx: Esmx, options?: RsbuildVueAppOptions): Promise<App>
+```
+
+创建一个 Rsbuild + Vue 3 的 Esmx 应用实例。
+
+**参数：**
+- `esmx` — Esmx 框架实例
+- `options` — Rsbuild Vue 应用配置选项
+
+**返回值：**
+- 返回一个 `Promise`，解析为创建的应用实例
+
+```ts title="src/entry.node.ts"
+export default {
+  async devApp(esmx) {
+    return import('@esmx/rsbuild-vue').then((m) => m.createRsbuildVueApp(esmx));
+  }
+};
+```
+
+## 重新导出
+
+本包重新导出 [`@esmx/rsbuild`](./rsbuild) 的全部成员（如 `createRsbuildApp`、`BuildTarget`、`rspack`），因此可直接从 `@esmx/rsbuild-vue` 导入基础 API。

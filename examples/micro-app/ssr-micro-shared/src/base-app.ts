@@ -45,11 +45,35 @@ export abstract class BaseApp {
     mount(el: HTMLElement): void {
         this.container = el;
         this.onMount(el);
+        this.moveFocus(el);
     }
 
     hydration(el: HTMLElement): void {
         this.container = el;
         this.onHydration(el);
+        this.moveFocus(el);
+    }
+
+    private moveFocus(container: HTMLElement): void {
+        // After mount/hydration, move focus to the main content so screen readers
+        // announce the new page in SPA navigation. Skip if an element already has
+        // focus (e.g. user tabbed to a control before hydration completed).
+        if (
+            typeof document !== 'undefined' &&
+            document.activeElement &&
+            document.activeElement !== document.body
+        ) {
+            return;
+        }
+        const target =
+            container.querySelector('main') ||
+            container.querySelector('[role="main"]') ||
+            container;
+        if (!(target instanceof HTMLElement)) return;
+        if (!target.hasAttribute('tabindex')) {
+            target.setAttribute('tabindex', '-1');
+        }
+        target.focus({ preventScroll: true });
     }
 
     unmount(): void {

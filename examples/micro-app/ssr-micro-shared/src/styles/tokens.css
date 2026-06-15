@@ -1,0 +1,186 @@
+/**
+ * Esmx Design Tokens — single source of truth for all demo surfaces.
+ *
+ * Imported by: ssr-micro-shared/src/layout.ts (host layout),
+ *              every micro remote (via shared `injectGlobalStyles`),
+ *              every standalone SSR demo, and the docs site
+ *              (which overrides Rspress `--rp-*` to map onto `--esmx-*`).
+ *
+ * NOTHING in any demo / hub / doc should hardcode a color, font size,
+ * spacing, radius, or duration. Either reference a token from here, or
+ * propose a new token in `.claude/design-direction.md` first.
+ *
+ * Spec: see `.claude/design-direction.md` §3-§5 for rationale.
+ */
+
+:root {
+    /* ─── 1. Brand (single, used sparingly) ─────────────────────────── */
+    --esmx-brand: #0077b3; /* Links, primary CTA, active state, brand badge (WCAG AA on white) */
+    --esmx-brand-hover: #0069a8; /* Hover on brand */
+    --esmx-brand-soft: #e6f3fa; /* Soft fill (badge bg, focus ring bg) */
+
+    /* ─── 2. Surfaces ───────────────────────────────────────────────── */
+    --esmx-bg-canvas: #fdfdfd; /* Page background */
+    --esmx-bg-paper: #ffffff; /* Card / panel background */
+    --esmx-bg-subtle: #f5f7f9; /* Code block, table header, alternate row */
+    --esmx-bg-overlay: rgba(13, 17, 23, 0.5); /* Mobile drawer overlay */
+
+    /* ─── 3. Borders ────────────────────────────────────────────────── */
+    --esmx-border: #e5e9ed; /* Default border (card, table cell) */
+    --esmx-border-strong: #c9d1d9; /* Table header, group separator */
+    --esmx-border-subtle: #eef1f3; /* Table row divider, very faint dividers */
+
+    /* ─── 4. Text ───────────────────────────────────────────────────── */
+    --esmx-text-primary: #0c1117; /* Headings, body */
+    --esmx-text-secondary: #5a6473; /* Subheading, description */
+    --esmx-text-muted: #5d6b7a; /* Metadata, placeholder, URL, timestamp (WCAG AA on white) */
+    --esmx-text-inverse: #ffffff; /* Text on primary button / dark surface */
+
+    /* ─── 5. Status (mode-agnostic) ─────────────────────────────────── */
+    --esmx-success: #22a06b; /* live, pass */
+    --esmx-warning: #d97706; /* preview, pending */
+    --esmx-danger: #dc3545; /* fail, minus button (replaces hardcoded #ef4444) */
+    --esmx-info: #0091e2; /* Same as brand */
+
+    /* ─── 6. Framework colors (dots & labels ONLY — never as fill) ──── */
+    --esmx-fw-react: #0e7a9e; /* WCAG AA on white for badge/label text */
+    --esmx-fw-vue: #41b883;
+    --esmx-fw-preact: #673ab8;
+    --esmx-fw-solid: #2c4f7c;
+    --esmx-fw-svelte: #ff3e00;
+    --esmx-fw-lit: #324fff;
+    --esmx-fw-html: #e34f26;
+
+    /* ─── 7. Fonts ──────────────────────────────────────────────────── */
+    --esmx-font-sans:
+        "Inter Variable", ui-sans-serif, system-ui, -apple-system, "PingFang SC",
+        "Microsoft YaHei", sans-serif;
+    --esmx-font-mono:
+        "JetBrains Mono Variable", ui-monospace, "SF Mono", Menlo, Consolas,
+        monospace;
+
+    /* ─── 8. Font sizes (modular 1.25) ──────────────────────────────── */
+    --esmx-fs-xs: 0.75rem; /* 12px — metadata, time, tag */
+    --esmx-fs-sm: 0.875rem; /* 14px — secondary, table cells */
+    --esmx-fs-base: 1rem; /* 16px — body */
+    --esmx-fs-md: 1.125rem; /* 18px — emphasised paragraph */
+    --esmx-fs-lg: 1.25rem; /* 20px — h4 */
+    --esmx-fs-xl: 1.5rem; /* 24px — h3 */
+    --esmx-fs-2xl: 2rem; /* 32px — h2 / stat number (replaces 3rem) */
+    --esmx-fs-3xl: 2.5rem; /* 40px — h1 */
+    --esmx-fs-display: clamp(
+        2.5rem,
+        4vw +
+        1rem,
+        3.5rem
+    ); /* 40-56px — landing hero */
+
+    /* ─── 9. Line heights ───────────────────────────────────────────── */
+    --esmx-leading-tight: 1.2; /* Display, large headings */
+    --esmx-leading-snug: 1.4; /* Medium headings */
+    --esmx-leading-normal: 1.6; /* Body */
+    --esmx-leading-loose: 1.8; /* Long documentation paragraphs */
+
+    /* ─── 10. Font weights ──────────────────────────────────────────── */
+    --esmx-fw-regular: 400;
+    --esmx-fw-medium: 500; /* Table header, emphasis */
+    --esmx-fw-semibold: 600; /* h1-h4 (replaces hardcoded 800) */
+    --esmx-fw-bold: 700; /* Inline <strong> only */
+
+    /* ─── 11. Letter spacing ────────────────────────────────────────── */
+    --esmx-tracking-eyebrow: 0.08em; /* Uppercase section eyebrow */
+
+    /* ─── 12. Spacing (4px base, t-shirt) ───────────────────────────── */
+    --esmx-space-0: 0;
+    --esmx-space-1: 0.25rem; /* 4px — icon-text gap */
+    --esmx-space-2: 0.5rem; /* 8px — button gap, tag y-padding */
+    --esmx-space-3: 0.75rem; /* 12px — tight padding */
+    --esmx-space-4: 1rem; /* 16px — card inner padding, paragraph gap */
+    --esmx-space-5: 1.25rem; /* 20px — medium padding */
+    --esmx-space-6: 1.5rem; /* 24px — card padding (replaces 48px) */
+    --esmx-space-8: 2rem; /* 32px — section gap */
+    --esmx-space-10: 2.5rem; /* 40px — hero gap */
+    --esmx-space-12: 3rem; /* 48px — hero v-padding */
+    --esmx-space-16: 4rem; /* 64px — landing block gap */
+    --esmx-space-20: 5rem; /* 80px — landing hero v-padding */
+
+    /* ─── 13. Radii ─────────────────────────────────────────────────── */
+    --esmx-radius-sm: 4px; /* Badge, tag, input */
+    --esmx-radius-md: 6px; /* Button */
+    --esmx-radius-lg: 8px; /* Card (replaces 16px) */
+    --esmx-radius-xl: 12px; /* Modal, hero card */
+    --esmx-radius-pill: 9999px; /* Chip, framework dot wrapper */
+
+    /* ─── 14. Shadows (used sparingly — prefer borders) ─────────────── */
+    --esmx-shadow-sm: 0 1px 2px rgba(13, 17, 23, 0.06);
+    --esmx-shadow-md:
+        0 2px 8px rgba(13, 17, 23, 0.06), 0 1px 2px rgba(13, 17, 23, 0.04);
+    --esmx-shadow-lg:
+        0 8px 24px rgba(13, 17, 23, 0.08), 0 2px 4px rgba(13, 17, 23, 0.04);
+
+    /* ─── 15. Container widths ──────────────────────────────────────── */
+    --esmx-width-narrow: 720px; /* Long-form reading */
+    --esmx-width-content: 960px; /* Standard content */
+    --esmx-width-wide: 1200px; /* Landing, hub */
+    --esmx-width-full: 1440px; /* Hub table max-width */
+
+    /* ─── 16. Motion ────────────────────────────────────────────────── */
+    --esmx-duration-instant: 100ms; /* Color, opacity */
+    --esmx-duration-fast: 150ms; /* Border, shadow */
+    --esmx-duration-normal: 200ms; /* Transform, layout */
+    --esmx-ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+    /* ─── 17. Layout (legacy, kept for layout.ts compatibility) ─────── */
+    --esmx-sidebar-width: 260px; /* Hub sidebar width — referenced by remotes */
+}
+
+/* ─── Dark mode overrides ───────────────────────────────────────────── */
+/**
+ * Dark is OPT-IN via [data-theme="dark"] (set by user toggle or system pref).
+ * Light remains the default — see `.claude/design-direction.md` §1 D5.
+ */
+[data-theme="dark"] {
+    /* Brand */
+    --esmx-brand: #48b9ec;
+    --esmx-brand-hover: #65c5f0;
+    --esmx-brand-soft: #0c2030;
+
+    /* Surfaces */
+    --esmx-bg-canvas: #0c1117;
+    --esmx-bg-paper: #161b22;
+    --esmx-bg-subtle: #1c232c;
+    --esmx-bg-overlay: rgba(0, 0, 0, 0.6);
+
+    /* Borders */
+    --esmx-border: #30363d;
+    --esmx-border-strong: #484f58;
+    --esmx-border-subtle: #21262d;
+
+    /* Text */
+    --esmx-text-primary: #e6edf3;
+    --esmx-text-secondary: #8b949e;
+    --esmx-text-muted: #6e7681;
+    --esmx-text-inverse: #0c1117;
+
+    /* Status / framework / fonts / scale tokens are mode-agnostic — not redefined here. */
+}
+
+/* Respect OS preference when no explicit toggle is set. */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --esmx-brand: #48b9ec;
+        --esmx-brand-hover: #65c5f0;
+        --esmx-brand-soft: #0c2030;
+        --esmx-bg-canvas: #0c1117;
+        --esmx-bg-paper: #161b22;
+        --esmx-bg-subtle: #1c232c;
+        --esmx-bg-overlay: rgba(0, 0, 0, 0.6);
+        --esmx-border: #30363d;
+        --esmx-border-strong: #484f58;
+        --esmx-border-subtle: #21262d;
+        --esmx-text-primary: #e6edf3;
+        --esmx-text-secondary: #8b949e;
+        --esmx-text-muted: #6e7681;
+        --esmx-text-inverse: #0c1117;
+    }
+}

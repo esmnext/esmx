@@ -1,15 +1,18 @@
+import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
     addPackageExportsToScopes,
-    createDefaultExports,
+    createEntryExports,
+    DEFAULT_MODULE_ENTRY,
+    getEntryChunkId,
     getEnvironmentExports,
     getEnvironmentImports,
-    getEnvironmentScopes,
     getEnvironments,
     getLinks,
     type ModuleConfig,
     parsedExportValue,
+    parseEntryConfig,
     parseModuleConfig,
     processExportArray,
     processObjectExport,
@@ -234,43 +237,18 @@ describe('Module Config Parser', () => {
             });
         });
 
-        describe('getEnvironmentScopes', () => {
-            it('should process scoped imports per environment', () => {
-                const scopes = {
-                    utils: {
-                        lodash: 'lodash',
-                        moment: {
-                            client: 'moment',
-                            server: 'moment/server'
-                        }
-                    }
-                };
-                const result = getEnvironmentScopes('client', scopes);
-                expect(result.utils.lodash).toBe('lodash');
-                expect(result.utils.moment).toBe('moment');
-            });
-
-            it('should handle empty scopes object', () => {
-                const result = getEnvironmentScopes('client', {});
-                expect(Object.keys(result)).toHaveLength(0);
-            });
-        });
-
         describe('getEnvironments', () => {
-            it('should combine imports, exports and scopes', () => {
+            it('should combine imports and exports into the root scope', () => {
                 const config: ModuleConfig = {
                     imports: {
                         react: 'react'
-                    },
-                    scopes: {
-                        utils: {
-                            lodash: 'lodash'
-                        }
                     }
                 };
                 const result = getEnvironments(config, 'client', 'test-module');
                 expect(result.imports.react).toBe('react');
-                expect(result.scopes.utils.lodash).toBe('lodash');
+                // The only scope is the derived root scope, carrying imports.
+                expect(Object.keys(result.scopes)).toEqual(['']);
+                expect(result.scopes[''].react).toBe('react');
                 expect(result.exports).toBeDefined();
             });
 
@@ -298,49 +276,22 @@ describe('Module Config Parser', () => {
                 expect(emptyScope['./src/component']).toBeUndefined();
             });
 
-            it('should not override existing empty string scope', () => {
-                const config: ModuleConfig = {
-                    exports: ['pkg:lodash'],
-                    scopes: {
-                        '': {
-                            existing: 'existing-value'
-                        }
-                    }
-                };
-                const result = getEnvironments(config, 'client', 'test-module');
-                const emptyScope = result.scopes[''];
-                expect(emptyScope).toBeDefined();
-                expect(emptyScope.existing).toBe('existing-value');
-                expect(emptyScope.lodash).toBe('test-module/lodash');
-            });
-
-            it('should verify the specific scopes merging logic with imports', () => {
+            it('should merge imports and pkg exports into the single root scope', () => {
                 const config: ModuleConfig = {
                     imports: {
                         react: 'react',
                         vue: 'vue'
                     },
-                    scopes: {
-                        utils: {
-                            lodash: 'lodash'
-                        },
-                        '': {
-                            existing: 'existing-value'
-                        }
-                    }
+                    exports: ['pkg:lodash']
                 };
                 const result = getEnvironments(config, 'client', 'test-module');
 
-                // 验证核心逻辑：imports 被合并到空字符串 scope 中
-                expect(result.scopes['']).toBeDefined();
-                expect(result.scopes[''].existing).toBe('existing-value'); // 保留现有内容
-                expect(result.scopes[''].react).toBe('react'); // 合并 imports
-                expect(result.scopes[''].vue).toBe('vue'); // 合并 imports
-
-                // 验证其他 scopes 不受影响
-                expect(result.scopes.utils.lodash).toBe('lodash');
-
-                // 验证 result.imports 也包含相同的 imports
+                // The derived root scope carries both supply imports and the
+                // module's own pkg-exports — no user-authored scopes exist.
+                expect(Object.keys(result.scopes)).toEqual(['']);
+                expect(result.scopes[''].react).toBe('react');
+                expect(result.scopes[''].vue).toBe('vue');
+                expect(result.scopes[''].lodash).toBe('test-module/lodash');
                 expect(result.imports.react).toBe('react');
                 expect(result.imports.vue).toBe('vue');
             });
@@ -403,40 +354,6 @@ describe('Module Config Parser', () => {
     });
 
     describe('Export Processing Functions', () => {
-        describe('createDefaultExports', () => {
-            it('should generate client default exports', () => {
-                const result = createDefaultExports('client');
-                expect(result['src/entry.client'].file).toBe(
-                    './src/entry.client'
-                );
-                expect(result['src/entry.server'].file).toBe('');
-            });
-
-            it('should generate server default exports', () => {
-                const result = createDefaultExports('server');
-                expect(result['src/entry.client'].file).toBe('');
-                expect(result['src/entry.server'].file).toBe(
-                    './src/entry.server'
-                );
-            });
-
-            it('should handle client environment switch case', () => {
-                const result = createDefaultExports('client');
-                expect(result['src/entry.client'].file).toBe(
-                    './src/entry.client'
-                );
-                expect(result['src/entry.server'].file).toBe('');
-            });
-
-            it('should handle server environment switch case', () => {
-                const result = createDefaultExports('server');
-                expect(result['src/entry.client'].file).toBe('');
-                expect(result['src/entry.server'].file).toBe(
-                    './src/entry.server'
-                );
-            });
-        });
-
         describe('processStringExport', () => {
             it('should parse simple string export', () => {
                 const result = processStringExport('./src/component');
@@ -725,11 +642,6 @@ describe('Module Config Parser', () => {
                         server: 'vue/server'
                     }
                 },
-                scopes: {
-                    utils: {
-                        lodash: 'lodash'
-                    }
-                },
                 exports: [
                     './src/component',
                     {
@@ -824,5 +736,254 @@ describe('Module Config Parser', () => {
             expect(result.name).toBe('');
             expect(result.pkg).toBe(false);
         });
+    });
+});
+
+describe('Framework entry threading (RFC 0001 Phase 2)', () => {
+    describe('parseEntryConfig', () => {
+        it('should default to legacy entries for an empty config', () => {
+            const entry = parseEntryConfig({});
+
+            expect(entry).toEqual({
+                client: {
+                    name: 'src/entry.client',
+                    file: './src/entry.client'
+                },
+                server: {
+                    name: 'src/entry.server',
+                    file: './src/entry.server'
+                }
+            });
+        });
+
+        it('should resolve both entries to null for lib modules', () => {
+            const entry = parseEntryConfig({ lib: true });
+
+            expect(entry).toEqual({ client: null, server: null });
+        });
+
+        it('should derive the export name from a custom entry file path', () => {
+            const entry = parseEntryConfig({
+                entry: { client: './custom/main.ts' }
+            });
+
+            expect(entry.client).toEqual({
+                name: 'custom/main',
+                file: './custom/main.ts'
+            });
+            expect(entry.server).toEqual(DEFAULT_MODULE_ENTRY.server);
+        });
+
+        it('should keep the path-derived default name for a standard declaration path', () => {
+            const entry = parseEntryConfig({
+                entry: { client: './src/entry.client.ts' }
+            });
+
+            expect(entry.client).toEqual({
+                name: 'src/entry.client',
+                file: './src/entry.client.ts'
+            });
+        });
+
+        it('should disable a side declared as false', () => {
+            const entry = parseEntryConfig({ entry: { server: false } });
+
+            expect(entry.server).toBeNull();
+            expect(entry.client).toEqual(DEFAULT_MODULE_ENTRY.client);
+        });
+    });
+
+    describe('parseModuleConfig entry population', () => {
+        it('should populate entry for legacy configs', () => {
+            const result = parseModuleConfig('test-module', '/test/root');
+
+            expect(result.entry.client).toEqual(DEFAULT_MODULE_ENTRY.client);
+            expect(result.entry.server).toEqual(DEFAULT_MODULE_ENTRY.server);
+        });
+
+        it('should populate null entries for lib configs and omit entry exports', () => {
+            const result = parseModuleConfig('test-module', '/test/root', {
+                lib: true
+            });
+
+            expect(result.entry).toEqual({ client: null, server: null });
+            expect(result.environments.client.exports).toEqual({});
+            expect(result.environments.server.exports).toEqual({});
+        });
+
+        it('should thread a custom entry into the environment exports', () => {
+            const result = parseModuleConfig('test-module', '/test/root', {
+                entry: { client: './custom/main.ts' }
+            });
+
+            expect(result.environments.client.exports['custom/main']).toEqual({
+                name: 'custom/main',
+                file: './custom/main.ts',
+                pkg: false
+            });
+            expect(result.environments.server.exports['custom/main']).toEqual({
+                name: 'custom/main',
+                file: '',
+                pkg: false
+            });
+            expect(
+                result.environments.server.exports['src/entry.server']
+            ).toEqual({
+                name: 'src/entry.server',
+                file: './src/entry.server',
+                pkg: false
+            });
+            expect(
+                result.environments.client.exports['src/entry.client']
+            ).toBeUndefined();
+        });
+    });
+
+    describe('default entry exports single source of truth', () => {
+        it('should derive byte-identical defaults from DEFAULT_MODULE_ENTRY', () => {
+            const entry = parseEntryConfig({});
+
+            expect(createEntryExports(entry, 'client')).toEqual({
+                'src/entry.client': {
+                    name: 'src/entry.client',
+                    file: './src/entry.client',
+                    pkg: false
+                },
+                'src/entry.server': {
+                    name: 'src/entry.server',
+                    file: '',
+                    pkg: false
+                }
+            });
+            expect(createEntryExports(entry, 'server')).toEqual({
+                'src/entry.client': {
+                    name: 'src/entry.client',
+                    file: '',
+                    pkg: false
+                },
+                'src/entry.server': {
+                    name: 'src/entry.server',
+                    file: './src/entry.server',
+                    pkg: false
+                }
+            });
+        });
+    });
+
+    describe('getEntryChunkId', () => {
+        it('should append .ts to the legacy extensionless default', () => {
+            const id = getEntryChunkId(
+                'test-module',
+                DEFAULT_MODULE_ENTRY.client
+            );
+
+            expect(id).toBe('test-module@src/entry.client.ts');
+        });
+
+        it('should preserve an explicit extension on custom entries', () => {
+            expect(
+                getEntryChunkId('m', {
+                    name: 'custom/main',
+                    file: './custom/main.tsx'
+                })
+            ).toBe('m@custom/main.tsx');
+            expect(
+                getEntryChunkId('m', {
+                    name: 'src/entry.client',
+                    file: './src/entry.client.ts'
+                })
+            ).toBe('m@src/entry.client.ts');
+        });
+    });
+
+    describe('fleet invariant: built example manifests', () => {
+        const repoRoot = path.resolve(import.meta.dirname, '../../..');
+        const examplesDir = path.join(repoRoot, 'examples');
+
+        const findClientManifests = (dir: string): string[] => {
+            if (!fs.existsSync(dir)) {
+                return [];
+            }
+            const found: string[] = [];
+            for (const item of fs.readdirSync(dir, { withFileTypes: true })) {
+                if (!item.isDirectory() || item.name === 'node_modules') {
+                    continue;
+                }
+                const child = path.join(dir, item.name);
+                const manifest = path.join(child, 'dist/client/manifest.json');
+                if (fs.existsSync(manifest)) {
+                    found.push(manifest);
+                }
+                found.push(...findClientManifests(child));
+            }
+            return found;
+        };
+
+        const manifests = findClientManifests(examplesDir);
+
+        it.skipIf(manifests.length === 0)(
+            'should compute the exact historical chunk seed for every built example',
+            () => {
+                expect(manifests.length).toBeGreaterThan(0);
+                for (const manifestPath of manifests) {
+                    const manifest = JSON.parse(
+                        fs.readFileSync(manifestPath, 'utf-8')
+                    ) as {
+                        name: string;
+                        chunks: Record<string, unknown>;
+                        exports: Record<string, unknown>;
+                    };
+                    const parsed = parseModuleConfig(
+                        manifest.name,
+                        path.resolve(manifestPath, '../../..')
+                    );
+                    if (!parsed.entry.client) {
+                        continue;
+                    }
+
+                    const seed = getEntryChunkId(
+                        manifest.name,
+                        parsed.entry.client
+                    );
+
+                    expect(seed).toBe(`${manifest.name}@src/entry.client.ts`);
+                    if (manifest.exports['src/entry.client']) {
+                        expect(Object.keys(manifest.chunks)).toContain(seed);
+                    }
+                }
+            }
+        );
+
+        it.skipIf(
+            !fs.existsSync(
+                path.join(
+                    examplesDir,
+                    'micro-app/ssr-micro-shared/dist/client/manifest.json'
+                )
+            )
+        )(
+            'should match the ssr-micro-shared manifest chunk key exactly',
+            () => {
+                const manifestPath = path.join(
+                    examplesDir,
+                    'micro-app/ssr-micro-shared/dist/client/manifest.json'
+                );
+                const manifest = JSON.parse(
+                    fs.readFileSync(manifestPath, 'utf-8')
+                ) as { name: string; chunks: Record<string, unknown> };
+                const parsed = parseModuleConfig(
+                    manifest.name,
+                    path.resolve(manifestPath, '../../..')
+                );
+
+                const seed = getEntryChunkId(
+                    manifest.name,
+                    parsed.entry.client!
+                );
+
+                expect(seed).toBe('ssr-micro-shared@src/entry.client.ts');
+                expect(Object.keys(manifest.chunks)).toContain(seed);
+            }
+        );
     });
 });

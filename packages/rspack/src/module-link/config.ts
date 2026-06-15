@@ -120,6 +120,8 @@ function createExternalsFunction(
     const FILE_EXT_REGEX =
         /\.worker\.(js|mjs|cjs|jsx|mjsx|cjsx|ts|mts|cts|tsx|mtsx|ctsx)$/i;
 
+    const wrapperFiles = new Set(opts.wrapperFiles);
+
     return async (data: ExternalItemFunctionData) => {
         if (
             !data.request ||
@@ -128,6 +130,11 @@ function createExternalsFunction(
             FILE_EXT_REGEX.test(data.contextInfo.issuer)
         )
             return;
+
+        // A pkg-export wrapper file IS the federation chunk for its package.
+        // Don't externalize its inner `import __m from '<abs-pkg-path>'` —
+        // that would route back to the wrapper itself (cyclic).
+        if (wrapperFiles.has(data.contextInfo.issuer)) return;
 
         const defaultContext = compilerContext;
         const resolvePath: ResolvePath = async (

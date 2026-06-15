@@ -76,7 +76,7 @@ Visit http://localhost:3000 to see the development environment.
 ## 🔧 Configuration Details
 
 - `entry.client.ts` - Responsible for client-side shared module consistency checking
-- `entry.node.ts` - Handles shared module configuration and scope mapping
+- `entry.node.ts` - Handles shared module behavior (dev/server/build hooks)
 - `entry.server.ts` - Manages shared module rendering and HTML generation
 
 ## 📚 Additional Resources

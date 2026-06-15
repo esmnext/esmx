@@ -1,0 +1,61 @@
+{
+    "name": "@esmx/pkg-wrapper",
+    "description": "Builds federation-entry wrappers (`esmx://<spec>` virtual modules) that expose every named export of a CJS or ESM package as static ESM re-exports — used by @esmx/rspack, @esmx/rsbuild, and @esmx/vite to give CJS packages like React proper named exports across dev and prod.",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/esmnext/esmx.git",
+        "directory": "packages/pkg-wrapper"
+    },
+    "homepage": "https://github.com/esmnext/esmx",
+    "bugs": {
+        "url": "https://github.com/esmnext/esmx/issues"
+    },
+    "template": "library-node",
+    "license": "MIT",
+    "keywords": [
+        "esmx",
+        "module-federation",
+        "cjs-to-esm",
+        "wrapper",
+        "virtual-module"
+    ],
+    "scripts": {
+        "lint:js": "biome check --write --no-errors-on-unmatched",
+        "lint:css": "pnpm run lint:js",
+        "lint:type": "tsc --noEmit",
+        "test": "vitest run --pass-with-no-tests",
+        "coverage": "vitest run --coverage --pass-with-no-tests",
+        "build": "unbuild"
+    },
+    "engines": {
+        "node": ">=24"
+    },
+    "dependencies": {
+        "cjs-module-lexer": "^1.4.3",
+        "es-module-lexer": "^1.7.0"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "2.3.7",
+        "@types/node": "^24.0.0",
+        "@vitest/coverage-v8": "3.2.4",
+        "typescript": "5.9.3",
+        "unbuild": "3.6.1",
+        "vitest": "3.2.4"
+    },
+    "version": "3.0.0-rc.117",
+    "type": "module",
+    "private": false,
+    "exports": {
+        ".": {
+            "import": "./dist/index.mjs",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "module": "dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "src",
+        "dist",
+        "*.mjs"
+    ]
+}

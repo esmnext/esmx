@@ -1,5 +1,11 @@
 [
     "rspack",
     "rspack-vue",
-    "rspack-react"
+    "rspack-react",
+    "vite",
+    "vite-react",
+    "vite-vue",
+    "rsbuild",
+    "rsbuild-react",
+    "rsbuild-vue"
 ]

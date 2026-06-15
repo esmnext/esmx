@@ -1,0 +1,47 @@
+{
+    "name": "ssr-micro-vue3-shared",
+    "version": "1.0.0",
+    "esmx": {
+        "entry": {
+            "client": "./src/entry.client.ts",
+            "server": "./src/entry.server.ts"
+        },
+        "provides": [
+            "vue"
+        ],
+        "exports": {
+            "./@vue/server-renderer": {
+                "server": "./src/server-renderer.ts",
+                "client": false
+            }
+        }
+    },
+    "description": "Shared Vue 3 runtime for the micro-frontend example: single authoritative provider of vue@3, consumed by the vue3 apps via uses (no per-app provides, no multi-candidate election)",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "esmx dev",
+        "build": "esmx build",
+        "preview": "esmx preview",
+        "start": "esmx start",
+        "build:dts": "tsc -p tsconfig.json --declaration --emitDeclarationOnly --outDir dist --rootDir ."
+    },
+    "dependencies": {
+        "@esmx/core": "workspace:*"
+    },
+    "devDependencies": {
+        "@esmx/router-vue": "workspace:*",
+        "@esmx/rspack": "workspace:*",
+        "@types/node": "^25.6.2",
+        "@unhead/vue": "^3.1.0",
+        "@vue/server-renderer": "^3.5.34",
+        "typescript": "6.0.3",
+        "vue": "^3.5.34"
+    },
+    "exports": {
+        "./*": {
+            "types": "./src/*.d.ts",
+            "default": "./src/*.ts"
+        }
+    }
+}

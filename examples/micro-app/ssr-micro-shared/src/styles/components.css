@@ -1,0 +1,425 @@
+/**
+ * Esmx UI primitives — CSS-class contract shared across all 7-framework demos.
+ *
+ * Esmx demos run in Vue 2/3, React 19, Preact, Solid, Svelte, Lit, plain HTML.
+ * Components don't cross those frameworks. What CAN be shared is the CSS:
+ * every demo's framework-native button/card/etc. attaches the classes below
+ * and inherits the same look + dark-mode behaviour for free.
+ *
+ * Depends on `./tokens.css` — import that FIRST.
+ *
+ * Spec: `docs/design/components.md`. If you find yourself adding a new class
+ * here, document its visual spec there too.
+ */
+
+/* ─── Button ────────────────────────────────────────────────────────── */
+
+.esmx-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--esmx-space-2);
+    padding: 8px 14px;
+    font-family: inherit;
+    font-size: var(--esmx-fs-sm);
+    font-weight: var(--esmx-fw-medium);
+    line-height: 1;
+    color: var(--esmx-text-primary);
+    background: transparent;
+    border: 1px solid var(--esmx-border);
+    border-radius: var(--esmx-radius-md);
+    cursor: pointer;
+    transition:
+        background var(--esmx-duration-instant) var(--esmx-ease-out),
+        border-color var(--esmx-duration-fast) var(--esmx-ease-out),
+        color var(--esmx-duration-instant) var(--esmx-ease-out);
+}
+
+.esmx-btn:hover {
+    background: var(--esmx-bg-subtle);
+    border-color: var(--esmx-border-strong);
+}
+
+.esmx-btn:focus-visible {
+    outline: 2px solid var(--esmx-brand);
+    outline-offset: 2px;
+}
+
+.esmx-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.esmx-btn--primary {
+    color: var(--esmx-text-inverse);
+    background: var(--esmx-brand);
+    border-color: var(--esmx-brand);
+}
+
+.esmx-btn--primary:hover {
+    background: var(--esmx-brand-hover);
+    border-color: var(--esmx-brand-hover);
+}
+
+.esmx-btn--danger {
+    color: var(--esmx-text-inverse);
+    background: var(--esmx-danger);
+    border-color: var(--esmx-danger);
+}
+
+.esmx-btn--danger:hover {
+    background: #b02a37; /* darker step from --esmx-danger */
+    border-color: #b02a37;
+}
+
+.esmx-btn--subtle {
+    background: var(--esmx-bg-subtle);
+    border-color: transparent;
+}
+
+.esmx-btn--subtle:hover {
+    background: var(--esmx-border-subtle);
+}
+
+.esmx-btn--icon {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-color: transparent;
+}
+
+.esmx-btn--large {
+    padding: 10px 18px;
+    font-size: var(--esmx-fs-base);
+}
+
+/* ─── Card ──────────────────────────────────────────────────────────── */
+
+.esmx-card {
+    background: var(--esmx-bg-paper);
+    border: 1px solid var(--esmx-border);
+    border-radius: var(--esmx-radius-lg);
+    padding: var(--esmx-space-6);
+    transition:
+        border-color var(--esmx-duration-fast) var(--esmx-ease-out),
+        box-shadow var(--esmx-duration-fast) var(--esmx-ease-out);
+}
+
+.esmx-card--interactive:hover {
+    border-color: var(--esmx-border-strong);
+    box-shadow: var(--esmx-shadow-sm);
+}
+
+/* ─── Code block ────────────────────────────────────────────────────── */
+
+.esmx-code {
+    overflow: hidden;
+    background: var(--esmx-bg-subtle);
+    border-radius: var(--esmx-radius-md);
+    font-family: var(--esmx-font-mono);
+    font-size: var(--esmx-fs-sm);
+    line-height: 1.55;
+}
+
+.esmx-code__header {
+    display: flex;
+    align-items: center;
+    padding: var(--esmx-space-2) var(--esmx-space-4);
+    background: var(--esmx-bg-paper);
+    border-bottom: 1px solid var(--esmx-border-subtle);
+}
+
+.esmx-code__file {
+    font-family: var(--esmx-font-mono);
+    font-size: var(--esmx-fs-xs);
+    color: var(--esmx-text-muted);
+}
+
+.esmx-code__body {
+    overflow-x: auto;
+    padding: var(--esmx-space-4) var(--esmx-space-5);
+}
+
+.esmx-code__body pre {
+    margin: 0;
+}
+
+/* ─── Stat ──────────────────────────────────────────────────────────── */
+
+.esmx-stat {
+    display: inline-flex;
+    flex-direction: column;
+    gap: var(--esmx-space-1);
+    padding: var(--esmx-space-4);
+}
+
+.esmx-stat__label {
+    font-size: var(--esmx-fs-xs);
+    font-weight: var(--esmx-fw-medium);
+    color: var(--esmx-text-muted);
+    text-transform: uppercase;
+    letter-spacing: var(--esmx-tracking-eyebrow);
+}
+
+.esmx-stat__value {
+    font-family: var(--esmx-font-mono);
+    font-size: var(--esmx-fs-2xl);
+    font-weight: var(--esmx-fw-semibold);
+    color: var(--esmx-text-primary);
+    line-height: var(--esmx-leading-tight);
+}
+
+/* ─── Tabs ──────────────────────────────────────────────────────────── */
+
+.esmx-tabs {
+    display: flex;
+    gap: var(--esmx-space-1);
+    border-bottom: 1px solid var(--esmx-border);
+}
+
+.esmx-tabs__item {
+    padding: var(--esmx-space-3) var(--esmx-space-4);
+    margin-bottom: -1px;
+    color: var(--esmx-text-secondary);
+    font-size: var(--esmx-fs-sm);
+    font-weight: var(--esmx-fw-medium);
+    background: transparent;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: color var(--esmx-duration-instant) var(--esmx-ease-out);
+}
+
+.esmx-tabs__item:hover {
+    color: var(--esmx-text-primary);
+}
+
+.esmx-tabs__item[aria-selected="true"],
+.esmx-tabs__item--active {
+    color: var(--esmx-brand);
+    border-bottom-color: var(--esmx-brand);
+}
+
+/* ─── Badge / Tag ───────────────────────────────────────────────────── */
+
+.esmx-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--esmx-space-1);
+    padding: 2px 8px;
+    font-family: var(--esmx-font-mono);
+    font-size: var(--esmx-fs-xs);
+    font-weight: var(--esmx-fw-medium);
+    color: var(--esmx-text-secondary);
+    background: transparent;
+    border: 1px solid var(--esmx-border);
+    border-radius: var(--esmx-radius-pill);
+    line-height: 1.4;
+}
+
+/* Framework variant: 7 dotted colour pairs (border + text use the same fw token). */
+.esmx-badge--react {
+    color: var(--esmx-fw-react);
+    border-color: var(--esmx-fw-react);
+}
+.esmx-badge--vue {
+    color: var(--esmx-fw-vue);
+    border-color: var(--esmx-fw-vue);
+}
+.esmx-badge--preact {
+    color: var(--esmx-fw-preact);
+    border-color: var(--esmx-fw-preact);
+}
+.esmx-badge--solid {
+    color: var(--esmx-fw-solid);
+    border-color: var(--esmx-fw-solid);
+}
+.esmx-badge--svelte {
+    color: var(--esmx-fw-svelte);
+    border-color: var(--esmx-fw-svelte);
+}
+.esmx-badge--lit {
+    color: var(--esmx-fw-lit);
+    border-color: var(--esmx-fw-lit);
+}
+.esmx-badge--html {
+    color: var(--esmx-fw-html);
+    border-color: var(--esmx-fw-html);
+}
+
+/* Status variants: filled with soft tone. */
+.esmx-badge--success {
+    color: var(--esmx-success);
+    border-color: var(--esmx-success);
+}
+.esmx-badge--warning {
+    color: var(--esmx-warning);
+    border-color: var(--esmx-warning);
+}
+.esmx-badge--danger {
+    color: var(--esmx-danger);
+    border-color: var(--esmx-danger);
+}
+.esmx-badge--info {
+    color: var(--esmx-info);
+    border-color: var(--esmx-info);
+}
+
+/* Dot — 8 px circle, no text, used in lists/tables to denote framework. */
+.esmx-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: var(--esmx-radius-pill);
+    background: var(--esmx-text-muted);
+    flex-shrink: 0;
+}
+
+.esmx-dot--react {
+    background: var(--esmx-fw-react);
+}
+.esmx-dot--vue {
+    background: var(--esmx-fw-vue);
+}
+.esmx-dot--preact {
+    background: var(--esmx-fw-preact);
+}
+.esmx-dot--solid {
+    background: var(--esmx-fw-solid);
+}
+.esmx-dot--svelte {
+    background: var(--esmx-fw-svelte);
+}
+.esmx-dot--lit {
+    background: var(--esmx-fw-lit);
+}
+.esmx-dot--html {
+    background: var(--esmx-fw-html);
+}
+.esmx-dot--success {
+    background: var(--esmx-success);
+}
+.esmx-dot--warning {
+    background: var(--esmx-warning);
+}
+.esmx-dot--danger {
+    background: var(--esmx-danger);
+}
+
+/* ─── Table ─────────────────────────────────────────────────────────── */
+
+.esmx-table {
+    width: 100%;
+    font-size: var(--esmx-fs-sm);
+    border-collapse: collapse;
+}
+
+.esmx-table th {
+    padding: var(--esmx-space-2) var(--esmx-space-3);
+    text-align: left;
+    font-weight: var(--esmx-fw-medium);
+    text-transform: uppercase;
+    letter-spacing: var(--esmx-tracking-eyebrow);
+    color: var(--esmx-text-muted);
+    background: var(--esmx-bg-subtle);
+    border-bottom: 1px solid var(--esmx-border);
+}
+
+.esmx-table td {
+    padding: var(--esmx-space-2) var(--esmx-space-3);
+    border-bottom: 1px solid var(--esmx-border-subtle);
+    color: var(--esmx-text-primary);
+    vertical-align: middle;
+}
+
+.esmx-table tbody tr {
+    transition: background var(--esmx-duration-instant) var(--esmx-ease-out);
+}
+
+.esmx-table tbody tr:hover {
+    background: var(--esmx-bg-subtle);
+}
+
+.esmx-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+/* ─── Demo-card layout ──────────────────────────────────────────────── */
+/*
+ * Canonical "code-on-the-left, rendered-output-on-the-right" layout shared
+ * by every micro-app demo. Lives here (not in each remote's app.vue/app.tsx
+ * `<style>` block) so the layout is *one* federation contract: each remote
+ * just composes the primitives + class names; the design owns the structure.
+ * See `.claude/design-direction.md` §7.1 wireframe.
+ */
+
+.esmx-demo-main {
+    margin-left: var(--esmx-sidebar-width, 260px);
+    min-height: 100vh;
+    padding: var(--esmx-space-8);
+    padding-top: calc(
+        var(--esmx-space-8) +
+        var(--esmx-mobile-header-height, 0px)
+    );
+}
+
+.esmx-demo-card {
+    display: grid;
+    grid-template-columns: 6fr 4fr;
+    gap: var(--esmx-space-6);
+    max-width: var(--esmx-width-wide);
+    margin: 0 auto;
+    background: var(--esmx-bg-paper);
+    border: 1px solid var(--esmx-border);
+    border-radius: var(--esmx-radius-lg);
+    padding: var(--esmx-space-6);
+}
+
+.esmx-demo-card__source {
+    min-width: 0; /* allow grid item to shrink for overflow-x */
+}
+
+.esmx-demo-card__rendered {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--esmx-space-4);
+}
+
+.esmx-demo-card__title {
+    margin: 0;
+    color: var(--esmx-text-primary);
+    font-size: var(--esmx-fs-xl);
+    font-weight: var(--esmx-fw-semibold);
+    line-height: var(--esmx-leading-snug);
+}
+
+.esmx-demo-card__actions {
+    display: flex;
+    gap: var(--esmx-space-2);
+}
+
+.esmx-demo-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--esmx-space-2);
+    margin-top: auto;
+}
+
+.esmx-demo-source {
+    max-width: var(--esmx-width-wide);
+    margin: var(--esmx-space-4) auto 0;
+    color: var(--esmx-text-muted);
+    font-size: var(--esmx-fs-sm);
+}
+
+.esmx-demo-source code {
+    font-family: var(--esmx-font-mono);
+    font-size: var(--esmx-fs-xs);
+}
+
+@media (max-width: 767px) {
+    .esmx-demo-card {
+        grid-template-columns: 1fr;
+    }
+}

@@ -196,7 +196,7 @@ export class StoreContext<T extends {}> {
                         return true;
                     }
                     throw new Error(
-                        `Change the state in the agreed commit function, For example, $${p}('${String(newValue)}')`
+                        `[@esmx/class-state] Direct assignment to state.${p} is not allowed outside a commit function. Call the auto-generated mutator $${p}(${JSON.stringify(newValue)}) instead, or wrap the change in store.commit(s => s.${p} = ...).`
                     );
                 }
                 return Reflect.set(target, p, newValue, receiver);
@@ -277,7 +277,9 @@ export function foreignStore<T extends StoreConstructor>(
     cacheKey?: string
 ): InstanceType<T> | null {
     if (!currentStateContext) {
-        throw new Error('No state context found');
+        throw new Error(
+            '[@esmx/class-state] No state context active. createState() / useState() must be called inside a stateContext.run() callback. Initialize the context at app entry (e.g. createStateContext()) before resolving stores.'
+        );
     }
     const fullPath = getFullPath(name, cacheKey);
     const storeContext: StoreContext<InstanceType<T>> | null =
