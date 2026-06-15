@@ -7,9 +7,7 @@
             "server": "./src/entry.server.ts"
         },
         "provides": [
-            "vue",
-            "@unhead/vue",
-            "@esmx/router-vue"
+            "vue"
         ],
         "exports": {
             "./@vue/server-renderer": {
