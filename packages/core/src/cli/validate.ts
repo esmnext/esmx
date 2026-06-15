@@ -17,10 +17,13 @@ Options:
             {
               "diagnostics": [ { "code", "check"?, "module", "package"?,
                                  "found"?, "required"?, "message", "fix" } ],
-              "supply":      { "<package>": { "provider", "version" } },
+              "supply":      { "<package>": { "groups": [ { "major",
+                                              "provider", "version" } ] } },
               "mounts":      { "<module>":  { "name", "root",
                                               "artifactDir", "built" } }
             }
+            Two providers of one (package, major) is an E_DUP_PROVIDER error
+            (a shared dependency must have a single owner).
             Legacy packages emit { "protocol": "legacy", "diagnostics": [] }.
   --help    Show this message.`;
 
@@ -108,9 +111,15 @@ function formatHumanReport(
             ? 'Supply: (empty)'
             : [
                   'Supply:',
-                  ...supplyEntries.map(
-                      ([pkg, entry]) =>
-                          `  ${pkg} → ${entry.provider}@${entry.version ?? 'unresolved'}`
+                  ...supplyEntries.flatMap(([pkg, entry]) =>
+                      entry.groups.map(
+                          (group) =>
+                              `  ${pkg} → ${group.provider}@${group.version ?? 'unresolved'}${
+                                  entry.groups.length > 1
+                                      ? ` (major ${group.major})`
+                                      : ''
+                              }`
+                      )
                   )
               ].join('\n')
     );
@@ -156,7 +165,7 @@ export async function runValidate(
             exitCode: 0,
             output: [
                 'No "esmx" field in package.json — this module uses the legacy entry.node.ts config.',
-                'That is fine: the new module protocol is opt-in. To adopt it, run `esmx migrate`.'
+                'That is fine: the new module protocol is opt-in. To adopt it, add an "esmx" field to package.json (see the module protocol docs).'
             ].join('\n')
         };
     }

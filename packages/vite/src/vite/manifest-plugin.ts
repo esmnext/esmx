@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import path from 'node:path';
 import type { ManifestJson } from '@esmx/core';
+import { buildManifestProtocolFields } from '@esmx/core';
 import type { Plugin, Rollup } from 'vite';
 
 type RenderedChunk = Rollup.RenderedChunk;
@@ -173,7 +174,12 @@ export function esmxManifestPlugin(options: EsmxManifestPluginOptions): Plugin {
                     chunks[key] = { name: key, js, css, resources: [] };
                 }
 
+                const provides = Object.values(exportsField)
+                    .filter((exp) => exp.pkg)
+                    .map((exp) => exp.name);
+
                 const manifest: ManifestJson = {
+                    ...buildManifestProtocolFields(root, provides),
                     name: moduleName,
                     exports: exportsField,
                     scopes,

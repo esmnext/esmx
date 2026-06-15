@@ -8,7 +8,7 @@ import {
     getAppState,
     setAppState,
     t
-} from 'ssr-micro-shared/src/index';
+} from 'ssr-micro-shared/index';
 import { AppContent } from './app';
 
 class PreactApp extends BaseApp {

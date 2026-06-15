@@ -66,7 +66,7 @@
 
 import { useRouter } from '@esmx/router-vue';
 import { useHead } from '@unhead/vue';
-import { buildSeoHead, Layout, t } from 'ssr-micro-shared/src/index';
+import { buildSeoHead, Layout, t } from 'ssr-micro-shared/index';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 const router = useRouter();

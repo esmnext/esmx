@@ -1,6 +1,24 @@
 {
     "name": "ssr-micro-html",
     "version": "1.0.0",
+    "exports": {
+        "./*": {
+            "types": "./src/*.d.ts",
+            "default": "./src/*.ts"
+        }
+    },
+    "esmx": {
+        "entry": {
+            "client": "./src/entry.client.ts",
+            "server": "./src/entry.server.ts"
+        },
+        "exports": {
+            "./routes": "./src/routes.ts"
+        },
+        "uses": [
+            "ssr-micro-shared"
+        ]
+    },
     "description": "HTML micro-app for micro-frontend example",
     "type": "module",
     "private": true,
@@ -8,10 +26,15 @@
         "dev": "esmx dev",
         "build": "esmx build",
         "preview": "esmx preview",
-        "start": "esmx start"
+        "start": "esmx start",
+        "build:dts": "tsc -p tsconfig.json --declaration --emitDeclarationOnly --outDir dist --rootDir ."
     },
     "dependencies": {
         "@esmx/core": "workspace:*"
+    },
+    "peerDependencies": {
+        "@esmx/router": "workspace:*",
+        "unhead": "^3.1.3"
     },
     "devDependencies": {
         "@esmx/rspack": "workspace:*",

@@ -1,5 +1,5 @@
 import type { RenderContext } from '@esmx/core';
-import { renderHost } from 'ssr-micro-shared/src/index';
+import { renderHost } from 'ssr-micro-shared/index';
 
 import { routes } from './routes';
 

@@ -1,6 +1,12 @@
 {
     "name": "{{projectName}}",
     "version": "1.0.0",
+    "esmx": {
+        "entry": {
+            "client": "./src/entry.client.ts",
+            "server": "./src/entry.server.tsx"
+        }
+    },
     "description": "React Server-Side Rendering framework",
     "type": "module",
     "private": true,
@@ -26,4 +32,3 @@
         "typescript": "5.8.3"
     }
 }
-

@@ -475,6 +475,78 @@ export class Esmx {
     }
 
     /**
+     * Atomic generational relink (RFC 0001 §9).
+     *
+     * In-process remotes are not hot-swappable: the server import map and the
+     * module loader are captured once when the app is created. When a mounted
+     * remote republishes (new resolved versions, new wiring), the composer
+     * adopts it by relinking — building a NEW generation (fresh cache,
+     * re-resolved module config, rebuilt app capturing a new import map +
+     * loader) and switching to it atomically.
+     *
+     * The previous generation keeps serving throughout the rebuild; the new
+     * app is installed only once it is fully built, then the previous app's
+     * resources are released. If the rebuild fails, the previous generation
+     * is fully restored (rollback) and the error propagates — a failed relink
+     * never takes the running server down.
+     *
+     * Scope: the production render path (`start`/`preview`). Dev rebuilds its
+     * own app. Cross-compiler dev-watch invalidation remains future work.
+     *
+     * @returns true once the new generation is live.
+     * @throws {NotReadyError} when called before {@link init}.
+     *
+     * @example
+     * ```ts
+     * // After a mounted remote republishes:
+     * await esmx.reinit(); // new generation live, old requests drained
+     * ```
+     */
+    public async reinit(): Promise<boolean> {
+        const previous = this.readied;
+
+        const packageJson = await this.readJson<Record<string, unknown>>(
+            path.resolve(this.root, 'package.json')
+        );
+        const name = String(packageJson.name);
+        const moduleConfig = parseModuleConfig(
+            name,
+            this.root,
+            resolveModuleOptions(this.root, packageJson, this._options.modules)
+        );
+        const packConfig = parsePackConfig(this._options.packs);
+
+        // Install the new generation's config + fresh cache, but keep serving
+        // on the previous app until the new one is built. App-creation reads
+        // `this.readied`, so the rebuilt app captures the new import map.
+        this._readied = {
+            command: previous.command,
+            app: previous.app,
+            moduleConfig,
+            packConfig,
+            cache: createCache(this.isProd)
+        };
+
+        try {
+            const command = previous.command;
+            const devApp = this._options.devApp || defaultDevApp;
+            const app: App = [COMMAND.dev, COMMAND.build].includes(command)
+                ? await devApp(this)
+                : await createApp(this, command);
+            this.readied.app = app;
+        } catch (error) {
+            // Rollback: restore the previous generation untouched.
+            this._readied = previous;
+            throw error;
+        }
+
+        if (previous.app?.destroy) {
+            await previous.app.destroy();
+        }
+        return true;
+    }
+
+    /**
      * Execute the application's build process.
      *
      * This method is responsible for executing the entire application build process, including:

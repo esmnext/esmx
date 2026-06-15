@@ -3,10 +3,22 @@ import type { BuildEnvironment } from './core';
 
 export interface ModuleConfig {
     lib?: boolean;
+    entry?: ModuleConfigEntry;
     links?: Record<string, string>;
     imports?: ModuleConfigImportMapping;
-    scopes?: Record<string, ModuleConfigImportMapping>;
     exports?: ModuleConfigExportExports;
+}
+
+/**
+ * Framework entry declaration (RFC 0001 Phase 2).
+ *
+ * Per side: a `./`-relative source file path declares a custom entry,
+ * `false` disables the side, and `undefined` keeps the legacy default
+ * (`./src/entry.client` / `./src/entry.server`).
+ */
+export interface ModuleConfigEntry {
+    client?: string | false;
+    server?: string | false;
 }
 
 export type ModuleConfigImportMapping = Record<
@@ -30,11 +42,25 @@ export interface ParsedModuleConfig {
     name: string;
     root: string;
     lib: boolean;
+    entry: ParsedModuleConfigEntry;
     links: Record<string, ParsedModuleConfigLink>;
     environments: {
         client: ParsedModuleConfigEnvironment;
         server: ParsedModuleConfigEnvironment;
     };
+}
+
+/** A resolved framework entry: export name + source file path. */
+export interface ParsedModuleConfigEntryTarget {
+    /** Export name (import specifier suffix), e.g. 'src/entry.client'. */
+    name: string;
+    /** Source file path, e.g. './src/entry.client' or './custom/main.ts'. */
+    file: string;
+}
+
+export interface ParsedModuleConfigEntry {
+    client: ParsedModuleConfigEntryTarget | null;
+    server: ParsedModuleConfigEntryTarget | null;
 }
 
 export type ParsedModuleConfigExports = Record<
@@ -63,19 +89,88 @@ export interface ParsedModuleConfigLink {
     serverManifestJson: string;
 }
 
+/**
+ * Single source of truth for the default framework entries, used as the
+ * fallback when a module declares no explicit `entry` (RFC 0001 Phase 2
+ * threads resolved entries through the config instead of hard-coding them).
+ */
+export const DEFAULT_MODULE_ENTRY: Record<
+    'client' | 'server',
+    ParsedModuleConfigEntryTarget
+> = {
+    client: { name: 'src/entry.client', file: './src/entry.client' },
+    server: { name: 'src/entry.server', file: './src/entry.server' }
+};
+
+const FILE_EXT_REGEX =
+    /\.(js|mjs|cjs|jsx|mjsx|cjsx|ts|mts|cts|tsx|mtsx|ctsx)$/i;
+
+function parseEntryTarget(
+    value: string | false | undefined,
+    fallback: ParsedModuleConfigEntryTarget
+): ParsedModuleConfigEntryTarget | null {
+    if (value === false) {
+        return null;
+    }
+    if (value === undefined) {
+        return { ...fallback };
+    }
+    const relativePath = value.startsWith('./') ? value.slice(2) : value;
+    const parsed = parsedExportValue(`root:${relativePath}`);
+    return { name: parsed.name, file: parsed.file };
+}
+
+export function parseEntryConfig(
+    config: ModuleConfig
+): ParsedModuleConfigEntry {
+    if (config.lib) {
+        return { client: null, server: null };
+    }
+    return {
+        client: parseEntryTarget(
+            config.entry?.client,
+            DEFAULT_MODULE_ENTRY.client
+        ),
+        server: parseEntryTarget(
+            config.entry?.server,
+            DEFAULT_MODULE_ENTRY.server
+        )
+    };
+}
+
+/**
+ * Manifest chunk identifier for an entry target: `<module>@<srcRelPath>`
+ * including the file extension (bundlers key chunks by the resolved source
+ * file, so the legacy extensionless default maps to `.ts`).
+ */
+export function getEntryChunkId(
+    moduleName: string,
+    target: ParsedModuleConfigEntryTarget
+): string {
+    const relativePath = target.file.startsWith('./')
+        ? target.file.slice(2)
+        : target.file;
+    const withExtension = FILE_EXT_REGEX.test(relativePath)
+        ? relativePath
+        : `${relativePath}.ts`;
+    return `${moduleName}@${withExtension}`;
+}
+
 export function parseModuleConfig(
     name: string,
     root: string,
     config: ModuleConfig = {}
 ): ParsedModuleConfig {
+    const entry = parseEntryConfig(config);
     return {
         name,
         root,
         lib: config.lib ?? false,
+        entry,
         links: getLinks(name, root, config),
         environments: {
-            client: getEnvironments(config, 'client', name),
-            server: getEnvironments(config, 'server', name)
+            client: getEnvironments(config, 'client', name, entry),
+            server: getEnvironments(config, 'server', name, entry)
         }
     };
 }
@@ -128,33 +223,21 @@ export function getEnvironmentImports(
     return result;
 }
 
-export function getEnvironmentScopes(
-    environment: BuildEnvironment,
-    scopes: Record<string, ModuleConfigImportMapping> = {}
-): Record<string, Record<string, string>> {
-    const result: Record<string, Record<string, string>> = {};
-
-    for (const [scopeName, scopeImports] of Object.entries(scopes)) {
-        result[scopeName] = getEnvironmentImports(environment, scopeImports);
-    }
-
-    return result;
-}
-
 export function getEnvironments(
     config: ModuleConfig,
     env: BuildEnvironment,
-    moduleName: string
+    moduleName: string,
+    entry: ParsedModuleConfigEntry = parseEntryConfig(config)
 ): ParsedModuleConfigEnvironment {
     const imports = getEnvironmentImports(env, config.imports);
-    const exports = getEnvironmentExports(config, env);
-    const scopes = getEnvironmentScopes(env, {
-        ...config.scopes,
-        '': {
-            ...config.scopes?.[''],
-            ...imports
-        }
-    });
+    const exports = getEnvironmentExports(config, env, entry);
+    // The single root scope (`''`) is derived from the supply wiring and the
+    // module's own pkg-exports. There is no user-authored directory-scope
+    // remapping (RFC 0001 §4): per-module isolation and multi-major
+    // coexistence are derived from declarations, never hand-mapped.
+    const scopes: Record<string, Record<string, string>> = {
+        '': { ...imports }
+    };
     addPackageExportsToScopes(exports, scopes, moduleName);
     return {
         imports,
@@ -163,37 +246,28 @@ export function getEnvironments(
     };
 }
 
-export function createDefaultExports(
+/**
+ * Builds the per-environment exports for the resolved framework entries.
+ * Each entry exports its source file in its own environment and an empty
+ * file on the other side (the inactive side is skipped by adapters).
+ */
+export function createEntryExports(
+    entry: ParsedModuleConfigEntry,
     env: BuildEnvironment
 ): ParsedModuleConfigExports {
-    switch (env) {
-        case 'client':
-            return {
-                'src/entry.client': {
-                    name: 'src/entry.client',
-                    file: './src/entry.client',
-                    pkg: false
-                },
-                'src/entry.server': {
-                    name: 'src/entry.server',
-                    file: '',
-                    pkg: false
-                }
-            };
-        case 'server':
-            return {
-                'src/entry.client': {
-                    name: 'src/entry.client',
-                    file: '',
-                    pkg: false
-                },
-                'src/entry.server': {
-                    name: 'src/entry.server',
-                    file: './src/entry.server',
-                    pkg: false
-                }
-            };
+    const exports: ParsedModuleConfigExports = {};
+    for (const side of ['client', 'server'] as const) {
+        const target = entry[side];
+        if (!target) {
+            continue;
+        }
+        exports[target.name] = {
+            name: target.name,
+            file: side === env ? target.file : '',
+            pkg: false
+        };
     }
+    return exports;
 }
 
 export function processStringExport(
@@ -263,9 +337,10 @@ export function processExportArray(
 
 export function getEnvironmentExports(
     config: ModuleConfig,
-    env: BuildEnvironment
+    env: BuildEnvironment,
+    entry: ParsedModuleConfigEntry = parseEntryConfig(config)
 ): ParsedModuleConfigExports {
-    const exports = config.lib ? {} : createDefaultExports(env);
+    const exports = createEntryExports(entry, env);
 
     if (config.exports) {
         const userExports = processExportArray(config.exports, env);
@@ -293,9 +368,6 @@ export function addPackageExportsToScopes(
 }
 
 export function parsedExportValue(value: string): ParsedModuleConfigExport {
-    const FILE_EXT_REGEX =
-        /\.(js|mjs|cjs|jsx|mjsx|cjsx|ts|mts|cts|tsx|mtsx|ctsx)$/i;
-
     if (value.startsWith('pkg:')) {
         const item = value.substring('pkg:'.length);
         return {

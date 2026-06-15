@@ -47,19 +47,6 @@ export async function cli(command: string) {
         }
         return;
     }
-    if (command === 'migrate') {
-        // Handled before the banner: `--json` must keep stdout pure JSON.
-        const opts = await getSrcOptions();
-        const { runMigrate } = await import('../declaration/migrate');
-        const ok = runMigrate(process.cwd(), opts.modules, {
-            dryRun: process.argv.includes('--dry-run'),
-            json: process.argv.includes('--json')
-        });
-        if (!ok) {
-            process.exit(17);
-        }
-        return;
-    }
     console.log(`🔥 ${styleText('yellow', 'Esmx')} v${pkg.version}
     `);
     if (

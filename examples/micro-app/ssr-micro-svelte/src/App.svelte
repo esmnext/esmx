@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { Layout } from 'ssr-micro-shared/src/index';
+import type { Layout } from 'ssr-micro-shared/index';
 
 interface Props {
     layout: Layout;

@@ -1,19 +1,19 @@
 import type { RouteConfig } from '@esmx/router';
-import { routes as htmlRoutes } from 'ssr-micro-html/src/routes';
-import { routes as litRoutes } from 'ssr-micro-lit/src/routes';
-import { routes as preactRoutes } from 'ssr-micro-preact/src/routes';
-import { routes as preactHtmRoutes } from 'ssr-micro-preact-htm/src/routes';
-import { routes as reactRoutes } from 'ssr-micro-react/src/routes';
-import { routes as rsbuildHtmlRoutes } from 'ssr-micro-rsbuild-html/src/routes';
-import { routes as rsbuildReactRoutes } from 'ssr-micro-rsbuild-react/src/routes';
-import { routes as rsbuildVueRoutes } from 'ssr-micro-rsbuild-vue/src/routes';
-import { routes as solidRoutes } from 'ssr-micro-solid/src/routes';
-import { routes as svelteRoutes } from 'ssr-micro-svelte/src/routes';
-import { routes as viteHtmlRoutes } from 'ssr-micro-vite-html/src/routes';
-import { routes as viteReactRoutes } from 'ssr-micro-vite-react/src/routes';
-import { routes as viteVueRoutes } from 'ssr-micro-vite-vue/src/routes';
-import { routes as vue2Routes } from 'ssr-micro-vue2/src/routes';
-import { routes as vue3Routes } from 'ssr-micro-vue3/src/routes';
+import { routes as htmlRoutes } from 'ssr-micro-html/routes';
+import { routes as litRoutes } from 'ssr-micro-lit/routes';
+import { routes as preactRoutes } from 'ssr-micro-preact/routes';
+import { routes as preactHtmRoutes } from 'ssr-micro-preact-htm/routes';
+import { routes as reactRoutes } from 'ssr-micro-react/routes';
+import { routes as rsbuildHtmlRoutes } from 'ssr-micro-rsbuild-html/routes';
+import { routes as rsbuildReactRoutes } from 'ssr-micro-rsbuild-react/routes';
+import { routes as rsbuildVueRoutes } from 'ssr-micro-rsbuild-vue3/routes';
+import { routes as solidRoutes } from 'ssr-micro-solid/routes';
+import { routes as svelteRoutes } from 'ssr-micro-svelte/routes';
+import { routes as viteHtmlRoutes } from 'ssr-micro-vite-html/routes';
+import { routes as viteReactRoutes } from 'ssr-micro-vite-react/routes';
+import { routes as viteVueRoutes } from 'ssr-micro-vite-vue3/routes';
+import { routes as vue2Routes } from 'ssr-micro-vue2/routes';
+import { routes as vue3Routes } from 'ssr-micro-vue3/routes';
 import { createHomeApp, createLandingApp } from './create-app';
 
 const baseRoutes: RouteConfig[] = [

@@ -33,12 +33,19 @@ export const DiagnosticCode = {
     E_NOT_BUILT: 'E_NOT_BUILT',
     E_CYCLE: 'E_CYCLE',
     E_VERSION: 'E_VERSION',
+    E_DUP_PROVIDER: 'E_DUP_PROVIDER',
+    /** A declared entry/exports target file does not exist on disk. */
+    E_TARGET_MISSING: 'E_TARGET_MISSING',
+    // Build-time (phase 3) codes: emitted by the bundler during its
+    // per-specifier traversal, NOT by the build-free `esmx validate` (which
+    // never lexes source). Reserved here so the bundler emits them with the
+    // same envelope; do not wire emit paths into the resolver.
     E_NOT_USED: 'E_NOT_USED',
     E_NO_EXPORT: 'E_NO_EXPORT',
     E_PROTOCOL: 'E_PROTOCOL',
     E_PROTOCOL_IN_BEHAVIOR: 'E_PROTOCOL_IN_BEHAVIOR',
     E_SCHEMA: 'E_SCHEMA',
-    W_MULTI_CANDIDATE: 'W_MULTI_CANDIDATE',
+    W_MULTI_MAJOR: 'W_MULTI_MAJOR',
     W_NO_RANGE: 'W_NO_RANGE',
     W_TYPE_DRIFT: 'W_TYPE_DRIFT'
 } as const;
@@ -48,7 +55,7 @@ export type DiagnosticCodeValue =
 
 export type DiagnosticSeverity = 'error' | 'warning';
 
-export type DiagnosticCheck = 'intent' | 'substitution-safety';
+export type DiagnosticCheck = 'intent';
 
 /** Structured diagnostic matching the RFC `esmx validate --json` envelope. */
 export interface Diagnostic {

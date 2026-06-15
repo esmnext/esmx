@@ -7,7 +7,7 @@ import {
     SIDEBAR_WIDTH,
     subscribeLocale,
     t
-} from 'ssr-micro-shared/src/index';
+} from 'ssr-micro-shared/index';
 
 interface DemoRow {
     to: string;

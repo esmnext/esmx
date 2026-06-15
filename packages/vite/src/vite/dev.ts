@@ -6,7 +6,11 @@ import type {
     Middleware,
     RenderContextOptions
 } from '@esmx/core';
-import { RenderContext, type ServerRenderHandle } from '@esmx/core';
+import {
+    buildManifestProtocolFields,
+    RenderContext,
+    type ServerRenderHandle
+} from '@esmx/core';
 import {
     createServer,
     type InlineConfig,
@@ -168,6 +172,9 @@ function writeDevManifests(
         fs.copyFileSync(sourceFile, dest);
     }
     const manifest: ManifestJson = {
+        // Dev serves sources directly: no pkg chunks exist, so provides
+        // carries no chunk sets; protocol/version/uses still transcribe.
+        ...buildManifestProtocolFields(esmx.root, []),
         name: esmx.name,
         exports: exportsField,
         scopes: { '': {} },

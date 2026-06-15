@@ -114,7 +114,7 @@ describe('lowerDeclaration', () => {
         expect(lowered.imports).toBeUndefined();
     });
 
-    it('should lower custom entries to named object exports per side', async () => {
+    it('should lower custom entries through config.entry with path-derived names', async () => {
         const root = await fixtureRoot();
         const appDir = writeFixturePackage(root, {
             dir: 'custom-entry',
@@ -135,17 +135,15 @@ describe('lowerDeclaration', () => {
         const lowered = lowerDeclaration(pkg, resolution);
 
         expect(lowered.lib).toBeUndefined();
-        expect(lowered.exports).toEqual([
-            {
-                'src/entry.client': {
-                    client: 'root:src/main.client.ts',
-                    server: false
-                }
-            }
-        ]);
+        expect(lowered.entry).toEqual({ client: './src/main.client.ts' });
+        expect(lowered.exports).toBeUndefined();
         const parsed = parseModuleConfig('custom-entry', appDir, lowered);
-        expect(parsed.environments.client.exports['src/entry.client']).toEqual({
-            name: 'src/entry.client',
+        expect(parsed.entry).toEqual({
+            client: { name: 'src/main.client', file: './src/main.client.ts' },
+            server: { name: 'src/entry.server', file: './src/entry.server' }
+        });
+        expect(parsed.environments.client.exports['src/main.client']).toEqual({
+            name: 'src/main.client',
             file: './src/main.client.ts',
             pkg: false
         });
@@ -171,10 +169,12 @@ describe('lowerDeclaration', () => {
 
         const lowered = lowerDeclaration(pkg, resolution);
 
+        expect(lowered.entry).toEqual({ server: false });
         const parsed = parseModuleConfig('client-only', appDir, lowered);
+        expect(parsed.entry.server).toBeNull();
         expect(
-            parsed.environments.server.exports['src/entry.server'].file
-        ).toBe('');
+            parsed.environments.server.exports['src/entry.server']
+        ).toBeUndefined();
         expect(
             parsed.environments.client.exports['src/entry.client'].file
         ).toBe('./src/entry.client');
@@ -215,5 +215,158 @@ describe('lowerDeclaration', () => {
             './src/store.client.ts'
         );
         expect(parsed.environments.server.exports.store.file).toBe('');
+    });
+
+    it('should wire a single-owner supply group into config.imports', async () => {
+        const root = await fixtureRoot();
+        writeFixturePackage(root, {
+            dir: 'node_modules/shared',
+            packageJson: {
+                name: 'shared',
+                version: '1.0.0',
+                dependencies: { vue: '^3.4.0' },
+                esmx: { provides: ['vue'] }
+            },
+            built: true
+        });
+        writeFixturePackage(root, {
+            dir: 'node_modules/shared/node_modules/vue',
+            packageJson: { name: 'vue', version: '3.5.2' }
+        });
+        const appDir = writeFixturePackage(root, {
+            dir: 'app',
+            packageJson: {
+                name: 'app',
+                version: '1.0.0',
+                dependencies: { vue: '^3.4.0' },
+                esmx: { uses: ['shared'] }
+            }
+        });
+
+        const pkg = readRootDeclaration(appDir);
+        const lowered = lowerDeclaration(pkg, resolveMounts(appDir, pkg));
+
+        expect(lowered.imports).toEqual({ vue: 'shared/vue' });
+    });
+
+    describe('per-major group wiring', () => {
+        async function multiMajorFixture(): Promise<string> {
+            const root = await fixtureRoot();
+            writeFixturePackage(root, {
+                dir: 'node_modules/vue2-app',
+                packageJson: {
+                    name: 'vue2-app',
+                    version: '1.0.0',
+                    dependencies: { vue: '2.7.16' },
+                    esmx: { provides: ['vue'] }
+                },
+                built: true
+            });
+            writeFixturePackage(root, {
+                dir: 'node_modules/vue2-app/node_modules/vue',
+                packageJson: { name: 'vue', version: '2.7.16' }
+            });
+            writeFixturePackage(root, {
+                dir: 'node_modules/vue3-base',
+                packageJson: {
+                    name: 'vue3-base',
+                    version: '1.0.0',
+                    dependencies: { vue: '^3.5.0' },
+                    esmx: { provides: ['vue'] }
+                },
+                built: true
+            });
+            writeFixturePackage(root, {
+                dir: 'node_modules/vue3-base/node_modules/vue',
+                packageJson: { name: 'vue', version: '3.5.13' }
+            });
+            return root;
+        }
+
+        function lowerApp(appDir: string) {
+            const pkg = readRootDeclaration(appDir);
+            const resolution = resolveMounts(appDir, pkg);
+            return { resolution, lowered: lowerDeclaration(pkg, resolution) };
+        }
+
+        it('should wire a ^3 consumer to the vue3 group winner', async () => {
+            const root = await multiMajorFixture();
+            const appDir = writeFixturePackage(root, {
+                dir: 'app',
+                packageJson: {
+                    name: 'app',
+                    version: '1.0.0',
+                    peerDependencies: { vue: '^3.5.0' },
+                    esmx: { uses: ['vue2-app', 'vue3-base'] }
+                }
+            });
+
+            const { lowered } = lowerApp(appDir);
+
+            expect(lowered.imports?.vue).toBe('vue3-base/vue');
+        });
+
+        it('should wire a ^2 consumer to the vue2 group winner', async () => {
+            const root = await multiMajorFixture();
+            const appDir = writeFixturePackage(root, {
+                dir: 'app',
+                packageJson: {
+                    name: 'app',
+                    version: '1.0.0',
+                    dependencies: { vue: '^2.7.0' },
+                    esmx: { uses: ['vue2-app', 'vue3-base'] }
+                }
+            });
+
+            const { lowered } = lowerApp(appDir);
+
+            expect(lowered.imports?.vue).toBe('vue2-app/vue');
+        });
+
+        it('should wire a range-less consumer to the highest major with W_NO_RANGE', async () => {
+            const root = await multiMajorFixture();
+            const appDir = writeFixturePackage(root, {
+                dir: 'app',
+                packageJson: {
+                    name: 'app',
+                    version: '1.0.0',
+                    esmx: { uses: ['vue2-app', 'vue3-base'] }
+                }
+            });
+
+            const { resolution, lowered } = lowerApp(appDir);
+
+            expect(lowered.imports?.vue).toBe('vue3-base/vue');
+            expect(
+                resolution.diagnostics.some(
+                    (d) => d.code === 'W_NO_RANGE' && d.package === 'vue'
+                )
+            ).toBe(true);
+        });
+
+        it('should let a 2.x provider wire to its own copy despite a 3.x group existing', async () => {
+            const root = await multiMajorFixture();
+            const appDir = writeFixturePackage(root, {
+                dir: 'app',
+                packageJson: {
+                    name: 'app',
+                    version: '1.0.0',
+                    dependencies: { vue: '2.7.16' },
+                    esmx: { uses: ['vue3-base'], provides: ['vue'] }
+                }
+            });
+            writeFixturePackage(root, {
+                dir: 'app/node_modules/vue',
+                packageJson: { name: 'vue', version: '2.7.16' }
+            });
+
+            const { resolution, lowered } = lowerApp(appDir);
+
+            // Self-provided package: never imported from another module.
+            expect(lowered.imports?.vue).toBeUndefined();
+            expect(
+                resolution.diagnostics.filter((d) => d.severity === 'error')
+            ).toEqual([]);
+        });
     });
 });

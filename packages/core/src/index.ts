@@ -20,7 +20,8 @@ export type {
     ReadDeclarationResult,
     ResolveDeclarationOptions,
     ResolveDeclarationResult,
-    SupplyEntry
+    SupplyEntry,
+    SupplyGroup
 } from './declaration';
 export {
     DiagnosticCode,
@@ -33,7 +34,13 @@ export type {
     ManifestJsonChunk,
     ManifestJsonChunks,
     ManifestJsonExport,
-    ManifestJsonExports
+    ManifestJsonExports,
+    ManifestJsonProvide,
+    ManifestProtocolFields
+} from './manifest-json';
+export {
+    buildManifestProtocolFields,
+    MANIFEST_PROTOCOL_VERSION
 } from './manifest-json';
 export type {
     ModuleConfig,

@@ -1,3 +1,4 @@
+import { buildManifestProtocolFields } from '@esmx/core';
 import type { Compiler, StatsChunk, StatsCompilation } from '@rspack/core';
 import upath from 'upath';
 import type {
@@ -22,6 +23,10 @@ export class ManifestPlugin {
             RSPACK_PLUGIN_NAME,
             (compilation) => {
                 let manifestJson: ManifestJson = {
+                    ...buildManifestProtocolFields(
+                        compiler.options.context ?? process.cwd(),
+                        []
+                    ),
                     name: opts.name,
                     exports: {},
                     scopes: opts.scopes,
@@ -49,11 +54,19 @@ export class ManifestPlugin {
                             chunks: true,
                             modules: true,
                             chunkModules: true,
-                            ids: true
+                            ids: true,
+                            entrypoints: true,
+                            chunkRelations: true
                         });
                         const root =
                             compilation.options.context ?? process.cwd();
                         manifestJson = {
+                            ...buildManifestProtocolFields(
+                                root,
+                                Object.values(exports)
+                                    .filter((exp) => exp.pkg)
+                                    .map((exp) => exp.name)
+                            ),
                             name: opts.name,
                             exports: exports,
                             scopes: opts.scopes,

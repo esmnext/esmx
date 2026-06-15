@@ -1,6 +1,20 @@
 import path from 'node:path';
 import serialize from 'serialize-javascript';
 import type { Esmx } from './core';
+import {
+    DEFAULT_MODULE_ENTRY,
+    getEntryChunkId,
+    type ParsedModuleConfigEntryTarget
+} from './module-config';
+
+/**
+ * Resolves the client entry target threaded through the module config
+ * (RFC 0001 Phase 2), falling back to the legacy default for modules
+ * without a resolved client entry (e.g. `lib: true`).
+ */
+function getClientEntry(esmx: Esmx): ParsedModuleConfigEntryTarget {
+    return esmx.moduleConfig.entry.client ?? DEFAULT_MODULE_ENTRY.client;
+}
 
 /**
  * Configuration options interface for RenderContext
@@ -1006,7 +1020,8 @@ export class RenderContext {
      */
     public async commit() {
         const { esmx } = this;
-        const chunkSet = new Set([`${esmx.name}@src/entry.client.ts`]);
+        const clientEntry = getClientEntry(esmx);
+        const chunkSet = new Set([getEntryChunkId(esmx.name, clientEntry)]);
         for (const item of this.importMetaSet) {
             if ('chunkName' in item && typeof item.chunkName === 'string') {
                 chunkSet.add(item.chunkName);
@@ -1044,7 +1059,7 @@ export class RenderContext {
 
         const paths = await esmx.getStaticImportPaths(
             'client',
-            `${esmx.name}/src/entry.client`
+            `${esmx.name}/${clientEntry.name}`
         );
         paths?.forEach((filepath) =>
             files.modulepreload.add(getUrlPath(filepath))
@@ -1274,7 +1289,8 @@ export class RenderContext {
      * ```
      */
     public moduleEntry() {
-        return `<script type="module">import "${this.esmx.name}/src/entry.client";</script>`;
+        const clientEntry = getClientEntry(this.esmx);
+        return `<script type="module">import "${this.esmx.name}/${clientEntry.name}";</script>`;
     }
 
     /**

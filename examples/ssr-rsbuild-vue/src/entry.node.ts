@@ -2,9 +2,6 @@ import http from 'node:http';
 import type { EsmxOptions } from '@esmx/core';
 
 export default {
-    modules: {
-        exports: ['pkg:vue']
-    },
     async devApp(esmx) {
         return import('@esmx/rsbuild-vue').then((m) =>
             m.createRsbuildVueApp(esmx)

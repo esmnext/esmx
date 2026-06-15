@@ -1,6 +1,16 @@
 {
     "name": "ssr-vite-react",
     "version": "1.0.0",
+    "esmx": {
+        "entry": {
+            "client": "./src/entry.client.ts",
+            "server": "./src/entry.server.tsx"
+        },
+        "provides": [
+            "react",
+            "react-dom"
+        ]
+    },
     "description": "React app powered by Esmx + Vite",
     "type": "module",
     "private": true,

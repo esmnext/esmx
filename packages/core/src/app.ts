@@ -1,6 +1,7 @@
 import { pathToFileURL } from 'node:url';
 import { createLoaderImport } from '@esmx/import';
 import type { COMMAND, Esmx } from './core';
+import { DEFAULT_MODULE_ENTRY } from './module-config';
 import {
     RenderContext,
     type RenderContextOptions,
@@ -123,10 +124,12 @@ async function createStartRender(esmx: Esmx) {
     const baseURL = pathToFileURL(esmx.resolvePath('dist/server')) as URL;
     const importMap = await esmx.getImportMap('server');
     const loaderImport = createLoaderImport(baseURL, importMap);
+    const serverEntry =
+        esmx.moduleConfig.entry.server ?? DEFAULT_MODULE_ENTRY.server;
 
     return async (options?: RenderContextOptions): Promise<RenderContext> => {
         const rc = new RenderContext(esmx, options);
-        const result = await loaderImport(`${esmx.name}/src/entry.server`);
+        const result = await loaderImport(`${esmx.name}/${serverEntry.name}`);
         const serverRender: ServerRenderHandle = result[rc.entryName];
         if (typeof serverRender === 'function') {
             await serverRender(rc);

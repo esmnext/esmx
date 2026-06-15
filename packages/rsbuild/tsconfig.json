@@ -23,7 +23,12 @@
         "skipLibCheck": true,
         "allowSyntheticDefaultImports": true,
         "forceConsistentCasingInFileNames": true,
-        "noEmit": true
+        "noEmit": true,
+        "paths": {
+            "@esmx/core": [
+                "../core/src/index.ts"
+            ]
+        }
     },
     "include": [
         "server",

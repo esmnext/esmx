@@ -12,7 +12,7 @@ import {
     Layout,
     setAppState,
     t
-} from 'ssr-micro-shared/src/index';
+} from 'ssr-micro-shared/index';
 
 const SOURCE_SNIPPET = `import { html } from 'lit'
 

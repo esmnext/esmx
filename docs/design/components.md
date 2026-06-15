@@ -96,7 +96,7 @@ COUNT
 
 ## Composition reference
 
-The B1 reference demo (`ssr-micro-vite-vue`) assembles these primitives like
+The B1 reference demo (`ssr-micro-vite-vue3`) assembles these primitives like
 this — left source pane is a Code block, right pane is a Card containing a
 Stat + a horizontal group of Buttons:
 

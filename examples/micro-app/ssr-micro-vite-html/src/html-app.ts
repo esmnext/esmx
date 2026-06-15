@@ -6,7 +6,7 @@ import {
     Layout,
     setAppState,
     t
-} from 'ssr-micro-shared/src/index';
+} from 'ssr-micro-shared/index';
 
 const SOURCE_SNIPPET = `// pure HTML + TypeScript — no framework
 container.innerHTML = \`

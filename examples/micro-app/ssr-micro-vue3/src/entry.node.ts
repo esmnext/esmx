@@ -2,24 +2,6 @@ import http from 'node:http';
 import type { EsmxOptions } from '@esmx/core';
 
 export default {
-    modules: {
-        links: {
-            'ssr-micro-shared': '../ssr-micro-shared/dist'
-        },
-        imports: {
-            '@esmx/router': 'ssr-micro-shared/@esmx/router'
-        },
-        exports: [
-            'pkg:vue',
-            'root:src/routes.ts',
-            {
-                '@vue/server-renderer': {
-                    server: 'pkg:@vue/server-renderer',
-                    client: false
-                }
-            }
-        ]
-    },
     async devApp(esmx) {
         return import('@esmx/rspack-vue').then((m) =>
             m.createRspackVue3App(esmx, {

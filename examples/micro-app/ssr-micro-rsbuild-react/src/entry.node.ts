@@ -2,15 +2,6 @@ import http from 'node:http';
 import type { EsmxOptions } from '@esmx/core';
 
 export default {
-    modules: {
-        links: {
-            'ssr-micro-shared': '../ssr-micro-shared/dist'
-        },
-        imports: {
-            '@esmx/router': 'ssr-micro-shared/@esmx/router'
-        },
-        exports: ['pkg:react', 'pkg:react-dom', 'root:src/routes.ts']
-    },
     async devApp(esmx) {
         return import('@esmx/rsbuild-react').then((m) =>
             m.createRsbuildReactApp(esmx)

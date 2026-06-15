@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import path from 'node:path';
 import type { ManifestJson } from '@esmx/core';
+import { buildManifestProtocolFields } from '@esmx/core';
 import { rspack } from '@rsbuild/core';
 
 const { RawSource } = rspack.sources;
@@ -61,6 +62,8 @@ export interface CollectedChunk {
 
 interface CollectStats {
     chunks?: Array<{
+        id?: string | number;
+        children?: Array<string | number>;
         files?: string[];
         modules?: Array<{
             index?: number;
@@ -68,6 +71,7 @@ interface CollectStats {
             nameForCondition?: string | null;
         }>;
     }>;
+    entrypoints?: Record<string, { chunks?: Array<string | number> }>;
 }
 
 /**
@@ -195,12 +199,30 @@ export class EsmxManifestPlugin {
                         }
                     }
 
+                    const stats = compilation.getStats().toJson({
+                        all: false,
+                        chunks: true,
+                        modules: true,
+                        chunkModules: true,
+                        ids: true,
+                        entrypoints: true,
+                        chunkRelations: true
+                    });
                     const chunks: ManifestJson['chunks'] = {};
-                    for (const { key, js, css } of collectChunks()) {
+                    for (const { key, js, css } of collectChunksFromStats(
+                        stats,
+                        moduleName,
+                        root
+                    )) {
                         chunks[key] = { name: key, js, css, resources: [] };
                     }
 
+                    const provides = Object.values(exportsField)
+                        .filter((exp) => exp.pkg)
+                        .map((exp) => exp.name);
+
                     const manifest: ManifestJson = {
+                        ...buildManifestProtocolFields(root, provides),
                         name: moduleName,
                         exports: exportsField,
                         scopes,

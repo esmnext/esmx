@@ -1,6 +1,15 @@
 {
     "name": "ssr-rsbuild-vue",
     "version": "1.0.0",
+    "esmx": {
+        "entry": {
+            "client": "./src/entry.client.ts",
+            "server": "./src/entry.server.ts"
+        },
+        "provides": [
+            "vue"
+        ]
+    },
     "description": "Vue app powered by Esmx + Rsbuild",
     "type": "module",
     "private": true,

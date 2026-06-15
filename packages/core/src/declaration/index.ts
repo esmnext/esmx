@@ -12,12 +12,13 @@ export type {
     ResolvedMount,
     ResolveMountsResult,
     ResolverEnvLinks,
-    SupplyEntry
+    SupplyEntry,
+    SupplyGroup
 } from './resolver';
-export { resolveMounts } from './resolver';
+export { resolveMounts, selectSupplyGroup } from './resolver';
 export type { ValidateDeclarationResult } from './schema';
 export { esmxDeclarationSchema, validateDeclaration } from './schema';
-export { compareSemver, parseSemver, satisfiesRange } from './semver';
+export { parseSemver, satisfiesRange } from './semver';
 export type {
     Diagnostic,
     DiagnosticCheck,
@@ -42,7 +43,7 @@ export interface ResolveDeclarationOptions {
 export interface ResolveDeclarationResult {
     /** The declaration lowered to today's internal ModuleConfig IR. */
     config: ModuleConfig;
-    /** Merged supply table: bare package → elected provider. */
+    /** Merged supply table: bare package → per-major group winners. */
     supply: Record<string, SupplyEntry>;
     /** Resolved mount table: module name → mounted artifact location. */
     mounts: Record<string, ResolvedMount>;
@@ -70,7 +71,7 @@ export function resolveDeclaration(
     };
 }
 
-const PROTOCOL_MODULE_KEYS = ['lib', 'imports', 'exports', 'scopes'] as const;
+const PROTOCOL_MODULE_KEYS = ['lib', 'imports', 'exports'] as const;
 
 function formatDiagnostic(diagnostic: Diagnostic): string {
     const location = diagnostic.package
@@ -85,7 +86,7 @@ function formatDiagnostic(diagnostic: Diagnostic): string {
  *
  * - No `esmx` field in package.json → legacy path, untouched.
  * - `esmx` field present and `options.modules` carries protocol facts
- *   (lib/imports/exports/scopes) → E_PROTOCOL_IN_BEHAVIOR (protocol facts
+ *   (lib/imports/exports) → E_PROTOCOL_IN_BEHAVIOR (protocol facts
  *   must live in package.json only).
  * - `links` alone is an environment fact and is passed to the resolver as
  *   explicit mount overrides.

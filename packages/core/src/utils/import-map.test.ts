@@ -1980,3 +1980,62 @@ describe('createClientImportMap code-split chunk scopes', () => {
         assert.equal(scope?.pinia, '/app-a/pinia.aaa.mjs');
     });
 });
+
+describe('multi-version coexistence (scope isolation)', () => {
+    // Two providers each declare their own copy of `vue` (single-owner per
+    // (package,major) still allows legitimate cross-major coexistence). Each
+    // copy must stay isolated in its own module scope, never collapsed.
+    const layeredManifests: ImportMapManifest[] = [
+        {
+            name: 'base',
+            exports: {
+                vue: {
+                    name: 'vue',
+                    pkg: true,
+                    file: 'vue.base.mjs',
+                    identifier: 'base/vue'
+                }
+            },
+            scopes: { '': { vue: 'base/vue' } },
+            chunks: { 'base@src/app.ts': { js: 'app.base.mjs' } },
+            integrity: {
+                'vue.base.mjs': 'sha384-base',
+                'app.base.mjs': 'sha384-base-app'
+            }
+        },
+        {
+            name: 'vue-base',
+            exports: {
+                vue: {
+                    name: 'vue',
+                    pkg: true,
+                    file: 'vue.winner.mjs',
+                    identifier: 'vue-base/vue'
+                }
+            },
+            scopes: { '': { vue: 'vue-base/vue' } },
+            integrity: { 'vue.winner.mjs': 'sha384-winner' }
+        }
+    ];
+    const getFile = (name: string, file: string) => `/${name}/${file}`;
+    const getScope = (name: string, scope: string) => `/${name}${scope}`;
+
+    test('each copy stays isolated in its own scope', () => {
+        const result = createImportMap({
+            manifests: layeredManifests,
+            getFile,
+            getScope
+        });
+
+        assert.equal(result.imports['base/vue'], '/base/vue.base.mjs');
+        assert.equal(
+            result.imports['vue-base/vue'],
+            '/vue-base/vue.winner.mjs'
+        );
+        assert.equal(result.scopes['/base/']?.vue, '/base/vue.base.mjs');
+        assert.equal(
+            result.scopes['/vue-base/']?.vue,
+            '/vue-base/vue.winner.mjs'
+        );
+    });
+});

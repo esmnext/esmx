@@ -1,6 +1,6 @@
 ---
 titleSuffix: "用 AI 助手开发 Esmx"
-description: "Esmx 框架的 AI 单文件简报:package.json esmx 模块协议、validate/migrate CLI 验证环、遗留语法。让 Claude/Cursor/Copilot/Gemini 写 Esmx 代码前先喂这一页。"
+description: "Esmx 框架的 AI 单文件简报:package.json esmx 模块协议、esmx validate CLI 验证环、遗留语法。让 Claude/Cursor/Copilot/Gemini 写 Esmx 代码前先喂这一页。"
 head:
   - - "meta"
     - name: "keywords"
@@ -74,7 +74,7 @@ pnpm dev
 | `entry` | 框架入口(`client` / `server`),和普通导出一样声明。纯库模块直接省略。 |
 | `exports` | 带**逻辑名**的子路径映射:key 是 `./<name>`,value 是相对源文件路径,或 `{ client, server }` 双端分叉(`false` 禁用一端)。消费方永远看不到你的物理路径。 |
 | `provides` | 字符串数组:本模块为消费方转供的第三方包(如 `["vue"]`)。供给版本是你**实际安装的解析版本**,构建时写进 manifest。 |
-| `uses` | 字符串数组:我消费哪些**模块名**。不是具体 specifier,也不是版本 — 只是名字。**数组顺序是有语义的**(见下面的合并规则)。 |
+| `uses` | 字符串数组:我消费哪些**模块名**。不是具体 specifier,也不是版本 — 只是名字。顺序无关紧要 — 它只决定哪些模块可达(见下面的单一所有者规则)。 |
 
 模块声明严格只含**本地知识**:写它(无论人还是 agent)不需要了解任何
 其他模块。三种角色覆盖所有工程:
@@ -153,22 +153,27 @@ pnpm dev
 
 两条规则取代了所有手写映射:
 
-**合并规则** — 一句话:
-`supply(M) = merge(supply(uses[0]), …, supply(uses[n]), M.provides)` —
-后面的覆盖前面的,模块自己的 `provides` 是隐式的最后一项,所以**当两个
-模块供给同一个包时,`uses` 数组的顺序决定谁赢**(按通用到具体排列,
-具体的那层赢;与 `Object.assign` 是同一族约定)。
+**单一所有者规则** — 一句话:每个共享包、在每个 major 版本上,在一个
+组合里只有**一个所有者**(owner)—— 即唯一在 `provides` 里列出它的那个
+模块 —— 整个闭包都接到这个所有者。没有选举、没有优先级:`uses` 数组顺序
+只决定哪些模块可达,从不决定谁拥有某个包。如果同一组合里有两个不同模块
+供给同一个 `(package, major)`,这是**硬错误**(`E_DUP_PROVIDER`):共享
+依赖必须有单一所有者 —— 把它合并进一个共享模块,或者用 npm alias 给其中
+一份赋予独立的包身份,以表达有意的同 major 共存。所有者**按 major 版本
+分组**,所以共存的 major(比如 vue 2 和 vue 3)是彼此隔离的孤岛,各自有
+自己的单一所有者(`W_MULTI_MAJOR`,纯信息性),每个消费方接到满足自己
+声明范围的那个 major。
 
 **查找规则** — bundler 遍历你的代码时逐 specifier 应用,无预扫描、
 无需声明:
 
 ```
-bare specifier 在我合并后的供给表里 → externalize,接到赢家
-哪儿都找不到                      → 打进我自己的副本,由 per-module
-                                    import-map scope 隔离
+bare specifier 在我的供给表里 → externalize,接到所有者
+哪儿都找不到                 → 打进我自己的副本,由 per-module
+                               import-map scope 隔离
 ```
 
-因此单实例共享是模型的固有属性(每个包只有一个赢家,整个闭包都接到
+因此单实例共享是模型的固有属性(每个包只有一个所有者,整个闭包都接到
 它),多版本共存也不需要任何词汇 — 打了自己副本的模块自动被 scope 隔离。
 纯类型导入(`import type`)永远不会产生接线。
 
@@ -181,49 +186,76 @@ bare specifier 在我合并后的供给表里 → externalize,接到赢家
 |---|---|---|---|
 | `E_NOT_LINKED` | error | `uses` 里的名字不在挂载表里。 | `npm install` 该模块(npm 包自动挂载在 `node_modules/<name>/dist`),或加一条 `links` 覆盖。 |
 | `E_NOT_BUILT` | error | 已挂载但还没有构建产物。只阻塞依赖 manifest 的检查,不阻塞声明级接线。 | 先构建列出的模块。 |
-| `E_CYCLE` | error | `uses` 链(或挂载遍历)回到了某个模块。 | 架构错误 — 拆掉环;永远不会被静默忽略。 |
-| `E_VERSION` | error | *intent*(赢家版本不满足某层的 `dependencies`/`peerDependencies` 范围)或 *substitution safety*(落选供给方的 chunk 构建时依赖的版本不兼容 — 至少要同 major)。会指出是哪一层、哪项检查失败。 | 调整该层的版本范围,或升级/重建供给方。 |
-| `E_NOT_USED` | error | 你 import 了 `'mod/export'`,但 `mod` 不在你的 `uses` 链里。 | 把 `"mod"` 加进 `uses`(和 `dependencies`)。 |
-| `E_NO_EXPORT` | error | 供给方声明里没有这个导出。报错信息会列出该模块的实际导出。 | 改 import specifier,或在供给方 `esmx.exports` 里补上导出。 |
+| `E_CYCLE` | error | `uses` 链(或挂载遍历)回到了某个模块。 | 架构错误 — 拆掉环。会**硬停**解析(扣留 supply),绝不基于依赖顺序的结果接线。 |
+| `E_DUP_PROVIDER` | error | 两个不同模块拥有同一个 `(package, major)`。会指出这两个所有者。 | 共享依赖必须有单一所有者:删掉重复的 `provides` 项(合并进一个共享模块),或用 npm alias 给其中一份赋予独立的包身份,以表达有意的同 major 共存。 |
+| `E_VERSION` | error | *intent*:所有者的解析版本不满足某消费层的 `dependencies`/`peerDependencies` 范围。会指出是哪一层。 | 调整该层的版本范围,或升级/重建所有者。 |
+| `E_TARGET_MISSING` | error | 声明的 `entry`/`exports` 指向的文件在磁盘上不存在。仅检查根模块(挂载的依赖发布的是 `dist` 而非 `src`)。由 `esmx validate` 发射。 | 修正根模块 `esmx` 声明里的路径,或补上缺失的文件。 |
+| `E_NOT_USED` | error | 你 import 了 `'mod/export'`,但 `mod` 不在你的 `uses` 链里。**构建时 / 由打包器发射** —— 不由 `esmx validate` 发射。 | 把 `"mod"` 加进 `uses`(和 `dependencies`)。 |
+| `E_NO_EXPORT` | error | 供给方声明里没有这个导出。报错信息会列出该模块的实际导出。**构建时 / 由打包器发射** —— 不由 `esmx validate` 发射。 | 改 import specifier,或在供给方 `esmx.exports` 里补上导出。 |
 | `E_PROTOCOL` | error | 挂载的 manifest 的 `protocol` 比当前 linker 支持的更新。 | 升级 `@esmx/core`。 |
-| `E_PROTOCOL_IN_BEHAVIOR` | error | `entry.node.ts` 里发现了协议事实(`modules` 配置)。 | 移到 `package.json` `esmx` — `esmx migrate` 帮你做。 |
-| `W_MULTI_CANDIDATE` | warning | 合并链里某个包有多个供给方。报告赢家、落选者、被重接的层。 | 分层基座的正常现象;赢家不对就调整 `uses` 顺序。 |
+| `E_PROTOCOL_IN_BEHAVIOR` | error | `entry.node.ts` 里发现了协议事实(`modules` 配置)。 | 移到 `package.json` `esmx` — 一次机械改写。 |
+| `E_SCHEMA` | error | `esmx` 声明结构非法 — 类型错误、出现未知键,或某个导出/入口路径不是 `./` 相对路径。最常见的书写错误。 | 看报错信息:它会指出违规字段和允许的形态;按提示修正声明。 |
+| `W_MULTI_MAJOR` | warning | 某个包有多个 major 版本共存,每个 major 是有自己单一所有者的隔离孤岛。纯信息性 — 跨 major 冲突在结构上不可能发生。 | 共存是有意为之就什么都不用做;否则对齐各所有者安装的 major。 |
 | `W_NO_RANGE` | warning | 某层消费了被供给的包但没声明任何版本范围。 | 把该包加进 `dependencies` 或 `peerDependencies`。 |
-| `W_TYPE_DRIFT` | warning | 你 `devDependencies` 里的类型副本与当选赢家的解析版本(代码实际运行的版本)不一致。 | 对齐 `devDependencies` 版本。 |
+| `W_TYPE_DRIFT` | warning | 你 `devDependencies` 里的类型副本与所有者的解析版本(代码实际运行的版本)不一致。 | 对齐 `devDependencies` 版本。 |
 
 ### 验证环:`esmx validate --json`
 
-`esmx validate` 是整个解析过程的**免构建 dry run**:挂载遍历、版本检查、
-供给合并、导出检查。每次改完声明就跑;声明对不对由它的退出码裁定,而不是
-靠人读。加 `--json` 输出结构化信封 — 错误**和**警告都在:
+`esmx validate` 是解析**阶段 1–2** 的**免构建 dry run**:挂载遍历、传递
+`uses`、版本检查、供给表、单一所有者校验(`E_DUP_PROVIDER`)。每次改完声明
+就跑;声明对不对由它的退出码裁定,而不是靠人读。它保证的是**解析有效性,
+而非可构建性**。它**会**检查根模块声明的 `entry`/`exports` 指向的文件在
+磁盘上是否存在(`E_TARGET_MISSING`,仅根模块 —— 挂载的依赖发布的是 `dist`
+而非 `src`)。剩下的边界是:它**不**发射阶段 3、由打包器发射的
+`E_NOT_USED` / `E_NO_EXPORT`(打包器在构建时逐 specifier 词法分析源码后
+发现),也**不**做类型检查。所以诚实的闭环是:先 `esmx validate`,**再**
+跑一次构建 / `tsc`;validate 是快速的第一道门,不是全部预言机。加 `--json`
+输出含三个键的结构化信封 —— `diagnostics`(错误**和**警告)、`supply`
+(逐 major 所有者表)、`mounts`(解析出的挂载表):
 
 ```json
 {
     "diagnostics": [
         {
             "code": "E_VERSION",
-            "check": "substitution-safety",
+            "check": "intent",
             "module": "base",
             "package": "vue",
             "found": "3.0.2",
-            "required": "built against 3.4.21 (same major)",
+            "required": "^3.4.0",
             "message": "发生了什么、为什么",
             "fix": "该做哪条声明编辑"
         }
-    ]
+    ],
+    "supply": {
+        "vue": {
+            "groups": [
+                { "major": 3, "provider": "shared", "version": "3.5.13" }
+            ]
+        }
+    },
+    "mounts": {
+        "shared": {
+            "name": "shared",
+            "root": "/abs/path/to/shared",
+            "artifactDir": "/abs/path/to/shared/dist",
+            "built": true
+        }
+    }
 }
 ```
 
-`check` 只出现在 `E_VERSION` 条目上,取值 `"intent"` 或
-`"substitution-safety"`。`diagnostics` 为空数组表示声明完全确定了一份
-合法接线。
+`check` 只出现在 `E_VERSION` 条目上,取值 `"intent"`。`diagnostics` 为空
+数组表示声明完全确定了一份合法接线。没有 `esmx` 字段的包则输出
+`{ "protocol": "legacy", "diagnostics": [] }`。
 
-### 存量工程迁移:`esmx migrate`
-
-`esmx migrate` 是一个 codemod:把遗留的 `entry.node.ts` `modules` 配置
-(`pkg:`/`root:` 导出、`imports`)提升为 `package.json` `esmx` 声明,并把
-消费方的 import 调用点改写为逻辑名,输出机器可读的变更报告。跑完后再跑一遍
-`esmx validate --json`。
+> **唯一要盯的是重复所有者。** 如果同一组合里有两个模块都 `provide` 同一个
+> `(package, major)`,`validate` 会报 `E_DUP_PROVIDER` 并指出这两个所有者
+> —— 修法是删掉其中一条 `provides`(合并进一个共享模块),或用 npm alias
+> 给其中一份赋予独立的包身份。这里没有选举、也没有需要推理的闭包级重接:
+> 每个 `(package, major)` 恰好一个所有者,整个闭包都接到它,代码实际运行的
+> 版本就是这个所有者的解析版本。绿色 `validate`(`diagnostics` 为空)再加一次
+> 构建 / `tsc`,就是全部闭环。
 
 ## 最小 Rspack 远程
 
@@ -358,14 +390,17 @@ import map**。bundler 选择只是开发者体验差异。
 import { App } from 'my-remote/app';
 ```
 
-npm 安装的模块**自动挂载**在 `node_modules/<name>/dist` — 不用配路径。
-monorepo 兄弟目录或部署目录用 `links` 覆盖挂载点(它是*环境*事实,目前
-仍写在 `entry.node.ts` 的 `modules` 块里):
+凡是能通过 `node_modules` 解析到的模块都**自动挂载**在
+`node_modules/<name>/dist` — 不用配路径。registry 安装和 monorepo
+兄弟目录都覆盖:pnpm `workspace:*` 依赖的符号链接会被跟随并 realpath,
+所以 workspace 依赖 + 上面的 `uses` 一条就是全部。只有 npm 解析不到的
+产物目录(部署路径、`@esmx/fetch` 输出)才需要 `links` 覆盖挂载点
+(它是*环境*事实,写在 `entry.node.ts` 的 `modules` 块里):
 
 ```ts
 modules: {
     links: {
-        'my-remote': '../my-remote/dist'
+        'my-remote': '/srv/deploy/my-remote/dist'
     }
 }
 ```
@@ -436,7 +471,7 @@ await hydrateApp();
 
 > **写新代码一律用上面的 `package.json` `esmx` 声明。**下面的语法在过渡期
 > 仍然能跑,而且你**一定会**在存量工程里见到 — 要认得、要会维护,用户要求
-> 现代化时给出 `esmx migrate`。但不要为新模块生成它。
+> 现代化时把它改写成新声明。但不要为新模块生成它。
 
 遗留工程把所有协议事实放在 `entry.node.ts` 的 `modules` 键下,四个字段:
 
@@ -479,8 +514,8 @@ export default {
 - **接线是手写的。**每个消费方都要手写 `imports`,而新协议从声明里推导。
 - **运行之前什么都不校验。**没有版本检查、没有导出检查、没有结构化诊断。
 
-`esmx migrate` 会机械化地完成全部转换。按 RFC 0001,遗留语法将在后续
-阶段彻底删除 — 不会长期双语法并存。
+这一切的转换是一次机械改写(可写成 codemod,但没有随框架提供的命令)。
+按 RFC 0001,遗留语法将在后续阶段彻底删除 — 不会长期双语法并存。
 
 ## **不存在** 的 API
 
@@ -490,8 +525,9 @@ export default {
 - `bootstrap` / `mount` / `unmount` / `update` 生命周期 export(qiankun 风格)
 - `expose` / `shared` / `singleton` / `optional` / `resolutions` / `sealed`
   配置(Module Federation 风格)。Esmx **完全不需要共享仲裁词汇**:组合是
-  构建时解析的静态合并 — 单实例共享是固有属性(每个包一个赢家,整个闭包
-  重接到它),多实例共存就是某个模块打了自己的 scope 隔离副本。
+  构建时解析的静态结构 — 单实例共享是固有属性(每个 `(package, major)`
+  一个所有者,整个闭包都接到它;出现第二个所有者就是 `E_DUP_PROVIDER`),
+  多实例共存就是某个模块打了自己的 scope 隔离副本。
 - 解析锁文件(`esmx.resolution.json` 之类)。**emit 进 `dist` 的 import
   map 本身就是解析结果**;声明完全确定它。诊断信息在 `esmx validate` 和
   构建日志里,不在任何提交的产物里。
@@ -520,9 +556,10 @@ import 了未经 bundler 预处理的 `.css`,把那个 import 改到只在 JS-ev
 执行(如 `entry.client.ts`)。
 
 **运行时报 `Cannot find module '<remote>/<export>'`。**
-新协议下这几乎总会更早地以 `E_NOT_LINKED`(远程没挂载)、`E_NOT_USED`
-(`uses` 里没有这个远程)、`E_NO_EXPORT`(导出未声明)或 `E_NOT_BUILT`
-(还没构建产物)的形式被抓住 — 跑 `esmx validate`。遗留工程则检查:
+新协议下这会更早暴露:`E_NOT_LINKED`(远程没挂载)和 `E_NOT_BUILT`(还没
+构建产物)由 `esmx validate` 抓住;`E_NOT_USED`(`uses` 里没有这个远程)和
+`E_NO_EXPORT`(导出未声明)是阶段 3 的码,由打包器在**构建时**报,不在
+`validate` 里 —— 所以先 `esmx validate`、再跑构建。遗留工程则检查:
 (1) 消费端 `modules.links` 是否有 `'<remote>'`?(2) 发布端
 `modules.exports` 是否有该导出?(3) 发布端是否构建过
 (`dist/manifest.json` 存在)?

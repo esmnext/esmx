@@ -1,6 +1,33 @@
 {
     "name": "ssr-micro-hub",
     "version": "1.0.0",
+    "esmx": {
+        "entry": {
+            "client": "./src/entry.client.ts",
+            "server": "./src/entry.server.ts"
+        },
+        "uses": [
+            "ssr-micro-shared",
+            "ssr-micro-vue3-shared",
+            "ssr-micro-html",
+            "ssr-micro-lit",
+            "ssr-micro-preact",
+            "ssr-micro-preact-htm",
+            "ssr-micro-react",
+            "ssr-micro-solid",
+            "ssr-micro-svelte",
+            "ssr-micro-vue2",
+            "ssr-micro-vue3",
+            "ssr-micro-vite-html",
+            "ssr-micro-vite-react",
+            "ssr-micro-vite-vue3",
+            "ssr-micro-rsbuild-html",
+            "ssr-micro-rsbuild-react",
+            "ssr-micro-rsbuild-vue3",
+            "ssr-micro-react-shared",
+            "ssr-micro-preact-shared"
+        ]
+    },
     "description": "Hub for micro-frontend example",
     "type": "module",
     "private": true,
@@ -14,26 +41,37 @@
     "dependencies": {
         "@esmx/core": "workspace:*"
     },
+    "peerDependencies": {
+        "preact": "^10.29.1",
+        "react": "^19.2.6",
+        "react-dom": "^19.2.6",
+        "solid-js": "^1.9.12",
+        "unhead": "^3.1.3",
+        "vue": "^3.5.34"
+    },
     "devDependencies": {
         "@esmx/router": "workspace:*",
         "@esmx/rspack": "workspace:*",
         "@types/node": "^25.6.2",
         "ssr-micro-html": "workspace:*",
         "ssr-micro-lit": "workspace:*",
-        "ssr-micro-react": "workspace:*",
         "ssr-micro-preact": "workspace:*",
         "ssr-micro-preact-htm": "workspace:*",
+        "ssr-micro-preact-shared": "workspace:*",
+        "ssr-micro-react": "workspace:*",
+        "ssr-micro-react-shared": "workspace:*",
+        "ssr-micro-rsbuild-html": "workspace:*",
+        "ssr-micro-rsbuild-react": "workspace:*",
+        "ssr-micro-rsbuild-vue3": "workspace:*",
         "ssr-micro-shared": "workspace:*",
         "ssr-micro-solid": "workspace:*",
         "ssr-micro-svelte": "workspace:*",
-        "ssr-micro-vue2": "workspace:*",
-        "ssr-micro-vue3": "workspace:*",
         "ssr-micro-vite-html": "workspace:*",
         "ssr-micro-vite-react": "workspace:*",
-        "ssr-micro-vite-vue": "workspace:*",
-        "ssr-micro-rsbuild-html": "workspace:*",
-        "ssr-micro-rsbuild-react": "workspace:*",
-        "ssr-micro-rsbuild-vue": "workspace:*",
+        "ssr-micro-vite-vue3": "workspace:*",
+        "ssr-micro-vue2": "workspace:*",
+        "ssr-micro-vue3": "workspace:*",
+        "ssr-micro-vue3-shared": "workspace:*",
         "typescript": "6.0.3"
     }
 }

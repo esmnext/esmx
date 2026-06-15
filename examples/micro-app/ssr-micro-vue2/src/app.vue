@@ -62,7 +62,7 @@
 
 <script setup>
 import { useRouter } from '@esmx/router-vue';
-import { Layout, t } from 'ssr-micro-shared/src/index';
+import { Layout, t } from 'ssr-micro-shared/index';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 const router = useRouter();

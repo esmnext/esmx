@@ -6,7 +6,7 @@ import {
     localePath,
     subscribeLocale,
     t
-} from 'ssr-micro-shared/src/index';
+} from 'ssr-micro-shared/index';
 import './landing-page.css';
 
 const ESMX_LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" shape-rendering="geometricPrecision"><g transform="translate(20,20)"><circle r="12" fill="none" stroke="#12B2EF" stroke-width="2.8"/><circle r="6.2" fill="#FFA000"/></g></svg>`;
@@ -85,21 +85,19 @@ export class LandingApp extends BaseApp {
     }
 
     private getHeroHtml(): string {
-        // Hero shows the actual minimum esmx config — the file the framework
-        // really reads on every build. `modules.exports` is the distinctive
-        // API surface: declare what to share, get a manifest + import map
-        // for free.
-        const ENTRY_NODE_SNIPPET = `import type { EsmxOptions } from '@esmx/core';
-
-export default {
-  modules: {
-    exports: [
-      'root:src/routes',
-      'pkg:react',
-      'pkg:react-dom'
-    ]
+        // Hero shows the actual minimum esmx config — the package.json
+        // "esmx" declaration the framework really reads on every build.
+        // `exports` + `provides` are the distinctive API surface: declare
+        // what to share, get a manifest + import map for free.
+        const ESMX_DECLARATION_SNIPPET = `{
+  "name": "my-remote",
+  "esmx": {
+    "exports": {
+      "./routes": "./src/routes.ts"
+    },
+    "provides": ["react", "react-dom"]
   }
-} satisfies EsmxOptions;`;
+}`;
         return (
             `<section class="hero">` +
             `<div class="hero-bg"></div>` +
@@ -126,8 +124,8 @@ export default {
             `</div>` +
             `<div class="hero-visual reveal reveal-delay-3">` +
             `<div class="hero-code">` +
-            `<div class="hero-code__header"><span class="hero-code__file">src/entry.node.ts</span></div>` +
-            `<pre class="hero-code__body">${ENTRY_NODE_SNIPPET}</pre>` +
+            `<div class="hero-code__header"><span class="hero-code__file">package.json</span></div>` +
+            `<pre class="hero-code__body">${ESMX_DECLARATION_SNIPPET}</pre>` +
             `</div>` +
             `</div>` +
             `</div>` +
@@ -283,22 +281,17 @@ export default {
             `<span class="terminal-dot red"></span>` +
             `<span class="terminal-dot yellow"></span>` +
             `<span class="terminal-dot green"></span>` +
-            `<span class="terminal-title">src/entry.node.ts</span>` +
+            `<span class="terminal-title">package.json</span>` +
             `</div>` +
             `<div class="terminal-body">` +
-            `<div><span class="sh-keyword">import type</span> { <span class="sh-function">EsmxOptions</span> } <span class="sh-keyword">from</span> <span class="sh-string">'@esmx/core'</span>;</div>` +
-            `<div class="terminal-spacer">&nbsp;</div>` +
-            `<div><span class="sh-keyword">export default</span> {</div>` +
-            `<div>&nbsp;&nbsp;<span class="sh-property">modules</span>: {</div>` +
-            `<div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="sh-property">links</span>: {</div>` +
-            `<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sh-property">shared</span>: <span class="sh-string">'../shared-modules/dist'</span></div>` +
-            `<div>&nbsp;&nbsp;&nbsp;&nbsp;},</div>` +
-            `<div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="sh-property">imports</span>: {</div>` +
-            `<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sh-property">vue</span>: <span class="sh-string">'shared-modules/vue'</span>,</div>` +
-            `<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sh-property">utils</span>: <span class="sh-string">'shared-modules/utils'</span></div>` +
-            `<div>&nbsp;&nbsp;&nbsp;&nbsp;}</div>` +
+            `<div>{</div>` +
+            `<div>&nbsp;&nbsp;<span class="sh-property">"dependencies"</span>: {</div>` +
+            `<div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="sh-property">"shared-modules"</span>: <span class="sh-string">"^1.0.0"</span></div>` +
+            `<div>&nbsp;&nbsp;},</div>` +
+            `<div>&nbsp;&nbsp;<span class="sh-property">"esmx"</span>: {</div>` +
+            `<div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="sh-property">"uses"</span>: [<span class="sh-string">"shared-modules"</span>]</div>` +
             `<div>&nbsp;&nbsp;}</div>` +
-            `<div>} <span class="sh-keyword">satisfies</span> <span class="sh-function">EsmxOptions</span>;</div>` +
+            `<div>}</div>` +
             `</div>` +
             `</div>` +
             `</div>` +

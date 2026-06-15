@@ -2,7 +2,7 @@ import { useRouter } from '@esmx/router-react';
 import { useHead } from '@unhead/react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { buildSeoHead, Layout, t } from 'ssr-micro-shared/src/index';
+import { buildSeoHead, Layout, t } from 'ssr-micro-shared/index';
 
 const SOURCE_SNIPPET = `import { useState } from 'react'
 

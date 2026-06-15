@@ -1,6 +1,6 @@
 ---
 titleSuffix: "Using Esmx with an AI assistant"
-description: "Single-file briefing on the Esmx framework for LLMs: the package.json esmx module protocol, validate/migrate CLI loop, and legacy syntax. Feed this page to Claude/Cursor/Copilot/Gemini before asking them to write Esmx code."
+description: "Single-file briefing on the Esmx framework for LLMs: the package.json esmx module protocol, the esmx validate CLI loop, and legacy syntax. Feed this page to Claude/Cursor/Copilot/Gemini before asking them to write Esmx code."
 head:
   - - "meta"
     - name: "keywords"
@@ -80,7 +80,7 @@ there are an error (`E_PROTOCOL_IN_BEHAVIOR`).
 | `entry` | The framework entries (`client` / `server`), declared like any other export. Library-only modules simply omit it. |
 | `exports` | Subpath map with **logical names**: keys are `./<name>`, values are relative source files or `{ client, server }` forks (`false` disables a side). Consumers never see your physical paths. |
 | `provides` | Plain array of third-party packages this module re-exports for consumers (e.g. `["vue"]`). The provided version is your **resolved installed version**, captured into the manifest at build time. |
-| `uses` | Plain array of **module names** you consume from. Not specifiers, not versions — just names. **Array order is load-bearing** (see the merge rule below). |
+| `uses` | Plain array of **module names** you consume from. Not specifiers, not versions — just names. Order does not matter — it only fixes which modules are reachable (see the single-owner rule below). |
 
 A module's declaration is strictly **local knowledge**: you can write it —
 human or agent — knowing nothing about any other module. Three roles cover
@@ -162,24 +162,31 @@ and stay ignorant of the chain's depth.
 
 Two rules replace every hand-written mapping:
 
-**The merge rule** — one sentence:
-`supply(M) = merge(supply(uses[0]), …, supply(uses[n]), M.provides)` —
-later entries override earlier ones, the module's own `provides` is the
-implicit last element, so **the order of the `uses` array decides who
-wins** when two modules provide the same package (list generic-to-specific;
-the specific layer wins, same convention family as `Object.assign`).
+**The single-owner rule** — one sentence: each shared package, at each
+major version, has exactly **one owner** in a composition — the single
+module whose `provides` lists it — and the whole closure wires to that
+owner. There is no election and no precedence: `uses` array order only
+fixes which modules are reachable, never who owns a package. If two
+distinct modules in the same composition provide the same `(package,
+major)`, that is a **hard error** (`E_DUP_PROVIDER`): a shared dependency
+must have a single owner — consolidate it into one shared module, or give
+one copy a distinct package identity via npm alias for intentional
+same-major coexistence. Ownership is keyed **per major version**, so
+coexisting majors (e.g. vue 2 and vue 3) are isolated islands, each with
+its own single owner (`W_MULTI_MAJOR`, informational), and every consumer
+wires to the major satisfying its own declared range.
 
 **The lookup rule** — applied per specifier as the bundler traverses your
 code, no pre-pass, no declaration:
 
 ```
-bare specifier found in my merged supply table → externalized, wired to the winner
-found nowhere                                  → my own bundled copy, isolated by
-                                                 per-module import-map scopes
+bare specifier found in my supply table → externalized, wired to the owner
+found nowhere                            → my own bundled copy, isolated by
+                                           per-module import-map scopes
 ```
 
-Single-instance sharing is therefore inherent (one winner per package, the
-entire closure rewired to it), and multi-version coexistence needs zero
+Single-instance sharing is therefore inherent (one owner per package, the
+entire closure wired to it), and multi-version coexistence needs zero
 vocabulary — a module that bundles its own copy is scope-isolated
 automatically. Type-only imports (`import type`) never produce wiring.
 
@@ -193,52 +200,83 @@ already exists, never a new concept.
 |---|---|---|---|
 | `E_NOT_LINKED` | error | A name in `uses` is absent from the mount table. | `npm install` the module (npm packages auto-mount at `node_modules/<name>/dist`) or add a `links` override. |
 | `E_NOT_BUILT` | error | Mounted, but no built artifact yet. Blocks only manifest-dependent checks, not declaration wiring. | Build the listed modules first. |
-| `E_CYCLE` | error | The `uses` chain (or mount walk) revisits a module. | Architecture error — break the cycle; it is never silently ignored. |
-| `E_VERSION` | error | Either *intent* (the winner's version violates a layer's `dependencies`/`peerDependencies` range) or *substitution safety* (a losing provider's chunks were built against an incompatible version — same-major minimum). Names the layer and which check failed. | Align the named layer's range, or upgrade/rebuild the provider. |
-| `E_NOT_USED` | error | You imported `'mod/export'` but `mod` is not in your `uses` chain. | Add `"mod"` to `uses` (and `dependencies`). |
-| `E_NO_EXPORT` | error | The export name is absent from the provider's declaration. Message lists the module's actual exports. | Fix the import specifier, or add the export to the provider's `esmx.exports`. |
+| `E_CYCLE` | error | The `uses` chain (or mount walk) revisits a module. | Architecture error — break the cycle. Hard-stops resolution (supply withheld), so it is never wired on an order-dependent result. |
+| `E_DUP_PROVIDER` | error | Two distinct modules own the same `(package, major)`. Names both owners. | A shared dependency must have a single owner: delete the duplicate `provides` entry (consolidate into one shared module), or give one copy a distinct package identity via npm alias for intentional same-major coexistence. |
+| `E_VERSION` | error | *Intent*: the owner's resolved version violates a consuming layer's `dependencies`/`peerDependencies` range. Names the layer. | Align the named layer's range, or upgrade/rebuild the owner. |
+| `E_TARGET_MISSING` | error | A declared `entry`/`exports` target file does not exist on disk. Root-module check only (mounted deps ship `dist`, not `src`). Emitted by `esmx validate`. | Fix the path in the root `esmx` declaration, or create the missing file. |
+| `E_NOT_USED` | error | You imported `'mod/export'` but `mod` is not in your `uses` chain. **Build-time / bundler-emitted** — not emitted by `esmx validate`. | Add `"mod"` to `uses` (and `dependencies`). |
+| `E_NO_EXPORT` | error | The export name is absent from the provider's declaration. Message lists the module's actual exports. **Build-time / bundler-emitted** — not emitted by `esmx validate`. | Fix the import specifier, or add the export to the provider's `esmx.exports`. |
 | `E_PROTOCOL` | error | A mounted manifest's `protocol` is newer than this linker supports. | Upgrade `@esmx/core`. |
-| `E_PROTOCOL_IN_BEHAVIOR` | error | Protocol facts (a `modules` config) found in `entry.node.ts`. | Move them to `package.json` `esmx` — `esmx migrate` does this for you. |
-| `W_MULTI_CANDIDATE` | warning | A package had multiple providers in the merge chain. Reports winner, losers, and rewired layers. | Expected for layered bases; reorder `uses` if the wrong layer won. |
+| `E_PROTOCOL_IN_BEHAVIOR` | error | Protocol facts (a `modules` config) found in `entry.node.ts`. | Move them to `package.json` `esmx` — a mechanical rewrite. |
+| `E_SCHEMA` | error | The `esmx` declaration is structurally invalid — wrong type, an unknown key, or an export/entry path that is not a `./` relative path. The single most common authoring error. | Read the message: it names the offending field and the allowed shape; fix the declaration to match. |
+| `W_MULTI_MAJOR` | warning | A package has coexisting major versions, each major an isolated island with its own single owner. Informational — cross-major collision cannot happen. | Nothing, if coexistence is intended; otherwise align the owners' installed majors. |
 | `W_NO_RANGE` | warning | A layer consumes a provided package without declaring any version range. | Add the package to `dependencies` or `peerDependencies`. |
-| `W_TYPE_DRIFT` | warning | Your `devDependencies` types copy diverges from the elected winner's resolved version (the version your code actually runs on). | Align the `devDependencies` version. |
+| `W_TYPE_DRIFT` | warning | Your `devDependencies` types copy diverges from the owner's resolved version (the version your code actually runs on). | Align the `devDependencies` version. |
 
 ### The verification loop: `esmx validate --json`
 
-`esmx validate` is a **build-free dry run** of the whole resolution: mount
-walk, version checks, supply merge, export checks. Run it after every
-declaration edit; the judge of a correct declaration is its exit status,
-not human reading. With `--json` it emits a structured envelope — errors
-AND warnings:
+`esmx validate` is a **build-free dry run** of resolution phases 1–2:
+mount walk, transitive `uses`, version checks, supply table, single-owner
+enforcement (`E_DUP_PROVIDER`). Run it after every declaration edit; the
+judge of a correct declaration is its exit status, not human reading. It
+guarantees **resolution validity, not buildability**. It DOES check that
+the root module's declared `entry`/`exports` target files exist on disk
+(`E_TARGET_MISSING`, root-only — mounted deps ship `dist`, not `src`).
+The remaining boundary: it does NOT emit the phase-3, bundler-emitted
+codes `E_NOT_USED` / `E_NO_EXPORT` (the bundler lexes source and
+discovers those per-specifier at build time), and it does not type-check.
+So the honest loop is `esmx validate` **then** a build / `tsc` pass:
+validate is the fast first gate, not the whole oracle. With `--json` it emits a structured envelope with
+three keys — `diagnostics` (errors AND warnings), `supply` (the per-major
+owner table) and `mounts` (the resolved mount table):
 
 ```json
 {
     "diagnostics": [
         {
             "code": "E_VERSION",
-            "check": "substitution-safety",
+            "check": "intent",
             "module": "base",
             "package": "vue",
             "found": "3.0.2",
-            "required": "built against 3.4.21 (same major)",
+            "required": "^3.4.0",
             "message": "what happened and why",
             "fix": "the declaration edit to make"
         }
-    ]
+    ],
+    "supply": {
+        "vue": {
+            "groups": [
+                { "major": 3, "provider": "shared", "version": "3.5.13" }
+            ]
+        }
+    },
+    "mounts": {
+        "shared": {
+            "name": "shared",
+            "root": "/abs/path/to/shared",
+            "artifactDir": "/abs/path/to/shared/dist",
+            "built": true
+        }
+    }
 }
 ```
 
-`check` appears on `E_VERSION` entries and is either `"intent"` or
-`"substitution-safety"`. An empty `diagnostics` array means the
-declarations fully determine a valid wiring.
+`check` appears on `E_VERSION` entries and is `"intent"`. An empty
+`diagnostics` array means the declarations fully determine a valid wiring.
+A package without an `esmx` field instead emits
+`{ "protocol": "legacy", "diagnostics": [] }`.
 
-### Adopting on an existing project: `esmx migrate`
-
-`esmx migrate` is a codemod: it lifts a legacy `entry.node.ts` `modules`
-config (`pkg:`/`root:` exports, `imports`) into the `package.json` `esmx`
-declaration and rewrites consumer import sites to logical names, emitting
-a machine-readable report of every change. Run `esmx validate --json`
-afterwards.
+> **A duplicate owner is the one thing to watch for.** If two modules in
+> the same composition both `provide` the same `(package, major)`,
+> `validate` reports `E_DUP_PROVIDER` naming both owners — fix it by
+> deleting one `provides` entry (consolidate into a single shared module)
+> or by giving one copy a distinct package identity via npm alias. There
+> is no winner-election and no closure-wide rewiring to reason about: each
+> `(package, major)` has exactly one owner, the whole closure wires to it,
+> and the version the code runs on is exactly that owner's resolved
+> version. A green `validate` (empty `diagnostics`) plus a build / `tsc`
+> pass is the whole loop.
 
 ## A minimal Rspack remote
 
@@ -375,15 +413,19 @@ Then in your code, import by **logical export name**:
 import { App } from 'my-remote/app';
 ```
 
-Modules installed via npm **auto-mount** at `node_modules/<name>/dist` —
-no path configuration. For monorepo siblings or deploy directories, a
-`links` entry (an *environment* fact, kept in `entry.node.ts`'s `modules`
-block today) overrides the mount point:
+Any module resolvable through `node_modules` **auto-mounts** at
+`node_modules/<name>/dist` — no path configuration. This covers registry
+installs *and* monorepo siblings: a pnpm `workspace:*` dependency symlink
+is followed and realpath'd, so the workspace dep + `uses` entry above is
+the whole story. Only for artifact directories that are **not**
+npm-resolvable (deploy paths, `@esmx/fetch` output) does a `links` entry
+(an *environment* fact, kept in `entry.node.ts`'s `modules` block)
+override the mount point:
 
 ```ts
 modules: {
     links: {
-        'my-remote': '../my-remote/dist'
+        'my-remote': '/srv/deploy/my-remote/dist'
     }
 }
 ```
@@ -459,8 +501,8 @@ rendered.
 
 > **For NEW code, always use the `package.json` `esmx` declaration above.**
 > The syntax below still works during the transition and you WILL see it in
-> existing projects — recognize it, maintain it, and offer `esmx migrate`
-> when asked to modernize. Do not generate it for new modules.
+> existing projects — recognize it, maintain it, and rewrite it to the new
+> declaration when asked to modernize. Do not generate it for new modules.
 
 Legacy projects keep all protocol facts in `entry.node.ts` under a
 `modules` key with four fields:
@@ -507,9 +549,9 @@ Key differences from the new protocol — these are the legacy traps:
 - **Nothing is validated until runtime.** No version checks, no export
   checks, no structured diagnostics.
 
-`esmx migrate` converts all of this mechanically. Per RFC 0001 the legacy
-syntax is removed entirely in a later phase — there is no long-term dual
-syntax.
+Converting all of this is a mechanical rewrite (codemod-able, but there is
+no shipped command). Per RFC 0001 the legacy syntax is removed entirely in a
+later phase — there is no long-term dual syntax.
 
 ## What does NOT exist
 
@@ -519,10 +561,11 @@ Don't generate these — they aren't real APIs:
 - `bootstrap` / `mount` / `unmount` / `update` lifecycle exports (qiankun style)
 - `expose` / `shared` / `singleton` / `optional` / `resolutions` / `sealed`
   config (Module Federation style). Esmx needs **no sharing-arbitration
-  vocabulary at all**: composition is a static merge resolved at build
-  time — single-instance sharing is inherent (one winner per package,
-  whole closure rewired), and multi-instance coexistence is just a module
-  bundling its own scope-isolated copy.
+  vocabulary at all**: composition is static and resolved at build time —
+  single-instance sharing is inherent (one owner per `(package, major)`,
+  the whole closure wired to it; a duplicate owner is `E_DUP_PROVIDER`),
+  and multi-instance coexistence is just a module bundling its own
+  scope-isolated copy.
 - A resolution lockfile (`esmx.resolution.json` or similar). **The import
   map emitted into `dist` IS the resolution result**; declarations alone
   fully determine it. Diagnostics live in `esmx validate` and the build
@@ -555,10 +598,12 @@ transitively imports a `.css` file in code that the bundler doesn't pre-process,
 move that import into a JS-eval-only path (e.g. `entry.client.ts`).
 
 **`Cannot find module '<remote>/<export>'` at runtime.**
-On the new protocol this is almost always caught earlier as `E_NOT_LINKED`
-(remote not mounted), `E_NOT_USED` (remote missing from your `uses`),
-`E_NO_EXPORT` (export not declared), or `E_NOT_BUILT` (no artifact yet) —
-run `esmx validate`. On a legacy project, check: (1) is `'<remote>'` in the
+On the new protocol this surfaces earlier: `E_NOT_LINKED` (remote not
+mounted) and `E_NOT_BUILT` (no artifact yet) are caught by `esmx validate`;
+`E_NOT_USED` (remote missing from your `uses`) and `E_NO_EXPORT` (export
+not declared) are phase-3 codes the bundler raises **at build time**, not
+in `validate` — so run `esmx validate` first, then a build. On a legacy
+project, check: (1) is `'<remote>'` in the
 consumer's `modules.links`? (2) is the export in the producer's
 `modules.exports`? (3) did the producer build (`dist/manifest.json` exists)?
 

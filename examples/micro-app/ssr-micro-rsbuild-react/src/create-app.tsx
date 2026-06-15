@@ -4,7 +4,7 @@ import { UnheadProvider } from '@unhead/react/client';
 import React from 'react';
 import { createRoot, hydrateRoot } from 'react-dom/client';
 import { renderToString } from 'react-dom/server';
-import { BaseApp, getAppState, setAppState } from 'ssr-micro-shared/src/index';
+import { BaseApp, getAppState, setAppState } from 'ssr-micro-shared/index';
 import type { Unhead } from 'unhead/types';
 import { AppContent } from './app';
 

@@ -1,6 +1,22 @@
 {
     "name": "{{projectName}}",
     "version": "1.0.0",
+    "esmx": {
+        "entry": {
+            "client": "./src/entry.client.ts",
+            "server": "./src/entry.server.ts"
+        },
+        "exports": {
+            "./vue/index": "./src/vue/index.ts",
+            "./vue2/index": "./src/vue2/index.ts"
+        },
+        "provides": [
+            "@esmx/router",
+            "@esmx/router-vue",
+            "vue",
+            "vue2"
+        ]
+    },
     "description": "Shared modules solution for micro-frontend architecture",
     "type": "module",
     "private": true,

@@ -63,6 +63,48 @@ async function warningOnlyFixture(): Promise<string> {
     });
 }
 
+/** Layered merge (Gate 2): vue-base wins over base → one election. */
+async function dupProviderFixture(): Promise<string> {
+    const root = await fixtureRoot();
+    writeFixturePackage(root, {
+        dir: 'node_modules/base',
+        packageJson: {
+            name: 'base',
+            version: '1.0.0',
+            dependencies: { vue: '^3.4.0' },
+            esmx: { provides: ['vue'] }
+        },
+        built: true
+    });
+    writeFixturePackage(root, {
+        dir: 'node_modules/base/node_modules/vue',
+        packageJson: { name: 'vue', version: '3.4.21' }
+    });
+    writeFixturePackage(root, {
+        dir: 'node_modules/vue-base',
+        packageJson: {
+            name: 'vue-base',
+            version: '1.0.0',
+            dependencies: { vue: '^3.4.0' },
+            esmx: { uses: ['base'], provides: ['vue'] }
+        },
+        built: true
+    });
+    writeFixturePackage(root, {
+        dir: 'node_modules/vue-base/node_modules/vue',
+        packageJson: { name: 'vue', version: '3.5.13' }
+    });
+    return writeFixturePackage(root, {
+        dir: 'app',
+        packageJson: {
+            name: 'app',
+            version: '1.0.0',
+            dependencies: { vue: '^3.4.0' },
+            esmx: { uses: ['vue-base'] }
+        }
+    });
+}
+
 async function notLinkedFixture(): Promise<string> {
     const root = await fixtureRoot();
     return writeFixturePackage(root, {
@@ -92,7 +134,7 @@ describe('runValidate', () => {
         });
         expect(humanResult.exitCode).toBe(0);
         expect(humanResult.output).toContain('entry.node.ts');
-        expect(humanResult.output).toContain('esmx migrate');
+        expect(humanResult.output).toContain('opt-in');
     });
 
     it('should exit 0 when the declaration only has warnings', async () => {
@@ -105,8 +147,7 @@ describe('runValidate', () => {
         expect(envelope.diagnostics).toHaveLength(1);
         expect(envelope.diagnostics[0].code).toBe('W_NO_RANGE');
         expect(envelope.supply.vue).toEqual({
-            provider: 'base',
-            version: '3.4.21'
+            groups: [{ major: 3, provider: 'base', version: '3.4.21' }]
         });
         expect(Object.keys(envelope.mounts)).toEqual(['base']);
         expect(envelope.mounts.base.built).toBe(true);
@@ -127,6 +168,34 @@ describe('runValidate', () => {
         expect(typeof entry.message).toBe('string');
         expect(typeof entry.fix).toBe('string');
         expect(entry).not.toHaveProperty('severity');
+    });
+
+    it('should exit non-zero and surface E_DUP_PROVIDER in the JSON envelope', async () => {
+        const appDir = await dupProviderFixture();
+
+        const result = await runValidate(appDir, { json: true });
+
+        const envelope = JSON.parse(result.output);
+        expect(result.exitCode).toBe(1);
+        const entry = envelope.diagnostics.find(
+            (d: { code: string }) => d.code === 'E_DUP_PROVIDER'
+        );
+        expect(entry).toBeDefined();
+        expect(entry.module).toBe('vue-base');
+        expect(entry.package).toBe('vue');
+        expect(entry.found).toBe('base, vue-base');
+        expect(envelope).not.toHaveProperty('elections');
+    });
+
+    it('should print E_DUP_PROVIDER in the human report', async () => {
+        const appDir = await dupProviderFixture();
+
+        const result = await runValidate(appDir);
+
+        const plain = util.stripVTControlCharacters(result.output);
+        expect(plain).toContain('[E_DUP_PROVIDER]');
+        expect(plain).toContain('vue-base → vue');
+        expect(plain).toContain('base, vue-base');
     });
 
     it('should report diagnostics, supply and mounts in human mode', async () => {

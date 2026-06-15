@@ -1,4 +1,4 @@
-import { hydrateHost } from 'ssr-micro-shared/src/index';
+import { hydrateHost } from 'ssr-micro-shared/index';
 
 import { routes } from './routes';
 

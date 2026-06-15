@@ -12,6 +12,8 @@
 // in ~2 min.
 
 import { spawn } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 
 const STANDALONE = [
@@ -89,8 +91,8 @@ const MICRO = [
         port: 3011
     },
     {
-        name: 'ssr-micro-vite-vue',
-        dir: 'examples/micro-app/ssr-micro-vite-vue',
+        name: 'ssr-micro-vite-vue3',
+        dir: 'examples/micro-app/ssr-micro-vite-vue3',
         port: 3012
     },
     {
@@ -104,8 +106,8 @@ const MICRO = [
         port: 3014
     },
     {
-        name: 'ssr-micro-rsbuild-vue',
-        dir: 'examples/micro-app/ssr-micro-rsbuild-vue',
+        name: 'ssr-micro-rsbuild-vue3',
+        dir: 'examples/micro-app/ssr-micro-rsbuild-vue3',
         port: 3015
     }
 ];
@@ -233,7 +235,193 @@ async function runGroup(groupName, targets) {
     }
 }
 
+// --- Gate 2 (B2): build-artifact chunk-graph assertions ---------------------
+//
+// Proves what build-free `esmx validate` cannot: that single-owner resolution
+// actually collapses each framework runtime to ONE shared copy in the built
+// dist, and that coexisting majors (vue@2 vs vue@3) stay isolated.
+//
+// We read each micro-app's built `dist/client/manifest.json` (`provides` is now
+// version-only, e.g. `{ vue: { version } }`) plus the physical framework chunk
+// files emitted next to it (`<name>.<hash>.final.mjs` at the top level of
+// dist/client). A "framework chunk" is a top-level final-mjs whose base name is
+// the bare runtime package (vue / react / react-dom / preact); scoped chunks
+// like `@unhead/vue.*.final.mjs` live under a scope dir and are NOT matched.
+//
+// Invariants asserted per framework:
+//   - exactly ONE owner app declares the framework in `provides` AND emits its
+//     chunk (the *-shared app);
+//   - every other app in that framework's set emits ZERO own chunks for it
+//     (externalized to the owner — single-owner intact);
+//   - vue@2 and vue@3 resolve to DISTINCT owners/chunks (no cross-major dedupe).
+//
+// Any violation throws, which `main()` surfaces as a non-zero exit.
+
+const MICRO_APP_ROOT = 'examples/micro-app';
+
+// Each framework: the bare runtime package names whose chunks we track, the
+// sole expected owner, the expected provided major, and the consumer apps that
+// must ship zero own copies.
+const FRAMEWORK_OWNERSHIP = [
+    {
+        framework: 'vue@3',
+        pkg: 'vue',
+        chunkNames: ['vue'],
+        owner: 'ssr-micro-vue3-shared',
+        major: 3,
+        consumers: [
+            'ssr-micro-vue3',
+            'ssr-micro-vite-vue3',
+            'ssr-micro-rsbuild-vue3'
+        ]
+    },
+    {
+        framework: 'vue@2',
+        pkg: 'vue',
+        chunkNames: ['vue'],
+        owner: 'ssr-micro-vue2',
+        major: 2,
+        consumers: []
+    },
+    {
+        framework: 'react',
+        pkg: 'react',
+        chunkNames: ['react', 'react-dom'],
+        owner: 'ssr-micro-react-shared',
+        major: 19,
+        consumers: [
+            'ssr-micro-react',
+            'ssr-micro-vite-react',
+            'ssr-micro-rsbuild-react'
+        ]
+    },
+    {
+        framework: 'preact',
+        pkg: 'preact',
+        chunkNames: ['preact'],
+        owner: 'ssr-micro-preact-shared',
+        major: 10,
+        consumers: ['ssr-micro-preact', 'ssr-micro-preact-htm']
+    }
+];
+
+function readManifest(app) {
+    const file = path.join(MICRO_APP_ROOT, app, 'dist/client/manifest.json');
+    if (!fs.existsSync(file)) {
+        throw new Error(
+            `${app}: missing dist/client/manifest.json — run \`pnpm build:examples\` first`
+        );
+    }
+    return JSON.parse(fs.readFileSync(file, 'utf-8'));
+}
+
+// Top-level framework chunk files in dist/client matching `<name>.<hash>.final.mjs`
+// for any of the given bare package names. Returns the matched file names.
+function frameworkChunkFiles(app, chunkNames) {
+    const dir = path.join(MICRO_APP_ROOT, app, 'dist/client');
+    if (!fs.existsSync(dir)) return [];
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    const matchers = chunkNames.map(
+        (n) =>
+            new RegExp(
+                `^${n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\.[a-f0-9]+\\.final\\.mjs$`
+            )
+    );
+    return entries
+        .filter((e) => e.isFile())
+        .map((e) => e.name)
+        .filter((name) => matchers.some((re) => re.test(name)));
+}
+
+function majorOf(version) {
+    const m = /^(\d+)\./.exec(String(version ?? ''));
+    return m ? Number(m[1]) : null;
+}
+
+function assertChunkGraph() {
+    console.log('\n=== smoke gate B2: build-artifact chunk-graph ===');
+    const errors = [];
+    // Record (framework -> owner chunk file names) to verify cross-major isolation.
+    const ownerChunks = {};
+
+    for (const spec of FRAMEWORK_OWNERSHIP) {
+        // 1. Owner must declare the framework in `provides` at the expected major
+        //    AND physically emit its chunk(s).
+        const ownerManifest = readManifest(spec.owner);
+        const provided = ownerManifest.provides?.[spec.pkg];
+        if (!provided) {
+            errors.push(
+                `${spec.framework}: owner ${spec.owner} does not declare \`${spec.pkg}\` in provides`
+            );
+        } else if (majorOf(provided.version) !== spec.major) {
+            errors.push(
+                `${spec.framework}: owner ${spec.owner} provides ${spec.pkg}@${provided.version} (major ${majorOf(provided.version)}), expected major ${spec.major}`
+            );
+        }
+
+        const ownerEmitted = frameworkChunkFiles(spec.owner, spec.chunkNames);
+        if (ownerEmitted.length === 0) {
+            errors.push(
+                `${spec.framework}: owner ${spec.owner} emits ZERO framework chunks [${spec.chunkNames.join(', ')}] — single-owner provider broken`
+            );
+        }
+        ownerChunks[spec.framework] = ownerEmitted;
+
+        // 2. Every consumer must externalize: empty/absent provides for this pkg
+        //    AND zero own framework chunks.
+        for (const consumer of spec.consumers) {
+            const cManifest = readManifest(consumer);
+            if (cManifest.provides?.[spec.pkg]) {
+                errors.push(
+                    `${spec.framework}: consumer ${consumer} re-declares \`${spec.pkg}\` in provides — single-owner broken (should externalize to ${spec.owner})`
+                );
+            }
+            const cEmitted = frameworkChunkFiles(consumer, spec.chunkNames);
+            if (cEmitted.length > 0) {
+                errors.push(
+                    `${spec.framework}: consumer ${consumer} ships its OWN framework copy [${cEmitted.join(', ')}] — single-owner resolution regressed`
+                );
+            }
+        }
+
+        const consumerNote = spec.consumers.length
+            ? `${spec.consumers.length} consumer(s) externalized`
+            : 'no consumers';
+        console.log(
+            `  ${spec.framework}: owner ${spec.owner} emits [${ownerEmitted.join(', ') || 'NONE'}], ${consumerNote}`
+        );
+    }
+
+    // 3. Cross-major isolation: vue@2 and vue@3 must be distinct chunks/owners,
+    //    i.e. vue@2 was NOT deduped onto the vue@3 owner.
+    const vue2 = ownerChunks['vue@2'] ?? [];
+    const vue3 = ownerChunks['vue@3'] ?? [];
+    const overlap = vue2.filter((f) => vue3.includes(f));
+    if (overlap.length > 0) {
+        errors.push(
+            `cross-major: vue@2 and vue@3 share chunk file(s) [${overlap.join(', ')}] — majors collapsed`
+        );
+    }
+    if (vue2.length > 0 && vue3.length > 0) {
+        console.log(
+            `  cross-major: vue@2 [${vue2.join(', ')}] ⟂ vue@3 [${vue3.join(', ')}] (distinct)`
+        );
+    }
+
+    if (errors.length) {
+        for (const e of errors) console.error(`  ✗ ${e}`);
+        throw new Error(
+            `chunk-graph gate B2 failed with ${errors.length} violation(s)`
+        );
+    }
+    console.log('  ✓ single-owner intact; majors isolated');
+}
+
 async function main() {
+    // Gate 2 (B2): static post-build chunk-graph assertions. No servers needed;
+    // runs first so a single-owner regression fails fast before booting servers.
+    assertChunkGraph();
+
     const failures = [];
     failures.push(...(await runGroup('standalone', STANDALONE)));
     failures.push(...(await runGroup('micro (hub + 15 remotes)', MICRO)));

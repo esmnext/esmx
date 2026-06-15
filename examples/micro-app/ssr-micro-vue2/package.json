@@ -1,6 +1,31 @@
 {
     "name": "ssr-micro-vue2",
     "version": "1.0.0",
+    "exports": {
+        "./*": {
+            "types": "./src/*.d.ts",
+            "default": "./src/*.ts"
+        }
+    },
+    "esmx": {
+        "entry": {
+            "client": "./src/entry.client.ts",
+            "server": "./src/entry.server.ts"
+        },
+        "exports": {
+            "./vue-server-renderer": {
+                "server": "./src/server-renderer.ts",
+                "client": false
+            },
+            "./routes": "./src/routes.ts"
+        },
+        "uses": [
+            "ssr-micro-shared"
+        ],
+        "provides": [
+            "vue"
+        ]
+    },
     "description": "Vue2 micro-app for micro-frontend example",
     "type": "module",
     "private": true,
@@ -10,7 +35,8 @@
         "preview": "esmx preview",
         "start": "esmx start",
         "lint:type": "vue-tsc --noEmit",
-        "build:type": "vue-tsc --declaration --emitDeclarationOnly --noEmit false --outDir dist/src && tsc-alias -p tsconfig.json --outDir dist/src"
+        "build:type": "vue-tsc --declaration --emitDeclarationOnly --noEmit false --outDir dist/src && tsc-alias -p tsconfig.json --outDir dist/src",
+        "build:dts": "vue-tsc -p tsconfig.json --declaration --emitDeclarationOnly --outDir dist --rootDir ."
     },
     "dependencies": {
         "@esmx/core": "workspace:*"
@@ -28,4 +54,4 @@
         "vue-server-renderer": "2.7.16",
         "vue-tsc": "^3.2.8"
     }
-} 
+}

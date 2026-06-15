@@ -1,6 +1,6 @@
 import { createSignal, onCleanup, onMount } from 'solid-js';
 
-import { Layout, t } from 'ssr-micro-shared/src/index';
+import { Layout, t } from 'ssr-micro-shared/index';
 
 const SOURCE_SNIPPET = `import { createSignal } from 'solid-js'
 

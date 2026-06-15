@@ -19,7 +19,8 @@ function makeLink(name: string) {
 }
 
 function makeEsmx(env: ParsedModuleConfigEnvironment): Esmx {
-    const moduleConfig: ParsedModuleConfig = {
+    // Partial fixture: only the fields the predicate under test reads.
+    const moduleConfig = {
         name: 'my-app',
         root: '/app',
         lib: false,
@@ -28,7 +29,7 @@ function makeEsmx(env: ParsedModuleConfigEnvironment): Esmx {
             'remote-a': makeLink('remote-a')
         },
         environments: { client: env, server: env }
-    };
+    } as unknown as ParsedModuleConfig;
     return {
         name: 'my-app',
         root: '/app',

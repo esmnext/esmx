@@ -2,9 +2,6 @@ import http from 'node:http';
 import type { EsmxOptions } from '@esmx/core';
 
 export default {
-    modules: {
-        exports: ['pkg:react', 'pkg:react-dom']
-    },
     async devApp(esmx) {
         return import('@esmx/vite-react').then((m) =>
             m.createViteReactApp(esmx)

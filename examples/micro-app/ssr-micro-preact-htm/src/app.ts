@@ -2,7 +2,7 @@ import type { Router } from '@esmx/router';
 import { html } from 'htm/preact';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 
-import { Layout, t } from 'ssr-micro-shared/src/index';
+import { Layout, t } from 'ssr-micro-shared/index';
 
 const SOURCE_SNIPPET = `import { html } from 'htm/preact'
 import { useState } from 'preact/hooks'

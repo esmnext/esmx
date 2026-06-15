@@ -38,10 +38,10 @@ const MICRO = [
     { dir: 'examples/micro-app/ssr-micro-svelte', port: 3009 },
     { dir: 'examples/micro-app/ssr-micro-vite-html', port: 3010 },
     { dir: 'examples/micro-app/ssr-micro-vite-react', port: 3011 },
-    { dir: 'examples/micro-app/ssr-micro-vite-vue', port: 3012 },
+    { dir: 'examples/micro-app/ssr-micro-vite-vue3', port: 3012 },
     { dir: 'examples/micro-app/ssr-micro-rsbuild-html', port: 3013 },
     { dir: 'examples/micro-app/ssr-micro-rsbuild-react', port: 3014 },
-    { dir: 'examples/micro-app/ssr-micro-rsbuild-vue', port: 3015 }
+    { dir: 'examples/micro-app/ssr-micro-rsbuild-vue3', port: 3015 }
 ];
 
 const GROUPS = { standalone: STANDALONE, hub: HUB, micro: MICRO };

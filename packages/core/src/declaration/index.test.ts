@@ -67,8 +67,7 @@ describe('resolveDeclaration', () => {
 
         expect(result).not.toBeNull();
         expect(result?.supply.vue).toEqual({
-            provider: 'shared',
-            version: '3.4.21'
+            groups: [{ major: 3, provider: 'shared', version: '3.4.21' }]
         });
         expect(result?.config).toEqual({
             links: {
