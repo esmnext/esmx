@@ -119,7 +119,7 @@ head:
 
 任何可通过 `node_modules` 解析的模块都会**自动挂载**在 `node_modules/<name>/dist`，无需路径配置。这覆盖了 registry 安装*和* monorepo 兄弟包：pnpm `workspace:*` 依赖的软链会被跟随并 realpath 化，所以一条普通的 `dependencies` 加上 `uses` 名字就是全部。
 
-只有对于**不能**经 npm 解析的产物目录（部署路径、`@esmx/fetch` 输出），才需要加显式 `links` 条目。`links` 是**环境事实**而非协议事实，所以它是唯一还允许留在 `entry.node.ts` 里的 `modules` 键：
+只有对于**不能**经 npm 解析的产物目录（部署路径、远程拉取的产物），才需要加显式 `links` 条目。`links` 是**环境事实**而非协议事实，所以它是唯一还允许留在 `entry.node.ts` 里的 `modules` 键：
 
 ```ts
 // host/entry.node.ts —— 只有环境链接，没有协议事实

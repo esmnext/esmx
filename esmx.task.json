@@ -1,9 +1,7 @@
 {
     "packages": [
-        "packages/class-state",
         "packages/core",
         "packages/create-esmx",
-        "packages/fetch",
         "packages/import",
         "packages/router",
         "packages/router-vue",

@@ -133,7 +133,7 @@ resolver auto-mounts each one through Node resolution
 and vite-built remotes composing into one import map — then statically
 renders every route in `postBuild`. Explicit `modules.links` in
 `entry.node.ts` remains only as an escape hatch for artifact directories
-that are not npm-resolvable (deploy paths, `@esmx/fetch` output).
+that are not npm-resolvable (deploy paths, remotely fetched artifacts).
 
 ## 3. Key data structures
 
