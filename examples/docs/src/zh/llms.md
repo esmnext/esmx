@@ -111,7 +111,7 @@ pnpm dev
 {
     "name": "cart",
     "version": "1.8.0",
-    "dependencies": { "shared": "^3.0.0" },
+    "devDependencies": { "shared": "^3.0.0" },
     "peerDependencies": { "vue": "^3.4.0", "@esmx/router": "^3.0.0" },
     "esmx": {
         "entry": {
@@ -125,8 +125,11 @@ pnpm dev
 ```
 
 注意**没有**的东西:没有 `imports` 映射、没有逐 specifier 的接线、`esmx`
-里没有版本字段。版本范围放在 npm 本来的位置 — `dependencies`
-(∪ `peerDependencies`)— 构建时会拿它去校验已挂载产物的实际版本。
+里没有版本字段。版本范围放在 npm 本来的位置,构建时拿它去校验已挂载产物的
+实际版本。被消费的模块是**构建/组合期依赖**(被挂载、被组合,生产运行时从不
+从 `node_modules` 取),所以放 `devDependencies` —— 只有 `@esmx/core` 等真正
+Node 运行时需要的才留在 `dependencies`。范围从
+`devDependencies` ∪ `dependencies` ∪ `peerDependencies` 读取。
 
 ### 角色 3 — 组合方(host)
 
@@ -134,7 +137,7 @@ pnpm dev
 {
     "name": "host",
     "version": "2.0.0",
-    "dependencies": { "shared": "^3.0.0", "cart": "^1.5.0" },
+    "devDependencies": { "shared": "^3.0.0", "cart": "^1.5.0" },
     "peerDependencies": { "vue": "^3.4.0", "@esmx/router": "^3.0.0" },
     "esmx": {
         "entry": {
@@ -369,11 +372,12 @@ import map**。bundler 选择只是开发者体验差异。
 
 ## 消费其他远程
 
-加进 `dependencies` 和 `uses` — 接线就这两行:
+加进 `devDependencies` 和 `uses` — 接线就这两行(被消费的远程是构建/组合期
+依赖,放 `devDependencies`,不是 `dependencies`):
 
 ```json
 {
-    "dependencies": { "my-remote": "^0.1.0" },
+    "devDependencies": { "my-remote": "^0.1.0" },
     "esmx": {
         "entry": {
             "client": "./src/entry.client.ts",

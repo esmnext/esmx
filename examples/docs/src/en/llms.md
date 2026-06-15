@@ -118,7 +118,7 @@ Consumers import `'shared/ui'` — a logical name. Renaming
 {
     "name": "cart",
     "version": "1.8.0",
-    "dependencies": { "shared": "^3.0.0" },
+    "devDependencies": { "shared": "^3.0.0" },
     "peerDependencies": { "vue": "^3.4.0", "@esmx/router": "^3.0.0" },
     "esmx": {
         "entry": {
@@ -133,8 +133,12 @@ Consumers import `'shared/ui'` — a logical name. Renaming
 
 Note what is **absent**: no `imports` map, no per-specifier wiring, no
 version field inside `esmx`. The version range lives where npm already
-puts it — `dependencies` (∪ `peerDependencies`) — and is validated at
-build time against the mounted artifact's actual version.
+puts it and is validated at build time against the mounted artifact's
+actual version. A used module is a build/compose-time dependency (mounted
+and composed, never resolved from `node_modules` at production runtime),
+so it belongs in `devDependencies` — only `@esmx/core` and genuine
+Node-runtime needs stay in `dependencies`. The range is read from
+`devDependencies` ∪ `dependencies` ∪ `peerDependencies`.
 
 ### Role 3 — composer (the host)
 
@@ -142,7 +146,7 @@ build time against the mounted artifact's actual version.
 {
     "name": "host",
     "version": "2.0.0",
-    "dependencies": { "shared": "^3.0.0", "cart": "^1.5.0" },
+    "devDependencies": { "shared": "^3.0.0", "cart": "^1.5.0" },
     "peerDependencies": { "vue": "^3.4.0", "@esmx/router": "^3.0.0" },
     "esmx": {
         "entry": {
@@ -392,11 +396,13 @@ same import map.** The bundler choice is purely a developer-experience knob.
 
 ## Consuming another remote
 
-Add it to `dependencies` and `uses` — that's the whole wiring:
+Add it to `devDependencies` and `uses` — that's the whole wiring (a used
+remote is build/compose-time, so it goes in `devDependencies`, not
+`dependencies`):
 
 ```json
 {
-    "dependencies": { "my-remote": "^0.1.0" },
+    "devDependencies": { "my-remote": "^0.1.0" },
     "esmx": {
         "entry": {
             "client": "./src/entry.client.ts",

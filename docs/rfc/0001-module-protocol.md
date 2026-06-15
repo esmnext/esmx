@@ -130,7 +130,7 @@ errors if it does.
 {
   "name": "cart",
   "version": "1.8.0",
-  "dependencies": { "shared": "^3.0.0" },
+  "devDependencies": { "shared": "^3.0.0" },
   "peerDependencies": { "vue": "^3.4.0", "@esmx/router": "^3.0.0" },
   "esmx": {
     "entry": { "client": "./src/entry.client.ts", "server": "./src/entry.server.ts" },
@@ -145,7 +145,7 @@ errors if it does.
 {
   "name": "host",
   "version": "2.0.0",
-  "dependencies": { "shared": "^3.0.0", "cart": "^1.5.0" },
+  "devDependencies": { "shared": "^3.0.0", "cart": "^1.5.0" },
   "peerDependencies": { "vue": "^3.4.0", "@esmx/router": "^3.0.0" },
   "esmx": {
     "entry": { "client": "./src/entry.client.ts", "server": "./src/entry.server.ts" },
@@ -209,9 +209,13 @@ never produce wiring (a guaranteed invariant, fixtured in Gate 3).
     per-module import-map scopes (this is how the hub's vue2/vue3
     coexistence already works, with zero protocol vocabulary).
   - Version ranges are NOT declared here: the consumer's
-    `dependencies` ∪ `peerDependencies` ranges are the single source of
-    truth, validated against the mounted artifact's transcribed version
-    (`E_VERSION` on mismatch). A layer that consumes a provided package
+    `dependencies` ∪ `peerDependencies` ∪ `devDependencies` ranges are the
+    single source of truth, validated against the mounted artifact's
+    transcribed version (`E_VERSION` on mismatch). A used module is a
+    build/compose-time dependency (it is mounted and composed, never
+    resolved from `node_modules` at production runtime), so it belongs in
+    `devDependencies` — only `@esmx/core` and other genuine Node-runtime
+    needs stay in `dependencies`. A layer that consumes a provided package
     without declaring any range gets a build-time warning, not a silent
     pass and not a hard error. Bare-package types are validated against
     the consumer's own devDependencies copy, with drift warnings.

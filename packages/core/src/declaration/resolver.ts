@@ -337,9 +337,13 @@ export function resolveMounts(
         consumer: PackageRecord,
         used: PackageRecord
     ): void {
+        // A used module is a build/compose-time dependency, so its range may
+        // live in devDependencies (the hygiene-correct bucket) as well as
+        // dependencies/peerDependencies — all three are checked at link time.
         const range =
             consumer.dependencies[used.name] ??
-            consumer.peerDependencies[used.name];
+            consumer.peerDependencies[used.name] ??
+            consumer.devDependencies[used.name];
         if (range === undefined || isWorkspacePlaceholderRange(range)) {
             return;
         }
