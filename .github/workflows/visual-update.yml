@@ -7,6 +7,11 @@ name: Visual baseline update
 # which the host-server `scripts/visual-run.sh` helper cannot reproduce.
 on:
   workflow_dispatch:
+  # workflow_dispatch only works once this is on the default branch; until
+  # then, editing this file triggers a run (scoped so normal pushes don't).
+  push:
+    paths:
+      - '.github/workflows/visual-update.yml'
 
 jobs:
   update:
