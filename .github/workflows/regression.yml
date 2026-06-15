@@ -90,7 +90,7 @@ jobs:
     # Playwright image ships chromium + system deps pre-installed; avoids
     # the CDN-stuck `playwright install` that broke previous runs.
     container:
-      image: mcr.microsoft.com/playwright:v1.48.2-jammy
+      image: mcr.microsoft.com/playwright:v1.61.0-jammy
       options: --user root --ipc=host
     timeout-minutes: 40
     steps:

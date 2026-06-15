@@ -13,7 +13,7 @@ jobs:
     name: Regenerate baselines
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.48.2-jammy
+      image: mcr.microsoft.com/playwright:v1.61.0-jammy
       options: --user root --ipc=host
     timeout-minutes: 40
     steps:
