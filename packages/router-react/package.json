@@ -16,6 +16,16 @@
         "framework",
         "frontend"
     ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/esmnext/esmx.git",
+        "directory": "packages/router-react"
+    },
+    "homepage": "https://github.com/esmnext/esmx",
+    "bugs": {
+        "url": "https://github.com/esmnext/esmx/issues"
+    },
+    "license": "MIT",
     "template": "library",
     "scripts": {
         "lint:js": "biome check --write --no-errors-on-unmatched",

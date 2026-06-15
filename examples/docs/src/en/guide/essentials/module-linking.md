@@ -120,7 +120,7 @@ Single-instance sharing is therefore inherent (one winner per package, the entir
 
 Any module resolvable through `node_modules` **auto-mounts** at `node_modules/<name>/dist` — no path configuration. This covers registry installs *and* monorepo siblings: a pnpm `workspace:*` dependency symlink is followed and realpath'd, so a normal `dependencies` entry plus the `uses` name is the whole story.
 
-Only for artifact directories that are **not** npm-resolvable (deploy paths, `@esmx/fetch` output) do you add an explicit `links` entry. `links` is an **environment fact**, not a protocol fact, so it is the one `modules` key still allowed in `entry.node.ts`:
+Only for artifact directories that are **not** npm-resolvable (deploy paths, remotely fetched artifacts) do you add an explicit `links` entry. `links` is an **environment fact**, not a protocol fact, so it is the one `modules` key still allowed in `entry.node.ts`:
 
 ```ts
 // host/entry.node.ts — environment links only, no protocol facts

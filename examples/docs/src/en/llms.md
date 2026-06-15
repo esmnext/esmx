@@ -424,7 +424,7 @@ Any module resolvable through `node_modules` **auto-mounts** at
 installs *and* monorepo siblings: a pnpm `workspace:*` dependency symlink
 is followed and realpath'd, so the workspace dep + `uses` entry above is
 the whole story. Only for artifact directories that are **not**
-npm-resolvable (deploy paths, `@esmx/fetch` output) does a `links` entry
+npm-resolvable (deploy paths, remotely fetched artifacts) does a `links` entry
 (an *environment* fact, kept in `entry.node.ts`'s `modules` block)
 override the mount point:
 

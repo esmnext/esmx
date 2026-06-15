@@ -398,7 +398,7 @@ import { App } from 'my-remote/app';
 `node_modules/<name>/dist` — 不用配路径。registry 安装和 monorepo
 兄弟目录都覆盖:pnpm `workspace:*` 依赖的符号链接会被跟随并 realpath,
 所以 workspace 依赖 + 上面的 `uses` 一条就是全部。只有 npm 解析不到的
-产物目录(部署路径、`@esmx/fetch` 输出)才需要 `links` 覆盖挂载点
+产物目录(部署路径、远程拉取的产物)才需要 `links` 覆盖挂载点
 (它是*环境*事实,写在 `entry.node.ts` 的 `modules` 块里):
 
 ```ts

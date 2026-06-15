@@ -1,5 +1,30 @@
 {
     "name": "@esmx/router",
+    "description": "Framework-agnostic universal router for browser and Node.js SSR, with micro-frontend and layer navigation support",
+    "keywords": [
+        "router",
+        "routing",
+        "ssr",
+        "micro-frontend",
+        "typescript",
+        "universal",
+        "navigation",
+        "esmx",
+        "esm",
+        "spa",
+        "framework",
+        "frontend"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/esmnext/esmx.git",
+        "directory": "packages/router"
+    },
+    "homepage": "https://github.com/esmnext/esmx",
+    "bugs": {
+        "url": "https://github.com/esmnext/esmx/issues"
+    },
+    "license": "MIT",
     "template": "library",
     "scripts": {
         "lint:js": "biome check --write --no-errors-on-unmatched",

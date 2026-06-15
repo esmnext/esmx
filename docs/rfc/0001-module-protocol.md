@@ -334,14 +334,14 @@ it participates in the ecosystem.
 `links` keeps its current semantics — a mount point mapping module name →
 artifact directory. Distribution is delegated (P1): pack produces a
 standard npm tgz consumed via registry install, static hosting +
-`@esmx/fetch`, or deploy paths.
+remote fetch, or deploy paths.
 
 New convention: **any module resolvable through `node_modules` auto-mounts
 at `node_modules/<name>/dist`** — registry installs and workspace siblings
 alike (pnpm `workspace:*` symlinks are followed and realpath'd, so a
 monorepo sibling needs nothing beyond a normal dependency entry). Explicit
 `links` remains **only** for artifact directories that are not
-npm-resolvable: deploy paths, `@esmx/fetch` output and similar
+npm-resolvable: deploy paths, remotely fetched artifacts and similar
 out-of-tree drops. `links` is an environment fact, not
 a protocol fact, so it is the one `modules` key still permitted in
 `entry.node.ts`: `E_PROTOCOL_IN_BEHAVIOR` (§4) carves out

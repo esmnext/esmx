@@ -1,5 +1,15 @@
 {
     "name": "@esmx/import",
+    "description": "Import map utilities for resolving and merging ESM import maps",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/esmnext/esmx.git",
+        "directory": "packages/import"
+    },
+    "homepage": "https://github.com/esmnext/esmx",
+    "bugs": {
+        "url": "https://github.com/esmnext/esmx/issues"
+    },
     "template": "library-node",
     "license": "MIT",
     "contributors": [
