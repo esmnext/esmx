@@ -12,7 +12,13 @@
     },
     "template": "library-node",
     "license": "MIT",
-    "keywords": ["Vite", "React", "Esmx", "SSR", "Module Linking"],
+    "keywords": [
+        "Vite",
+        "React",
+        "Esmx",
+        "SSR",
+        "Module Linking"
+    ],
     "scripts": {
         "lint:js": "biome check --write --no-errors-on-unmatched",
         "lint:css": "pnpm run lint:js",
@@ -53,5 +59,12 @@
     },
     "module": "dist/index.mjs",
     "types": "./dist/index.d.ts",
-    "files": ["src", "dist", "*.mjs"]
+    "files": [
+        "src",
+        "dist",
+        "*.mjs"
+    ],
+    "publishConfig": {
+        "access": "public"
+    }
 }
