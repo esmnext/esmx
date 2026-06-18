@@ -13,7 +13,7 @@
         "build:packages": "pnpm --filter \"./packages/**\" build",
         "build:examples": "pnpm --filter \"./examples/**\" build",
         "build:dts": "pnpm --filter \"./examples/micro-app/**\" run build:dts",
-        "release": "pnpm run build:packages && lerna publish --force-publish --exact",
+        "release": "pnpm run build:packages && npx lerna publish --force-publish --exact",
         "smoke": "node scripts/smoke.mjs",
         "test:visual": "playwright test",
         "test:visual:update": "playwright test --update-snapshots",
@@ -25,6 +25,7 @@
         "@playwright/test": "1.48.2",
         "esbuild": "^0.28.1",
         "husky": "9.1.7",
+        "lerna": "^8.0.0",
         "lint-staged": "16.2.6"
     },
     "private": false,
@@ -36,7 +37,6 @@
         "registry": "https://registry.npmjs.org"
     },
     "engines": {
-        "lerna": ">=8",
         "node": ">=24",
         "pnpm": ">=10"
     }
