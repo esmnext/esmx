@@ -57,5 +57,8 @@
         "src",
         "dist",
         "*.mjs"
-    ]
+    ],
+    "publishConfig": {
+        "access": "public"
+    }
 }
