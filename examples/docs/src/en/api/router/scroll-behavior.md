@@ -1,5 +1,5 @@
 ---
-titleSuffix: "Scroll Behavior"
+titleSuffix: "@esmx/router Scroll Control"
 description: "Learn how @esmx/router handles scroll position — automatic scroll to top, scroll restoration on back/forward, keeping scroll position, and scrolling to elements."
 head:
   - - "meta"

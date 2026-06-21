@@ -1,5 +1,5 @@
 ---
-titleSuffix: "滚动行为"
+titleSuffix: "@esmx/router 滚动控制"
 description: "了解 @esmx/router 如何处理滚动位置 —— 自动滚动到顶部、返回/前进时的滚动恢复、保持滚动位置以及滚动到指定元素。"
 head:
   - - "meta"

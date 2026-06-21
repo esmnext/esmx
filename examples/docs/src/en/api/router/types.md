@@ -1,5 +1,5 @@
 ---
-titleSuffix: "Types Reference"
+titleSuffix: "@esmx/router Type Definitions"
 description: "Comprehensive type reference for @esmx/router and @esmx/router-vue, including all exported types, enums, interfaces, and deprecated types."
 head:
   - - "meta"

@@ -1,5 +1,5 @@
 ---
-titleSuffix: "Nested Routes"
+titleSuffix: "@esmx/router Nested Routing Guide"
 description: "Learn how to use nested routes in @esmx/router to build layouts with child components, understand RouterView depth, and structure complex UIs."
 head:
   - - "meta"

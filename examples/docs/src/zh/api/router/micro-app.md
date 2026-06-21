@@ -1,10 +1,10 @@
 ---
-titleSuffix: "MicroApp API Reference"
-description: "Complete guide to @esmx/router MicroApp system — framework-agnostic micro-frontend lifecycle management with mount, unmount, and SSR support."
+titleSuffix: "微应用 API 参考"
+description: "详细介绍 @esmx/router 微应用系统的 API，包括框架无关的微前端生命周期管理、挂载、卸载与 SSR 支持。"
 head:
   - - "meta"
     - name: "keywords"
-      content: "esmx micro-app, micro-frontend, mount unmount, renderToString, SSR micro-app, framework-agnostic"
+      content: "Esmx, 微应用, 微前端, 挂载卸载, renderToString, SSR 微应用, 框架无关"
 ---
 
 # 微应用

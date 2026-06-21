@@ -1,5 +1,5 @@
 ---
-titleSuffix: "Programmatic Navigation"
+titleSuffix: "@esmx/router Navigation API"
 description: "Complete guide to programmatic navigation in @esmx/router — push, replace, window navigation, history traversal, resolve, and navigation options."
 head:
   - - "meta"
