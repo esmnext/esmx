@@ -38,7 +38,14 @@ export async function copyArtifacts() {
         log.warn('No client builds found to copy');
     }
 
-    for (const { name, path } of ssrDirs) {
+    // The docs package owns the site root (copied to config.outDir below), so
+    // it must NOT also be namespaced to `dist/docs/`. That second copy produced
+    // a full duplicate of the site under `/docs/*` — 111 canonical-duplicate
+    // URLs that wasted crawl budget and inflated "crawled - currently not
+    // indexed" in Search Console. Demos still get their own `/<name>/` paths.
+    const namespacedDirs = ssrDirs.filter(({ name }) => name !== 'docs');
+
+    for (const { name, path } of namespacedDirs) {
         const targetDir = join(config.outDir, name);
         mkdirSync(targetDir, { recursive: true });
         cpSync(path, targetDir, { recursive: true });
