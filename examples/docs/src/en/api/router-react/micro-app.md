@@ -102,3 +102,8 @@ const router = new Router({
     })
 });
 ```
+
+## Related
+
+- [React Integration](/guide/router/react) — connect the router to a React application
+- [Getting Started](/guide/router/getting-started) — router concepts shared across all framework integrations

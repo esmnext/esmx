@@ -320,3 +320,8 @@ Creates a copy of the current route instance with the same configuration and sta
 ```ts
 const routeCopy = route.clone();
 ```
+
+## Related
+
+- [Router Introduction](/guide/router/introduction) — how routes are matched and resolved
+- [Getting Started](/guide/router/getting-started) — define routes and read route state in practice

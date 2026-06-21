@@ -1,6 +1,6 @@
 ---
 titleSuffix: "manifest.json 构建清单参考"
-description: "详细介绍 Esmx 框架的构建清单文件（manifest.json）结构，包括构建产物管理、导出文件映射和资源统计功能，帮助开发者理解和使用构建系统。"
+description: "Esmx 构建清单 manifest.json：构建产物管理、导出文件映射与资源统计。"
 head:
   - - "meta"
     - name: "keywords"

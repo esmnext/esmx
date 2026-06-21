@@ -79,3 +79,8 @@ When installed, the plugin performs the following:
 1. **Registers global components**: `RouterLink` and `RouterView` become available in all templates without explicit importing
 2. **Sets up instance properties**: Configures `$router` and `$route` as reactive properties accessible via `this.$router` and `this.$route` in Options API
 3. **Vue 2 compatibility**: Automatically detects the Vue version and applies the appropriate setup mechanism (prototype augmentation for Vue 2, `globalProperties` for Vue 3)
+
+## Related
+
+- [Vue 3 Integration](/guide/router/vue3) — wire the router into a Vue 3 application
+- [Vue 2 Integration](/guide/router/vue2) — wire the router into a Vue 2 application

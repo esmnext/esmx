@@ -1,6 +1,6 @@
 ---
 titleSuffix: "React Integration — @esmx/router"
-description: "Complete guide to integrating @esmx/router with React — micro-app pattern, SSR with renderToString, custom hooks, RouterLink equivalent, and full working examples."
+description: "Integrate @esmx/router with React using the micro-app pattern: mount, unmount, SSR via renderToString, custom hooks, a RouterLink equivalent, and examples."
 head:
   - - "meta"
     - name: "keywords"

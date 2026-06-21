@@ -1,6 +1,6 @@
 ---
 titleSuffix: "Framework Core Class API Reference"
-description: "Detailed introduction to Esmx framework's core class API, including application lifecycle management, static resource handling, and Server-Side Rendering capabilities, helping developers deeply understand the framework's core functionality."
+description: "The Esmx core class: application lifecycle, static asset handling, and server-side rendering APIs that drive an Esmx app."
 head:
   - - "meta"
     - name: "keywords"
@@ -732,3 +732,8 @@ const report = esmx.generateSizeReport();
 console.log(report.text);
 console.log(`Total files: ${report.json.totalFiles}, Total size: ${report.json.totalSize} bytes`);
 ```
+
+## Related
+
+- [Introduction](/guide/start/introduction) — what Esmx is and the problems it solves
+- [Rspack](/guide/essentials/rspack) — configure the build that the Esmx instance drives

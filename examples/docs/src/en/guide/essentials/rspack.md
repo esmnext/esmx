@@ -1,6 +1,6 @@
 ---
 titleSuffix: "Rspack Builder Encapsulated by Esmx"
-description: "Learn how to use the Rspack builder encapsulated by Esmx to quickly create HTML and Vue applications, and how to support any front-end framework like React, Svelte, etc. by extending the configuration."
+description: "Use Esmx's bundled Rspack builders to create HTML and Vue apps fast, and extend the config to support React, Svelte, or any other front-end framework."
 head:
   - - "meta"
     - name: "keywords"

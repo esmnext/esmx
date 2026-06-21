@@ -1,6 +1,6 @@
 ---
 titleSuffix: "Base Path and Static Asset Management"
-description: "Detailed introduction to Esmx framework's base path configuration, including multi-environment deployment, CDN distribution, and resource access path settings, helping developers achieve flexible static resource management."
+description: "Configure the Esmx base path for static assets, covering multi-environment deployment, multi-region clusters, and CDN distribution of JS, CSS, and images."
 head:
   - - "meta"
     - name: "keywords"
@@ -69,3 +69,8 @@ const rc = await esmx.render({
 - In production environments, it is recommended to dynamically determine the base path through environment variables or request headers to avoid hardcoding.
 - When using a CDN, ensure that the base path points to the CDN domain to fully leverage caching and acceleration capabilities.
 - Multi-language sites can be distinguished by secondary directories (such as `/cn/`, `/en/`) or independent domains. Choose the appropriate solution based on business requirements.
+
+## Related
+
+- [Render Context](/guide/essentials/render-context) — the `esmx.render()` context where the `base` path is set
+- [Client-Side Rendering](/guide/essentials/csr) — how base paths interact with CSR output

@@ -1,6 +1,6 @@
 ---
 titleSuffix: "Introduction to @esmx/router"
-description: "A comprehensive introduction to @esmx/router — a framework-agnostic router for micro-frontend applications with SSR support, navigation guards, layer routing, and micro-app orchestration."
+description: "@esmx/router is a framework-agnostic router for micro-frontends with SSR, navigation guards, layer routing, and React, Vue 2, and Vue 3 in one app."
 head:
   - - "meta"
     - name: "keywords"

@@ -1,10 +1,10 @@
 ---
-titleSuffix: "Programmatic Navigation"
-description: "Complete guide to programmatic navigation in @esmx/router — push, replace, window navigation, history traversal, resolve, and navigation options."
+titleSuffix: "@esmx/router 导航 API"
+description: "详细介绍 @esmx/router 的编程式导航，包括 push、replace、窗口导航、历史记录遍历、resolve 及导航选项。"
 head:
   - - "meta"
     - name: "keywords"
-      content: "programmatic navigation, router push, router replace, pushWindow, replaceWindow, history navigation, router.go, router.back, router resolve"
+      content: "Esmx, 编程式导航, router push, router replace, pushWindow, replaceWindow, 历史导航, router.go, router.back, 路由解析"
 ---
 
 # 编程式导航

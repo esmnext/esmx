@@ -1,6 +1,6 @@
 ---
 titleSuffix: "框架核心类 API 参考"
-description: "详细介绍 Esmx 框架的核心类 API，包括应用生命周期管理、静态资源处理和服务端渲染能力，帮助开发者深入理解框架的核心功能。"
+description: "Esmx 核心类 API：应用生命周期管理、静态资源处理与服务端渲染能力。"
 head:
   - - "meta"
     - name: "keywords"
@@ -732,3 +732,8 @@ const report = esmx.generateSizeReport();
 console.log(report.text);
 console.log(`总文件: ${report.json.totalFiles}, 总大小: ${report.json.totalSize} 字节`);
 ```
+
+## 相关
+
+- [介绍](/zh/guide/start/introduction) —— Esmx 是什么以及它解决的问题
+- [Rspack](/zh/guide/essentials/rspack) —— 配置由 Esmx 实例驱动的构建

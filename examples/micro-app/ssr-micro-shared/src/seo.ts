@@ -29,7 +29,9 @@ export interface SeoOptions {
 
 function localizedUrl(lang: string, path: string): string {
     if (lang === 'zh') {
-        return path === '/' ? `${SITE_ORIGIN}/zh` : `${SITE_ORIGIN}/zh${path}`;
+        // zh home keeps its trailing slash (`/zh/`): the host 308s `/zh` ->
+        // `/zh/`, so the slashless form would make canonical point at a redirect.
+        return path === '/' ? `${SITE_ORIGIN}/zh/` : `${SITE_ORIGIN}/zh${path}`;
     }
     return path === '/' ? `${SITE_ORIGIN}/` : `${SITE_ORIGIN}${path}`;
 }

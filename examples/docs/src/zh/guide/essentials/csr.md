@@ -66,3 +66,8 @@ export default {
     }
 } satisfies EsmxOptions;
 ```
+
+## 相关
+
+- [渲染上下文](/zh/guide/essentials/render-context) —— CSR 入口中使用的渲染上下文与资源注入方法
+- [样式](/zh/guide/essentials/styles) —— 渲染期间 CSS 如何被收集与注入

@@ -1,6 +1,6 @@
 ---
 titleSuffix: "SSR 渲染上下文 API 参考"
-description: "详细介绍 Esmx 框架的 RenderContext 核心类，包括渲染控制、资源管理、状态同步和路由控制等功能，帮助开发者实现高效的服务端渲染。"
+description: "Esmx RenderContext 核心类：渲染控制、资源收集、状态同步与路由控制，实现高效 SSR。"
 head:
   - - "meta"
     - name: "keywords"

@@ -102,3 +102,8 @@ const router = new Router({
     })
 });
 ```
+
+## 相关
+
+- [React 集成](/zh/guide/router/react) —— 将路由接入 React 应用
+- [快速开始](/zh/guide/router/getting-started) —— 各框架集成通用的路由概念

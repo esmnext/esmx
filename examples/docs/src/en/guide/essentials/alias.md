@@ -1,6 +1,6 @@
 ---
 titleSuffix: "Simplifying Imports with Path Aliases"
-description: "Detailed introduction to Esmx framework's path alias mechanism, including simplifying import paths, avoiding deep nesting, type safety, and module resolution optimization, helping developers improve code maintainability."
+description: "Use Esmx path aliases to shorten imports, avoid deep ../../ nesting, and gain TypeScript type safety with auto-generated aliases from your package.json name."
 head:
   - - "meta"
     - name: "keywords"
@@ -132,3 +132,8 @@ export default {
 3. Overuse of custom aliases may affect code maintainability and build optimization.
 
 :::
+
+## Related
+
+- [Module Linking](/guide/essentials/module-linking) — how cross-service imports resolve across linked modules
+- [Base Path](/guide/essentials/base-path) — configure deployment paths alongside your aliases

@@ -1,10 +1,10 @@
 ---
-titleSuffix: "Nested Routes"
-description: "Learn how to use nested routes in @esmx/router to build layouts with child components, understand RouterView depth, and structure complex UIs."
+titleSuffix: "@esmx/router 嵌套路由指南"
+description: "介绍如何在 @esmx/router 中使用嵌套路由构建带子组件的布局，理解 RouterView 层级，并组织复杂界面。"
 head:
   - - "meta"
     - name: "keywords"
-      content: "nested routes, children routes, RouterView, layout routes, route nesting, Vue RouterView, router view depth"
+      content: "Esmx, 嵌套路由, 子路由, RouterView, 布局路由, 路由嵌套, Vue RouterView, 路由视图层级"
 ---
 
 # 嵌套路由

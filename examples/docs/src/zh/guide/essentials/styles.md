@@ -1,6 +1,6 @@
 ---
 titleSuffix: "Esmx 联邦中的样式"
-description: "CSS 如何在 Esmx 联邦 manifest 中传递。照常写 `import './x.css'` —— Esmx 负责把真正的 `<link rel=\"stylesheet\">` 送到浏览器,跨 bundler 一致。"
+description: "Esmx 把 CSS 当作联邦一等资源：照常写 import './x.css'，框架经 manifest 注入真实的 link stylesheet，跨 bundler 一致。"
 head:
   - - "meta"
     - name: "keywords"

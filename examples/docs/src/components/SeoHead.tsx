@@ -18,6 +18,12 @@ const SITE_NAME = 'Esmx';
 const OG_IMAGE = `${SITE_ORIGIN}/og-cover.png`;
 const OG_LOCALE: Record<string, string> = { en: 'en_US', zh: 'zh_CN' };
 
+// Captured once per build. Fallback for pages whose git-derived lastUpdatedTime
+// is unavailable during SSG (e.g. shallow CI clones), so every TechArticle
+// carries valid dates instead of omitting them. Stable across all pages in a
+// single build.
+const BUILD_TIME = new Date().toISOString();
+
 interface PageLike {
     routePath?: string;
     title?: string;
@@ -42,30 +48,39 @@ function splitLocale(routePath: string): { lang: 'en' | 'zh'; path: string } {
 
 function localizedUrl(lang: 'en' | 'zh', path: string): string {
     const suffix = path === '/' ? '' : path;
-    return lang === 'zh'
-        ? `${SITE_ORIGIN}/zh${suffix}`
-        : `${SITE_ORIGIN}${suffix}`;
+    if (lang === 'zh') {
+        // The zh home must keep its trailing slash (`/zh/`): the host 308s
+        // `/zh` -> `/zh/`, so the slashless form would make canonical/hreflang
+        // point at a redirect instead of the final URL.
+        return suffix ? `${SITE_ORIGIN}/zh${suffix}` : `${SITE_ORIGIN}/zh/`;
+    }
+    return `${SITE_ORIGIN}${suffix}`;
 }
 
-/** ISO 8601 date from Rspress's lastUpdatedTime (epoch ms or string), if usable. */
+/** ISO 8601 date from an epoch (number/numeric string) or a date string, if usable. */
 function toIsoDate(value: string | number | undefined): string | undefined {
     if (value === undefined || value === null || value === '') return undefined;
-    const ms = typeof value === 'number' ? value : Number(value);
+    const ms =
+        typeof value === 'number'
+            ? value
+            : /^\d+$/.test(value)
+              ? Number(value)
+              : Date.parse(value);
     if (!Number.isFinite(ms)) return undefined;
     return new Date(ms).toISOString();
 }
 
-/** A BreadcrumbList from the locale-agnostic path segments (Guide → Start → …). */
-function buildBreadcrumb(lang: 'en' | 'zh', path: string) {
-    const segments = path.split('/').filter(Boolean);
+/**
+ * A BreadcrumbList of Home → current page. Intermediate path segments are NOT
+ * emitted as crumbs: the docs have no section landing pages (e.g. `/api`,
+ * `/api/router`, `/guide/start` all 404), so linking them would point every
+ * non-final crumb at a dead URL — which Google flags and may drop the whole
+ * breadcrumb. Both emitted items resolve to a real page.
+ */
+function buildBreadcrumb(lang: 'en' | 'zh', path: string, leafName: string) {
     const items = [{ name: 'Home', url: localizedUrl(lang, '/') }];
-    let acc = '';
-    for (const segment of segments) {
-        acc += `/${segment}`;
-        const name = segment
-            .replace(/-/g, ' ')
-            .replace(/\b\w/g, (c) => c.toUpperCase());
-        items.push({ name, url: localizedUrl(lang, acc) });
+    if (path !== '/') {
+        items.push({ name: leafName, url: localizedUrl(lang, path) });
     }
     return {
         '@type': 'BreadcrumbList',
@@ -96,7 +111,12 @@ export default function SeoHead() {
         page.description ||
         (page.frontmatter?.description as string | undefined) ||
         '';
-    const modified = toIsoDate(page.lastUpdatedTime);
+    const gitDate = toIsoDate(page.lastUpdatedTime);
+    const frontmatterDate = toIsoDate(
+        page.frontmatter?.date as string | number | undefined
+    );
+    const dateModified = gitDate || frontmatterDate || BUILD_TIME;
+    const datePublished = frontmatterDate || gitDate || BUILD_TIME;
 
     const article: Record<string, unknown> = {
         '@context': 'https://schema.org',
@@ -116,14 +136,12 @@ export default function SeoHead() {
             logo: { '@type': 'ImageObject', url: `${SITE_ORIGIN}/logo.svg` }
         }
     };
-    if (modified) {
-        article.dateModified = modified;
-        article.datePublished = modified;
-    }
+    article.dateModified = dateModified;
+    article.datePublished = datePublished;
 
     const breadcrumb = {
         '@context': 'https://schema.org',
-        ...buildBreadcrumb(lang, path)
+        ...buildBreadcrumb(lang, path, baseTitle)
     };
 
     useHead({

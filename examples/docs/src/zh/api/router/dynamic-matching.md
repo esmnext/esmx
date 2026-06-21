@@ -1,10 +1,10 @@
 ---
-titleSuffix: "Dynamic Route Matching"
-description: "Learn how to use dynamic segments, optional parameters, wildcards, query strings, and hash fragments in @esmx/router route patterns."
+titleSuffix: "@esmx/router 路径参数与通配符"
+description: "介绍如何在 @esmx/router 的路由模式中使用动态片段、可选参数、通配符、查询字符串与哈希片段。"
 head:
   - - "meta"
     - name: "keywords"
-      content: "dynamic routes, route params, route parameters, path-to-regexp, wildcard routes, catch-all routes, query params, optional params"
+      content: "Esmx, 动态路由, 路由参数, path-to-regexp, 通配符路由, 全捕获路由, 查询参数, 可选参数"
 ---
 
 # 动态路由匹配

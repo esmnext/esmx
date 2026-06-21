@@ -1,6 +1,6 @@
 ---
 titleSuffix: "使用路径别名简化导入"
-description: "详细介绍 Esmx 框架的路径别名机制，包括简化导入路径、避免深层嵌套、类型安全和模块解析优化等特性，帮助开发者提升代码可维护性。"
+description: "Esmx 路径别名机制：简化导入路径、消除深层相对引用、集成 TypeScript 类型安全，并优化模块解析，提升代码可维护性。"
 head:
   - - "meta"
     - name: "keywords"
@@ -132,3 +132,8 @@ export default {
 3. 过度使用自定义别名可能会影响代码的可维护性和构建优化。
 
 :::
+
+## 相关
+
+- [模块链接](/zh/guide/essentials/module-linking) —— 跨服务导入如何在链接的模块间解析
+- [基础路径](/zh/guide/essentials/base-path) —— 在配置别名的同时设置部署路径

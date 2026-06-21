@@ -1,6 +1,6 @@
 ---
 titleSuffix: "Styles in Esmx Federation"
-description: "How CSS travels through Esmx's federation manifest. Write `import './x.css'` like always — Esmx makes sure the browser gets a real `<link rel=\"stylesheet\">` regardless of which bundler each remote uses."
+description: "How CSS travels through Esmx's federation manifest: write import './x.css' and the host injects a real <link rel=\"stylesheet\"> for every touched chunk."
 head:
   - - "meta"
     - name: "keywords"
@@ -138,3 +138,8 @@ attribute. Browsers refuse to apply tampered stylesheets.
 - [Render context — `rc.css()` / `rc.preload()`](/api/core/render-context)
 - Each bundler's manifest format includes the `chunks[*].css[]` array
   documented above.
+
+## Related
+
+- [Render Context](/guide/essentials/render-context) — `rc.css()` / `rc.preload()` emit the collected stylesheet links
+- [Module Linking](/guide/essentials/module-linking) — how remotes own and share their styles

@@ -1,6 +1,6 @@
 ---
 titleSuffix: "PackConfig 打包配置 API"
-description: "详细介绍 Esmx 框架的 PackConfig 配置接口，包括软件包打包规则、输出配置和生命周期钩子，帮助开发者实现标准化的构建流程。"
+description: "Esmx PackConfig 接口：软件包打包规则、输出配置与生命周期钩子，实现标准化构建。"
 head:
   - - "meta"
     - name: "keywords"

@@ -1,5 +1,5 @@
 ---
-titleSuffix: "类型参考"
+titleSuffix: "@esmx/router 类型定义"
 description: "全面的 @esmx/router 和 @esmx/router-vue 类型参考，包括所有导出类型、枚举、接口和已弃用类型。"
 head:
   - - "meta"

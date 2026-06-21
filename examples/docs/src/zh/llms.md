@@ -1,6 +1,6 @@
 ---
 titleSuffix: "用 AI 助手开发 Esmx"
-description: "Esmx 框架的 AI 单文件简报:package.json esmx 模块协议、esmx validate CLI 验证环、遗留语法。让 Claude/Cursor/Copilot/Gemini 写 Esmx 代码前先喂这一页。"
+description: "Esmx 的 AI 单文件简报：模块协议、esmx validate 验证、遗留语法。让 Claude、Cursor、Copilot、Gemini 写 Esmx 代码前先读这页。"
 head:
   - - "meta"
     - name: "keywords"

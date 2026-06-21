@@ -288,3 +288,8 @@ The legacy traps the new protocol removes:
 - **Nothing is validated until runtime.** No version checks, no export checks, no structured diagnostics.
 
 Converting all of this is a mechanical rewrite (codemod-able, but there is no shipped command). Per RFC 0001 the legacy syntax is removed entirely in a later phase — there is no long-term dual syntax.
+
+## Related
+
+- [Alias](/guide/essentials/alias) — how cross-service imports between linked modules are resolved
+- [Styles](/guide/essentials/styles) — how linked remotes own and share their CSS

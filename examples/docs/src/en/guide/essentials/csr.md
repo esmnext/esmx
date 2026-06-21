@@ -65,3 +65,8 @@ export default {
         );
     }
 } satisfies EsmxOptions;
+
+## Related
+
+- [Render Context](/guide/essentials/render-context) — the rendering context and resource injection methods used in CSR entries
+- [Styles](/guide/essentials/styles) — how CSS is collected and injected during rendering

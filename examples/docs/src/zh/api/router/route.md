@@ -320,3 +320,8 @@ Node.js HTTP 响应对象（SSR 期间可用）。
 ```ts
 const routeCopy = route.clone();
 ```
+
+## 相关
+
+- [路由介绍](/zh/guide/router/introduction) —— 路由如何匹配与解析
+- [快速开始](/zh/guide/router/getting-started) —— 在实践中定义路由并读取路由状态

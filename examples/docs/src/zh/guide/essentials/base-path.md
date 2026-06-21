@@ -1,6 +1,6 @@
 ---
 titleSuffix: "基础路径与静态资源管理"
-description: "详细介绍 Esmx 框架的基础路径配置，包括多环境部署、CDN 分发和资源访问路径设置，帮助开发者实现灵活的静态资源管理。"
+description: "Esmx 基础路径配置：覆盖多环境部署、CDN 分发与资源访问路径设置，实现灵活的静态资源管理。"
 head:
   - - "meta"
     - name: "keywords"
@@ -69,3 +69,8 @@ const rc = await esmx.render({
 - 在生产环境中，建议通过环境变量或请求头来动态决定基础路径，避免硬编码。
 - 使用 CDN 时，确保基础路径指向 CDN 域名，以充分利用缓存和加速能力。
 - 多语言站点可以通过二级目录（如 `/cn/`、`/en/`）或独立域名来区分，根据业务需求选择合适的方案。
+
+## 相关
+
+- [渲染上下文](/zh/guide/essentials/render-context) —— 设置 `base` 路径所在的 `esmx.render()` 上下文
+- [客户端渲染](/zh/guide/essentials/csr) —— 基础路径如何与 CSR 输出协同

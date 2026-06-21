@@ -1,6 +1,6 @@
 ---
 titleSuffix: "SSR RenderContext API Reference"
-description: "Detailed introduction to Esmx framework's RenderContext core class, including rendering control, resource management, state synchronization, and routing control, helping developers implement efficient Server-Side Rendering."
+description: "RenderContext in Esmx: rendering control, resource collection, state synchronization, and routing for efficient SSR."
 head:
   - - "meta"
     - name: "keywords"

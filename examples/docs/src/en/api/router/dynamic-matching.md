@@ -1,5 +1,5 @@
 ---
-titleSuffix: "Dynamic Route Matching"
+titleSuffix: "@esmx/router Path Params & Wildcards"
 description: "Learn how to use dynamic segments, optional parameters, wildcards, query strings, and hash fragments in @esmx/router route patterns."
 head:
   - - "meta"
