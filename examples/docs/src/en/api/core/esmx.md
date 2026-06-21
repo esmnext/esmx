@@ -1,6 +1,6 @@
 ---
 titleSuffix: "Framework Core Class API Reference"
-description: "Detailed introduction to Esmx framework's core class API, including application lifecycle management, static resource handling, and Server-Side Rendering capabilities, helping developers deeply understand the framework's core functionality."
+description: "The Esmx core class: application lifecycle, static asset handling, and server-side rendering APIs that drive an Esmx app."
 head:
   - - "meta"
     - name: "keywords"

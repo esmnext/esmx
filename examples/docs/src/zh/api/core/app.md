@@ -1,6 +1,6 @@
 ---
 titleSuffix: "App 应用核心接口"
-description: "详细介绍 Esmx 框架的 App 接口，包括应用生命周期管理、静态资源处理和服务端渲染功能，帮助开发者理解和使用应用核心功能。"
+description: "Esmx App 接口：应用生命周期管理、静态资源处理与服务端渲染等核心应用能力。"
 head:
   - - "meta"
     - name: "keywords"

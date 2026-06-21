@@ -1,5 +1,5 @@
 ---
-titleSuffix: "From Micro-Frontend Dilemma to ESM Innovation: The Evolution of Esmx Framework"
+titleSuffix: "Esmx Blog"
 description: "Deep dive into Esmx framework's evolution from traditional micro-frontend architecture dilemmas to ESM-based innovations, sharing technical insights and practical experiences in performance optimization, dependency management, and build tool selection."
 head:
   - - "meta"
