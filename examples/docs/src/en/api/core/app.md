@@ -82,3 +82,8 @@ Production environment build function. Used for resource bundling and optimizati
 - **Type**: `() => Promise<boolean>`
 
 Resource cleanup function. Used to close the server, disconnect connections, etc. Returns true upon successful cleanup, false upon failure.
+
+## Related
+
+- [Introduction](/guide/start/introduction) — how the App fits into the Esmx application lifecycle
+- [Rspack](/guide/essentials/rspack) — the build pipeline behind the App's dev and build hooks

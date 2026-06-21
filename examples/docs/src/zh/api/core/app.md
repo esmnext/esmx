@@ -90,3 +90,8 @@ res.end(rc.html);
 **返回值：**
 - 清理成功返回 `true`
 - 清理失败返回 `false`
+
+## 相关
+
+- [介绍](/zh/guide/start/introduction) —— App 在 Esmx 应用生命周期中的位置
+- [Rspack](/zh/guide/essentials/rspack) —— App 的开发与构建钩子背后的构建流程

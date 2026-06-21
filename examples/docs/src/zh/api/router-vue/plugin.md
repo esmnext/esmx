@@ -79,3 +79,8 @@ new Vue({
 1. **注册全局组件**：`RouterLink` 和 `RouterView` 在所有模板中可用，无需显式导入
 2. **设置实例属性**：配置 `$router` 和 `$route` 为响应式属性，可通过选项式 API 中的 `this.$router` 和 `this.$route` 访问
 3. **Vue 2 兼容**：自动检测 Vue 版本并应用相应的设置机制（Vue 2 使用原型增强，Vue 3 使用 `globalProperties`）
+
+## 相关
+
+- [Vue 3 集成](/zh/guide/router/vue3) —— 在 Vue 3 应用中接入路由
+- [Vue 2 集成](/zh/guide/router/vue2) —— 在 Vue 2 应用中接入路由

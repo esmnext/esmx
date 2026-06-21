@@ -1,6 +1,6 @@
 ---
 titleSuffix: "@esmx/router Scroll Control"
-description: "Learn how @esmx/router handles scroll position — automatic scroll to top, scroll restoration on back/forward, keeping scroll position, and scrolling to elements."
+description: "How @esmx/router manages scroll position: scroll to top on push, restore on back/forward, keep position with keepScrollPosition, and scroll to elements."
 head:
   - - "meta"
     - name: "keywords"

@@ -1,6 +1,6 @@
 ---
 titleSuffix: "Router Class API Reference"
-description: "Detailed API reference for the @esmx/router Router class, including constructor options, instance properties, navigation methods, guard registration, and lifecycle management."
+description: "@esmx/router Router class API: constructor options, instance properties, navigation methods, guard registration, history/memory modes, and lifecycle."
 head:
   - - "meta"
     - name: "keywords"
@@ -486,3 +486,8 @@ Destroys the router instance, cleaning up all resources including navigation lis
 ```ts
 router.destroy();
 ```
+
+## Related
+
+- [Router Introduction](/guide/router/introduction) — concepts and design behind `@esmx/router`
+- [Getting Started](/guide/router/getting-started) — set up the router and define your first routes

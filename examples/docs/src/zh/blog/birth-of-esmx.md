@@ -1,6 +1,6 @@
 ---
 titleSuffix: "Esmx 博客"
-description: "深入探讨 Esmx 从传统微前端架构的困境走向 ESM 原生方案的创新历程，分享在性能优化、依赖治理与构建工具选型等方面的技术实践。"
+description: "Esmx 从传统微前端困境走向 ESM 原生方案的演进历程，分享性能优化、依赖治理与构建工具选型的技术实践。"
 head:
   - - "meta"
     - name: "keywords"

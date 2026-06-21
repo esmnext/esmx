@@ -732,3 +732,8 @@ const report = esmx.generateSizeReport();
 console.log(report.text);
 console.log(`Total files: ${report.json.totalFiles}, Total size: ${report.json.totalSize} bytes`);
 ```
+
+## Related
+
+- [Introduction](/guide/start/introduction) — what Esmx is and the problems it solves
+- [Rspack](/guide/essentials/rspack) — configure the build that the Esmx instance drives

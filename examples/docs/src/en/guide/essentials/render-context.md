@@ -220,3 +220,8 @@ export const desktop = async (rc: RenderContext) => {};
    - Reasonably use `modulePreload` to optimize module loading.
    - Avoid unnecessary resource loading.
    - Utilize the browser caching mechanism to optimize loading performance.
+
+## Related
+
+- [Client-Side Rendering](/guide/essentials/csr) — a concrete entry that consumes the render context
+- [Styles](/guide/essentials/styles) — how `rc.css()` / `rc.preload()` emit stylesheet links

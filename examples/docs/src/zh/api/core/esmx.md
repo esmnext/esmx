@@ -732,3 +732,8 @@ const report = esmx.generateSizeReport();
 console.log(report.text);
 console.log(`总文件: ${report.json.totalFiles}, 总大小: ${report.json.totalSize} 字节`);
 ```
+
+## 相关
+
+- [介绍](/zh/guide/start/introduction) —— Esmx 是什么以及它解决的问题
+- [Rspack](/zh/guide/essentials/rspack) —— 配置由 Esmx 实例驱动的构建

@@ -220,3 +220,8 @@ export const desktop = async (rc: RenderContext) => {};
    - 合理使用 `modulePreload` 优化模块加载。
    - 避免不必要的资源加载。
    - 利用浏览器缓存机制优化加载性能。
+
+## 相关
+
+- [客户端渲染](/zh/guide/essentials/csr) —— 消费渲染上下文的具体入口
+- [样式](/zh/guide/essentials/styles) —— `rc.css()` / `rc.preload()` 如何 emit 样式表链接

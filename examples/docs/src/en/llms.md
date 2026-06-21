@@ -1,6 +1,6 @@
 ---
 titleSuffix: "Using Esmx with an AI assistant"
-description: "Single-file briefing on the Esmx framework for LLMs: the package.json esmx module protocol, the esmx validate CLI loop, and legacy syntax. Feed this page to Claude/Cursor/Copilot/Gemini before asking them to write Esmx code."
+description: "Single-file Esmx briefing for AI assistants: the package.json esmx module protocol, the esmx validate CLI loop, and legacy syntax. Feed it before coding."
 head:
   - - "meta"
     - name: "keywords"

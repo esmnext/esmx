@@ -1,6 +1,6 @@
 ---
 titleSuffix: "Esmx Blog"
-description: "Deep dive into Esmx framework's evolution from traditional micro-frontend architecture dilemmas to ESM-based innovations, sharing technical insights and practical experiences in performance optimization, dependency management, and build tool selection."
+description: "How Esmx evolved from the limits of traditional micro-frontend architectures to a native ESM and Import Maps design, with lessons on performance and builds."
 head:
   - - "meta"
     - name: "keywords"

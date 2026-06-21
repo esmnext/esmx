@@ -1,6 +1,6 @@
 ---
 titleSuffix: "Core Concepts and Design"
-description: "Esmx is a modern front-end framework based on native ESM and Import Maps, designed to address the complexities of front-end modularization and micro-frontend architecture."
+description: "Esmx is a modern front-end framework built on native ESM and Import Maps, solving the complexity of modularization and micro-frontend architecture."
 head:
   - - "meta"
     - name: "keywords"
@@ -49,3 +49,7 @@ Esmx focuses on the linking and composition of modules and is not tied to any sp
 Esmx is not a simple encapsulation of existing tools, but a rethinking of the front-end development paradigm. By embracing web standards, it hands over complexity to the browser, allowing developers to return to a purer and more efficient development experience.
 
 Ready to get started? Let's explore the powerful features of Esmx together!
+
+## Related
+
+- [The Birth of Esmx](/blog/birth-of-esmx) — the design thinking and motivation behind the framework

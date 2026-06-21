@@ -486,3 +486,8 @@ try {
 ```ts
 router.destroy();
 ```
+
+## 相关
+
+- [路由介绍](/zh/guide/router/introduction) —— `@esmx/router` 的概念与设计
+- [快速开始](/zh/guide/router/getting-started) —— 配置路由器并定义第一个路由
