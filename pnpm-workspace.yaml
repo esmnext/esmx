@@ -27,4 +27,4 @@ allowBuilds:
   puppeteer: false
   protobufjs: false
   less: false
-  nx: set this to true or false
+  nx: false
