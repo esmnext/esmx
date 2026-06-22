@@ -48,7 +48,18 @@ export async function copyArtifacts() {
     for (const { name, path } of namespacedDirs) {
         const targetDir = join(config.outDir, name);
         mkdirSync(targetDir, { recursive: true });
-        cpSync(path, targetDir, { recursive: true });
+        // The hub is overlaid at the site root below, so its root-relative HTML
+        // pages (landing + each `/<framework>/` demo) already exist at the root.
+        // Copy only the hub's ASSETS to its `/ssr-micro-hub/` namespace — the
+        // root HTML loads its scripts/styles from there — and skip the HTML,
+        // which would otherwise duplicate every root page under
+        // `/ssr-micro-hub/*` (canonical-duplicate URLs Google indexed instead
+        // of the clean paths).
+        const filter =
+            name === 'ssr-micro-hub'
+                ? (src) => !src.endsWith('.html')
+                : undefined;
+        cpSync(path, targetDir, { recursive: true, filter });
         log.info(
             `Copied ${toDisplayPath(path)} to ${toDisplayPath(targetDir)}`
         );
