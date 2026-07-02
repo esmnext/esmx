@@ -6,7 +6,8 @@ export default {
         return import('@esmx/rspack-react').then((m) =>
             m.createRspackReactApp(esmx, {
                 config(context) {
-                    // Custom Rspack configuration
+                    // Customize the Rspack config object, e.g.:
+                    // context.config.resolve = { ...context.config.resolve };
                 }
             })
         );

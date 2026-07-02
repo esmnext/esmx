@@ -64,8 +64,8 @@ pnpm create esmx my-project
 然后开始开发：
 ```bash
 cd my-project
-pnpm install
-pnpm dev
+npm install   # 或:pnpm install / yarn
+npm run dev   # 或:pnpm dev / yarn dev
 ```
 
 ## 📚 文档

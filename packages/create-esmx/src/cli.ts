@@ -28,7 +28,7 @@ ${color.bold('Usage:')}
   ${createCmd} [project-name] [options]
 
 ${color.bold('Options:')}
-  -t, --template <template>    Template to use (default: vue2-csr)
+  -t, --template <template>    Template to use (prompted if omitted)
   -n, --name <name>            Project name or path
   -f, --force                  Force overwrite existing directory
   -h, --help                   Show help information

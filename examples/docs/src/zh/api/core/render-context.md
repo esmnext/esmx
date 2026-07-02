@@ -287,7 +287,7 @@ const rc = await esmx.render({
 
 服务端渲染入口函数名称。用于从 entry.server.ts 中选择要使用的渲染函数。
 
-```ts title="entry.node.ts"
+```ts title="src/entry.node.ts"
 export default async (rc: RenderContext) => {
 };
 
