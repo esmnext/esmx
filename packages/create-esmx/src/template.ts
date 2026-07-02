@@ -99,7 +99,10 @@ export function copyTemplateFiles(
 
     for (const file of files) {
         const filePath = join(templatePath, file);
-        const targetFilePath = join(targetPath, file);
+        // npm strips a literal `.gitignore` from published package tarballs, so
+        // templates ship it as `_gitignore` and we restore the dotfile on copy.
+        const targetFileName = file === '_gitignore' ? '.gitignore' : file;
+        const targetFilePath = join(targetPath, targetFileName);
         const stat = statSync(filePath);
 
         if (stat.isDirectory()) {
