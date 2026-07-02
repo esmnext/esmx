@@ -1,5 +1,5 @@
 ---
-titleSuffix: "@esmx/router React 集成"
+titleSuffix: "@esmx/router"
 description: "完整的 @esmx/router 与 React 集成指南 — 涵盖微应用模式、renderToString SSR、自定义 hooks、RouterLink 组件及完整示例。"
 head:
   - - "meta"
