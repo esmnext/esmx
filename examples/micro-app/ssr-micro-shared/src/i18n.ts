@@ -32,7 +32,7 @@ const messages = {
         navQuickstart: 'Quick Start',
         navEcosystem: 'Ecosystem',
         navDocs: 'Docs',
-        heroBadge: 'v3.0.0-rc.117 Preview',
+        heroBadge: 'Preview',
         heroTitleLead: 'A Universal Rendering Framework',
         heroTitleGradient: 'Built on Native ESM',
         heroSubtitle:
@@ -136,7 +136,7 @@ const messages = {
         navQuickstart: '快速开始',
         navEcosystem: '生态',
         navDocs: '文档',
-        heroBadge: 'v3.0.0-rc.117 预览版',
+        heroBadge: '预览版',
         heroTitleLead: '基于原生 ESM 的',
         heroTitleGradient: '通用渲染框架',
         heroSubtitle:

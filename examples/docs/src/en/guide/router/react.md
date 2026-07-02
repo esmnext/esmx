@@ -1,5 +1,5 @@
 ---
-titleSuffix: "React Integration — @esmx/router"
+titleSuffix: "@esmx/router"
 description: "Integrate @esmx/router with React using the micro-app pattern: mount, unmount, SSR via renderToString, custom hooks, a RouterLink equivalent, and examples."
 head:
   - - "meta"

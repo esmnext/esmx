@@ -1,5 +1,5 @@
 ---
-titleSuffix: "Vue 2 Integration — @esmx/router"
+titleSuffix: "@esmx/router"
 description: "Complete guide to integrating @esmx/router with Vue 2.7+ — plugin setup, Composition API and Options API usage, SSR, and full working examples."
 head:
   - - "meta"

@@ -1,5 +1,5 @@
 ---
-titleSuffix: "@esmx/router Vue 3 集成"
+titleSuffix: "@esmx/router"
 description: "完整的 @esmx/router 与 Vue 3 集成指南 — 涵盖插件配置、组合式 API、SSR、RouterView、RouterLink 及完整示例。"
 head:
   - - "meta"

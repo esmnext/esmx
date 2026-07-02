@@ -106,7 +106,13 @@ export default function SeoHead() {
 
     const suffix = page.frontmatter?.titleSuffix as string | undefined;
     const baseTitle = page.title || SITE_NAME;
-    const title = suffix ? `${baseTitle} - ${suffix}` : baseTitle;
+    // Compose `H1 - suffix`, but if the suffix already restates the H1 (many
+    // pages set titleSuffix to a phrase containing the heading), fall back to
+    // the suffix alone so the <title> doesn't repeat the same words twice.
+    const title =
+        suffix && !suffix.includes(baseTitle)
+            ? `${baseTitle} - ${suffix}`
+            : suffix || baseTitle;
     const description =
         page.description ||
         (page.frontmatter?.description as string | undefined) ||
