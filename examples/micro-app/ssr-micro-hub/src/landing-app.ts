@@ -412,7 +412,7 @@ export class LandingApp extends BaseApp {
 
         const rows = MATRIX.map(([label, dot, cells]) => {
             const tds = cells
-                .map((url) => {
+                .map((url, i) => {
                     if (!url)
                         return `<td class="matrix__cell matrix__cell--empty">—</td>`;
                     const to = localePath(this.router, url);
@@ -420,7 +420,7 @@ export class LandingApp extends BaseApp {
                         to,
                         type: 'push'
                     });
-                    return `<td class="matrix__cell"><a href="${resolved.attributes.href}" data-to="${to}" class="matrix__dot" aria-label="${label}"></a></td>`;
+                    return `<td class="matrix__cell"><a href="${resolved.attributes.href}" data-to="${to}" class="matrix__dot" aria-label="${label} ${['Vite 8', 'Rspack', 'Rsbuild'][i]} demo"></a></td>`;
                 })
                 .join('');
             return `<tr><th scope="row"><span class="esmx-dot ${dot}" aria-hidden="true"></span>${label}</th>${tds}</tr>`;
