@@ -289,6 +289,20 @@ The legacy traps the new protocol removes:
 
 Converting all of this is a mechanical rewrite (codemod-able, but there is no shipped command). Per RFC 0001 the legacy syntax is removed entirely in a later phase — there is no long-term dual syntax.
 
+## Module Linking vs Module Federation
+
+Both share code across independently built apps, but the mechanism differs:
+
+| | Esmx Module Linking | Module Federation |
+|---|---|---|
+| Runtime | Native ESM + Import Maps (browser-native) | Webpack/Rspack runtime container |
+| Overhead | Zero extra runtime | Federation runtime + shared-scope negotiation |
+| SSR | First-class, SEO-friendly | Extra setup, historically fragile |
+| Lock-in | Standard `import`, any bundler | Bundler-specific plugin + config |
+| Versioning | Explicit provider, one owner per package | Runtime shared-scope negotiation |
+
+Because linking rides on the browser's own module system, there is no sandbox, no proprietary loader, and nothing extra to ship at runtime — the same `import` works in the browser, in SSR, and in tests.
+
 ## Related
 
 - [Alias](/guide/essentials/alias) — how cross-service imports between linked modules are resolved

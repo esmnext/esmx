@@ -1,10 +1,10 @@
 ---
 titleSuffix: "框架核心理念与设计"
-description: "Esmx 是一个基于原生 ESM 和 Import Maps 的现代化前端框架，旨在解决前端模块化和微前端架构中的复杂性。"
+description: "Esmx 是基于原生 ESM 的微前端框架——支持 SSR、框架无关，通过 Import Maps 实现零运行时模块链接。无需 Module Federation，无需沙箱。"
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, 微前端, ESM, Import Maps, 模块化, 框架无关"
+      content: "Esmx, 原生 ESM 微前端, 微前端框架, ESM 微前端, SSR 微前端, Module Federation 替代, Import Maps, 零运行时, 框架无关"
 ---
 
 # 介绍

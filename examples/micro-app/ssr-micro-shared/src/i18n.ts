@@ -27,7 +27,7 @@ const messages = {
         landingMetaTitle:
             'Esmx - Universal Rendering Framework Built on Native ESM',
         landingMetaDesc:
-            'A universal rendering framework based on native ESM + Import Maps, supporting CSR/SSR and module linking with zero extra runtime overhead',
+            'Esmx is an SEO-friendly SSR micro-frontend framework built on native ESM + Import Maps — CSR/SSR, framework-agnostic module linking, zero runtime overhead, no Module Federation.',
         navFeatures: 'Features',
         navQuickstart: 'Quick Start',
         navEcosystem: 'Ecosystem',
@@ -131,7 +131,7 @@ const messages = {
         // Landing page (LandingApp)
         landingMetaTitle: 'Esmx - 基于原生 ESM 的通用渲染框架',
         landingMetaDesc:
-            '基于原生 ESM + Import Maps 的通用渲染框架，支持 CSR/SSR 与模块链接，零额外运行时开销',
+            'Esmx 是基于原生 ESM + Import Maps 的 SSR 微前端框架——SEO 友好，支持 CSR/SSR 与跨框架模块链接，零运行时开销，无需 Module Federation。',
         navFeatures: '特性',
         navQuickstart: '快速开始',
         navEcosystem: '生态',

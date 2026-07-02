@@ -1,6 +1,7 @@
 [
-  "introduction",
-  "glossary",
-  "environment",
-  "getting-started"
+    "introduction",
+    "native-esm-micro-frontend",
+    "glossary",
+    "environment",
+    "getting-started"
 ]
