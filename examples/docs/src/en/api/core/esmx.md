@@ -108,14 +108,14 @@ interface EsmxOptions {
 }
 ```
 
-#### root
+### root
 
 - **Type**: `string`
 - **Default**: `process.cwd()`
 
 Project root directory path. Can be an absolute or relative path; relative paths are resolved based on the current working directory.
 
-#### isProd
+### isProd
 
 - **Type**: `boolean`
 - **Default**: `process.env.NODE_ENV === 'production'`
@@ -124,26 +124,26 @@ Environment identifier.
 - `true`: Production environment
 - `false`: Development environment
 
-#### basePathPlaceholder
+### basePathPlaceholder
 
 - **Type**: `string | false`
 - **Default**: `'[[[___ESMX_DYNAMIC_BASE___]]]'`
 
 Base path placeholder configuration. Used for runtime dynamic replacement of resource base paths. Set to `false` to disable this feature.
 
-#### modules
+### modules
 
 - **Type**: `ModuleConfig`
 
 Module configuration options. Used to configure project module resolution rules, including module aliases, external dependencies, etc.
 
-#### packs
+### packs
 
 - **Type**: `PackConfig`
 
 Packaging configuration options. Used to package build artifacts into standard npm .tgz format packages.
 
-#### devApp
+### devApp
 
 - **Type**: `(esmx: Esmx) => Promise<App>`
 
@@ -161,7 +161,7 @@ export default {
 }
 ```
 
-#### server
+### server
 
 - **Type**: `(esmx: Esmx) => Promise<void>`
 
@@ -184,7 +184,7 @@ export default {
 }
 ```
 
-#### postBuild
+### postBuild
 
 - **Type**: `(esmx: Esmx) => Promise<void>`
 

@@ -110,7 +110,7 @@ interface RenderContextOptions {
 }
 ```
 
-#### base
+### base
 
 - **类型**: `string`
 - **默认值**: `''`
@@ -120,7 +120,7 @@ interface RenderContextOptions {
 - 支持运行时动态配置，无需重新构建
 - 常用于多语言站点、微前端应用等场景
 
-#### entryName
+### entryName
 
 - **类型**: `string`
 - **默认值**: `'default'`
@@ -135,7 +135,7 @@ export const desktop = async (rc: RenderContext) => {
 };
 ```
 
-#### params
+### params
 
 - **类型**: `Record<string, any>`
 - **默认值**: `{}`
@@ -152,7 +152,7 @@ const rc = await esmx.render({
 });
 ```
 
-#### importmapMode
+### importmapMode
 
 - **类型**: `'inline' | 'js'`
 - **默认值**: `'inline'`

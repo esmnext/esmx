@@ -108,14 +108,14 @@ interface EsmxOptions {
 }
 ```
 
-#### root
+### root
 
 - **类型**: `string`
 - **默认值**: `process.cwd()`
 
 项目根目录路径。可以是绝对路径或相对路径，相对路径基于当前工作目录解析。
 
-#### isProd
+### isProd
 
 - **类型**: `boolean`
 - **默认值**: `process.env.NODE_ENV === 'production'`
@@ -124,26 +124,26 @@ interface EsmxOptions {
 - `true`: 生产环境
 - `false`: 开发环境
 
-#### basePathPlaceholder
+### basePathPlaceholder
 
 - **类型**: `string | false`
 - **默认值**: `'[[[___ESMX_DYNAMIC_BASE___]]]'`
 
 基础路径占位符配置。用于运行时动态替换资源的基础路径。设置为 `false` 可以禁用此功能。
 
-#### modules
+### modules
 
 - **类型**: `ModuleConfig`
 
 模块配置选项。用于配置项目的模块解析规则，包括模块别名、外部依赖等配置。
 
-#### packs
+### packs
 
 - **类型**: `PackConfig`
 
 打包配置选项。用于将构建产物打包成标准的 npm .tgz 格式软件包。
 
-#### devApp
+### devApp
 
 - **类型**: `(esmx: Esmx) => Promise<App>`
 
@@ -161,7 +161,7 @@ export default {
 }
 ```
 
-#### server
+### server
 
 - **类型**: `(esmx: Esmx) => Promise<void>`
 
@@ -184,7 +184,7 @@ export default {
 }
 ```
 
-#### postBuild
+### postBuild
 
 - **类型**: `(esmx: Esmx) => Promise<void>`
 
