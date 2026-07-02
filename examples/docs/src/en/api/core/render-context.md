@@ -111,7 +111,7 @@ interface RenderContextOptions {
 }
 ```
 
-#### base
+### base
 
 - **Type**: `string`
 - **Default**: `''`
@@ -121,7 +121,7 @@ Base path for static resources.
 - Supports runtime dynamic configuration without rebuilding
 - Commonly used in multi-language sites, micro-frontend applications, and other scenarios
 
-#### entryName
+### entryName
 
 - **Type**: `string`
 - **Default**: `'default'`
@@ -136,7 +136,7 @@ export const desktop = async (rc: RenderContext) => {
 };
 ```
 
-#### params
+### params
 
 - **Type**: `Record<string, any>`
 - **Default**: `{}`
@@ -153,7 +153,7 @@ const rc = await esmx.render({
 });
 ```
 
-#### importmapMode
+### importmapMode
 
 - **Type**: `'inline' | 'js'`
 - **Default**: `'inline'`
