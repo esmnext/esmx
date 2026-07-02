@@ -52,7 +52,7 @@ const messages = {
         painSolution1:
             'No lifecycle to learn — your remote is a standard ESM module the host imports.',
         painSolution2:
-            "Federation is `import './x'` resolved by a standard import map. Your AI assistant already knows the API.",
+            "Sharing is `import './x'` resolved by a standard import map. Your AI assistant already knows the API.",
         painSolution3:
             'Stack traces, devtools, and source maps point at the real module — no proxy in between.',
         featuresTitle: 'Core Features',
@@ -154,7 +154,7 @@ const messages = {
         painSolution1:
             '没有需要学的生命周期 —— 远程就是一个标准 ESM 模块,host import 即可',
         painSolution2:
-            "联邦 = `import './x'` + 标准 import map 解析。你的 AI 助手已经会这套 API",
+            "共享就是 `import './x'` + 标准 import map 解析。你的 AI 助手已经会这套 API",
         painSolution3:
             '栈追踪、devtools、source map 都指向真实模块,中间没有 proxy',
         featuresTitle: '核心特性',

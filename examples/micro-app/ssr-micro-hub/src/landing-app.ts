@@ -114,7 +114,7 @@ export class LandingApp extends BaseApp {
             `<p class="hero-subtitle reveal reveal-delay-2">${t(this.router, 'heroSubtitle')}</p>` +
             `<div class="hero-actions reveal reveal-delay-3">` +
             `<a href="#quickstart" class="btn btn-primary">${t(this.router, 'heroBtnQuickstart')}<span aria-hidden="true">${ARROW_RIGHT_ICON}</span></a>` +
-            `<a href="${localePath(this.router, '/demo/')}" class="btn btn-primary" data-to="${localePath(this.router, '/demo/')}">${t(this.router, 'heroBtnDemo')}<span aria-hidden="true">${ARROW_RIGHT_ICON}</span></a>` +
+            `<a href="${localePath(this.router, '/demo/')}" class="btn btn-outline" data-to="${localePath(this.router, '/demo/')}">${t(this.router, 'heroBtnDemo')}<span aria-hidden="true">${ARROW_RIGHT_ICON}</span></a>` +
             `<a href="https://github.com/esmnext/esmx" target="_blank" class="btn btn-outline"><span aria-hidden="true">${GITHUB_ICON}</span>GitHub</a>` +
             `</div>` +
             `<div class="hero-trust reveal reveal-delay-4">` +
@@ -134,7 +134,11 @@ export class LandingApp extends BaseApp {
         );
     }
 
-    private getPainPointCard(delay: string, solution: string): string {
+    private getPainPointCard(
+        delay: string,
+        pain: string,
+        solution: string
+    ): string {
         return (
             `<div class="painpoint-card reveal reveal-delay-${delay}">` +
             `<div class="painpoint-header">` +
@@ -142,9 +146,7 @@ export class LandingApp extends BaseApp {
             `<span class="painpoint-label-bad">${t(this.router, 'painLabelBad')}</span>` +
             `</div>` +
             `<div class="painpoint-list">` +
-            `<div class="painpoint-item"><span class="mark bad" aria-hidden="true">${X_ICON}</span><span>${t(this.router, 'painBad1')}</span></div>` +
-            `<div class="painpoint-item"><span class="mark bad" aria-hidden="true">${X_ICON}</span><span>${t(this.router, 'painBad2')}</span></div>` +
-            `<div class="painpoint-item"><span class="mark bad" aria-hidden="true">${X_ICON}</span><span>${t(this.router, 'painBad3')}</span></div>` +
+            `<div class="painpoint-item"><span class="mark bad" aria-hidden="true">${X_ICON}</span><span>${pain}</span></div>` +
             `</div>` +
             `<div class="painpoint-divider"></div>` +
             `<div class="painpoint-header">` +
@@ -166,9 +168,21 @@ export class LandingApp extends BaseApp {
             `<p class="section-desc">${t(this.router, 'whyDesc')}</p>` +
             `</div>` +
             `<div class="painpoints-grid">` +
-            this.getPainPointCard('1', t(this.router, 'painSolution1')) +
-            this.getPainPointCard('2', t(this.router, 'painSolution2')) +
-            this.getPainPointCard('3', t(this.router, 'painSolution3')) +
+            this.getPainPointCard(
+                '1',
+                t(this.router, 'painBad1'),
+                t(this.router, 'painSolution1')
+            ) +
+            this.getPainPointCard(
+                '2',
+                t(this.router, 'painBad2'),
+                t(this.router, 'painSolution2')
+            ) +
+            this.getPainPointCard(
+                '3',
+                t(this.router, 'painBad3'),
+                t(this.router, 'painSolution3')
+            ) +
             `</div>` +
             `</div>` +
             `</section>`
@@ -308,7 +322,8 @@ export class LandingApp extends BaseApp {
             preact: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><path fill="#673AB8" d="M64 0L31.1 19v38L64 76l32.9-19V19L64 0z"/><path fill="#fff" d="M64 8L39.6 22v28L64 64l24.4-14V22L64 8z"/><path fill="#673AB8" d="M64 24l-12.2 7v14L64 52l12.2-7V31L64 24z"/><path fill="#FF73FA" d="M31.1 57L64 76l32.9-19v12L64 88 31.1 69V57z"/><path fill="#9D8DF1" d="M31.1 69L64 88l32.9-19v12L64 100 31.1 81V69z"/><path fill="#fff" d="M31.1 81L64 100l32.9-19v12L64 112 31.1 93V81z"/></svg>`,
             solid: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><path fill="#446b9e" d="M64 0L15.8 27.8v72.4L64 128l48.2-27.8V27.8L64 0z"/><path fill="#2c4f7c" d="M64 8L23.6 31.3v65.4L64 120l40.4-23.3V31.3L64 8z"/><path fill="#76b3e1" d="M64 16L31.4 34.8v57.4L64 112l32.6-19.8V34.8L64 16z"/><path fill="#fff" d="M64 24L39.2 38.3v51.4L64 104l24.8-14.3V38.3L64 24z"/></svg>`,
             html5: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><path fill="#E44D26" d="M19.037 113.876L9.032 1.661h109.936l-10.016 112.198-45.019 12.48z"/><path fill="#F16529" d="M64 116.8l36.378-10.086 8.559-95.878H64z"/><path fill="#EBEBEB" d="M64 52.455H45.788L44.53 38.361H64V24.599H29.489l.33 3.692 3.382 37.927H64zm0 35.743l-.061.017-15.327-4.14-.979-10.975H33.816l1.928 21.609 28.193 7.826.063-.017z"/><path fill="#fff" d="M63.952 52.455v13.762h16.947l-1.597 17.849-15.35 4.143v14.319l28.215-7.82.207-2.325 3.234-36.233.335-3.696h-3.708zm0-27.856v13.762h33.244l.276-3.092.628-6.978.329-3.692z"/></svg>`,
-            svelte: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><path fill="#FF3E00" d="M98.96 14.53a8.96 8.96 0 0 0-8.14 5.18l-9.68 20.1c-1.05 2.18-.9 4.76.4 6.8l12.28 18.9a8.96 8.96 0 0 1-7.55 13.78h-7.9a8.96 8.96 0 0 0-8.14 5.18l-9.68 20.1a8.96 8.96 0 0 1-16.14 0l-9.68-20.1a8.96 8.96 0 0 0-8.14-5.18h-7.9a8.96 8.96 0 0 1-7.55-13.78l12.28-18.9a8.96 8.96 0 0 0 .4-6.8l-9.68-20.1a8.96 8.96 0 0 1 16.14-7.96l9.68 20.1a8.96 8.96 0 0 0 8.14 5.18h15.8a8.96 8.96 0 0 0 8.14-5.18l9.68-20.1a8.96 8.96 0 0 1 16.14 7.96z"/><path fill="#fff" d="M64 40a24 24 0 1 0 0 48 24 24 0 0 0 0-48zm0 8a16 16 0 1 1 0 32 16 16 0 0 1 0-32z"/></svg>`
+            svelte: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><path fill="#FF3E00" d="M98.96 14.53a8.96 8.96 0 0 0-8.14 5.18l-9.68 20.1c-1.05 2.18-.9 4.76.4 6.8l12.28 18.9a8.96 8.96 0 0 1-7.55 13.78h-7.9a8.96 8.96 0 0 0-8.14 5.18l-9.68 20.1a8.96 8.96 0 0 1-16.14 0l-9.68-20.1a8.96 8.96 0 0 0-8.14-5.18h-7.9a8.96 8.96 0 0 1-7.55-13.78l12.28-18.9a8.96 8.96 0 0 0 .4-6.8l-9.68-20.1a8.96 8.96 0 0 1 16.14-7.96l9.68 20.1a8.96 8.96 0 0 0 8.14 5.18h15.8a8.96 8.96 0 0 0 8.14-5.18l9.68-20.1a8.96 8.96 0 0 1 16.14 7.96z"/><path fill="#fff" d="M64 40a24 24 0 1 0 0 48 24 24 0 0 0 0-48zm0 8a16 16 0 1 1 0 32 16 16 0 0 1 0-32z"/></svg>`,
+            lit: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><path fill="#324FFF" d="M60 6 30 52v34l30-30z"/><path fill="#00E8FF" d="M30 86V52l15 22zM64 122l34-46V38L64 84z"/><path fill="#00E8FF" d="M64 58 98 92l-34 30-34-30z" opacity=".92"/></svg>`
         };
 
         return (
@@ -338,6 +353,9 @@ export class LandingApp extends BaseApp {
             `<a href="${localePath(this.router, '/svelte/')}" class="ecosystem-item" data-to="${localePath(this.router, '/svelte/')}">` +
             `<span aria-hidden="true">${logos.svelte}</span>` +
             '<span>Svelte</span></a>' +
+            `<a href="${localePath(this.router, '/lit/')}" class="ecosystem-item" data-to="${localePath(this.router, '/lit/')}">` +
+            `<span aria-hidden="true">${logos.lit}</span>` +
+            '<span>Lit</span></a>' +
             '</div>' +
             `</div>` +
             `</section>`
@@ -414,7 +432,7 @@ export class LandingApp extends BaseApp {
             `<div class="section-header reveal">` +
             `<span class="section-label">21 LIVE DEMOS</span>` +
             `<h2 class="section-title">Framework × Bundler</h2>` +
-            `<p class="section-desc">Every cell is one running federation remote. Click to open it.</p>` +
+            `<p class="section-desc">Every cell is a live micro-app linked via native ESM. Click to open it.</p>` +
             `</div>` +
             `<div class="matrix-wrap reveal">` +
             `<table class="matrix">` +
