@@ -86,7 +86,7 @@ async function verifyProjectStructure(
     expect(tsconfig).toMatchObject({
         compilerOptions: {
             module: 'ESNext',
-            moduleResolution: 'node',
+            moduleResolution: 'bundler',
             target: 'ESNext',
             strict: true,
             baseUrl: '.',
