@@ -61,11 +61,11 @@ Follow the interactive prompts to select:
 - **Project name** - Your project directory name
 - **Template** - Choose from Vue SSR, Vue CSR, React SSR, React CSR, Vue2 SSR, Vue2 CSR, or Shared Modules
 
-Then start development:
+Then start development. The CLI prints the exact next-step commands for the package manager you scaffolded with — in general:
 ```bash
 cd my-project
-pnpm install
-pnpm dev
+npm install   # or: pnpm install / yarn
+npm run dev   # or: pnpm dev / yarn dev
 ```
 
 ## 📚 Documentation

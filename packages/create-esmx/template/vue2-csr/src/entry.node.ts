@@ -6,7 +6,8 @@ export default {
         return import('@esmx/rspack-vue').then((m) =>
             m.createRspackVue2App(esmx, {
                 chain(context) {
-                    // Custom Rspack configuration
+                    // Tweak the config via rspack-chain, e.g.:
+                    // context.chain.resolve.alias.set('@', esmx.resolvePath('src'));
                 }
             })
         );
