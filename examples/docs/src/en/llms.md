@@ -1,5 +1,5 @@
 ---
-titleSuffix: "Using Esmx with an AI assistant"
+titleSuffix: "llms.txt Guide"
 description: "Single-file Esmx briefing for AI assistants: the package.json esmx module protocol, the esmx validate CLI loop, and legacy syntax. Feed it before coding."
 head:
   - - "meta"

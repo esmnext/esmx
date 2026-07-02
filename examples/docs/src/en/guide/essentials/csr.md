@@ -65,6 +65,7 @@ export default {
         );
     }
 } satisfies EsmxOptions;
+```
 
 ## Related
 

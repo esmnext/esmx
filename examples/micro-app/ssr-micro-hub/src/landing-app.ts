@@ -1,6 +1,7 @@
 import {
     BaseApp,
     buildSeoHead,
+    ESMX_VERSION,
     landingLd,
     localeFromPath,
     localePath,
@@ -107,9 +108,9 @@ export class LandingApp extends BaseApp {
             `<div class="hero-content">` +
             `<div class="hero-badge reveal">` +
             `<span class="hero-badge-dot"></span>` +
-            t(this.router, 'heroBadge') +
+            `v${ESMX_VERSION} ${t(this.router, 'heroBadge')}` +
             `</div>` +
-            `<h1 class="hero-title reveal reveal-delay-1">${t(this.router, 'heroTitleLead')}<span class="hero-title-gradient">${t(this.router, 'heroTitleGradient')}</span></h1>` +
+            `<h1 class="hero-title reveal reveal-delay-1">${t(this.router, 'heroTitleLead')} <span class="hero-title-gradient">${t(this.router, 'heroTitleGradient')}</span></h1>` +
             `<p class="hero-subtitle reveal reveal-delay-2">${t(this.router, 'heroSubtitle')}</p>` +
             `<div class="hero-actions reveal reveal-delay-3">` +
             `<a href="#quickstart" class="btn btn-primary">${t(this.router, 'heroBtnQuickstart')}<span aria-hidden="true">${ARROW_RIGHT_ICON}</span></a>` +
@@ -118,7 +119,7 @@ export class LandingApp extends BaseApp {
             `</div>` +
             `<div class="hero-trust reveal reveal-delay-4">` +
             `<span class="hero-trust-item"><span aria-hidden="true">${STAR_ICON}</span>GitHub</span>` +
-            `<span class="hero-trust-item">@esmx/core v3.0.0-rc.117</span>` +
+            `<span class="hero-trust-item">@esmx/core v${ESMX_VERSION}</span>` +
             `<span class="hero-trust-item">MIT License</span>` +
             `</div>` +
             `</div>` +

@@ -88,7 +88,8 @@
         "./cli": {
             "import": "./dist/cli/cli.mjs",
             "types": "./dist/cli/cli.d.ts"
-        }
+        },
+        "./package.json": "./package.json"
     },
     "module": "dist/index.mjs",
     "types": "./dist/index.d.ts",

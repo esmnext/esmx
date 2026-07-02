@@ -1,5 +1,5 @@
 ---
-titleSuffix: "用 AI 助手开发 Esmx"
+titleSuffix: "llms.txt 指南"
 description: "Esmx 的 AI 单文件简报：模块协议、esmx validate 验证、遗留语法。让 Claude、Cursor、Copilot、Gemini 写 Esmx 代码前先读这页。"
 head:
   - - "meta"
