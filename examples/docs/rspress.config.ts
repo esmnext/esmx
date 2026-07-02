@@ -5,7 +5,11 @@ import { pluginLlms } from '@rspress/plugin-llms';
 export default defineConfig({
     root: path.join(__dirname, 'src'),
     route: {
-        cleanUrls: true
+        cleanUrls: true,
+        // `src/components` holds the SeoHead global UI component, not content.
+        // Without this, Rspress turns it into a crawlable /components/SeoHead
+        // page (with a broken zh hreflang). Keep it out of the route table.
+        exclude: ['components/**']
     },
     outDir:
         process.env.NODE_ENV === 'production'
