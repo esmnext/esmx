@@ -157,7 +157,10 @@ export function organizationLd(): Record<string, unknown> {
         name: SITE_NAME,
         url: SITE_ORIGIN,
         logo: { '@type': 'ImageObject', url: `${SITE_ORIGIN}/logo.svg` },
-        sameAs: ['https://github.com/esmnext/esmx']
+        sameAs: [
+            'https://github.com/esmnext/esmx',
+            'https://www.npmjs.com/org/esmx'
+        ]
     };
 }
 

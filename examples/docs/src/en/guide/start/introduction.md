@@ -1,10 +1,10 @@
 ---
 titleSuffix: "Core Concepts and Design"
-description: "Esmx is a modern front-end framework built on native ESM and Import Maps, solving the complexity of modularization and micro-frontend architecture."
+description: "Esmx is a native-ESM micro-frontend framework — SSR-ready, framework-agnostic, with zero-runtime module linking via Import Maps. No Module Federation, no sandbox."
 head:
   - - "meta"
     - name: "keywords"
-      content: "Esmx, micro-frontend, ESM, Import Maps, modularization, framework agnostic"
+      content: "Esmx, native ESM micro frontend, esm micro frontend, micro-frontend framework, SSR micro frontend, module federation alternative, Import Maps, zero runtime, framework agnostic"
 ---
 
 # Introduction
