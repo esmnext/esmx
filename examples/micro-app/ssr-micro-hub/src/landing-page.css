@@ -1422,7 +1422,6 @@ svg {
 .landing-page a:focus-visible,
 .landing-page button:focus-visible,
 .landing-page .matrix__dot:focus-visible {
-    outline: 2px solid var(--color-primary-light, #12b2ef);
+    outline: 2px solid var(--color-primary-light, #0091d8);
     outline-offset: 2px;
-    border-radius: 4px;
 }
