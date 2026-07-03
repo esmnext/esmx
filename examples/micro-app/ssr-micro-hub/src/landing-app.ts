@@ -35,6 +35,36 @@ const BOOK_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18
  */
 const DOCS_ENTRY_PATH = '/guide/start/introduction';
 
+/**
+ * Minimal JSON syntax highlighter for the hero snippet. Wraps property keys,
+ * string values, and literals in the shared `sh-*` token classes (defined in
+ * landing-page.css) — the same convention the quickstart terminal uses, so the
+ * hero card is highlighted consistently instead of rendering as flat text. The
+ * input is a trusted static snippet, so this only tokenizes well-formed JSON
+ * rather than guarding against arbitrary input. HTML-special chars are escaped
+ * before any span is injected, so the output is safe as element TEXT content;
+ * it must not be used to build attribute values (quotes are left unescaped).
+ */
+function highlightJson(src: string): string {
+    const escaped = src
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    return escaped.replace(
+        /("(?:[^"\\]|\\.)*")(\s*:)?|\b(true|false|null)\b|(-?\d+(?:\.\d+)?)/g,
+        (match, str, colon, literal, num) => {
+            if (str) {
+                return colon
+                    ? `<span class="sh-property">${str}</span>${colon}`
+                    : `<span class="sh-string">${str}</span>`;
+            }
+            if (literal) return `<span class="sh-keyword">${literal}</span>`;
+            if (num) return `<span class="sh-value">${num}</span>`;
+            return match;
+        }
+    );
+}
+
 export class LandingApp extends BaseApp {
     private unsubLocale: (() => void) | null = null;
 
@@ -126,7 +156,7 @@ export class LandingApp extends BaseApp {
             `<div class="hero-visual reveal reveal-delay-3">` +
             `<div class="hero-code">` +
             `<div class="hero-code__header"><span class="hero-code__file">package.json</span></div>` +
-            `<pre class="hero-code__body">${ESMX_DECLARATION_SNIPPET}</pre>` +
+            `<pre class="hero-code__body">${highlightJson(ESMX_DECLARATION_SNIPPET)}</pre>` +
             `</div>` +
             `</div>` +
             `</div>` +
