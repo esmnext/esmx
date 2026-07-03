@@ -31,7 +31,7 @@ export class HtmlApp extends BaseApp {
     protected getHead() {
         return buildSeoHead(this.router, {
             path: '/rsbuild-html/',
-            title: t(this.router, 'fwHtmlTitle'),
+            title: `${t(this.router, 'fwHtmlTitle')} · Rsbuild`,
             description: t(this.router, 'fwHtmlDesc')
         });
     }

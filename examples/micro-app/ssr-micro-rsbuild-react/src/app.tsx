@@ -55,7 +55,7 @@ export function AppContent() {
     useHead(
         buildSeoHead(router, {
             path: '/rsbuild-react/',
-            title: t(router, 'fwReactTitle'),
+            title: `${t(router, 'fwReactTitle')} · Rsbuild`,
             description: t(router, 'fwReactDesc')
         })
     );

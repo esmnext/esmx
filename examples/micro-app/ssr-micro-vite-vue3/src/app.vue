@@ -90,8 +90,8 @@ ${'</scr' + 'ipt>'}
 
 useHead(
     buildSeoHead(router, {
-        path: '/vue3/',
-        title,
+        path: '/vite-vue/',
+        title: `${title} · Vite`,
         description: t(router, 'fwVue3Desc')
     })
 );

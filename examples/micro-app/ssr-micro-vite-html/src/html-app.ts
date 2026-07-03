@@ -31,7 +31,7 @@ export class HtmlApp extends BaseApp {
     protected getHead() {
         return buildSeoHead(this.router, {
             path: '/vite-html/',
-            title: t(this.router, 'fwHtmlTitle'),
+            title: `${t(this.router, 'fwHtmlTitle')} · Vite`,
             description: t(this.router, 'fwHtmlDesc')
         });
     }

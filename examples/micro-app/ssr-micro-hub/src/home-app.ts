@@ -175,7 +175,7 @@ export class HomeApp extends BaseApp {
             <aside class="hub-callout">
                 <p class="hub-callout__lead">Using Esmx with an AI assistant?</p>
                 <p class="hub-callout__body">
-                    Feed it <a href="/guide/essentials/styles" target="_blank">esmx.dev/llms.md</a> —
+                    Feed it <a href="/llms.md" target="_blank">esmx.dev/llms.md</a> —
                     one file, every code block CI-validated, versioned with Esmx.
                 </p>
             </aside>
