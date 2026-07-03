@@ -1,5 +1,6 @@
 [
     "esmx",
+    "middleware",
     "app",
     "render-context",
     "module-config",
