@@ -72,7 +72,7 @@ const app = mergeMiddlewares([loggerMiddleware, createMiddleware(esmx)]);
 function isImmutableFile(filename: string): boolean;
 ```
 
-当文件路径匹配 Esmx 的内容指纹(不可变)资源模式时返回 `true`——即可安全地以 `Cache-Control: immutable, max-age=31536000` 服务。`createMiddleware` 内部用它为每个资源决定缓存策略。
+当文件路径匹配 Esmx 的内容指纹(不可变)资源模式时返回 `true`——即可安全地以 `Cache-Control: public, max-age=31536000, immutable` 服务。`createMiddleware` 内部用它为每个资源决定缓存策略。
 
 ## 相关
 

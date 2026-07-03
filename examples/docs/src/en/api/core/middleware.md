@@ -72,7 +72,7 @@ const app = mergeMiddlewares([loggerMiddleware, createMiddleware(esmx)]);
 function isImmutableFile(filename: string): boolean;
 ```
 
-Returns `true` when a file path matches Esmx's content-hashed (immutable) asset pattern — i.e. safe to serve with `Cache-Control: immutable, max-age=31536000`. `createMiddleware` uses it internally to decide the cache policy for each asset.
+Returns `true` when a file path matches Esmx's content-hashed (immutable) asset pattern — i.e. safe to serve with `Cache-Control: public, max-age=31536000, immutable`. `createMiddleware` uses it internally to decide the cache policy for each asset.
 
 ## Related
 
