@@ -163,7 +163,7 @@ export class LandingApp extends BaseApp {
             `<section class="section painpoints" id="features">` +
             `<div class="container">` +
             `<div class="section-header reveal">` +
-            `<span class="section-label">WHY ESMX</span>` +
+            `<span class="section-label">${t(this.router, 'labelWhy')}</span>` +
             `<h2 class="section-title">${t(this.router, 'whyTitle')}</h2>` +
             `<p class="section-desc">${t(this.router, 'whyDesc')}</p>` +
             `</div>` +
@@ -218,7 +218,7 @@ export class LandingApp extends BaseApp {
             `<section class="section">` +
             `<div class="container">` +
             `<div class="section-header reveal">` +
-            `<span class="section-label">FEATURES</span>` +
+            `<span class="section-label">${t(this.router, 'labelFeatures')}</span>` +
             `<h2 class="section-title">${t(this.router, 'featuresTitle')}</h2>` +
             `<p class="section-desc">${t(this.router, 'featuresDesc')}</p>` +
             `</div>` +
@@ -270,7 +270,7 @@ export class LandingApp extends BaseApp {
             `<section class="section code-demo" id="quickstart">` +
             `<div class="container">` +
             `<div class="section-header reveal">` +
-            `<span class="section-label">QUICK START</span>` +
+            `<span class="section-label">${t(this.router, 'labelQuickstart')}</span>` +
             `<h2 class="section-title">${t(this.router, 'quickstartTitle')}</h2>` +
             `<p class="section-desc">${t(this.router, 'quickstartDesc')}</p>` +
             `</div>` +
@@ -330,7 +330,7 @@ export class LandingApp extends BaseApp {
             `<section class="section" id="ecosystem">` +
             `<div class="container">` +
             `<div class="section-header reveal">` +
-            `<span class="section-label">ECOSYSTEM</span>` +
+            `<span class="section-label">${t(this.router, 'labelEco')}</span>` +
             `<h2 class="section-title">${t(this.router, 'ecoTitle')}</h2>` +
             `<p class="section-desc">${t(this.router, 'ecoDesc')}</p>` +
             `</div>` +
@@ -430,9 +430,9 @@ export class LandingApp extends BaseApp {
             `<section class="section matrix-section" id="matrix">` +
             `<div class="container">` +
             `<div class="section-header reveal">` +
-            `<span class="section-label">21 LIVE DEMOS</span>` +
-            `<h2 class="section-title">Framework × Bundler</h2>` +
-            `<p class="section-desc">Every cell is a live micro-app linked via native ESM. Click to open it.</p>` +
+            `<span class="section-label">${t(this.router, 'labelDemos')}</span>` +
+            `<h2 class="section-title">${t(this.router, 'matrixTitle')}</h2>` +
+            `<p class="section-desc">${t(this.router, 'matrixDesc')}</p>` +
             `</div>` +
             `<div class="matrix-wrap reveal">` +
             `<table class="matrix">` +
@@ -458,7 +458,7 @@ export class LandingApp extends BaseApp {
             `<section class="section" style="text-align: center;">
                 <div class="container">
                     <div class="section-header reveal">
-                        <span class="section-label">LIVE DEMO</span>
+                        <span class="section-label">${t(this.router, 'labelLiveDemo')}</span>
                         <h2 class="section-title">${t(this.router, 'liveTitle')}</h2>
                         <p class="section-desc">${t(this.router, 'liveDesc')}</p>
                     </div>
