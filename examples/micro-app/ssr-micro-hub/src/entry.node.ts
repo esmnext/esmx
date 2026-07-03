@@ -75,14 +75,25 @@ export default {
         // docs. Locale is derived from the URL in entry.server, and the client
         // can switch via SPA navigation (history pushState, no full reload).
         const base = 'http://localhost:3000/';
+        // Every demo route registered in routes.ts must be prerendered here:
+        // the SPA router knows them all, but only paths in this list get a
+        // static HTML entry point at the site root. A missing entry 404s on
+        // direct navigation / crawl even though in-app SPA navigation works —
+        // so this list must stay in sync with routes.ts (all 15 demos live).
         const routes = [
             '',
             'demo/',
             'html/',
+            'rsbuild-html/',
+            'vite-html/',
             'lit/',
             'vue2/',
             'vue3/',
+            'rsbuild-vue/',
+            'vite-vue/',
             'react/',
+            'rsbuild-react/',
+            'vite-react/',
             'preact/',
             'preact-htm/',
             'solid/',

@@ -89,7 +89,7 @@ ${'</scr' + 'ipt>'}
 useHead(
     buildSeoHead(router, {
         path: '/rsbuild-vue/',
-        title,
+        title: `${title} · Rsbuild`,
         description: t(router, 'fwVue3Desc')
     })
 );

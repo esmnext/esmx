@@ -55,7 +55,7 @@ export function AppContent() {
     useHead(
         buildSeoHead(router, {
             path: '/vite-react/',
-            title: t(router, 'fwReactTitle'),
+            title: `${t(router, 'fwReactTitle')} · Vite`,
             description: t(router, 'fwReactDesc')
         })
     );
