@@ -161,7 +161,7 @@ const messages = {
         labelLiveDemo: '在线 Demo',
         matrixTitle: '框架 × 构建器',
         matrixDesc:
-            '每个格子都是一个由原生 ESM 链接的在线微应用,点击即可打开。',
+            '每个格子都是一个由原生 ESM 链接的在线微应用，点击即可打开。',
         whyDesc:
             '其他微前端框架发明了自己的生命周期钩子、loader DSL 和全局对象。Esmx 只是原生 ESM + import map —— 跟 LLM 训练数据同一表面。学得少,幻觉少。',
         painLabelBad: '传统方案',
