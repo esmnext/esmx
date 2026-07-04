@@ -47,7 +47,10 @@ for (const [dir, lang] of Object.entries(APP_LANGUAGES)) {
 
     const html = await codeToHtml(code, {
         lang,
-        themes: { light: 'github-light', dark: 'github-dark' },
+        themes: {
+            light: 'github-light-high-contrast',
+            dark: 'github-dark-high-contrast'
+        },
         defaultColor: false
     });
 
