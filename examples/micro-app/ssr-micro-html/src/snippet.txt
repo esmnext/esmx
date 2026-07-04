@@ -1,0 +1,7 @@
+// pure HTML + TypeScript — no framework
+container.innerHTML = `
+  <p>Count: <span id="count">0</span></p>
+  <button id="inc">+</button>
+  <button id="dec">−</button>
+`
+document.querySelector('#inc')!.addEventListener('click', () => { ... })

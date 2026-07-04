@@ -3,19 +3,7 @@ import { useHead } from '@unhead/react';
 import { useEffect, useMemo, useState } from 'react';
 
 import { buildSeoHead, Layout, t } from 'ssr-micro-shared/index';
-
-const SOURCE_SNIPPET = `import { useState } from 'react'
-
-export function Counter() {
-  const [count, setCount] = useState(0)
-  return (
-    <>
-      <p>Count: {count}</p>
-      <button onClick={() => setCount(c => c + 1)}>+</button>
-      <button onClick={() => setCount(c => c - 1)}>−</button>
-    </>
-  )
-}`;
+import { highlightedSnippet } from './snippet.generated';
 
 function Counter() {
     const [count, setCount] = useState(0);
@@ -78,7 +66,11 @@ export function AppContent() {
                             <span className="esmx-code__file">src/app.tsx</span>
                         </header>
                         <div className="esmx-code__body">
-                            <pre>{SOURCE_SNIPPET}</pre>
+                            <div
+                                dangerouslySetInnerHTML={{
+                                    __html: highlightedSnippet
+                                }}
+                            />
                         </div>
                     </section>
 

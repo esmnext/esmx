@@ -1,0 +1,12 @@
+import { createSignal } from 'solid-js'
+
+export function Counter() {
+  const [count, setCount] = createSignal(0)
+  return (
+    <>
+      <p>Count: {count()}</p>
+      <button onClick={() => setCount(c => c + 1)}>+</button>
+      <button onClick={() => setCount(c => c - 1)}>−</button>
+    </>
+  )
+}

@@ -1,43 +1,45 @@
 {
-    "name": "esmx",
-    "template": "monorepo",
-    "version": "1.0.0",
-    "type": "module",
-    "scripts": {
-        "prepare": "node ./prepare.mjs",
-        "lint:js": "biome check --write --no-errors-on-unmatched",
-        "lint:css": "pnpm --filter \"*\" lint:css",
-        "lint:type": "pnpm --filter \"*\" lint:type",
-        "test": "pnpm --filter \"*\" test",
-        "build": "node ./build.mjs",
-        "build:packages": "pnpm --filter \"./packages/**\" build",
-        "build:examples": "pnpm --filter \"./examples/**\" build",
-        "build:dts": "pnpm --filter \"./examples/micro-app/**\" run build:dts",
-        "release": "pnpm run build:packages && npx lerna publish --force-publish --exact",
-        "smoke": "node scripts/smoke.mjs",
-        "test:visual": "playwright test",
-        "test:visual:update": "playwright test --update-snapshots",
-        "validate:llms": "node scripts/validate-llms.mjs",
-        "gate5": "node scripts/gate5.mjs"
-    },
-    "devDependencies": {
-        "@biomejs/biome": "2.3.7",
-        "@playwright/test": "1.48.2",
-        "esbuild": "^0.28.1",
-        "husky": "9.1.7",
-        "lerna": "^8.0.0",
-        "lint-staged": "16.2.6"
-    },
-    "private": false,
-    "workspaces": [
-        "packages/*",
-        "examples/*"
-    ],
-    "publishConfig": {
-        "registry": "https://registry.npmjs.org"
-    },
-    "engines": {
-        "node": ">=24",
-        "pnpm": ">=10"
-    }
+  "name": "esmx",
+  "template": "monorepo",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "prepare": "node ./prepare.mjs",
+    "lint:js": "biome check --write --no-errors-on-unmatched",
+    "lint:css": "pnpm --filter \"*\" lint:css",
+    "lint:type": "pnpm --filter \"*\" lint:type",
+    "test": "pnpm --filter \"*\" test",
+    "build": "node ./build.mjs",
+    "build:packages": "pnpm --filter \"./packages/**\" build",
+    "build:examples": "pnpm --filter \"./examples/**\" build",
+    "build:dts": "pnpm --filter \"./examples/micro-app/**\" run build:dts",
+    "release": "pnpm run build:packages && npx lerna publish --force-publish --exact",
+    "smoke": "node scripts/smoke.mjs",
+    "test:visual": "playwright test",
+    "test:visual:update": "playwright test --update-snapshots",
+    "validate:llms": "node scripts/validate-llms.mjs",
+    "gate5": "node scripts/gate5.mjs",
+    "highlight:snippets": "node scripts/highlight-snippets.mjs"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.3.7",
+    "@playwright/test": "1.48.2",
+    "esbuild": "^0.28.1",
+    "husky": "9.1.7",
+    "lerna": "^8.0.0",
+    "lint-staged": "16.2.6",
+    "shiki": "^4.3.0"
+  },
+  "private": false,
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=10"
+  }
 }

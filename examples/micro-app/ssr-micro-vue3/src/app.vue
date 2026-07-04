@@ -8,7 +8,7 @@
                         <span class="esmx-code__file">src/app.vue</span>
                     </header>
                     <div class="esmx-code__body">
-                        <pre>{{ sourceSnippet }}</pre>
+                        <div class="esmx-code__body-pre" v-html="highlightedSnippet"></div>
                     </div>
                 </section>
 
@@ -68,23 +68,12 @@ import { useRouter } from '@esmx/router-vue';
 import { useHead } from '@unhead/vue';
 import { buildSeoHead, Layout, t } from 'ssr-micro-shared/index';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { highlightedSnippet } from './snippet.generated';
 
 const router = useRouter();
 const layout = new Layout({ appId: 'vue3', router });
 const count = ref(0);
 const title = t(router, 'fwVue3Title');
-
-const sourceSnippet = `<script setup lang="ts">
-import { ref } from 'vue'
-
-const count = ref(0)
-${'</scr' + 'ipt>'}
-
-<template>
-  <p>Count: {{ count }}</p>
-  <button @click="count++">+</button>
-  <button @click="count--">−</button>
-</template>`;
 
 useHead(
     buildSeoHead(router, {

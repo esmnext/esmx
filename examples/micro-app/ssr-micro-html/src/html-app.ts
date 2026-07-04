@@ -7,18 +7,7 @@ import {
     setAppState,
     t
 } from 'ssr-micro-shared/index';
-
-const SOURCE_SNIPPET = `// pure HTML + TypeScript — no framework
-container.innerHTML = \`
-  <p>Count: <span id="count">0</span></p>
-  <button id="inc">+</button>
-  <button id="dec">−</button>
-\`
-document.querySelector('#inc')!.addEventListener('click', () => { ... })`;
-
-function escapeHtml(s: string): string {
-    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
+import { highlightedSnippet } from './snippet.generated';
 
 export class HtmlApp extends BaseApp {
     private layout: Layout;
@@ -47,7 +36,7 @@ export class HtmlApp extends BaseApp {
                             <span class="esmx-code__file">src/html-app.ts</span>
                         </header>
                         <div class="esmx-code__body">
-                            <pre>${escapeHtml(SOURCE_SNIPPET)}</pre>
+                            ${highlightedSnippet}
                         </div>
                     </section>
                     <section class="esmx-demo-card__rendered">

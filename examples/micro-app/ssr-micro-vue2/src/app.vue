@@ -8,7 +8,7 @@
                         <span class="esmx-code__file">src/app.vue</span>
                     </header>
                     <div class="esmx-code__body">
-                        <pre>{{ sourceSnippet }}</pre>
+                        <div class="esmx-code__body-pre" v-html="highlightedSnippet"></div>
                     </div>
                 </section>
 
@@ -64,6 +64,7 @@
 import { useRouter } from '@esmx/router-vue';
 import { Layout, t } from 'ssr-micro-shared/index';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { highlightedSnippet } from './snippet.generated';
 
 const router = useRouter();
 const layout = new Layout({ appId: 'vue2', router });
@@ -72,17 +73,6 @@ const title = t(router, 'fwVue2Title');
 
 // The Vue 2.7 idiom the demo is illustrating — `ref()` from the Composition
 // API plugin that ships with 2.7, paired with the `<script setup>` syntax.
-const sourceSnippet = `<script setup>
-import { ref } from 'vue'
-
-const count = ref(0)
-${'</scr' + 'ipt>'}
-
-<template>
-  <p>Count: {{ count }}</p>
-  <button @click="count++">+</button>
-  <button @click="count--">−</button>
-</template>`;
 
 onMounted(() => layout.mount());
 onBeforeUnmount(() => layout.unmount());
