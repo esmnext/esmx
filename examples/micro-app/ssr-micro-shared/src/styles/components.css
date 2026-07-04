@@ -144,6 +144,38 @@
     margin: 0;
 }
 
+/*
+ * Shiki syntax highlighting. Snippets are pre-highlighted at build time
+ * (see scripts/highlight-snippets.mjs), so no highlighter ships to the client.
+ * `defaultColor: false` emits per-token `--shiki-light` / `--shiki-dark` CSS
+ * variables; pick the active colour to mirror the token theme scheme — light by
+ * default, dark under [data-theme="dark"] or a dark system preference (unless
+ * explicitly overridden to light).
+ */
+.esmx-code__body .shiki {
+    background: transparent;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+.shiki,
+.shiki span {
+    color: var(--shiki-light);
+}
+
+[data-theme="dark"] .shiki,
+[data-theme="dark"] .shiki span {
+    color: var(--shiki-dark);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .shiki,
+    :root:not([data-theme="light"]) .shiki span {
+        color: var(--shiki-dark);
+    }
+}
+
 /* ─── Stat ──────────────────────────────────────────────────────────── */
 
 .esmx-stat {

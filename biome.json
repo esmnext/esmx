@@ -61,7 +61,8 @@
                 "**/svg-icons.ts",
                 "build.config.ts",
                 "*.min.js",
-                "*.g.ts"
+                "*.g.ts",
+                "**/*.generated.ts"
             ],
             "linter": {
                 "enabled": false

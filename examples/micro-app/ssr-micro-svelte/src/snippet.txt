@@ -1,0 +1,7 @@
+<script lang="ts">
+  let count = $state(0)
+</script>
+
+<p>Count: {count}</p>
+<button onclick={() => count++}>+</button>
+<button onclick={() => count--}>−</button>

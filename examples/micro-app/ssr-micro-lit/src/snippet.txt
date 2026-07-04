@@ -1,0 +1,7 @@
+import { html } from 'lit'
+
+export const counter = (count: number) => html`
+  <p>Count: ${count}</p>
+  <button id="inc">+</button>
+  <button id="dec">−</button>
+`

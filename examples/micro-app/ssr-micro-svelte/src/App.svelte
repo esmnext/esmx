@@ -1,5 +1,6 @@
 <script lang="ts">
 import type { Layout } from 'ssr-micro-shared/index';
+import { highlightedSnippet } from './snippet.generated';
 
 interface Props {
     layout: Layout;
@@ -10,14 +11,6 @@ const { layout, title }: Props = $props();
 
 // biome-ignore lint/style/useConst: Svelte 5 $state rune requires `let` for reassignable bindings
 let count = $state(0);
-
-const sourceSnippet = `${'<scr' + 'ipt lang="ts">'}
-  let count = $state(0)
-${'</scr' + 'ipt>'}
-
-<p>Count: {count}</p>
-<button onclick={() => count++}>+</button>
-<button onclick={() => count--}>−</button>`;
 </script>
 
 <div>
@@ -29,7 +22,7 @@ ${'</scr' + 'ipt>'}
                     <span class="esmx-code__file">src/App.svelte</span>
                 </header>
                 <div class="esmx-code__body">
-                    <pre>{sourceSnippet}</pre>
+                    {@html highlightedSnippet}
                 </div>
             </section>
 

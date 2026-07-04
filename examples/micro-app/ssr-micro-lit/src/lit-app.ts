@@ -13,15 +13,7 @@ import {
     setAppState,
     t
 } from 'ssr-micro-shared/index';
-
-const SOURCE_SNIPPET = `import { html } from 'lit'
-
-export const counter = (count: number) => html\`
-  <p>Count: \${count}</p>
-  <button id="inc">+</button>
-  <button id="dec">−</button>
-\`
-`;
+import { highlightedSnippet } from './snippet.generated';
 
 /**
  * Hydratable content template — regular `lit` html with markers.
@@ -37,7 +29,7 @@ function createContentTemplate(title: string): TemplateResult {
                         <span class="esmx-code__file">src/lit-app.ts</span>
                     </header>
                     <div class="esmx-code__body">
-                        <pre>${SOURCE_SNIPPET}</pre>
+                        ${unsafeHTML(highlightedSnippet)}
                     </div>
                 </section>
                 <section class="esmx-demo-card__rendered">
