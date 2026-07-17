@@ -438,6 +438,7 @@ type RouterMicroAppCallback = (router: Router) => RouterMicroAppOptions;
 ```ts
 interface RouterMicroAppOptions {
     mount: (el: HTMLElement) => void;
+    hydration?: (el: HTMLElement) => void;
     unmount: () => void;
     renderToString?: () => Awaitable<string>;
 }
@@ -445,6 +446,7 @@ interface RouterMicroAppOptions {
 
 微应用生命周期接口：
 - `mount`：将应用挂载到 DOM 元素
+- `hydration`：可选的水合钩子，在客户端执行时传入挂载元素
 - `unmount`：卸载并清理应用
 - `renderToString`：可选的 SSR 渲染方法
 

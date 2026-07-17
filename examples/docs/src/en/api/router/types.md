@@ -438,6 +438,7 @@ Factory function that creates a micro-app instance from a router.
 ```ts
 interface RouterMicroAppOptions {
     mount: (el: HTMLElement) => void;
+    hydration?: (el: HTMLElement) => void;
     unmount: () => void;
     renderToString?: () => Awaitable<string>;
 }
@@ -445,6 +446,7 @@ interface RouterMicroAppOptions {
 
 Micro-app lifecycle interface:
 - `mount`: Mount the app into a DOM element
+- `hydration`: Optional hydration hook invoked on the client with the mount element
 - `unmount`: Unmount and clean up the app
 - `renderToString`: Optional SSR render method
 

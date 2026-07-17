@@ -41,7 +41,7 @@ export default async (rc: RenderContext) => {
     const html = await router.renderToString();
 
     // Collect route data for client hydration
-    const routeData = router.route.data;
+    const routeData = router.data;
 
     rc.html = `<!DOCTYPE html>
 <html lang="en">

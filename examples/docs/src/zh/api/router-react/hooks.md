@@ -131,7 +131,7 @@ function CustomLink({ to, children }) {
     const link = useLink({ to, type: 'push', exact: 'include' });
 
     return (
-        <a href={link.href} onClick={link.navigate}>
+        <a {...link.attributes} onClick={link.navigate}>
             {children}
         </a>
     );

@@ -51,6 +51,10 @@ interface RouterOptions {
     zIndex?: number;
     handleBackBoundary?: (router: Router) => void;
     handleLayerClose?: (router: Router, data?: any) => void;
+    resolveLink?: (
+        link: RouterLinkResolved,
+        props: RouterLinkProps
+    ) => RouterLinkResolved;
 }
 ```
 

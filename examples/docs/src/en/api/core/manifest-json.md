@@ -17,7 +17,11 @@ head:
 
 ```typescript
 interface ManifestJson {
+  protocol: number;
   name: string;
+  version: string;
+  provides: Record<string, ManifestJsonProvide>;
+  uses: string[];
   scopes: Record<string, Record<string, string>>;
   exports: ManifestJsonExports;
   files: string[];
@@ -26,10 +30,30 @@ interface ManifestJson {
 }
 ```
 
+#### protocol
+
+- **Type**: `number`
+- **Description**: Manifest protocol version (RFC 0001 §5), currently `2`. Absent in pre-v2 manifests; readers treat absence as protocol 1 and skip v2-only checks. The linker rejects manifests whose `protocol` is higher than the supported version.
+
 #### name
 
 - **Type**: `string`
 - **Description**: Module name, sourced from the module configuration
+
+#### version
+
+- **Type**: `string`
+- **Description**: Module version, transcribed from the module's `package.json` at build time (RFC 0001 §5). Pre-v2 manifests default to `'0.0.0'` at read time.
+
+#### provides
+
+- **Type**: `Record<string, ManifestJsonProvide>`
+- **Description**: Resolved versions for every pkg-export (`pkg: true`) package, captured at build time (RFC 0001 §5). Keys are package specifiers; values record the resolved installed version.
+
+#### uses
+
+- **Type**: `string[]`
+- **Description**: Consumption edges transcribed from the module's `package.json` `esmx.uses` declaration (RFC 0001 §5). Pre-v2 manifests default to `[]` at read time.
 
 #### scopes
 
@@ -63,6 +87,21 @@ type ManifestJsonExports = Record<string, ManifestJsonExport>;
 ```
 
 An export item configuration mapping, where the key is the export path and the value is the export item information.
+
+### ManifestJsonProvide
+
+```typescript
+interface ManifestJsonProvide {
+  version: string;
+}
+```
+
+Build-time facts about one provided (pkg-export) package (RFC 0001 §5).
+
+#### version
+
+- **Type**: `string`
+- **Description**: The resolved installed version of the provided package at build time, read from `node_modules/<pkg>/package.json` relative to the module root. Subpath specifiers (e.g. `vue/jsx-runtime`) resolve via their parent package. `'0.0.0'` when the package could not be resolved.
 
 ### ManifestJsonExport
 

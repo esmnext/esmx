@@ -167,7 +167,7 @@ route.hash  // '#team'
 | `:id?` | 可选参数 | `/users` or `/users/42` |
 | `:path*` | 零个或多个段 | `/files` or `/files/a/b` |
 | `:path+` | 一个或多个段 | `/files/a` or `/files/a/b` |
-| `:id(\\\\d+)` | 带正则约束的参数 | `/users/42` (not `/users/alice`) |
+| `:id(\\d+)` | 带正则约束的参数 | `/users/42` (not `/users/alice`) |
 | `(.*)*` | 捕获所有通配符 | Anything |
 
 ### 自定义正则约束
@@ -177,7 +177,7 @@ route.hash  // '#team'
 ```ts
 const routes: RouteConfig[] = [
   // Only matches numeric IDs
-  { path: '/users/:id(\\\\d+)', component: UserProfile },
+  { path: '/users/:id(\\d+)', component: UserProfile },
 
   // Only matches specific values
   { path: '/:lang(en|fr|de)/docs', component: Docs }
