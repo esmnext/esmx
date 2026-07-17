@@ -5,7 +5,8 @@
     "type": "module",
     "scripts": {
         "prepare": "node ./prepare.mjs",
-        "lint:js": "biome check --write --no-errors-on-unmatched",
+        "lint:js": "biome check --no-errors-on-unmatched",
+        "lint:js:fix": "biome check --write --no-errors-on-unmatched",
         "lint:css": "pnpm --filter \"*\" lint:css",
         "lint:type": "pnpm --filter \"*\" lint:type",
         "test": "pnpm --filter \"*\" test",
