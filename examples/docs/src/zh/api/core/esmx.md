@@ -251,7 +251,7 @@ export default {
 ```ts
 const server = http.createServer((req, res) => {
   esmx.middleware(req, res, async () => {
-    const rc = await esmx.render({ url: req.url });
+    const rc = await esmx.render({ params: { url: req.url } });
     res.end(rc.html);
   });
 });
@@ -549,7 +549,7 @@ async server(esmx) {
 获取构建清单列表。
 
 - **参数**:
-  - `target`: `BuildEnvironment` - 目标环境类型
+  - `env`: `BuildEnvironment` - 目标环境类型
     - `'client'`: 客户端环境
     - `'server'`: 服务端环境
 
@@ -587,7 +587,7 @@ async server(esmx) {
 获取导入映射对象。
 
 - **参数**:
-  - `target`: `BuildEnvironment` - 目标环境类型
+  - `env`: `BuildEnvironment` - 目标环境类型
     - `'client'`: 生成浏览器环境的导入映射
     - `'server'`: 生成服务端环境的导入映射
 
@@ -644,6 +644,7 @@ async server(esmx) {
       src: string;
       filepath: string;
       code: string;
+      integrity: Record<string, string> | null;
     }
     ```
   - 内联模式:
@@ -652,6 +653,7 @@ async server(esmx) {
       src: null;
       filepath: null;
       code: string;
+      integrity: Record<string, string> | null;
     }
     ```
 
@@ -703,7 +705,7 @@ async server(esmx) {
 获取模块的静态导入路径列表。
 
 - **参数**:
-  - `target`: `BuildEnvironment` - 构建目标
+  - `env`: `BuildEnvironment` - 构建目标
     - `'client'`: 客户端环境
     - `'server'`: 服务端环境
   - `specifier`: `string` - 模块标识符

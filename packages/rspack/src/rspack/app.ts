@@ -156,7 +156,7 @@ export interface RspackAppOptions {
 
     /**
      * Uses rspack-chain to provide chained configuration method, allowing more flexible modification of Rspack configuration.
-     * Called after the config hook, if chain hook exists, chained configuration is preferred.
+     * Called before the config hook: the chain is applied first, then `chain.toConfig()` produces the final RspackOptions which the config hook may still mutate.
      *
      * @param context - Configuration context, containing framework instance, build target, and chain configuration object
      */

@@ -163,7 +163,7 @@ esmx validate          # human-readable report
 esmx validate --json   # machine-readable envelope (CI / agents)
 ```
 
-It exits non-zero only when an error-severity diagnostic is found; warnings alone exit 0. A package without an `esmx` field reports `protocol: "legacy"` and exits 0. The full diagnostic taxonomy (`E_NOT_LINKED`, `E_VERSION`, `E_SCHEMA`, `W_MULTI_CANDIDATE`, …) is documented in the [LLM briefing](/llms.md#diagnostics-the-complete-taxonomy).
+It exits non-zero only when an error-severity diagnostic is found; warnings alone exit 0. A package without an `esmx` field reports `protocol: "legacy"` and exits 0. The full diagnostic taxonomy (`E_NOT_LINKED`, `E_VERSION`, `E_SCHEMA`, `W_MULTI_MAJOR`, …) is documented in the [LLM briefing](/llms.md#diagnostics-the-complete-taxonomy).
 
 ## Complete example: multi-version coexistence
 

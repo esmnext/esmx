@@ -162,7 +162,7 @@ esmx validate          # 人类可读报告
 esmx validate --json   # 机器可读信封（CI / Agent）
 ```
 
-只有出现 error 级诊断时它才以非零码退出；只有警告则退出 0。没有 `esmx` 字段的包会报告 `protocol: "legacy"` 并退出 0。完整诊断分类（`E_NOT_LINKED`、`E_VERSION`、`E_SCHEMA`、`W_MULTI_CANDIDATE` 等）见 [LLM 简报](/llms.md#diagnostics-the-complete-taxonomy)。
+只有出现 error 级诊断时它才以非零码退出；只有警告则退出 0。没有 `esmx` 字段的包会报告 `protocol: "legacy"` 并退出 0。完整诊断分类（`E_NOT_LINKED`、`E_VERSION`、`E_SCHEMA`、`W_MULTI_MAJOR` 等）见 [LLM 简报](/llms.md#diagnostics-the-complete-taxonomy)。
 
 ## 完整示例：多版本共存
 

@@ -98,7 +98,7 @@ export function getSavedScrollPosition(
     key: string,
     defaultValue: _ScrollPosition | null = null
 ): _ScrollPosition | null {
-    const scroll = scrollPositions.get(key) || history.state[POSITION_KEY];
+    const scroll = scrollPositions.get(key) || history.state?.[POSITION_KEY];
 
     // Saved scroll position should not be used multiple times, next time should use newly saved position
     scrollPositions.delete(key);

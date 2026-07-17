@@ -287,7 +287,7 @@ export class Esmx {
      * const server = http.createServer((req, res) => {
      *     // Use middleware to handle static asset requests
      *     esmx.middleware(req, res, async () => {
-     *         const rc = await esmx.render({ url: req.url });
+     *         const rc = await esmx.render({ params: { url: req.url } });
      *         res.end(rc.html);
      *     });
      * });
@@ -543,6 +543,10 @@ export class Esmx {
         if (previous.app?.destroy) {
             await previous.app.destroy();
         }
+        // Invalidate the cached import-map hash so the new generation re-derives
+        // (and re-writes) its own importmap file instead of reusing the previous
+        // generation's filepath. See getImportMapClientInfo().
+        this._importmapHash = null;
         return true;
     }
 
@@ -1119,7 +1123,7 @@ document.head.appendChild(script);
                 return {
                     src: null,
                     filepath: null,
-                    code: `<script type="importmap">${serialize(importmap, { isJSON: true, unsafe: true })}</script>`,
+                    code: `<script type="importmap">${serialize(importmap, { isJSON: true })}</script>`,
                     integrity: integrity ?? null
                 };
             }

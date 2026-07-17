@@ -251,7 +251,7 @@ Gets the static resource handling middleware. Provides different implementations
 ```ts
 const server = http.createServer((req, res) => {
   esmx.middleware(req, res, async () => {
-    const rc = await esmx.render({ url: req.url });
+    const rc = await esmx.render({ params: { url: req.url } });
     res.end(rc.html);
   });
 });
@@ -549,7 +549,7 @@ async server(esmx) {
 Get build manifest list.
 
 - **Parameters**:
-  - `target`: `BuildEnvironment` - Target environment type
+  - `env`: `BuildEnvironment` - Target environment type
     - `'client'`: Client environment
     - `'server'`: Server environment
 
@@ -587,7 +587,7 @@ async server(esmx) {
 Get import mapping object.
 
 - **Parameters**:
-  - `target`: `BuildEnvironment` - Target environment type
+  - `env`: `BuildEnvironment` - Target environment type
     - `'client'`: Generate import map for browser environment
     - `'server'`: Generate import map for server environment
 
@@ -644,6 +644,7 @@ Get client import map information.
       src: string;
       filepath: string;
       code: string;
+      integrity: Record<string, string> | null;
     }
     ```
   - Inline mode:
@@ -652,6 +653,7 @@ Get client import map information.
       src: null;
       filepath: null;
       code: string;
+      integrity: Record<string, string> | null;
     }
     ```
 
@@ -703,7 +705,7 @@ async server(esmx) {
 Gets the module's static import path list.
 
 - **Parameters**:
-  - `target`: `BuildEnvironment` - Build target
+  - `env`: `BuildEnvironment` - Build target
     - `'client'`: Client environment
     - `'server'`: Server environment
   - `specifier`: `string` - Module specifier

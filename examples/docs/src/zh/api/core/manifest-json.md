@@ -17,7 +17,11 @@ head:
 
 ```typescript
 interface ManifestJson {
+  protocol: number;
   name: string;
+  version: string;
+  provides: Record<string, ManifestJsonProvide>;
+  uses: string[];
   scopes: Record<string, Record<string, string>>;
   exports: ManifestJsonExports;
   files: string[];
@@ -26,10 +30,30 @@ interface ManifestJson {
 }
 ```
 
+#### protocol
+
+- **类型**: `number`
+- **描述**: 清单协议版本（RFC 0001 §5），当前为 `2`。v2 之前的清单没有该字段；读取端将缺失视为协议 1 并跳过 v2 专属检查。linker 会拒绝 `protocol` 高于支持版本的清单。
+
 #### name
 
 - **类型**: `string`
 - **描述**: 模块名称，来源于模块配置
+
+#### version
+
+- **类型**: `string`
+- **描述**: 模块版本，在构建时从模块的 `package.json` 转录（RFC 0001 §5）。v2 之前的清单在读取时默认为 `'0.0.0'`。
+
+#### provides
+
+- **类型**: `Record<string, ManifestJsonProvide>`
+- **描述**: 每个 pkg-export（`pkg: true`）包在构建时的已解析版本（RFC 0001 §5）。key 为包标识符，value 记录已解析的安装版本。
+
+#### uses
+
+- **类型**: `string[]`
+- **描述**: 从模块 `package.json` 的 `esmx.uses` 声明转录的消费边（RFC 0001 §5）。v2 之前的清单在读取时默认为 `[]`。
 
 #### scopes
 
@@ -63,6 +87,21 @@ type ManifestJsonExports = Record<string, ManifestJsonExport>;
 ```
 
 导出项配置映射，key为导出路径，value为导出项信息。
+
+### ManifestJsonProvide
+
+```typescript
+interface ManifestJsonProvide {
+  version: string;
+}
+```
+
+关于某个被提供（pkg-export）包的构建时事实（RFC 0001 §5）。
+
+#### version
+
+- **类型**: `string`
+- **描述**: 该被提供的包在构建时的已解析安装版本，从相对模块根目录的 `node_modules/<pkg>/package.json` 读取。子路径标识符（如 `vue/jsx-runtime`）通过其父包解析。当包无法解析时为 `'0.0.0'`。
 
 ### ManifestJsonExport
 

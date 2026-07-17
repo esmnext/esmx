@@ -41,7 +41,7 @@ export default async (rc: RenderContext) => {
     const html = await router.renderToString();
 
     // 收集路由数据用于客户端水合
-    const routeData = router.route.data;
+    const routeData = router.data;
 
     rc.html = `<!DOCTYPE html>
 <html lang="zh">
