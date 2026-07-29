@@ -1,115 +1,124 @@
 name: Release
 
-# 由 tag 推送触发（本地 scripts/release.mjs 执行 lerna version + push tag）。
-# 也可手动触发（workflow_dispatch）作为备用入口。
-#
-# 发布认证：OIDC Trusted Publishing（2025-07 GA）。
-#   - 完全不需要 NPM_TOKEN，CI 用 GitHub OIDC 向 npm 证明身份
-#   - 每个 npm publish 调用各自做 OIDC token 交换，按包名匹配 npm 网页配置
-#   - 需要 id-token: write 权限 + 在 npm 网页为每个包配置 trusted publisher
-#   - 配置：包页面 → Settings → Trusted publishing → GitHub Actions
-#       Repository:       esmnext/esmx
-#       Workflow filename: release.yml
-#       Environment:      release
 on:
   push:
     tags:
-      - 'v*.*.*' # v3.0.0-rc.120 / v3.0.0
-  workflow_dispatch:
-    inputs:
-      version:
-        description: '版本号（如 3.0.0-rc.120）'
-        required: true
-        type: string
-
-# id-token: write = OIDC 签名权限；contents: read = 拉代码
-permissions:
-  contents: read
-  id-token: write
+      - 'v*.*.*'
 
 concurrency:
   group: release
-  # 不允许并发发布，也不取消正在跑的发布
   cancel-in-progress: false
 
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
-    # release environment：在 Settings → Environments 配置 required reviewers
-    # 同时这也是 OIDC trusted publisher 配置里的 environment 名（必须一致）
-    environment: release
-
+    outputs:
+      version: ${{ steps.metadata.outputs.version }}
+      dist-tag: ${{ steps.metadata.outputs.dist-tag }}
+    permissions:
+      contents: read
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Checkout immutable tag commit
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          fetch-depth: 0 # lerna 需要完整历史
+          fetch-depth: 0
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@7088e561eb65bb68695d245aa206f005ef30921d # v4.1.0
         with:
           version: 10
           run_install: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 24
           cache: pnpm
           registry-url: https://registry.npmjs.org
 
+      - name: Require npm with Trusted Publishing support
+        run: |
+          npm install --global npm@11.16.0
+          npm --version
+
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Build packages
-        run: pnpm build:packages
-
-      - name: Reinstall to relink bin symlinks
-        run: pnpm install --frozen-lockfile
-
-      # 解析触发 tag 的版本号、判定 dist-tag（rc / latest）、校验未重复发布
-      # 输出 env.VERSION 和 env.DIST_TAG 给后续 step
-      - name: Verify release inputs
+      - name: Verify release identity
         run: node scripts/verify-release.mjs
-        env:
-          VERSION_INPUT: ${{ inputs.version }}
 
-      # 发布前门禁（双保险，防止绕过本地脚本直接 push tag）
+      - name: Export release metadata
+        id: metadata
+        run: |
+          version=$(node -p "require('./lerna.json').version")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if [[ "$version" == *-* ]]; then
+            echo "dist-tag=rc" >> "$GITHUB_OUTPUT"
+          else
+            echo "dist-tag=latest" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build packages
+        run: |
+          pnpm build:packages
+          pnpm install --frozen-lockfile
+          node scripts/prepare-release-artifacts.mjs
+          node scripts/validate-release-artifacts.mjs
+
       - name: Type check
         run: pnpm lint:type
+
       - name: Unit tests
         run: pnpm test
 
-      # 发布：OIDC Trusted Publishing（无需 NPM_TOKEN）
-      # npm CLI 自动检测 OIDC 环境，按包名匹配 npm 网页上的 trusted publisher 配置
-      # --provenance 生成供应链签名（显示 "Built and signed on GitHub Actions"）
-      # --workspaces 递归发所有 packages/*（每个包独立 OIDC 交换；private 包自动跳过）
-      # dist-tag 通过 npm_config_tag 环境变量注入（npm 读 npm_config_* 作为 flag）
-      - name: Publish to npm via OIDC
-        run: npm publish --workspaces --provenance --access public
-        env:
-          npm_config_tag: ${{ env.DIST_TAG }}
+      - name: Create immutable publish tarballs
+        run: node scripts/pack-release.mjs
 
-      # 发布后核对：列出 16 个包的实际版本与 dist-tag
-      - name: Verify published versions
+      - name: Upload publish tarballs
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: release-packages
+          path: release-artifacts/
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: release
+    env:
+      VERSION: ${{ needs.build.outputs.version }}
+      DIST_TAG: ${{ needs.build.outputs.dist-tag }}
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout release scripts
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - name: Require npm with Trusted Publishing support
+        run: npm install --global npm@11.16.0
+
+      - name: Download verified publish tarballs
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: release-packages
+          path: release-artifacts/
+
+      - name: Publish missing packages via OIDC
+        run: node scripts/publish-release.mjs
+
+      - name: Verify all published versions
         run: |
-          set -e
-          echo "=== 已发布版本核对 ==="
-          ok=0; fail=0
-          for dir in packages/*/; do
-            name=$(node -p "require('./$dir/package.json').name")
-            published=$(npm view "$name" dist-tags."$DIST_TAG" 2>/dev/null || echo "MISSING")
-            if [ "$published" = "$VERSION" ]; then
-              echo "✅ $name @ $VERSION ($DIST_TAG)"
-              ok=$((ok+1))
-            else
-              echo "❌ $name (期望 $VERSION，实际 $published)"
-              fail=$((fail+1))
-            fi
+          for attempt in 1 2 3 4 5; do
+            node scripts/verify-published.mjs && exit 0
+            sleep $((attempt * 5))
           done
-          echo "---"
-          echo "结果: $ok ✅ / $fail ❌"
-          [ "$fail" -eq 0 ] || exit 1
-        env:
-          VERSION: ${{ env.VERSION }}
-          DIST_TAG: ${{ env.DIST_TAG }}
+          exit 1

@@ -4,18 +4,19 @@
 //       → push tag → 回显 CI run URL → 结构化输出
 //
 // 设计要点：
-// - 不在本地 publish，发布交给 CI（provenance 必须 GHA+OIDC 签；CI 用
-//   Automation token 绕过 2FA，免去逐包按 Touch ID）。
+// - 不在本地 publish，发布交给 CI（GitHub Actions OIDC trusted
+//   publishing + provenance，无 npm token 或 OTP）。
 // - 失败回滚：bump 之后、push 之前任何失败，回滚 version commit + tag。
 // - 对 agent 触发友好：结构化 JSON 输出，零交互。
 //
 // dist-tag 判定：版本号含 `-`（如 3.0.0-rc.120）→ rc；否则 → latest。
 // 这与 .github/workflows/release.yml 里 scripts/verify-release.mjs 的逻辑一致。
 
-import { execSync, spawnSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import semver from 'semver';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
@@ -40,7 +41,7 @@ function run(cmd, { inherit = false, cwd = ROOT } = {}) {
 
 /** 简单 semver 校验：X.Y.Z[-prerelease][+build] */
 function isValidSemver(v) {
-    return /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/.test(v);
+    return semver.valid(v) === v;
 }
 
 /** prerelease → dist-tag rc；正式版 → latest */
@@ -54,22 +55,6 @@ function gitHeadShort() {
 }
 
 /** 比较 semver：a > b 返回 1，相等 0，小于 -1。仅比较主.次.修与 prerelease。 */
-function compareSemver(a, b) {
-    const pa = a.split(/[-+]/);
-    const pb = b.split(/[-+]/);
-    const na = pa[0].split('.').map(Number);
-    const nb = pb[0].split('.').map(Number);
-    for (let i = 0; i < 3; i++) {
-        if (na[i] !== nb[i]) return na[i] > nb[i] ? 1 : -1;
-    }
-    // 都没有 prerelease → 相等
-    if (!pa[1] && !pb[1]) return 0;
-    // 有 prerelease 的版本号更小（semver 规则：1.0.0-rc < 1.0.0）
-    if (!pa[1]) return 1;
-    if (!pb[1]) return -1;
-    return pa[1] === pb[1] ? 0 : pa[1] > pb[1] ? 1 : -1;
-}
-
 /** 读 lerna.json 当前版本 */
 function currentVersion() {
     return JSON.parse(readFileSync(resolve(ROOT, 'lerna.json'), 'utf8'))
@@ -120,14 +105,14 @@ if (status) {
     fail('工作区不干净，请先提交或 stash 改动', { dirty: status.split('\n') });
 }
 const branch = run('git rev-parse --abbrev-ref HEAD').stdout.trim();
-if (branch !== 'master' && branch !== 'main') {
-    fail(`当前分支 ${branch}，请在 master/main 上发布`);
+if (branch !== 'master') {
+    fail(`当前分支 ${branch}，请在 master 上发布`);
 }
 
 // 3. 版本递增校验
 const cur = currentVersion();
 console.log(`当前版本：${cur} → 目标：${version}`);
-if (compareSemver(version, cur) <= 0) {
+if (!semver.gt(version, cur)) {
     fail(`目标版本 ${version} 必须大于当前版本 ${cur}`);
 }
 
@@ -149,6 +134,13 @@ console.log('\n✅ 门禁通过');
 console.log('\n🔨 build:packages');
 const buildRes = run('pnpm build:packages', { inherit: true });
 if (!buildRes.ok) fail('build:packages 失败');
+for (const step of [
+    'node scripts/prepare-release-artifacts.mjs',
+    'node scripts/validate-release-artifacts.mjs'
+]) {
+    const result = run(step, { inherit: true });
+    if (!result.ok) fail(`发布产物校验失败：${step}`);
+}
 
 // 7. lerna version bump（本地 commit + tag，不 push，便于失败回滚）
 //    --no-push：我们自己 push；--force-publish：所有包统一升版本
@@ -156,29 +148,42 @@ if (!buildRes.ok) fail('build:packages 失败');
 //    （lerna 8 真实支持的 flag，已在 lerna/dist/commands/version/command.js 核实）
 console.log('\n🏷️  lerna version bump');
 const BEFORE = run('git rev-parse HEAD').stdout.trim();
-const bumpRes = run(
-    `npx lerna version ${version} --no-push --exact --force-publish --yes`,
-    { inherit: true }
-);
-if (!bumpRes.ok) fail('lerna version 失败（未产生 commit）');
-
-// 回滚辅助：删除本次 bump 产生的 version commit + tag
+// 回滚辅助：删除本次 bump 产生的 version commit/tag 和未提交修改。
 function rollbackBump() {
     const tag = `v${version}`;
     run(`git tag -d ${tag}`, { inherit: false });
     run(`git reset --hard ${BEFORE}`, { inherit: true });
+    const clean = run('git status --porcelain').stdout.trim();
+    if (clean) {
+        fail('版本升级回滚后工作区仍不干净', {
+            dirty: clean.split('\n')
+        });
+    }
     console.log(`↩️  已回滚到 ${BEFORE}`);
+}
+
+const bumpRes = run(
+    `npx lerna version ${version} --no-push --exact --force-publish --yes`,
+    { inherit: true }
+);
+if (!bumpRes.ok) {
+    rollbackBump();
+    fail('lerna version 失败，已回滚');
 }
 
 // 确认 lerna 确实产生了 version commit
 const afterCommit = run('git rev-parse HEAD').stdout.trim();
 if (afterCommit === BEFORE) {
-    fail('lerna version 未产生 commit');
+    rollbackBump();
+    fail('lerna version 未产生 commit，已回滚');
 }
 
 // 8. push commit + tag
 console.log('\n📤 push version commit + tag');
-const pushRes = run('git push origin HEAD --follow-tags', { inherit: true });
+const pushRes = run(
+    `git push --atomic origin HEAD:master refs/tags/v${version}`,
+    { inherit: true }
+);
 if (!pushRes.ok) {
     rollbackBump();
     fail('git push 失败，已回滚本地 version commit');

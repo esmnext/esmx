@@ -29,6 +29,7 @@
         "husky": "9.1.7",
         "lerna": "^8.0.0",
         "lint-staged": "16.2.6",
+        "semver": "7.7.2",
         "shiki": "^4.3.0"
     },
     "private": false,
