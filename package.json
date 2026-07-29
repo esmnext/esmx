@@ -14,7 +14,7 @@
         "build:packages": "pnpm --filter \"./packages/**\" build",
         "build:examples": "pnpm --filter \"./examples/**\" build",
         "build:dts": "pnpm --filter \"./examples/micro-app/**\" run build:dts",
-        "release": "pnpm run build:packages && npx lerna publish --force-publish --exact",
+        "release": "node scripts/release.mjs",
         "smoke": "node scripts/smoke.mjs",
         "test:visual": "playwright test",
         "test:visual:update": "playwright test --update-snapshots",
