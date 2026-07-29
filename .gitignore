@@ -30,3 +30,6 @@ examples/templates/
 test-results/
 playwright-report/
 .lighthouseci/
+
+# Generated release tarballs
+/release-artifacts/
