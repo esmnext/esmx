@@ -1,4 +1,4 @@
-#!/usr/bin/env node --no-warnings --experimental-vm-modules --experimental-import-meta-resolve --experimental-strip-types
+#!/usr/bin/env -S node --no-warnings --experimental-vm-modules --experimental-import-meta-resolve --experimental-strip-types
 import { enableCompileCache } from 'node:module';
 
 try {

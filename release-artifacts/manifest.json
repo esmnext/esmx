@@ -1,0 +1,98 @@
+[
+  {
+    "name": "create-esmx",
+    "version": "3.0.0-rc.121",
+    "filename": "create-esmx-3.0.0-rc.121.tgz",
+    "integrity": "sha512-2cPfCk2i/a9RdyWZVQrURBSvkF+kjokk/tUzuaHP+oDUYP38gHV1wPL+oXbFH0wBbojCcv6mkDmW322XjJJdFA=="
+  },
+  {
+    "name": "@esmx/import",
+    "version": "3.0.0-rc.121",
+    "filename": "esmx-import-3.0.0-rc.121.tgz",
+    "integrity": "sha512-Izwfx6Xq78oC3u9iCnUFp0daC4MsizqrjOvR66gbqhDlhoULvNHwxxyPp06kUEQSxEj38DqrFnpycax3Tx/k4w=="
+  },
+  {
+    "name": "@esmx/pkg-wrapper",
+    "version": "3.0.0-rc.121",
+    "filename": "esmx-pkg-wrapper-3.0.0-rc.121.tgz",
+    "integrity": "sha512-5DEcNrWHacBmiTZkdCLdNGZvuQod6MIuTRkqsMJL3QJBYMsiMW9PpAdTThoNXpfE7+GTZ1/jGW3GooaGZ2U8mg=="
+  },
+  {
+    "name": "@esmx/router",
+    "version": "3.0.0-rc.121",
+    "filename": "esmx-router-3.0.0-rc.121.tgz",
+    "integrity": "sha512-xuwK9oSC4VIT91Vj8FOX825zXrCkkPp57zb6pEt9RSp0ZoL4ARJTPcq7U5gcQCs/Qv8L2dnEIitb8F1JidsJww=="
+  },
+  {
+    "name": "@esmx/core",
+    "version": "3.0.0-rc.121",
+    "filename": "esmx-core-3.0.0-rc.121.tgz",
+    "integrity": "sha512-KwfvMh5cUQnZaCPXmEIIgP+K3oKZ66OOSq6d0/+ptzk5AARjO26a/ebz6lVk02uNTKzNcu3w5e3t+RgPvv86Jg=="
+  },
+  {
+    "name": "@esmx/router-react",
+    "version": "3.0.0-rc.121",
+    "filename": "esmx-router-react-3.0.0-rc.121.tgz",
+    "integrity": "sha512-LAy9xQ1+n/agRF00wkVqAtd2jqnWIb5CGKdpvfxLs0/asuthIP2MxdLISMmDNNJkMHC8UxNmngX9Vc3z4hcX5Q=="
+  },
+  {
+    "name": "@esmx/router-vue",
+    "version": "3.0.0-rc.121",
+    "filename": "esmx-router-vue-3.0.0-rc.121.tgz",
+    "integrity": "sha512-tvxhAAiwfgl5y+vw9yUJi0IkVrS4R5qtF9KpmhFO+X39/eMZW3ywUeQUaN6US+mv0CXIDSzkZTK63dvAfX24Ug=="
+  },
+  {
+    "name": "@esmx/rsbuild",
+    "version": "3.0.0-rc.121",
+    "filename": "esmx-rsbuild-3.0.0-rc.121.tgz",
+    "integrity": "sha512-T8VOQ29KZHrtDAUrjH1nwqdBjpW0aIYBuCmpc5f2iMwcNUC2Fj5qZb2qVKFGsOX7LGegUc5pWWgIxAoWlpZnqA=="
+  },
+  {
+    "name": "@esmx/rspack",
+    "version": "3.0.0-rc.121",
+    "filename": "esmx-rspack-3.0.0-rc.121.tgz",
+    "integrity": "sha512-YZvILVpUAl+X8rYMVTb6zZYkimNvYZH6fNusCrohF2nfKDwn034DhtNZB8Sc4ANjwlq/lVGVSzFPQysUa7uB4w=="
+  },
+  {
+    "name": "@esmx/vite",
+    "version": "3.0.0-rc.121",
+    "filename": "esmx-vite-3.0.0-rc.121.tgz",
+    "integrity": "sha512-899HWU+MeCWh3iDpPe6nQO8/UFCYwWq4GqZ2D5VrHttV8FK6duEDxGDLe/wVhnMipq4J8q233Y96JcJY/usy4A=="
+  },
+  {
+    "name": "@esmx/rsbuild-react",
+    "version": "3.0.0-rc.121",
+    "filename": "esmx-rsbuild-react-3.0.0-rc.121.tgz",
+    "integrity": "sha512-pOtgL8yPXOsNiwVfB+0e2beci8pwvKaYyD6A6JfZ/ekBSOZ9M2/ta7vMixkBOzFOBuofZW3C2u2V5cw9fhZnSQ=="
+  },
+  {
+    "name": "@esmx/rsbuild-vue",
+    "version": "3.0.0-rc.121",
+    "filename": "esmx-rsbuild-vue-3.0.0-rc.121.tgz",
+    "integrity": "sha512-iEwHZH3DIiRnJ58wsE7y0Z1I0q9Sr+1QnK46q6Vhe0cR4u+Ufp9YykX3BzMrMi28NB30ZjQz+982/duIwpqczg=="
+  },
+  {
+    "name": "@esmx/rspack-react",
+    "version": "3.0.0-rc.121",
+    "filename": "esmx-rspack-react-3.0.0-rc.121.tgz",
+    "integrity": "sha512-qFJ9yCW7TXiHTG5ux8GGQjkWSkFiAwEFq/twTRXryq5l19c5TyKLAVnxe938/O4CxcKHB90V0OWzUhSX/AT7dw=="
+  },
+  {
+    "name": "@esmx/rspack-vue",
+    "version": "3.0.0-rc.121",
+    "filename": "esmx-rspack-vue-3.0.0-rc.121.tgz",
+    "integrity": "sha512-pIraHSmI75GKv/2swEU3mRypC6D76s+V5em8zhkazwnu0op8roEfxb4W0WZFyD7N1rsKZ+szRk/9JGj97kLWGg=="
+  },
+  {
+    "name": "@esmx/vite-react",
+    "version": "3.0.0-rc.121",
+    "filename": "esmx-vite-react-3.0.0-rc.121.tgz",
+    "integrity": "sha512-FmTctbx4GT23K7lVXOPEQHuZPi12asA2J0HVMJDKnTiQBE1a4NiBtsrjbGDZxCixORaAqk7ebMMDarGH029njQ=="
+  },
+  {
+    "name": "@esmx/vite-vue",
+    "version": "3.0.0-rc.121",
+    "filename": "esmx-vite-vue-3.0.0-rc.121.tgz",
+    "integrity": "sha512-jqDJ3/QWL66UzcqGmYlzb8sWShaPiNOeIFmFHUbA2pVV7xzNmjZqZ/f9qZ91xiXlZ3oOzWjdng7dwbQF8xfgoA=="
+  }
+]
