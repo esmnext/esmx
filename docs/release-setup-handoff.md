@@ -31,6 +31,8 @@ pnpm release <version>
 - tag commit 是 `origin/master` 的祖先
 - CLI bin 存在且具有可执行权限
 - 16 个包均可通过 `npm pack --dry-run`
+- tarball 中所有 `workspace:*` 均已改写为可安装的精确版本
+- 16 个 tarball 可由 npm 一次性安装，两个 CLI 均可执行
 - 下载 tarball 的 SHA-512 integrity 与构建 manifest 一致
 
 ## npm Trusted Publisher

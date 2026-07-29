@@ -38,27 +38,21 @@ for (const name of ['@esmx/core', 'create-esmx']) {
 const results = [];
 for (const name of RELEASE_PACKAGES) {
     const packed = spawnSync(
-        'npm',
-        [
-            'pack',
-            '--dry-run',
-            '--json',
-            '--ignore-scripts',
-            `--workspace=${name}`
-        ],
+        'pnpm',
+        ['--filter', name, 'pack', '--dry-run', '--json'],
         { cwd: root, encoding: 'utf8' }
     );
     if (packed.status !== 0) {
-        throw new Error(`npm pack dry-run 失败：${name}\n${packed.stderr}`);
+        throw new Error(`pnpm pack dry-run 失败：${name}\n${packed.stderr}`);
     }
-    const [result] = JSON.parse(packed.stdout);
+    const result = JSON.parse(packed.stdout);
     if (result?.name !== name) {
         throw new Error(
-            `npm pack 产物错误：期望 ${name}，实际 ${result?.name}`
+            `pnpm pack 产物错误：期望 ${name}，实际 ${result?.name}`
         );
     }
     if (/invalid bin|removing/i.test(packed.stderr)) {
-        throw new Error(`npm pack 报告无效 bin：${name}\n${packed.stderr}`);
+        throw new Error(`pnpm pack 报告无效 bin：${name}\n${packed.stderr}`);
     }
     results.push(result);
 }
