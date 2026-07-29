@@ -9,7 +9,7 @@
 // - 失败回滚：bump 之后、push 之前任何失败，回滚 version commit + tag。
 // - 对 agent 触发友好：结构化 JSON 输出，零交互。
 //
-// dist-tag 判定：版本号含 `-`（如 3.0.0-rc.120）→ rc；否则 → latest。
+// 所有版本统一发布到 latest；预发布版本也作为默认安装版本。
 // 这与 .github/workflows/release.yml 里 scripts/verify-release.mjs 的逻辑一致。
 
 import { spawnSync } from 'node:child_process';
@@ -44,9 +44,9 @@ function isValidSemver(v) {
     return semver.valid(v) === v;
 }
 
-/** prerelease → dist-tag rc；正式版 → latest */
-function distTagFor(version) {
-    return version.includes('-') ? 'rc' : 'latest';
+/** 所有发布统一更新 latest。 */
+function distTagFor() {
+    return 'latest';
 }
 
 /** 当前 git HEAD 短 hash */

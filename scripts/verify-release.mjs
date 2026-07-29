@@ -99,8 +99,8 @@ if (sha) {
     }
 }
 
-// 2. dist-tag 判定（与 scripts/release.mjs 保持一致）
-const distTag = version.includes('-') ? 'rc' : 'latest';
+// 2. 所有发布统一更新 latest（与 scripts/release.mjs 保持一致）
+const distTag = 'latest';
 
 console.log(`版本：${version}`);
 console.log(`dist-tag：${distTag}`);

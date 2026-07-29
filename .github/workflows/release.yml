@@ -52,11 +52,7 @@ jobs:
         run: |
           version=$(node -p "require('./lerna.json').version")
           echo "version=$version" >> "$GITHUB_OUTPUT"
-          if [[ "$version" == *-* ]]; then
-            echo "dist-tag=rc" >> "$GITHUB_OUTPUT"
-          else
-            echo "dist-tag=latest" >> "$GITHUB_OUTPUT"
-          fi
+          echo "dist-tag=latest" >> "$GITHUB_OUTPUT"
 
       - name: Build packages
         run: |

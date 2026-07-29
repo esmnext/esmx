@@ -103,7 +103,7 @@ pnpm release 3.0.0-rc.120
 1. GitHub Release workflow 的 build/publish jobs 均成功。
 2. artifact 下载日志确认 digest 验证成功。
 3. 16 个包的精确版本均为目标版本。
-4. 16 个包的 `rc` 或 `latest` dist-tag 均指向目标版本。
+4. 16 个包的 `latest` dist-tag 均指向目标版本。
 5. registry `dist.integrity` 与本次构建 manifest 完全一致。
 6. 16 个包均展示来自 `esmnext/esmx`、`release.yml` 的 npm provenance。
 7. `esmx` 和 `create-esmx` 两个 CLI 可从发布包安装并执行。
