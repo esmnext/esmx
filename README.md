@@ -77,4 +77,4 @@ npx create-esmx@latest my-app
 
 ## 📈 Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=esmnext/esmx&type=Date)](https://www.star-history.com/#esmnext/esmx&Date)
+[![Star History Chart](https://star-history.dera.page/svg?repos=esmnext/esmx&type=Date)](https://star-history.dera.page/#esmnext/esmx&Date)
